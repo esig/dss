@@ -49,6 +49,7 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 		this.maxInputSize = maxInputSize;
 	}
 	
+	@Override
 	public byte[] call() {
 		OutputStream out = null;
 		InputStream inputStream = null;

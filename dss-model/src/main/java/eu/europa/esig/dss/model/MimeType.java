@@ -33,8 +33,8 @@ import java.util.Map.Entry;
 @SuppressWarnings("serial")
 public class MimeType implements Serializable {
 
-	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
-	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>();
+	private static Map<String, MimeType> mimeTypes = new HashMap<>();
+	private static Map<String, MimeType> fileExtensions = new HashMap<>();
 
 	public static final MimeType BINARY = new MimeType("application/octet-stream");
 	public static final MimeType XML = new MimeType("text/xml");

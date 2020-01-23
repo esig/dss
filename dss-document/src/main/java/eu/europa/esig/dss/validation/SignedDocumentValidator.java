@@ -97,7 +97,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * In case of a detached signature this {@code List} contains the signed
 	 * documents.
 	 */
-	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+	protected List<DSSDocument> detachedContents = new ArrayList<>();
 	
 	/**
 	 * In case of an ASiC signature this {@code List} of container documents.
@@ -576,7 +576,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return a list of {@link SignatureScope}s
 	 */
 	protected List<SignatureScope> getSignatureScope(List<AdvancedSignature> signatures, List<TimestampToken> timestamps) {
-		List<SignatureScope> signatureScopes = new ArrayList<SignatureScope>();
+		List<SignatureScope> signatureScopes = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (AdvancedSignature signature : signatures) {
 				signatureScopes.addAll(signature.getSignatureScopes());
@@ -614,7 +614,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 
-		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> allSignatureList = new ArrayList<>();
 		for (final AdvancedSignature signature : getSignatures()) {
 			allSignatureList.add(signature);
 			allSignatureList.addAll(signature.getCounterSignatures());			

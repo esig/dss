@@ -50,7 +50,7 @@ public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 		// We use this file because File.listFiles() doesn't work from another jar
 		String listFiles = "/files_to_sign.txt";
 
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Object[]> dataToRun = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(PAdESLevelBLoopTest.class.getResourceAsStream(listFiles)))) {
 			String filepath;
 			while ((filepath = br.readLine()) != null) {

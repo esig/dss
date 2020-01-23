@@ -59,7 +59,7 @@ public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools 
 			// tag::demo[]
 
 			// Preparing the documents to be embedded in the container and signed
-			List<DSSDocument> documentsToBeSigned = new ArrayList<DSSDocument>();
+			List<DSSDocument> documentsToBeSigned = new ArrayList<>();
 			documentsToBeSigned.add(new FileDocument("src/main/resources/hello-world.pdf"));
 			documentsToBeSigned.add(new FileDocument("src/main/resources/xml_example.xml"));
 

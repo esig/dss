@@ -58,7 +58,7 @@ public class CompositeTSPSourceTest {
 		OnlineTSPSource tsa2 = new OnlineTSPSource("http://dss.nowina.lu/pki-factory/tsa/good-tsa");
 		tsa2.setDataLoader(timestampDataLoader);
 
-		Map<String, TSPSource> tspSources = new HashMap<String, TSPSource>();
+		Map<String, TSPSource> tspSources = new HashMap<>();
 		tspSources.put("TSA1", tsa1);
 		tspSources.put("TSA2", tsa2);
 

@@ -97,7 +97,7 @@ public class TLValidationJobTest {
 	
 	@BeforeAll
 	public static void initBeforeAll() throws IOException {
-		urlMap = new HashMap<String, DSSDocument>();
+		urlMap = new HashMap<>();
 		
 		cacheDirectory = new File("target/cache");
 		
@@ -106,7 +106,7 @@ public class TLValidationJobTest {
 		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
 		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		
-		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> onlineMap = new HashMap<>();
 		onlineMap.putAll(urlMap);
 		
 		onlineFileLoader = new FileCacheDataLoader();

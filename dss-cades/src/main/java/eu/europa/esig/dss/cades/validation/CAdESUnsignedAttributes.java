@@ -41,7 +41,7 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	private static List<ASN1ObjectIdentifier> timestampOids;
 	
 	static {
-		timestampOids = new ArrayList<ASN1ObjectIdentifier>();
+		timestampOids = new ArrayList<>();
 		timestampOids.add(id_aa_ets_archiveTimestampV2);
 		timestampOids.add(id_aa_ets_archiveTimestampV3);
 		timestampOids.add(id_aa_ets_certCRLTimestamp);

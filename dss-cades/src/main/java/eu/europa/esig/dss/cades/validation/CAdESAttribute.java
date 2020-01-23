@@ -61,7 +61,7 @@ public class CAdESAttribute implements ISignatureAttribute {
 	 * @return list of {@link ASN1Primitive}
 	 */
 	private List<ASN1Primitive> getASN1Primitives() {
-		final List<ASN1Primitive> primitives = new ArrayList<ASN1Primitive>();
+		final List<ASN1Primitive> primitives = new ArrayList<>();
 		final ASN1Set attrValues = attribute.getAttrValues();
 		for (final ASN1Encodable value : attrValues.toArray()) {
 			if (value instanceof DEROctetString) {

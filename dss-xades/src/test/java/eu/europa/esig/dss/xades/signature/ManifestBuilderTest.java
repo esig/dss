@@ -46,7 +46,7 @@ public class ManifestBuilderTest {
 
 	@Test
 	public void testBuildManifest() throws IOException {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		FileDocument file1 = new FileDocument("src/test/resources/sample.png");
 		documents.add(file1);
 		documents.add(new FileDocument("src/test/resources/sample.txt"));

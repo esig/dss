@@ -326,7 +326,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
-		List<PdfRevision> signatures = new ArrayList<PdfRevision>();
+		List<PdfRevision> signatures = new ArrayList<>();
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
 			final PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(doc);
@@ -398,8 +398,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	private Map<PdfSignatureDictionary, List<String>> extractSigDictionaries(PDDocument doc) throws IOException {
-		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<PdfSignatureDictionary, List<String>>();
-		Map<Long, PdfSignatureDictionary> pdfObjectDictMap = new LinkedHashMap<Long, PdfSignatureDictionary>();
+		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<>();
+		Map<Long, PdfSignatureDictionary> pdfObjectDictMap = new LinkedHashMap<>();
 
 		List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 		if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
@@ -421,7 +421,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					PdfDict dictionary = new PdfBoxDict((COSDictionary)sigDictObject.getObject(), doc);
 					signature = new PdfSigDictWrapper(dictionary);
 					
-					pdfDictionaries.put(signature, new ArrayList<String>(Arrays.asList(signatureFieldName)));
+					pdfDictionaries.put(signature, new ArrayList<>(Arrays.asList(signatureFieldName)));
 					pdfObjectDictMap.put(sigDictNumber, signature);
 					
 				} else {
@@ -488,11 +488,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		Map<String, Long> knownObjects = buildKnownObjects(callbacks);
 
-		Map<String, COSStream> streams = new HashMap<String, COSStream>();
+		Map<String, COSStream> streams = new HashMap<>();
 
-		Set<CRLToken> allCrls = new HashSet<CRLToken>();
-		Set<OCSPToken> allOcsps = new HashSet<OCSPToken>();
-		Set<CertificateToken> allCertificates = new HashSet<CertificateToken>();
+		Set<CRLToken> allCrls = new HashSet<>();
+		Set<OCSPToken> allOcsps = new HashSet<>();
+		Set<CertificateToken> allCertificates = new HashSet<>();
 
 		COSDictionary vriDictionary = new COSDictionary();
 		for (DSSDictionaryCallback callback : callbacks) {
@@ -542,7 +542,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			throws IOException {
 		COSArray array = new COSArray();
 		// avoid duplicate CRLs
-		List<String> currentObjIds = new ArrayList<String>();
+		List<String> currentObjIds = new ArrayList<>();
 		for (Token token : tokens) {
 			String digest = getTokenDigest(token);
 			if (!currentObjIds.contains(digest)) {
@@ -580,7 +580,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is)) {
 			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
 			for (PDSignatureField pdSignatureField : signatureFields) {

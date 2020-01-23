@@ -311,7 +311,7 @@ public class DSS1770Test {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770refUriRemoved.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		List<DSSDocument> detachedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedDocuments = new ArrayList<>();
 		detachedDocuments.add(new FileDocument("src/test/resources/sample.png"));
 		detachedDocuments.add(new FileDocument("src/test/resources/sample.xml"));
 		validator.setDetachedContents(detachedDocuments);

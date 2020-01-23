@@ -47,7 +47,7 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 	public void zipContentEquals() throws Exception {
 		Date now = new Date();
 		ASiCParameters asicParameters = new ASiCParameters();
-		List<DSSDocument> filesToBeSigned = new ArrayList<DSSDocument>();
+		List<DSSDocument> filesToBeSigned = new ArrayList<>();
 		filesToBeSigned.add(new InMemoryDocument("Hello".getBytes(), "test.xml"));
 		filesToBeSigned.add(new InMemoryDocument("Bye".getBytes(), "test2.xml"));
 		DataToSignASiCSWithXAdESFromFiles dataToSign = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);

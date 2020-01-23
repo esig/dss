@@ -176,7 +176,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	}
 
 	private List<String> getTimestampedObjectByCategory(TimestampedObjectType category) {
-		List<String> timestampedObjectIds = new ArrayList<String>();
+		List<String> timestampedObjectIds = new ArrayList<>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (category == timestampedObject.getCategory()) {
 				timestampedObjectIds.add(timestampedObject.getToken().getId());
@@ -203,7 +203,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * @return list of ids
 	 */
 	public List<String> getTimestampedOrphanTokenIdsByType(OrphanTokenType tokenType) {
-		List<String> timestampedObjectIds = new ArrayList<String>();
+		List<String> timestampedObjectIds = new ArrayList<>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (TimestampedObjectType.ORPHAN == timestampedObject.getCategory()) {
 				XmlOrphanToken orphanToken = (XmlOrphanToken) timestampedObject.getToken();

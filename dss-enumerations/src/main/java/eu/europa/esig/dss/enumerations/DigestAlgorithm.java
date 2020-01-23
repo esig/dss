@@ -84,7 +84,7 @@ public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 		private static final Map<String, DigestAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
 
 		private static Map<String, DigestAlgorithm> registerOIDAlgorithms() {
-			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
+			final Map<String, DigestAlgorithm> map = new HashMap<>();
 			for (final DigestAlgorithm digestAlgorithm : values()) {
 				map.put(digestAlgorithm.oid, digestAlgorithm);
 			}
@@ -92,7 +92,7 @@ public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 		}
 
 		private static Map<String, DigestAlgorithm> registerXMLAlgorithms() {
-			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
+			final Map<String, DigestAlgorithm> map = new HashMap<>();
 			for (final DigestAlgorithm digestAlgorithm : values()) {
 				map.put(digestAlgorithm.xmlId, digestAlgorithm);
 			}
@@ -100,7 +100,7 @@ public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 		}
 
 		private static Map<String, DigestAlgorithm> registerAlgorithms() {
-			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
+			final Map<String, DigestAlgorithm> map = new HashMap<>();
 			for (final DigestAlgorithm digestAlgorithm : values()) {
 				map.put(digestAlgorithm.name, digestAlgorithm);
 			}
@@ -108,7 +108,7 @@ public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 		}
 
 		private static Map<String, DigestAlgorithm> registerJavaAlgorithms() {
-			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
+			final Map<String, DigestAlgorithm> map = new HashMap<>();
 			for (final DigestAlgorithm digestAlgorithm : values()) {
 				map.put(digestAlgorithm.javaName, digestAlgorithm);
 			}

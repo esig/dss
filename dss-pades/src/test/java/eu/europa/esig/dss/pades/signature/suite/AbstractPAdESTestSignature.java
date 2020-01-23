@@ -33,6 +33,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
@@ -136,6 +137,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(getSignatureParameters().getLocation(), signature.getCountryName());
 	}
 	
+	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertNotNull(signature.getPDFRevision());
@@ -190,7 +192,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCAdESSignature().getCmsSignedData().getEncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
+			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
 
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 			SignerInfo signedInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));

@@ -210,11 +210,11 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 	@Test
 	public final void getTwoOriginalDocumentFromEnvelopingSignature() throws Exception {
-		List<DSSReference> refs = new ArrayList<DSSReference>();
+		List<DSSReference> refs = new ArrayList<>();
 		DSSDocument doc1 = new FileDocument("src/test/resources/sample.xml");
 		DSSDocument doc2 = new FileDocument("src/test/resources/sampleISO.xml");
 
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 

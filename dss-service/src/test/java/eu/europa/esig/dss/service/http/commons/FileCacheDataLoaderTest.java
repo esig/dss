@@ -129,7 +129,7 @@ public class FileCacheDataLoaderTest {
 		cacheDirectory.mkdirs();
 		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
 		
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put("sample", "sample".getBytes());
 		dataMap.put("null", null);
 		dataMap.put("empty-array", new byte[] {});

@@ -241,7 +241,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(XAdESAttribute signedAttribute) {
 		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
-		List<TimestampedReference> timestampReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampReferences = new ArrayList<>();
 		for (Reference reference : references) {
 			if (isContentTimestampedReference(reference, includes)) {
 				for (SignatureScope signatureScope : signatureScopes) {
@@ -285,7 +285,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected List<Digest> getCertificateRefDigests(XAdESAttribute unsignedAttribute) {
-		List<Digest> digests = new ArrayList<Digest>();
+		List<Digest> digests = new ArrayList<>();
 		NodeList certRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
 		for (int ii = 0; ii < certRefs.getLength(); ii++) {
 			Element certRefElement = (Element) certRefs.item(ii);
@@ -299,7 +299,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected List<Digest> getRevocationRefCRLDigests(XAdESAttribute unsignedAttribute) {
-		List<Digest> crlRefDigests = new ArrayList<Digest>();
+		List<Digest> crlRefDigests = new ArrayList<>();
 		NodeList crlRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCRLRefsChildren());
 		for (int ii = 0; ii < crlRefs.getLength(); ii++) {
 			Element crlRef = (Element) crlRefs.item(ii);
@@ -313,7 +313,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected List<Digest> getRevocationRefOCSPDigests(XAdESAttribute unsignedAttribute) {
-		List<Digest> ocspRefDigests = new ArrayList<Digest>();
+		List<Digest> ocspRefDigests = new ArrayList<>();
 		NodeList ocspRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentOCSPRefsChildren());
 		for (int ii = 0; ii < ocspRefs.getLength(); ii++) {
 			Element ocspRef = (Element) ocspRefs.item(ii);
@@ -327,7 +327,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected List<EncapsulatedCertificateTokenIdentifier> getEncapsulatedCertificateIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<EncapsulatedCertificateTokenIdentifier> certificateIdentifiers = new ArrayList<EncapsulatedCertificateTokenIdentifier>();
+		List<EncapsulatedCertificateTokenIdentifier> certificateIdentifiers = new ArrayList<>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate()
 				: xadesPaths.getCurrentEncapsulatedCertificate();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
@@ -342,7 +342,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<CRLBinary> crlIdentifiers = new ArrayList<CRLBinary>();
+		List<CRLBinary> crlIdentifiers = new ArrayList<>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xadesPaths.getCurrentRevocationValuesEncapsulatedCRLValue() : xadesPaths.getCurrentEncapsulatedCRLValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
@@ -356,7 +356,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<OCSPResponseBinary> crlIdentifiers = new ArrayList<OCSPResponseBinary>();
+		List<OCSPResponseBinary> crlIdentifiers = new ArrayList<>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);

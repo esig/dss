@@ -74,7 +74,7 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractXAdESTestSignatur
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		// DSS-1290
 		documentToSign.setName(null);
 		detachedContents.add(documentToSign);

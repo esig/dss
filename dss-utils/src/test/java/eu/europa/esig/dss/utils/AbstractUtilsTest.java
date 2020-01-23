@@ -166,7 +166,7 @@ public abstract class AbstractUtilsTest {
 		assertEquals("", Utils.joinStrings(new ArrayList<String>(), null));
 		assertEquals("", Utils.joinStrings(new ArrayList<String>(), ","));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
@@ -256,7 +256,7 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isCollectionEmpty(null));
 		assertTrue(Utils.isCollectionEmpty(new ArrayList<String>()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
@@ -268,7 +268,7 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isCollectionNotEmpty(null));
 		assertFalse(Utils.isCollectionNotEmpty(new ArrayList<String>()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
@@ -280,7 +280,7 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isMapEmpty(null));
 		assertTrue(Utils.isMapEmpty(new HashMap<String, Integer>()));
 		
-		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Map<String, Boolean> map = new HashMap<>();
 		map.put("a", true);
 		map.put("b", false);
 		map.put("c", true);
@@ -296,7 +296,7 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isMapNotEmpty(null));
 		assertFalse(Utils.isMapNotEmpty(new HashMap<String, Integer>()));
 		
-		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Map<String, Boolean> map = new HashMap<>();
 		map.put("a", true);
 		map.put("b", false);
 		map.put("c", true);
@@ -313,7 +313,7 @@ public abstract class AbstractUtilsTest {
 
 		assertEquals(0, Utils.collectionSize(new ArrayList<String>()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");

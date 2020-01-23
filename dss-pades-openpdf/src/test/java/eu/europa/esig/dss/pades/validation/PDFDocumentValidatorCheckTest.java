@@ -61,7 +61,7 @@ public class PDFDocumentValidatorCheckTest extends AbstractTestValidator {
 
 	@Override
 	protected List<DSSDocument> getValidDocuments() {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new InMemoryDocument(getClass().getResourceAsStream("/validation/pdf-signed-original.pdf")));
 		documents.add(new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LTA.pdf")));
 		documents.add(new InMemoryDocument(getClass().getResourceAsStream("/validation/encrypted.pdf")));

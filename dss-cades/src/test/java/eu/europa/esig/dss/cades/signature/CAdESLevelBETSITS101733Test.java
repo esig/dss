@@ -127,7 +127,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentS
 			assertEquals(PKCSObjectIdentifiers.signedData, oid);
 			logger.info("OID : " + oid.toString());
 
-			ASN1TaggedObject taggedObj = DERTaggedObject.getInstance(asn1Seq.getObjectAt(1));
+			ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
 
 			logger.info("TAGGED OBJ : " + taggedObj.toString());
 
@@ -146,7 +146,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentS
 			ASN1Set certificates = signedData.getCertificates();
 			logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
 
-			List<X509Certificate> foundCertificates = new ArrayList<X509Certificate>();
+			List<X509Certificate> foundCertificates = new ArrayList<>();
 			for (int i = 0; i < certificates.size(); i++) {
 				ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
 				logger.info("SEQ cert " + i + " : " + seqCertif);
@@ -214,7 +214,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentS
 			ASN1ObjectIdentifier oidContentType = ASN1ObjectIdentifier.getInstance(seqEncapsulatedInfo.getObjectAt(0));
 			logger.info("OID CONTENT TYPE : " + oidContentType.toString());
 
-			ASN1TaggedObject taggedContent = DERTaggedObject.getInstance(seqEncapsulatedInfo.getObjectAt(1));
+			ASN1TaggedObject taggedContent = ASN1TaggedObject.getInstance(seqEncapsulatedInfo.getObjectAt(1));
 
 			ASN1OctetString contentOctetString = ASN1OctetString.getInstance(taggedContent.getObject());
 			String content = new String(contentOctetString.getOctets());

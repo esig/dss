@@ -85,7 +85,7 @@ public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator
 
 	@Override
 	protected List<SignatureScope> getTimestampSignatureScope() {
-		List<SignatureScope> result = new ArrayList<SignatureScope>();
+		List<SignatureScope> result = new ArrayList<>();
 		result.add(new ManifestSignatureScope(manifestFile.getFilename(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), getTimestampedData())));
 		if (Utils.isCollectionNotEmpty(originalDocuments)) {
 			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {

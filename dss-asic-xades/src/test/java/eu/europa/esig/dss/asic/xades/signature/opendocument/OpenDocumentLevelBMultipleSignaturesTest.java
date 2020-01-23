@@ -68,7 +68,7 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "odt", "ods", "odp", "odg" }, true);
-		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
+		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));
 		}

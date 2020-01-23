@@ -372,7 +372,7 @@ public final class DSSASN1Utils {
 	 */
 	public static String getCanonicalizedName(final GeneralNames generalNames) {
 		GeneralName[] names = generalNames.getNames();
-		TreeMap<String, String> treeMap = new TreeMap<String, String>();
+		TreeMap<String, String> treeMap = new TreeMap<>();
 		for (GeneralName name : names) {
 			String ldapString = String.valueOf(name.getName());
 			LOG.debug("ldapString to canonicalize: {} ", ldapString);
@@ -501,7 +501,7 @@ public final class DSSASN1Utils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<DEROctetString> getDEROctetStrings(final ASN1Sequence asn1Sequence) {
-		final List<DEROctetString> derOctetStrings = new ArrayList<DEROctetString>();
+		final List<DEROctetString> derOctetStrings = new ArrayList<>();
 		if (asn1Sequence != null) {
 			derOctetStrings.addAll(Collections.list(asn1Sequence.getObjects()));
 		}
@@ -535,7 +535,7 @@ public final class DSSASN1Utils {
 	}
 
 	public static List<CertificatePolicy> getCertificatePolicies(final CertificateToken certToken) {
-		List<CertificatePolicy> certificatePolicies = new ArrayList<CertificatePolicy>();
+		List<CertificatePolicy> certificatePolicies = new ArrayList<>();
 		final byte[] certificatePoliciesBinaries = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
 		if (Utils.isArrayNotEmpty(certificatePoliciesBinaries)) {
 			try {
@@ -571,7 +571,7 @@ public final class DSSASN1Utils {
 	 * @return the list of QC Statements oids
 	 */
 	public static List<String> getQCStatementsIdList(final CertificateToken certToken) {
-		final List<String> extensionIdList = new ArrayList<String>();
+		final List<String> extensionIdList = new ArrayList<>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (Utils.isArrayNotEmpty(qcStatement)) {
 			try {
@@ -597,7 +597,7 @@ public final class DSSASN1Utils {
 	 * @return the list of QCTypes oids
 	 */
 	public static List<String> getQCTypesIdList(final CertificateToken certToken) {
-		final List<String> qcTypesIdList = new ArrayList<String>();
+		final List<String> qcTypesIdList = new ArrayList<>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (Utils.isArrayNotEmpty(qcStatement)) {
 			try {
@@ -713,7 +713,7 @@ public final class DSSASN1Utils {
 	 */
 	public static byte[] computeSkiFromCertPublicKey(final PublicKey publicKey) {
 		try {
-			DLSequence seq = (DLSequence) DERSequence.fromByteArray(publicKey.getEncoded());
+			DLSequence seq = (DLSequence) ASN1Primitive.fromByteArray(publicKey.getEncoded());
 			DERBitString item = (DERBitString) seq.getObjectAt(1);
 			return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
 		} catch (IOException e) {
@@ -744,7 +744,7 @@ public final class DSSASN1Utils {
 	}
 
 	private static List<String> getAccessLocations(final CertificateToken certificate, ASN1ObjectIdentifier aiaType) {
-		List<String> locationsUrls = new ArrayList<String>();
+		List<String> locationsUrls = new ArrayList<>();
 		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
 		if (null == authInfoAccessExtensionValue) {
 			return locationsUrls;
@@ -781,7 +781,7 @@ public final class DSSASN1Utils {
 	 * @return the {@code List} of CRL URI, or empty list if the extension is not present
 	 */
 	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
-		final List<String> urls = new ArrayList<String>();
+		final List<String> urls = new ArrayList<>();
 
 		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
 		if (crlDistributionPointsBytes != null) {
@@ -909,7 +909,7 @@ public final class DSSASN1Utils {
 	}
 
 	public static Map<String, String> get(final X500Principal x500Principal) {
-		Map<String, String> treeMap = new HashMap<String, String>();
+		Map<String, String> treeMap = new HashMap<>();
 		final byte[] encoded = x500Principal.getEncoded();
 		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
 		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
@@ -1167,7 +1167,7 @@ public final class DSSASN1Utils {
 	 */
 	public static List<byte[]> getOctetStringForAtsHashIndex(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		
-		List<byte[]> octets = new ArrayList<byte[]>();
+		List<byte[]> octets = new ArrayList<>();
 		/*
 		 *  id_aa_ATSHashIndexV3 (EN 319 122-1 v1.1.1) -> Each one shall contain the hash
 		 *  value of the octets resulting from concatenating the Attribute.attrType field and one of the instances of
@@ -1241,7 +1241,7 @@ public final class DSSASN1Utils {
 	 * @param oid {@link ASN1ObjectIdentifier} to collect
 	 */
 	public static List<TimeStampToken> findTimeStampTokens(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
-		List<TimeStampToken> timeStamps = new ArrayList<TimeStampToken>();
+		List<TimeStampToken> timeStamps = new ArrayList<>();
 		Attribute[] signatureTimeStamps = getAsn1Attributes(unsignedAttributes, oid);
 		if (signatureTimeStamps != null) {
 			for (final Attribute attribute : signatureTimeStamps) {

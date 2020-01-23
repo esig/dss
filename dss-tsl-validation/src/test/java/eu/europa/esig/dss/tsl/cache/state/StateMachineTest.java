@@ -38,7 +38,7 @@ public class StateMachineTest {
 
 	@Test
 	public void testEmpty() throws Exception {
-		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<MockCachedResult>();
+		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>();
 		Date emptyStateDate = cachedEntry.getLastStateTransitionTime();
 		assertNotNull(emptyStateDate);
 		assertNull(cachedEntry.getCachedResult());
@@ -114,7 +114,7 @@ public class StateMachineTest {
 
 	@Test
 	public void testDesynchro() {
-		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<MockCachedResult>(new MockCachedResult(8));
+		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>(new MockCachedResult(8));
 		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
 		assertEquals(8, cachedEntry.getCachedResult().integer);
 		assertNotNull(cachedEntry.getLastStateTransitionTime());

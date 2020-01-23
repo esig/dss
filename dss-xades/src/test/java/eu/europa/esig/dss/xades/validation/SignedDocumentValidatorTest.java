@@ -118,7 +118,7 @@ public class SignedDocumentValidatorTest {
 	}
 	
 	private Set<String> getValues(ResourceBundle bundle) {
-		Set<String> values = new HashSet<String>();
+		Set<String> values = new HashSet<>();
 		for (String key : bundle.keySet()) {
 			values.add(MessageFormat.format(bundle.getString(key), new Object[] {}));
 		}

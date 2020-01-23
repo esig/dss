@@ -29,14 +29,14 @@ public class ASiCExtractResult {
 
 	private String zipComment;
 	private DSSDocument mimeTypeDocument;
-	private List<DSSDocument> allDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>(); // originally signed documents
-	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> archiveManifestDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
-	private List<DSSDocument> timestampDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
-	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> containerDocuments = new ArrayList<DSSDocument>(); // List of documents inside a ZIP container (for ASiC-S signatures)
+	private List<DSSDocument> allDocuments = new ArrayList<>();
+	private List<DSSDocument> signedDocuments = new ArrayList<>(); // originally signed documents
+	private List<DSSDocument> signatureDocuments = new ArrayList<>();
+	private List<DSSDocument> manifestDocuments = new ArrayList<>();
+	private List<DSSDocument> archiveManifestDocuments = new ArrayList<>(); // ASiC with CAdES
+	private List<DSSDocument> timestampDocuments = new ArrayList<>(); // ASiC with CAdES
+	private List<DSSDocument> unsupportedDocuments = new ArrayList<>();
+	private List<DSSDocument> containerDocuments = new ArrayList<>(); // List of documents inside a ZIP container (for ASiC-S signatures)
 	private DSSDocument rootContainer; // For OpenDocument
 
 	public String getZipComment() {
@@ -133,7 +133,7 @@ public class ASiCExtractResult {
 	 * @return list of {@link DSSDocument}s
 	 */
 	public List<DSSDocument> getAllManifestDocuments() {
-		List<DSSDocument> allManifestsList = new ArrayList<DSSDocument>();
+		List<DSSDocument> allManifestsList = new ArrayList<>();
 		allManifestsList.addAll(getManifestDocuments());
 		allManifestsList.addAll(getArchiveManifestDocuments());
 		return allManifestsList;

@@ -42,7 +42,7 @@ public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 
 	@Override
 	protected List<DSSDocument> getValidDocuments() {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/validation/onefile-ok.asice"));
 		documents.add(new FileDocument("src/test/resources/validation/onefile-ok.asics"));
 		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asice"));

@@ -379,7 +379,7 @@ public class TransitionTest {
 	private DSSFileLoader getOnlineDataLoader(DSSDocument doc, String url) {
 		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
 		onlineFileLoader.setCacheExpirationTime(0);
-		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> onlineMap = new HashMap<>();
 		onlineMap.put(url, doc);
 		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
 		onlineFileLoader.setFileCacheDirectory(cacheDirectory);

@@ -68,14 +68,14 @@ public class CertificatePool implements Serializable {
 	 * 
 	 * All entries share the same keypair
 	 */
-	private Map<String, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<String, CertificatePoolEntity>();
+	private Map<String, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/*
 	 * Map of tokens, the key is the canonicalized SubjectX500Principal
 	 * 
 	 * For a same SubjectX500Principal, different keypairs are possible
 	 */
-	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<String, Set<CertificateToken>>();
+	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<>();
 
 	public CertificatePool() {
 		LOG.debug("New CertificatePool created");
@@ -116,7 +116,7 @@ public class CertificatePool implements Serializable {
 			String canonicalizedSubject = certificateToAdd.getCanonicalizedSubject();
 			Set<CertificateToken> tokensSet = tokensBySubject.get(canonicalizedSubject);
 			if (tokensSet == null) {
-				tokensSet = new HashSet<CertificateToken>();
+				tokensSet = new HashSet<>();
 				tokensBySubject.put(canonicalizedSubject, tokensSet);
 			}
 			tokensSet.add(certificateToAdd);
@@ -193,7 +193,7 @@ public class CertificatePool implements Serializable {
 				return certificates.iterator().next();
 			}
 
-			List<PublicKey> pubKeyIssuers = new ArrayList<PublicKey>();
+			List<PublicKey> pubKeyIssuers = new ArrayList<>();
 			for (CertificateToken certificateToken : certificates) {
 				if (!certificateToken.isSelfIssued() && certificateToken.getPublicKeyOfTheSigner() != null) {
 					pubKeyIssuers.add(certificateToken.getPublicKeyOfTheSigner());
@@ -272,7 +272,7 @@ public class CertificatePool implements Serializable {
 			List<CertificateToken> equivalentCertificates = entity.getEquivalentCertificates();
 			CertificateToken token = equivalentCertificates.iterator().next();
 			X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(token);
-			Store<X509CertificateHolder> store = new CollectionStore<X509CertificateHolder>(Collections.singleton(x509CertificateHolder));
+			Store<X509CertificateHolder> store = new CollectionStore<>(Collections.singleton(x509CertificateHolder));
 			Collection<X509CertificateHolder> matches = store.getMatches(signerId);
 			if (!matches.isEmpty()) {
 				return equivalentCertificates;
@@ -340,7 +340,7 @@ public class CertificatePool implements Serializable {
 	}
 
 	public List<CertificateToken> getCertificateTokens() {
-		List<CertificateToken> certs = new ArrayList<CertificateToken>();
+		List<CertificateToken> certs = new ArrayList<>();
 		for (CertificatePoolEntity entity : entriesByPublicKeyHash.values()) {
 			certs.addAll(entity.getEquivalentCertificates());
 		}

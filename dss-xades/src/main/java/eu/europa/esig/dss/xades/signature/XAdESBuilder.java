@@ -314,7 +314,7 @@ public abstract class XAdESBuilder {
 	 * @return list of object ids to no indent
 	 */
 	private List<String> getNotIndentedObjectIds() {
-		List<String> ids = new ArrayList<String>();
+		List<String> ids = new ArrayList<>();
 		List<DSSReference> dssReferences = params.getReferences();
 		if (dssReferences != null) {
 			for (DSSReference reference : dssReferences) {

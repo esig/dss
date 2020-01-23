@@ -51,7 +51,7 @@ public final class OpenDocumentSupportUtils {
 	 * @return the list of covered documents
 	 */
 	public static List<DSSDocument> getOpenDocumentCoverage(ASiCExtractResult extractResult) {
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(extractResult.getMimeTypeDocument());
 		docs.addAll(extractResult.getSignedDocuments());
 		docs.addAll(extractResult.getManifestDocuments());
@@ -59,7 +59,7 @@ public final class OpenDocumentSupportUtils {
 		docs.addAll(extractResult.getTimestampDocuments());
 		docs.addAll(extractResult.getUnsupportedDocuments());
 
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 		for (DSSDocument doc : docs) {
 			if (!doc.getName().startsWith(EXTERNAL_DATA)) {
 				result.add(doc);

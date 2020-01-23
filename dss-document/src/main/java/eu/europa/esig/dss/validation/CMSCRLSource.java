@@ -66,7 +66,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	/**
 	 * Cached list of {@code CRLBinary}s found in SignedData attribute
 	 */
-	private List<CRLBinary> signedDataCRLIdentifiers = new ArrayList<CRLBinary>();
+	private List<CRLBinary> signedDataCRLIdentifiers = new ArrayList<>();
 
 	/**
 	 * The default constructor for CMSCRLSource.

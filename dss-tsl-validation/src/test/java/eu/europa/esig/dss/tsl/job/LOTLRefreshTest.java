@@ -148,7 +148,7 @@ public class LOTLRefreshTest {
 	}
 
 	private Map<String, DSSDocument> correctUrlMap() {
-		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put("EU", new FileDocument("src/test/resources/lotlCache/EU.xml"));
 		return urlMap;
 	}

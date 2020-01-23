@@ -126,7 +126,7 @@ public class SerializationTest {
 	public void testSerializationBLevel() throws Exception {
 		BLevelParameters blevel = new BLevelParameters();
 		blevel.setSigningDate(new Date());
-		List<String> commitmentTypeIndication = new ArrayList<String>();
+		List<String> commitmentTypeIndication = new ArrayList<>();
 		commitmentTypeIndication.add("Test commitment");
 		blevel.setCommitmentTypeIndications(commitmentTypeIndication);
 
@@ -140,7 +140,7 @@ public class SerializationTest {
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("country");
 		signerLocation.setLocality("locality");
-		List<String> postalAddress = new ArrayList<String>();
+		List<String> postalAddress = new ArrayList<>();
 		postalAddress.add("Postal address");
 		signerLocation.setPostalAddress(postalAddress);
 		signerLocation.setPostalCode("postal code");
@@ -159,7 +159,7 @@ public class SerializationTest {
 		testObj.setSignWithExpiredCertificate(false);
 		testObj.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		testObj.bLevel().setSigningDate(new Date());
-		List<String> commitmentTypeIndication = new ArrayList<String>();
+		List<String> commitmentTypeIndication = new ArrayList<>();
 		commitmentTypeIndication.add("Test commitment");
 		testObj.bLevel().setCommitmentTypeIndications(commitmentTypeIndication);
 		Policy signaturePolicy = new Policy();
@@ -172,7 +172,7 @@ public class SerializationTest {
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("country");
 		signerLocation.setLocality("locality");
-		List<String> postalAddress = new ArrayList<String>();
+		List<String> postalAddress = new ArrayList<>();
 		postalAddress.add("Postal address");
 		signerLocation.setPostalAddress(postalAddress);
 		signerLocation.setPostalCode("postal code");

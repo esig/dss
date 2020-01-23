@@ -606,7 +606,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return Collections.emptyList();
 			}
 
-			final List<SignerRole> claimedRoles = new ArrayList<SignerRole>();
+			final List<SignerRole> claimedRoles = new ArrayList<>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (!(signerAttrValue instanceof org.bouncycastle.asn1.x509.Attribute[])) {
 					continue;
@@ -645,7 +645,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			if (signerAttrValues == null) {
 				return Collections.emptyList();
 			}
-			List<SignerRole> roles = new ArrayList<SignerRole>();
+			List<SignerRole> roles = new ArrayList<>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (signerAttrValue instanceof AttributeCertificate) {
 					final AttributeCertificate attributeCertificate = (AttributeCertificate) signerAttrValue;
@@ -719,7 +719,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private List<TimestampedReference> getTimestampedReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		final List<CertificateToken> certs = getCertificateSource().getCompleteCertificates();
 		for (final CertificateToken certificate : certs) {
 			references.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
@@ -892,7 +892,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	
 	public List<ReferenceValidation> getReferenceValidations(SignerInformation signerInformationToCheck) {
 		if (referenceValidations == null) {
-			referenceValidations = new ArrayList<ReferenceValidation>();
+			referenceValidations = new ArrayList<>();
 
 			DSSDocument originalDocument = null;
 			try {
@@ -962,7 +962,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
-		List<ReferenceValidation> manifestEntryValidations = new ArrayList<ReferenceValidation>();
+		List<ReferenceValidation> manifestEntryValidations = new ArrayList<>();
 		ManifestFile manifest = getSignedManifest(originalDocument, messageDigest);
 		if (manifest == null) {
 			if (LOG.isDebugEnabled()) {
@@ -1077,7 +1077,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public Set<DigestAlgorithm> getMessageDigestAlgorithms() {
-		Set<DigestAlgorithm> result = new HashSet<DigestAlgorithm>();
+		Set<DigestAlgorithm> result = new HashSet<>();
 		Set<AlgorithmIdentifier> digestAlgorithmIDs = cmsSignedData.getDigestAlgorithmIDs();
 		for (AlgorithmIdentifier algorithmIdentifier : digestAlgorithmIDs) {
 			String oid = algorithmIdentifier.getAlgorithm().getId();
@@ -1192,7 +1192,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		final List<AdvancedSignature> countersignatures = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> countersignatures = new ArrayList<>();
 		recursiveCollect(countersignatures, signerInformation, this);
 		return countersignatures;
 	}

@@ -60,7 +60,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 	@Test
 	public void test() {
 
-		List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 

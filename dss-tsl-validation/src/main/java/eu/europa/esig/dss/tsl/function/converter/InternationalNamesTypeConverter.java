@@ -34,14 +34,14 @@ public class InternationalNamesTypeConverter implements Function<InternationalNa
 
 	@Override
 	public Map<String, List<String>> apply(InternationalNamesType original) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		Map<String, List<String>> result = new HashMap<>();
 		if (original != null && Utils.isCollectionNotEmpty(original.getName())) {
 			for (MultiLangNormStringType multiLangNormString : original.getName()) {
 				final String lang = multiLangNormString.getLang();
 				final String value = multiLangNormString.getValue();
 				List<String> resultsByLang = result.get(lang);
 				if (resultsByLang == null) {
-					resultsByLang = new ArrayList<String>();
+					resultsByLang = new ArrayList<>();
 					result.put(lang, resultsByLang);
 				}
 				resultsByLang.add(value);

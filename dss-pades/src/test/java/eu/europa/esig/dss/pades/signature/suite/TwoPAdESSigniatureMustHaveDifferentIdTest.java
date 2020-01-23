@@ -78,7 +78,7 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest extends PKIFactoryAccess 
 
 		List<String> signatureIdList = reports.getSimpleReport().getSignatureIdList();
 
-		assertEquals(2, new HashSet<String>(reports.getSimpleReport().getSignatureIdList()).size());
+		assertEquals(2, new HashSet<>(reports.getSimpleReport().getSignatureIdList()).size());
 		assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
 
 	}

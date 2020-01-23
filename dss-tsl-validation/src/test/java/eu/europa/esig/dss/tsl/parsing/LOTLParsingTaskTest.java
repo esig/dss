@@ -177,7 +177,7 @@ public class LOTLParsingTaskTest {
 	public void parseLOTLOnlyBEandPTPointers() {
 		LOTLSource lotlSource = new LOTLSource();
 
-		Set<String> countries = new HashSet<String>();
+		Set<String> countries = new HashSet<>();
 		countries.add("BE");
 		countries.add("PT");
 

@@ -72,7 +72,7 @@ public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWi
 	@Override
 	public List<DSSDocument> getSignatures() {
 		// new container
-		return new ArrayList<DSSDocument>();
+		return new ArrayList<>();
 	}
 	
 	@Override

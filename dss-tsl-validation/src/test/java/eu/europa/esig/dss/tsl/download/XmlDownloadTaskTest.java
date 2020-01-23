@@ -42,7 +42,7 @@ public class XmlDownloadTaskTest {
 
 	@Test
 	public void nullResult() {
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put("null", null);
 		dataMap.put("empty-array", new byte[] {});
 		dataMap.put("0", new byte[] { 0 });
@@ -57,7 +57,7 @@ public class XmlDownloadTaskTest {
 
 	@Test
 	public void nonNullResults() {
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 
 		byte[] sampleByteArray = DSSUtils.toByteArray(new FileDocument(new File("src/test/resources/sample.xml")));
 		dataMap.put("sample", sampleByteArray);

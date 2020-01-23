@@ -142,7 +142,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		List<XmlFoundRevocation> allFoundRevocations = signature.getAllFoundRevocations();
 		assertEquals(3, allFoundRevocations.size());
 
-		List<String> revocationIds = new ArrayList<String>();
+		List<String> revocationIds = new ArrayList<>();
 		for (XmlFoundRevocation revocation : allFoundRevocations) {
 			assertNotNull(revocation.getType());
 			

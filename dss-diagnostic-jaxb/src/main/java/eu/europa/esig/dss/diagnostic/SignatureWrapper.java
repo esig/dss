@@ -159,7 +159,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public List<TimestampWrapper> getTimestampList() {
-		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
+		List<TimestampWrapper> tsps = new ArrayList<>();
 		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
 		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
 			tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
@@ -168,7 +168,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public List<TimestampWrapper> getTimestampListByType(final TimestampType timestampType) {
-		List<TimestampWrapper> result = new ArrayList<TimestampWrapper>();
+		List<TimestampWrapper> result = new ArrayList<>();
 		List<TimestampWrapper> all = getTimestampList();
 		for (TimestampWrapper tsp : all) {
 			if (timestampType.equals(tsp.getType())) {
@@ -179,7 +179,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public List<TimestampWrapper> getTimestampListByLocation(TimestampLocation timestampLocation) {
-		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
+		List<TimestampWrapper> tsps = new ArrayList<>();
 		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
 		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
 			if (xmlFoundTimestamp.getLocation() != null && 
@@ -329,7 +329,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getTimestampIdsList() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<TimestampWrapper> timestamps = getTimestampList();
 		if (timestamps != null) {
 			for (TimestampWrapper tsp : timestamps) {
@@ -382,7 +382,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of role details
 	 */
 	public List<String> getSignerRoleDetails(List<XmlSignerRole> listOfSignerRoles) {
-		List<String> roles = new ArrayList<String>();
+		List<String> roles = new ArrayList<>();
 		for (XmlSignerRole xmlSignerRole : listOfSignerRoles) {
 			roles.add(xmlSignerRole.getRole());
 		}
@@ -390,7 +390,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	private List<XmlSignerRole> getSignerRolesByCategory(EndorsementType category) {
-		List<XmlSignerRole> roles = new ArrayList<XmlSignerRole>();
+		List<XmlSignerRole> roles = new ArrayList<>();
 		for (XmlSignerRole xmlSignerRole : getSignerRoles()) {
 			if (category.equals(xmlSignerRole.getCategory())) {
 				roles.add(xmlSignerRole);
@@ -605,7 +605,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public List<XmlFoundCertificate> getAllFoundCertificates() {
-		List<XmlFoundCertificate> foundCertificates = new ArrayList<XmlFoundCertificate>();
+		List<XmlFoundCertificate> foundCertificates = new ArrayList<>();
 		for (XmlFoundCertificate foundCertificate : getRelatedCertificates()) {
 			foundCertificates.add(foundCertificate);
 		}
@@ -624,7 +624,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public List<XmlFoundRevocation> getAllFoundRevocations() {
-		List<XmlFoundRevocation> foundRevocations = new ArrayList<XmlFoundRevocation>();
+		List<XmlFoundRevocation> foundRevocations = new ArrayList<>();
 		foundRevocations.addAll(getRelatedRevocations());
 		foundRevocations.addAll(getOrphanRevocations());
 		return foundRevocations;
@@ -653,7 +653,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	private <T extends XmlFoundRevocation> List<XmlRevocationRef> getRevocationRefsFromListOfRevocations(Collection<T> foundRevocations) {
-		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
+		List<XmlRevocationRef> revocationRefs = new ArrayList<>();
 		if (foundRevocations != null) {
 			for (T revocation : foundRevocations) {
 				revocationRefs.addAll(revocation.getRevocationRefs());
@@ -668,7 +668,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of {@link XmlRevocationRef}s
 	 */
 	public List<XmlRevocationRef> getFoundRevocationRefsByOrigin(RevocationRefOrigin origin) {
-		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
+		List<XmlRevocationRef> revocationRefs = new ArrayList<>();
 		for (XmlRevocationRef ref : getAllFoundRevocationRefs()) {
 			if (ref.getOrigins().contains(origin)) {
 				revocationRefs.add(ref);
@@ -698,7 +698,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	private <T extends XmlFoundRevocation> Set<T> filterRevocationsByOrigin(List<T> revocations, RevocationOrigin originType) {
-		Set<T> revocationsWithOrigin = new HashSet<T>();
+		Set<T> revocationsWithOrigin = new HashSet<>();
 		if (revocations != null) {
 			for (T relatedRevocation : revocations) {
 				if (relatedRevocation.getOrigins().contains(originType)) {
@@ -738,7 +738,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of {@link XmlFoundRevocation}s
 	 */
 	public <T extends XmlFoundRevocation> Set<T> filterRevocationsByType(List<T> revocations, RevocationType type) {
-		Set<T> revocationWithType = new HashSet<T>();
+		Set<T> revocationWithType = new HashSet<>();
 		if (revocations != null) {
 			for (T revocation : revocations) {
 				if (revocation.getType().equals(type)) {
@@ -754,7 +754,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of ids
 	 */
 	public List<String> getRevocationIds() {
-		List<String> revocationIds = new ArrayList<String>();
+		List<String> revocationIds = new ArrayList<>();
 		List<XmlFoundRevocation> foundRevocations = getAllFoundRevocations();
 		for (XmlFoundRevocation foundRevocation : foundRevocations) {
 			if (foundRevocation instanceof XmlRelatedRevocation) {
@@ -772,7 +772,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of ids
 	 */
 	public List<String> getRevocationIdsByType(RevocationType type) {
-		List<String> revocationIds = new ArrayList<String>();
+		List<String> revocationIds = new ArrayList<>();
 		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByType(type)) {
 			revocationIds.add(revocationRef.getRevocation().getId());
 		}
@@ -788,7 +788,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of ids
 	 */
 	public List<String> getRevocationIdsByOrigin(RevocationOrigin origin) {
-		List<String> revocationIds = new ArrayList<String>();
+		List<String> revocationIds = new ArrayList<>();
 		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByOrigin(origin)) {
 			revocationIds.add(revocationRef.getRevocation().getId());
 		}
@@ -816,7 +816,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of certificate ids
 	 */
 	public List<String> getFoundCertificateIds(CertificateOrigin origin) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
 		if (foundCertificates != null) {
 			for (XmlRelatedCertificate xmlRelatedCertificate : foundCertificates.getRelatedCertificates()) {
@@ -839,7 +839,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of {@link XmlRelatedCertificate}
 	 */
 	public List<XmlRelatedCertificate> getRelatedCertificatesByOrigin(CertificateOrigin origin) {
-		List<XmlRelatedCertificate> certificatesByOrigin = new ArrayList<XmlRelatedCertificate>();
+		List<XmlRelatedCertificate> certificatesByOrigin = new ArrayList<>();
 		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
 		if (foundCertificates != null) {
 			for (XmlRelatedCertificate foundCertificate : foundCertificates.getRelatedCertificates()) {
@@ -860,7 +860,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of found {@link XmlFoundCertificate}
 	 */
 	public List<XmlFoundCertificate> getFoundCertificatesByRefOrigin(CertificateRefOrigin origin) {
-		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<XmlFoundCertificate>();
+		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<>();
 		for (XmlFoundCertificate foundCertificate : getAllFoundCertificates()) {
 			for (XmlCertificateRef certificateRef : foundCertificate.getCertificateRefs()) {
 				if (origin.equals(certificateRef.getOrigin())) {

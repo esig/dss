@@ -106,6 +106,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 *
 	 * @return true if signature with an expired certificate is allowed
 	 */
+	@Override
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
 	}
@@ -126,6 +127,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 *
 	 * @return true if signing certificate is not required when generating ToBeSigned data.
 	 */
+	@Override
 	public boolean isGenerateTBSWithoutCertificate() {
 		return generateTBSWithoutCertificate;
 	}
@@ -185,6 +187,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * 
 	 * @return the digest algorithm
 	 */
+	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
@@ -242,6 +245,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		return signatureAlgorithm;
 	}
 
+	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		return maskGenerationFunction;
 	}
@@ -264,6 +268,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * 
 	 * @return the Baseline B parameters
 	 */
+	@Override
 	public BLevelParameters bLevel() {
 		return bLevelParams;
 	}

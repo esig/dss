@@ -129,7 +129,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
 
-		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
+		final List<DSSTransform> dssTransformList = new ArrayList<>();
 
 		// For parallel signatures
 		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform(getXmldsigNamespace());

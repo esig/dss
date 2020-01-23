@@ -62,7 +62,7 @@ public class SignDigestRSASSAPSSTest {
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestRSASSAPSSTest.class);
 
 	private static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
 				rsaCombinations.add(digestAlgorithm);

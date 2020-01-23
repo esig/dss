@@ -103,7 +103,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	@Override
 	public List<CertificateToken> getKeyInfoCertificates() {
 		if (keyInfoCertificates == null) {
-			keyInfoCertificates = new ArrayList<CertificateToken>();
+			keyInfoCertificates = new ArrayList<>();
 			try {
 				final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
 				for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
@@ -134,7 +134,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	@Override
 	public List<CertificateRef> getSigningCertificateValues() {
 		if (signingCertificateValues == null) {
-			signingCertificateValues = new ArrayList<CertificateRef>();
+			signingCertificateValues = new ArrayList<>();
 			if (signedAttributes != null && signedAttributes.size() > 0) {
 				final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
 				if (signingCertificateAttributeV1 != null) {
@@ -150,7 +150,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	}
 
 	private List<CertificateRef> extractSigningCertificateV1(Attribute attribute) {
-		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
+		List<CertificateRef> certificateRefs = new ArrayList<>();
 		final ASN1Set attrValues = attribute.getAttrValues();
 		for (int ii = 0; ii < attrValues.size(); ii++) {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
@@ -169,7 +169,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	}
 
 	private List<CertificateRef> extractESSCertIDs(final ESSCertID[] essCertIDs, CertificateRefOrigin location) {
-		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
+		List<CertificateRef> certificateRefs = new ArrayList<>();
 		for (final ESSCertID essCertID : essCertIDs) {
 			CertificateRef certRef = new CertificateRef();
 
@@ -191,7 +191,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	}
 
 	private List<CertificateRef> extractSigningCertificateV2(Attribute attribute) {
-		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
+		List<CertificateRef> certificateRefs = new ArrayList<>();
 		final ASN1Set attrValues = attribute.getAttrValues();
 		for (int ii = 0; ii < attrValues.size(); ii++) {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
@@ -210,7 +210,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	}
 
 	private List<CertificateRef> extractESSCertIDv2s(ESSCertIDv2[] essCertIDv2s, CertificateRefOrigin location) {
-		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
+		List<CertificateRef> certificateRefs = new ArrayList<>();
 		for (final ESSCertIDv2 essCertIDv2 : essCertIDv2s) {
 			CertificateRef certRef = new CertificateRef();
 			final String algorithmId = essCertIDv2.getHashAlgorithm().getAlgorithm().getId();

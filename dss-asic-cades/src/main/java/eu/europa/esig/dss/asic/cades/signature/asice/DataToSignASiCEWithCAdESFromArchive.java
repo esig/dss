@@ -83,7 +83,7 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 
 	@Override
 	public List<DSSDocument> getManifestFiles() {
-		List<DSSDocument> manifests = new ArrayList<DSSDocument>(existingManifests);
+		List<DSSDocument> manifests = new ArrayList<>(existingManifests);
 		manifests.add(getToBeSigned());
 		return manifests;
 	}

@@ -125,7 +125,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setDetachedContents(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setReferences(Collections.emptyList());;
+        signatureParameters.setReferences(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setRootDocument(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());

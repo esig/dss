@@ -45,7 +45,7 @@ public class Snippets {
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		CertificateToken certificateToken = new CertificateToken(null);
-		List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
+		List<CertificateToken> certificateChain = new LinkedList<>();
 
 		// tag::demoCertificateChain[]
 

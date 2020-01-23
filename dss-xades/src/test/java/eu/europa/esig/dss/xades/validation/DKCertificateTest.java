@@ -140,7 +140,7 @@ public class DKCertificateTest {
 	}
 
 	private DataLoader getMemoryDataLoader() {
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(AIA_URI, Utils.fromBase64(AIA_BASE64_CONTENT));
 		return new MemoryDataLoader(dataMap);
 	}

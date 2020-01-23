@@ -65,7 +65,7 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 
 		// certificateVerifier.setDataLoader(new CommonsDataLoader());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf",
 				new FileDocument("src/test/resources/validation/dss1135/politica_de_firma.pdf"));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);

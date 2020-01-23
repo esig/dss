@@ -36,6 +36,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -118,7 +119,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	
 	private DSSDocument addCustomIndents(DSSDocument document) {
 		Document documentDom = DomUtils.buildDOM(document);
-		Node unsignedSignaturePropertiesNode = DomUtils.getNode(documentDom, XAdES132Paths.all(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+		Node unsignedSignaturePropertiesNode = DomUtils.getNode(documentDom, AbstractPaths.all(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 		Text customIndents = documentDom.createTextNode("\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\n");
 		Node firstChild = getFirstElement(unsignedSignaturePropertiesNode);
 		unsignedSignaturePropertiesNode.insertBefore(customIndents, firstChild);

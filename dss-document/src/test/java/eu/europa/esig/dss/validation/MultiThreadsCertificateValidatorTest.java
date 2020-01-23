@@ -51,7 +51,7 @@ public class MultiThreadsCertificateValidatorTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
-		List<Future<CertificateReports>> futures = new ArrayList<Future<CertificateReports>>();
+		List<Future<CertificateReports>> futures = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
 			futures.add(executor.submit(new TestConcurrent(DSSUtils.loadCertificate(new File("src/test/resources/certificates/ec.europa.eu.crt")))));

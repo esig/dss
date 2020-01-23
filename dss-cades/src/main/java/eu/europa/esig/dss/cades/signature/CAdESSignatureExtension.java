@@ -121,7 +121,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		cmsSignedData = preExtendCMSSignedData(cmsSignedData, parameters);
 
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
-		final List<SignerInformation> newSignerInformationList = new ArrayList<SignerInformation>();
+		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		
 		for (SignerInformation signerInformation : signerInformationCollection) {
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
@@ -155,7 +155,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		SignerInformation lastSignerInformation = getFirstSigner(cmsSignedData);
-		final List<SignerInformation> newSignerInformationList = new ArrayList<SignerInformation>();
+		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		for (SignerInformation signerInformation : signerInformationCollection) {
 
 			if (lastSignerInformation == signerInformation) {
@@ -260,7 +260,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 					unsignedAttributes = null;
 				}
 				final SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-				final List<SignerInformation> signerInformationList = new ArrayList<SignerInformation>();
+				final List<SignerInformation> signerInformationList = new ArrayList<>();
 				signerInformationList.add(newSignerInformation);
 				final SignerInformationStore newSignerStore = new SignerInformationStore(signerInformationList);
 				cmsSignedDataTimeStampToken = CMSSignedData.replaceSigners(cmsSignedDataTimeStampToken, newSignerStore);

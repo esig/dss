@@ -54,7 +54,7 @@ public class PolicySPURITest {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new MockDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-728/InfoSelladoTiempo.pdf"));
 		validator.setDetachedContents(detachedContents);
 		Reports reports = validator.validateDocument();
@@ -91,13 +91,13 @@ public class PolicySPURITest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf",
 				new FileDocument(new File("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf")));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-728/InfoSelladoTiempo.pdf"));
 		validator.setDetachedContents(detachedContents);
 		Reports reports = validator.validateDocument();

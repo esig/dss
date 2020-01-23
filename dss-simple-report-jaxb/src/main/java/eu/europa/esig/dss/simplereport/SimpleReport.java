@@ -106,7 +106,7 @@ public class SimpleReport {
 	 * @return the {@code List} of signature id(s) contained in the simpleReport
 	 */
 	public List<String> getSignatureIdList() {
-		final List<String> signatureIdList = new ArrayList<String>();
+		final List<String> signatureIdList = new ArrayList<>();
 		List<XmlToken> tokens = wrapped.getSignatureOrTimestamp();
 		if (tokens != null) {
 			for (XmlToken token : tokens) {
@@ -124,7 +124,7 @@ public class SimpleReport {
 	 * @return the {@code List} of timestamp id(s) contained in the simpleReport
 	 */
 	public List<String> getTimestampIdList() {
-		final List<String> timestampIdList = new ArrayList<String>();
+		final List<String> timestampIdList = new ArrayList<>();
 		List<XmlToken> tokens = wrapped.getSignatureOrTimestamp();
 		if (tokens != null) {
 			for (XmlToken token : tokens) {

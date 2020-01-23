@@ -73,7 +73,7 @@ public class RemoteCertificateConverterTest {
 	
 	@Test
 	public void toCertificateTokens() {
-		List<RemoteCertificate> remoteCertificates = new ArrayList<RemoteCertificate>();
+		List<RemoteCertificate> remoteCertificates = new ArrayList<>();
 		remoteCertificates.add(new RemoteCertificate(encodedCertificate));
 		remoteCertificates.add(new RemoteCertificate(null));
 		remoteCertificates.add(null);

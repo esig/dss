@@ -99,7 +99,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
+		List<AdvancedSignature> signatures = new ArrayList<>();
 		if (cmsSignedData != null) {
 			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
 				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
@@ -120,7 +120,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
 		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 
-		List<DSSDocument> results = new ArrayList<DSSDocument>();
+		List<DSSDocument> results = new ArrayList<>();
 
 		for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
 

@@ -58,7 +58,7 @@ public class CAdESLevelBDetachedEmptyDocTest extends AbstractCAdESTestSignature 
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;

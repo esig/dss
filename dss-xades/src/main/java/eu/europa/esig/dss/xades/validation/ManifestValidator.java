@@ -84,7 +84,7 @@ public class ManifestValidator {
 
 		LOG.info("Validation of the manifest references ...");
 
-		List<ReferenceValidation> result = new ArrayList<ReferenceValidation>();
+		List<ReferenceValidation> result = new ArrayList<>();
 
 		NodeList nodeList = DomUtils.getNodeList(manifestNode, XMLDSigPaths.REFERENCE_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
@@ -105,7 +105,7 @@ public class ManifestValidator {
 	}
 	
 	private List<String> getTransformNames(Element refNode) {
-		List<String> transfromNames = new ArrayList<String>();
+		List<String> transfromNames = new ArrayList<>();
 		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPaths.TRANSFORMS_TRANSFORM_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
@@ -212,7 +212,7 @@ public class ManifestValidator {
 	}
 
 	private List<Transform> getTransforms(List<String> transformNames) throws InvalidTransformException {
-		List<Transform> transforms = new ArrayList<Transform>();
+		List<Transform> transforms = new ArrayList<>();
 		for (String algorithm : transformNames) {
 			transforms.add(new Transform(signatureElement.getOwnerDocument(), algorithm));
 		}

@@ -96,7 +96,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<CertificateRevocationWrapper> getCertificateRevocationData() {
-		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<CertificateRevocationWrapper>();
+		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<>();
 		List<XmlCertificateRevocation> revocations = certificate.getRevocations();
 		for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 			certRevocationWrappers.add(new CertificateRevocationWrapper(xmlCertificateRevocation));
@@ -217,7 +217,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<TrustedServiceWrapper> getTrustedServices() {
-		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> result = new ArrayList<>();
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
 		if (tsps != null) {
 			for (XmlTrustedServiceProvider tsp : tsps) {
@@ -235,8 +235,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 						wrapper.setType(trustedService.getServiceType());
 						wrapper.setStartDate(trustedService.getStartDate());
 						wrapper.setEndDate(trustedService.getEndDate());
-						wrapper.setCapturedQualifiers(new ArrayList<String>(trustedService.getCapturedQualifiers()));
-						wrapper.setAdditionalServiceInfos(new ArrayList<String>(trustedService.getAdditionalServiceInfoUris()));
+						wrapper.setCapturedQualifiers(new ArrayList<>(trustedService.getCapturedQualifiers()));
+						wrapper.setAdditionalServiceInfos(new ArrayList<>(trustedService.getAdditionalServiceInfoUris()));
 						result.add(wrapper);
 					}
 				}
@@ -281,7 +281,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getCpsUrls() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
 		if (certificatePolicyIds != null) {
 			for (XmlCertificatePolicy xmlCertificatePolicy : certificatePolicyIds) {
@@ -310,7 +310,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (xmlOids != null) {
 			for (XmlOID xmlOID : xmlOids) {
 				result.add(xmlOID.getValue());

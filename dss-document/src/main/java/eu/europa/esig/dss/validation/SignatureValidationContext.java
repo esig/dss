@@ -71,9 +71,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureValidationContext.class);
 
-	private final Set<CertificateToken> processedCertificates = new HashSet<CertificateToken>();
-	private final Set<RevocationToken> processedRevocations = new HashSet<RevocationToken>();
-	private final Set<TimestampToken> processedTimestamps = new HashSet<TimestampToken>();
+	private final Set<CertificateToken> processedCertificates = new HashSet<>();
+	private final Set<RevocationToken> processedRevocations = new HashSet<>();
+	private final Set<TimestampToken> processedTimestamps = new HashSet<>();
 
 	/**
 	 * The data loader used to access AIA certificate source.
@@ -86,11 +86,11 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	protected CertificatePool validationCertificatePool;
 
-	private final Map<Token, Boolean> tokensToProcess = new HashMap<Token, Boolean>();
+	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
 
-	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<CertificateToken, Date>();
+	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<>();
 
-	private final Map<String, Date> bestSignatureTimes = new HashMap<String, Date>();
+	private final Map<String, Date> bestSignatureTimes = new HashMap<>();
 	
 	/* The map contains all the certificate chains that has been used into the signature. Links the signing certificate and its chain. */
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
@@ -230,7 +230,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	private List<Token> getCertChain(final Token token) throws DSSException {
-		List<Token> chain = new LinkedList<Token>();
+		List<Token> chain = new LinkedList<>();
 		Token issuerCertificateToken = token;
 		do {
 			chain.add(issuerCertificateToken);
@@ -466,7 +466,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private List<CertificateToken> toCertificateTokenChain(List<Token> tokens) {
-		List<CertificateToken> chain = new LinkedList<CertificateToken>();
+		List<CertificateToken> chain = new LinkedList<>();
 		for (Token token : tokens) {
 			if (token instanceof CertificateToken) {
 				chain.add((CertificateToken) token);
@@ -520,7 +520,7 @@ public class SignatureValidationContext implements ValidationContext {
 			return Collections.emptyList();
 		}
 
-		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocations = new ArrayList<>();
 
 		// ALL Embedded revocation data
 		if (signatureCRLSource != null || signatureOCSPSource != null) {
@@ -608,7 +608,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
-		List<String> alternativeOCSPUrls = new ArrayList<String>();
+		List<String> alternativeOCSPUrls = new ArrayList<>();
 		for (CertificateSource certificateSource : trustedCertSources) {
 			if (certificateSource instanceof CommonTrustedCertificateSource) {
 				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
@@ -619,7 +619,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
-		List<String> alternativeCRLUrls = new ArrayList<String>();
+		List<String> alternativeCRLUrls = new ArrayList<>();
 		for (CertificateSource certificateSource : trustedCertSources) {
 			if (certificateSource instanceof CommonTrustedCertificateSource) {
 				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
@@ -818,7 +818,7 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes() {
 		Set<CertificateToken> certs = getProcessedCertificates();
-		Map<CertificateToken, Set<CertificateSourceType>> result = new HashMap<CertificateToken, Set<CertificateSourceType>>();
+		Map<CertificateToken, Set<CertificateSourceType>> result = new HashMap<>();
 		for (CertificateToken certificateToken : certs) {
 			result.put(certificateToken, validationCertificatePool.getSources(certificateToken));
 		}

@@ -63,7 +63,7 @@ public class XAdESDoubleManifestTest {
 		
 		int manifestCounter = 0;
 		int manifestEntryCounter = 0;
-		List<String> referenceNames = new ArrayList<String>();
+		List<String> referenceNames = new ArrayList<>();
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.MANIFEST.equals(digestMatcher.getType())) {
 				manifestCounter++;

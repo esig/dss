@@ -57,7 +57,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		if (getSignatureTimestamps() == null || getArchiveTimestamps() == null) {
 			createAndValidate();
 		}
-		List<TimestampToken> documentTimestamps = new ArrayList<TimestampToken>();
+		List<TimestampToken> documentTimestamps = new ArrayList<>();
 		documentTimestamps.addAll(getSignatureTimestamps());
 		documentTimestamps.addAll(getArchiveTimestamps());
 		return documentTimestamps;
@@ -76,10 +76,10 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		super.makeTimestampTokens();
 		
 		List<TimestampToken> cadesSignatureTimestamps = getSignatureTimestamps();
-		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(cadesSignatureTimestamps);
+		final List<TimestampToken> timestampedTimestamps = new ArrayList<>(cadesSignatureTimestamps);
 		
 		// contains KeyInfo certificates embedded to the timestamp's content
-		final List<CertificateToken> cmsContentCertificates = new ArrayList<CertificateToken>();
+		final List<CertificateToken> cmsContentCertificates = new ArrayList<>();
 		
 		final List<PdfRevision> outerSignatures = pdfSignatureRevision.getOuterSignatures();
 		for (final PdfRevision outerSignature : outerSignatures) {
@@ -95,7 +95,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					// Archive TimeStamps
 					timestampToken.setArchiveTimestampType(getArchiveTimestampType());
 					
-					List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+					List<TimestampedReference> references = new ArrayList<>();
 					if (Utils.isCollectionEmpty(cadesSignatureTimestamps)) {
 						references = getSignatureTimestampReferences();
 					}

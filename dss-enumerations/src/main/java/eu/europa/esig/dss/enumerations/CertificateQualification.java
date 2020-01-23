@@ -83,7 +83,7 @@ public enum CertificateQualification {
 		private final static Map<String, CertificateQualification> QUALIFS_BY_READABLE = registerByReadable();
 
 		private static Map<String, CertificateQualification> registerByReadable() {
-			final Map<String, CertificateQualification> map = new HashMap<String, CertificateQualification>();
+			final Map<String, CertificateQualification> map = new HashMap<>();
 			for (final CertificateQualification qualification : values()) {
 				map.put(qualification.readable, qualification);
 			}

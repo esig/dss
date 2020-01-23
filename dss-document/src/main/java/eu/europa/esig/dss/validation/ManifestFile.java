@@ -65,7 +65,7 @@ public class ManifestFile {
 
 	public List<ManifestEntry> getEntries() {
 		if (entries == null) {
-			entries = new ArrayList<ManifestEntry>();
+			entries = new ArrayList<>();
 		}
 		return entries;
 	}

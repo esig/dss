@@ -43,7 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public class ListOCSPSource implements OCSPSource {
 
-	private List<OfflineOCSPSource> sources = new ArrayList<OfflineOCSPSource>();
+	private List<OfflineOCSPSource> sources = new ArrayList<>();
 
 	public ListOCSPSource() {
 		// default constructor
@@ -85,7 +85,7 @@ public class ListOCSPSource implements OCSPSource {
 	}
 
 	public Set<RevocationOrigin> getRevocationOrigins(OCSPResponseBinary identifier) {
-		Set<RevocationOrigin> result = new HashSet<RevocationOrigin>();
+		Set<RevocationOrigin> result = new HashSet<>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			Set<RevocationOrigin> revocationOrigins = offlineOCSPSource.getRevocationOrigins(identifier);
 			if (Utils.isCollectionNotEmpty(revocationOrigins)) {
@@ -96,7 +96,7 @@ public class ListOCSPSource implements OCSPSource {
 	}
 
 	public Set<OCSPToken> getAllOCSPTokens() {
-		Set<OCSPToken> allTokens = new HashSet<OCSPToken>();
+		Set<OCSPToken> allTokens = new HashSet<>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
 				allTokens.addAll(((SignatureOCSPSource) offlineOCSPSource).getAllOCSPTokens());
@@ -106,7 +106,7 @@ public class ListOCSPSource implements OCSPSource {
 	}
 
 	public List<OCSPRef> findRefsForRevocationToken(OCSPToken revocationToken) {
-		List<OCSPRef> result = new ArrayList<OCSPRef>();
+		List<OCSPRef> result = new ArrayList<>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
 				result.addAll(((SignatureOCSPSource) offlineOCSPSource).findRefsForRevocationToken(revocationToken));
@@ -116,7 +116,7 @@ public class ListOCSPSource implements OCSPSource {
 	}
 
 	public List<OCSPRef> getReferencesForOCSPIdentifier(OCSPResponseBinary revocationIdentifier) {
-		List<OCSPRef> result = new ArrayList<OCSPRef>();
+		List<OCSPRef> result = new ArrayList<>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
 				result.addAll(((SignatureOCSPSource) offlineOCSPSource).getReferencesForOCSPIdentifier(revocationIdentifier));
@@ -126,7 +126,7 @@ public class ListOCSPSource implements OCSPSource {
 	}
 
 	public List<OCSPRef> getOrphanOCSPRefs() {
-		List<OCSPRef> result = new ArrayList<OCSPRef>();
+		List<OCSPRef> result = new ArrayList<>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
 				List<OCSPRef> allOCSPRefs = ((SignatureOCSPSource) offlineOCSPSource).getOrphanOCSPRefs();
@@ -153,7 +153,7 @@ public class ListOCSPSource implements OCSPSource {
 	}
 
 	public List<OCSPResponseBinary> getOCSPResponsesList() {
-		List<OCSPResponseBinary> result = new ArrayList<OCSPResponseBinary>();
+		List<OCSPResponseBinary> result = new ArrayList<>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			result.addAll(offlineOCSPSource.getOCSPResponsesList());
 		}

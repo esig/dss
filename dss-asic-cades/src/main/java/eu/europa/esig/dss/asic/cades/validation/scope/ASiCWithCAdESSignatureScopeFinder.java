@@ -37,7 +37,7 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
 
     @Override
     public List<SignatureScope> findSignatureScope(final CAdESSignature cadesSignature) {
-        List<SignatureScope> result = new ArrayList<SignatureScope>();
+        List<SignatureScope> result = new ArrayList<>();
         DSSDocument originalDocument = getOriginalDocument(cadesSignature);
         if (originalDocument == null) {
         	return result;

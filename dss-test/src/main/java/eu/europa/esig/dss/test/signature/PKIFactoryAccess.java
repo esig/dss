@@ -251,7 +251,7 @@ public abstract class PKIFactoryAccess {
 
 	protected TSPSource getCompositeTsa() {
 		CompositeTSPSource composite = new CompositeTSPSource();
-		Map<String, TSPSource> tspSources = new HashMap<String, TSPSource>();
+		Map<String, TSPSource> tspSources = new HashMap<>();
 		tspSources.put(FAIL_GOOD_TSA, getFailGoodTsa());
 		tspSources.put(GOOD_TSA, getGoodTsa());
 		tspSources.put(EE_GOOD_TSA, getAlternateGoodTsa());

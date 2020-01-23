@@ -151,7 +151,7 @@ public class CAdESLevelBaselineB {
 		final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
 		if (claimedSignerRoles != null) {
 
-			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
+			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<>(claimedSignerRoles.size());
 			for (final String claimedSignerRole : claimedSignerRoles) {
 				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
 				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,

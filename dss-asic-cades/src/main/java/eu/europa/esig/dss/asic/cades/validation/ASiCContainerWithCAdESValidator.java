@@ -77,7 +77,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	@Override
 	protected List<DocumentValidator> getSignatureValidators() {
 		if (signatureValidators == null) {
-			signatureValidators = new ArrayList<DocumentValidator>();
+			signatureValidators = new ArrayList<>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
 				cadesValidator.setValidationCertPool(validationCertPool);
@@ -95,7 +95,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	protected List<DocumentValidator> getTimestampValidators() {
 		if (timestampValidators == null) {
-			timestampValidators = new ArrayList<DocumentValidator>();
+			timestampValidators = new ArrayList<>();
 			for (final DSSDocument timestamp : getTimestampDocuments()) {
 				// timestamp's manifest can be a simple ASiCManifest as well as
 				// ASiCArchiveManifest file
@@ -132,7 +132,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	
 	@Override
 	public List<TimestampToken> getDetachedTimestamps() {
-		List<TimestampToken> independantTimestamps = new ArrayList<TimestampToken>();
+		List<TimestampToken> independantTimestamps = new ArrayList<>();
 		for (DocumentValidator timestampValidator : getTimestampValidators()) {
 			independantTimestamps.addAll(timestampValidator.getDetachedTimestamps());
 		}
@@ -155,7 +155,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	protected List<TimestampToken> attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
-		List<TimestampToken> externalTimestamps = new ArrayList<TimestampToken>();
+		List<TimestampToken> externalTimestamps = new ArrayList<>();
 		
 		List<DocumentValidator> currentTimestampValidators = getTimestampValidators();
 		for (DocumentValidator tspValidator : currentTimestampValidators) {
@@ -181,7 +181,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				for (AdvancedSignature advancedSignature : allSignatures) {
 					if (Utils.areStringsEqual(entry.getFileName(), advancedSignature.getSignatureFilename())) {
 						CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
-						List<TimestampToken> cadesTimestamps = new ArrayList<TimestampToken>();
+						List<TimestampToken> cadesTimestamps = new ArrayList<>();
 						cadesTimestamps.addAll(cadesSig.getContentTimestamps());
 						cadesTimestamps.addAll(cadesSig.getSignatureTimestamps());
 						cadesTimestamps.addAll(cadesSig.getTimestampsX1());
@@ -253,7 +253,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	protected List<ManifestFile> getManifestFilesDecriptions() {
-		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
+		List<ManifestFile> descriptions = new ArrayList<>();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		for (DSSDocument manifestDocument : manifestDocuments) {
 			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestDocument);
@@ -303,7 +303,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			List<ManifestEntry> entries = manifestFile.getEntries();
 			List<DSSDocument> signedDocuments = getAllDocuments();
 			
-			List<DSSDocument> result = new ArrayList<DSSDocument>();
+			List<DSSDocument> result = new ArrayList<>();
 			for (ManifestEntry entry : entries) {
 				for (DSSDocument signedDocument : signedDocuments) {
 					if (Utils.areStringsEqual(entry.getFileName(), signedDocument.getName())) {

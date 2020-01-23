@@ -255,7 +255,7 @@ public class TLParsingTaskTest {
 		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
 		assertNotNull(trustServiceProviders);
 
-		Set<CertificateToken> certs = new HashSet<CertificateToken>();
+		Set<CertificateToken> certs = new HashSet<>();
 		for (TrustServiceProvider tslServiceProvider : trustServiceProviders) {
 			List<TrustService> services = tslServiceProvider.getServices();
 			for (TrustService tslService : services) {

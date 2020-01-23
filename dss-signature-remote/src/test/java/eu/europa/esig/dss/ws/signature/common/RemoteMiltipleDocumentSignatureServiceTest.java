@@ -73,7 +73,7 @@ public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSi
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(fileToSign), fileToSign.getName());
 		RemoteDocument toSignDoc2 = new RemoteDocument("Hello world!".getBytes("UTF-8"), "test.bin");
-		List<RemoteDocument> toSignDocuments = new ArrayList<RemoteDocument>();
+		List<RemoteDocument> toSignDocuments = new ArrayList<>();
 		toSignDocuments.add(toSignDocument);
 		toSignDocuments.add(toSignDoc2);
 		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocuments, parameters);

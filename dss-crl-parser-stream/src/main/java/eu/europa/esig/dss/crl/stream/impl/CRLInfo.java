@@ -36,8 +36,8 @@ class CRLInfo {
 	private Date nextUpdate;
 	private String tbsSignatureAlgorithmOid;
 	private byte[] signatureValue;
-	private Map<String, byte[]> criticalExtensions = new HashMap<String, byte[]>();
-	private Map<String, byte[]> nonCriticalExtensions = new HashMap<String, byte[]>();
+	private Map<String, byte[]> criticalExtensions = new HashMap<>();
+	private Map<String, byte[]> nonCriticalExtensions = new HashMap<>();
 
 	public Integer getVersion() {
 		return version;

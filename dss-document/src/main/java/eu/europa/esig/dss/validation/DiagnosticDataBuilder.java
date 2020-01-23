@@ -151,7 +151,7 @@ public class DiagnosticDataBuilder {
 	private Set<RevocationToken> usedRevocations;
 	private Set<TimestampToken> usedTimestamps;
 	private List<SignatureScope> signatureScopes;
-	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
+	private List<CertificateSource> trustedCertSources = new ArrayList<>();
 	private Date validationDate;
 
 	private boolean includeRawCertificateTokens = false;
@@ -160,19 +160,19 @@ public class DiagnosticDataBuilder {
 	
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
-	private Map<String, XmlCertificate> xmlCerts = new HashMap<String, XmlCertificate>();
-	private Map<String, XmlRevocation> xmlRevocations = new HashMap<String, XmlRevocation>();
-	private Map<String, XmlSignature> xmlSignatures = new HashMap<String, XmlSignature>();
-	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<String, XmlTimestamp>();
-	private Map<String, XmlTimestampedObject> xmlTimestampedObjects = new HashMap<String, XmlTimestampedObject>();
-	private Map<String, XmlSignerData> xmlSignedData = new HashMap<String, XmlSignerData>();
-	private Map<String, XmlOrphanToken> xmlOrphanTokens = new HashMap<String, XmlOrphanToken>();
-	private Map<String, XmlTrustedList> xmlTrustedLists = new HashMap<String, XmlTrustedList>();
+	private Map<String, XmlCertificate> xmlCerts = new HashMap<>();
+	private Map<String, XmlRevocation> xmlRevocations = new HashMap<>();
+	private Map<String, XmlSignature> xmlSignatures = new HashMap<>();
+	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<>();
+	private Map<String, XmlTimestampedObject> xmlTimestampedObjects = new HashMap<>();
+	private Map<String, XmlSignerData> xmlSignedData = new HashMap<>();
+	private Map<String, XmlOrphanToken> xmlOrphanTokens = new HashMap<>();
+	private Map<String, XmlTrustedList> xmlTrustedLists = new HashMap<>();
 
 	// A map between {@link CertificateToken}'s id and its certificate refs
-	private Map<String, List<CertificateRef>> certificateRefsMap = new HashMap<String, List<CertificateRef>>();
+	private Map<String, List<CertificateRef>> certificateRefsMap = new HashMap<>();
 	// A map between {@link RevocationToken}'s id and its revocation refs
-	private Map<String, List<RevocationRef>> revocationRefsMap = new HashMap<String, List<RevocationRef>>();
+	private Map<String, List<RevocationRef>> revocationRefsMap = new HashMap<>();
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -422,9 +422,9 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Collection<XmlCertificate> buildXmlCertificates(Set<CertificateToken> certificates) {
-		List<XmlCertificate> builtCertificates = new ArrayList<XmlCertificate>();
+		List<XmlCertificate> builtCertificates = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(certificates)) {
-			List<CertificateToken> tokens = new ArrayList<CertificateToken>(certificates);
+			List<CertificateToken> tokens = new ArrayList<>(certificates);
 			Collections.sort(tokens, new TokenComparator());
 			for (CertificateToken certificateToken : tokens) {
 				String id = certificateToken.getDSSIdAsString();
@@ -459,11 +459,11 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Collection<XmlRevocation> buildXmlRevocations(Set<RevocationToken> revocations) {
-		List<XmlRevocation> builtRevocations = new ArrayList<XmlRevocation>();
+		List<XmlRevocation> builtRevocations = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(revocations)) {
-			List<RevocationToken> tokens = new ArrayList<RevocationToken>(revocations);
+			List<RevocationToken> tokens = new ArrayList<>(revocations);
 			Collections.sort(tokens, new TokenComparator());
-			List<String> uniqueIds = new ArrayList<String>(); // CRL can contain multiple entries
+			List<String> uniqueIds = new ArrayList<>(); // CRL can contain multiple entries
 			for (RevocationToken revocationToken : tokens) {
 				String id = revocationToken.getDSSIdAsString();
 				if (uniqueIds.contains(id)) {
@@ -506,7 +506,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private Collection<XmlSignerData> buildXmlSignerData(List<SignatureScope> currentSignatureScopes) {
-		List<XmlSignerData> builtSignerData = new ArrayList<XmlSignerData>();
+		List<XmlSignerData> builtSignerData = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(currentSignatureScopes)) {
 			for (SignatureScope signatureScope : currentSignatureScopes) {
 				String id = signatureScope.getDSSIdAsString();
@@ -522,7 +522,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private Collection<XmlSignature> buildXmlSignatures(List<AdvancedSignature> signatures) {
-		List<XmlSignature> builtSignatures = new ArrayList<XmlSignature>();
+		List<XmlSignature> builtSignatures = new ArrayList<>();
 		for (AdvancedSignature advancedSignature : signatures) {
 			String id = advancedSignature.getId();
 			XmlSignature xmlSignature = xmlSignatures.get(id);
@@ -557,10 +557,10 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Collection<XmlTrustedList> buildXmlTrustedLists(List<CertificateSource> certificateSources) {
-		List<XmlTrustedList> trustedLists = new ArrayList<XmlTrustedList>();
+		List<XmlTrustedList> trustedLists = new ArrayList<>();
 
-		Map<Identifier, XmlTrustedList> mapTrustedLists = new HashMap<Identifier, XmlTrustedList>();
-		Map<Identifier, XmlTrustedList> mapListOfTrustedLists = new HashMap<Identifier, XmlTrustedList>();
+		Map<Identifier, XmlTrustedList> mapTrustedLists = new HashMap<>();
+		Map<Identifier, XmlTrustedList> mapListOfTrustedLists = new HashMap<>();
 
 		for (CertificateSource certificateSource : certificateSources) {
 			if (certificateSource instanceof TrustedListsCertificateSource) {
@@ -599,7 +599,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Set<Identifier> getTLIdentifiers(TrustedListsCertificateSource tlCS) {
-		Set<Identifier> tlIdentifiers = new HashSet<Identifier>();
+		Set<Identifier> tlIdentifiers = new HashSet<>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
@@ -610,7 +610,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Set<Identifier> getLOTLIdentifiers(TrustedListsCertificateSource tlCS) {
-		Set<Identifier> lotlIdentifiers = new HashSet<Identifier>();
+		Set<Identifier> lotlIdentifiers = new HashSet<>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
@@ -673,7 +673,7 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlManifestFile> getXmlManifests(List<ManifestFile> manifestFiles) {
 		if (Utils.isCollectionNotEmpty(manifestFiles)) {
-			List<XmlManifestFile> xmlManifests = new ArrayList<XmlManifestFile>();
+			List<XmlManifestFile> xmlManifests = new ArrayList<>();
 			for (ManifestFile manifestFile : manifestFiles) {
 				XmlManifestFile xmlManifest = new XmlManifestFile();
 				xmlManifest.setFilename(manifestFile.getFilename());
@@ -775,7 +775,7 @@ public class DiagnosticDataBuilder {
 	private List<XmlSignerInfo> getXmlSignerInformationStore(PdfRevision pdfRevision) {
 		Collection<SignerInfo> signerInformationStore = pdfRevision.getSignatureInformationStore();
 		if (Utils.isCollectionNotEmpty(signerInformationStore)) {
-			List<XmlSignerInfo> signerInfos = new ArrayList<XmlSignerInfo>();
+			List<XmlSignerInfo> signerInfos = new ArrayList<>();
 			for (SignerInfo signerInfo : signerInformationStore) {
 				XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
 				xmlSignerInfo.setIssuer(signerInfo.getIssuer());
@@ -789,7 +789,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	public List<BigInteger> intArrayToBigIntegerList(int[] v) {
-		List<BigInteger> bi = new ArrayList<BigInteger>();
+		List<BigInteger> bi = new ArrayList<>();
 		for (int i : v) {
 			bi.add(BigInteger.valueOf(i));
 		}
@@ -849,9 +849,9 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlTimestamp> buildXmlTimestamps(Set<TimestampToken> timestamps) {
-		List<XmlTimestamp> xmlTimestampsList = new ArrayList<XmlTimestamp>();
+		List<XmlTimestamp> xmlTimestampsList = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestamps)) {
-			List<TimestampToken> tokens = new ArrayList<TimestampToken>(timestamps);
+			List<TimestampToken> tokens = new ArrayList<>(timestamps);
 			Collections.sort(tokens, new TokenComparator());
 			for (TimestampToken timestampToken : tokens) {
 				String id = timestampToken.getDSSIdAsString();
@@ -918,8 +918,8 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlChainItem> getXmlForCertificateChain(PublicKey certPubKey) {
 		if (certPubKey != null) {
-			final List<XmlChainItem> certChainTokens = new ArrayList<XmlChainItem>();
-			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
+			final List<XmlChainItem> certChainTokens = new ArrayList<>();
+			Set<CertificateToken> processedTokens = new HashSet<>();
 			CertificateToken issuerToken = getCertificateByPubKey(certPubKey);
 			while (issuerToken != null) {
 				certChainTokens.add(getXmlChainItem(issuerToken));
@@ -975,7 +975,7 @@ public class DiagnosticDataBuilder {
 			return null;
 		}
 
-		List<CertificateToken> founds = new ArrayList<CertificateToken>();
+		List<CertificateToken> founds = new ArrayList<>();
 		for (CertificateToken cert : usedCertificates) {
 			if (certPubKey.equals(cert.getPublicKey())) {
 				founds.add(cert);
@@ -1009,7 +1009,7 @@ public class DiagnosticDataBuilder {
 			return null;
 		}
 
-		List<CertificateToken> founds = new ArrayList<CertificateToken>();
+		List<CertificateToken> founds = new ArrayList<>();
 		for (CertificateToken cert : usedCertificates) {
 			if (signerInfo.getIssuer().equals(cert.getIssuerX500Principal().toString()) &&
 					signerInfo.getSerialNumber().equals(cert.getSerialNumber())) {
@@ -1064,7 +1064,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlSignerRole> getXmlSignerRoles(Collection<SignerRole> signerRoles) {
-		List<XmlSignerRole> xmlSignerRoles = new ArrayList<XmlSignerRole>();
+		List<XmlSignerRole> xmlSignerRoles = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signerRoles)) {
 			for (SignerRole signerRole : signerRoles) {
 				XmlSignerRole xmlSignerRole = new XmlSignerRole();
@@ -1101,7 +1101,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlRelatedCertificate> getXmlRelatedCertificates(AdvancedSignature signature) {
-		Map<String, XmlRelatedCertificate> relatedCertificatesMap = new HashMap<String, XmlRelatedCertificate>();
+		Map<String, XmlRelatedCertificate> relatedCertificatesMap = new HashMap<>();
 		SignatureCertificateSource certificateSource = signature.getCertificateSource();
 		
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.KEY_INFO, 
@@ -1117,7 +1117,7 @@ public class DiagnosticDataBuilder {
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.VRI_DICTIONARY, 
 				certificateSource.getVRIDictionaryCertValues(), certificateSource);
 		
-		return new ArrayList<XmlRelatedCertificate>(relatedCertificatesMap.values());
+		return new ArrayList<>(relatedCertificatesMap.values());
 	}
 	
 	private void populateCertificateOriginMap(Map<String, XmlRelatedCertificate> relatedCertificatesMap, CertificateOrigin origin,
@@ -1163,7 +1163,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlRelatedCertificate> getXmlRelatedCertificateForOrphanReferences(AdvancedSignature signature) {
-		List<XmlRelatedCertificate> relatedCertificates = new ArrayList<XmlRelatedCertificate>();
+		List<XmlRelatedCertificate> relatedCertificates = new ArrayList<>();
 		for (CertificateRef certificateRef : signature.getOrphanCertificateRefs()) {
 			Digest certRefDigest = certificateRef.getCertDigest();
 			for (CertificateToken certificateToken : usedCertificates) {
@@ -1187,7 +1187,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlOrphanCertificate> getOrphanCertificates(AdvancedSignature signature) {
-		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<XmlOrphanCertificate>();
+		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<>();
 		
 		for (CertificateToken certificateToken : signature.getCertificates()) {
 			if (!usedCertificates.contains(certificateToken)) {
@@ -1247,7 +1247,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlFoundTimestamp> getXmlFoundTimestamps(AdvancedSignature signature) {
-		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
+		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<>();
 		for (TimestampToken timestampToken : signature.getAllTimestamps()) {
 			XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
 			foundTimestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
@@ -1280,7 +1280,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<EncapsulatedRevocationTokenIdentifier> getOrphanRevocations(AdvancedSignature signature) {
-		List<EncapsulatedRevocationTokenIdentifier> orphanIdentifiers = new ArrayList<EncapsulatedRevocationTokenIdentifier>();
+		List<EncapsulatedRevocationTokenIdentifier> orphanIdentifiers = new ArrayList<>();
 		List<EncapsulatedRevocationTokenIdentifier> revocationIdentifiers = signature.getAllFoundRevocationIdentifiers();
 		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : revocationIdentifiers) {
 			if (!xmlRevocations.containsKey(revocationIdentifier.asXmlId())) {
@@ -1291,14 +1291,14 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlRelatedRevocation> getXmlRelatedRevocations(AdvancedSignature signature) {
-		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<XmlRelatedRevocation>();
+		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<>();
 		xmlRelatedRevocations.addAll(getXmlRevocationsByType(signature, signature.getAllRevocationTokens()));
 		return xmlRelatedRevocations;
 	}
 
 	private List<XmlRelatedRevocation> getXmlRevocationsByType(AdvancedSignature signature, Collection<RevocationToken> revocationTokens) {
-		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<XmlRelatedRevocation>();
-		Set<String> revocationKeys = new HashSet<String>();
+		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<>();
+		Set<String> revocationKeys = new HashSet<>();
 		for (RevocationToken revocationToken : revocationTokens) {
 			String id = revocationToken.getDSSIdAsString();
 			if (!revocationKeys.contains(id)) {
@@ -1323,7 +1323,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlRevocationRef> getXmlRevocationRefs(List<RevocationRef> revocationRefs) {
-		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
+		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
 		for (RevocationRef ref : revocationRefs) {
 			XmlRevocationRef revocationRef;
 			if (ref instanceof CRLRef) {
@@ -1367,7 +1367,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlOrphanRevocation> getXmlOrphanRevocations(Collection<EncapsulatedRevocationTokenIdentifier> orphanRevocations, AdvancedSignature signature) {
-		List<XmlOrphanRevocation> xmlOrphanRevocations = new ArrayList<XmlOrphanRevocation>();
+		List<XmlOrphanRevocation> xmlOrphanRevocations = new ArrayList<>();
 		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : orphanRevocations) {
 			xmlOrphanRevocations.add(getXmlOrphanRevocation(revocationIdentifier, signature));
 		}
@@ -1542,7 +1542,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlDigestMatcher> getXmlDigestMatchers(TimestampToken timestampToken) {
-		List<XmlDigestMatcher> digestMatchers = new ArrayList<XmlDigestMatcher>();
+		List<XmlDigestMatcher> digestMatchers = new ArrayList<>();
 		digestMatchers.add(getImprintDigestMatcher(timestampToken));
 		digestMatchers.addAll(getManifestEntriesDigestMatchers(timestampToken.getManifestFile()));
 		return digestMatchers;
@@ -1566,7 +1566,7 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private List<XmlDigestMatcher> getManifestEntriesDigestMatchers(ManifestFile manifestFile) {
-		List<XmlDigestMatcher> digestMatchers = new ArrayList<XmlDigestMatcher>();
+		List<XmlDigestMatcher> digestMatchers = new ArrayList<>();
 		if (manifestFile != null && Utils.isCollectionNotEmpty(manifestFile.getEntries())) {
 			for (ManifestEntry entry : manifestFile.getEntries()) {
 				XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
@@ -1589,7 +1589,7 @@ public class DiagnosticDataBuilder {
 	private List<XmlTimestampedObject> getXmlTimestampedObjects(TimestampToken timestampToken) {
 		List<TimestampedReference> timestampReferences = timestampToken.getTimestampedReferences();
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
-			List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
+			List<XmlTimestampedObject> objects = new ArrayList<>();
 			for (final TimestampedReference timestampReference : timestampReferences) {
 				String id = timestampReference.getObjectId();
 				XmlTimestampedObject timestampedObject = xmlTimestampedObjects.get(id);
@@ -1720,7 +1720,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlDigestMatcher> getXmlDigestMatchers(AdvancedSignature signature) {
-		List<XmlDigestMatcher> refs = new ArrayList<XmlDigestMatcher>();
+		List<XmlDigestMatcher> refs = new ArrayList<>();
 		List<ReferenceValidation> refValidations = signature.getReferenceValidations();
 		if (Utils.isCollectionNotEmpty(refValidations)) {
 			for (ReferenceValidation referenceValidation : refValidations) {
@@ -1765,7 +1765,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlSignatureScope> getXmlSignatureScopes(List<SignatureScope> scopes) {
-		List<XmlSignatureScope> xmlScopes = new ArrayList<XmlSignatureScope>();
+		List<XmlSignatureScope> xmlScopes = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(scopes)) {
 			for (SignatureScope xmlSignatureScope : scopes) {
 				xmlScopes.add(getXmlSignatureScope(xmlSignatureScope));
@@ -1847,7 +1847,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {
-		List<CertificateSourceType> certificateSources = new ArrayList<CertificateSourceType>();
+		List<CertificateSourceType> certificateSources = new ArrayList<>();
 		if (certificateSourceTypes != null) {
 			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
 			if (sourceTypes != null) {
@@ -1861,7 +1861,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Set<RevocationToken> getRevocationsForCert(CertificateToken certToken) {
-		Set<RevocationToken> revocations = new HashSet<RevocationToken>();
+		Set<RevocationToken> revocations = new HashSet<>();
 		if (Utils.isCollectionNotEmpty(usedRevocations)) {
 			for (RevocationToken revocationToken : usedRevocations) {
 				if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
@@ -1873,7 +1873,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlCertificatePolicy> getXmlCertificatePolicies(List<CertificatePolicy> certificatePolicies) {
-		List<XmlCertificatePolicy> result = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> result = new ArrayList<>();
 		for (CertificatePolicy cp : certificatePolicies) {
 			XmlCertificatePolicy xmlCP = new XmlCertificatePolicy();
 			xmlCP.setValue(cp.getOid());
@@ -1885,7 +1885,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlOID> getXmlOids(List<String> oidList) {
-		List<XmlOID> result = new ArrayList<XmlOID>();
+		List<XmlOID> result = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oidList)) {
 			for (String oid : oidList) {
 				XmlOID xmlOID = new XmlOID();
@@ -1898,7 +1898,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(CertificateToken certToken) {
-		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
+		List<XmlTrustedServiceProvider> result = new ArrayList<>();
 		Map<CertificateToken, List<TrustProperties>> servicesByTrustedCert = getRelatedTrustServices(certToken);
 		for (Entry<CertificateToken, List<TrustProperties>> entry : servicesByTrustedCert.entrySet()) {
 			CertificateToken trustedCert = entry.getKey();
@@ -1936,7 +1936,7 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlLangAndValue> getLangAndValues(Map<String, List<String>> map) {
 		if (Utils.isMapNotEmpty(map)) {
-			List<XmlLangAndValue> result = new ArrayList<XmlLangAndValue>();
+			List<XmlLangAndValue> result = new ArrayList<>();
 			for (Entry<String, List<String>> entry : map.entrySet()) {
 				for (String value : entry.getValue()) {
 					XmlLangAndValue langAndValue = new XmlLangAndValue();
@@ -1951,8 +1951,8 @@ public class DiagnosticDataBuilder {
 	}
 
 	private Map<CertificateToken, List<TrustProperties>> getRelatedTrustServices(CertificateToken certToken) {
-		Map<CertificateToken, List<TrustProperties>> result = new HashMap<CertificateToken, List<TrustProperties>>();
-		Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
+		Map<CertificateToken, List<TrustProperties>> result = new HashMap<>();
+		Set<CertificateToken> processedTokens = new HashSet<>();
 		for (CertificateSource trustedSource : trustedCertSources) {
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource trustedCertSource = (TrustedListsCertificateSource) trustedSource;
@@ -1974,7 +1974,7 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlTrustedService> buildXmlTrustedServices(List<TrustProperties> trustPropertiesList,
 			CertificateToken certToken, CertificateToken trustedCert) {
-		List<XmlTrustedService> result = new ArrayList<XmlTrustedService>();
+		List<XmlTrustedService> result = new ArrayList<>();
 
 		for (TrustProperties trustProperties : trustPropertiesList) {
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService = trustProperties.getTrustService();
@@ -2016,13 +2016,13 @@ public class DiagnosticDataBuilder {
 
 	private Map<TrustServiceProvider, List<TrustProperties>> classifyByServiceProvider(
 			List<TrustProperties> trustPropertiesList) {
-		Map<TrustServiceProvider, List<TrustProperties>> servicesByProviders = new HashMap<TrustServiceProvider, List<TrustProperties>>();
+		Map<TrustServiceProvider, List<TrustProperties>> servicesByProviders = new HashMap<>();
 		if (Utils.isCollectionNotEmpty(trustPropertiesList)) {
 			for (TrustProperties trustProperties : trustPropertiesList) {
 				TrustServiceProvider currentTrustServiceProvider = trustProperties.getTrustServiceProvider();
 				List<TrustProperties> list = servicesByProviders.get(currentTrustServiceProvider);
 				if (list == null) {
-					list = new ArrayList<TrustProperties>();
+					list = new ArrayList<>();
 					servicesByProviders.put(currentTrustServiceProvider, list);
 				}
 				list.add(trustProperties);
@@ -2040,7 +2040,7 @@ public class DiagnosticDataBuilder {
 	 */
 	private List<String> getQualifiers(TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certificateToken) {
 		LOG.trace("--> GET_QUALIFIERS()");
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		final List<ConditionForQualifiers> conditionsForQualifiers = serviceInfoStatus.getConditionsForQualifiers();
 		if (Utils.isCollectionNotEmpty(conditionsForQualifiers)) {
 			for (ConditionForQualifiers conditionForQualifiers : conditionsForQualifiers) {

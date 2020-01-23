@@ -91,7 +91,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 				CMSDocumentValidator validator = new CMSDocumentValidator(cmsDocument);
 
-				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+				List<DSSDocument> detachedContents = new ArrayList<>();
 				InMemoryDocument complete = new InMemoryDocument(signedContent);
 
 				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256,
@@ -145,7 +145,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 				CMSDocumentValidator validator = new CMSDocumentValidator(cmsDocument);
 
-				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+				List<DSSDocument> detachedContents = new ArrayList<>();
 				InMemoryDocument complete = new InMemoryDocument(signedContent);
 
 				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256,
@@ -198,7 +198,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 				CMSDocumentValidator validator = new CMSDocumentValidator(cmsDocument);
 
-				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+				List<DSSDocument> detachedContents = new ArrayList<>();
 				InMemoryDocument complete = new InMemoryDocument(signedContent);
 				detachedContents.add(complete);
 
@@ -240,17 +240,17 @@ public class DSS1823Test extends PKIFactoryAccess {
 		
 		PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(pdDocument);
 
-		List<RevocationSource<CRLToken>> crlTokens = new ArrayList<RevocationSource<CRLToken>>();
+		List<RevocationSource<CRLToken>> crlTokens = new ArrayList<>();
 		crlTokens.add(calculateCRLs(dssDictionary));
 		crlTokens.add(onlineCRLSource);
 
-		List<RevocationSource<OCSPToken>> ocspTokens = new ArrayList<RevocationSource<OCSPToken>>();
+		List<RevocationSource<OCSPToken>> ocspTokens = new ArrayList<>();
 		ocspTokens.add(calculateOCSPs(dssDictionary));
 		ocspTokens.add(onlineOCSPSource);
 
-		CompositeRevocationSource<CRLToken> compositeCTLSources = new CompositeRevocationSource<CRLToken>(
+		CompositeRevocationSource<CRLToken> compositeCTLSources = new CompositeRevocationSource<>(
 				crlTokens);
-		CompositeRevocationSource<OCSPToken> compositeOCSPSources = new CompositeRevocationSource<OCSPToken>(
+		CompositeRevocationSource<OCSPToken> compositeOCSPSources = new CompositeRevocationSource<>(
 				ocspTokens);
 
 		certificateVerifier.setCrlSource(compositeCTLSources);

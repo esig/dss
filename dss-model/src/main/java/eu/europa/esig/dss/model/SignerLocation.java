@@ -27,7 +27,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class SignerLocation implements Serializable {
 
-	private List<String> postalAddress = new ArrayList<String>();
+	private List<String> postalAddress = new ArrayList<>();
 	private String postalCode;
 	private String locality;
 	private String stateOrProvince;
@@ -93,7 +93,7 @@ public class SignerLocation implements Serializable {
 	 */
 	public void addPostalAddress(final String addressItem) {
 		if (postalAddress == null) {
-			postalAddress = new ArrayList<String>();
+			postalAddress = new ArrayList<>();
 		}
 		postalAddress.add(addressItem);
 	}

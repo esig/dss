@@ -47,7 +47,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
     }
     
     protected List<SignatureScope> getSignatureScopeFromOriginalDocument(DSSDocument originalDocument) {
-        List<SignatureScope> result = new ArrayList<SignatureScope>();
+        List<SignatureScope> result = new ArrayList<>();
         if (originalDocument == null) {
         	return result;
         }

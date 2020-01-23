@@ -117,7 +117,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 		Collections.sort(signatures, new PdfRevisionComparator());
 
-		List<PdfRevision> previousList = new ArrayList<PdfRevision>();
+		List<PdfRevision> previousList = new ArrayList<>();
 		for (PdfRevision sig : signatures) {
 			if (Utils.isCollectionNotEmpty(previousList)) {
 				for (PdfRevision previous : previousList) {
@@ -264,7 +264,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @return
 	 */
 	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
-		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, Long> result = new HashMap<>();
 		for (DSSDictionaryCallback callback : callbacks) {
 
 			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();

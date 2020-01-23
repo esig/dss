@@ -52,7 +52,7 @@ public class DSSDataLoaderMultipleException extends DSSExternalResourceException
 	
 	@Override
 	public StackTraceElement[] getStackTrace() {
-		List<StackTraceElement> stackTraceElements = new ArrayList<StackTraceElement>();
+		List<StackTraceElement> stackTraceElements = new ArrayList<>();
 		for (Throwable exception : urlExceptionMap.values()) {
 			stackTraceElements.addAll(Arrays.asList(exception.getStackTrace()));
 		}

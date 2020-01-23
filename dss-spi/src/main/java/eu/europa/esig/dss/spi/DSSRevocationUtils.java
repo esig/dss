@@ -341,7 +341,7 @@ public final class DSSRevocationUtils {
 	 */
 	public static List<String> getCRLRevocationTokenKeys(final CertificateToken certificateToken) {
 		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
-		List<String> revocationKeys = new ArrayList<String>();
+		List<String> revocationKeys = new ArrayList<>();
 		for (String crlUrl : crlUrls) {
 			revocationKeys.add(getCRLRevocationTokenKey(crlUrl));
 		}
@@ -359,7 +359,7 @@ public final class DSSRevocationUtils {
 	 */
 	public static List<String> getOcspRevocationTokenKeys(final CertificateToken certificateToken) {
 		final List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
-		List<String> revocationKeys = new ArrayList<String>();
+		List<String> revocationKeys = new ArrayList<>();
 		for (String ocspUrl : ocspUrls) {
 			revocationKeys.add(getOcspRevocationKey(certificateToken, ocspUrl));
 		}

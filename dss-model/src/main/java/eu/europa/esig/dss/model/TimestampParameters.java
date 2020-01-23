@@ -44,6 +44,7 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
+	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}

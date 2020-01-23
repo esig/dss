@@ -62,10 +62,10 @@ public class OtherTLSLPointerPredicatesTest {
 					pointersToOtherTSL.getOtherTSLPointer().stream().filter(new SchemeTerritoryOtherTSLPointer("BG").and(new XMLOtherTSLPointer())).count());
 
 			assertEquals(3, pointersToOtherTSL.getOtherTSLPointer().stream()
-					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).count());
+					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<>(Arrays.asList("BG", "CY")))).count());
 
 			List<OtherTSLPointer> result = pointersToOtherTSL.getOtherTSLPointer().stream()
-					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter())
+					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter())
 					.collect(Collectors.toList());
 
 			assertEquals(3, result.size());

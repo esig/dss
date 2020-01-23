@@ -83,7 +83,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		final List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> signatures = new ArrayList<>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
@@ -107,7 +107,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<TimestampToken> getDetachedTimestamps() {
-		final List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
+		final List<TimestampToken> timestamps = new ArrayList<>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
@@ -153,7 +153,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 		InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
 		if (originalPDF != null) {
 			result.add(originalPDF);

@@ -59,7 +59,7 @@ public class ETSISamplesValidationTest {
 		File folder = new File("src/test/resources/plugtest");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "p7", "p7b", "p7m", "p7s", "asice", "asics", "pdf", "xml", "bdoc", "csig", "xsig", "es3" }, true);
-		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
+		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of( file ));
 		}
@@ -72,7 +72,7 @@ public class ETSISamplesValidationTest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
 
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("https://www.sk.ee/repository/bdoc-spec21.pdf", new FileDocument(new File("src/test/resources/bdoc-spec21.pdf")));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);

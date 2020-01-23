@@ -62,7 +62,7 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws Exception {
-		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentToSigns = new ArrayList<>();
 		DSSDocument firstDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 		documentToSigns.add(firstDocument);
 		DSSDocument secondDocument = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT);

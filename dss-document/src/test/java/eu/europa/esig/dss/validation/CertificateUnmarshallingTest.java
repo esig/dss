@@ -62,7 +62,7 @@ public class CertificateUnmarshallingTest {
 	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/certificates");
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "cer", "crt" }, true);
-		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
+		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));
 		}

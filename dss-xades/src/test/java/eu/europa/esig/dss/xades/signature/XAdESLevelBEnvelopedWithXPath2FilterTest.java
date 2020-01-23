@@ -60,13 +60,13 @@ public class XAdESLevelBEnvelopedWithXPath2FilterTest extends AbstractXAdESTestS
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setXPathLocationString("//placeOfSignature");
 
-		List<DSSReference> dssReferences = new ArrayList<DSSReference>();
+		List<DSSReference> dssReferences = new ArrayList<>();
 		DSSReference reference = new DSSReference();
 		reference.setContents(documentToSign);
 		reference.setId("REF-ID1");
 		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference.setUri("");
-		List<DSSTransform> transforms1 = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms1 = new ArrayList<>();
 		XPath2FilterEnvelopedSignatureTransform transform1 = new XPath2FilterEnvelopedSignatureTransform();
 		transforms1.add(transform1);
 		reference.setTransforms(transforms1);

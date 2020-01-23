@@ -94,7 +94,7 @@ public class CertificatePoolTest {
 		CertificatePool sharedPool = new CertificatePool();
 
 		final ExecutorService threadPool = Executors.newFixedThreadPool(NB_THREADS);
-		List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
+		List<Future<Boolean>> futures = new ArrayList<>();
 
 		for (int i = 0; i < NB_THREADS; i++) {
 			futures.add(threadPool.submit(new CertPoolMergerRunnable(sharedPool, sharedCertSource)));

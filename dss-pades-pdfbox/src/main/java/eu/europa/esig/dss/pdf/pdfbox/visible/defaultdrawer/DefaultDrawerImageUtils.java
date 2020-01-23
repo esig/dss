@@ -249,7 +249,7 @@ public class DefaultDrawerImageUtils {
 		ImageWriter writer = getImageWriter("jpeg");
 
 		JPEGImageWriteParam jpegParams = (JPEGImageWriteParam) writer.getDefaultWriteParam();
-		jpegParams.setCompressionMode(JPEGImageWriteParam.MODE_EXPLICIT);
+		jpegParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 		jpegParams.setCompressionQuality(1);
 
 		ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);

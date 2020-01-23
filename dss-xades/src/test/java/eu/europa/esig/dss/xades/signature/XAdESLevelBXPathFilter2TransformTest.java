@@ -59,7 +59,7 @@ public class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSigna
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("DSS-REF-1");
@@ -76,6 +76,7 @@ public class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSigna
 		service = new XAdESService(getCompleteCertificateVerifier());
 	}
 	
+	@Override
 	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) throws IOException {
 		// the reference output does not equal to the original file content
 		// do nothing

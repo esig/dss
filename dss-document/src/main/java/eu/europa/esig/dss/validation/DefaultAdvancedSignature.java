@@ -209,7 +209,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (Utils.isCollectionEmpty(manifestFiles) || Utils.isCollectionEmpty(containerContents)) {
 			return Collections.emptyList();
 		}
-		List<DSSDocument> foundManifestedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> foundManifestedDocuments = new ArrayList<>();
 		for (ManifestFile manifestFile : manifestFiles) {
 			if (Utils.areStringsEqual(manifestFile.getSignatureFilename(), signatureFilename)) {
 				for (DSSDocument document : containerContents) {
@@ -402,7 +402,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
 		final List<CertificateToken> certWithinSignatures = getCertificateListWithinSignatureAndTimestamps();
 
-		final Set<CertificateToken> certificatesForInclusion = new HashSet<CertificateToken>(certWithinSignatures);
+		final Set<CertificateToken> certificatesForInclusion = new HashSet<>(certWithinSignatures);
 		// avoid adding of cross-certificates to the list
 		final List<String> publicKeys = getEntityIdentifierList(certWithinSignatures);
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
@@ -418,7 +418,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<CertificateToken> getCertificateListWithinSignatureAndTimestamps() {
-		List<CertificateToken> certs = new ArrayList<CertificateToken>(getCertificates());
+		List<CertificateToken> certs = new ArrayList<>(getCertificates());
 		for (CertificateToken token : getTimestampSourceCertificates()) {
 			if (!certs.contains(token)) {
 				certs.add(token);
@@ -435,7 +435,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public Map<String, List<CertificateToken>> getCertificateMapWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		// We can have more than one chain in the signature : signing certificate, ocsp
 		// responder, ...
-		Map<String, List<CertificateToken>> certificateMap = new HashMap<String, List<CertificateToken>>();
+		Map<String, List<CertificateToken>> certificateMap = new HashMap<>();
 		
 		// add signature certificates
 		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
@@ -450,7 +450,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	private List<String> getEntityIdentifierList(List<CertificateToken> certificateTokens) {
-		final List<String> entityIdentifiers = new ArrayList<String>();
+		final List<String> entityIdentifiers = new ArrayList<>();
 		for (CertificateToken certificateToken : certificateTokens) {
 			entityIdentifiers.add(certificateToken.getEntityKey());
 		}
@@ -469,8 +469,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private List<CRLToken> getCRLsForInclusion(final Set<RevocationToken> processedRevocations, 
 			final Set<CertificateToken> certificatesToBeIncluded) {
 		
-		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
-		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>();
+		final List<CRLToken> crlTokens = new ArrayList<>();
+		final List<TokenIdentifier> revocationIds = new ArrayList<>();
 		
 		for (final RevocationToken revocationToken : processedRevocations) {
 			if (!revocationIds.contains(revocationToken.getDSSId()) && isAtLeastOneCertificateCovered(revocationToken, certificatesToBeIncluded)) {
@@ -496,8 +496,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private List<OCSPToken> getOCSPsForInclusion(final Set<RevocationToken> processedRevocations, 
 			final Set<CertificateToken> certificatesToBeIncluded) {
 		
-		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
-		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>();
+		final List<OCSPToken> ocspTokens = new ArrayList<>();
+		final List<TokenIdentifier> revocationIds = new ArrayList<>();
 		
 		for (final RevocationToken revocationToken : processedRevocations) {
 			if (!revocationIds.contains(revocationToken.getDSSId()) && isAtLeastOneCertificateCovered(revocationToken, certificatesToBeIncluded)) {
@@ -650,7 +650,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	protected List<TimestampedReference> getContentTimestampReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
 			for (SignatureScope signatureScope : signatureScopes) {
 				addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
@@ -660,7 +660,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	protected List<TimestampedReference> getSignatureTimestampReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		addReferences(references, getContentTimestampReferences());
 		addReference(references, new TimestampedReference(getId(), TimestampedObjectType.SIGNATURE));
 		addReferences(references, getSigningCertificateTimestampReferences());
@@ -668,7 +668,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		List<CertificateToken> signingCertificates = getCertificateSource().getSigningCertificates();
 		for (CertificateToken certificateToken : signingCertificates) {
 			addReference(references, new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
@@ -707,7 +707,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getTimestampedReferencesFromCertificates(List<CertificateToken> certificateTokens) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (final CertificateToken certificateToken : certificateTokens) {
 			timestampedReferences.add(new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
@@ -909,7 +909,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public Set<RevocationToken> getAllRevocationTokens() {
-		Set<RevocationToken> allRevocations = new HashSet<RevocationToken>();
+		Set<RevocationToken> allRevocations = new HashSet<>();
 		allRevocations.addAll(getCompleteCRLSource().getAllCRLTokens());
 		allRevocations.addAll(getCompleteOCSPSource().getAllOCSPTokens());
 		return allRevocations;
@@ -917,7 +917,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getCMSSignedDataRevocationTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getCMSSignedDataRevocationTokens());
 		revocationTokens.addAll(getOCSPSource().getCMSSignedDataRevocationTokens());
 		return revocationTokens;
@@ -925,7 +925,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getTimestampSignedDataRevocationTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getTimestampSignedDataRevocationTokens());
 		revocationTokens.addAll(getOCSPSource().getTimestampSignedDataRevocationTokens());
 		return revocationTokens;
@@ -933,7 +933,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getRevocationValuesTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getRevocationValuesTokens());
 		revocationTokens.addAll(getOCSPSource().getRevocationValuesTokens());
 		return revocationTokens;
@@ -941,7 +941,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getAttributeRevocationValuesTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getAttributeRevocationValuesTokens());
 		revocationTokens.addAll(getOCSPSource().getAttributeRevocationValuesTokens());
 		return revocationTokens;
@@ -949,7 +949,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getTimestampValidationDataTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getTimestampValidationDataTokens());
 		revocationTokens.addAll(getOCSPSource().getTimestampValidationDataTokens());
 		return revocationTokens;
@@ -957,7 +957,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getDSSDictionaryRevocationTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getDSSDictionaryTokens());
 		revocationTokens.addAll(getOCSPSource().getDSSDictionaryTokens());
 		return revocationTokens;
@@ -965,7 +965,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getVRIDictionaryRevocationTokens() {
-		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(getCRLSource().getVRIDictionaryTokens());
 		revocationTokens.addAll(getOCSPSource().getVRIDictionaryTokens());
 		return revocationTokens;
@@ -1003,7 +1003,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<RevocationRef> getOrphanRevocationRefs() {
-		List<RevocationRef> orphanRevocationRefs = new ArrayList<RevocationRef>();
+		List<RevocationRef> orphanRevocationRefs = new ArrayList<>();
 		orphanRevocationRefs.addAll(getCompleteCRLSource().getOrphanCrlRefs());
 		orphanRevocationRefs.addAll(getCompleteOCSPSource().getOrphanOCSPRefs());
 		return orphanRevocationRefs;
@@ -1011,7 +1011,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getCompleteRevocationTokens() {
-		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocations = new ArrayList<>();
 		revocations.addAll(getCRLSource().findTokensFromRefs(getCRLSource().getCompleteRevocationRefs()));
 		revocations.addAll(getOCSPSource().findTokensFromRefs(getOCSPSource().getCompleteRevocationRefs()));
 		return revocations;
@@ -1019,7 +1019,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getAttributeRevocationTokens() {
-		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
+		List<RevocationToken> revocations = new ArrayList<>();
 		revocations.addAll(getCRLSource().findTokensFromRefs(getCRLSource().getAttributeRevocationRefs()));
 		revocations.addAll(getOCSPSource().findTokensFromRefs(getOCSPSource().getAttributeRevocationRefs()));
 		return revocations;
@@ -1027,7 +1027,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken) {
-		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		List<RevocationRef> revocationRefs = new ArrayList<>();
 		if (RevocationType.CRL.equals(revocationToken.getRevocationType())) {
 			revocationRefs.addAll(getCompleteCRLSource().findRefsForRevocationToken((CRLToken) revocationToken));
 		} else {
@@ -1038,7 +1038,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<RevocationRef> findRefsForRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
-		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		List<RevocationRef> revocationRefs = new ArrayList<>();
 		if (revocationIdentifier instanceof CRLBinary) {
 			revocationRefs.addAll(getCompleteCRLSource().getReferencesForCRLIdentifier((CRLBinary) revocationIdentifier));
 		} else {
@@ -1049,7 +1049,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers() {
-		List<EncapsulatedRevocationTokenIdentifier> allFoundRevocationTokens = new ArrayList<EncapsulatedRevocationTokenIdentifier>();
+		List<EncapsulatedRevocationTokenIdentifier> allFoundRevocationTokens = new ArrayList<>();
 		allFoundRevocationTokens.addAll(getCompleteCRLSource().getCRLBinaryList());
 		allFoundRevocationTokens.addAll(getCompleteOCSPSource().getOCSPResponsesList());
 		return allFoundRevocationTokens;

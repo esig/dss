@@ -51,7 +51,7 @@ public class SignDigestECDSATest {
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestECDSATest.class);
 
 	private static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> ecdsaCombinations = new ArrayList<DigestAlgorithm>();
+		Collection<DigestAlgorithm> ecdsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgorithm) != null) {
 				ecdsaCombinations.add(digestAlgorithm);

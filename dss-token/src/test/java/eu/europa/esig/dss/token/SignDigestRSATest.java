@@ -60,7 +60,7 @@ public class SignDigestRSATest {
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestRSATest.class);
 
 	private static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm) != null) {
 				rsaCombinations.add(digestAlgorithm);

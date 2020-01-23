@@ -64,7 +64,7 @@ public class ValidationResult implements CachedResult {
 	}
 	
 	public List<CertificateToken> getPotentialSigners() {
-		return new ArrayList<CertificateToken>(certificateSource.getCertificates());
+		return new ArrayList<>(certificateSource.getCertificates());
 	}
 
 }

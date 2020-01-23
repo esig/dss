@@ -42,7 +42,7 @@ public class TimestampTokenConverter {
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampTokenConverter.class);
 	
 	public static List<TimestampToken> toTimestampTokens(List<TimestampDTO> timestampDTOs) {
-		List<TimestampToken> timestampTokens = new ArrayList<TimestampToken>();
+		List<TimestampToken> timestampTokens = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestampDTOs)) {
 			for (TimestampDTO timestampDTO : timestampDTOs) {
 				if (timestampDTO != null && Utils.isArrayNotEmpty(timestampDTO.getBinaries())) {
@@ -82,7 +82,7 @@ public class TimestampTokenConverter {
 	}
 	
 	private static List<TimestampInclude> toTimestampIncludes(List<TimestampIncludeDTO> timestampIncludeDTOs) {
-		List<TimestampInclude> timestampIncludes = new ArrayList<TimestampInclude>();
+		List<TimestampInclude> timestampIncludes = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestampIncludeDTOs)) {
 			for (TimestampIncludeDTO timestampIncludeDTO : timestampIncludeDTOs) {
 				if (timestampIncludeDTO != null) {
@@ -94,7 +94,7 @@ public class TimestampTokenConverter {
 	}
 	
 	private static List<TimestampIncludeDTO> toTimestampIncludeDTOs(List<TimestampInclude> timestampIncludes) {
-		List<TimestampIncludeDTO> timestampIncludeDTOs = new ArrayList<TimestampIncludeDTO>();
+		List<TimestampIncludeDTO> timestampIncludeDTOs = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestampIncludes)) {
 			for (TimestampInclude timestampInclude : timestampIncludes) {
 				if (timestampInclude != null) {

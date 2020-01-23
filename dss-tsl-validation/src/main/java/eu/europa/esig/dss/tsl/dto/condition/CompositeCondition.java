@@ -42,7 +42,7 @@ public class CompositeCondition extends Condition {
 	/**
 	 * The list of child conditions
 	 */
-	private List<Condition> children = new ArrayList<Condition>();
+	private List<Condition> children = new ArrayList<>();
 
 	/**
 	 * The default constructor for CriteriaListCondition.

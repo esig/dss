@@ -44,7 +44,7 @@ public class CandidatesForSigningCertificate implements Serializable {
 	/**
 	 * This list contains the candidates for the signing certificate.
 	 */
-	private List<CertificateValidity> certificateValidityList = new ArrayList<CertificateValidity>();
+	private List<CertificateValidity> certificateValidityList = new ArrayList<>();
 
 	/**
 	 * @return the list of candidates for the signing certificate.
@@ -66,7 +66,7 @@ public class CandidatesForSigningCertificate implements Serializable {
 	 * @return the list of candidates for the signing certificate.
 	 */
 	public List<CertificateToken> getSigningCertificateTokenList() {
-		final List<CertificateToken> signCertificateTokenList = new ArrayList<CertificateToken>();
+		final List<CertificateToken> signCertificateTokenList = new ArrayList<>();
 		for (final CertificateValidity certificateValidity : certificateValidityList) {
 			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
 			if (certificateToken != null) {

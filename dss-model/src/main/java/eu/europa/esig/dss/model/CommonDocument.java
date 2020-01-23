@@ -39,7 +39,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 @SuppressWarnings("serial")
 public abstract class CommonDocument implements DSSDocument {
 
-	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<DigestAlgorithm, String>(
+	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<>(
 			DigestAlgorithm.class);
 
 	protected MimeType mimeType;

@@ -153,7 +153,8 @@ public class RevocationInfoArchival
         return this.otherRevVals;
     }
 
-    public ASN1Primitive toASN1Primitive()
+    @Override
+	public ASN1Primitive toASN1Primitive()
     {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
         if (null != this.crlVals)

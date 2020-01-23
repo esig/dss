@@ -61,7 +61,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
+	private List<CertificateToken> certificateChain = new LinkedList<>();
 
 	/*
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
@@ -126,6 +126,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 *
 	 * @return the signing certificate
 	 */
+	@Override
 	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
 	}

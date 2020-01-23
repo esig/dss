@@ -91,7 +91,7 @@ public class ReadOnlyCacheAccess {
 	 * @return a set of cache keys
 	 */
 	public Set<CacheKey> getAllCacheKeys() {
-		Set<CacheKey> keys = new HashSet<CacheKey>();
+		Set<CacheKey> keys = new HashSet<>();
 		keys.addAll(downloadCache.getKeys());
 		keys.addAll(parsingCache.getKeys());
 		keys.addAll(validationCache.getKeys());

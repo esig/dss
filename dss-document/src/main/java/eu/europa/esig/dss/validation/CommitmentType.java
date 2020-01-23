@@ -37,7 +37,7 @@ public class CommitmentType {
 
     public void addIdentifier(final String identifier) {
         if (identifiers == null) {
-            identifiers = new ArrayList<String>();
+            identifiers = new ArrayList<>();
         }
         identifiers.add(identifier);
     }

@@ -47,7 +47,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESReferenceValidation.class);
 
-	private static final Map<String, String> presentableTransformationNames = new HashMap<String, String>();
+	private static final Map<String, String> presentableTransformationNames = new HashMap<>();
 
 	static {
 		presentableTransformationNames.put(Transforms.TRANSFORM_ENVELOPED_SIGNATURE, "Enveloped Signature Transform");
@@ -119,7 +119,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	@Override
 	public List<String> getTransformationNames() {
 		if (transforms == null) {
-			transforms = new ArrayList<String>();
+			transforms = new ArrayList<>();
 			try {
 				Transforms referenceTransforms = reference.getTransforms();
 				if (referenceTransforms != null) {

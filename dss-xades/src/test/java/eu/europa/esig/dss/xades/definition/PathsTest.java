@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
@@ -75,7 +76,7 @@ public class PathsTest {
 
 	@Test
 	public void allFromCurrentPosition() {
-		assertEquals(".//xades132:UnsignedProperties", XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_PROPERTIES));
+		assertEquals(".//xades132:UnsignedProperties", AbstractPaths.allFromCurrentPosition(XAdES132Element.UNSIGNED_PROPERTIES));
 	}
 
 }

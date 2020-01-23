@@ -225,7 +225,7 @@ public final class DSSUtils {
 	}
 
 	private static List<CertificateToken> loadCertificates(InputStream is) {
-		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
+		final List<CertificateToken> certificates = new ArrayList<>();
 		try {
 			@SuppressWarnings("unchecked")
 			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory
@@ -688,7 +688,7 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-			Map<String, String> keywords = new HashMap<String, String>();
+			Map<String, String> keywords = new HashMap<>();
 			keywords.put("ORGANIZATIONIDENTIFIER", "2.5.4.97");
 			return new X500Principal(x500PrincipalString, keywords);
 		} catch (Exception e) {

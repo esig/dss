@@ -96,10 +96,10 @@ public class OnlineOCSPSourceTest {
 	@Test
 	public void testInjectExternalUrls() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		List<String> alternativeOCSPUrls = new ArrayList<String>();
+		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
 
-		RevocationSource<OCSPToken> currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>(ocspSource,
+		RevocationSource<OCSPToken> currentOCSPSource = new AlternateUrlsSourceAdapter<>(ocspSource,
 				alternativeOCSPUrls);
 		OCSPToken ocspToken = currentOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);

@@ -45,7 +45,7 @@ public class CommonCertificateSource implements CertificateSource {
 	/**
 	 * The list of all encapsulated certificate tokens for the current source.
 	 */
-	private final List<CertificateToken> certificateTokens = new ArrayList<CertificateToken>();
+	private final List<CertificateToken> certificateTokens = new ArrayList<>();
 
 	/**
 	 * The default constructor to generate a certificates source with an independent certificates pool.

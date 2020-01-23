@@ -103,7 +103,7 @@ public class CertificateReorderer {
 	 * @return a map of one or more ordered certificates chain
 	 */
 	public Map<CertificateToken, List<CertificateToken>> getOrderedCertificateChains() {
-		Map<CertificateToken, List<CertificateToken>> result = new HashMap<CertificateToken, List<CertificateToken>>();
+		Map<CertificateToken, List<CertificateToken>> result = new HashMap<>();
 		
 		List<CertificateToken> certificates = getAllCertificatesOnce();
 		if (Utils.collectionSize(certificates) == 1) {
@@ -140,7 +140,7 @@ public class CertificateReorderer {
 	}
 
 	private List<CertificateToken> buildCertificateChainForCert(List<CertificateToken> certificates, CertificateToken certToAdd) {
-		List<CertificateToken> result = new LinkedList<CertificateToken>();
+		List<CertificateToken> result = new LinkedList<>();
 		while (certToAdd != null && !result.contains(certToAdd)) {
 			result.add(certToAdd);
 			certToAdd = getCertificateByPubKey(certificates, certToAdd.getPublicKeyOfTheSigner());
@@ -182,7 +182,7 @@ public class CertificateReorderer {
 	 * @return a list with all certificates
 	 */
 	private List<CertificateToken> getAllCertificatesOnce() {
-		List<CertificateToken> result = new ArrayList<CertificateToken>();
+		List<CertificateToken> result = new ArrayList<>();
 
 		if (signingCertificate != null) {
 			result.add(signingCertificate);
@@ -207,7 +207,7 @@ public class CertificateReorderer {
 	 * @return the identified signing certificates
 	 */
 	private List<CertificateToken> getSigningCertificates(List<CertificateToken> certificates) {
-		List<CertificateToken> potentialSigners = new ArrayList<CertificateToken>();
+		List<CertificateToken> potentialSigners = new ArrayList<>();
 		for (CertificateToken signer : certificates) {
 			boolean isSigner = false;
 

@@ -43,7 +43,7 @@ public class ASN1PolicyTest extends PKIFactoryAccess {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/AD-RB.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("http://politicas.icpbrasil.gov.br/PA_PAdES_AD_RB_v1_0.der",
 				new InMemoryDocument(getClass().getResourceAsStream("/validation/PA_PAdES_AD_RB_v1_0.der")));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);

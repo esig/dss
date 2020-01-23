@@ -40,7 +40,7 @@ import eu.europa.esig.dss.ws.dto.TimestampDTO;
 public class RemoteSignatureParameters implements Serializable {
 
 	private RemoteCertificate signingCertificate;
-	private List<RemoteCertificate> certificateChain = new ArrayList<RemoteCertificate>();
+	private List<RemoteCertificate> certificateChain = new ArrayList<>();
 
 	/**
 	 * The documents to be signed

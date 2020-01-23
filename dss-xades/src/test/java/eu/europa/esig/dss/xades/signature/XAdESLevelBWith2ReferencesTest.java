@@ -55,11 +55,11 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 	@Test
 	public void test1() throws Exception {
-		List<DSSReference> refs = new ArrayList<DSSReference>();
+		List<DSSReference> refs = new ArrayList<>();
 		DSSDocument doc1 = new FileDocument(FILE1);
 		DSSDocument doc2 = new FileDocument(FILE2);
 
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
@@ -117,7 +117,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 	@Test
 	public void multiDocsEnveloping() throws Exception {
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
 
@@ -153,7 +153,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 	@Test
 	public void multiDocsDetached() throws Exception {
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
 

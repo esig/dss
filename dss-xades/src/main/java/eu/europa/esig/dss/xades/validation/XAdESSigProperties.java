@@ -47,7 +47,7 @@ public abstract class XAdESSigProperties implements SignatureProperties<XAdESAtt
 
 	@Override
 	public List<XAdESAttribute> getAttributes() {
-		List<XAdESAttribute> unsignedAttributes = new ArrayList<XAdESAttribute>();
+		List<XAdESAttribute> unsignedAttributes = new ArrayList<>();
 		if (signatureProptiesDom != null && signatureProptiesDom.hasChildNodes()) {
 			final NodeList unsignedProperties = signatureProptiesDom.getChildNodes();
 			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {

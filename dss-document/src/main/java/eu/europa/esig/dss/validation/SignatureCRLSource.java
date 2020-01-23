@@ -43,19 +43,19 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {
 	
-	private Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<CRLBinary, List<CRLToken>>();
+	private Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<>();
 
-	private List<CRLToken> cmsSignedDataCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> timestampSignedDataCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> revocationValuesCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> timestampValidationDataCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> dssDictionaryCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> vriDictionaryCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> adbeRevocationValuesCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> cmsSignedDataCRLs = new ArrayList<>();
+	private List<CRLToken> timestampSignedDataCRLs = new ArrayList<>();
+	private List<CRLToken> revocationValuesCRLs = new ArrayList<>();
+	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<>();
+	private List<CRLToken> timestampValidationDataCRLs = new ArrayList<>();
+	private List<CRLToken> dssDictionaryCRLs = new ArrayList<>();
+	private List<CRLToken> vriDictionaryCRLs = new ArrayList<>();
+	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<>();
+	private List<CRLToken> adbeRevocationValuesCRLs = new ArrayList<>();
 	
-	private List<CRLRef> crlRefs = new ArrayList<CRLRef>();
+	private List<CRLRef> crlRefs = new ArrayList<>();
 	
 	private List<CRLRef> orphanRevocationRefsCRLs;
 	
@@ -122,7 +122,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	private List<CRLRef> getCRLRefsByOrigin(RevocationRefOrigin origin) {
-		List<CRLRef> revocationRefsCRLs = new ArrayList<CRLRef>();
+		List<CRLRef> revocationRefsCRLs = new ArrayList<>();
 		for (CRLRef crlRef : crlRefs) {
 			if (crlRef.getOrigins().contains(origin)) {
 				revocationRefsCRLs.add(crlRef);
@@ -136,7 +136,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * @return list of {@link CRLToken}s
 	 */
 	public List<CRLToken> getAllCRLTokens() {
-		List<CRLToken> crlTokens = new ArrayList<CRLToken>();
+		List<CRLToken> crlTokens = new ArrayList<>();
 		crlTokens.addAll(getCMSSignedDataRevocationTokens());
 		crlTokens.addAll(getTimestampSignedDataRevocationTokens());
 		crlTokens.addAll(getRevocationValuesTokens());
@@ -162,7 +162,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		if (getCRLBinaryList().contains(crlBinary)) {
 			List<CRLToken> tokensList = crlTokenMap.get(crlBinary);
 			if (tokensList == null) {
-				tokensList = new ArrayList<CRLToken>();
+				tokensList = new ArrayList<>();
 				crlTokenMap.put(crlBinary, tokensList);
 			}
 			tokensList.add(crlToken);
@@ -223,7 +223,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * @return list of {@link CRLRef}s
 	 */
 	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinary crlBinary) {
-		List<CRLRef> relatedRefs = new ArrayList<CRLRef>();
+		List<CRLRef> relatedRefs = new ArrayList<>();
 		for (CRLRef crlRef : getAllCRLReferences()) {
 			Digest refDigest = crlRef.getDigest();
 			byte[] digestValue = crlBinary.getDigestValue(refDigest.getAlgorithm());
@@ -254,7 +254,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 */
 	public List<CRLRef> getOrphanCrlRefs() {
 		if (orphanRevocationRefsCRLs == null) {
-			orphanRevocationRefsCRLs = new ArrayList<CRLRef>();
+			orphanRevocationRefsCRLs = new ArrayList<>();
 			for (CRLRef crlRef : getAllCRLReferences()) {
 				if (getIdentifier(crlRef) == null) {
 					orphanRevocationRefsCRLs.add(crlRef);
@@ -273,7 +273,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		if (Utils.isMapEmpty(revocationRefsMap)) {
 			collectRevocationRefsMap();
 		}
-		List<CRLToken> tokensFromRefs = new ArrayList<CRLToken>();
+		List<CRLToken> tokensFromRefs = new ArrayList<>();
 		for (Entry<CRLToken, Set<CRLRef>> revocationMapEntry : revocationRefsMap.entrySet()) {
 			for (CRLRef tokenRevocationRef : revocationMapEntry.getValue()) {
 				if (revocationRefs.contains(tokenRevocationRef)) {
@@ -303,7 +303,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	private void collectRevocationRefsMap() {
-		revocationRefsMap = new HashMap<CRLToken, Set<CRLRef>>();
+		revocationRefsMap = new HashMap<>();
 		for (CRLToken revocationToken : getAllCRLTokens()) {
 			for (CRLRef reference : getAllCRLReferences()) {
 				Digest refDigest = reference.getDigest();
@@ -317,7 +317,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private void addReferenceToMap(CRLToken revocationToken, CRLRef reference) {
 		Set<CRLRef> crlRefs = revocationRefsMap.get(revocationToken);
 		if (crlRefs == null) {
-			crlRefs = new HashSet<CRLRef>();
+			crlRefs = new HashSet<>();
 			revocationRefsMap.put(revocationToken, crlRefs);
 		}
 		crlRefs.add(reference);

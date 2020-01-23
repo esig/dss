@@ -30,7 +30,7 @@ public class MemoryDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = -2899281917849499181L;
 
-	private Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+	private Map<String, byte[]> dataMap = new HashMap<>();
 
 	public MemoryDataLoader(Map<String, byte[]> dataMap) {
 		this.dataMap.putAll(dataMap);

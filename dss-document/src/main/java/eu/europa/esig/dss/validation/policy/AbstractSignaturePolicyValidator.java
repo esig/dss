@@ -34,7 +34,7 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 	private boolean status = false;
 	private boolean asn1Processable = false;
 	private boolean digestAlgorithmsEqual = false;
-	private Map<String, String> errors = new HashMap<String, String>();
+	private Map<String, String> errors = new HashMap<>();
 
 	protected AdvancedSignature getSignature() {
 		return signature;

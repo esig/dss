@@ -36,7 +36,7 @@ public class DSSDictionaryExtractionUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSDictionaryExtractionUtils.class);
 
 	public static Map<Long, byte[]> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, byte[]> crlMap = new HashMap<Long, byte[]>();
+		Map<Long, byte[]> crlMap = new HashMap<>();
 		final PdfArray crlArray = dict.getAsArray(arrayName);
 		if (crlArray != null) {
 			LOG.debug("There are {} CRLs in the '{}' dictionary", crlArray.size(), dictionaryName);
@@ -57,7 +57,7 @@ public class DSSDictionaryExtractionUtils {
 	}
 
 	public static Map<Long, CertificateToken> getCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, CertificateToken> certMap = new HashMap<Long, CertificateToken>();
+		Map<Long, CertificateToken> certMap = new HashMap<>();
 		final PdfArray certsArray = dict.getAsArray(arrayName);
 		if (certsArray != null) {
 			LOG.debug("There are {} certificates in the '{}' dictionary", certsArray.size(), dictionaryName);
@@ -78,7 +78,7 @@ public class DSSDictionaryExtractionUtils {
 	}
 
 	public static Map<Long, BasicOCSPResp> getOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, BasicOCSPResp> ocspMap = new HashMap<Long, BasicOCSPResp>();
+		Map<Long, BasicOCSPResp> ocspMap = new HashMap<>();
 		PdfArray ocspArray = dict.getAsArray(arrayName);
 		if (ocspArray != null) {
 			LOG.debug("There are {} OCSPs in the '{}' dictionary", ocspArray.size(), dictionaryName);

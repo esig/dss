@@ -61,7 +61,7 @@ public class DSS1188Test {
 	public void testSigWithAttached() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1188/Test.bin.sig");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-1188/Test.bin"));
 		validator.setDetachedContents(detachedContents);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());

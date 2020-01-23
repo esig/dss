@@ -235,7 +235,7 @@ public class DSSASN1UtilsTest {
 	public void isEmpty() {
 		assertTrue(DSSASN1Utils.isEmpty(null));
 		assertTrue(DSSASN1Utils.isEmpty(new AttributeTable(new Hashtable<>())));
-		Hashtable<ASN1ObjectIdentifier, Object> nonEmpty = new Hashtable<ASN1ObjectIdentifier, Object>();
+		Hashtable<ASN1ObjectIdentifier, Object> nonEmpty = new Hashtable<>();
 		nonEmpty.put(new ASN1ObjectIdentifier("1.2.3.4.5"), 4);
 		assertFalse(DSSASN1Utils.isEmpty(new AttributeTable(nonEmpty)));
 	}
@@ -244,7 +244,7 @@ public class DSSASN1UtilsTest {
 	public void emptyIfNull() {
 		assertNotNull(DSSASN1Utils.emptyIfNull(null));
 
-		Hashtable<ASN1ObjectIdentifier, Object> nonEmpty = new Hashtable<ASN1ObjectIdentifier, Object>();
+		Hashtable<ASN1ObjectIdentifier, Object> nonEmpty = new Hashtable<>();
 		nonEmpty.put(new ASN1ObjectIdentifier("1.2.3.4.5"), 4);
 		AttributeTable attributeTable = new AttributeTable(nonEmpty);
 

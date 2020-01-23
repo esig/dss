@@ -44,7 +44,7 @@ public class TLSourceBuilder {
 	}
 
 	public List<TLSource> build() {
-		List<TLSource> result = new ArrayList<TLSource>();
+		List<TLSource> result = new ArrayList<>();
 		if (lotlList != null) {
 			for (LOTLSource lotlSource : lotlList) {
 				ParsingCacheDTO cachedResult = parsingResults.get(lotlSource.getCacheKey());

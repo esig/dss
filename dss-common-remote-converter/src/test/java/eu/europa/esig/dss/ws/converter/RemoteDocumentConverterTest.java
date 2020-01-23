@@ -58,7 +58,7 @@ public class RemoteDocumentConverterTest {
 	
 	@Test
 	public void toDSSDocumentsTest() {
-		List<RemoteDocument> remoteDocuments = new ArrayList<RemoteDocument>();
+		List<RemoteDocument> remoteDocuments = new ArrayList<>();
 		remoteDocuments.add(new RemoteDocument(new byte[] {'1','2','3'}, "remoteDocument"));
 		remoteDocuments.add(new RemoteDocument(new byte[] {'4','5','6'}, "remoteDocument2"));
 		remoteDocuments.add(new RemoteDocument(null, null));
@@ -95,7 +95,7 @@ public class RemoteDocumentConverterTest {
 	
 	@Test
 	public void toRemoteDocumentsTest() {
-		List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> dssDocuments = new ArrayList<>();
 		dssDocuments.add(new InMemoryDocument(new byte[] {'1','2','3'}, "inMemoryDocument", MimeType.BINARY));
 		dssDocuments.add(new InMemoryDocument(new byte[] {'1','2','3'}, "inMemoryDocument2"));
 		dssDocuments.add(new DigestDocument(DigestAlgorithm.SHA256, "332b7ce3b5e8f8c6132f0e09264db9da6d1c9fd6e37b73a35e68f78f4e590f90", "digestDocument"));

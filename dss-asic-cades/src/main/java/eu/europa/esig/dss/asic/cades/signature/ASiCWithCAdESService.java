@@ -119,7 +119,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		List<DSSDocument> archiveManifests = dataToSignHelper.getArchiveManifestFiles();
 		List<DSSDocument> timestamps = dataToSignHelper.getTimestamps();
 		
-		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> extendedDocuments = new ArrayList<>();
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
@@ -151,7 +151,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		List<DSSDocument> documentsToStore = new ArrayList<DSSDocument>(manifests);
+		List<DSSDocument> documentsToStore = new ArrayList<>(manifests);
 		documentsToStore.addAll(archiveManifests);
 		documentsToStore.addAll(timestamps);
 		documentsToStore.addAll(signatures);
@@ -176,7 +176,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		List<DSSDocument> timestamps = dataToSignHelper.getTimestamps();
 
-		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> extendedDocuments = new ArrayList<>();
 
 		if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(timestamps) > 0) {
 
@@ -215,7 +215,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			}
 			extendedDocuments.add(timestampToken);
 
-			List<DSSDocument> documentsToStore = new ArrayList<DSSDocument>(manifests);
+			List<DSSDocument> documentsToStore = new ArrayList<>(manifests);
 			documentsToStore.addAll(archiveManifests);
 			documentsToStore.addAll(timestamps);
 			documentsToStore.addAll(signatures);
@@ -259,7 +259,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			throw new DSSException("Unable to determine container type");
 		}
 
-		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> extendedDocuments = new ArrayList<>();
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		

@@ -265,7 +265,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			final CertificateToken certificateToken = xadesSignature.getSigningCertificateToken();
 			final Set<CertificateToken> processedCertificateTokens = validationContext.getProcessedCertificates();
-			final Set<CertificateToken> processedCertificateTokenList = new HashSet<CertificateToken>();
+			final Set<CertificateToken> processedCertificateTokenList = new HashSet<>();
 			processedCertificateTokenList.addAll(processedCertificateTokens);
 			processedCertificateTokenList.remove(certificateToken);
 			final Set<CertificateToken> x509CertificateProcessedList = processedCertificateTokenList;

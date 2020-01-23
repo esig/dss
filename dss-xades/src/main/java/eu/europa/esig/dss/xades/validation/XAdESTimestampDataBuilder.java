@@ -307,7 +307,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			/**
 			 * The references are already calculated {@see #checkSignatureIntegrity()}
 			 */
-			final Set<String> referenceURIs = new HashSet<String>();
+			final Set<String> referenceURIs = new HashSet<>();
 			for (final Reference reference : references) {
 				referenceURIs.add(DomUtils.getId(reference.getURI()));
 				writeReferenceBytes(reference, buffer);

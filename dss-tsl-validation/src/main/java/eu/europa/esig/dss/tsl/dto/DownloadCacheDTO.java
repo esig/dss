@@ -52,7 +52,7 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	@Override
 	public Date getLastDownloadAttemptTime() {
-		List<Date> dates = new ArrayList<Date>();
+		List<Date> dates = new ArrayList<>();
 		dates.add(lastSuccessDownloadTime);
 		dates.add(getExceptionLastOccurrenceTime());
 		dates.add(getLastStateTransitionTime());

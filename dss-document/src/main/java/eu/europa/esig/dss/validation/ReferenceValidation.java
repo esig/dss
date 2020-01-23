@@ -102,7 +102,7 @@ public class ReferenceValidation implements Serializable {
 	 */
 	public List<ReferenceValidation> getDependentValidations() {
 		if (dependentReferenceValidations == null) {
-			dependentReferenceValidations = new ArrayList<ReferenceValidation>();
+			dependentReferenceValidations = new ArrayList<>();
 		}
 		return dependentReferenceValidations;
 	}

@@ -84,7 +84,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		this.document = dssDocument;
 		this.rootElement = DomUtils.buildDOM(dssDocument);
 
-		xadesPathsHolders = new ArrayList<XAdESPaths>();
+		xadesPathsHolders = new ArrayList<>();
 		xadesPathsHolders.add(new XAdES111Paths());
 		xadesPathsHolders.add(new XAdES122Paths());
 		xadesPathsHolders.add(new XAdES132Paths());
@@ -113,7 +113,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			return signatures;
 		}
 
-		signatures = new ArrayList<AdvancedSignature>();
+		signatures = new ArrayList<>();
 		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 

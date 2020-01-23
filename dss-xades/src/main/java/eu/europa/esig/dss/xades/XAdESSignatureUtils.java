@@ -49,7 +49,7 @@ public final class XAdESSignatureUtils {
 	public static List<DSSDocument> getSignerDocuments(XAdESSignature signature) {
 		signature.checkSignatureIntegrity();
 		
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 
 		SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureValid()) {

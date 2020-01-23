@@ -34,7 +34,7 @@ import eu.europa.esig.validationreport.enums.TypeOfProof;
 
 public final class UriBasedEnumParser {
 
-	private static final Map<String, UriBasedEnum> URI_TO_ENUM_MAP = new HashMap<String, UriBasedEnum>();
+	private static final Map<String, UriBasedEnum> URI_TO_ENUM_MAP = new HashMap<>();
 
 	static {
 		register(Indication.values());

@@ -54,7 +54,7 @@ public final class CRLRef extends RevocationRef {
 	 */
 	public CRLRef(Digest digest, RevocationRefOrigin origin) {
 		this.digest = digest;
-		this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
+		this.origins = new HashSet<>(Arrays.asList(origin));
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class CRLRef extends RevocationRef {
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
 			byte[] digestValue = crlHash.getHashValue();
 			this.digest = new Digest(digestAlgorithm, digestValue);
-			this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
+			this.origins = new HashSet<>(Arrays.asList(origin));
 		} catch (ParseException ex) {
 			throw new DSSException(ex);
 		}

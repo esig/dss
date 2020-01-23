@@ -68,7 +68,7 @@ public class MultiThreadTLValidationJobTest {
 	@BeforeAll
 	public static void init() throws IOException {
 		
-		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put(CZ_URL, new FileDocument("src/test/resources/lotlCache/CZ.xml"));
 
 		File cacheDirectory = new File("target/cache");
@@ -78,7 +78,7 @@ public class MultiThreadTLValidationJobTest {
 		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
 		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		
-		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> onlineMap = new HashMap<>();
 		onlineMap.putAll(urlMap);
 		
 		onlineFileLoader = new FileCacheDataLoader();
@@ -122,9 +122,9 @@ public class MultiThreadTLValidationJobTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(40);
 
-		List<Future<TLValidationJobSummary>> futuresValidationResult = new ArrayList<Future<TLValidationJobSummary>>();
-		List<Future<?>> futuresOfflineRefresh = new ArrayList<Future<?>>();
-		List<Future<?>> futuresOnlineRefresh = new ArrayList<Future<?>>();
+		List<Future<TLValidationJobSummary>> futuresValidationResult = new ArrayList<>();
+		List<Future<?>> futuresOfflineRefresh = new ArrayList<>();
+		List<Future<?>> futuresOnlineRefresh = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
 			futuresValidationResult.add(executor.submit(new ValidationJobSummeryConcurrent()));

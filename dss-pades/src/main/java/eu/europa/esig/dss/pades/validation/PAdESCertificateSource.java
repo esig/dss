@@ -106,7 +106,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	public List<CertificateToken> getDSSDictionaryCertValues() {
 		if (dssDictionary != null) {
 			Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
-			return new ArrayList<CertificateToken>(dssCerts.values());
+			return new ArrayList<>(dssCerts.values());
 		}
 		return Collections.emptyList();
 	}
@@ -114,14 +114,14 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	@Override
 	public List<CertificateToken> getVRIDictionaryCertValues() {
 		if (dssDictionary != null) {
-			Map<Long, CertificateToken> vriCerts = new HashMap<Long, CertificateToken>();
+			Map<Long, CertificateToken> vriCerts = new HashMap<>();
 			List<PdfVRIDict> vris = dssDictionary.getVRIs();
 			if (vris != null) {
 				for (PdfVRIDict vri : vris) {
 					vriCerts.putAll(vri.getCertMap());
 				}
 			}
-			return new ArrayList<CertificateToken>(vriCerts.values());
+			return new ArrayList<>(vriCerts.values());
 		}
 		return Collections.emptyList();
 	}

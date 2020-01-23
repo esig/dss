@@ -70,7 +70,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	/**
 	 * Cached list of {@code OCSPResponseBinary}s found in SignedData attribute
 	 */
-	private List<OCSPResponseBinary> signedDataOCSPIdentifiers = new ArrayList<OCSPResponseBinary>();
+	private List<OCSPResponseBinary> signedDataOCSPIdentifiers = new ArrayList<>();
 
 	/**
 	 * The default constructor for CAdESOCSPSource.

@@ -37,7 +37,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 public abstract class AbstractOtherTSLPointerPredicate implements Predicate<OtherTSLPointerType> {
 
 	protected Map<String, Object> extractAdditionalInformation(OtherTSLPointerType o) {
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<>();
 
 		AdditionalInformationType additionalInformation = o.getAdditionalInformation();
 		if (additionalInformation != null) {

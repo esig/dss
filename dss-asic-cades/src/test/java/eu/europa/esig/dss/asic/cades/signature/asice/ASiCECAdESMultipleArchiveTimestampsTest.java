@@ -63,7 +63,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws Exception {
-		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentToSigns = new ArrayList<>();
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
@@ -205,7 +205,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertTrue(Utils.isCollectionNotEmpty(entries));
 		for (ManifestEntry entry : entries) {
 			assertNotNull(entry.getFileName());
-			assertNotNull(entry.getMimeType());;
+			assertNotNull(entry.getMimeType());
 			assertNotNull(entry.getDigest());
 			assertTrue(entry.isFound());
 			assertTrue(entry.isIntact());

@@ -67,7 +67,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	@Test
 	public void test() {
 		
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 		
@@ -91,7 +91,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		String imageFileName = "sample.png";
 		DSSDocument image = new FileDocument("src/test/resources/" + imageFileName);
 		
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 		
@@ -133,7 +133,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	@Test
 	public void embedXmlWithBase64Test() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+			List<DSSTransform> transforms = new ArrayList<>();
 			Base64Transform dssTransform = new Base64Transform();
 			transforms.add(dssTransform);
 			
@@ -156,7 +156,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	@Test
 	public void envelopedBase64TransformTest() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+			List<DSSTransform> transforms = new ArrayList<>();
 			Base64Transform dssTransform = new Base64Transform();
 			transforms.add(dssTransform);
 			
@@ -178,7 +178,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	@Test
 	public void base64WithOtherReferencesTest() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+			List<DSSTransform> transforms = new ArrayList<>();
 			Base64Transform dssTransform = new Base64Transform();
 			transforms.add(dssTransform);
 			CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS);
@@ -202,7 +202,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	@Test
 	public void doubleBase64TransformTest() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+			List<DSSTransform> transforms = new ArrayList<>();
 			Base64Transform dssTransform = new Base64Transform();
 			transforms.add(dssTransform);
 			Base64Transform dssTransform2 = new Base64Transform();
@@ -226,7 +226,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	@Test
 	public void manifestWithBase64Test() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<DSSDocument> documents = new ArrayList<DSSDocument>();
+			List<DSSDocument> documents = new ArrayList<>();
 			documents.add(new FileDocument("src/test/resources/sample.png"));
 			documents.add(new FileDocument("src/test/resources/sample.txt"));
 			documents.add(new FileDocument("src/test/resources/sample.xml"));
@@ -234,7 +234,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 
 			DSSDocument documentToSign = builder.build();
 			
-			List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+			List<DSSTransform> transforms = new ArrayList<>();
 			Base64Transform dssTransform = new Base64Transform();
 			transforms.add(dssTransform);
 			
@@ -263,7 +263,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		ref1.setUri('#' + document.getName());
 		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		
-		List<DSSReference> refs = new ArrayList<DSSReference>();
+		List<DSSReference> refs = new ArrayList<>();
 		refs.add(ref1);
 		
 		return refs;

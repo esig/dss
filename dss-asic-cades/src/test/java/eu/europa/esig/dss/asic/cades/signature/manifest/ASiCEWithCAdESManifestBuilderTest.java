@@ -52,7 +52,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 
 	@Test
 	public void testManifestAgainstXSD() throws SAXException, IOException {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeType.BINARY));
 		ASiCEWithCAdESManifestBuilder builder = new ASiCEWithCAdESManifestBuilder(SigningOperation.SIGN, documents, DigestAlgorithm.SHA256, "signature.p7s");
@@ -63,14 +63,14 @@ public class ASiCEWithCAdESManifestBuilderTest {
 
 	@Test
 	public void testArchiveManifestAgainstXSD() throws SAXException, IOException {
-		List<DSSDocument> signatures = new ArrayList<DSSDocument>();
+		List<DSSDocument> signatures = new ArrayList<>();
 		signatures.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.p7s", MimeType.PKCS7));
-		List<DSSDocument> timestamps = new ArrayList<DSSDocument>();
+		List<DSSDocument> timestamps = new ArrayList<>();
 		signatures.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.tst", MimeType.TST));
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeType.BINARY));
-		List<DSSDocument> manifests = new ArrayList<DSSDocument>();
+		List<DSSDocument> manifests = new ArrayList<>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.xml", MimeType.XML));
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, timestamps, 
 				documents, manifests, null, DigestAlgorithm.SHA256, "timestamp.tst");

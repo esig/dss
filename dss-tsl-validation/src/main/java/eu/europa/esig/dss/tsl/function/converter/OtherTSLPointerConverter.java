@@ -40,7 +40,7 @@ public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, O
 	}
 
 	private List<CertificateToken> getCertificates(ServiceDigitalIdentityListType serviceDigitalIdentities) {
-		List<CertificateToken> certificates = new ArrayList<CertificateToken>();
+		List<CertificateToken> certificates = new ArrayList<>();
 		if (serviceDigitalIdentities != null && Utils.isCollectionNotEmpty(serviceDigitalIdentities.getServiceDigitalIdentity())) {
 			DigitalIdentityListTypeConverter converter = new DigitalIdentityListTypeConverter();
 			for (DigitalIdentityListType digitalIdentityList : serviceDigitalIdentities.getServiceDigitalIdentity()) {

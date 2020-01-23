@@ -237,7 +237,7 @@ public class TLValidationJob {
 
 	private void refresh(DSSFileLoader dssFileLoader) {
 
-		List<TLSource> currentTLSources = new ArrayList<TLSource>();
+		List<TLSource> currentTLSources = new ArrayList<>();
 		if (trustedListSources != null) {
 			currentTLSources.addAll(Arrays.asList(trustedListSources));
 		}
@@ -384,7 +384,7 @@ public class TLValidationJob {
 	 */
 	private void checkNoDuplicateUrls(List<? extends TLSource> sources) {
 		List<String> allUrls = sources.stream().map(s -> s.getUrl()).collect(Collectors.toList());
-		Set<String> uniqueUrls = new HashSet<String>(allUrls);
+		Set<String> uniqueUrls = new HashSet<>(allUrls);
 		if (allUrls.size() > uniqueUrls.size()) {
 			throw new DSSException(String.format("Duplicate urls found : %s", allUrls));
 		}

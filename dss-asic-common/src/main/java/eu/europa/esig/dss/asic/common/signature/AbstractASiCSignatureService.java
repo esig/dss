@@ -151,7 +151,7 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	protected abstract boolean isSignatureFilename(String name);
 	
 	private List<String> getDocumentNames(List<DSSDocument> documents) {
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		for (DSSDocument document : documents) {
 			names.add(document.getName());
 		}

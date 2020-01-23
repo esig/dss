@@ -72,7 +72,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private List<CertificateToken> getCertificateFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid) {
-		final List<CertificateToken> certs = new ArrayList<CertificateToken>();
+		final List<CertificateToken> certs = new ArrayList<>();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {
@@ -94,7 +94,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin location) {
-		List<CertificateRef> result = new ArrayList<CertificateRef>();
+		List<CertificateRef> result = new ArrayList<>();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {

@@ -93,7 +93,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	}
 	
 	private Collection<Long> getCRLKeys(SignedDocumentValidator validator) {
-		Collection<Long> crls = new ArrayList<Long>();
+		Collection<Long> crls = new ArrayList<>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
@@ -103,7 +103,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	}
 	
 	private Collection<Long> getOCSPKeys(SignedDocumentValidator validator) {
-		Collection<Long> ocsps = new ArrayList<Long>();
+		Collection<Long> ocsps = new ArrayList<>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
@@ -113,7 +113,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	}
 	
 	private Collection<Long> getCertKeys(SignedDocumentValidator validator) {
-		Collection<Long> certs = new ArrayList<Long>();
+		Collection<Long> certs = new ArrayList<>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();

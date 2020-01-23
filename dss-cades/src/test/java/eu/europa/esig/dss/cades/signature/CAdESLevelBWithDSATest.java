@@ -58,7 +58,7 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
 				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
 
-		List<Object[]> data = new ArrayList<Object[]>();
+		List<Object[]> data = new ArrayList<>();
 		for (DigestAlgorithm digest1 : digestAlgos) {
 			for (DigestAlgorithm digest2 : digestAlgos) {
 				data.add(new Object[] { digest1, digest2 });

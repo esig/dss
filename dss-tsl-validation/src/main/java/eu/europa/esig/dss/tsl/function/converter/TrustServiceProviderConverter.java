@@ -84,7 +84,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	private List<String> extractRegistrationIdentifiers(InternationalNamesType internationalNamesType) {
 		OfficialRegistrationIdentifierPredicate predicate = new OfficialRegistrationIdentifierPredicate();
 
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (internationalNamesType != null && Utils.isCollectionNotEmpty(internationalNamesType.getName())) {
 			for (MultiLangNormStringType multiLangNormString : internationalNamesType.getName()) {
 				final String value = multiLangNormString.getValue();
@@ -98,7 +98,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	}
 
 	private Map<String, String> extractPostalAddress(PostalAddressListType postalAddressList) {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		if (postalAddressList != null && Utils.isCollectionNotEmpty(postalAddressList.getPostalAddress())) {
 			for (PostalAddressType postalAddress : postalAddressList.getPostalAddress()) {
 				String lang = postalAddress.getLang();
@@ -136,7 +136,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	}
 
 	private Map<String, List<String>> extractElectronicAddress(ElectronicAddressType electronicAddress) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		Map<String, List<String>> result = new HashMap<>();
 		if (electronicAddress != null && Utils.isCollectionNotEmpty(electronicAddress.getURI())) {
 			for (NonEmptyMultiLangURIType uriAndLang : electronicAddress.getURI()) {
 				addEntry(result, uriAndLang.getLang(), uriAndLang.getValue());
@@ -146,7 +146,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	}
 
 	private Map<String, String> extractInformationURI(NonEmptyMultiLangURIListType tspInformationURI) {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		if (tspInformationURI != null && Utils.isCollectionNotEmpty(tspInformationURI.getURI())) {
 			for (NonEmptyMultiLangURIType uriAndLang : tspInformationURI.getURI()) {
 				String lang = uriAndLang.getLang();
@@ -162,7 +162,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	private void addEntry(Map<String, List<String>> result, final String lang, final String value) {
 		List<String> resultsByLang = result.get(lang);
 		if (resultsByLang == null) {
-			resultsByLang = new ArrayList<String>();
+			resultsByLang = new ArrayList<>();
 			result.put(lang, resultsByLang);
 		}
 		resultsByLang.add(value);

@@ -39,7 +39,7 @@ public class DigitalIdentityListTypeConverter implements Function<DigitalIdentit
 
 	@Override
 	public List<CertificateToken> apply(DigitalIdentityListType digitalIdentityList) {
-		List<CertificateToken> certificates = new ArrayList<CertificateToken>();
+		List<CertificateToken> certificates = new ArrayList<>();
 		if (digitalIdentityList != null && Utils.isCollectionNotEmpty(digitalIdentityList.getDigitalId())) {
 			for (DigitalIdentityType digitalIdentity : digitalIdentityList.getDigitalId()) {
 				if (Utils.isArrayNotEmpty(digitalIdentity.getX509Certificate())) {

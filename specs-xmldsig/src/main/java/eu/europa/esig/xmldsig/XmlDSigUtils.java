@@ -73,7 +73,7 @@ public final class XmlDSigUtils extends XSDAbstractUtils {
 
 	@Override
 	public List<Source> getXSDSources() {
-		List<Source> xsdSources = new ArrayList<Source>();
+		List<Source> xsdSources = new ArrayList<>();
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XML_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XMLDSIG_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XMLDSIG_FILTER2_SCHEMA_LOCATION)));

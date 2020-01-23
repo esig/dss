@@ -63,7 +63,7 @@ public class OpenDocumentMultipleTimestampsTest extends PKIFactoryAccess {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.odt")));
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.ods")));
 

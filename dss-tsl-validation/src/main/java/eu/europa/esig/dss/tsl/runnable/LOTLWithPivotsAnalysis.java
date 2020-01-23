@@ -119,7 +119,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
 
-		List<String> pivotUrlsReversed = new LinkedList<String>(pivotURLs);
+		List<String> pivotUrlsReversed = new LinkedList<>(pivotURLs);
 		Collections.reverse(pivotUrlsReversed); // -> 172, 191,..
 
 		CertificateSource currentCertificateSource = initialCertificateSource;
@@ -166,7 +166,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	private Map<String, PivotProcessingResult> downloadAndParseAllPivots(List<String> pivotURLs) {
 		ExecutorService executorService = Executors.newFixedThreadPool(pivotURLs.size());
 
-		Map<String, Future<PivotProcessingResult>> futures = new HashMap<String, Future<PivotProcessingResult>>();
+		Map<String, Future<PivotProcessingResult>> futures = new HashMap<>();
 		for (String pivotUrl : pivotURLs) {
 			CacheAccessByKey pivotCacheAccess = cacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
 			LOTLSource pivotSource = new LOTLSource();
@@ -177,7 +177,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, dssFileLoader)));
 		}
 
-		Map<String, PivotProcessingResult> processingResults = new HashMap<String, PivotProcessingResult>();
+		Map<String, PivotProcessingResult> processingResults = new HashMap<>();
 		for (Entry<String, Future<PivotProcessingResult>> entry : futures.entrySet()) {
 			try {
 				processingResults.put(entry.getKey(), entry.getValue().get());

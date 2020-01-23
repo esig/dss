@@ -83,7 +83,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			bLevelParameters.setSignerLocation(signerLocation);
 
 			// commitment type(s)
-			List<String> commitmentTypeIndications = new ArrayList<String>();
+			List<String> commitmentTypeIndications = new ArrayList<>();
 			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
 			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);

@@ -83,7 +83,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 
-		final List<DSSReference> references = new ArrayList<DSSReference>();
+		final List<DSSReference> references = new ArrayList<>();
 
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("xml_ref_id");
@@ -91,7 +91,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 		dssReference.setContents(documentToSign);
 		dssReference.setDigestMethodAlgorithm(signatureParameters.getDigestAlgorithm());
 
-		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		final List<DSSTransform> transforms = new ArrayList<>();
 
 		EnvelopedSignatureTransform signatureTransform = new EnvelopedSignatureTransform();
 		transforms.add(signatureTransform);

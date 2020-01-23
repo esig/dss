@@ -69,7 +69,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	private static final List<ASN1ObjectIdentifier> archiveTimestampOIDs;
 	
 	static {
-		archiveTimestampOIDs = new ArrayList<ASN1ObjectIdentifier>();
+		archiveTimestampOIDs = new ArrayList<>();
 		archiveTimestampOIDs.add(OID.id_aa_ets_archiveTimestampV2);
 		archiveTimestampOIDs.add(OID.id_aa_ets_archiveTimestampV3);
 	}

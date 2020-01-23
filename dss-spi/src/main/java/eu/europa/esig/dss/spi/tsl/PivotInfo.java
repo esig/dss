@@ -32,7 +32,7 @@ public class PivotInfo extends LOTLInfo {
 	private static final long serialVersionUID = 1724138551018429654L;
 	
 	/* Map between certificates and their change statuses in the current Pivot */
-	private Map<CertificateToken, CertificatePivotStatus> certificateStatusMap = new HashMap<CertificateToken, CertificatePivotStatus>();
+	private Map<CertificateToken, CertificatePivotStatus> certificateStatusMap = new HashMap<>();
 	
 	/* associated XML LOTL Location */
 	private String lotlLocation;

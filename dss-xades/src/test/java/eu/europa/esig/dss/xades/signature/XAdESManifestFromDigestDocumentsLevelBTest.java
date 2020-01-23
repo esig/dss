@@ -49,7 +49,7 @@ public class XAdESManifestFromDigestDocumentsLevelBTest extends AbstractXAdESTes
 		List<DSSDocument> documents = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.png"),
 				new FileDocument("src/test/resources/sample.txt"), new FileDocument("src/test/resources/sample.xml"));
 
-		List<DSSDocument> digestDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> digestDocuments = new ArrayList<>();
 		for (DSSDocument dssDocument : documents) {
 			DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, dssDocument.getDigest(DigestAlgorithm.SHA512));
 			digestDocument.setName(dssDocument.getName());

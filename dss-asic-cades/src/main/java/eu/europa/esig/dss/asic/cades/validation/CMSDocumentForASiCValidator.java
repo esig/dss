@@ -32,6 +32,7 @@ public class CMSDocumentForASiCValidator extends CMSDocumentValidator implements
 		super(signatureDocument, new ASiCWithCAdESSignatureScopeFinder());
 	}
 
+	@Override
 	public void setValidationCertPool(CertificatePool validationCertPool) {
 		this.validationCertPool = validationCertPool;
 	}

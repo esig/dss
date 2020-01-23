@@ -51,7 +51,7 @@ public class ASiCECAdESLevelBMultiArchivesTest extends AbstractPkiFactoryTestMul
 
 	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+	private List<DSSDocument> documentToSigns = new ArrayList<>();
 
 	@BeforeEach
 	public void init() throws Exception {

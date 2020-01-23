@@ -87,10 +87,10 @@ public final class DSSXMLUtils {
 	static {
 		SantuarioInitializer.init();
 
-		transforms = new HashSet<String>();
+		transforms = new HashSet<>();
 		registerDefaultTransforms();
 
-		canonicalizers = new HashSet<String>();
+		canonicalizers = new HashSet<>();
 		registerDefaultCanonicalizers();
 	}
 
@@ -251,13 +251,13 @@ public final class DSSXMLUtils {
 			String signatureAttrIdValue = getIDIdentifier(signature);
 			if (Utils.isStringNotEmpty(signatureAttrIdValue) && signatureAttrIdValue.contains(signatureId)) {
 				Node unsignedSignatureProperties = DomUtils.getNode(signature,
-						XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+						AbstractPaths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
 				signature.getParentNode().replaceChild(importedSignature, signature);
 				if (unsignedSignatureProperties != null) {
 					Node newUnsignedSignatureProperties = DomUtils.getNode(signature,
-							XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+							AbstractPaths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 					newUnsignedSignatureProperties.getParentNode().replaceChild(unsignedSignatureProperties, newUnsignedSignatureProperties);
 				}
 			}

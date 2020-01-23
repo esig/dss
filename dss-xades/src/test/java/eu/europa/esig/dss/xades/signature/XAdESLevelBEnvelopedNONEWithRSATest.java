@@ -58,7 +58,7 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 
 	@Parameters(name = "DigestAlgorithm {index} : {0}")
 	public static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			SignatureAlgorithm algorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm);
 			if (algorithm != null && Utils.isStringNotEmpty(algorithm.getUri())) {

@@ -47,6 +47,7 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
@@ -145,7 +146,7 @@ public class InfiniteLoopDSS621Test {
 				ASN1ObjectIdentifier oid = ASN1ObjectIdentifier.getInstance(asn1Seq.getObjectAt(0));
 				assertEquals(PKCSObjectIdentifiers.signedData, oid);
 
-				SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
+				SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
 
 				ASN1Set digestAlgorithmSet = signedData.getDigestAlgorithms();
 				ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier
@@ -253,7 +254,7 @@ public class InfiniteLoopDSS621Test {
 		ASN1Set certificates = signedData.getCertificates();
 		logger.debug("CERTIFICATES (" + certificates.size() + ") : " + certificates);
 
-		List<X509Certificate> foundCertificates = new ArrayList<X509Certificate>();
+		List<X509Certificate> foundCertificates = new ArrayList<>();
 		for (int i = 0; i < certificates.size(); i++) {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
 

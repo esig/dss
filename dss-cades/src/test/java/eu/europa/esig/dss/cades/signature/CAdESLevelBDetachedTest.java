@@ -59,7 +59,7 @@ public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		// test with wrong provided certificate
 		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;

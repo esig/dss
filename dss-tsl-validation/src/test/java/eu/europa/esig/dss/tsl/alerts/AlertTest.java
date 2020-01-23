@@ -90,7 +90,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_BROKEN_SIG, url));
 
-		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
+		List<Alert<?>> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -114,7 +114,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 
-		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
+		List<Alert<?>> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -137,7 +137,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_PARSABLE, url));
 
-		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
+		List<Alert<?>> alerts = new ArrayList<>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -160,7 +160,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(EXPIRED_LOTL, url));
 
-		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
+		List<Alert<?>> alerts = new ArrayList<>();
 		TLExpirationDetection expirationDetection = new TLExpirationDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -196,7 +196,7 @@ public class AlertTest {
 
 		job.setListOfTrustedListSources(lotlSource);
 
-		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
+		List<Alert<?>> alerts = new ArrayList<>();
 		OJUrlChangeDetection ojUrlDetection = new OJUrlChangeDetection(lotlSource);
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -228,7 +228,7 @@ public class AlertTest {
 		lotlSource.setCertificateSource(trustedCertificateSource);
 		job.setListOfTrustedListSources(lotlSource);
 
-		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
+		List<Alert<?>> alerts = new ArrayList<>();
 		LOTLLocationChangeDetection lotlLocationDetection = new LOTLLocationChangeDetection(lotlSource);
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -257,7 +257,7 @@ public class AlertTest {
 	private DSSFileLoader getOnlineDataLoader(DSSDocument doc, String url) {
 		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
 		onlineFileLoader.setCacheExpirationTime(0);
-		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> onlineMap = new HashMap<>();
 		onlineMap.put(url, doc);
 		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
 		onlineFileLoader.setFileCacheDirectory(cacheDirectory);

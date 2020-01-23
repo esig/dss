@@ -64,11 +64,11 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		// Canonicalization is optional
 		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
 
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
 		dssReference.setId(referenceId);
@@ -100,7 +100,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;

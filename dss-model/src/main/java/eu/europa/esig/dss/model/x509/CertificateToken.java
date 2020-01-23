@@ -350,7 +350,7 @@ public class CertificateToken extends Token {
 	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
 	public List<KeyUsageBit> getKeyUsageBits() {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
 		if (keyUsageArray != null) {
 			for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {

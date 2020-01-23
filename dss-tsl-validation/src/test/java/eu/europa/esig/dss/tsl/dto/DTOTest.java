@@ -84,29 +84,29 @@ public class DTOTest {
 	public void trustServiceProviderBuilder() {
 		TrustServiceProviderBuilder builder = new TrustServiceProviderBuilder();
 		
-		Map<String, List<String>> names = new HashMap<String, List<String>>();
+		Map<String, List<String>> names = new HashMap<>();
 		names.put("CZ", Arrays.asList("TSP1", "TSP2"));
 		builder.setNames(names);
 		
-		Map<String, List<String>> tradeNames = new HashMap<String, List<String>>();
+		Map<String, List<String>> tradeNames = new HashMap<>();
 		tradeNames.put("CZ", Arrays.asList("TSPTradeName1", "TSPTradeName2"));
 		builder.setTradeNames(tradeNames);
 		
 		builder.setRegistrationIdentifiers(Arrays.asList("VAT 154764", "PAS 4898464"));
 
-		Map<String, String> postalAddresses = new HashMap<String, String>();
+		Map<String, String> postalAddresses = new HashMap<>();
 		postalAddresses.put("CZ", "Prague, Second Street 15");
 		builder.setPostalAddresses(postalAddresses);
 		
-		Map<String, List<String>> electronicAddresses = new HashMap<String, List<String>>();
+		Map<String, List<String>> electronicAddresses = new HashMap<>();
 		electronicAddresses.put("CZ", Arrays.asList("address@gmail.com", "mail@mail.com"));
 		builder.setElectronicAddresses(electronicAddresses);
 
-		Map<String, String> information = new HashMap<String, String>();
+		Map<String, String> information = new HashMap<>();
 		information.put("CZ", "Information");
 		builder.setInformation(information);
 		
-		List<TrustService> trustServices = new ArrayList<TrustService>();
+		List<TrustService> trustServices = new ArrayList<>();
 		
 		TrustServiceBuilder trustServiceBuilder = new TrustService.TrustServiceBuilder();
 		trustServiceBuilder.setCertificates(Arrays.asList(cert));

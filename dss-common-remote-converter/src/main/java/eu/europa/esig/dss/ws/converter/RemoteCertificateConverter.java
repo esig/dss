@@ -62,7 +62,7 @@ public class RemoteCertificateConverter {
 	 */
 	public static List<CertificateToken> toCertificateTokens(List<RemoteCertificate> remoteCertificates) {
 		if (Utils.isCollectionNotEmpty(remoteCertificates)) {
-			List<CertificateToken> certificateTokens = new LinkedList<CertificateToken>();
+			List<CertificateToken> certificateTokens = new LinkedList<>();
 			for (RemoteCertificate remoteCertificate : remoteCertificates) {
 				CertificateToken certificateToken = toCertificateToken(remoteCertificate);
 				if (certificateToken != null) {

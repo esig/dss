@@ -125,7 +125,7 @@ public class CMSSignedDataBuilder {
 
 			generator.addSignerInfoGenerator(signerInfoGenerator);
 
-			final List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
+			final List<CertificateToken> certificateChain = new LinkedList<>();
 			if (originalSignedData != null) {
 
 				generator.addSigners(originalSignedData.getSignerInfos());
@@ -239,7 +239,7 @@ public class CMSSignedDataBuilder {
 		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificatesToAdd;
 		if (parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate()) {
-			certificatesToAdd = new ArrayList<CertificateToken>();
+			certificatesToAdd = new ArrayList<>();
 		} else {
 			certificatesToAdd = certificateSelectors.getCertificates();
 		}
@@ -251,7 +251,7 @@ public class CMSSignedDataBuilder {
 		}
 
 		try {
-			final Collection<X509Certificate> certs = new ArrayList<X509Certificate>();
+			final Collection<X509Certificate> certs = new ArrayList<>();
 			for (final CertificateToken certificateInChain : certificateChain) {
 				certs.add(certificateInChain.getCertificate());
 			}
@@ -305,21 +305,21 @@ public class CMSSignedDataBuilder {
 
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
 		final Set<CertificateToken> certificates = validationDataForInclusion.certificateTokens;
-		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
+		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificates) {
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
 			newCertificateStore.add(x509CertificateHolder);
 		}
-		certificatesStore = new CollectionStore<X509CertificateHolder>(newCertificateStore);
+		certificatesStore = new CollectionStore<>(newCertificateStore);
 
 		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
-		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
+		final Collection<X509CRLHolder> newCrlsStore = new HashSet<>(crlsStore.getMatches(null));
 		final List<CRLToken> crlTokens = validationDataForInclusion.crlTokens;
 		for (final CRLToken crlToken : crlTokens) {
 			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
 			newCrlsStore.add(x509CRLHolder);
 		}
-		crlsStore = new CollectionStore<X509CRLHolder>(newCrlsStore);
+		crlsStore = new CollectionStore<>(newCrlsStore);
 
 		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));

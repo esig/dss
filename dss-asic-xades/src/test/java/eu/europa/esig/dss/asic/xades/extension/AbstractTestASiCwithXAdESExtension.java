@@ -139,7 +139,7 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	}
 
 	private List<String> getFilesNames(DSSDocument doc) {
-		List<String> filenames = new ArrayList<String>();
+		List<String> filenames = new ArrayList<>();
 		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {

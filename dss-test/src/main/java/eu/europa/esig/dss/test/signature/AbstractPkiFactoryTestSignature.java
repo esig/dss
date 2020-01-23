@@ -417,7 +417,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	 * This method returns all possible cases of the originalDocument end string
 	 */
 	private List<DSSDocument> buildCloseDocuments(DSSDocument originalDocument) throws IOException {
-		List<DSSDocument> documentList = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentList = new ArrayList<>();
 		documentList.add(originalDocument);
 		documentList.add(getReducedDocument(originalDocument, 1));
 		documentList.add(getReducedDocument(originalDocument, 2));

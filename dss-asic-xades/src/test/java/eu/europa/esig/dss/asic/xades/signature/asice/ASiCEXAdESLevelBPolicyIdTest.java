@@ -71,7 +71,7 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignatur
 	@Override
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("https://www.sk.ee/repository/bdoc-spec21.pdf", new FileDocument(new File("src/test/resources/bdoc-spec21.pdf")));
 		spp.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		return spp;

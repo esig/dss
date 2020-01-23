@@ -135,7 +135,7 @@ public class CommonsDataLoader implements DataLoader {
 	private boolean redirectsEnabled = true;
 	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
-	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
+	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<>();
 
 	/**
 	 * Used SSL protocol
@@ -417,7 +417,7 @@ public class CommonsDataLoader implements DataLoader {
 			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
 		}
 
-		final Map<String, Throwable> exceptions = new HashMap<String, Throwable>(); // store map of exception thrown for urls
+		final Map<String, Throwable> exceptions = new HashMap<>(); // store map of exception thrown for urls
 		for (String urlString : urlStrings) {
 			LOG.debug("Processing a GET call to URL [{}]...", urlString);
 			try {
@@ -465,7 +465,7 @@ public class CommonsDataLoader implements DataLoader {
 		
 		urlString = LdapURLUtils.encode(urlString);
 
-		final Hashtable<String, String> env = new Hashtable<String, String>();
+		final Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, urlString);
 		try {

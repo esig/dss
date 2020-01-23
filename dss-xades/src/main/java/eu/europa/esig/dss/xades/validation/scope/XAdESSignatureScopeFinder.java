@@ -54,7 +54,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 	@Override
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 
-		final List<SignatureScope> result = new ArrayList<SignatureScope>();
+		final List<SignatureScope> result = new ArrayList<>();
 		
 		List<ReferenceValidation> referenceValidations = xadesSignature.getReferenceValidations();
 		for (ReferenceValidation referenceValidation : referenceValidations) {
@@ -131,7 +131,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 
 	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature,
 			final List<String> transformations, final String uri) {
-		List<SignatureScope> detachedSignatureScopes = new ArrayList<SignatureScope>();
+		List<SignatureScope> detachedSignatureScopes = new ArrayList<>();
 		List<DSSDocument> detachedContents = xadesSignature.getDetachedContents();
 		for (DSSDocument detachedDocument : detachedContents) {
 

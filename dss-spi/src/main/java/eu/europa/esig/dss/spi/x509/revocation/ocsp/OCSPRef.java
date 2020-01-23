@@ -61,7 +61,7 @@ public class OCSPRef extends RevocationRef {
 		this.digest = digest;
 		this.producedAt = producedAt;
 		this.responderId = responderId;
-		this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
+		this.origins = new HashSet<>(Arrays.asList(origin));
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class OCSPRef extends RevocationRef {
 		if (Utils.isArrayNotEmpty(key)) {
 			this.responderId.setKey(key);
 		}
-		this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
+		this.origins = new HashSet<>(Arrays.asList(origin));
 	}
 	
 	public Date getProducedAt() {

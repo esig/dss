@@ -767,7 +767,7 @@ public class XMLSignatureWrappingTest {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 
-		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
+		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<>();
 		
 		TLInfo tlInfo = new TLInfo(null, null, null, "BE.xml");
 		TrustProperties trustProperties = new TrustProperties(tlInfo.getIdentifier(), new TrustServiceProvider(), new TimeDependentValues<>());

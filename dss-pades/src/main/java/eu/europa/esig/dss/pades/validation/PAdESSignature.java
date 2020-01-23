@@ -192,7 +192,7 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public List<CertificateRef> getCertificateRefs() {
-		List<CertificateRef> refs = new ArrayList<CertificateRef>();
+		List<CertificateRef> refs = new ArrayList<>();
 		// other are unsigned and should be added in the DSS Dictionary
 		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
 		addCertRefs(refs, encapsulatedCertificates);

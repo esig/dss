@@ -144,7 +144,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		extractCurrentArchive(toExtendDocument);
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
-		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> extendedDocuments = new ArrayList<>();
 
 		boolean openDocument = ASiCUtils.isOpenDocument(getEmbeddedMimetype());
 

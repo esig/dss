@@ -65,7 +65,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		references.add(createReference(documentToSign));
 		references.add(createReference(attachment1));
 		references.add(createReference(attachment2));
@@ -100,7 +100,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		detachedContents.add(attachment1);
 		detachedContents.add(attachment2);

@@ -37,7 +37,7 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
 	private final PdfRevision pdfSignatureRevision;
 	
-	private List<TimestampToken> signatureTimestamps = new ArrayList<TimestampToken>();
+	private List<TimestampToken> signatureTimestamps = new ArrayList<>();
 
 	public PAdESTimestampDataBuilder(PdfRevision pdfSignatureRevision, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
 		super(signerInformation, detacheDocuments);

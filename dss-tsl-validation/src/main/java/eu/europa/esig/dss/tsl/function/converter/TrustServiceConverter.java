@@ -87,7 +87,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	}
 
 	private TimeDependentValues<TrustServiceStatusAndInformationExtensions> extractStatusAndHistory(TSPServiceType original) {
-		MutableTimeDependentValues<TrustServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<TrustServiceStatusAndInformationExtensions>();
+		MutableTimeDependentValues<TrustServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<>();
 
 		TSPServiceInformationType serviceInfo = original.getServiceInformation();
 
@@ -135,7 +135,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 
 	@SuppressWarnings("rawtypes")
 	private List<ConditionForQualifiers> extractConditionsForQualifiers(List<ExtensionType> extensions) {
-		List<ConditionForQualifiers> conditionsForQualifiers = new ArrayList<ConditionForQualifiers>();
+		List<ConditionForQualifiers> conditionsForQualifiers = new ArrayList<>();
 		for (ExtensionType extensionType : extensions) {
 			List<Object> content = extensionType.getContent();
 			if (Utils.isCollectionNotEmpty(content)) {
@@ -164,7 +164,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 
 	@SuppressWarnings("rawtypes")
 	private List<String> extractAdditionalServiceInfoUris(List<ExtensionType> extensions) {
-		List<String> additionalServiceInfos = new ArrayList<String>();
+		List<String> additionalServiceInfos = new ArrayList<>();
 		for (ExtensionType extensionType : extensions) {
 			List<Object> content = extensionType.getContent();
 			if (Utils.isCollectionNotEmpty(content)) {
@@ -211,7 +211,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	}
 
 	private List<String> extractQualifiers(QualificationElementType qualificationElement) {
-		List<String> qualifiers = new ArrayList<String>();
+		List<String> qualifiers = new ArrayList<>();
 		QualifiersType qualifiersType = qualificationElement.getQualifiers();
 		if ((qualifiersType != null) && Utils.isCollectionNotEmpty(qualifiersType.getQualifier())) {
 			for (QualifierType qualitierType : qualifiersType.getQualifier()) {
@@ -261,7 +261,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	}
 
 	private List<String> extractOids(List<ObjectIdentifierType> oits) {
-		List<String> oids = new ArrayList<String>();
+		List<String> oids = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oits)) {
 			for (ObjectIdentifierType objectIdentifierType : oits) {
 				oids.add(objectIdentifierType.getIdentifier().getValue());
@@ -312,7 +312,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	}
 
 	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (serviceSupplyPoints != null && Utils.isCollectionNotEmpty(serviceSupplyPoints.getServiceSupplyPoint())) {
 			for (AttributedNonEmptyURIType nonEmptyURI : serviceSupplyPoints.getServiceSupplyPoint()) {
 				result.add(nonEmptyURI.getValue());

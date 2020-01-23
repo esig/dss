@@ -150,7 +150,7 @@ public class ASiCEWithCAdESManifestParser {
 	}
 
 	private static List<ManifestEntry> parseManifestEntries(Element root) {
-		List<ManifestEntry> entries = new ArrayList<ManifestEntry>();
+		List<ManifestEntry> entries = new ArrayList<>();
 		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCPaths.DATA_OBJECT_REFERENCE_PATH);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");

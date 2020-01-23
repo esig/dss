@@ -54,7 +54,7 @@ public class CertificatePoolMultiThreadTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
-		List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
+		List<Future<Integer>> futures = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
 			futures.add(executor.submit(new TestConcurrent(sharedPool, certificates)));

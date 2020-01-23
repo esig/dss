@@ -44,6 +44,7 @@ public enum XAdES132Attribute implements DSSAttribute {
 		this.attributeName = attributeName;
 	}
 
+	@Override
 	public String getAttributeName() {
 		return attributeName;
 	}

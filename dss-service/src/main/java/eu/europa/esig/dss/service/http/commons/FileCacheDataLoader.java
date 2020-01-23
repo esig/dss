@@ -122,7 +122,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 		if (toBeLoaded == null) {
 
-			toBeLoaded = new ArrayList<String>();
+			toBeLoaded = new ArrayList<>();
 		}
 		if (Utils.isStringNotBlank(url)) {
 
@@ -142,7 +142,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 		if (toIgnored == null) {
 
-			toIgnored = new ArrayList<String>();
+			toIgnored = new ArrayList<>();
 		}
 		if (Utils.isStringNotBlank(urlString)) {
 
@@ -339,7 +339,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
 		}
 		
-		final Map<String, Throwable> exceptions = new HashMap<String, Throwable>(); // store map of exception thrown for urls
+		final Map<String, Throwable> exceptions = new HashMap<>(); // store map of exception thrown for urls
 		for (final String urlString : urlStrings) {
 			LOG.debug("Processing a GET call to URL [{}]...", urlString);
 			try {

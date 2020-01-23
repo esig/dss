@@ -65,7 +65,7 @@ public class EtsiValidationReportCompleteTest extends PKIFactoryAccess {
 		assertNotNull(signatureAttributesType);
 		List<Object> attributesList = signatureAttributesType.getSigningTimeOrSigningCertificateOrDataObjectFormat();
 		assertTrue(Utils.isCollectionNotEmpty(attributesList));
-		List<SATimestampType> foundTimestamps = new ArrayList<SATimestampType>();
+		List<SATimestampType> foundTimestamps = new ArrayList<>();
 		int docTimestampsCounter = 0;
 		int sigTimestampsCounter = 0;
 		int archiveTimestampsCounter = 0;

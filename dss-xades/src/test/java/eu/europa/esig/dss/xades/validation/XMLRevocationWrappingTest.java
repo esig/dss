@@ -62,7 +62,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		int revocationSignatureOriginCounter = 0;
 		
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
-		Set<String> revocationIds = new HashSet<String>();
+		Set<String> revocationIds = new HashSet<>();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
@@ -105,7 +105,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		int revocationSignatureOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
-		Set<String> revocationIds = new HashSet<String>();
+		Set<String> revocationIds = new HashSet<>();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
@@ -162,7 +162,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(4, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 		int ocspResponses = 0;
-		List<String> revocationDigests = new ArrayList<String>();
+		List<String> revocationDigests = new ArrayList<>();
 		for (XmlRevocationRef revocationRef : signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS)) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());

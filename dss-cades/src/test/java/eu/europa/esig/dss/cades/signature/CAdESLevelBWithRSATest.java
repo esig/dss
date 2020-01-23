@@ -57,7 +57,7 @@ public class CAdESLevelBWithRSATest extends AbstractCAdESTestSignature {
 	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1} + MGF1 ? {2}")
 	public static Collection<Object[]> data() {
 
-		List<Object[]> digests = new ArrayList<Object[]>();
+		List<Object[]> digests = new ArrayList<>();
 		
 		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA224,
 				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,

@@ -108,7 +108,7 @@ public class DetailedReport {
 	}
 
 	public List<String> getBasicBuildingBlocksCertChain(String tokenId) {
-		List<String> certIds = new LinkedList<String>();
+		List<String> certIds = new LinkedList<>();
 		XmlBasicBuildingBlocks bbb = getBasicBuildingBlockById(tokenId);
 		if (bbb != null) {
 			List<XmlChainItem> chainItems = bbb.getCertificateChain().getChainItem();
@@ -168,7 +168,7 @@ public class DetailedReport {
 	}
 
 	public List<String> getSignatureIds() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
 			if (Context.SIGNATURE == bbb.getType() || Context.COUNTER_SIGNATURE == bbb.getType()) {
@@ -192,7 +192,7 @@ public class DetailedReport {
 	}
 
 	public List<String> getTimestampIds() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
 			if (Context.TIMESTAMP == bbb.getType()) {
@@ -203,7 +203,7 @@ public class DetailedReport {
 	}
 
 	public List<String> getRevocationIds() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
 			if (Context.REVOCATION == bbb.getType()) {
@@ -367,7 +367,7 @@ public class DetailedReport {
 	}
 
 	public List<XmlSignature> getSignatures() {
-		List<XmlSignature> result = new ArrayList<XmlSignature>();
+		List<XmlSignature> result = new ArrayList<>();
 		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
 			if (element instanceof XmlSignature) {
 				result.add((XmlSignature) element);
@@ -377,7 +377,7 @@ public class DetailedReport {
 	}
 
 	public List<XmlTimestamp> getIndependentTimestamps() {
-		List<XmlTimestamp> result = new ArrayList<XmlTimestamp>();
+		List<XmlTimestamp> result = new ArrayList<>();
 		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
 			if (element instanceof XmlTimestamp) {
 				result.add((XmlTimestamp) element);
@@ -387,7 +387,7 @@ public class DetailedReport {
 	}
 
 	public List<XmlCertificate> getCertificates() {
-		List<XmlCertificate> result = new ArrayList<XmlCertificate>();
+		List<XmlCertificate> result = new ArrayList<>();
 		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
 			if (element instanceof XmlCertificate) {
 				result.add((XmlCertificate) element);
@@ -478,7 +478,7 @@ public class DetailedReport {
 	}
 
 	public Set<String> collect(MessageType type, String signatureId) {
-		Set<String> result = new LinkedHashSet<String>();
+		Set<String> result = new LinkedHashSet<>();
 
 		XmlSignature signatureById = getXmlSignatureById(signatureId);
 
@@ -592,7 +592,7 @@ public class DetailedReport {
 	}
 	
 	private Set<String> getMessages(List<XmlName> xmlNames) {
-		Set<String> messages = new HashSet<String>();
+		Set<String> messages = new HashSet<>();
 		if (xmlNames != null) {
 			for (XmlName xmlName : xmlNames) {
 				messages.add(xmlName.getValue());

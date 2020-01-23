@@ -59,7 +59,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
 	public static Collection<Object[]> data() {
 
-		List<Object[]> digests = new ArrayList<Object[]>();
+		List<Object[]> digests = new ArrayList<>();
 		
 		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA224,
 				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
@@ -86,7 +86,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 		// Due to
 		// org.bouncycastle.cms.DefaultCMSSignatureEncryptionAlgorithmFinder.findEncryptionAlgorithm(AlgorithmIdentifier)
-		List<DigestAlgorithm> digestAlgosWithSha1 = new ArrayList<DigestAlgorithm>(digestAlgos);
+		List<DigestAlgorithm> digestAlgosWithSha1 = new ArrayList<>(digestAlgos);
 		digestAlgosWithSha1.add(DigestAlgorithm.SHA1);
 		for (DigestAlgorithm digest : digestAlgosWithSha1) {
 			digests.add(new Object[] { DigestAlgorithm.SHA1, digest });

@@ -65,7 +65,7 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private String uniqueId;
 	private CMSSignedData cmsSignedData;
 
-	private List<PdfRevision> outerSignatures = new ArrayList<PdfRevision>();
+	private List<PdfRevision> outerSignatures = new ArrayList<>();
 
 	/**
 	 *
@@ -157,6 +157,7 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	/**
 	 * Returns a built CMSSignedData object
 	 */
+	@Override
 	public CMSSignedData getCMSSignedData() {
 		if (cmsSignedData == null) {
 			try {
@@ -180,7 +181,7 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	
 	@Override
 	public List<SignerInfo> getSignatureInformationStore() {
-		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
+		List<SignerInfo> signerInfos = new ArrayList<>();
 		SignerInformationStore signerInformationStore = getCMSSignedData().getSignerInfos();
 		
 		Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();

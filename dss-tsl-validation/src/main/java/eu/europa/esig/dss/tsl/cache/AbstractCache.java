@@ -47,7 +47,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	/**
 	 * Map between {@code CacheKey} and the related result wrapper {@code CachedEntry<CachedResult>}
 	 */
-	private Map<CacheKey, CachedEntry<R>> cachedEntriesMap = new ConcurrentHashMap<CacheKey, CachedEntry<R>>();
+	private Map<CacheKey, CachedEntry<R>> cachedEntriesMap = new ConcurrentHashMap<>();
 	
 	/**
 	 * Returns all current keys
@@ -71,7 +71,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 			return cacheWrapper;
 		}
 		LOG.trace("A result for key [{}] is not found in the cache. Return empty object.", cacheKey);
-		CachedEntry<R> emptyEntry = new CachedEntry<R>();
+		CachedEntry<R> emptyEntry = new CachedEntry<>();
 		cachedEntriesMap.put(cacheKey, emptyEntry);
 		return emptyEntry;
 	}

@@ -37,9 +37,9 @@ public class SignaturePolicyProvider {
 
 	private DataLoader dataLoader;
 
-	private Map<String, DSSDocument> signaturePoliciesById = new HashMap<String, DSSDocument>();
+	private Map<String, DSSDocument> signaturePoliciesById = new HashMap<>();
 
-	private Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+	private Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 
 	public DataLoader getDataLoader() {
 		return dataLoader;

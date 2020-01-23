@@ -56,7 +56,7 @@ public class XAdESLevelBEnvelopedWithReferenceByIdNoTransformTest extends Abstra
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		
 		DSSReference dssReferenceWholeDocument = new DSSReference();
 		dssReferenceWholeDocument.setId("r-wholeDocument");

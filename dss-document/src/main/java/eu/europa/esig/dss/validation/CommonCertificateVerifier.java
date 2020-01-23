@@ -60,7 +60,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This field contains the reference to multiple trusted certificate sources. These sources are fixed, it means that the same
 	 * sources are used for different validations.
 	 */
-	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
+	private List<CertificateSource> trustedCertSources = new ArrayList<>();
 
 	/**
 	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate

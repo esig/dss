@@ -608,7 +608,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-		List<SignerRole> claimedRoles = new ArrayList<SignerRole>();
+		List<SignerRole> claimedRoles = new ArrayList<>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			claimedRoles.add(new SignerRole(nodeList.item(ii).getTextContent(), EndorsementType.CLAIMED));
 		}
@@ -640,7 +640,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-		final List<SignerRole> certifiedRoles = new ArrayList<SignerRole>();
+		final List<SignerRole> certifiedRoles = new ArrayList<>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certEl = (Element) nodeList.item(ii);
 			final String textContent = certEl.getTextContent();
@@ -807,7 +807,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			
 			LOG.debug("Determining signing certificate from certificate candidates list...");
-			final List<String> preliminaryErrorMessages = new ArrayList<String>();
+			final List<String> preliminaryErrorMessages = new ArrayList<>();
 			int certificateNumber = 0;
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
 				String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
@@ -870,7 +870,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private void extractReferences() {
-		references = new ArrayList<Reference>();
+		references = new ArrayList<>();
 		final XMLSignature santuarioSignature = getSantuarioSignature();
 		final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
 		final int numberOfReferences = signedInfo.getLength();
@@ -887,7 +887,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
 		if (referenceValidations == null) {
-			referenceValidations = new ArrayList<ReferenceValidation>();
+			referenceValidations = new ArrayList<>();
 
 			final XMLSignature santuarioSignature = getSantuarioSignature();
 			boolean atLeastOneReferenceElementFound = false;
@@ -1128,7 +1128,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (counterSignatures == null) {
 			return null;
 		}
-		final List<AdvancedSignature> xadesList = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> xadesList = new ArrayList<>();
 		for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
 
 			final Element counterSignatureElement = (Element) counterSignatures.item(ii);
@@ -1304,7 +1304,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public List<Element> getSignatureObjects() {
 
 		final NodeList list = DomUtils.getNodeList(signatureElement, XMLDSigPaths.OBJECT_PATH);
-		final List<Element> references = new ArrayList<Element>(list.getLength());
+		final List<Element> references = new ArrayList<>(list.getLength());
 		for (int ii = 0; ii < list.getLength(); ii++) {
 
 			final Node node = list.item(ii);

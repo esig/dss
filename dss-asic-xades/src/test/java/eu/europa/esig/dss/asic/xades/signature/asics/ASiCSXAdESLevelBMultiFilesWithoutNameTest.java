@@ -47,7 +47,7 @@ public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractPkiFactor
 
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+	private List<DSSDocument> documentToSigns = new ArrayList<>();
 	
 	@BeforeEach
 	public void init() throws Exception {

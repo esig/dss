@@ -63,7 +63,7 @@ public class ETSISamplesValidation {
 		// We use this file because File.listFiles() doesn't work from another jar
 		String listFiles = "/plugtest/plugtest_files.txt";
 
-		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
+		Collection<Arguments> dataToRun = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(
 				new InputStreamReader(ETSISamplesValidation.class.getResourceAsStream(listFiles)))) {
 			String filepath;

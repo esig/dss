@@ -71,7 +71,7 @@ public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiC
 			if (Utils.collectionSize(filesToBeSigned) > 1) {
 				signedDocuments = Arrays.asList(createPackageZip(filesToBeSigned, signingDate));
 			} else {
-				signedDocuments = new ArrayList<DSSDocument>(filesToBeSigned);
+				signedDocuments = new ArrayList<>(filesToBeSigned);
 			}
 		}
 		return signedDocuments;
@@ -86,7 +86,7 @@ public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiC
 	@Override
 	public List<DSSDocument> getSignatures() {
 		// new container
-		return new ArrayList<DSSDocument>();
+		return new ArrayList<>();
 	}
 	
 	@Override

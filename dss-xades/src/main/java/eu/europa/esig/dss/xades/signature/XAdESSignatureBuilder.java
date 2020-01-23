@@ -708,13 +708,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @return {@code List} of {@code DSSReference}
 	 */
 	private List<DSSReference> createDefaultReferences() {
-		final List<DSSReference> references = new ArrayList<DSSReference>();
+		final List<DSSReference> references = new ArrayList<>();
 		references.add(createReference(detachedDocument, 1));
 		return references;
 	}
 
 	List<DSSReference> createReferencesForDocuments(List<DSSDocument> documents) {
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		int referenceIndex = 1;
 		for (DSSDocument dssDocument : documents) {
 			references.add(createReference(dssDocument, referenceIndex));
@@ -888,7 +888,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			return;
 		}
 
-		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
+		final Set<CertificateToken> certificates = new HashSet<>();
 		certificates.add(params.getSigningCertificate());
 
 		if (params.isEn319132()) {

@@ -89,7 +89,7 @@ public class RefsOnlyTimestampTest {
 	}
 	
 	private void assertDoesNotContainDuplicates(List<XmlTimestampedObject> timestampedObjects) {
-		HashSet<XmlTimestampedObject> timestampedObjectsSet = new HashSet<XmlTimestampedObject>(timestampedObjects);
+		HashSet<XmlTimestampedObject> timestampedObjectsSet = new HashSet<>(timestampedObjects);
 		assertEquals(timestampedObjectsSet.size(), timestampedObjects.size());
 	}
 

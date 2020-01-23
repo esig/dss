@@ -54,15 +54,15 @@ public abstract class OfflineCRLSource implements CRLSource {
 	/**
 	 * This {@code Map} contains all collected CRL binaries with a set of their origins
 	 */
-	private final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, Set<RevocationOrigin>>();
+	private final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
 	 * pair of crl's id + issuer token id {@code String}. It is used for performance reasons.
 	 */
-	private Map<String, CRLValidity> crlValidityMap = new HashMap<String, CRLValidity>();
+	private Map<String, CRLValidity> crlValidityMap = new HashMap<>();
 
-	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
+	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<>();
 
 	@Override
 	public final CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
@@ -173,7 +173,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	protected void addCRLBinary(CRLBinary crlBinary, RevocationOrigin origin) {
 		Set<RevocationOrigin> origins = crlBinaryOriginsMap.get(crlBinary);
 		if (origins == null) {
-			origins = new HashSet<RevocationOrigin>();
+			origins = new HashSet<>();
 			crlBinaryOriginsMap.put(crlBinary, origins);
 		}
 		origins.add(origin);

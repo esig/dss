@@ -56,7 +56,7 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 		// if true, trust anchor certificates (and upper certificates) are not included in the signature
 		if (parameters.bLevel().isTrustAnchorBPPolicy() && Utils.isCollectionNotEmpty(trustedCertSources)) {
 
-			List<CertificateToken> result = new LinkedList<CertificateToken>();
+			List<CertificateToken> result = new LinkedList<>();
 			for (CertificateToken certificateToken : orderedCertificates) {
 				if (isTrusted(trustedCertSources, certificateToken)) {
 					break;

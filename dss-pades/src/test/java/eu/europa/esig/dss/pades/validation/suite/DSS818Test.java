@@ -28,6 +28,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
@@ -102,7 +103,7 @@ public class DSS818Test {
 		ASN1InputStream asn1sInput = new ASN1InputStream(encoded);
 		ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-		SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
+		SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
 
 		ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 		LOGGER.info("SIGNER INFO ASN1 : " + signerInfosAsn1.toString());

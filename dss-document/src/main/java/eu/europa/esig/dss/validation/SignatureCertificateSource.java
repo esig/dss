@@ -218,7 +218,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		if (Utils.isMapEmpty(certificateRefsMap)) {
 			collectCertificateRefsMap();
 		}
-		List<CertificateToken> tokensFromRefs = new ArrayList<CertificateToken>();
+		List<CertificateToken> tokensFromRefs = new ArrayList<>();
 		for (Entry<CertificateToken, List<CertificateRef>> certMapEntry : certificateRefsMap.entrySet()) {
 			for (CertificateRef reference : certMapEntry.getValue()) {
 				if (certificateRefs.contains(reference)) {
@@ -232,7 +232,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	
 	public List<CertificateRef> getAllCertificateRefs() {
 		if (certificateRefs == null) {
-			certificateRefs = new ArrayList<CertificateRef>();
+			certificateRefs = new ArrayList<>();
 			certificateRefs.addAll(getCompleteCertificateRefs());
 			certificateRefs.addAll(getAttributeCertificateRefs());
 			certificateRefs.addAll(getSigningCertificateValues());
@@ -255,7 +255,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 	
 	private void collectCertificateRefsMap() {
-		certificateRefsMap = new HashMap<CertificateToken, List<CertificateRef>>();
+		certificateRefsMap = new HashMap<>();
 		for (CertificateToken certificateToken : getCertificates()) {
 			for (CertificateRef certificateRef : getAllCertificateRefs()) {
 				Digest certDigest = certificateRef.getCertDigest();
@@ -279,7 +279,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	private void addCertificateRefToMap(CertificateToken certificateToken, CertificateRef certificateRef) {
 		List<CertificateRef> certificateRefs = certificateRefsMap.get(certificateToken);
 		if (certificateRefs == null) {
-			certificateRefs = new ArrayList<CertificateRef>();
+			certificateRefs = new ArrayList<>();
 			certificateRefsMap.put(certificateToken, certificateRefs);
 		}
 		certificateRefs.add(certificateRef);
@@ -291,7 +291,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	 */
 	public List<CertificateRef> getOrphanCertificateRefs() {
 		if (orphanCertificateRefs == null) {
-			orphanCertificateRefs = new ArrayList<CertificateRef>();
+			orphanCertificateRefs = new ArrayList<>();
 			if (Utils.isMapEmpty(certificateRefsMap)) {
 				collectCertificateRefsMap();
 			}

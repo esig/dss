@@ -89,7 +89,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private DigestAlgorithm hashIndexDigestAlgorithm;
 
-	private final Set<ASN1ObjectIdentifier> excludedAttributesFromAtsHashIndex = new HashSet<ASN1ObjectIdentifier>();
+	private final Set<ASN1ObjectIdentifier> excludedAttributesFromAtsHashIndex = new HashSet<>();
 	
 	private final CMSSignedData cmsSignedData;
 	private final Collection<CertificateToken> signatureCertificates;
@@ -231,7 +231,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence certHashes = DSSASN1Utils.getCertificatesHashIndex(timestampHashIndex);
 		final List<DEROctetString> certHashesList = DSSASN1Utils.getDEROctetStrings(certHashes);
 
-		final List<CertificateToken> certificates = new ArrayList<CertificateToken>(signatureCertificates);
+		final List<CertificateToken> certificates = new ArrayList<>(signatureCertificates);
 		certificates.addAll(timestampCertificates);
 		for (final CertificateToken certificateToken : certificates) {
 			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
@@ -399,7 +399,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		
 		final ASN1Sequence unsignedAttributesHashes = DSSASN1Utils.getUnsignedAttributesHashIndex(timestampHashIndex);
 		
-		final List<DEROctetString> timestampUnsignedAttributesHashesList = new ArrayList<DEROctetString>();
+		final List<DEROctetString> timestampUnsignedAttributesHashesList = new ArrayList<>();
 		if (unsignedAttributesHashes != null) {
 			timestampUnsignedAttributesHashesList.addAll(Collections.list(unsignedAttributesHashes.getObjects()));
 		}
@@ -431,7 +431,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private List<DEROctetString> getAttributeDerOctetStringHashes(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		List<byte[]> octets = DSSASN1Utils.getOctetStringForAtsHashIndex(attribute, atsHashIndexVersionIdentifier);
 		if (Utils.isCollectionNotEmpty(octets)) {
-			List<DEROctetString> derOctetStrings = new ArrayList<DEROctetString>();
+			List<DEROctetString> derOctetStrings = new ArrayList<>();
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, bytes);
 				derOctetStrings.add(new DEROctetString(digest));

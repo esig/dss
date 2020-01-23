@@ -74,14 +74,14 @@ public class ValidationJobSummaryBuilder {
 
 	public TLValidationJobSummary build() {
 
-		final List<TLInfo> otherTLInfos = new ArrayList<TLInfo>();
+		final List<TLInfo> otherTLInfos = new ArrayList<>();
 		if (Utils.isArrayNotEmpty(tlSources)) {
 			for (TLSource tlSource : tlSources) {
 				otherTLInfos.add(buildTLInfo(tlSource));
 			}
 		}
 
-		final List<LOTLInfo> lotlList = new ArrayList<LOTLInfo>();
+		final List<LOTLInfo> lotlList = new ArrayList<>();
 		if (Utils.isArrayNotEmpty(lotlSources)) {
 
 			for (LOTLSource lotlSource : lotlSources) {
@@ -89,7 +89,7 @@ public class ValidationJobSummaryBuilder {
 
 				LOTLInfo lotlInfo = buildLOTLInfo(lotlSource);
 
-				List<TLInfo> tlInfos = new ArrayList<TLInfo>();
+				List<TLInfo> tlInfos = new ArrayList<>();
 				List<TLSource> currentTLSources = extractTLSources(lotlParsingResult);
 				for (TLSource tlSource : currentTLSources) {
 					tlInfos.add(buildTLInfo(tlSource));
@@ -97,7 +97,7 @@ public class ValidationJobSummaryBuilder {
 				lotlInfo.setTlInfos(tlInfos);
 
 				if (lotlSource.isPivotSupport()) {
-					List<PivotInfo> pivotInfos = new LinkedList<PivotInfo>();
+					List<PivotInfo> pivotInfos = new LinkedList<>();
 
 					List<CertificateToken> currentCertificates = getLOTLKeystoreCertificates(lotlSource);
 					if (LOG.isDebugEnabled()) {
@@ -152,7 +152,7 @@ public class ValidationJobSummaryBuilder {
 	}
 
 	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {
-		List<TLSource> result = new ArrayList<TLSource>();
+		List<TLSource> result = new ArrayList<>();
 		if (lotlParsingResult != null && lotlParsingResult.isResultExist()) {
 			List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
 			for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
@@ -175,7 +175,7 @@ public class ValidationJobSummaryBuilder {
 	}
 	
 	private List<LOTLSource> extractPivotSources(ParsingCacheDTO lotlParsingResult) {
-		List<LOTLSource> result = new LinkedList<LOTLSource>();
+		List<LOTLSource> result = new LinkedList<>();
 		if (lotlParsingResult != null && lotlParsingResult.isResultExist()) {
 			List<String> pivotUrls = lotlParsingResult.getPivotUrls();
 			for (String pivotUrl : pivotUrls) {
@@ -203,7 +203,7 @@ public class ValidationJobSummaryBuilder {
 	
 	private Map<CertificateToken, CertificatePivotStatus> getCertificateChangesMap(List<CertificateToken> pivotSourceCertificates, 
 			List<CertificateToken> currentCertificates) {
-		Map<CertificateToken, CertificatePivotStatus> certificateChangesMap = new LinkedHashMap<CertificateToken, CertificatePivotStatus>();
+		Map<CertificateToken, CertificatePivotStatus> certificateChangesMap = new LinkedHashMap<>();
 		
 		List<CertificateToken> commonCertificates = pivotSourceCertificates.stream().filter(cert -> { 
 				return currentCertificates.contains(cert); 

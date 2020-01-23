@@ -167,7 +167,7 @@ public class LOTLChangesTest {
 	private Map<String, DSSDocument> originalFiles() {
 		DSSDocument lotl248 = new FileDocument("src/test/resources/eu-lotl.xml");
 
-		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put("EU", lotl248);
 
 		String siURL248 = "http://www.mju.gov.si/fileadmin/mju.gov.si/pageuploads/DID/Informacijska_druzba/eIDAS/SI_TL.xml";
@@ -187,7 +187,7 @@ public class LOTLChangesTest {
 
 		DSSDocument lotl250 = new FileDocument("src/test/resources/eu-lotl-250.xml");
 
-		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put("EU", lotl250);
 
 		String siURL248 = "http://www.mju.gov.si/fileadmin/mju.gov.si/pageuploads/DID/Informacijska_druzba/eIDAS/SI_TL.xml";

@@ -149,7 +149,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+				List<DSSDocument> detachedContents = new ArrayList<>();
 				detachedContents.add(toSignDocument);
 				parameters.setDetachedContents(detachedContents);
 			}

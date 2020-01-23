@@ -86,7 +86,7 @@ public class TimestampTokenConverterTest {
 	
 	@Test
 	public void toTimestampTokenListTest() throws Exception {
-		List<TimestampDTO> timestampDTOs = new ArrayList<TimestampDTO>();
+		List<TimestampDTO> timestampDTOs = new ArrayList<>();
 		timestampDTOs.add(null);
 		timestampDTOs.add(new TimestampDTO());
 		timestampDTOs.add(new TimestampDTO(Utils.fromBase64(timestampBinaries), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));

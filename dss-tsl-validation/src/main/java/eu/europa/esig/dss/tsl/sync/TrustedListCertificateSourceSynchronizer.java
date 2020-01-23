@@ -125,7 +125,7 @@ public class TrustedListCertificateSourceSynchronizer {
 	}
 
 	private void synchronizeCertificates(TLValidationJobSummary summary) {
-		final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts = new WeakHashMap<CertificateToken, List<TrustProperties>>();
+		final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts = new WeakHashMap<>();
 		for (LOTLInfo lotlInfo : summary.getLOTLInfos()) {
 			if (synchronizationStrategy.canBeSynchronized(lotlInfo)) {
 				addCertificatesFromTLs(trustPropertiesByCerts, lotlInfo.getTLInfos(), lotlInfo);
@@ -173,7 +173,7 @@ public class TrustedListCertificateSourceSynchronizer {
 			TrustProperties trustProperties) {
 		List<TrustProperties> list = trustPropertiesByCerts.get(certificate);
 		if (list == null) {
-			list = new ArrayList<TrustProperties>();
+			list = new ArrayList<>();
 			trustPropertiesByCerts.put(certificate, list);
 		}
 		if (!list.contains(trustProperties)) {

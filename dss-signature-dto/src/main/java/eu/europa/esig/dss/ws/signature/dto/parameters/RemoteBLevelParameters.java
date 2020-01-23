@@ -62,7 +62,7 @@ public class RemoteBLevelParameters implements Serializable {
 	private List<String> commitmentTypeIndications;
 
 	/* SignerLocation */
-	private List<String> signerLocationPostalAddress = new ArrayList<String>();
+	private List<String> signerLocationPostalAddress = new ArrayList<>();
 	private String signerLocationPostalCode;
 	private String signerLocationLocality;
 	private String signerLocationStateOrProvince;
@@ -319,7 +319,7 @@ public class RemoteBLevelParameters implements Serializable {
 	 */
 	public void addSignerLocationPostalAddress(final String addressItem) {
 		if (signerLocationPostalAddress == null) {
-			signerLocationPostalAddress = new ArrayList<String>();
+			signerLocationPostalAddress = new ArrayList<>();
 		}
 		signerLocationPostalAddress.add(addressItem);
 	}

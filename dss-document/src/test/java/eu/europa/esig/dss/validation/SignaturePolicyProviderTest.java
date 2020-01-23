@@ -52,7 +52,7 @@ public class SignaturePolicyProviderTest {
 	@Test
 	public void policyById() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesById = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesById = new HashMap<>();
 		signaturePoliciesById.put(POLICY_ID, policy);
 		spp.setSignaturePoliciesById(signaturePoliciesById);
 
@@ -63,7 +63,7 @@ public class SignaturePolicyProviderTest {
 	@Test
 	public void policyByUrl() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put(POLICY_URL, policy);
 		spp.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 
@@ -74,7 +74,7 @@ public class SignaturePolicyProviderTest {
 	@Test
 	public void policyByDataLoader() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(POLICY_URL, new byte[] { 1, 2, 3 });
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		spp.setDataLoader(dataLoader);

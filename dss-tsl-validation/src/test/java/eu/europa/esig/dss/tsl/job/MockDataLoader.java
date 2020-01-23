@@ -32,7 +32,7 @@ public class MockDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = 4624853984865942793L;
 	
-	private Map<String, DSSDocument> dataMap = new HashMap<String, DSSDocument>();
+	private Map<String, DSSDocument> dataMap = new HashMap<>();
 	
 	public MockDataLoader(Map<String, DSSDocument> dataMap) {
 		this.dataMap = dataMap;

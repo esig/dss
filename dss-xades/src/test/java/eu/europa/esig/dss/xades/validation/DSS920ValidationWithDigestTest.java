@@ -79,7 +79,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		// Provide only the digest value
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, toBeSigned.getDigest(DigestAlgorithm.SHA1));
 		digestDocument.setName(documentName);
 		detachedContents.add(digestDocument);
@@ -138,7 +138,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		// Provide only the digest value
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, toBeSigned.getDigest(DigestAlgorithm.SHA256));
 		digestDocument.setName("sample.xml");
 		detachedContents.add(digestDocument);

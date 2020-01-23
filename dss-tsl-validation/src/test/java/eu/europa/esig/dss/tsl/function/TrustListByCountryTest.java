@@ -54,7 +54,7 @@ class TrustListByCountryTest {
 
         assertFalse(selector.test(trustStatusList));
 
-        Set<String> testSet = new HashSet<String>();
+        Set<String> testSet = new HashSet<>();
 
         testSet.add("lu");
         testSet.add("pt");

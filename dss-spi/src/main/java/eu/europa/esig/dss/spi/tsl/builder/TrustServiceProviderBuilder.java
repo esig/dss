@@ -144,7 +144,7 @@ public class TrustServiceProviderBuilder {
 	}
 	
 	private <T extends Object> List<T> getUnmodifiableList(List<T> originalList) {
-		List<T> newList = new ArrayList<T>();
+		List<T> newList = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(originalList)) {
 			newList.addAll(originalList);
 		}
@@ -152,7 +152,7 @@ public class TrustServiceProviderBuilder {
 	}
 	
 	private <T extends Object, K extends Object> Map<T, K> getUnmodifiableMap(Map<T, K> originalMap) {
-		Map<T, K> newMap = new HashMap<T, K>();
+		Map<T, K> newMap = new HashMap<>();
 		if (Utils.isMapNotEmpty(originalMap)) {
 			newMap.putAll(originalMap);
 		}
@@ -160,7 +160,7 @@ public class TrustServiceProviderBuilder {
 	}
 	
 	private Map<String, List<String>> getUnmodifiableMapWithLists(Map<String, List<String>> originalMap) {
-		Map<String, List<String>> copyMap = new HashMap<String, List<String>>();
+		Map<String, List<String>> copyMap = new HashMap<>();
 		if (Utils.isMapNotEmpty(originalMap)) {
 			for (Map.Entry<String, List<String>> mapEntry : originalMap.entrySet()) {
 				copyMap.put(mapEntry.getKey(), Collections.unmodifiableList(mapEntry.getValue()));
@@ -170,7 +170,7 @@ public class TrustServiceProviderBuilder {
 	}
 	
 	private List<TrustService> getUnmodifiableTrustServices(List<TrustService> originalTrustServices) {
-		List<TrustService> copyTrustServices = new ArrayList<TrustService>();
+		List<TrustService> copyTrustServices = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(originalTrustServices)) {
 			for (TrustService trustService : originalTrustServices) {
 				TrustServiceBuilder trustServiceBuilder = new TrustService.TrustServiceBuilder();
@@ -186,7 +186,7 @@ public class TrustServiceProviderBuilder {
 	private TimeDependentValues<TrustServiceStatusAndInformationExtensions> getUnmodifiableTimeDependentValues(
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> timeDependentValues) {
 		
-		List<TrustServiceStatusAndInformationExtensions> copyTSSAndIEs = new ArrayList<TrustServiceStatusAndInformationExtensions>();
+		List<TrustServiceStatusAndInformationExtensions> copyTSSAndIEs = new ArrayList<>();
 		
 		Iterator<TrustServiceStatusAndInformationExtensions> iterator = timeDependentValues.iterator();
 		while (iterator.hasNext()) {
@@ -207,7 +207,7 @@ public class TrustServiceProviderBuilder {
 			copyTSSAndIEs.add(copyStatus);
 		}
 		
-		return new TimeDependentValues<TrustServiceStatusAndInformationExtensions>(copyTSSAndIEs);
+		return new TimeDependentValues<>(copyTSSAndIEs);
 	}
 
 }

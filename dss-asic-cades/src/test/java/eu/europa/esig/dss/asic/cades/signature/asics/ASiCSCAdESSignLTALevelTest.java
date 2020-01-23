@@ -56,7 +56,7 @@ public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws IOException {
 		
-		List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 

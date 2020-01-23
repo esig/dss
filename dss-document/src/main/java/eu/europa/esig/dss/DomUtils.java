@@ -96,7 +96,7 @@ public final class DomUtils {
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
-		namespaces = new HashMap<String, String>();
+		namespaces = new HashMap<>();
 
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
@@ -516,7 +516,7 @@ public final class DomUtils {
 	 * @return {@code List} of children's names
 	 */
 	public static List<String> getChildrenNames(final Node xmlNode, final String xPathString) {
-		List<String> childrenNames = new ArrayList<String>();
+		List<String> childrenNames = new ArrayList<>();
 		final Element element = getElement(xmlNode, xPathString);
 		if (element != null) {
 			final NodeList unsignedProperties = element.getChildNodes();
@@ -592,7 +592,7 @@ public final class DomUtils {
 	 * @return a map with the prefix and the related URI
 	 */
 	public static Map<String, String> getCurrentNamespaces() {
-		return new HashMap<String, String>(namespaces);
+		return new HashMap<>(namespaces);
 	}
 
 	/**

@@ -57,7 +57,7 @@ public class CAdESWithContentTimestampTest {
 		ASN1InputStream asn1sInput = new ASN1InputStream(Utils.toByteArray(fis));
 		ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-		ASN1TaggedObject taggedObj = DERTaggedObject.getInstance(asn1Seq.getObjectAt(1));
+		ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
 		ASN1Primitive object = taggedObj.getObject();
 		SignedData signedData = SignedData.getInstance(object);
 

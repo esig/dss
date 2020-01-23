@@ -192,7 +192,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
 			if (poeProvisioning != null) {
 				
-				List<String> timestampedObjectIds = new ArrayList<String>();
+				List<String> timestampedObjectIds = new ArrayList<>();
 				
 				assertNotNull(poeProvisioning.getPOETime());
 				assertNotNull(poeProvisioning.getSignatureReference());

@@ -54,7 +54,7 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws IOException {
 		
-		List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new FileDocument("src/test/resources/signable/open-document.odt"));
 		documentsToSign.add(new FileDocument("src/test/resources/signable/test.txt"));
 

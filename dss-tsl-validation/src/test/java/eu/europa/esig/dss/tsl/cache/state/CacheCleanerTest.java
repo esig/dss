@@ -75,7 +75,7 @@ public class CacheCleanerTest {
 		DSSDocument sampleDocument = new InMemoryDocument(SAMPLE_FILE_NAME.getBytes());
 		DSSDocument lotlDocument = new InMemoryDocument(LOTL_FILE_NAME.getBytes());
 		
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(SAMPLE_FILE_NAME, SAMPLE_FILE_NAME.getBytes());
 		dataMap.put(LOTL_FILE_NAME, LOTL_FILE_NAME.getBytes());
 		MemoryDataLoader memoryDataLoader = new MemoryDataLoader(dataMap);

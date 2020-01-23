@@ -78,7 +78,7 @@ public class CMSDocumentValidatorTest extends AbstractTestValidator {
 
 	@Override
 	protected List<DSSDocument> getValidDocuments() {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument(PATH));
 		documents.add(new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m"));
 		documents.add(new FileDocument("src/test/resources/validation/counterSig.p7m"));

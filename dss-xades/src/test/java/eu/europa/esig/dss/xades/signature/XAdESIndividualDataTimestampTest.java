@@ -72,7 +72,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		DSSDocument fileToBeIndividualTimestamped = new FileDocument(FILE1);
 		docs.add(fileToBeIndividualTimestamped);
 

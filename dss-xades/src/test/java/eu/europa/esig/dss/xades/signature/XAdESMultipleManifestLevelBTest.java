@@ -46,7 +46,7 @@ public class XAdESMultipleManifestLevelBTest extends AbstractPkiFactoryTestMulti
 	@BeforeEach
 	public void init() throws Exception {
 
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/sample.png"));
 		documents.add(new FileDocument("src/test/resources/sample.txt"));
 		documents.add(new FileDocument("src/test/resources/sample.xml"));

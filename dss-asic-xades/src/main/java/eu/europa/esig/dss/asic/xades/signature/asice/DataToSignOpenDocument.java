@@ -74,7 +74,7 @@ public class DataToSignOpenDocument extends AbstractDataToSignASiCEWithXAdES imp
 
 	@Override
 	public List<DSSDocument> getSignedDocuments() {
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		// For open document we do not sign any file inside external-data
 		for(DSSDocument doc: signedDocuments) {
 			if(!doc.getName().startsWith("external-data/")){

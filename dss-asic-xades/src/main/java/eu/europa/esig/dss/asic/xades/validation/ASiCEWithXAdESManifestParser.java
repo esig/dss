@@ -64,7 +64,7 @@ public class ASiCEWithXAdESManifestParser {
 	}
 
 	private List<ManifestEntry> getEntries() {
-		List<ManifestEntry> result = new ArrayList<ManifestEntry>();
+		List<ManifestEntry> result = new ArrayList<>();
 		try (InputStream is = manifestDocument.openStream()) {
 			Document manifestDom = DomUtils.buildDOM(is);
 			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPaths.FILE_ENTY_PATH);

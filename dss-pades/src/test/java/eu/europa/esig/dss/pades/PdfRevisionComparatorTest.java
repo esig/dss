@@ -70,7 +70,7 @@ public class PdfRevisionComparatorTest {
 
 	@Test
 	public void test1() {
-		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
+		List<PdfRevision> listToSort = new ArrayList<>();
 
 		listToSort.add(mock0);
 		listToSort.add(mock1);
@@ -86,7 +86,7 @@ public class PdfRevisionComparatorTest {
 
 	@Test
 	public void test2() {
-		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
+		List<PdfRevision> listToSort = new ArrayList<>();
 
 		listToSort.add(mock2);
 		listToSort.add(mock1);
@@ -101,7 +101,7 @@ public class PdfRevisionComparatorTest {
 
 	@Test
 	public void test3() {
-		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
+		List<PdfRevision> listToSort = new ArrayList<>();
 
 		listToSort.add(mock1);
 		listToSort.add(mock2);
@@ -116,7 +116,7 @@ public class PdfRevisionComparatorTest {
 
 	@Test
 	public void test4() {
-		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
+		List<PdfRevision> listToSort = new ArrayList<>();
 
 		listToSort.add(mock0bis);
 		listToSort.add(mock0);
@@ -130,7 +130,7 @@ public class PdfRevisionComparatorTest {
 	@Test
 	public void testStrange() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
+			List<PdfRevision> listToSort = new ArrayList<>();
 
 			listToSort.add(strange);
 			listToSort.add(mock0);

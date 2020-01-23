@@ -59,7 +59,7 @@ public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractPkiFactory
 	
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
+	private List<DSSDocument> documentsToSign = new ArrayList<>();
 
 	@BeforeEach
 	public void init() throws Exception {

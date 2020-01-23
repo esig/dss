@@ -44,7 +44,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private TLValidationJobSummary summary;
 
-	private Map<String, List<TrustProperties>> trustPropertiesByEntity = new HashMap<String, List<TrustProperties>>();
+	private Map<String, List<TrustProperties>> trustPropertiesByEntity = new HashMap<>();
 
 	/**
 	 * The default constructor.
@@ -84,7 +84,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 * @param trustPropertiesByCerts map between {@link CertificateToken}s and a list of {@link TrustProperties}
 	 */
 	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
-		this.trustPropertiesByEntity = new HashMap<String, List<TrustProperties>>(); // reinit the map
+		this.trustPropertiesByEntity = new HashMap<>(); // reinit the map
 		trustPropertiesByCerts.forEach((certificateToken, trustPropertiesList) -> {
 			addCertificate(certificateToken, trustPropertiesList);
 		});
@@ -96,7 +96,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		String entityKey = certificateToken.getEntityKey();
 		List<TrustProperties> list = trustPropertiesByEntity.get(entityKey);
 		if (list == null) {
-			list = new ArrayList<TrustProperties>();
+			list = new ArrayList<>();
 			trustPropertiesByEntity.put(entityKey, list);
 		}
 		for (TrustProperties trustProperties : trustPropertiesList) {
@@ -127,7 +127,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	private List<String> getServiceSupplyPoints(CertificateToken trustAnchor, String... keywords) {
-		List<String> urls = new ArrayList<String>();
+		List<String> urls = new ArrayList<>();
 		List<TrustProperties> trustPropertiesList = getTrustServices(trustAnchor);
 		for (TrustProperties trustProperties : trustPropertiesList) {
 			for (TrustServiceStatusAndInformationExtensions statusAndInfo : trustProperties.getTrustService()) {

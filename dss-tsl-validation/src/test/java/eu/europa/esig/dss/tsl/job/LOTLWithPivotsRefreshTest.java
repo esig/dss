@@ -173,7 +173,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	private Map<String, DSSDocument> correctUrlMap() {
-		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml",
@@ -186,7 +186,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	private Map<String, DSSDocument> missingUrlMap() {
-		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml",

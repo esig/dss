@@ -55,7 +55,7 @@ public class ASiCEXAdESLevelBMultiArchivesParallelTest extends PKIFactoryAccess 
 
 	@Test
 	public void test() throws Exception {
-		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentToSigns = new ArrayList<>();
 		documentToSigns.add(new FileDocument("src/test/resources/signable/open-document.odt"));
 		documentToSigns.add(new FileDocument("src/test/resources/signable/test.txt"));
 

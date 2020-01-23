@@ -187,12 +187,12 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
-		List<String> usedTimestampIds = new ArrayList<String>();
+		List<String> usedTimestampIds = new ArrayList<>();
 		for (TimestampWrapper timestamp : timestamps) {
 			assertFalse(usedTimestampIds.contains(timestamp.getId()));
 			usedTimestampIds.add(timestamp.getId());
 			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
-			List<String> usedTimestampObjectIds = new ArrayList<String>();
+			List<String> usedTimestampObjectIds = new ArrayList<>();
 			for (XmlTimestampedObject timestampedObject : timestampedObjects) {
 				assertFalse(usedTimestampObjectIds.contains(timestampedObject.getToken().getId()));
 				usedTimestampObjectIds.add(timestampedObject.getToken().getId());
@@ -218,7 +218,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
         assertNotNull(archiveTimestamp);
         assertEquals(1, archiveTimestamps);
 
-        List<String> checkedIds = new ArrayList<String>();
+        List<String> checkedIds = new ArrayList<>();
         
         assertEquals(5, archiveTimestamp.getTimestampedSignatureIds().size());
         checkedIds.add(archiveTimestamp.getTimestampedSignatureIds().get(0));

@@ -65,7 +65,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	@Override
 	protected List<DocumentValidator> getSignatureValidators() {
 		if (signatureValidators == null) {
-			signatureValidators = new ArrayList<DocumentValidator>();
+			signatureValidators = new ArrayList<>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
 				xadesValidator.setValidationCertPool(validationCertPool);
@@ -88,7 +88,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	protected List<ManifestFile> getManifestFilesDecriptions() {
-		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
+		List<ManifestFile> descriptions = new ArrayList<>();
 		List<DSSDocument> signatureDocuments = getSignatureDocuments();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		// All signatures use the same file : manifest.xml
@@ -103,7 +103,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) {
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 		List<DSSDocument> potentials = getSignedDocuments();
 		for (final DSSDocument signature : getSignatureDocuments()) {
 			XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);

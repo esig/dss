@@ -58,7 +58,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Object[]> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });
 		}
@@ -124,7 +124,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 	}
 	
 	private List<String> getSignedFilesNames(List<DSSDocument> files) {
-		List<String> fileNames = new ArrayList<String>();
+		List<String> fileNames = new ArrayList<>();
 		for(DSSDocument doc: files) {
 			fileNames.add(doc.getName());
 		}
@@ -132,7 +132,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 	}
 	
 	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
-		List<String> fileDigests = new ArrayList<String>();
+		List<String> fileDigests = new ArrayList<>();
 		for(DSSDocument doc: files) {
 			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
 		}

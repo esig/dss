@@ -335,7 +335,7 @@ public final class ASiCUtils {
 	 * @return a list of filename
 	 */
 	public static List<String> getFileNames(DSSDocument archive) {
-		List<String> filenames = new ArrayList<String>();
+		List<String> filenames = new ArrayList<>();
 		try (InputStream is = archive.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = getNextValidEntry(zis)) != null) {
@@ -456,7 +456,7 @@ public final class ASiCUtils {
 	 * @return list of {@link DSSDocument}s
 	 */
 	public static List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 		long containerSize = DSSUtils.getFileByteSize(packageZip);
 		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
 			ZipEntry entry;

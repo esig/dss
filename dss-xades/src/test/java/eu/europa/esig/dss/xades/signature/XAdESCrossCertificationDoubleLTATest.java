@@ -111,7 +111,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper certificateWrapper : usedCertificates) {
         	List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
-        	List<String> revocationIds = new ArrayList<String>();
+        	List<String> revocationIds = new ArrayList<>();
         	for (CertificateRevocationWrapper revocationWrapper : certificateRevocationData) {
         		assertTrue(!revocationIds.contains(revocationWrapper.getId()));
         		revocationIds.add(revocationWrapper.getId());

@@ -66,7 +66,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() {
 		File file = new File("src/test/resources/signable/open-document-external-data.odt");
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Object[]> dataToRun = new ArrayList<>();
 		dataToRun.add(new Object[] { file });
 		return dataToRun;
 	}

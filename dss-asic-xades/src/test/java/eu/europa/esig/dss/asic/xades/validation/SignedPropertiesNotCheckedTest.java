@@ -75,7 +75,7 @@ public class SignedPropertiesNotCheckedTest {
 			}
 		}
 
-		assertNull(signedPropertiesDigest);;
+		assertNull(signedPropertiesDigest);
 		assertNotNull(refDigest);
 		assertTrue(refDigest.isDataFound());
 		assertTrue(refDigest.isDataIntact());

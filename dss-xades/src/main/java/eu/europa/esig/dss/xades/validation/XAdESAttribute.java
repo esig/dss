@@ -115,7 +115,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 		if (currentIncludePath != null) {
 			final NodeList timestampIncludes = DomUtils.getNodeList(element, currentIncludePath);
 			if (timestampIncludes != null && timestampIncludes.getLength() > 0) {
-				List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
+				List<TimestampInclude> includes = new ArrayList<>();
 				for (int jj = 0; jj < timestampIncludes.getLength(); jj++) {
 					final Element include = (Element) timestampIncludes.item(jj);
 					final String uri = DomUtils.getId(include.getAttribute(XAdES132Attribute.URI.getAttributeName()));

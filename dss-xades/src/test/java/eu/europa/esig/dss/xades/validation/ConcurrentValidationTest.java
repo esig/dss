@@ -57,7 +57,7 @@ public class ConcurrentValidationTest {
 		DataLoader dataLoader = new NativeHTTPDataLoader();
 		certificateVerifier.setDataLoader(dataLoader);
 
-		List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
+		List<Future<Boolean>> futures = new ArrayList<>();
 
 		for (int i = 0; i < 200; i++) {
 			futures.add(executor.submit(new TestConcurrent(certificateVerifier)));

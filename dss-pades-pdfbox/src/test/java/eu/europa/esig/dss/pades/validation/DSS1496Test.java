@@ -103,7 +103,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
 
-		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(TSA_CA_URL, Utils.fromBase64(TSA_CA));
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		certificateVerifier.setDataLoader(dataLoader);

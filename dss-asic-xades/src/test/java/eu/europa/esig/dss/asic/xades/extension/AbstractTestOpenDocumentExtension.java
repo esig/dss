@@ -60,7 +60,7 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Object[]> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });
 		}
@@ -150,7 +150,7 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	}
 
 	private List<String> getFilesNames(DSSDocument doc) {
-		List<String> filenames = new ArrayList<String>();
+		List<String> filenames = new ArrayList<>();
 		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {

@@ -48,7 +48,7 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 		private static final Map<String, EncryptionAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
 		private static Map<String, EncryptionAlgorithm> registerOIDAlgorithms() {
-			Map<String, EncryptionAlgorithm> map = new HashMap<String, EncryptionAlgorithm>();
+			Map<String, EncryptionAlgorithm> map = new HashMap<>();
 			for (EncryptionAlgorithm encryptionAlgorithm : values()) {
 				map.put(encryptionAlgorithm.oid, encryptionAlgorithm);
 			}

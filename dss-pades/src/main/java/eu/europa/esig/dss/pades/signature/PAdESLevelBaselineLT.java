@@ -91,7 +91,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		// create DSS dictionary (order is important to know the original object
 		// streams)
-		List<DSSDictionaryCallback> callbacks = new LinkedList<DSSDictionaryCallback>();
+		List<DSSDictionaryCallback> callbacks = new LinkedList<>();
 		for (final AdvancedSignature signature : signatures) {
 			if (signature instanceof PAdESSignature) {
 				PAdESSignature padesSignature = (PAdESSignature) signature;

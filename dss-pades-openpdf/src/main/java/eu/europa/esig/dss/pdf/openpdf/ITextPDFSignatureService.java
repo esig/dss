@@ -271,7 +271,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
-		List<PdfRevision> result = new ArrayList<PdfRevision>();
+		List<PdfRevision> result = new ArrayList<>();
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
 
@@ -342,8 +342,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	private Map<PdfSignatureDictionary, List<String>> extractSigDictionaries(AcroFields acroFields) {
-		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<PdfSignatureDictionary, List<String>>();
-		Map<Integer, PdfSigDictWrapper> pdfObjectDictMap = new LinkedHashMap<Integer, PdfSigDictWrapper>();
+		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<>();
+		Map<Integer, PdfSigDictWrapper> pdfObjectDictMap = new LinkedHashMap<>();
 		
 		Map<String, Item> allFields = acroFields.getAllFields();
 		List<String> names = acroFields.getSignedFieldNames();
@@ -358,7 +358,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
 				signature = new PdfSigDictWrapper(dictionary);
 
-				pdfDictionaries.put(signature, new ArrayList<String>(Arrays.asList(name)));
+				pdfDictionaries.put(signature, new ArrayList<>(Arrays.asList(name)));
 				pdfObjectDictMap.put(refNumber, signature);
 				
 			} else {
@@ -481,7 +481,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
-			List<String> result = new ArrayList<String>();
+			List<String> result = new ArrayList<>();
 			AcroFields acroFields = reader.getAcroFields();
 			List<String> names = acroFields.getSignedFieldNames();
 			for (String name : names) {

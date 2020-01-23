@@ -76,13 +76,13 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setXPathLocationString("//placeOfSignature");
 
-		List<DSSReference> dssReferences = new ArrayList<DSSReference>();
+		List<DSSReference> dssReferences = new ArrayList<>();
 		DSSReference reference1 = new DSSReference();
 		reference1.setContents(documentToSign);
 		reference1.setId("REF-ID1");
 		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference1.setUri("#data1");
-		List<DSSTransform> transforms1 = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms1 = new ArrayList<>();
 		CanonicalizationTransform transform1 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms1.add(transform1);
 		reference1.setTransforms(transforms1);
@@ -93,7 +93,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		reference2.setId("REF-ID2");
 		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference2.setUri("#data2");
-		List<DSSTransform> transforms2 = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms2 = new ArrayList<>();
 		CanonicalizationTransform transform2 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms2.add(transform2);
 		reference2.setTransforms(transforms2);

@@ -90,7 +90,7 @@ public enum TimestampType {
 	 * @return array of content {@link TimestampType}
 	 */
 	public static TimestampType[] getContentTimestampTypes() {
-		List<TimestampType> contentTimestamps = new ArrayList<TimestampType>();
+		List<TimestampType> contentTimestamps = new ArrayList<>();
 		for (TimestampType timestampType : values()) {
 			if (timestampType.isContentTimestamp()) {
 				contentTimestamps.add(timestampType);

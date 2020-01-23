@@ -246,7 +246,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	
 	private Set<CertificateToken> filterNewCertificateValues(Collection<CertificateToken> certificatesForInclusion,
 			Collection<CertificateToken> certificatesFromSignature) {
-		Set<CertificateToken> certificatesToBeAdded = new HashSet<CertificateToken>();
+		Set<CertificateToken> certificatesToBeAdded = new HashSet<>();
 		for (CertificateToken certificateToken : certificatesForInclusion) {
 			if (!certificatesFromSignature.contains(certificateToken)) {
 				certificatesToBeAdded.add(certificateToken);
@@ -305,7 +305,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	
 	private <R extends RevocationToken> Set<R> filterNewRevocations(Collection<R> revocationTokens,
 			Collection<? extends EncapsulatedRevocationTokenIdentifier> revocationBinaryList) {
-		Set<R> revocationTokensToBeAdded = new HashSet<R>();
+		Set<R> revocationTokensToBeAdded = new HashSet<>();
 		for (R revocationToken : revocationTokens) {
 			boolean found = false;
 			for (EncapsulatedRevocationTokenIdentifier revocationBinary : revocationBinaryList) {

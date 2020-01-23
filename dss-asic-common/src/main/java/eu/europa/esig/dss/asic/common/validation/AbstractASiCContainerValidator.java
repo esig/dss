@@ -98,7 +98,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 		List<DSSDocument> originalSignedDocuments = extractResult.getSignedDocuments();
 		if (Utils.isCollectionNotEmpty(originalSignedDocuments)) {
-			List<String> signedDocumentFilenames = new ArrayList<String>();
+			List<String> signedDocumentFilenames = new ArrayList<>();
 			for (DSSDocument dssDocument : originalSignedDocuments) {
 				signedDocumentFilenames.add(dssDocument.getName());
 			}
@@ -127,11 +127,11 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 
-		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> allSignatureList = new ArrayList<>();
 
 		List<DocumentValidator> currentValidators = getSignatureValidators();
 		for (DocumentValidator signatureValidator : currentValidators) {
-			List<AdvancedSignature> currentValidatorSignatures = new ArrayList<AdvancedSignature>();
+			List<AdvancedSignature> currentValidatorSignatures = new ArrayList<>();
 			for (AdvancedSignature advancedSignature : signatureValidator.getSignatures()) {
 				currentValidatorSignatures.add(advancedSignature);
 				currentValidatorSignatures.addAll(advancedSignature.getCounterSignatures());
@@ -150,7 +150,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		final List<AdvancedSignature> signatureList = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> signatureList = new ArrayList<>();
 		for (DocumentValidator validator : getSignatureValidators()) {
 			signatureList.addAll(validator.getSignatures());
 		}
@@ -203,7 +203,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 	
 	private List<DSSDocument> getArchiveDocuments(List<DSSDocument> foundDocuments) {
-		List<DSSDocument> archiveDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> archiveDocuments = new ArrayList<>();
 		for (DSSDocument document : foundDocuments) {
 			if (ASiCUtils.isASiCSArchive(document)) {
 				archiveDocuments.addAll(ASiCUtils.getPackageZipContent(document));
@@ -218,7 +218,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			throw new DSSException("ASiC-S : More than one file");
 		}
 		DSSDocument uniqueDoc = retrievedDocs.get(0);
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 		if (ASiCUtils.isASiCSArchive(uniqueDoc)) {
 			result.addAll(ASiCUtils.getPackageZipContent(uniqueDoc));
 		} else {

@@ -34,7 +34,7 @@ public abstract class MultipleDigestIdentifier extends Identifier {
 
 	private final byte[] binaries;
 
-	private final EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
+	private final EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<>(DigestAlgorithm.class);
 	
 	protected MultipleDigestIdentifier(byte[] binaries) {
 		super(binaries);

@@ -201,7 +201,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	private List<String> getSignedFilesNames(List<DSSDocument> files) {
-		List<String> fileNames = new ArrayList<String>();
+		List<String> fileNames = new ArrayList<>();
 		for (DSSDocument doc: files) {
 			fileNames.add(doc.getName());
 		}
@@ -209,7 +209,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
-		List<String> fileDigests = new ArrayList<String>();
+		List<String> fileDigests = new ArrayList<>();
 		for (DSSDocument doc: files) {
 			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
 		}

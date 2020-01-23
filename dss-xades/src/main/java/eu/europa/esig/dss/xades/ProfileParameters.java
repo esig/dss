@@ -65,7 +65,7 @@ public class ProfileParameters implements Serializable {
 	/*
 	 * The type of operation to perform.
 	 */
-	public static enum Operation {
+	public enum Operation {
 		SIGNING, EXTENDING
 	}
 

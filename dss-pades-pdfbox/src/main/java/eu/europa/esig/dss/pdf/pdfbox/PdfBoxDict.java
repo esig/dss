@@ -77,7 +77,7 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public String[] list() {
 		final Set<COSName> cosNames = wrapped.keySet();
-		List<String> result = new ArrayList<String>(cosNames.size());
+		List<String> result = new ArrayList<>(cosNames.size());
 		for (final COSName cosName : cosNames) {
 			final String name = cosName.getName();
 			result.add(name);

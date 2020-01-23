@@ -56,7 +56,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	/**
 	 * This {@code Map} contains all collected OCSP responses with a set of their origins
 	 */
-	private final Map<OCSPResponseBinary, Set<RevocationOrigin>> ocspResponseOriginsMap = new HashMap<OCSPResponseBinary, Set<RevocationOrigin>>();
+	private final Map<OCSPResponseBinary, Set<RevocationOrigin>> ocspResponseOriginsMap = new HashMap<>();
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
@@ -119,7 +119,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 * @return unmodifiable collection of {@code OCSPResponse}s
 	 */
 	public Collection<OCSPResponseBinary> getOCSPResponsesList() {
-		Collection<OCSPResponseBinary> ocspResponsesList = new ArrayList<OCSPResponseBinary>();
+		Collection<OCSPResponseBinary> ocspResponsesList = new ArrayList<>();
 		if (!isEmpty()) {
 			ocspResponsesList = ocspResponseOriginsMap.keySet();
 		}
@@ -191,7 +191,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	protected void addOCSPResponse(OCSPResponseBinary ocspResponse, RevocationOrigin origin) {
 		Set<RevocationOrigin> origins = ocspResponseOriginsMap.get(ocspResponse);
 		if (origins == null) {
-			origins = new HashSet<RevocationOrigin>();
+			origins = new HashSet<>();
 			ocspResponseOriginsMap.put(ocspResponse, origins);
 		}
 		origins.add(origin);

@@ -57,7 +57,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Object[]> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });
 		}

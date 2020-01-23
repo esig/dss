@@ -58,7 +58,7 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 	public void testValidation() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(SIGNED_DOC_PATH));
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument(DETACHED_DOC_PATH));
 		validator.setDetachedContents(detachedContents);
 		Reports reports = validator.validateDocument();
