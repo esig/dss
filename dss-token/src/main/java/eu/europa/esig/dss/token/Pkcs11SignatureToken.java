@@ -188,6 +188,23 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		this(pkcs11Path, callback, slotId, -1, null);
 	}
 
+	/**
+	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used. This
+	 * create a SignatureTokenConnection and the keys will be accessed using the provided password.
+	 *
+	 * @param pkcs11Path
+	 *                          the path for the library (.dll, .so)
+	 * @param callback
+	 *                          the callback to enter the pin code / password
+	 * @param slotId
+	 *                          the slotId to use
+	 * @param extraPkcs11Config
+	 *                          extra configuration for pkcs11 library
+	 */
+	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId, String extraPkcs11Config) {
+		this(pkcs11Path, callback, slotId, -1, extraPkcs11Config);
+	}
+
     /**
 	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotListIndex is used.
 	 * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
