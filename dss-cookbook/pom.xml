@@ -62,6 +62,14 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-signature-rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-server-signing-rest</artifactId>
+		</dependency>
 	</dependencies>
 
 	<profiles>

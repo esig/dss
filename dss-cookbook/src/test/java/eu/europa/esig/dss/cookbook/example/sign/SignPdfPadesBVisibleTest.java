@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
@@ -89,21 +90,45 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			imageParameters.setHeight(200);
 
 			// tag::font[]
+			
 			// Initialize text to generate for visual signature
 			DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
+			
 			// tag::text[]
+			
+			// Instantiates a SignatureImageTextParameters object
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+			// Allows you to set a DSSFont object that defines the text style (see more information in the section "Fonts usage")
 			textParameters.setFont(font);
-			textParameters.setSize(14);
-			textParameters.setTextColor(Color.BLUE);
+			// Defines the text content
 			textParameters.setText("My visual signature \n #1");
+			// Specifies the text size value (the default font size is 12pt)
+			textParameters.setSize(14);
+			// Defines the color of the characters
+			textParameters.setTextColor(Color.BLUE);
+			// Defines the background color for the area filled out by the text
 			textParameters.setBackgroundColor(Color.YELLOW);
+			// Defines a padding between the text and a border of its bounding area
 			textParameters.setPadding(20);
-			textParameters.setSignerTextPosition(SignerTextPosition.LEFT);
-			textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
-			// end::text[]
-			// end::font[]
+			// Set textParameters to a SignatureImageParameters object
 			imageParameters.setTextParameters(textParameters);
+			
+			// end::text[]
+			
+			// tag::textImageCombination[]
+			
+			// Specifies a text position relatively to an image (Note: applicable only for joint image+text visible signatures). 
+			// Thus with _SignerPosition.LEFT_ value, the text will be placed on the left side, 
+			// and image will be aligned to the right side inside the signature field
+			textParameters.setSignerTextPosition(SignerTextPosition.LEFT);
+			// Specifies a horizontal alignment of a text with respect to its area
+			textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
+			// Specifies a vertical alignment of a text block with respect to a signature field area
+			textParameters.setSignerTextVerticalAlignment(SignerTextVerticalAlignment.TOP);
+			
+			// end::textImageCombination[]
+			
+			// end::font[]
 
 			parameters.setImageParameters(imageParameters);
 
