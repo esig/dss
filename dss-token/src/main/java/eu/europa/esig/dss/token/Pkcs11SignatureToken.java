@@ -57,6 +57,8 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
 	private final int slotId;
 
+	private final int slotListIndex;
+
 	private final String extraPkcs11Config;
 
 	/**
@@ -134,7 +136,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
      *            extra configuration for pkcs11 library
      */
     public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, String extraPkcs11Config) {
-        this(pkcs11Path, callback, 0, extraPkcs11Config);
+		this(pkcs11Path, callback, 0, -1, extraPkcs11Config);
     }
 
 	/**
@@ -168,7 +170,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
      *            extra configuration for pkcs11 library
      */
     public Pkcs11SignatureToken(String pkcs11Path, PasswordProtection password, int slotId, String extraPkcs11Config) {
-        this(pkcs11Path, new PrefilledPasswordCallback(password), slotId, extraPkcs11Config);
+		this(pkcs11Path, new PrefilledPasswordCallback(password), slotId, -1, extraPkcs11Config);
     }
 
 	/**
@@ -183,26 +185,29 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 *            the slotId to use
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId) {
-		this(pkcs11Path, callback, slotId, null);
+		this(pkcs11Path, callback, slotId, -1, null);
 	}
 
     /**
-     * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
-     * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
-     *
-     * @param pkcs11Path
-     *            the path for the library (.dll, .so)
-     * @param callback
-     *            the callback to enter the pin code / password
-     * @param slotId
-     *            the slotId to use
-     * @param extraPkcs11Config
-     *            extra configuration for pkcs11 library
-     */
-    public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId, String extraPkcs11Config) {
+	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotListIndex is used.
+	 * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
+	 *
+	 * @param pkcs11Path
+	 *                          the path for the library (.dll, .so)
+	 * @param callback
+	 *                          the callback to enter the pin code / password
+	 * @param slotId
+	 *                          the slotId to use (if negative, the parameter is not used)
+	 * @param slotListIndex
+	 *                          the slotListIndex to use (if negative, the parameter is not used)
+	 * @param extraPkcs11Config
+	 *                          extra configuration for pkcs11 library
+	 */
+	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId, int slotListIndex, String extraPkcs11Config) {
         this.pkcs11Path = pkcs11Path;
         this.callback = callback;
         this.slotId = slotId;
+		this.slotListIndex = slotListIndex;
         this.extraPkcs11Config = extraPkcs11Config;
     }
 
@@ -223,7 +228,6 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		return provider;
 	}
 
-
 	protected String buildConfig() {
 		/*
 		 * The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive
@@ -236,7 +240,13 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		pkcs11Config.append("name = SmartCard").append(UUID.randomUUID());
 		pkcs11Config.append(NEW_LINE).append("library = ").append(DOUBLE_QUOTE).append(aPKCS11LibraryFileName)
 				.append(DOUBLE_QUOTE);
-		pkcs11Config.append(NEW_LINE).append("slot = ").append(slotId);
+
+		if (slotId >= 0) {
+			pkcs11Config.append(NEW_LINE).append("slot = ").append(slotId);
+		}
+		if (slotListIndex >= 0) {
+			pkcs11Config.append(NEW_LINE).append("slotListIndex = ").append(slotListIndex);
+		}
 
 		if (extraPkcs11Config != null && !extraPkcs11Config.isEmpty()) {
 			pkcs11Config.append(NEW_LINE).append(extraPkcs11Config);
