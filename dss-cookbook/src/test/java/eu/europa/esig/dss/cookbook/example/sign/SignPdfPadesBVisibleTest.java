@@ -69,6 +69,7 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 			// tag::demo[]
 
+			// tag::parameters-configuration[]
 			// Preparing parameters for the PAdES signature
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 			// We choose the level of the signature (-B, -T, -LT, -LTA).
@@ -79,7 +80,7 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			// We set the certificate chain
 			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-			// Initialize visual signature
+			// Initialize visual signature and configure
 			SignatureImageParameters imageParameters = new SignatureImageParameters();
 			// set an image
 			imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png")));
@@ -88,14 +89,13 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			imageParameters.setyAxis(400);
 			imageParameters.setWidth(300);
 			imageParameters.setHeight(200);
-
-			// tag::font[]
+			// end::parameters-configuration[]
 			
+			// tag::font[]
 			// Initialize text to generate for visual signature
 			DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
-			
+			// end::font[]
 			// tag::text[]
-			
 			// Instantiates a SignatureImageTextParameters object
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 			// Allows you to set a DSSFont object that defines the text style (see more information in the section "Fonts usage")
@@ -112,11 +112,8 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			textParameters.setPadding(20);
 			// Set textParameters to a SignatureImageParameters object
 			imageParameters.setTextParameters(textParameters);
-			
 			// end::text[]
-			
 			// tag::textImageCombination[]
-			
 			// Specifies a text position relatively to an image (Note: applicable only for joint image+text visible signatures). 
 			// Thus with _SignerPosition.LEFT_ value, the text will be placed on the left side, 
 			// and image will be aligned to the right side inside the signature field
@@ -125,22 +122,17 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
 			// Specifies a vertical alignment of a text block with respect to a signature field area
 			textParameters.setSignerTextVerticalAlignment(SignerTextVerticalAlignment.TOP);
-			
 			// end::textImageCombination[]
-			
-			// end::font[]
-
+			// tag::sign[]
 			parameters.setImageParameters(imageParameters);
 
 			// Create common certificate verifier
 			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 			// Create PAdESService for signature
 			PAdESService service = new PAdESService(commonCertificateVerifier);
-
 			// tag::custom-factory[]
 			service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 			// end::custom-factory[]
-
 			// Get the SignedInfo segment that need to be signed.
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
@@ -152,6 +144,7 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			// We invoke the xadesService to sign the document with the signature value obtained in
 			// the previous step.
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			// end::sign[]
 
 			// end::demo[]
 

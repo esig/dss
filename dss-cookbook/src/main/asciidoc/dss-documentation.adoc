@@ -41,6 +41,7 @@ Please note that the DSS framework is still under maintenance and new features w
 === Abbreviations and Acronyms
 
 [cols=2]
+.Abbreviations and Acronyms
 |=======================
 |Code			|Description
 |AdES			|Advanced Electronic Signature
@@ -126,6 +127,7 @@ Please note that the DSS framework is still under maintenance and new features w
 === References
 
 [cols=4]
+.References
 |=======================
 |Ref.			|Title																			|Reference					|Version
 |[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.1.1
@@ -140,6 +142,7 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R10]]	R10	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.1.1
 |[[R11]]	R11	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
 |[[R12]]	R12	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.2.1
+|[[R13]]	R13	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |draft
 
 |=======================
 
@@ -343,6 +346,7 @@ The different formats of the digital signature make possible to cover a wide ran
 In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
 
 [cols=6]
+.Signature supported profiles
 |=======================
 2+|XAdES				  2+|CAdES				  2+|PAdES
 |STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE
@@ -364,6 +368,7 @@ Below you can find a table specifying various signature possibilities with avail
 The vertical column specifies available signature profiles and their extensions. The horizontal row specifies types of documents to be signed with the formats.
 
 [cols="9*^.^"]
+.File formats and Signature types conformance
 |=======================
   3+|Signature profiles                        |XML   |PDF   |Binary   |Digest   |Multi files   |Parallel signatures
 .10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
@@ -546,6 +551,7 @@ In XAdES format the following types of a Content Timestamp can be used:
 
 The code above produces the following signature :
 
+.XAdES signature example
 include::samples/xades-b-properties.adoc[]
 
 ===== Handling signature policy
@@ -586,6 +592,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBE
 
 The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
 
+.XAdES Signature Policy element
 include::samples/xades-explicit-policy.adoc[]
 
 ==== XAdES-BASELINE-T
@@ -604,6 +611,7 @@ If the timestamp source is not set a NullPointerException is thrown.
 
 The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
 
+.XAdES Signature Timestamp
 include::samples/xades-signature-timestamp.adoc[]
 
 ==== XAdES-BASELINE-LT
@@ -619,6 +627,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLT
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
+.Validation data values
 include::samples/xades-revocation-data.adoc[]
 
 NOTE: The use of online sources can significantly increase the execution time of the signing process. For testing purpose you can create your own source of data.
@@ -639,11 +648,36 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.j
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
+.XAdES Archive Timestamp
 include::samples/xades-archive-timestamp.adoc[]
 
 === Various settings
 
-// TODO : support of XAdES 1.1.1 and 1.2.2 up to LT-level + custom prefixes
+==== Versions support
+
+DSS supports the following XAdES formats :
+
+[cols="5*^"]
+.Supported XAdES versions
+|===
+| | B-level | T-level | LT-level | LTA-level
+
+| XAdES 1.1.1 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:times-circle[role="red"]
+
+| XAdES 1.2.2 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:times-circle[role="red"]
+
+| XAdES 1.3.2 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"]
+
+| XAdES 1.4.1  4+| The format contains qualifying properties for XAdES 1.3.2 LTA level
+|===
+
+The XAdES Profile, as well as a customizable prefixes can be set with following methods :
+
+[source,java,indent=0]
+.XAdES formats and prefixes
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=prefixes]
+----
 
 ==== Reference Transformations
 
@@ -730,6 +764,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlX
 
 Here is the result of adding a new extension of type-T to an already existing -T level signature:
 
+.XAdES Unsigned Signature Properties
 include::samples/xades-extend-t-to-t.adoc[]
 
 === XAdES-BASELINE-LT and -LTA
@@ -751,6 +786,7 @@ In case there is a need to use only a specific query holder the following steps 
  * Call: eu.europa.esig.dss.xades.validation.XMLDocumentValidator#clearQueryHolders
  * Call: eu.europa.esig.dss.xades.validation.XMLDocumentValidator#addXPathQueryHolder and pass the specific query holder
 
+[[signatureValidation]]
 == The signature validation
 
 Generally and following ETSI standard, the validation process of an electronic signature must provide one of these three following statuses: TOTAL-FAILED, TOTAL-PASSED or INDETERMINATE. A TOTAL-PASSED response indicates that the signature has passed verification and it complies with the signature validation policy. A TOTAL_FAILED response indicates that either the signature format is incorrect or that the digital signature value fails the verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is an insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
@@ -759,6 +795,7 @@ Generally and following ETSI standard, the validation process of an electronic s
 
 Since version 4.7 of the DSS framework the validation process is based on the latest ETSI standard <<R08>>. It is driven by the validation policy and allows long term signature validation. It not only verifies the existence of certain data and their validity, but it also checks the temporal dependences between these elements. The signature check is done following basic building blocks. On the simplified diagram below, showing the process of the signature validation, you can follow the relationships between each building block which represents a logic set of checks used in validation process.
 
+.Signature Validation Process
 image::sig_validation_process.jpg[]
 
 Note that the current version of the framework during the validation process does not indicate what part of a document was signed. However, in a case of XAdES signature XPath transformations presented in the signature will be applied, in the case of CAdES or PAdES signature the whole document must be signed.
@@ -943,12 +980,13 @@ Below there is an example of code to perform a PADES-BASELINE-B type signature w
 [source,java,indent=0]
 .Add a visible signature to a PDF document
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=parameters-configuration;sign]
 ----
 
-Additionally, DSS also allows you to insert a visible signature to an existing field : 
+Additionally, DSS also allows you to insert a visible signature to an existing field :
 
 [source,java,indent=0]
+.Add a visible signature to an existing field
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
 ----
@@ -1046,23 +1084,19 @@ The standard defines two types of containers; the first (ASiC-S) allows you to a
 
 For the moment the DSS framework has some restrictions on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
 
+.ASiC containers
 |===
 |Input |Output
 
-|ASiC-S CAdES
-|ASiC-S CAdES
+|ASiC-S CAdES |ASiC-S CAdES
 
-|ASiC-S XAdES
-|ASiC-S XAdES
+|ASiC-S XAdES |ASiC-S XAdES
 
-|ASiC-E CAdES
-|ASiC-E CAdES
+|ASiC-E CAdES |ASiC-E CAdES
 
-|ASiC-E XAdES
-|ASiC-E XAdES
+|ASiC-E XAdES |ASiC-E XAdES
 
-|Binary
-|ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
+|Binary |ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
 |===
 
 This is an example of the source code for signing a document using ASiCS-S based on XAdES-B:
@@ -1084,6 +1118,54 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDo
 Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on CAdES and of DETACHED packaging.
 
 It is also possible with the framework DSS to make an extension of an ASiC container to the level XAdES-BASELINE-T or -LT.
+
+== Timestamps
+
+=== Timestamp creation
+
+Since DSS 5.6 the framework allows an independent document timestamping (without a signature). The following Document Signature Services support the timestamping :
+
+ * `PAdESService` - adds a timestamp to a PDF document;
+ * `ASiCWithCAdESService` - creates a timestamped ASiC container with provided documents.
+
+[source,java,indent=0]
+.PDF timestamping
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampPDFTest.java[tags=creation]
+----
+
+=== Timestamp validation
+
+As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents "5.4 Time-stamp validation building block" (cf. <<R08>>). The validation process is identical to <<signatureValidation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
+
+ * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
+ * PDF document (`PDFDocumentValidator`);
+ * ASiC CAdES container with a timestamp (`ASiCEWithCAdESTimestampValidator`).
+
+The validation process can be run with the following inputs :
+
+[source,java,indent=0]
+.Timestamped document validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampPDFTest.java[tags=validation]
+----
+
+The produced reports use the same structure as for <<signatureValidation>>.
+
+==== Timestamp qualification
+
+DSS is also able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R13>>).
+
+Three qualification levels are supported by DSS and can be obtained :
+
+ * `QTSA` (issued from a granted trust service with TSA/QTST type at the timestamp production time);
+ * `TSA` any other from a known trust anchor;
+ * `N/A` for others.
+
+An example of a produced Detailed Report you can see below:
+
+.Timestamp Detailed Report
+include::samples/timestamp-detailed-report-example.adoc[]
 
 == Available implementations of DSSDocument
 
@@ -1431,7 +1513,7 @@ An Executor Service parameter allows you to customize a way of the program execu
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=executor-service]
 ----
 
-=== Complete configuration for the European LOT
+=== Complete configuration for the European LOTL
 
 Below, you can find a complete configuration for the European List Of Trusted Lists. The URLs need to be externalized.
 
@@ -1462,6 +1544,39 @@ The refresh can be called with the offline or the online loader and run exactly 
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=refresh]
 ----
+
+==== Java Keystore Management
+
+Generally (like in case of European LOTL) DSS downloads Trusted Lists by using the SSL protocol (for resources using HTTPS extension), that requires to have a certificate of a remote source in the Java trust store. The certificates have their own validity period and can expire. If a certificated is expired, it will be replaced on a server by a new one in order to support a secure SSL connection. The easiest way to know if your Java trust store is outdated and new certificates need to be added is to check your logs during a TLValidationJob update :
+
+[source]
+--
+ERROR 14052 --- [pool-2-thread-30] e.e.e.dss.tsl.runnable.AbstractAnalysis  : Unable to process GET call for url [https://sr.riik.ee/tsl/estonian-tsl.xml]. Reason : [PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+--
+
+The `SunCertPathBuilderException` means that the certificate established the secure connection is not trusted by your Java Virtual Machine. In order to add the certificate to the trust store, you need to do the following steps (the example is based on Windows OS and Google Chrome browser):
+
+ . Open the failed URL in your browser. In our case it will be 'https://sr.riik.ee/tsl/estonian-tsl.xml' obtained from the logs.
+ . Click on a lock icon next to the URL in the tab you just opened. It will open a window about the current connection status.
+ . Click on 'Certificate' button to open the Certificate window.
+ . Go to 'Details' tab and choose 'Copy to File...'.
+ . Process the 'Certificate Export Wizard', by saving the certificate in one of '.CER' formats. Store the file in your file system. For us it will create a file 'ee.cer'.
+ . Run 'Command Prompt' with administrator permissions (right click -> 'Run As Administrator').
+ . Execute the following line (ensure that 'keytool' is installed) :
+
+.Certificate import
+[source,ruby]
+----
+keytool -import -alias newCert -file pathToCert\ee.cer -keystore pathToJavaDirectory\lib\security\cacerts -storepass changeit
+----
+
+The default password for a Java keystore is "changeit". Ensure that you have a default configuration, or use another password you have configured.
+
+NOTE: In order to apply changes, the application using Java must be rebooted.
+
+After these steps the `TLValidationJob` will successfully download the target Trusted List (i.e. Estonian in our example).
+
+NOTE: This described algorithm is not only one available solution, if you have difficulties with this, you can search in the Internet for another working for you solution.
 
 === TLValidationJobSummary
 
@@ -1508,6 +1623,7 @@ In the next table, XAdES also applies to ASiC with embedded XAdES signatures and
 NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please refer to your SmartCard/HSM provider.
 
 [cols="13*^"]
+.Supported algorithms
 |===
 | | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160
 
