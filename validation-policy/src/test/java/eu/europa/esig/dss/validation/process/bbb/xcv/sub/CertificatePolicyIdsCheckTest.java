@@ -42,7 +42,7 @@ public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
-		List<XmlCertificatePolicy> policyIds = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> policyIds = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		policyIds.add(oid);
@@ -65,7 +65,7 @@ public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void failedCertificatePolicyIdsCheck() throws Exception {
-		List<XmlCertificatePolicy> policyIds = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> policyIds = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		policyIds.add(oid);

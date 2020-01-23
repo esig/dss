@@ -123,7 +123,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	private ChainItem<XmlRFC> revocationDataAvailable(RevocationWrapper revocationData) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(context, subContext);
-		return new AcceptableRevocationDataAvailableCheck<XmlRFC>(i18nProvider, result, revocationData, constraint);
+		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRFC> nextUpdateCheck(RevocationWrapper revocationData) {
@@ -156,7 +156,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
 		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<XmlRFC>(i18nProvider, result, revocationData, validationDate, cryptographicConstraint);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, validationDate, cryptographicConstraint);
 	}
 
 }

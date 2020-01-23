@@ -71,7 +71,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
 
-		Set<String> attachedTimestamps = new HashSet<String>();
+		Set<String> attachedTimestamps = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 
 			XmlSignature signatureAnalysis = new XmlSignature();
@@ -132,7 +132,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 
 	private List<XmlTimestamp> getXmlTimestamps(List<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis) {
-		List<XmlTimestamp> results = new ArrayList<XmlTimestamp>();
+		List<XmlTimestamp> results = new ArrayList<>();
 		for (TimestampWrapper timestamp : timestamps) {
 			results.add(buildXmlTimestamp(timestamp, bbbs, tlAnalysis));
 		}
@@ -173,7 +173,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
-		Map<String, XmlBasicBuildingBlocks> bbbs = new LinkedHashMap<String, XmlBasicBuildingBlocks>();
+		Map<String, XmlBasicBuildingBlocks> bbbs = new LinkedHashMap<>();
 		switch (validationLevel) {
 		case ARCHIVAL_DATA:
 		case LONG_TERM_DATA:

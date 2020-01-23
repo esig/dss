@@ -65,7 +65,7 @@ public class CAdESAttribute implements ISignatureAttribute {
 		final ASN1Set attrValues = attribute.getAttrValues();
 		for (final ASN1Encodable value : attrValues.toArray()) {
 			if (value instanceof DEROctetString) {
-				LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", toString());
+				LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", this);
 			} else {
 				primitives.add(value.toASN1Primitive());
 			}
@@ -81,7 +81,7 @@ public class CAdESAttribute implements ISignatureAttribute {
 		List<ASN1Primitive> asn1Primitives = getASN1Primitives();
 		if (Utils.isCollectionNotEmpty(asn1Primitives)) {
 			if (asn1Primitives.size() > 1) {
-				LOG.warn("More than one result in CAdES attribute with OID: [{}]. Return only the first one", toString()); 
+				LOG.warn("More than one result in CAdES attribute with OID: [{}]. Return only the first one", this);
 			}
 			return asn1Primitives.get(0);
 		}

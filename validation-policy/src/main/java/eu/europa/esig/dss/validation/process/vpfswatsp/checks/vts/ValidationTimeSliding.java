@@ -230,7 +230,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 
 	private List<CertificateWrapper> reduceChainUntilFirstTrustAnchor(List<CertificateWrapper> originalCertificateChain) {
-		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
+		List<CertificateWrapper> result = new ArrayList<>();
 		for (CertificateWrapper cert : originalCertificateChain) {
 			result.add(cert);
 			if (cert.isTrusted()) {
@@ -248,7 +248,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(RevocationWrapper revocationData) {
-		return new SatisfyingRevocationDataExistsCheck<XmlVTS>(i18nProvider, result, revocationData, getFailLevelConstraint());
+		return new SatisfyingRevocationDataExistsCheck<>(i18nProvider, result, revocationData, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType referenceCategory, Date controlTime) {

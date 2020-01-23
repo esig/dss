@@ -527,8 +527,8 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private List<XmlOrphanRevocation> excludeDuplicateIds(List<XmlOrphanRevocation> orphanRevocations) {
-		List<XmlOrphanRevocation> uniqueIdOrphanRevocations = new ArrayList<XmlOrphanRevocation>();
-		List<String> addedOrphanRevocationIds = new ArrayList<String>();
+		List<XmlOrphanRevocation> uniqueIdOrphanRevocations = new ArrayList<>();
+		List<String> addedOrphanRevocationIds = new ArrayList<>();
 		for (XmlOrphanRevocation orphanRevocation : orphanRevocations) {
 			if (orphanRevocation.getToken() != null && !addedOrphanRevocationIds.contains(orphanRevocation.getToken().getId())) {
 				uniqueIdOrphanRevocations.add(orphanRevocation);

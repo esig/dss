@@ -75,7 +75,7 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 		List<String> candidates = Arrays.asList(trustedCert.getOrganizationName(), trustedCert.getCommonName(), trustedCert.getOrganizationalUnit(),
 				trustedCert.getCertificateDN());
 
-		List<String> possibleMatchers = new ArrayList<String>();
+		List<String> possibleMatchers = new ArrayList<>();
 		possibleMatchers.addAll(trustService.getTspNames());
 		possibleMatchers.addAll(trustService.getServiceNames());
 

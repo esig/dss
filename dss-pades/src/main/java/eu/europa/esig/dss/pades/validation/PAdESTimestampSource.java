@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 	
-	private transient final PdfRevision pdfSignatureRevision;
+	private final transient PdfRevision pdfSignatureRevision;
 	
 	public PAdESTimestampSource(final PAdESSignature signature, final CertificatePool certificatePool) {
 		super(signature, certificatePool);

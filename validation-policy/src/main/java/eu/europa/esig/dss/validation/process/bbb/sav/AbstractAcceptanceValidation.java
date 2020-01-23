@@ -66,7 +66,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 	protected ChainItem<XmlSAV> cryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<XmlSAV>(i18nProvider, result, token, currentTime, constraint);
+		return new CryptographicCheck<>(i18nProvider, result, token, currentTime, constraint);
 	}
 
 	@Override

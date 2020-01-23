@@ -246,12 +246,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	
 	private ChainItem<XmlSubXCV> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(context, subContext);
-		return new RevocationDataAvailableCheck<XmlSubXCV>(i18nProvider, result, certificate, constraint);
+		return new RevocationDataAvailableCheck<>(i18nProvider, result, certificate, constraint);
 	}
 	
 	private Map<CertificateRevocationWrapper, XmlRAC> getRevocationAcceptanceResult(CertificateWrapper certificate) {
 		Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = 
-				new HashMap<CertificateRevocationWrapper, XmlRAC>();
+				new HashMap<>();
 		
 		for (CertificateRevocationWrapper revocationWrapper : certificate.getCertificateRevocationData()) {
 			RevocationAcceptanceChecker rac = new RevocationAcceptanceChecker(i18nProvider, certificate, revocationWrapper, currentTime, validationPolicy);
@@ -263,16 +263,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 	
 	private ChainItem<XmlSubXCV> revocationAcceptable(XmlRAC racResult) {
-		return new RevocationAcceptanceCheckerResultCheck<XmlSubXCV>(i18nProvider, result, racResult, getWarnLevelConstraint());
+		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
 	}
 	
 	private ChainItem<XmlSubXCV> latestRevocationAcceptable(XmlRAC racResult) {
-		return new LatestRevocationAcceptanceCheckerResultCheck<XmlSubXCV>(i18nProvider, result, racResult, getFailLevelConstraint());
+		return new LatestRevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
 		LevelConstraint constraint = validationPolicy.getCertificateRevocationFreshnessConstraint(context, subContext);
-		return new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(i18nProvider, result, rfcResult, constraint);
+		return new RevocationFreshnessCheckerResultCheck<>(i18nProvider, result, rfcResult, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> surname(CertificateWrapper certificate, SubContext subContext) {
@@ -322,7 +322,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(context, subContext);
-		return new CertificateSignatureValidCheck<XmlSubXCV>(i18nProvider, result, certificate, constraint);
+		return new CertificateSignatureValidCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateRevoked(CertificateRevocationWrapper latestCertificateRevocation, SubContext subContext) {
@@ -381,7 +381,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {
-		return new IdPkixOcspNoCheck<XmlSubXCV>(i18nProvider, result, getFailLevelConstraint());
+		return new IdPkixOcspNoCheck<>(i18nProvider, result, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> revocationCertHashCheck() {

@@ -29,7 +29,7 @@ public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilt
 
 	@Override
 	public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> originServices) {
-		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> result = new ArrayList<>();
 		for (TrustedServiceWrapper service : originServices) {
 			if (isAcceptable(service)) {
 				result.add(service);

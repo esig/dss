@@ -44,7 +44,7 @@ public class AcceptableRevocationDataAvailableCheckTest extends AbstractTestChec
 		constraint.setLevel(Level.FAIL);
 
 		XmlRFC result = new XmlRFC();
-		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<XmlRFC>(i18nProvider, result,
+		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result,
 				new RevocationWrapper(new XmlRevocation()), constraint);
 		rdac.execute();
 
@@ -59,7 +59,7 @@ public class AcceptableRevocationDataAvailableCheckTest extends AbstractTestChec
 		constraint.setLevel(Level.FAIL);
 
 		XmlRFC result = new XmlRFC();
-		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<XmlRFC>(i18nProvider, result, 
+		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, 
 				null, constraint);
 		rdac.execute();
 

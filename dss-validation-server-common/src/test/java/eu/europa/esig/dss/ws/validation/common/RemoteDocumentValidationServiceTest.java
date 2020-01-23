@@ -47,9 +47,9 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 public class RemoteDocumentValidationServiceTest {
-	
+
 	RemoteDocumentValidationService validationService;
-	
+
 	@BeforeEach
 	public void init() {
 		validationService = new RemoteDocumentValidationService();
@@ -77,8 +77,7 @@ public class RemoteDocumentValidationServiceTest {
 	public void testWithNoPolicyAndDigestOriginalFile() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.png");
-		RemoteDocument originalFile = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileDocument), 
-				DigestAlgorithm.SHA256, fileDocument.getName());
+		RemoteDocument originalFile = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileDocument), DigestAlgorithm.SHA256, fileDocument.getName());
 
 		WSReportsDTO result = validationService.validateDocument(signedFile, Arrays.asList(originalFile), null);
 		validateReports(result);
@@ -100,7 +99,7 @@ public class RemoteDocumentValidationServiceTest {
 		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
 
 		WSReportsDTO result = validationService.validateDocument(signedFile, null, policy);
-		
+
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
 		assertNotNull(result.getSimpleReport());
@@ -108,21 +107,20 @@ public class RemoteDocumentValidationServiceTest {
 
 		assertEquals(1, result.getSimpleReport().getSignaturesCount());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
-		assertEquals(result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication(), Indication.INDETERMINATE);
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
-				result.getValidationReport());
-		
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
+
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());
 		assertNotNull(reports.getDetailedReport());
 		assertNotNull(reports.getSimpleReport());
-		
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		assertEquals(SignatureLevel.XAdES_BASELINE_LTA, signature.getSignatureFormat());
-		
+
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		assertFalse(signature.isBLevelTechnicallyValid()); // no original data provided
@@ -134,7 +132,7 @@ public class RemoteDocumentValidationServiceTest {
 
 		WSReportsDTO reports = validationService.validateDocument(signedFile, null, null);
 		String signatureId = reports.getDiagnosticData().getSignatures().get(0).getId();
-		
+
 		List<RemoteDocument> result = validationService.getOriginalDocuments(signedFile, null, signatureId);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -164,12 +162,12 @@ public class RemoteDocumentValidationServiceTest {
 		assertNotNull(result);
 		assertEquals(0, result.size());
 	}
-	
+
 	@Test
 	public void testGetOriginalFromDetachedSignature() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		RemoteDocument originalDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
-		
+
 		List<RemoteDocument> result = validationService.getOriginalDocuments(signedFile, Arrays.asList(originalDocument), null);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -177,7 +175,7 @@ public class RemoteDocumentValidationServiceTest {
 		assertNotNull(document);
 		assertTrue(Arrays.equals(DSSUtils.toByteArray(RemoteDocumentConverter.toDSSDocument(originalDocument)), document.getBytes()));
 	}
-	
+
 	private void validateReports(WSReportsDTO result) {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
@@ -186,21 +184,20 @@ public class RemoteDocumentValidationServiceTest {
 
 		assertEquals(1, result.getSimpleReport().getSignaturesCount());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
-		assertEquals(result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication(), Indication.INDETERMINATE);
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
-				result.getValidationReport());
-		
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
+
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());
 		assertNotNull(reports.getDetailedReport());
 		assertNotNull(reports.getSimpleReport());
-		
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		assertEquals(SignatureLevel.XAdES_BASELINE_LTA, signature.getSignatureFormat());
-		
+
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {

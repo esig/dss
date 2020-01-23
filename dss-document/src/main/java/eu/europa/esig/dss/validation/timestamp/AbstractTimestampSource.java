@@ -75,7 +75,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected final SignatureOCSPSource signatureOCSPSource;
 	
 	protected final String signatureId;
-	protected transient final List<SignatureScope> signatureScopes;
+	protected final transient List<SignatureScope> signatureScopes;
 	
 	protected CertificatePool certificatePool;
 	
@@ -356,7 +356,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 				
 			} else {
-				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute.toString());
+				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute);
 				continue;
 			}
 			

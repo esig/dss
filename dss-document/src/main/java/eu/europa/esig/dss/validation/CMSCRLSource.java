@@ -60,8 +60,8 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCRLSource.class);
 
-	protected transient final CMSSignedData cmsSignedData;
-	protected transient final AttributeTable unsignedAttributes;
+	protected final transient CMSSignedData cmsSignedData;
+	protected final transient AttributeTable unsignedAttributes;
 
 	/**
 	 * Cached list of {@code CRLBinary}s found in SignedData attribute

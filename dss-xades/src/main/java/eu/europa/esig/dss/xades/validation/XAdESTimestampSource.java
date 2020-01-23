@@ -64,7 +64,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
 	
-	private transient final Element signatureElement;
+	private final transient Element signatureElement;
 	private final XAdESPaths xadesPaths;
 
 	private transient List<Reference> references;

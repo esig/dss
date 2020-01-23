@@ -60,8 +60,8 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESCertificateSource.class);
 
-	private transient final CMSSignedData cmsSignedData;
-	private transient final AttributeTable signedAttributes;
+	private final transient CMSSignedData cmsSignedData;
+	private final transient AttributeTable signedAttributes;
 
 	/**
 	 * Cached values

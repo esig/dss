@@ -60,7 +60,7 @@ public class CryptographicConstraintWrapper {
 	}
 
 	public Map<String, Integer> getMinimumKeySizes() {
-		Map<String, Integer> result = new HashMap<String, Integer>();
+		Map<String, Integer> result = new HashMap<>();
 		ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
 		if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
 			for (Algo algo : miniPublicKeySize.getAlgo()) {
@@ -76,7 +76,7 @@ public class CryptographicConstraintWrapper {
 	}
 	
 	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
-		TreeMap<Integer, Date> dates = new TreeMap<Integer, Date>();
+		TreeMap<Integer, Date> dates = new TreeMap<>();
 		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
 		if (expirations == null) {
 			return null;
@@ -123,7 +123,7 @@ public class CryptographicConstraintWrapper {
 	}
 	
 	public Map<String, Date> getExpirationTimes() {
-		Map<String, Date> result = new HashMap<String, Date>();
+		Map<String, Date> result = new HashMap<>();
 		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
 		if (expirations != null && Utils.isCollectionNotEmpty(expirations.getAlgo())) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
@@ -141,7 +141,7 @@ public class CryptographicConstraintWrapper {
 	}	
 
 	private List<String> extract(ListAlgo listAlgo) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (listAlgo != null && Utils.isCollectionNotEmpty(listAlgo.getAlgo())) {
 			for (Algo algo : listAlgo.getAlgo()) {
 				result.add(algo.getValue());

@@ -31,7 +31,7 @@ public class JoinedPseudoStrategy implements PseudoStrategy {
 	private static final List<PseudoStrategy> STRATEGIES;
 
 	static {
-		STRATEGIES = new ArrayList<PseudoStrategy>();
+		STRATEGIES = new ArrayList<>();
 		STRATEGIES.add(new PseudoAttributeStrategy());
 		STRATEGIES.add(new PseudoGermanyStrategy());
 	}

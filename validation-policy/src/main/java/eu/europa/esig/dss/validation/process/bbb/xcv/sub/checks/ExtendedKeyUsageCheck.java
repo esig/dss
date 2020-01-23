@@ -49,7 +49,7 @@ public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 	}
 
 	private List<String> getExtendedKeyUsageDescriptions() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (XmlOID eku : certificate.getExtendedKeyUsages()) {
 			result.add(eku.getDescription());
 		}

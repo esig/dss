@@ -73,14 +73,6 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationContext;
 
-/**
- *
- *
- *
- *
- *
- *
- */
 public class CMSSignedDataBuilder {
 
 	private final CertificateVerifier certificateVerifier;
@@ -322,7 +314,7 @@ public class CMSSignedDataBuilder {
 		crlsStore = new CollectionStore<>(newCrlsStore);
 
 		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
+		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<>(otherRevocationInfoFormatStoreBasic.getMatches(null));
 		final List<OCSPToken> ocspTokens = validationDataForInclusion.ocspTokens;
 		for (final OCSPToken ocspToken : ocspTokens) {
 			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();

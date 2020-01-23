@@ -51,7 +51,7 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	}
 
 	private List<String> toString(List<KeyUsageBit> keyUsages) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (KeyUsageBit keyUsageBit : keyUsages) {
 			result.add(keyUsageBit.getValue());
 		}

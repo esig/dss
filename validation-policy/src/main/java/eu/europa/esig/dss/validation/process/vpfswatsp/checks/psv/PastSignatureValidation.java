@@ -190,7 +190,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private CryptographicCheck<XmlPSV> tokenUsedAlgorithmsAreSecureAtPoeTime(TokenProxy currentToken, Context context) {
 		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<XmlPSV>(i18nProvider, result, currentToken, getLowestPoeTime(token), cryptographicConstraint);
+		return new CryptographicCheck<>(i18nProvider, result, currentToken, getLowestPoeTime(token), cryptographicConstraint);
 	}
 	
 	private ChainItem<XmlPSV> certificateChainReliableAtPoeTime(ChainItem<XmlPSV> item, Context context) {
@@ -209,14 +209,14 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			checkedTokens.add(certificate.getId());
 			
 			SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
-			item = item.setNextItem(new CryptographicCheck<XmlPSV>(i18nProvider, result, certificate, getLowestPoeTime(certificate), 
+			item = item.setNextItem(new CryptographicCheck<>(i18nProvider, result, certificate, getLowestPoeTime(certificate), 
 					policy.getCertificateCryptographicConstraint(context, subContext)));
 			
 			CertificateRevocationWrapper latestAcceptableRevocation = ValidationProcessUtils.getLatestAcceptableRevocationData(certificate, bbbs.get(token.getId()));
 			if (latestAcceptableRevocation != null && !checkedTokens.contains(latestAcceptableRevocation.getId())) {
 				checkedTokens.add(latestAcceptableRevocation.getId());
 				
-				item = item.setNextItem(new CryptographicCheck<XmlPSV>(i18nProvider, result, latestAcceptableRevocation, 
+				item = item.setNextItem(new CryptographicCheck<>(i18nProvider, result, latestAcceptableRevocation, 
 						getLowestPoeTime(latestAcceptableRevocation), policy.getSignatureCryptographicConstraint(Context.REVOCATION)));
 				
 				item = certificateChainReliableAtPoeTime(item, latestAcceptableRevocation.getCertificateChain(), Context.REVOCATION, checkedTokens);

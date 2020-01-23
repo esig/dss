@@ -50,7 +50,7 @@ public class CertificateQualifiedCheckTest extends AbstractTestCheck {
 
 		XmlCertificate xc = new XmlCertificate();
 
-		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
+		List<XmlOID> qcStatementIds = new ArrayList<>();
 		XmlOID oid = new XmlOID();
 		oid.setValue(QCStatement.QC_COMPLIANCE.getOid());
 		qcStatementIds.add(oid);
@@ -71,7 +71,7 @@ public class CertificateQualifiedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		List<XmlCertificatePolicy> certPolicies = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> certPolicies = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
 		certPolicies.add(oid);

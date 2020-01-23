@@ -85,7 +85,7 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 				}
 			}
 
-			Set<String> acceptableUrls = new HashSet<String>();
+			Set<String> acceptableUrls = new HashSet<>();
 			for (String tlURL : trustedListUrls) {
 				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 				if (currentTL != null) {
@@ -144,7 +144,7 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	}
 
 	private AcceptableTrustedListCheck<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlCertificate>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableBuildingBlockConclusion(XmlConclusion buildingBlocksConclusion) {

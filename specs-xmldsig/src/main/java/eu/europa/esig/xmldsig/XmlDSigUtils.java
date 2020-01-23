@@ -27,11 +27,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 public final class XmlDSigUtils extends XSDAbstractUtils {
@@ -43,7 +39,6 @@ public final class XmlDSigUtils extends XSDAbstractUtils {
 	private static XmlDSigUtils singleton;
 
 	private JAXBContext jc;
-	private Schema schema;
 
 	private XmlDSigUtils() {
 	}
@@ -61,14 +56,6 @@ public final class XmlDSigUtils extends XSDAbstractUtils {
 			jc = JAXBContext.newInstance(ObjectFactory.class);
 		}
 		return jc;
-	}
-
-	@Override
-	public Schema getSchema() throws SAXException {
-		if (schema == null) {
-			schema = XmlDefinerUtils.getSchema(getXSDSources());
-		}
-		return schema;
 	}
 
 	@Override

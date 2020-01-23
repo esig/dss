@@ -242,10 +242,7 @@ public final class CMSUtils {
 	}
 	
 	private static boolean equals(CMSSignedData signedData, CMSSignedData signedDataToCompare) throws IOException {
-		if (Arrays.equals(signedData.getEncoded(), signedDataToCompare.getEncoded())) {
-			return true;
-		}
-		return false;
+		return Arrays.equals(signedData.getEncoded(), signedDataToCompare.getEncoded());
 	}
 
 	/**

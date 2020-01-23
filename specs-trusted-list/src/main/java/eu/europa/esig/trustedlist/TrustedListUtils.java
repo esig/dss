@@ -26,11 +26,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
@@ -46,7 +42,6 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 	private static TrustedListUtils singleton;
 
 	private JAXBContext jc;
-	private Schema schema;
 
 	private TrustedListUtils() {
 	}
@@ -66,14 +61,6 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 					eu.europa.esig.trustedlist.jaxb.ecc.ObjectFactory.class);
 		}
 		return jc;
-	}
-
-	@Override
-	public Schema getSchema() throws SAXException {
-		if (schema == null) {
-			schema = XmlDefinerUtils.getSchema(getXSDSources());
-		}
-		return schema;
 	}
 
 	@Override

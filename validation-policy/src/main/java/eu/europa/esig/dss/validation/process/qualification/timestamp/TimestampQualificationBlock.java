@@ -83,7 +83,7 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 				}
 			}
 
-			Set<String> acceptableUrls = new HashSet<String>();
+			Set<String> acceptableUrls = new HashSet<>();
 			for (String tlURL : trustedListUrls) {
 				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 				if (currentTL != null) {
@@ -144,11 +144,11 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> certificatePathTrusted(CertificateWrapper signingCertificate) {
-		return new CertificatePathTrustedCheck<XmlValidationTimestampQualification>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
+		return new CertificatePathTrustedCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationTimestampQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlValidationTimestampQualification>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustedServiceWrapper> services) {
@@ -156,7 +156,7 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatus(List<TrustedServiceWrapper> services) {
-		return new GrantedStatusCheck<XmlValidationTimestampQualification>(i18nProvider, result, services, getFailLevelConstraint());
+		return new GrantedStatusCheck<>(i18nProvider, result, services, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatusAtDate(List<TrustedServiceWrapper> services) {

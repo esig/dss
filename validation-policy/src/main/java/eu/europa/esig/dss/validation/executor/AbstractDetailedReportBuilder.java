@@ -64,14 +64,14 @@ public abstract class AbstractDetailedReportBuilder {
 	}
 
 	protected List<XmlTLAnalysis> executeAllTlAnalysis(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
-		List<XmlTLAnalysis> result = new ArrayList<XmlTLAnalysis>();
+		List<XmlTLAnalysis> result = new ArrayList<>();
 		result.addAll(validateTL(policy, currentTime, diagnosticData.getListOfTrustedLists()));
 		result.addAll(validateTL(policy, currentTime, diagnosticData.getTrustedLists()));
 		return result;
 	}
 
 	private List<XmlTLAnalysis> validateTL(ValidationPolicy policy, Date currentTime, List<XmlTrustedList> trustedLists) {
-		List<XmlTLAnalysis> result = new ArrayList<XmlTLAnalysis>();
+		List<XmlTLAnalysis> result = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(trustedLists)) {
 			for (XmlTrustedList xmlTrustedList : trustedLists) {
 				TLValidationBlock tlValidation = new TLValidationBlock(i18nProvider, xmlTrustedList, currentTime, policy);

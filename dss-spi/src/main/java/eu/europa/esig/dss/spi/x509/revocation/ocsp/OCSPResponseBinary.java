@@ -37,7 +37,7 @@ public class OCSPResponseBinary extends EncapsulatedRevocationTokenIdentifier {
 
 	private static final long serialVersionUID = 6693521503459405568L;
 	
-	private transient final BasicOCSPResp basicOCSPResp;
+	private final transient BasicOCSPResp basicOCSPResp;
 	
 	// specifies origin of the OCSP Response from SignedData.CRLs element
 	// Note: Used in CAdES only!

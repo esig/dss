@@ -42,7 +42,7 @@ import eu.europa.esig.dss.ws.dto.TimestampDTO;
 import eu.europa.esig.dss.ws.dto.TimestampIncludeDTO;
 
 public class TimestampTokenConverterTest {
-	
+
 	private static final String timestampBinaries = "MIIGPAYJKoZIhvcNAQcCoIIGLTCCBikCAQMxCzAJBgUrDgMCGgUAM"
 			+ "GIGCyqGSIb3DQEJEAEEoFMEUTBPAgEBBgMqAwQwITAJBgUrDgMCGgUABBQivdlxQ99rOaZa+tKva9i/IM1PewIRAPEq"
 			+ "OSVB0izW3DCYCvFbiG4YDzIwMTkwOTEwMDkxMzE1WqCCA3IwggNuMIICVqADAgECAgFkMA0GCSqGSIb3DQEBCwUAMFU"
@@ -67,13 +67,13 @@ public class TimestampTokenConverterTest {
 			+ "irKH/oy8ZZqoQ84UWIKjxH7iOycx4O/5PjXLAiXHk6zOh5PvfdqCXFO+nv+CL+NyvfcSIL/gzHFwrQgSzhm92/3a6cb"
 			+ "P/q9M21zO+1IE0ZLpuyEgQNhLrllqaKOjfU1Hgi/dyaXTHfEB2VVhLNscQFqjUk1+dqxAUOhxtP2ZIAJTBnF3oQKF/9"
 			+ "A4Yj+0cXn6FJBBw9t3ljpAwtR50YSaykrI0A9u///W40X/dcXx/Nj2T6EHmzBlN5/q9jv0zk1wzQz4g==";
-	
+
 	@Test
 	public void toTimestampTokenTest() throws Exception {
 		TimestampDTO timestampDTO = new TimestampDTO(Utils.fromBase64(timestampBinaries), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		timestampDTO.setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		timestampDTO.setIncludes(Arrays.asList(new TimestampIncludeDTO("reference-id-1", true)));
-		
+
 		TimestampToken timestampToken = TimestampTokenConverter.toTimestampToken(timestampDTO);
 		assertNotNull(timestampToken);
 		assertEquals(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, timestampToken.getTimeStampType());
@@ -83,61 +83,61 @@ public class TimestampTokenConverterTest {
 		assertTrue(timestampToken.getTimestampIncludes().get(0).isReferencedData());
 		assertTrue(Arrays.equals(Utils.fromBase64(timestampBinaries), timestampToken.getEncoded()));
 	}
-	
+
 	@Test
 	public void toTimestampTokenListTest() throws Exception {
 		List<TimestampDTO> timestampDTOs = new ArrayList<>();
 		timestampDTOs.add(null);
 		timestampDTOs.add(new TimestampDTO());
 		timestampDTOs.add(new TimestampDTO(Utils.fromBase64(timestampBinaries), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
-		
+
 		List<TimestampToken> timestampTokens = TimestampTokenConverter.toTimestampTokens(timestampDTOs);
 		assertEquals(1, timestampTokens.size());
-		
+
 		TimestampToken timestampToken = timestampTokens.get(0);
 		assertNotNull(timestampToken);
 		assertEquals(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, timestampToken.getTimeStampType());
 		assertTrue(Arrays.equals(Utils.fromBase64(timestampBinaries), timestampToken.getEncoded()));
 	}
-	
+
 	@Test
 	public void emptyTimestampTokenDTOTest() {
 		Exception e = assertThrows(NullPointerException.class, () -> {
 			TimestampTokenConverter.toTimestampToken(null);
 		});
-		assertEquals(e.getMessage(), "TimestampDTO cannot be null!");
-		
+		assertEquals("TimestampDTO cannot be null!", e.getMessage());
+
 		e = assertThrows(NullPointerException.class, () -> {
 			TimestampTokenConverter.toTimestampToken(new TimestampDTO());
 		});
-		assertEquals(e.getMessage(), "TimestampDTO binaries cannot be null!");
-		
+		assertEquals("TimestampDTO binaries cannot be null!", e.getMessage());
+
 		e = assertThrows(NullPointerException.class, () -> {
 			TimestampTokenConverter.toTimestampToken(new TimestampDTO(null, TimestampType.CONTENT_TIMESTAMP));
 		});
-		assertEquals(e.getMessage(), "TimestampDTO binaries cannot be null!");
-		
+		assertEquals("TimestampDTO binaries cannot be null!", e.getMessage());
+
 		e = assertThrows(NullPointerException.class, () -> {
 			TimestampTokenConverter.toTimestampToken(new TimestampDTO(Utils.fromBase64(timestampBinaries), null));
 		});
-		assertEquals(e.getMessage(), "TimestampDTO type cannot be null!");
+		assertEquals("TimestampDTO type cannot be null!", e.getMessage());
 	}
-	
+
 	@Test
 	public void wrongBinaryTest() {
 		Exception e = assertThrows(DSSException.class, () -> {
-			TimestampTokenConverter.toTimestampToken(new TimestampDTO(new byte[] {1, 2, 3}, TimestampType.CONTENT_TIMESTAMP));
+			TimestampTokenConverter.toTimestampToken(new TimestampDTO(new byte[] { 1, 2, 3 }, TimestampType.CONTENT_TIMESTAMP));
 		});
 		assertTrue(e.getMessage().contains("Cannot convert a TimestampDTO to TimestampToken class"));
 	}
-	
+
 	@Test
 	public void toTimestampDTOTest() throws Exception {
 		TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(timestampBinaries), TimestampType.CONTENT_TIMESTAMP);
 		assertNotNull(timestampToken);
 		timestampToken.setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS);
 		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude("reference-id-1", true)));
-		
+
 		TimestampDTO timestampDTO = TimestampTokenConverter.toTimestampDTO(timestampToken);
 		assertNotNull(timestampDTO);
 		assertEquals(timestampToken.getTimeStampType(), timestampDTO.getType());
@@ -145,7 +145,7 @@ public class TimestampTokenConverterTest {
 		assertEquals(1, timestampDTO.getIncludes().size());
 		assertEquals("reference-id-1", timestampDTO.getIncludes().get(0).getURI());
 		assertTrue(timestampDTO.getIncludes().get(0).isReferencedData());
-		
+
 		assertTrue(Arrays.equals(timestampToken.getEncoded(), timestampDTO.getBinaries()));
 	}
 

@@ -42,6 +42,8 @@ public abstract class XSDAbstractUtils {
 
 	private static final String EMPTY_STRING = "";
 
+	private Schema schema;
+
 	/**
 	 * Returns a JAXBContext
 	 * 
@@ -52,20 +54,25 @@ public abstract class XSDAbstractUtils {
 	public abstract JAXBContext getJAXBContext() throws JAXBException;
 
 	/**
-	 * Returns a default module {@code Schema}
-	 * 
-	 * @return the created {@link Schema}
-	 * @throws SAXException
-	 *                      in case of an exception
-	 */
-	public abstract Schema getSchema() throws SAXException;
-
-	/**
 	 * Returns a list of module-specific XSD {@code Source}s
 	 * 
 	 * @return list of XSD {@link Source}s
 	 */
 	public abstract List<Source> getXSDSources();
+
+	/**
+	 * Returns a default module {@code Schema}. The result is cached
+	 * 
+	 * @return the created {@link Schema}
+	 * @throws SAXException
+	 *                      in case of an exception
+	 */
+	public Schema getSchema() throws SAXException {
+		if (schema == null) {
+			schema = XmlDefinerUtils.getSchema(getXSDSources());
+		}
+		return schema;
+	}
 
 	/**
 	 * Returns a Schema with custom sources

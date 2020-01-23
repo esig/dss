@@ -155,17 +155,17 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	}
 
 	private ChainItem<XmlRAC> revocationDataConsistent() {
-		return new RevocationConsistentCheck<XmlRAC>(i18nProvider, result, certificate, revocationData, getFailLevelConstraint());
+		return new RevocationConsistentCheck<>(i18nProvider, result, certificate, revocationData, getFailLevelConstraint());
 	}
 	
 	private ChainItem<XmlRAC> revocationDataIntact() {
 		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.REVOCATION);
-		return new SignatureIntactCheck<XmlRAC>(i18nProvider, result, revocationData, Context.REVOCATION, constraint);
+		return new SignatureIntactCheck<>(i18nProvider, result, revocationData, Context.REVOCATION, constraint);
 	}
 
 	private ChainItem<XmlRAC> prospectiveCertificateChain(CertificateWrapper signingCertificate) {
 		LevelConstraint constraint = policy.getProspectiveCertificateChainConstraint(Context.REVOCATION);
-		return new ProspectiveCertificateChainCheck<XmlRAC>(i18nProvider, result, signingCertificate, Context.REVOCATION, constraint);
+		return new ProspectiveCertificateChainCheck<>(i18nProvider, result, signingCertificate, Context.REVOCATION, constraint);
 	}
 	
 	private boolean isTokenValidated(TokenProxy token) {
@@ -176,11 +176,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	private ChainItem<XmlRAC> certificateIntact(CertificateWrapper certificate) {
 		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.CERTIFICATE);
-		return new SignatureIntactCheck<XmlRAC>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
+		return new SignatureIntactCheck<>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
 	private ChainItem<XmlRAC> idPkixOcspNoCheck() {
-		return new IdPkixOcspNoCheck<XmlRAC>(i18nProvider, result, getFailLevelConstraint());
+		return new IdPkixOcspNoCheck<>(i18nProvider, result, getFailLevelConstraint());
 	}
 	
 	private ChainItem<XmlRAC> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
@@ -211,17 +211,17 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	}
 	
 	private ChainItem<XmlRAC> revocationAcceptanceResultCheck(XmlRAC racResult) {
-		return new RevocationAcceptanceCheckerResultCheck<XmlRAC>(i18nProvider, result, racResult, getWarnLevelConstraint());
+		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
 	}
 	
 	private ChainItem<XmlRAC> latestRevocationAcceptable(XmlRAC racResult) {
-		return new LatestRevocationAcceptanceCheckerResultCheck<XmlRAC>(i18nProvider, result, racResult, getFailLevelConstraint());
+		return new LatestRevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlRAC> acceptableRevocationDataAvailable(RevocationWrapper revocationData, 
 			CertificateWrapper certificateWrapper, SubContext subContext) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
-		return new AcceptableRevocationDataAvailableCheck<XmlRAC>(i18nProvider, result, certificateWrapper, revocationData, constraint);
+		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, certificateWrapper, revocationData, constraint);
 	}
 
 }

@@ -26,11 +26,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.trustedlist.TrustedListUtils;
 import eu.europa.esig.validationreport.jaxb.ObjectFactory;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
@@ -44,7 +40,6 @@ public final class ValidationReportUtils extends XSDAbstractUtils {
 	private static ValidationReportUtils singleton;
 
 	private JAXBContext jc;
-	private Schema schema;
 
 	private ValidationReportUtils() {
 	}
@@ -62,14 +57,6 @@ public final class ValidationReportUtils extends XSDAbstractUtils {
 			jc = JAXBContext.newInstance(ObjectFactory.class);
 		}
 		return jc;
-	}
-
-	@Override
-	public Schema getSchema() throws SAXException {
-		if (schema == null) {
-			schema = XmlDefinerUtils.getSchema(getXSDSources());
-		}
-		return schema;
 	}
 
 	@Override

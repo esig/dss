@@ -100,7 +100,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				}
 			}
 
-			Set<String> acceptableUrls = new HashSet<String>();
+			Set<String> acceptableUrls = new HashSet<>();
 			for (String tlURL : trustedListUrls) {
 				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 				if (currentTL != null) {
@@ -205,12 +205,12 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> certificatePathTrusted(CertificateWrapper signingCertificate) {
-		return new CertificatePathTrustedCheck<XmlValidationSignatureQualification>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
+		return new CertificatePathTrustedCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(
 			XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlValidationSignatureQualification>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {

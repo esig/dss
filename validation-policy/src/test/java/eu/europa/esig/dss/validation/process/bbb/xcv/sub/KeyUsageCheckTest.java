@@ -42,7 +42,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void keyUsageCheck() throws Exception {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -63,7 +63,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void failedKeyUsageCheck() throws Exception {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();

@@ -48,7 +48,7 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 
 	@Override
 	public List<RemoteKeyEntry> getKeys() throws DSSException {
-		List<RemoteKeyEntry> result = new ArrayList<RemoteKeyEntry>();
+		List<RemoteKeyEntry> result = new ArrayList<>();
 		List<DSSPrivateKeyEntry> keys = token.getKeys();
 		for (DSSPrivateKeyEntry keyEntry : keys) {
 			result.add(convert((KSPrivateKeyEntry) keyEntry));

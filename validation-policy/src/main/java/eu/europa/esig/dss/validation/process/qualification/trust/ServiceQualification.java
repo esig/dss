@@ -164,7 +164,7 @@ public final class ServiceQualification {
 	}
 
 	public static List<String> getUsageQualifiers(List<String> qualifiers) {
-		List<String> filteredQualifiers = new ArrayList<String>();
+		List<String> filteredQualifiers = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(qualifiers)) {
 			if (qualifiers.contains(QC_FOR_ESIG)) {
 				filteredQualifiers.add(QC_FOR_ESIG);

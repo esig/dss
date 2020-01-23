@@ -162,7 +162,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 	}
 	
 	private List<TimestampWrapper> getOrderedArchiveTimestampsByTime() {
-		List<TimestampWrapper> archiveTimestamps = new ArrayList<TimestampWrapper>();
+		List<TimestampWrapper> archiveTimestamps = new ArrayList<>();
 		for (TimestampWrapper timestamp : timestamps) {
 			if (timestamp.getType().isArchivalTimestamp()) {
 				archiveTimestamps.add(timestamp);

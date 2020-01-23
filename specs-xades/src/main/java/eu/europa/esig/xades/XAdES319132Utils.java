@@ -26,11 +26,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
@@ -43,7 +39,6 @@ public final class XAdES319132Utils extends XSDAbstractUtils {
 	private static XAdES319132Utils singleton;
 
 	private JAXBContext jc;
-	private Schema schema;
 
 	private XAdES319132Utils() {
 	}
@@ -62,14 +57,6 @@ public final class XAdES319132Utils extends XSDAbstractUtils {
 					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class);
 		}
 		return jc;
-	}
-
-	@Override
-	public Schema getSchema() throws SAXException {
-		if (schema == null) {
-			schema = XmlDefinerUtils.getSchema(getXSDSources());
-		}
-		return schema;
 	}
 
 	@Override

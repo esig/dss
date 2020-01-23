@@ -51,7 +51,7 @@ public class RevocationFreshnessCheckerResultTest extends AbstractTestCheck {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResultCheck<XmlSubXCV> rfc = new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(i18nProvider, result, resultRFC, constraint);
+		RevocationFreshnessCheckerResultCheck<XmlSubXCV> rfc = new RevocationFreshnessCheckerResultCheck<>(i18nProvider, result, resultRFC, constraint);
 		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -71,7 +71,7 @@ public class RevocationFreshnessCheckerResultTest extends AbstractTestCheck {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResultCheck<XmlSubXCV> rfc = new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(i18nProvider, result, resultRFC, constraint);
+		RevocationFreshnessCheckerResultCheck<XmlSubXCV> rfc = new RevocationFreshnessCheckerResultCheck<>(i18nProvider, result, resultRFC, constraint);
 		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

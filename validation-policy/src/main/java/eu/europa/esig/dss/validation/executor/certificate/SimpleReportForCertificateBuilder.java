@@ -59,7 +59,7 @@ public class SimpleReportForCertificateBuilder {
 	public XmlSimpleCertificateReport build() {
 		XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
 		simpleReport.setValidationTime(currentTime);
-		List<XmlChainItem> chain = new ArrayList<XmlChainItem>();
+		List<XmlChainItem> chain = new ArrayList<>();
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 		XmlChainItem firstChainItem = getChainItem(certificate);
@@ -104,7 +104,7 @@ public class SimpleReportForCertificateBuilder {
 
 		if (certificate.isTrusted()) {
 			List<XmlTrustedServiceProvider> trustServiceProviders = filterByCertificateId(certificate.getTrustServiceProviders(), certificate.getId());
-			List<XmlTrustAnchor> trustAnchors = new ArrayList<XmlTrustAnchor>();
+			List<XmlTrustAnchor> trustAnchors = new ArrayList<>();
 			for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustServiceProviders) {
 				List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
 				Set<String> uniqueServiceNames = getUniqueServiceNames(trustedServices);
@@ -137,7 +137,7 @@ public class SimpleReportForCertificateBuilder {
 	}
 
 	private List<XmlTrustedServiceProvider> filterByCertificateId(List<XmlTrustedServiceProvider> trustServiceProviders, String certificateId) {
-		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
+		List<XmlTrustedServiceProvider> result = new ArrayList<>();
 		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustServiceProviders) {
 			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
 			boolean foundCertId = false;
@@ -156,7 +156,7 @@ public class SimpleReportForCertificateBuilder {
 
 	private List<String> getReadable(List<XmlOID> oids) {
 		if (Utils.isCollectionNotEmpty(oids)) {
-			List<String> result = new ArrayList<String>();
+			List<String> result = new ArrayList<>();
 			for (XmlOID xmlOID : oids) {
 				if (Utils.isStringNotEmpty(xmlOID.getDescription())) {
 					result.add(xmlOID.getDescription());
@@ -170,7 +170,7 @@ public class SimpleReportForCertificateBuilder {
 	}
 
 	private Set<String> getUniqueServiceNames(List<XmlTrustedService> trustedServices) {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		for (XmlTrustedService xmlTrustedService : trustedServices) {
 			result.add(getFirst(xmlTrustedService.getServiceNames()));
 		}

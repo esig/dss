@@ -50,7 +50,7 @@ public class CertificateSignatureValidCheckTest extends AbstractTestCheck {
 		xc.setBasicSignature(xbs);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<XmlSubXCV>(i18nProvider, result,
+		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<>(i18nProvider, result,
 				new CertificateWrapper(xc), constraint);
 		csvc.execute();
 
@@ -70,7 +70,7 @@ public class CertificateSignatureValidCheckTest extends AbstractTestCheck {
 		xc.setBasicSignature(xbs);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<XmlSubXCV>(i18nProvider, result,
+		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<>(i18nProvider, result,
 				new CertificateWrapper(xc), constraint);
 		csvc.execute();
 

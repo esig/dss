@@ -48,7 +48,7 @@ public class UniqueServiceFilterTest {
 				Collections.<String> emptyList());
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
-		List<TrustedServiceWrapper> trustServices = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
@@ -65,7 +65,7 @@ public class UniqueServiceFilterTest {
 				Collections.<String> emptyList());
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
-		List<TrustedServiceWrapper> trustServices = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
 		ts0.setServiceNames(Arrays.asList("Test"));
@@ -88,7 +88,7 @@ public class UniqueServiceFilterTest {
 				Collections.<String> emptyList());
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
-		List<TrustedServiceWrapper> trustServices = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
 		ts0.setServiceNames(Arrays.asList("Test"));

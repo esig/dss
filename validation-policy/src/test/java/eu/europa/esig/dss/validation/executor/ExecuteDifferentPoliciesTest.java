@@ -48,7 +48,7 @@ public class ExecuteDifferentPoliciesTest {
 		File[] policyFiles = folderPolicy.listFiles();
 		File folderDiagnosticData = new File("src/test/resources");
 		File[] diagDataFiles = folderDiagnosticData.listFiles();
-		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
+		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File diagData : diagDataFiles) {
 			if (diagData.isFile()) {
 				XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(diagData);

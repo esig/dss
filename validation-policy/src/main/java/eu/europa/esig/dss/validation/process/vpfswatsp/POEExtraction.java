@@ -60,7 +60,7 @@ public class POEExtraction {
 	/**
 	 * Map of proofs of existence by token ids
 	 */
-	private Map<String, List<XmlProofOfExistence>> poeMap = new HashMap<String, List<XmlProofOfExistence>>();
+	private Map<String, List<XmlProofOfExistence>> poeMap = new HashMap<>();
 
 	public void init(DiagnosticData diagnosticData, XmlProofOfExistence proofOfExistence) {
 
@@ -107,7 +107,7 @@ public class POEExtraction {
 		if (proofOfExistence != null) {
 			List<XmlProofOfExistence> poesById = poeMap.get(tokenId);
 			if (poesById == null) {
-				poesById = new ArrayList<XmlProofOfExistence>();
+				poesById = new ArrayList<>();
 				poeMap.put(tokenId, poesById);
 			}
 			poesById.add(proofOfExistence);

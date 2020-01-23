@@ -191,7 +191,7 @@ public class QualifiedTest {
 	}
 
 	private List<XmlCertificatePolicy> toCertPolicies(List<String> certificatePolicyIds) {
-		List<XmlCertificatePolicy> cerPolicies = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> cerPolicies = new ArrayList<>();
 		for (String oid : certificatePolicyIds) {
 			XmlCertificatePolicy cp = new XmlCertificatePolicy();
 			cp.setValue(oid);
@@ -201,7 +201,7 @@ public class QualifiedTest {
 	}
 
 	private List<XmlOID> toOids(List<String> oids) {
-		List<XmlOID> result = new ArrayList<XmlOID>();
+		List<XmlOID> result = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oids)) {
 			for (String oid : oids) {
 				XmlOID xmlOid = new XmlOID();

@@ -95,10 +95,10 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
 	
-	protected transient final SignerInformation signerInformation;
+	protected final transient SignerInformation signerInformation;
 	
-	protected transient final CMSSignedData cmsSignedData;
-	protected transient final List<DSSDocument> detachedDocuments;
+	protected final transient CMSSignedData cmsSignedData;
+	protected final transient List<DSSDocument> detachedDocuments;
 	
 	public CAdESTimestampSource(final CAdESSignature signature, final CertificatePool certificatePool) {
 		super(signature);

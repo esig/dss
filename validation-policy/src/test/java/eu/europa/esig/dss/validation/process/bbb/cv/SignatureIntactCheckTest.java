@@ -52,7 +52,7 @@ public class SignatureIntactCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		SignatureIntactCheck<XmlCV> sic = new SignatureIntactCheck<XmlCV>(i18nProvider, result, new SignatureWrapper(sig), Context.SIGNATURE, constraint);
+		SignatureIntactCheck<XmlCV> sic = new SignatureIntactCheck<>(i18nProvider, result, new SignatureWrapper(sig), Context.SIGNATURE, constraint);
 		sic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -72,7 +72,7 @@ public class SignatureIntactCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		SignatureIntactCheck<XmlCV> sic = new SignatureIntactCheck<XmlCV>(i18nProvider, result, new SignatureWrapper(sig), Context.SIGNATURE, constraint);
+		SignatureIntactCheck<XmlCV> sic = new SignatureIntactCheck<>(i18nProvider, result, new SignatureWrapper(sig), Context.SIGNATURE, constraint);
 		sic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -41,7 +41,7 @@ public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void commitmentTypeIndicationsCheck() throws Exception {
-		List<String> commitmentTypeIndication = new ArrayList<String>();
+		List<String> commitmentTypeIndication = new ArrayList<>();
 		commitmentTypeIndication.add("1");
 		commitmentTypeIndication.add("2");
 
@@ -66,7 +66,7 @@ public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void failedCommitmentTypeIndicationsCheck() throws Exception {
-		List<String> commitmentTypeIndication = new ArrayList<String>();
+		List<String> commitmentTypeIndication = new ArrayList<>();
 		commitmentTypeIndication.add("1");
 		commitmentTypeIndication.add("4");
 

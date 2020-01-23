@@ -56,7 +56,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 	private Indication indication;
 	private SubIndication subIndication;
-	private List<XmlName> errors = new ArrayList<XmlName>();
+	private List<XmlName> errors = new ArrayList<>();
 
 	public AbstractBasicBuildingBlocksCheck(I18nProvider i18nProvider, T result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks tokenBBB,
 			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {

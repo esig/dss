@@ -74,7 +74,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
-		this.caqcServices = new ArrayList<TrustedServiceWrapper>(caqcServices);
+		this.caqcServices = new ArrayList<>(caqcServices);
 
 		switch (validationTime) {
 		case CERTIFICATE_ISSUANCE_TIME:
@@ -187,7 +187,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new GrantedStatusCheck<XmlValidationCertificateQualification>(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
+		return new GrantedStatusCheck<>(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCertificateTypeCoverage(

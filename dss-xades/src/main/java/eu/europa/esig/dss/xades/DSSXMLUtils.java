@@ -65,7 +65,6 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
@@ -701,10 +700,10 @@ public final class DSSXMLUtils {
 			return reference.getContentsBeforeTransformation().getBytes();
 		} catch (ReferenceNotInitializedException e) {
 			// if exception occurs during an attempt to access reference original data
-			LOG.warn("Original data is not provided for the reference with id [" + reference.getId() + "]. Reason: [{}]", e.getMessage());
+			LOG.warn("Original data is not provided for the reference with id [{}]. Reason: [{}]", reference.getId(), e.getMessage());
 		} catch (IOException | CanonicalizationException e) {
 			// if exception occurs by another reason
-			LOG.error("Unable to retrieve the content of reference with id [" + reference.getId() + "].", e);
+			LOG.error("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
 		}
 		// in case of exceptions return null value
 		return null;

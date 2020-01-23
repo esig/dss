@@ -49,7 +49,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
 
-	protected transient final AttributeTable unsignedAttributes;
+	protected final transient AttributeTable unsignedAttributes;
 
 	protected CMSCertificateSource(final AttributeTable unsignedAttributes, CertificatePool certPool) {
 		super(certPool);

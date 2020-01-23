@@ -104,11 +104,11 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 				return xmlManifestFile.getEntries();
 			}
 		}
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	private List<String> getCoveredFilesFromScope() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
 			if (SignatureScopeType.FULL == xmlSignatureScope.getScope()) {

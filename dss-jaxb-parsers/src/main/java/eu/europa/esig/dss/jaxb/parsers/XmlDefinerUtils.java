@@ -46,7 +46,7 @@ public final class XmlDefinerUtils {
 	 */
 	public static Schema getSchema(List<Source> xsdSources) throws SAXException {
 		Objects.requireNonNull(xsdSources, "XSD Source(s) must be provided");
-		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
+		SchemaFactory sf = getSecureSchemaFactory();
 		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
 	}
 

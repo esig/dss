@@ -42,7 +42,7 @@ public class CertificateQCStatementIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateQCStatementCheck() throws Exception {
-		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
+		List<XmlOID> qcStatementIds = new ArrayList<>();
 		XmlOID oid = new XmlOID();
 		oid.setValue("0.4.0.1862.1.1");
 		qcStatementIds.add(oid);
@@ -65,7 +65,7 @@ public class CertificateQCStatementIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void failedCertificateQCStatementCheck() throws Exception {
-		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
+		List<XmlOID> qcStatementIds = new ArrayList<>();
 		XmlOID oid = new XmlOID();
 		oid.setValue("0.4.0.1862.1.1");
 		qcStatementIds.add(oid);

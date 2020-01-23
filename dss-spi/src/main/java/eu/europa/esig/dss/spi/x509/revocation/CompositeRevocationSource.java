@@ -51,7 +51,7 @@ public class CompositeRevocationSource<T extends RevocationToken> implements Rev
 				}
 			} catch (Exception e) {
 				LOG.warn("Exception occurred when accessing revocation from the source of class [{}] for a certificate with Id: [{}]",
-						revocationSource.getClass().toString(), certificateToken.getDSSIdAsString());
+						revocationSource.getClass(), certificateToken.getDSSIdAsString());
 			}
 		}
 		return null;

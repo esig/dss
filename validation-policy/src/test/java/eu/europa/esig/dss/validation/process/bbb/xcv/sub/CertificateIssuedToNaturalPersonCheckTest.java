@@ -46,7 +46,7 @@ public class CertificateIssuedToNaturalPersonCheckTest extends AbstractTestCheck
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> qualifiers = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_NATURAL.getOid());
 		qualifiers.add(oid);

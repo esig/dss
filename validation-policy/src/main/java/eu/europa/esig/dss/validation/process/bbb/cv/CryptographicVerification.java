@@ -167,7 +167,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
-		return new SignatureIntactCheck<XmlCV>(i18nProvider, result, token, context, constraint);
+		return new SignatureIntactCheck<>(i18nProvider, result, token, context, constraint);
 	}
 
 	private ChainItem<XmlCV> allFilesSignedCheck() {

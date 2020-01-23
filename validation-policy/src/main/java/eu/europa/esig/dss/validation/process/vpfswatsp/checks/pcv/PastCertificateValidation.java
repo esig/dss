@@ -180,7 +180,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
 		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<XmlPCV>(i18nProvider, result, certificate, validationTime, constraint);
+		return new CryptographicCheck<>(i18nProvider, result, certificate, validationTime, constraint);
 	}
 
 	@Override

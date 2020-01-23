@@ -327,7 +327,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
 		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, bestSignatureTime, signature, context, policy);
 		XmlSAV savResult = sav.execute();
-		return new SignatureAcceptanceValidationResultCheck<XmlValidationProcessArchivalData>(i18nProvider, result, savResult, getFailLevelConstraint());
+		return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelConstraint());
 	}
 
 }

@@ -48,7 +48,7 @@ public class RevocationDataAvailableCheckTest extends AbstractTestCheck {
 		xmlCertificate.getRevocations().add(new XmlCertificateRevocation());
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataAvailableCheck<XmlRFC> rdac = new RevocationDataAvailableCheck<XmlRFC>(i18nProvider, result, 
+		RevocationDataAvailableCheck<XmlRFC> rdac = new RevocationDataAvailableCheck<>(i18nProvider, result, 
 				new CertificateWrapper(xmlCertificate), constraint);
 		rdac.execute();
 
@@ -65,7 +65,7 @@ public class RevocationDataAvailableCheckTest extends AbstractTestCheck {
 		XmlCertificate xmlCertificate = new XmlCertificate();
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataAvailableCheck<XmlRFC> rdac = new RevocationDataAvailableCheck<XmlRFC>(i18nProvider, result, 
+		RevocationDataAvailableCheck<XmlRFC> rdac = new RevocationDataAvailableCheck<>(i18nProvider, result, 
 				new CertificateWrapper(xmlCertificate), constraint);
 		rdac.execute();
 

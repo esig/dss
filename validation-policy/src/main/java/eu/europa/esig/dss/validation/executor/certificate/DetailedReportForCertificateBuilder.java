@@ -51,7 +51,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 
-		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
+		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<>();
 		process(Collections.singleton(certificate), Context.CERTIFICATE, bbbs);
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
 

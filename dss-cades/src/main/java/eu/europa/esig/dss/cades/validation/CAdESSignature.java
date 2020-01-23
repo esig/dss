@@ -441,7 +441,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 								policyQualifierInfoValue);
 					}
 				} catch (Exception e) {
-					LOG.error("Unable to read SigPolicyQualifierInfo " + ii, e.getMessage());
+					LOG.error("Unable to read SigPolicyQualifierInfo {}", ii, e.getMessage());
 				}
 			}
 			if (signaturePolicy.getPolicyContent() != null) {

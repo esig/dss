@@ -42,7 +42,7 @@ public class IdPkixOcspNoCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSubXCV result = new XmlSubXCV();
-		IdPkixOcspNoCheck<XmlSubXCV> ic = new IdPkixOcspNoCheck<XmlSubXCV>(i18nProvider, result, constraint);
+		IdPkixOcspNoCheck<XmlSubXCV> ic = new IdPkixOcspNoCheck<>(i18nProvider, result, constraint);
 		ic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -76,7 +76,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
 		
-		Set<String> attachedTimestampIds = new HashSet<String>();
+		Set<String> attachedTimestampIds = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			attachedTimestampIds.addAll(signature.getTimestampIdsList());
 			simpleReport.getSignatureOrTimestamp().add(getSignature(signature, containerInfoPresent));
@@ -250,7 +250,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	}
 
 	private List<String> toStrings(List<XmlName> xmlNames) {
-		List<String> strings = new ArrayList<String>();
+		List<String> strings = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(xmlNames)) {
 			for (XmlName name : xmlNames) {
 				strings.add(name.getValue());
