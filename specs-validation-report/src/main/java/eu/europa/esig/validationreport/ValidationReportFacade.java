@@ -34,7 +34,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportType> {
 	
-	private static final ValidationReportUtils validationReportUtils = ValidationReportUtils.newInstance();
+	private static final ValidationReportUtils ETSI_VR_UTILS = ValidationReportUtils.getInstance();
 
 	public static ValidationReportFacade newFacade() {
 		return new ValidationReportFacade();
@@ -42,12 +42,12 @@ public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportT
 
 	@Override
 	protected JAXBContext getJAXBContext() throws JAXBException {
-		return validationReportUtils.getJAXBContext();
+		return ETSI_VR_UTILS.getJAXBContext();
 	}
 
 	@Override
 	protected Schema getSchema() throws IOException, SAXException {
-		return validationReportUtils.getSchema();
+		return ETSI_VR_UTILS.getSchema();
 	}
 
 	@Override

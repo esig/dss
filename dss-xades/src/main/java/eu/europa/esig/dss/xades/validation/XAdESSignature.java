@@ -796,7 +796,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		try {
-			final XMLSignature santuarioSignature = getSantuarioSignature();
+			final XMLSignature currentSantuarioSignature = getSantuarioSignature();
 			boolean coreValidity = false;
 			
 			CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
@@ -814,7 +814,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				try {
 
 					final PublicKey publicKey = certificateValidity.getPublicKey();
-					coreValidity = santuarioSignature.checkSignatureValue(publicKey);
+					coreValidity = currentSantuarioSignature.checkSignatureValue(publicKey);
 					if (coreValidity) {
 						LOG.info("Determining signing certificate from certificate candidates list succeeded");
 						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
@@ -871,8 +871,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	private void extractReferences() {
 		references = new ArrayList<>();
-		final XMLSignature santuarioSignature = getSantuarioSignature();
-		final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+		final XMLSignature currentSantuarioSignature = getSantuarioSignature();
+		final SignedInfo signedInfo = currentSantuarioSignature.getSignedInfo();
 		final int numberOfReferences = signedInfo.getLength();
 		for (int ii = 0; ii < numberOfReferences; ii++) {
 			try {
@@ -889,11 +889,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<>();
 
-			final XMLSignature santuarioSignature = getSantuarioSignature();
+			final XMLSignature currentSantuarioSignature = getSantuarioSignature();
 			boolean atLeastOneReferenceElementFound = false;
 			
-			List<Reference> references = getReferences();
-			for (Reference reference : references) {
+			List<Reference> santuarioReferences = getReferences();
+			for (Reference reference : santuarioReferences) {
 				XAdESReferenceValidation validation = new XAdESReferenceValidation(reference);
 				validation.setType(DigestMatcherType.REFERENCE);
 				boolean found = false;
@@ -922,7 +922,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					boolean noDuplicateIdFound = true;
 					// empty URI means enveloped signature
 					if (Utils.isStringNotEmpty(uri)) {
-						noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
+						noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(currentSantuarioSignature.getDocument(), DomUtils.getId(uri));
 					}
 					
 					boolean isElementReference = DomUtils.isElementReference(uri);
@@ -935,7 +935,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.XPOINTER);
 						found = found && noDuplicateIdFound;
 						
-					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, santuarioSignature.getElement())) {
+					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, currentSantuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
 						
@@ -982,7 +982,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
 			}
 			
-			if (referenceValidations.size() < references.size()) {
+			if (referenceValidations.size() < santuarioReferences.size()) {
 				LOG.warn("Not all references were validated!");
 			}
 			
@@ -1122,24 +1122,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
+		final List<AdvancedSignature> xadesList = new ArrayList<>();
 
 		// see ETSI TS 101 903 V1.4.2 (2010-12) pp. 38/39/40
 		final NodeList counterSignatures = DomUtils.getNodeList(signatureElement, xadesPaths.getCounterSignaturePath());
-		if (counterSignatures == null) {
-			return null;
-		}
-		final List<AdvancedSignature> xadesList = new ArrayList<>();
-		for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
-
-			final Element counterSignatureElement = (Element) counterSignatures.item(ii);
-			final Element signatureElement = DomUtils.getElement(counterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
-
-			// Verify that the element is a proper signature by trying to build
-			// a XAdESSignature out of it
-			final XAdESSignature xadesCounterSignature = new XAdESSignature(signatureElement, xadesPathsHolders, certPool);
-			if (isCounterSignature(xadesCounterSignature)) {
-				xadesCounterSignature.setMasterSignature(this);
-				xadesList.add(xadesCounterSignature);
+		if (counterSignatures != null && counterSignatures.getLength() > 0) {
+			for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
+				final Element currentCounterSignatureElement = (Element) counterSignatures.item(ii);
+				final NodeList counterSignaturesList = DomUtils.getNodeList(currentCounterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
+				if (counterSignaturesList != null && counterSignaturesList.getLength() > 0) {
+					for (int jj = 0; jj < counterSignaturesList.getLength(); jj++) {
+						// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
+						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders, certPool);
+						if (isCounterSignature(xadesCounterSignature)) {
+							xadesCounterSignature.setMasterSignature(this);
+							xadesList.add(xadesCounterSignature);
+						}
+					}
+				}
 			}
 		}
 		return xadesList;

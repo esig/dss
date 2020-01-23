@@ -34,7 +34,7 @@ public class ValidationReportUtilsTest {
 	
 	@BeforeAll
 	public static void init() {
-		validationReportUtils = ValidationReportUtils.newInstance();
+		validationReportUtils = ValidationReportUtils.getInstance();
 	}
 
 	@Test

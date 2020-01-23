@@ -37,23 +37,21 @@ import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 public final class XAdES122Utils extends XSDAbstractUtils {
 	
-	private static final XmlDSigUtils xmlDSigUtils = XmlDSigUtils.newInstance();
-	
 	public static final String XADES_122_SCHEMA_LOCATION = "/xsd/XAdESv122.xsd";
 
-	private static JAXBContext jc;
-	private static Schema schema;
-	
-	private static XAdES122Utils xades122Utils;
+	private static XAdES122Utils singleton;
+
+	private JAXBContext jc;
+	private Schema schema;
 
 	private XAdES122Utils() {
 	}
 	
-	public static XAdES122Utils newInstance() {
-		if (xades122Utils == null) {
-			xades122Utils = new XAdES122Utils();
+	public static XAdES122Utils getInstance() {
+		if (singleton == null) {
+			singleton = new XAdES122Utils();
 		}
-		return xades122Utils;
+		return singleton;
 	}
 
 	@Override
@@ -74,7 +72,7 @@ public final class XAdES122Utils extends XSDAbstractUtils {
 
 	@Override
 	public List<Source> getXSDSources() {
-		List<Source> xsdSources = xmlDSigUtils.getXSDSources();
+		List<Source> xsdSources = XmlDSigUtils.getInstance().getXSDSources();
 		xsdSources.add(new StreamSource(XAdES122Utils.class.getResourceAsStream(XADES_122_SCHEMA_LOCATION)));
 		return xsdSources;
 	}

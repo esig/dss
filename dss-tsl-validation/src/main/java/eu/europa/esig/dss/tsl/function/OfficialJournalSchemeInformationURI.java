@@ -27,7 +27,7 @@ import java.util.Objects;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 
-public class OfficialJournalSchemeInformationURI extends LOTLSigningCertificatesAnnouncementSchemeInformationURI {
+public class OfficialJournalSchemeInformationURI implements LOTLSigningCertificatesAnnouncementSchemeInformationURI {
 
 	private final String officialJournalURL;
 

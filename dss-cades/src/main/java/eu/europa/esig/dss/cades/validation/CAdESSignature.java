@@ -1259,8 +1259,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			signerInformations = this.signerInformation.getCounterSignatures().getSigners(getSignerId());
 		}
 		int counter = 0;
-		for (SignerInformation signerInformation : signerInformations) {
-			if (this.signerInformation == signerInformation) {
+		for (SignerInformation currentSignerInformation : signerInformations) {
+			if (this.signerInformation == currentSignerInformation) {
 				break;
 			}
 			counter++;

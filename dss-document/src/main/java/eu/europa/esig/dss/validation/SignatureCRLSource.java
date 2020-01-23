@@ -315,12 +315,12 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	private void addReferenceToMap(CRLToken revocationToken, CRLRef reference) {
-		Set<CRLRef> crlRefs = revocationRefsMap.get(revocationToken);
-		if (crlRefs == null) {
-			crlRefs = new HashSet<>();
-			revocationRefsMap.put(revocationToken, crlRefs);
+		Set<CRLRef> currentCrlRefs = revocationRefsMap.get(revocationToken);
+		if (currentCrlRefs == null) {
+			currentCrlRefs = new HashSet<>();
+			revocationRefsMap.put(revocationToken, currentCrlRefs);
 		}
-		crlRefs.add(reference);
+		currentCrlRefs.add(reference);
 	}
 
 }

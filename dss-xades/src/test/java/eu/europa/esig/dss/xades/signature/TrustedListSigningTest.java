@@ -67,7 +67,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
-	private static TrustedListUtils trustedListUtils = TrustedListUtils.newInstance();
+	private static TrustedListUtils trustedListUtils = TrustedListUtils.getInstance();
 
 	@BeforeEach
 	public void init() throws Exception {

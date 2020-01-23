@@ -40,19 +40,19 @@ public final class XmlDSigUtils extends XSDAbstractUtils {
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
 	public static final String XMLDSIG_FILTER2_SCHEMA_LOCATION = "/xsd/xmldsig-filter2.xsd";
 
-	protected static JAXBContext jc;
-	protected static Schema schema;
-	
-	private static XmlDSigUtils xmlDSigUtils;
+	private static XmlDSigUtils singleton;
+
+	private JAXBContext jc;
+	private Schema schema;
 
 	private XmlDSigUtils() {
 	}
 	
-	public static XmlDSigUtils newInstance() {
-		if (xmlDSigUtils == null) {
-			xmlDSigUtils = new XmlDSigUtils();
+	public static XmlDSigUtils getInstance() {
+		if (singleton == null) {
+			singleton = new XmlDSigUtils();
 		}
-		 return xmlDSigUtils;
+		 return singleton;
 	}
 
 	@Override

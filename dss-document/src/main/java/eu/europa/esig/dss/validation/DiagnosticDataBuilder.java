@@ -160,14 +160,14 @@ public class DiagnosticDataBuilder {
 	
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
-	private Map<String, XmlCertificate> xmlCerts = new HashMap<>();
-	private Map<String, XmlRevocation> xmlRevocations = new HashMap<>();
-	private Map<String, XmlSignature> xmlSignatures = new HashMap<>();
-	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<>();
-	private Map<String, XmlTimestampedObject> xmlTimestampedObjects = new HashMap<>();
-	private Map<String, XmlSignerData> xmlSignedData = new HashMap<>();
-	private Map<String, XmlOrphanToken> xmlOrphanTokens = new HashMap<>();
-	private Map<String, XmlTrustedList> xmlTrustedLists = new HashMap<>();
+	private Map<String, XmlCertificate> xmlCertsMap = new HashMap<>();
+	private Map<String, XmlRevocation> xmlRevocationsMap = new HashMap<>();
+	private Map<String, XmlSignature> xmlSignaturesMap = new HashMap<>();
+	private Map<String, XmlTimestamp> xmlTimestampsMap = new HashMap<>();
+	private Map<String, XmlTimestampedObject> xmlTimestampedObjectsMap = new HashMap<>();
+	private Map<String, XmlSignerData> xmlSignedDataMap = new HashMap<>();
+	private Map<String, XmlOrphanToken> xmlOrphanTokensMap = new HashMap<>();
+	private Map<String, XmlTrustedList> xmlTrustedListsMap = new HashMap<>();
 
 	// A map between {@link CertificateToken}'s id and its certificate refs
 	private Map<String, List<CertificateRef>> certificateRefsMap = new HashMap<>();
@@ -390,8 +390,8 @@ public class DiagnosticDataBuilder {
 			linkTimestampsAndTimestampsObjects(usedTimestamps);
 		}
 
-		if (Utils.isMapNotEmpty(xmlOrphanTokens)) {
-			diagnosticData.getOrphanTokens().addAll(xmlOrphanTokens.values());
+		if (Utils.isMapNotEmpty(xmlOrphanTokensMap)) {
+			diagnosticData.getOrphanTokens().addAll(xmlOrphanTokensMap.values());
 		}
 
 		if (isUseTrustedLists()) {
@@ -416,7 +416,7 @@ public class DiagnosticDataBuilder {
 
 	private void linkTimestampsAndTimestampsObjects(Set<TimestampToken> timestamps) {
 		for (TimestampToken timestampToken : timestamps) {
-			XmlTimestamp xmlTimestampToken = xmlTimestamps.get(timestampToken.getDSSIdAsString());
+			XmlTimestamp xmlTimestampToken = xmlTimestampsMap.get(timestampToken.getDSSIdAsString());
 			xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken));
 		}
 	}
@@ -428,10 +428,10 @@ public class DiagnosticDataBuilder {
 			Collections.sort(tokens, new TokenComparator());
 			for (CertificateToken certificateToken : tokens) {
 				String id = certificateToken.getDSSIdAsString();
-				XmlCertificate xmlCertificate = xmlCerts.get(id);
+				XmlCertificate xmlCertificate = xmlCertsMap.get(id);
 				if (xmlCertificate == null) {
 					xmlCertificate = buildDetachedXmlCertificate(certificateToken);
-					xmlCerts.put(id, xmlCertificate);
+					xmlCertsMap.put(id, xmlCertificate);
 				}
 				builtCertificates.add(xmlCertificate);
 			}
@@ -442,7 +442,7 @@ public class DiagnosticDataBuilder {
 	private void linkSigningCertificateAndChains(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
-				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
+				XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
 				xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken.getPublicKeyOfTheSigner()));
 				xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken.getPublicKeyOfTheSigner()));
 			}
@@ -452,7 +452,7 @@ public class DiagnosticDataBuilder {
 	private void linkCertificatesAndTrustServices(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
-				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
+				XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
 				xmlCertificate.setTrustedServiceProviders(getXmlTrustedServiceProviders(certificateToken));
 			}
 		}
@@ -469,11 +469,11 @@ public class DiagnosticDataBuilder {
 				if (uniqueIds.contains(id)) {
 					continue;
 				}
-				XmlRevocation xmlRevocation = xmlRevocations.get(id);
+				XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
 				if (xmlRevocation == null) {
 					xmlRevocation = buildDetachedXmlRevocation(revocationToken);
 					xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
-					xmlRevocations.put(id, xmlRevocation);
+					xmlRevocationsMap.put(id, xmlRevocation);
 					builtRevocations.add(xmlRevocation);
 				}
 				uniqueIds.add(id);
@@ -485,10 +485,10 @@ public class DiagnosticDataBuilder {
 	private void linkCertificatesAndRevocations(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
-				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
+				XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
 				Set<RevocationToken> revocationsForCert = getRevocationsForCert(certificateToken);
 				for (RevocationToken revocationToken : revocationsForCert) {
-					XmlRevocation xmlRevocation = xmlRevocations.get(revocationToken.getDSSIdAsString());
+					XmlRevocation xmlRevocation = xmlRevocationsMap.get(revocationToken.getDSSIdAsString());
 					XmlCertificateRevocation xmlCertificateRevocation = new XmlCertificateRevocation();
 					xmlCertificateRevocation.setRevocation(xmlRevocation);
 
@@ -510,10 +510,10 @@ public class DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(currentSignatureScopes)) {
 			for (SignatureScope signatureScope : currentSignatureScopes) {
 				String id = signatureScope.getDSSIdAsString();
-				XmlSignerData xmlSignerData = xmlSignedData.get(id);
+				XmlSignerData xmlSignerData = xmlSignedDataMap.get(id);
 				if (xmlSignerData == null) {
 					xmlSignerData = getXmlSignerData(signatureScope);
-					xmlSignedData.put(id, xmlSignerData);
+					xmlSignedDataMap.put(id, xmlSignerData);
 					builtSignerData.add(xmlSignerData);
 				}
 			}
@@ -525,10 +525,10 @@ public class DiagnosticDataBuilder {
 		List<XmlSignature> builtSignatures = new ArrayList<>();
 		for (AdvancedSignature advancedSignature : signatures) {
 			String id = advancedSignature.getId();
-			XmlSignature xmlSignature = xmlSignatures.get(id);
+			XmlSignature xmlSignature = xmlSignaturesMap.get(id);
 			if (xmlSignature == null) {
 				xmlSignature = buildDetachedXmlSignature(advancedSignature);
-				xmlSignatures.put(id, xmlSignature);
+				xmlSignaturesMap.put(id, xmlSignature);
 				builtSignatures.add(xmlSignature);
 			}
 		}
@@ -537,11 +537,11 @@ public class DiagnosticDataBuilder {
 	
 	private void attachCounterSignatures(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
-			XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
+			XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
 			// attach master
 			AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
 			if (masterSignature != null) {
-				XmlSignature xmlMasterSignature = xmlSignatures.get(masterSignature.getId());
+				XmlSignature xmlMasterSignature = xmlSignaturesMap.get(masterSignature.getId());
 				currentSignature.setCounterSignature(true);
 				currentSignature.setParent(xmlMasterSignature);
 			}
@@ -550,7 +550,7 @@ public class DiagnosticDataBuilder {
 	
 	private void linkSignaturesAndTimestamps(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
-			XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
+			XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
 			// attach timestamps
 			currentSignature.setFoundTimestamps(getXmlFoundTimestamps(advancedSignature));
 		}
@@ -625,7 +625,7 @@ public class DiagnosticDataBuilder {
 
 	private XmlTrustedList getXmlTrustedList(TLInfo tlInfo) {
 		String id = tlInfo.getIdentifier().asXmlId();
-		XmlTrustedList result = xmlTrustedLists.get(id);
+		XmlTrustedList result = xmlTrustedListsMap.get(id);
 		if (result == null) {
 			result = new XmlTrustedList();
 			if (tlInfo instanceof LOTLInfo) {
@@ -649,7 +649,7 @@ public class DiagnosticDataBuilder {
 			if (validationCacheInfo != null) {
 				result.setWellSigned(validationCacheInfo.isValid());
 			}
-			xmlTrustedLists.put(id, result);
+			xmlTrustedListsMap.put(id, result);
 		}
 		return result;
 	}
@@ -855,10 +855,10 @@ public class DiagnosticDataBuilder {
 			Collections.sort(tokens, new TokenComparator());
 			for (TimestampToken timestampToken : tokens) {
 				String id = timestampToken.getDSSIdAsString();
-				XmlTimestamp xmlTimestamp = xmlTimestamps.get(id);
+				XmlTimestamp xmlTimestamp = xmlTimestampsMap.get(id);
 				if (xmlTimestamp == null) {
 					xmlTimestamp = buildDetachedXmlTimestamp(timestampToken);
-					xmlTimestamps.put(id, xmlTimestamp);
+					xmlTimestampsMap.put(id, xmlTimestamp);
 				}
 				xmlTimestampsList.add(xmlTimestamp);
 			}
@@ -946,7 +946,7 @@ public class DiagnosticDataBuilder {
 
 	private XmlChainItem getXmlChainItem(final CertificateToken token) {
 		final XmlChainItem chainItem = new XmlChainItem();
-		chainItem.setCertificate(xmlCerts.get(token.getDSSIdAsString()));
+		chainItem.setCertificate(xmlCertsMap.get(token.getDSSIdAsString()));
 		return chainItem;
 	}
 
@@ -961,7 +961,7 @@ public class DiagnosticDataBuilder {
 		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 		final CertificateToken certificateByPubKey = getCertificateByPubKey(certPubKey);
 		if (certificateByPubKey != null) {
-			xmlSignCertType.setCertificate(xmlCerts.get(certificateByPubKey.getDSSIdAsString()));
+			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateByPubKey.getDSSIdAsString()));
 		} else if (certPubKey != null) {
 			xmlSignCertType.setPublicKey(certPubKey.getEncoded());
 		} else {
@@ -995,7 +995,7 @@ public class DiagnosticDataBuilder {
 		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 		final CertificateToken certificateBySignerInfo = getCertificateBySignerInfo(signerInfo);
 		if (certificateBySignerInfo != null) {
-			xmlSignCertType.setCertificate(xmlCerts.get(certificateBySignerInfo.getDSSIdAsString()));
+			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateBySignerInfo.getDSSIdAsString()));
 		} else if (signerInfo != null) {
 			// TODO: add info to xsd
 		} else {
@@ -1030,7 +1030,7 @@ public class DiagnosticDataBuilder {
 		XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 		CertificateToken signingCertificateToken = certificateValidity.getCertificateToken();
 		if (signingCertificateToken != null) {
-			xmlSignCertType.setCertificate(xmlCerts.get(signingCertificateToken.getDSSIdAsString()));
+			xmlSignCertType.setCertificate(xmlCertsMap.get(signingCertificateToken.getDSSIdAsString()));
 		} else if (certificateValidity.getPublicKey() != null) {
 			XmlSigningCertificate xmlSignCert = getXmlSigningCertificate(certificateValidity.getPublicKey());
 			if (xmlSignCert != null) {
@@ -1138,7 +1138,7 @@ public class DiagnosticDataBuilder {
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateOrigin origin, CertificateToken cert, SignatureCertificateSource certificateSource) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.getOrigins().add(origin);
-		xrc.setCertificate(xmlCerts.get(cert.getDSSIdAsString()));
+		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
 		List<CertificateRef> referencesForCertificateToken = certificateSource.getReferencesForCertificateToken(cert);
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
 			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
@@ -1177,7 +1177,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
-		xrc.setCertificate(xmlCerts.get(cert.getDSSIdAsString()));
+		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
 		if (getXmlCertificateSources(cert).contains(CertificateSourceType.TIMESTAMP)) {
 			xrc.getOrigins().add(CertificateOrigin.TIMESTAMP_CERTIFICATE_VALUES);
 		}
@@ -1233,7 +1233,7 @@ public class DiagnosticDataBuilder {
 		orphanToken.setId(certificateToken.getDSSIdAsString());
 		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certificateToken.getDigest(defaultDigestAlgorithm)));
 		orphanToken.setType(OrphanTokenType.CERTIFICATE);
-		xmlOrphanTokens.put(certificateToken.getDSSIdAsString(), orphanToken);
+		xmlOrphanTokensMap.put(certificateToken.getDSSIdAsString(), orphanToken);
 		return orphanToken;
 	}
 	
@@ -1242,7 +1242,7 @@ public class DiagnosticDataBuilder {
 		orphanToken.setId(orphanCertificateRef.getDSSIdAsString());
 		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(orphanCertificateRef.getCertDigest()));
 		orphanToken.setType(OrphanTokenType.CERTIFICATE);
-		xmlOrphanTokens.put(orphanCertificateRef.getDSSIdAsString(), orphanToken);
+		xmlOrphanTokensMap.put(orphanCertificateRef.getDSSIdAsString(), orphanToken);
 		return orphanToken;
 	}
 
@@ -1250,7 +1250,7 @@ public class DiagnosticDataBuilder {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<>();
 		for (TimestampToken timestampToken : signature.getAllTimestamps()) {
 			XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
-			foundTimestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
+			foundTimestamp.setTimestamp(xmlTimestampsMap.get(timestampToken.getDSSIdAsString()));
 			foundTimestamp.setLocation(timestampToken.getTimestampLocation());
 			foundTimestamps.add(foundTimestamp);
 		}
@@ -1283,7 +1283,7 @@ public class DiagnosticDataBuilder {
 		List<EncapsulatedRevocationTokenIdentifier> orphanIdentifiers = new ArrayList<>();
 		List<EncapsulatedRevocationTokenIdentifier> revocationIdentifiers = signature.getAllFoundRevocationIdentifiers();
 		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : revocationIdentifiers) {
-			if (!xmlRevocations.containsKey(revocationIdentifier.asXmlId())) {
+			if (!xmlRevocationsMap.containsKey(revocationIdentifier.asXmlId())) {
 				orphanIdentifiers.add(revocationIdentifier);
 			}
 		}
@@ -1302,7 +1302,7 @@ public class DiagnosticDataBuilder {
 		for (RevocationToken revocationToken : revocationTokens) {
 			String id = revocationToken.getDSSIdAsString();
 			if (!revocationKeys.contains(id)) {
-				XmlRevocation xmlRevocation = xmlRevocations.get(id);
+				XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
 				if (xmlRevocation != null) {
 					XmlRelatedRevocation xmlRelatedRevocation = new XmlRelatedRevocation();
 					xmlRelatedRevocation.setRevocation(xmlRevocation);
@@ -1417,8 +1417,8 @@ public class DiagnosticDataBuilder {
 			byte[] digestValue = revocationIdentifier.getDigestValue(defaultDigestAlgorithm);
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, digestValue));
 		}
-		if (!xmlOrphanTokens.containsKey(tokenId)) {
-			xmlOrphanTokens.put(tokenId, orphanToken);
+		if (!xmlOrphanTokensMap.containsKey(tokenId)) {
+			xmlOrphanTokensMap.put(tokenId, orphanToken);
 		}
 		return orphanToken;
 	}
@@ -1430,7 +1430,7 @@ public class DiagnosticDataBuilder {
 		orphanToken.setId(ref.getDSSIdAsString());
 		orphanToken.setType(OrphanTokenType.REVOCATION);
 		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
-		xmlOrphanTokens.put(ref.getDSSIdAsString(), orphanToken);
+		xmlOrphanTokensMap.put(ref.getDSSIdAsString(), orphanToken);
 		
 		xmlOrphanRevocation.setToken(orphanToken);
 		if (ref instanceof CRLRef) {
@@ -1592,13 +1592,13 @@ public class DiagnosticDataBuilder {
 			List<XmlTimestampedObject> objects = new ArrayList<>();
 			for (final TimestampedReference timestampReference : timestampReferences) {
 				String id = timestampReference.getObjectId();
-				XmlTimestampedObject timestampedObject = xmlTimestampedObjects.get(id);
+				XmlTimestampedObject timestampedObject = xmlTimestampedObjectsMap.get(id);
 				if (timestampedObject == null) {
 					timestampedObject = createXmlTimestampedObject(timestampReference);
 					if (timestampedObject.getToken() == null) {
 						throw new DSSException(String.format("Token with Id '%s' not found", id));
 					}
-					xmlTimestampedObjects.put(id, timestampedObject);
+					xmlTimestampedObjectsMap.put(id, timestampedObject);
 				}
 				objects.add(timestampedObject);
 			}
@@ -1614,7 +1614,7 @@ public class DiagnosticDataBuilder {
 		String objectId = timestampReference.getObjectId();
 		switch (timestampReference.getCategory()) {
 		case SIGNATURE:
-			timestampedObj.setToken(xmlSignatures.get(objectId));
+			timestampedObj.setToken(xmlSignaturesMap.get(objectId));
 			return timestampedObj;
 		case CERTIFICATE:
 			if (!isUsedToken(objectId, usedCertificates)) {
@@ -1625,7 +1625,7 @@ public class DiagnosticDataBuilder {
 					break;
 				}
 			}
-			timestampedObj.setToken(xmlCerts.get(objectId));
+			timestampedObj.setToken(xmlCertsMap.get(objectId));
 			return timestampedObj;
 		case REVOCATION:
 			if (!isUsedToken(objectId, usedRevocations)) {
@@ -1636,20 +1636,20 @@ public class DiagnosticDataBuilder {
 					break;
 				}
 			}
-			timestampedObj.setToken(xmlRevocations.get(objectId));
+			timestampedObj.setToken(xmlRevocationsMap.get(objectId));
 			return timestampedObj;
 		case TIMESTAMP:
-			timestampedObj.setToken(xmlTimestamps.get(objectId));
+			timestampedObj.setToken(xmlTimestampsMap.get(objectId));
 			return timestampedObj;
 		case SIGNED_DATA:
-			timestampedObj.setToken(xmlSignedData.get(objectId));
+			timestampedObj.setToken(xmlSignedDataMap.get(objectId));
 			return timestampedObj;
 		default:
 			throw new DSSException("Unsupported category " + timestampReference.getCategory());
 		}
 
 		timestampedObj.setCategory(TimestampedObjectType.ORPHAN);
-		timestampedObj.setToken(xmlOrphanTokens.get(objectId));
+		timestampedObj.setToken(xmlOrphanTokensMap.get(objectId));
 		return timestampedObj;
 	}
 	
@@ -1780,7 +1780,7 @@ public class DiagnosticDataBuilder {
 		xmlSignatureScope.setScope(scope.getType());
 		xmlSignatureScope.setDescription(scope.getDescription());
 		xmlSignatureScope.setTransformations(scope.getTransformations());
-		xmlSignatureScope.setSignerData(xmlSignedData.get(scope.getDSSIdAsString()));
+		xmlSignatureScope.setSignerData(xmlSignedDataMap.get(scope.getDSSIdAsString()));
 		return xmlSignatureScope;
 	}
 
@@ -1923,10 +1923,10 @@ public class DiagnosticDataBuilder {
 	private XmlTrustedServiceProvider buildXmlTrustedServiceProvider(TrustProperties trustProperties) {
 		XmlTrustedServiceProvider result = new XmlTrustedServiceProvider();
 		if (trustProperties.getLOTLIdentifier() != null) {
-			result.setLOTL(xmlTrustedLists.get(trustProperties.getLOTLIdentifier().asXmlId()));
+			result.setLOTL(xmlTrustedListsMap.get(trustProperties.getLOTLIdentifier().asXmlId()));
 		}
 		if (trustProperties.getTLIdentifier() != null) {
-			result.setTL(xmlTrustedLists.get(trustProperties.getTLIdentifier().asXmlId()));
+			result.setTL(xmlTrustedListsMap.get(trustProperties.getTLIdentifier().asXmlId()));
 		}
 		TrustServiceProvider tsp = trustProperties.getTrustServiceProvider();
 		result.setTSPNames(getLangAndValues(tsp.getNames()));
@@ -1983,7 +1983,7 @@ public class DiagnosticDataBuilder {
 				for (TrustServiceStatusAndInformationExtensions serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
-					trustedService.setServiceDigitalIdentifier(xmlCerts.get(trustedCert.getDSSIdAsString()));
+					trustedService.setServiceDigitalIdentifier(xmlCertsMap.get(trustedCert.getDSSIdAsString()));
 					trustedService.setServiceNames(getLangAndValues(serviceInfoStatus.getNames()));
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());

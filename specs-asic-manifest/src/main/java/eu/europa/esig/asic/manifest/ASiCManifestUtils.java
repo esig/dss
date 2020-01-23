@@ -37,24 +37,22 @@ import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 public final class ASiCManifestUtils extends XSDAbstractUtils {
 	
-	private static final XmlDSigUtils xmlDSigUtils = XmlDSigUtils.newInstance();
-	
 	public static final String ASIC_MANIFEST = "/xsd/en_31916201v010101.xsd";
 	
-	private static ASiCManifestUtils asicManifestUtils;
+	private static ASiCManifestUtils singleton;
+
+	private JAXBContext jc;
+	private Schema schema;
 
 	private ASiCManifestUtils() {
 	}
 	
-	public static ASiCManifestUtils newInstance() {
-		if (asicManifestUtils == null) {
-			asicManifestUtils = new ASiCManifestUtils();
+	public static ASiCManifestUtils getInstance() {
+		if (singleton == null) {
+			singleton = new ASiCManifestUtils();
 		}
-		return asicManifestUtils;
+		return singleton;
 	}
-
-	private static JAXBContext jc;
-	private static Schema schema;
 
 	@Override
 	public JAXBContext getJAXBContext() throws JAXBException {
@@ -74,7 +72,7 @@ public final class ASiCManifestUtils extends XSDAbstractUtils {
 
 	@Override
 	public List<Source> getXSDSources() {
-		List<Source> xsdSources = xmlDSigUtils.getXSDSources();
+		List<Source> xsdSources = XmlDSigUtils.getInstance().getXSDSources();
 		xsdSources.add(new StreamSource(ASiCManifestUtils.class.getResourceAsStream(ASIC_MANIFEST)));
 		return xsdSources;
 	}

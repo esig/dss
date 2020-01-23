@@ -122,9 +122,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 		List<DSSDocument> results = new ArrayList<>();
 
-		for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
-
-			final SignerInformation signerInformation = (SignerInformation) signerInformationObject;
+		for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
 			cadesSignature.setSignatureFilename(document.getName());
 			cadesSignature.setDetachedContents(detachedContents);

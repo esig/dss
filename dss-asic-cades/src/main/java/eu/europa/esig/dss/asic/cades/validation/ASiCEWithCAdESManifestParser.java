@@ -168,7 +168,7 @@ public class ASiCEWithCAdESManifestParser {
 				}
 				
 				String attribute = dataObjectReference.getAttribute(ASiCAttribute.ROOTFILE.getAttributeName());
-				if (attribute != null && "true".equals(attribute.toLowerCase())) {
+				if (Utils.areStringsEqualIgnoreCase("true", attribute)) {
 					entry.setRootfile(true);
 				}
 				

@@ -428,7 +428,7 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public XSDAbstractUtils getXSDUtils() {
-		return XAdES111Utils.newInstance();
+		return XAdES111Utils.getInstance();
 	}
 
 }

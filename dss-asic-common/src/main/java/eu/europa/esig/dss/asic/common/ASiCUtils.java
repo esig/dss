@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -221,7 +222,7 @@ public final class ASiCUtils {
 		}
 		try (InputStream is = mimeTypeDocument.openStream()) {
 			byte[] byteArray = Utils.toByteArray(is);
-			final String mimeTypeString = new String(byteArray, "UTF-8");
+			final String mimeTypeString = new String(byteArray, StandardCharsets.UTF_8);
 			return MimeType.fromMimeTypeString(mimeTypeString);
 		} catch (IOException e) {
 			throw new DSSException(e);

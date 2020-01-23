@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.common.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,9 +41,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -210,7 +211,7 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	}
 
 	private void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream zos) throws IOException {
-		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes("UTF-8");
+		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes(StandardCharsets.UTF_8);
 		final ZipEntry entryMimetype = getZipEntryMimeType(mimeTypeBytes);
 		zos.putNextEntry(entryMimetype);
 		Utils.write(mimeTypeBytes, zos);

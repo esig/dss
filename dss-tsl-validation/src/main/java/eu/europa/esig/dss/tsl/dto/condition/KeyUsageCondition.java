@@ -30,7 +30,7 @@ import eu.europa.esig.dss.spi.tsl.Condition;
 /**
  * Condition based on the certificate key usage
  */
-public class KeyUsageCondition extends Condition {
+public class KeyUsageCondition implements Condition {
 
 	private static final long serialVersionUID = -5078159553328523044L;
 

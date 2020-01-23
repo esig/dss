@@ -70,7 +70,7 @@ public class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		
 		try (InputStream is = new ByteArrayInputStream(byteArray)) {
-			String exceptionMessage = XAdES122Utils.newInstance().validateAgainstXSD(new StreamSource(is));
+			String exceptionMessage = XAdES122Utils.getInstance().validateAgainstXSD(new StreamSource(is));
 			assertTrue(Utils.isStringEmpty(exceptionMessage), "Unable to validate against the XSD : " + exceptionMessage);
 		} catch (IOException e) {
 			fail("Unable to read the signed document : " + e.getMessage());

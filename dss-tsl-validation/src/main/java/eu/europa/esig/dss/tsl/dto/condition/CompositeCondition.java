@@ -33,7 +33,7 @@ import eu.europa.esig.trustedlist.enums.Assert;
 /**
  * Condition resulting of the matchingCriteriaIndicator of other Conditions
  */
-public class CompositeCondition extends Condition {
+public class CompositeCondition implements Condition {
 
 	private static final long serialVersionUID = -3756905347291887068L;
 

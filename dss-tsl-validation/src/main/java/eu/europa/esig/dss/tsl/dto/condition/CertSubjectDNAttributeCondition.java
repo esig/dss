@@ -47,7 +47,7 @@ import eu.europa.esig.dss.utils.Utils;
  * schema referenced by clause C.2 (point 3).
  *
  */
-public class CertSubjectDNAttributeCondition extends Condition {
+public class CertSubjectDNAttributeCondition implements Condition {
 
 	private static final long serialVersionUID = 5941353274395443267L;
 

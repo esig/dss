@@ -45,7 +45,7 @@ public class XmlDSigUtilsTest {
 	
 	@BeforeAll
 	public static void init() {
-		xmlDSigUtils = XmlDSigUtils.newInstance();
+		xmlDSigUtils = XmlDSigUtils.getInstance();
 	}
 
 	@Test

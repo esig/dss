@@ -169,8 +169,7 @@ public class CertificateValidity implements Serializable {
 	 * @return {@code true} if the certificate digest matches.
 	 */
 	public boolean isValid() {
-		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual());
-		return valid;
+		return isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual());
 	}
 
 }

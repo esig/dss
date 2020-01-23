@@ -34,7 +34,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 
 public class TrustedListFacade extends AbstractJaxbFacade<TrustStatusListType> {
 	
-	private static final TrustedListUtils trustedListUtils = TrustedListUtils.newInstance();
+	private static final TrustedListUtils TL_UTILS = TrustedListUtils.getInstance();
 
 	public static TrustedListFacade newFacade() {
 		return new TrustedListFacade();
@@ -42,12 +42,12 @@ public class TrustedListFacade extends AbstractJaxbFacade<TrustStatusListType> {
 
 	@Override
 	protected JAXBContext getJAXBContext() throws JAXBException {
-		return trustedListUtils.getJAXBContext();
+		return TL_UTILS.getJAXBContext();
 	}
 
 	@Override
 	protected Schema getSchema() throws IOException, SAXException {
-		return trustedListUtils.getSchema();
+		return TL_UTILS.getSchema();
 	}
 
 	@Override

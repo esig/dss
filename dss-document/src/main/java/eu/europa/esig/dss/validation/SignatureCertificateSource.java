@@ -277,12 +277,12 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 	
 	private void addCertificateRefToMap(CertificateToken certificateToken, CertificateRef certificateRef) {
-		List<CertificateRef> certificateRefs = certificateRefsMap.get(certificateToken);
-		if (certificateRefs == null) {
-			certificateRefs = new ArrayList<>();
-			certificateRefsMap.put(certificateToken, certificateRefs);
+		List<CertificateRef> currentCertificateRefs = certificateRefsMap.get(certificateToken);
+		if (currentCertificateRefs == null) {
+			currentCertificateRefs = new ArrayList<>();
+			certificateRefsMap.put(certificateToken, currentCertificateRefs);
 		}
-		certificateRefs.add(certificateRef);
+		currentCertificateRefs.add(certificateRef);
 	}
 	
 	/**

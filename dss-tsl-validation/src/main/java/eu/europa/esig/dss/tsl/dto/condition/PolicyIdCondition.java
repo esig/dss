@@ -32,7 +32,7 @@ import eu.europa.esig.dss.spi.x509.CertificatePolicy;
  * Checks if a certificate has a specific policy OID.<br>
  * Objects based on this class are instantiated from trusted list or by SignedDocumentValidator for QCP and QCPPlus
  */
-public class PolicyIdCondition extends Condition {
+public class PolicyIdCondition implements Condition {
 
 	private static final long serialVersionUID = 7590885101177874819L;
 

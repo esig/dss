@@ -38,25 +38,23 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
 public final class ValidationReportUtils extends XSDAbstractUtils {
 
 	public static final String VALIDATION_REPORT_SCHEMA_LOCATION = "/xsd/1910202xmlSchema.xsd";
-	
-	private static final TrustedListUtils trustedListUtils = TrustedListUtils.newInstance();
-	
-	private static ValidationReportUtils validationReportUtils;
-
-	private ValidationReportUtils() {
-	}
-	
-	public static ValidationReportUtils newInstance() {
-		if (validationReportUtils == null) {
-			validationReportUtils = new ValidationReportUtils();
-		}
-		return validationReportUtils;
-	}
 
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
-	protected static JAXBContext jc;
-	protected static Schema schema;
+	private static ValidationReportUtils singleton;
+
+	private JAXBContext jc;
+	private Schema schema;
+
+	private ValidationReportUtils() {
+	}
+
+	public static ValidationReportUtils getInstance() {
+		if (singleton == null) {
+			singleton = new ValidationReportUtils();
+		}
+		return singleton;
+	}
 
 	@Override
 	public JAXBContext getJAXBContext() throws JAXBException {
@@ -76,7 +74,7 @@ public final class ValidationReportUtils extends XSDAbstractUtils {
 
 	@Override
 	public List<Source> getXSDSources() {
-		List<Source> xsdSources = trustedListUtils.getXSDSources();
+		List<Source> xsdSources = TrustedListUtils.getInstance().getXSDSources();
 		xsdSources.add(new StreamSource(ValidationReportUtils.class.getResourceAsStream(VALIDATION_REPORT_SCHEMA_LOCATION)));
 		return xsdSources;
 	}

@@ -47,7 +47,7 @@ import eu.europa.esig.dss.utils.Utils;
  * the schema referenced by clause C.2 (point 3).
  *
  */
-public class ExtendedKeyUsageCondition extends Condition {
+public class ExtendedKeyUsageCondition implements Condition {
 
 	private static final long serialVersionUID = -5969735320082024885L;
 

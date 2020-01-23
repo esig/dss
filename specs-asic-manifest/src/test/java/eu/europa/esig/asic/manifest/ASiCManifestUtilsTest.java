@@ -48,7 +48,7 @@ public class ASiCManifestUtilsTest {
 	
 	@BeforeAll
 	public static void init() {
-		asicManifestUtils = ASiCManifestUtils.newInstance();
+		asicManifestUtils = ASiCManifestUtils.getInstance();
 	}
 
 	@Test

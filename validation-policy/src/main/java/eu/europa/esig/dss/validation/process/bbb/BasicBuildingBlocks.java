@@ -209,22 +209,21 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		if (Context.CERTIFICATE.equals(context)) {
 			CertificateWrapper certificate = (CertificateWrapper) token;
-			X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, diagnosticData, certificate, currentTime,
-					certificate.getNotBefore(), context, policy);
+			X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
 			CertificateWrapper certificate = token.getSigningCertificate();
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, diagnosticData, certificate, currentTime,
-							certificate.getNotBefore(), context, policy);
+					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context,
+							policy);
 					return xcv.execute();
 				} else if (Context.TIMESTAMP.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, diagnosticData, certificate, currentTime,
+					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime,
 							((TimestampWrapper) token).getProductionTime(), context, policy);
 					return xcv.execute();
 				} else if (Context.REVOCATION.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, diagnosticData, certificate, currentTime,
+					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime,
 							((RevocationWrapper) token).getProductionDate(), context, policy);
 					return xcv.execute();
 				}

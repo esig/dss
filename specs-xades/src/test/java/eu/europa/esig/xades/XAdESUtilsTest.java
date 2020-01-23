@@ -48,10 +48,10 @@ public class XAdESUtilsTest {
 	
 	@BeforeAll
 	public static void init() {
-		xadesUtils = XAdESUtils.newInstance();
-		xades111Utils = XAdES111Utils.newInstance();
-		xades122Utils = XAdES122Utils.newInstance();
-		xades319132Utils = XAdES319132Utils.newInstance();
+		xadesUtils = XAdESUtils.getInstance();
+		xades111Utils = XAdES111Utils.getInstance();
+		xades122Utils = XAdES122Utils.getInstance();
+		xades319132Utils = XAdES319132Utils.getInstance();
 	}
 
 	@Test

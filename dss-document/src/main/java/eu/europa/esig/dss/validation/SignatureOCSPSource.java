@@ -321,12 +321,12 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	}
 	
 	private void addReferenceToMap(OCSPToken revocationToken, OCSPRef reference) {
-		Set<OCSPRef> ocspRefs = revocationRefsMap.get(revocationToken);
-		if (ocspRefs == null) {
-			ocspRefs = new HashSet<>();
-			revocationRefsMap.put(revocationToken, ocspRefs);
+		Set<OCSPRef> currentOcspRefs = revocationRefsMap.get(revocationToken);
+		if (currentOcspRefs == null) {
+			currentOcspRefs = new HashSet<>();
+			revocationRefsMap.put(revocationToken, currentOcspRefs);
 		}
-		ocspRefs.add(reference);
+		currentOcspRefs.add(reference);
 	}
 
 }

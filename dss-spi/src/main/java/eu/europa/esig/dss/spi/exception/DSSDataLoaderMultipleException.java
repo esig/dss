@@ -29,7 +29,7 @@ public class DSSDataLoaderMultipleException extends DSSExternalResourceException
 
 	private static final long serialVersionUID = 4981228392826668216L;
 	
-	private Map<String, Throwable> urlExceptionMap;
+	private final Map<String, Throwable> urlExceptionMap;
 	
 	public DSSDataLoaderMultipleException(Map<String, Throwable> urlExceptionMap) {
 		this.urlExceptionMap = urlExceptionMap;

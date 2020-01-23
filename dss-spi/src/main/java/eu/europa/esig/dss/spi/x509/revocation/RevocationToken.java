@@ -157,7 +157,6 @@ public abstract class RevocationToken extends Token {
 	 * @return {@link RevocationOrigin}
 	 */
 	public RevocationOrigin getFirstOrigin() {
-		Set<RevocationOrigin> origins = getOrigins();
 		if (Utils.isCollectionNotEmpty(origins)) {
 			return origins.iterator().next();
 		}

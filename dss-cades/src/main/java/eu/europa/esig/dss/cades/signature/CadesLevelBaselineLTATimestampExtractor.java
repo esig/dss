@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cades.signature;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
-
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
@@ -532,8 +531,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("getSignedFields DigestEncryptionAlgorithm={}", Utils.toBase64(derEncodedDigestEncryptionAlgorithm));
 			LOG.debug("getSignedFields EncryptedDigest={}", Utils.toBase64(derEncodedEncryptedDigest));
 		}
-		final byte[] concatenatedArrays = DSSUtils.concatenate(derEncodedVersion, derEncodedSid, derEncodedDigestAlgorithm, derEncodedSignedAttributes,
+		return DSSUtils.concatenate(derEncodedVersion, derEncodedSid, derEncodedDigestAlgorithm, derEncodedSignedAttributes,
 				derEncodedDigestEncryptionAlgorithm, derEncodedEncryptedDigest);
-		return concatenatedArrays;
 	}
 }

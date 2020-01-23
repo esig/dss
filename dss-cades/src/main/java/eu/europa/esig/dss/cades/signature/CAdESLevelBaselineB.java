@@ -128,8 +128,7 @@ public class CAdESLevelBaselineB {
 		// mime-type attribute breaks parallel signatures by adding PKCS7 as a mime-type for subsequent signers.
 		// This attribute is not mandatory, so it has been disabled.
 
-		final AttributeTable signedAttributesTable = new AttributeTable(signedAttributes);
-		return signedAttributesTable;
+		return new AttributeTable(signedAttributes);
 	}
 
 	/**

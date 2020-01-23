@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.util.Date;
 import java.util.Objects;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -58,14 +57,14 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 		assertConfigurationValid();
 		Objects.requireNonNull(validationLevel, "The validation level is missing");
 		DiagnosticData diagnosticData = getDiagnosticData();
-		return buildReports(diagnosticData, getCurrentTime());
+		return buildReports(diagnosticData);
 	}
 	
 	protected DiagnosticData getDiagnosticData() {
 		return new DiagnosticData(jaxbDiagnosticData);
 	}
 	
-	protected Reports buildReports(final DiagnosticData diagnosticData, final Date validationTime) {
+	protected Reports buildReports(final DiagnosticData diagnosticData) {
 		
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(getI18nProvider(), currentTime, policy, validationLevel, diagnosticData);
 		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();

@@ -26,7 +26,6 @@ import java.util.List;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -58,12 +57,12 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public X509CertificateValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, CertificateWrapper currentCertificate, 
+	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate,
 			Date validationDate, Context context, ValidationPolicy validationPolicy) {
-		this(i18nProvider, diagnosticData, currentCertificate, validationDate, validationDate, context, validationPolicy);
+		this(i18nProvider, currentCertificate, validationDate, validationDate, context, validationPolicy);
 	}
 
-	public X509CertificateValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, CertificateWrapper currentCertificate, 
+	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, 
 			Date validationDate, Date usageTime, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlXCV());
 

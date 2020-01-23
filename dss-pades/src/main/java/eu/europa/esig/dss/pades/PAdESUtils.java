@@ -59,8 +59,7 @@ public final class PAdESUtils {
 			DSSDocument dataToBeSigned = cadesDetachedFile.get(0);
 			int[] signatureByteRange = padesSignature.getSignatureByteRange();
 			DSSDocument firstByteRangePart = DSSUtils.splitDocument(dataToBeSigned, signatureByteRange[0], signatureByteRange[1]);
-			InMemoryDocument lastRevision = retrieveLastPDFRevision(firstByteRangePart);
-			return lastRevision;
+			return retrieveLastPDFRevision(firstByteRangePart);
 		}
 		return null;
 	}
@@ -75,8 +74,7 @@ public final class PAdESUtils {
 		int[] signatureByteRange = pdfRevision.getSignatureByteRange();
 		DSSDocument firstByteRangePart = DSSUtils.splitDocument(
 				new InMemoryDocument(signedDocumentBytes), signatureByteRange[0], signatureByteRange[1]);
-		InMemoryDocument lastRevision = retrieveLastPDFRevision(firstByteRangePart);
-		return lastRevision;
+		return retrieveLastPDFRevision(firstByteRangePart);
 	}
 
 	private static InMemoryDocument retrieveLastPDFRevision(DSSDocument firstByteRangePart) {

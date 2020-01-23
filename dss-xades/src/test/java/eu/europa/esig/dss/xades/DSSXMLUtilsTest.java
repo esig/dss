@@ -50,7 +50,7 @@ public class DSSXMLUtilsTest {
 
 	@BeforeAll
 	public static void init() {
-		xadesUtils = XAdES319132Utils.newInstance();
+		xadesUtils = XAdES319132Utils.getInstance();
 	}
 
 	@Test
@@ -80,13 +80,13 @@ public class DSSXMLUtilsTest {
 	@Test
 	public void validateAgainstXSDvalidMessage() {
 		FileDocument document = new FileDocument("src/test/resources/valid-xades-structure.xml");
-		assertFalse(Utils.isStringNotEmpty(DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.newInstance(), getSource(document))));
+		assertFalse(Utils.isStringNotEmpty(DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.getInstance(), getSource(document))));
 	}
 
 	@Test
 	public void validateAgainstXSDInvalidMessage() {
 		FileDocument document = new FileDocument("src/test/resources/invalid-xades-structure.xml");
-		assertTrue(Utils.isStringNotEmpty(DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.newInstance(), getSource(document))));
+		assertTrue(Utils.isStringNotEmpty(DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.getInstance(), getSource(document))));
 	}
 
 	public Source getSource(DSSDocument doc) {

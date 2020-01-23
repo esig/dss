@@ -34,7 +34,7 @@ public class TrustedListUtilsTest {
 	
 	@BeforeAll
 	public static void init() {
-		trustedListUtils = TrustedListUtils.newInstance();
+		trustedListUtils = TrustedListUtils.getInstance();
 	}
 
 	@Test
