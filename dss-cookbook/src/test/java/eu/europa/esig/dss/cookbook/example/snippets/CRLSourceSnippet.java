@@ -27,6 +27,8 @@ import javax.sql.DataSource;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -45,16 +47,61 @@ public class CRLSourceSnippet {
 		// end::demo[]
 
 		DataSource dataSource = null;
-		OnlineCRLSource onlineCRLSource = null;
+
+		// tag::demo-online[]
+		
+		// Instantiates a new OnlineCRLSource
+		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
+		
+		// Allows setting an implementation of `DataLoader` interface, 
+		// processing a querying of a remote revocation server. 
+		// `CommonsDataLoader` instance is used by default.
+		onlineCRLSource.setDataLoader(new CommonsDataLoader());
+		
+		// Aets a preferred protocol that will be used for obtaining a CRL. 
+		// E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined preferred protocol as FTP, 
+		// the FTP url will be called first, and in case of an unsuccessful result other url calls will follow. 
+		// Default : null (urls will be called in a provided order).
+		onlineCRLSource.setPreferredProtocol(Protocol.FTP);
+		
+		// end::demo-online[]
 
 		// tag::demo-cached[]
+		// Creates an instance of JdbcCacheCRLSource
 		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
+		
+		// Set dataSource for the repository
 		cacheCRLSource.setDataSource(dataSource);
+		
+		// Allows definition of an alternative dataLoadet to be used to access a revocation 
+		// from online sources if a requested revocation is not present in the repository or has been expired (see below).
 		cacheCRLSource.setProxySource(onlineCRLSource);
-		Long oneWeek = (long) (60 * 60 * 24 * 7);
+		
+		// All setters accept values in seconds
+		Long oneWeek = (long) (60 * 60 * 24 * 7); // seconds * minutes * hours * days
+		
+		// If "nextUpdate" field is not defined for a revocation token, the value of "defaultNextUpdateDelay" 
+		// will be used in order to determine when a new revocation data should be requested. 
+		// If the current time is not beyond the "thisUpdate" time + "defaultNextUpdateDelay", 
+		// then a revocation data will be retrieved from the repository source, otherwise a new revocation data 
+		// will be requested from a proxiedSource. 
+		// Default : null (a new revocation data will be requested of "nestUpdate" field is not defined).
+		cacheCRLSource.setDefaultNextUpdateDelay(oneWeek);
+		
+		// Defines a custom maximum possible nextUpdate delay. Allows limiting of a time interval 
+		// from "thisUpdate" to "nextUpdate" defined in a revocation data. 
+		// Default : null (not specified, the "nextUpdate" value provided in a revocation is used).
 		cacheCRLSource.setMaxNextUpdateDelay(oneWeek); // force refresh every week (eg : ARL)
+		
+		// Defines if a revocation should be removed on its expiration. 
+		// Default : true (removes revocation from a repository if expired).
+		cacheCRLSource.setRemoveExpired(true);
+		
+		// Creates an SQL table
 		cacheCRLSource.initTable();
-		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, certificateToken);
+		
+		// Extract CRL for a certificate
+		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo-cached[]
 
 	}

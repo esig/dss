@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
@@ -108,6 +109,7 @@ public class TLValidationJobSnippets {
 	public void jobConfig() {
 		// tag::job-config-sources[]
 		TLValidationJob validationJob = new TLValidationJob();
+		// Specify where is the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL. 
 		validationJob.setTrustedListSources(boliviaTLSource(), costaRicaTLSource());
 		validationJob.setListOfTrustedListSources(europeanLOTLSource(), unitedStatesLOTLSource());
 		// end::job-config-sources[]
@@ -233,6 +235,16 @@ public class TLValidationJobSnippets {
 
 		// end::alerting[]
 	}
+	
+	private void executorService() {
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		
+		// tag::executor-service[]
+		// Allows configuration of the execution process
+		// Default : Executors.newCachedThreadPool() is used
+		tlValidationJob.setExecutorService(Executors.newSingleThreadExecutor());
+		// end::executor-service[]
+	}
 
 	private DataLoader dataLoader() {
 		return new CommonsDataLoader();
@@ -242,9 +254,10 @@ public class TLValidationJobSnippets {
 		return null;
 	}
 
-	// tag::french-tl-source[]
 	public TLSource frenchTLSource() {
+		TLValidationJob tlValidationJob = new TLValidationJob();
 
+		// tag::french-tl-source[]
 		TLSource tlSource = new TLSource();
 
 		// Mandatory : The url where the TL needs to be downloaded
@@ -262,10 +275,13 @@ public class TLValidationJobSnippets {
 		// Optional : predicate to filter the trust service providers
 		// Default : none (select all)
 		tlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
+		
+		//instance of CertificateSource where all trusted certificates and their properties (service type,...) are stored.
+		tlValidationJob.setTrustedListSources(tlSource);
+		// end::french-tl-source[]
 
 		return tlSource;
 	}
-	// end::french-tl-source[]
 
 	public void summary() {
 		// tag::tl-summary[]
@@ -321,9 +337,10 @@ public class TLValidationJobSnippets {
 		return null;
 	}
 
-	// tag::european-lotl-source[]
 	public LOTLSource europeanLOTLSource() {
 
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		// tag::european-lotl-source[]
 		LOTLSource lotlSource = new LOTLSource();
 
 		// Mandatory : The url where the LOTL needs to be downloaded
@@ -364,10 +381,12 @@ public class TLValidationJobSnippets {
 		// applied on the related trusted lists
 		// Default : none (select all)
 		lotlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
+		
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		// end::european-lotl-source[]
 
 		return lotlSource;
 	}
-	// end::european-lotl-source[]
 
 	private CertificateSource getSigningCertificatesForEuropeanLOTL() {
 		try {

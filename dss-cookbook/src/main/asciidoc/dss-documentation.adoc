@@ -41,6 +41,7 @@ Please note that the DSS framework is still under maintenance and new features w
 === Abbreviations and Acronyms
 
 [cols=2]
+.Abbreviations and Acronyms
 |=======================
 |Code			|Description
 |AdES			|Advanced Electronic Signature
@@ -126,6 +127,7 @@ Please note that the DSS framework is still under maintenance and new features w
 === References
 
 [cols=4]
+.References
 |=======================
 |Ref.			|Title																			|Reference					|Version
 |[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.1.1
@@ -139,7 +141,8 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R09]]	R09	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |ETSI TS 119 172-4			|draft
 |[[R10]]	R10	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.1.1
 |[[R11]]	R11	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
-|[[R12]]	R12	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.1.1
+|[[R12]]	R12	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.2.1
+|[[R13]]	R13	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |draft
 
 |=======================
 
@@ -181,10 +184,10 @@ dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects
 ==== JAXB model modules
 
 specs-xmldsig:: W3C XSD schema for signatures http://www.w3.org/2000/09/xmldsig
-specs-xades:: ETSI EN 319 132-1 XSD schema for XAdES
-specs-trusted-list:: ETSI TS 119 612 XSD schema for parsing Trusted Lists
-specs-validation-report:: ETSI TS 119 102-2 XSD schema for the Validation report
-specs-asic-manifest:: ETSI EN 319 162 schema for ASiCManifest
+specs-xades:: ETSI EN 319 132-1 XSD schema for XAdES.
+specs-trusted-list:: ETSI TS 119 612 XSD schema for parsing Trusted Lists.
+specs-validation-report:: ETSI TS 119 102-2 XSD schema for the Validation report.
+specs-asic-manifest:: ETSI EN 319 162 schema for ASiCManifest.
 
 '''
 dss-policy-jaxb:: JAXB model of the validation policy.
@@ -196,8 +199,12 @@ dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certifi
 ==== Utils modules
 
 dss-utils:: API with utility methods for String, Collection, I/O,...
-dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries
-dss-utils-google-guava:: Implementation of dss-utils with Google Guava
+dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries.
+dss-utils-google-guava:: Implementation of dss-utils with Google Guava.
+
+==== i18n
+
+dss-i18n:: a module allowing internationalization of generated reports.
 
 ==== Core modules
 
@@ -235,11 +242,11 @@ dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument metho
 
 '''
 dss-server-signing-dto:: Data Transfer Objects used for the server signing module (REST and SOAP).
-dss-server-signing-common:: Common classes for server signing
-dss-server-signing-rest:: REST webservice for server signing
-dss-server-signing-rest-client:: REST client for server signing (sign method)
-dss-server-signing-soap:: SOAP webservice for server signing
-dss-server-signing-soap-client:: SOAP client for server signing (sign method)
+dss-server-signing-common:: Common classes for server signing.
+dss-server-signing-rest:: REST webservice for server signing.
+dss-server-signing-rest-client:: REST client for server signing (sign method).
+dss-server-signing-soap:: SOAP webservice for server signing.
+dss-server-signing-soap-client:: SOAP client for server signing (sign method).
 
 '''
 dss-validation-dto:: Data Transfer Objects used for signature validation (REST and SOAP).
@@ -274,7 +281,7 @@ dss-cookbook:: Samples and documentation of DSS used to generate this documentat
 
 The module dss-utils offers an interface with utility methods to operate on String, Collection, I/O,... DSS framework provides two different implementations with the same behaviour : 
 
- * dss-utils-apache-commons : this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
+ * dss-utils-apache-commons : this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec).
  * dss-utils-google-guava : this module only requires Google Guava (recommended on Android).
 
 If your integration include dss-utils, you will need to select an implementation.
@@ -339,6 +346,7 @@ The different formats of the digital signature make possible to cover a wide ran
 In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
 
 [cols=6]
+.Signature supported profiles
 |=======================
 2+|XAdES				  2+|CAdES				  2+|PAdES
 |STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE
@@ -360,6 +368,7 @@ Below you can find a table specifying various signature possibilities with avail
 The vertical column specifies available signature profiles and their extensions. The horizontal row specifies types of documents to be signed with the formats.
 
 [cols="9*^.^"]
+.File formats and Signature types conformance
 |=======================
   3+|Signature profiles                        |XML   |PDF   |Binary   |Digest   |Multi files   |Parallel signatures
 .10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
@@ -428,7 +437,7 @@ When signing data, the resulting signature needs to be linked with the data to w
  * *ENVELOPING :* when the signed data form a sub-element of the signature itself;
  ** Base64 encoded binaries;
  ** Embed XML object(s);
- ** Embed https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest[Manifest] object(s)
+ ** Embed https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest[Manifest] object(s).
  * *DETACHED :* when the signature relates to the external resource(s) separated from it.
  * *INTERNALLY-DETACHED :* when the signature and the related signed data are both included in a parent element (only XML).
 
@@ -444,7 +453,7 @@ The DSS fully manages the steps 1 and 3. We need to specify how to do the signat
 
 To write our Java code, we still need to specify the type of KeyStore to use for signing our document, more simply, where the private key can be found. In the package "eu.europa.esig.dss.token", we can choose between different connection tokens :
 
- * *Pkcs11SignatureToken :* allows communicating with SmartCards with the PKCS#11 interface. It requires some installed drivers (dll, sso,...) 
+ * *Pkcs11SignatureToken :* allows communicating with SmartCards with the PKCS#11 interface. It requires some installed drivers (dll, sso,...) .
  * *Pkcs12SignatureToken :* allows signing with a PKC#12 keystore (.p12 file).
  * *MSCAPISignatureToken :* handles the signature with MS CAPI (the Microsoft interface to communicate with SmartCards).
  * *JKSSignatureToken :* allows signing with a Java Key Store (.jks file).
@@ -499,21 +508,21 @@ In the current implementation this object is only used when profile -LT or -LTA 
 
 ===== Signing process
 
-Once the parameters of the signature were identified the service object itself must be created. The service used will depend on the type of document to sign. In our case it is an XML file, so we will instantiate a XAdES service. The process of signing takes place in three stages. The first is the "getDataToSign ()" method call, passing as a parameter the document to be signed and the previously selected settings. This step returns the data which is going to be digested and encrypted. In our case it corresponds to the SignedInfo XMLDSig element.  
+Once the parameters of the signature were identified the service object itself must be created. The service used will depend on the type of document to sign. In our case it is an XML file, so we will instantiate a XAdES service. The process of signing takes place in three stages. The first is the `getDataToSign()` method call, passing as a parameter the document to be signed and the previously selected settings. This step returns the data which is going to be digested and encrypted. In our case it corresponds to the SignedInfo XMLDSig element.  
 
 [source,java,indent=0]
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessGetDataToSign]
 ----
 
-The next step is a call to the function "sign()" which is invoked on the object token representing the KeyStore and not on the service. This method takes three parameters. The first is the array of bytes that must be signed. It is obtained by the previous method invocation. The second is the algorithm used to create the digest. You have the choice between SHA1, SHA256, and SHA512 (this list is not exhaustive). And the last one is the private key entry.
+The next step is a call to the function `sign()` which is invoked on the object token representing the KeyStore and not on the service. This method takes three parameters. The first is the array of bytes that must be signed. It is obtained by the previous method invocation. The second is the algorithm used to create the digest. You have the choice between SHA1, SHA256, and SHA512 (this list is not exhaustive). And the last one is the private key entry.
 
 [source,java,indent=0]
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessSign]
 ----
 
-The last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the selected packaging method. This is the method "signDocument()" on the service. We must pass to it three parameters: again the document to sign, the signature parameters and the value of the signature obtained in the previous step.
+The last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the selected packaging method. This is the method `signDocument()` on the service. We must pass to it three parameters: again the document to sign, the signature parameters and the value of the signature obtained in the previous step.
 
 This separation into three steps allows use cases where different environments have their precise responsibilities: specifically the distinction between communicating with the token and executing the business logic.
 
@@ -526,25 +535,23 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.j
 
 ===== Additional attributes
 
-For this type (XAdES-BASELINE-B) of signature it is possible to identify some additional attributes:
+For this type (XAdES-BASELINE-B) of signature it is possible to identify some additional attributes.
 
- * SignerRole - contains claimed roles assumed by the signer when creating the signature.
- * SignatureProductionPlace - contains the indication of the purported place where the signer claims to have produced the signature.
- * CommitmentTypeIndication - identifies the commitment undertaken by the signer in signing (a) signed data object(s) in the context of the selected signature policy.
- * AllDataObjectsTimeStamp - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
- * IndividualDataObjectsTimeStamp - each time-stamp token within this property covers selected signed data objects.
-
-The DSS framework allows setting up the following signed properties: SignerRole, SignatureProductionPlace, CommitmentTypeIndication, AllDataObjectsTimestamp and IndividualDataObjectsTimeStamp.
-
-[[SignXmlXadesBProperties.java]]
+[[SignXmlXadesBPropertiesTest.java]]
 [source,java,indent=0]
 .XAdES signature with additional signed attributes
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=demo]
 ----
 
-This code adds the following elements into the signature :
+In XAdES format the following types of a Content Timestamp can be used:
 
+ * AllDataObjectsTimeStamp - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
+ * IndividualDataObjectsTimeStamp - each time-stamp token within this property covers selected signed data objects.
+
+The code above produces the following signature :
+
+.XAdES signature example
 include::samples/xades-b-properties.adoc[]
 
 ===== Handling signature policy
@@ -553,7 +560,7 @@ With the new standards the policy handling is linked to -B level. The old -EPES 
 
 The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. It includes two kinds of text:
  
- * In human readable form:
+ * In a human readable form:
 It can be assessed to meet the requirements of the legal and contractual context in which it is being applied.
 
  * In a machine processable form:
@@ -585,6 +592,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBE
 
 The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
 
+.XAdES Signature Policy element
 include::samples/xades-explicit-policy.adoc[]
 
 ==== XAdES-BASELINE-T
@@ -603,6 +611,7 @@ If the timestamp source is not set a NullPointerException is thrown.
 
 The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
 
+.XAdES Signature Timestamp
 include::samples/xades-signature-timestamp.adoc[]
 
 ==== XAdES-BASELINE-LT
@@ -618,6 +627,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLT
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
+.Validation data values
 include::samples/xades-revocation-data.adoc[]
 
 NOTE: The use of online sources can significantly increase the execution time of the signing process. For testing purpose you can create your own source of data.
@@ -630,18 +640,44 @@ When the cryptographic data becomes weak and the cryptographic functions become 
 
 Below is an example of the implementation of this level of signature (but in practice, we will rather extend the signature to this level when there is a risk that the cryptographic functions become vulnerable or when one of certificates arrives to its expiration date):
 
-[source,java]
+[source,java,indent=0]
+.Signature level setting
 ----
-...
-parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-...
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSignatureLevel]
 ----
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
+.XAdES Archive Timestamp
 include::samples/xades-archive-timestamp.adoc[]
 
 === Various settings
+
+==== Versions support
+
+DSS supports the following XAdES formats :
+
+[cols="5*^"]
+.Supported XAdES versions
+|===
+| | B-level | T-level | LT-level | LTA-level
+
+| XAdES 1.1.1 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:times-circle[role="red"]
+
+| XAdES 1.2.2 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:times-circle[role="red"]
+
+| XAdES 1.3.2 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"]
+
+| XAdES 1.4.1  4+| The format contains qualifying properties for XAdES 1.3.2 LTA level
+|===
+
+The XAdES Profile, as well as a customizable prefixes can be set with following methods :
+
+[source,java,indent=0]
+.XAdES formats and prefixes
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=prefixes]
+----
 
 ==== Reference Transformations
 
@@ -702,7 +738,7 @@ It is possible to indicate to the framework if the certificate related to the tr
 
 This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
 
-NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
+NOTE: When trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
 
 === Multiple signatures
 
@@ -728,6 +764,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlX
 
 Here is the result of adding a new extension of type-T to an already existing -T level signature:
 
+.XAdES Unsigned Signature Properties
 include::samples/xades-extend-t-to-t.adoc[]
 
 === XAdES-BASELINE-LT and -LTA
@@ -749,6 +786,7 @@ In case there is a need to use only a specific query holder the following steps 
  * Call: eu.europa.esig.dss.xades.validation.XMLDocumentValidator#clearQueryHolders
  * Call: eu.europa.esig.dss.xades.validation.XMLDocumentValidator#addXPathQueryHolder and pass the specific query holder
 
+[[signatureValidation]]
 == The signature validation
 
 Generally and following ETSI standard, the validation process of an electronic signature must provide one of these three following statuses: TOTAL-FAILED, TOTAL-PASSED or INDETERMINATE. A TOTAL-PASSED response indicates that the signature has passed verification and it complies with the signature validation policy. A TOTAL_FAILED response indicates that either the signature format is incorrect or that the digital signature value fails the verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is an insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
@@ -757,15 +795,16 @@ Generally and following ETSI standard, the validation process of an electronic s
 
 Since version 4.7 of the DSS framework the validation process is based on the latest ETSI standard <<R08>>. It is driven by the validation policy and allows long term signature validation. It not only verifies the existence of certain data and their validity, but it also checks the temporal dependences between these elements. The signature check is done following basic building blocks. On the simplified diagram below, showing the process of the signature validation, you can follow the relationships between each building block which represents a logic set of checks used in validation process.
 
+.Signature Validation Process
 image::sig_validation_process.jpg[]
 
 Note that the current version of the framework during the validation process does not indicate what part of a document was signed. However, in a case of XAdES signature XPath transformations presented in the signature will be applied, in the case of CAdES or PAdES signature the whole document must be signed.
 
 At the end of the validation process four reports are created. They contain the different detail levels concerning the validation result. They provide four kinds of visions for the validation process: macroscopic, microscopic, input data and ETSI Validation report conformant with the standard <<R08>>. For more information about these reports, please refer to "Simple Report" chapter.
 
-Below is the simplest example of the validation of the signature of a document. The first thing to do is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this it is necessary to invoke a static method fromDocument() on the abstract class SignedDocumentValidator. This method returns the object in question whose type is chosen dynamically based on the type of source document. 
+Below is the simplest example of the validation of the signature of a document. The first thing to do is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this it is necessary to invoke a static method fromDocument() on the abstract class `SignedDocumentValidator`. This method returns the object in question whose type is chosen dynamically based on the type of source document. 
 
-The next step is to create an object that will check the status of a certificate using the Trusted List model (see "Trusted Lists of Certification Service Provider" for more information). In our example, this object is instantiated from the TrustedListCertificateVerifier class. In turn, this object needs an OCSP and/or CRL source and a TSL source (which defines how the certificates are retrieved from the Trusted Lists). See chapter "Management of CRL and OCSP Sources" for more information concerning sources.
+The next step is to create an object that will check the status of a certificate using the Trusted List model (see "Trusted Lists of Certification Service Provider" for more information). In order to achieve this, an instance of a `CertificateVerifier` must be created with a defined source of trusted certificates. In our example, the trusted source is instantiated with `CommonTrustedCertificateSource` class. As well as a trusted source the CertificateVerifier object needs an OCSP and/or CRL source and a TSL source (which defines how the certificates are retrieved from the Trusted Lists). See chapter "Management of CRL and OCSP Sources" for more information concerning sources.
 
 [source,java,indent=0]
 .Validation of a signature
@@ -781,13 +820,14 @@ NOTE: In general, the signature must cover the entire document so that the DSS f
 
 For execution of the validation process, DSS uses the 'SignedDocumentValidator' class. The DSS framework provides five implementations of validator:
  
- * XMLDocumentValidator,
- * CMSDocumentValidator,
- * PDFDocumentValidator,
- * ASiCContainerWithXAdESValidator,
- * ASiCContainerWithCAdESValidator.
+ * `XMLDocumentValidator` - validates documents in XML format (XAdES format);
+ * `CMSDocumentValidator` - validates documents in CMS format (CAdES format);
+ * `PDFDocumentValidator` - validates documents in PDF format (PADES format);
+ * `ASiCContainerWithXAdESValidator` - validates ASiC with XAdES containers;
+ * `ASiCContainerWithCAdESValidator` - validates ASiC with CAdES containers;
+ * `DetachedTimestampValidator` - validates CMS timestamps provided alone.
 
-DSS provides a method to initialize a relevant validator based on the provided signed file (it checks the file format and loads the required validator from a classpath). Below you can find a list of settings that can be used for the configuration of the class.
+DSS initializes a relevant validator based on specific characteristics of an input file (e.g. a PDF file version declaration for a PDF file). It checks the file format and loads the required validator from a classpath. Below you can find a list of settings that can be used for the configuration of the class.
 
 [source,java,indent=0]
 .SignedDocumentValidator usage
@@ -914,21 +954,17 @@ Below is an example of code to perform a PAdES-BASELINE-B type signature:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
 ----
 
-To add the timestamp to the signature (PAdES-T or LTA), please provide TSP source to the service.
+In order too add a timestamp to the signature (PAdES-T or LTA), a TSP source must be provided to the service.
 
 To create PAdES-BASELINE-B level with additional options: signature policy identifier and optionally a commitment type indication, please observe the following example in code 5.
 
-All these parameters are optional. 
+All these parameters are optional.
 
- * *SignaturePolicyOID :* The string representation of the OID of the signature policy to use when signing.
-
- * *SignaturePolicyHashValue :* The value of the hash of the signature policy, computed the same way as in clause 5.2.9 of CAdES (ETSI EN 319 122 (cf. <<R02>>)).
-
- * *SignaturePolicyHashAlgorithm :* The hash function used to compute the value of the SignaturePolicyHashValue entry. Entries must be represented the same way as in table 257 of ISO 32000-1 (cf. <<R05>>).
-
- * *SignaturePolicyCommitmentType :* If the SignaturePolicyOID is present, this array defines the commitment types that can be used within the signature policy. An empty string can be used to indicate the default commitment type.
-
-If the SignaturePolicyOID is absent, the three other fields defined above will be ignored. If the SignaturePolicyOID is present but the SignaturePolicyCommitmentType is absent, all commitments defined by the signature policy will be used.
+[source,java,indent=0]
+.Defining a Signature Policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=policy]
+----
 
 The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-LTA profile will add the following features:
 
@@ -938,18 +974,19 @@ The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-
 
 === PAdES Visible Signature
 
-The framework also allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter allows you customize the visual signature (with text, with image or with image and text).
+The framework also allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>). In the `SignatureParameters` object, there's a special attribute named `SignatureImageParameters`. This parameter allows you customize the visual signature (with text, with image or with image and text).
 Below there is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
 
 [source,java,indent=0]
 .Add a visible signature to a PDF document
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=parameters-configuration;sign]
 ----
 
-Additionally, DSS also allows you to insert a visible signature to an existing field : 
+Additionally, DSS also allows you to insert a visible signature to an existing field :
 
 [source,java,indent=0]
+.Add a visible signature to an existing field
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
 ----
@@ -967,61 +1004,43 @@ DSS has three implementations for visible signature drawing:
 
 ===== Positioning
 
-DSS provides a set of functions allowing to place the signature field on a specific place in the PDF page.
+DSS provides a set of functions allowing to place the signature field on a specific place in the PDF page :
 
- * *setPage(int page)* - allows defining of a specific page in a PDF document where the signature must be placed. The counting of pages starts from 1 (the first page) (the default value = 1).
- * *setxAxis(float xAxis)* - absolute positioning function, allowing to specify a margin between the left page side and a signature field (if no rotation and alignment is applied).
- * *setyAxis(float yAxis)* - absolute positioning function, allowing to specify a margin between the top page side and a signature field (if no rotation and alignment is applied).
- * *setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal)* - allows alignment of a signature field horizontally to a page. Allows the following values:
- ** _NONE_ (_DEFAULT value._ None alignment is applied, coordinates are counted from the left page side);
- ** _LEFT_ (the signature is aligned to the left side, coordinated are counted from the left page side);
- ** _CENTER_ (the signature is aligned to the center of the page, coordinates are counted automatically);
- ** _RIGHT_ (the signature is aligned to the right side, coordinated are counted from the right page side).
- * *setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical)* - allows alignment of a signature field vertically to a page. Allows the following values:
- * _NONE_ (_DEFAULT value._ None alignment is applied, coordinated are counted from the top side of a page);
- * _TOP_ (the signature is aligned to a top side, coordinated are counted from the top page side);
- * _MIDDLE_ (the signature aligned to a middle of a page, coordinated are counted automatically);
- * _BOTTOM_ (the signature is aligned to a bottom side, coordinated are counted from the bottom page side).
- * *setRotation(VisualSignatureRotation rotation)* - rotates the signature field and changes the coordinates' origin respectively to its values as following:
- ** _NONE_ (_DEFAULT value._ No rotation is applied. The origin of coordinates begins from the top left corner of a page);
- ** _AUTOMATIC_ (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as a defined in a PDF page);
- ** _ROTATE_90_ (Rotates a signature field for a 90&#176; clockwise. Coordinates' origin begins from top right page corner);
- ** _ROTATE_180_ (Rotates a signature field for a 180&#176; clockwise. Coordinates' origin begins from the bottom right page corner);
- ** _ROTATE_270_ (Rotates a signature field for a 270&#176; clockwise. Coordinates' origin begins from the bottom left page corner).
+[source,java,indent=0]
+.Visible signature positioning
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=positioning]
+----
 
 ===== Dimensions
 
-DSS framework provides a set of functions to manage the signature field size:
+DSS framework provides a set of functions to manage the signature field size :
 
- * *setWidth(int width)* - allows specifying of a precise signature field's width in pixels. If not defined, the default image/text width will be used;
- * *setHeight(int height)* - allows specifying of a precise signature field's height in pixels. If not defined, the default image/text height will be used;
- * *setZoom(int zoom)* - defines a zoom of the image. The value is applied to width and height of a signature field. The value must be defined in percentage (default value is 100, no zoom is applied);
- * *setBackgroundColor(Color backgroundColor)* - specifies a background color for a signature field.
+[source,java,indent=0]
+.Visible signature dimensions
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=positioning]
+----
 
 ===== Text Parameters
 
-The available implementations allow placing of a visible text to a signature field.
+The available implementations allow placing of a visible text to a signature field :
 
 [source,java,indent=0]
 .List of available visible text parameters
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=text]
 ----
-
- * *setFont(DSSFont dssFont)* - allows you to set a DSSFont object that defines the text style (see more information in the section "Fonts usage");
- * *setText(String text)* - defins the text content;
- * *setSize(int size)* - specifies the text size value (the default font size is 12pt);
- * *setTextColor(Color textColor)* - defines the color of the characters;
- * *setBackgroundColor(Color backgroundColor)* - defines the background color for the area filled out by the text;
- * *setPadding(float padding)* - defines a padding between the text and a border of its bounding area.
  
 ===== Text and image combination
 
-DSS provides a set of functions to align a text respectively to an image. The parameters must be applied to a 'SignatureImageTextParameters' object:
+DSS provides a set of functions to align a text respectively to an image. The parameters must be applied to a 'SignatureImageTextParameters' object :
 
- * *setSignerNamePosition(SignerPosition signerNamePosition)* - specifies a text position relatively to an image (Note: applicable only for joint image+text visible signatures). Thus with _SignerPosition.LEFT_ value, the text will be placed on the left side, and image will appear on the right side inside the signature field.
- * *setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment signerTextHorizontalAlignment)* - specifies a horizontal alignment of a text with respect to its area.
- * *setSignerTextVerticalAlignment(SignerTextVerticalAlignment signerTextVerticalAlignment)* - specifies a vertical alignment of a text block with respect to a signature field area.
+[source,java,indent=0]
+.Combination of text and image parameters
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=textImageCombination]
+----
  
 The result of applying the foregoing transformations is provided on the image below:
 
@@ -1029,11 +1048,11 @@ image::visual-sig-text-parameters.jpg[]
 
 ==== Fonts usage
 
-Since version 5.5, DSS supports two types of fonts. The custom font must be added as an instance of 'DSSFont' interface to a 'SignatureImageTextParameters' object.
-'DSSFont' interface has two implementations:
+Since version 5.5, DSS supports two types of fonts. The custom font must be added as an instance of `DSSFont` interface to a `SignatureImageTextParameters` object.
+`DSSFont` interface has two implementations:
 
- * 'DSSFileFont' for using of physical fonts, which must be embedded to the produced PDF document. To create an instance of the class, you must pass to a 'DSSFileFont' constructor an object of 'DSSDocument' type or InputStream of the font file;
- * 'DSSJavaFont' for using of logical fonts (default Java fonts). The logical Java fonts allow you to significantly reduce the document size, because these fonts cannot be embedded to the final PDF document. Be aware, because of the fact, using of logical fonts does not allow producing PDF documents satisfying the PDF/A standard. To create an instance of this class, you should pass as an input a java.awt.Font object or target font parameters (name, style, size).
+ * `DSSFileFont` for using of physical fonts, which must be embedded to the produced PDF document. To create an instance of the class, you must pass to a `DSSFileFont` constructor an object of `DSSDocument` type or InputStream of the font file;
+ * `DSSJavaFont` for using of logical fonts (default Java fonts). The logical Java fonts allow you to significantly reduce the document size, because these fonts cannot be embedded to the final PDF document. Be aware, because of the fact, using of logical fonts does not allow producing PDF documents satisfying the PDF/A standard. To create an instance of this class, you should pass as an input a `java.awt.Font` object or target font parameters (name, style, size).
 
 You can create a custom font as following (for a physical font):
 
@@ -1065,23 +1084,19 @@ The standard defines two types of containers; the first (ASiC-S) allows you to a
 
 For the moment the DSS framework has some restrictions on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
 
+.ASiC containers
 |===
 |Input |Output
 
-|ASiC-S CAdES
-|ASiC-S CAdES
+|ASiC-S CAdES |ASiC-S CAdES
 
-|ASiC-S XAdES
-|ASiC-S XAdES
+|ASiC-S XAdES |ASiC-S XAdES
 
-|ASiC-E CAdES
-|ASiC-E CAdES
+|ASiC-E CAdES |ASiC-E CAdES
 
-|ASiC-E XAdES
-|ASiC-E XAdES
+|ASiC-E XAdES |ASiC-E XAdES
 
-|Binary
-|ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
+|Binary |ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
 |===
 
 This is an example of the source code for signing a document using ASiCS-S based on XAdES-B:
@@ -1104,13 +1119,61 @@ Please note that you need to pass only few parameters to the service. Other para
 
 It is also possible with the framework DSS to make an extension of an ASiC container to the level XAdES-BASELINE-T or -LT.
 
+== Timestamps
+
+=== Timestamp creation
+
+Since DSS 5.6 the framework allows an independent document timestamping (without a signature). The following Document Signature Services support the timestamping :
+
+ * `PAdESService` - adds a timestamp to a PDF document;
+ * `ASiCWithCAdESService` - creates a timestamped ASiC container with provided documents.
+
+[source,java,indent=0]
+.PDF timestamping
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampPDFTest.java[tags=creation]
+----
+
+=== Timestamp validation
+
+As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents "5.4 Time-stamp validation building block" (cf. <<R08>>). The validation process is identical to <<signatureValidation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
+
+ * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
+ * PDF document (`PDFDocumentValidator`);
+ * ASiC CAdES container with a timestamp (`ASiCEWithCAdESTimestampValidator`).
+
+The validation process can be run with the following inputs :
+
+[source,java,indent=0]
+.Timestamped document validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampPDFTest.java[tags=validation]
+----
+
+The produced reports use the same structure as for <<signatureValidation>>.
+
+==== Timestamp qualification
+
+DSS is also able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R13>>).
+
+Three qualification levels are supported by DSS and can be obtained :
+
+ * `QTSA` (issued from a granted trust service with TSA/QTST type at the timestamp production time);
+ * `TSA` any other from a known trust anchor;
+ * `N/A` for others.
+
+An example of a produced Detailed Report you can see below:
+
+.Timestamp Detailed Report
+include::samples/timestamp-detailed-report-example.adoc[]
+
 == Available implementations of DSSDocument
 
 DSS allows creation of different kinds of DSSDocument : 
 
- * InMemoryDocument : fully loads in memory. This type of DSSDocument can be instantiated with an array of bytes, an InputStream,...
- * FileDocument : refers an existing File
- * DigestDocument : only contains pre-computed digest values for a given document. That allows a user to avoid sending the full document (detached signatures). 
+ * `InMemoryDocument` : fully loads in memory. This type of DSSDocument can be instantiated with an array of bytes, an InputStream,...
+ * `FileDocument` : refers an existing File
+ * `DigestDocument` : only contains pre-computed digest values for a given document. That allows a user to avoid sending the full document (detached signatures). 
  
 [source,java,indent=0]
 .DigestDocument
@@ -1165,38 +1228,35 @@ As you can see, it is easy to add another implementation of the SignatureTokenCo
 The validation of a certificate requires the access to some other certificates from multiple sources like trusted lists, trust store, the signature itself: certificates can be contained inside or any other source. 
 Within the framework, an X509 certificate is modelled through the class:
 
- * eu.europa.esig.dss.x509.CertificateToken 
+ * `eu.europa.esig.dss.x509.CertificateToken`
  
 This encapsulation helps make certificate handling more suited to the needs of the validation in the context of trust. Each certificate is unambiguously identified by its issuer DN and serial number. The framework associates a unique internal identifier to each certificate but this identifier is not calculated on the data contained in the certificate and therefore varies from one application to another. However, it is independent of its source. It allows comparison of certificates issued by different sources.
 Certificate tokens are grouped into pools. A certificate token can be declared in several pools. The class that models a pool is called:
 
- * eu.europa.esig.dss.x509.CertificatePool
+ * `eu.europa.esig.dss.x509.CertificatePool`
  
 This class allows keeping only one occurrence of the certificate in the given context (i.e. validation). 
  
 The CertificateSource interface provides abstraction for accessing a certificate, regardless of the source. However, each source has its own type:
 
- * eu.europa.esig.dss.x509.CertificateSourceType
+ * `eu.europa.esig.dss.x509.CertificateSourceType`
  
 This information is used, for example, to distinguish between the certificate from a trusted source and the others. A source has one and only one type, but a certificate token can be found in multiple sources. 
 The DSS framework supplies some standard implementations, but also gives the possibility to implement owner solutions. Among the standard solutions you can find:
 
- * eu.europa.esig.dss.x509.CommonCertificateSource
+ * `eu.europa.esig.dss.x509.CommonCertificateSource`
  
 This is the superclass of almost of the certificate sources. 
 It implements the common method CommonCertificateSource#get returns the list of CertificateToken(s) corresponding to the given subject distinguished name. Note that the content of the encapsulated certificates pool can be different from the content of the source. Only CertificateToken(s) present in the source are taken into account.
 It exposes also the method CommonCertificateSource#addCertificate which gives the possibility to add manually any X509Certificate as a part of this source and as a part of the encapsulated pool. If the certificate is already present in the pool its source type is associated to the token. 
 
- * eu.europa.esig.dss.x509.SignatureCertificateSource
+ * `eu.europa.esig.dss.x509.SignatureCertificateSource`
  
-Some certificate sources are based on data encapsulated within the signature. That means that the set of certificates is available and the software only needs to find the certificate using its subject name. This class adds also new methods to obtain specialized  list of certificates contained in the source:.
+Some certificate sources are based on data encapsulated within a signature. That means that the set of certificates is available and the software only needs to find the certificate using its subject name. This class also contains a list of methods allowing to obtain specialized list of certificates contained in the source by their original location.
 
- ** SignatureCertificateSource#getKeyInfoCertificates
- ** SignatureCertificateSource#getEncapsulatedCertificates
-
- * eu.europa.esig.dss.tsl.TrustedListsCertificateSource
+ * `eu.europa.esig.dss.tsl.TrustedListsCertificateSource`
  
-Certificates coming from the list of Trusted Lists. This class gives the mechanism to define the set of trusted certificates (trust anchors). They are used in the validation process to decide if the prospective certificate chain has a trust anchor. See chapter 5.2 to know more about EU Trusted Lists.
+Certificates coming from the list of Trusted Lists. This class gives the mechanism to define the set of trusted certificates (trust anchors). They are used in the validation process to decide if the prospective certificate chain has a trust anchor. See chapter <<tlValidationJob>> to get more information about trusted lists loading (e.g. EU Trusted List).
 
 == Management of CRL and OCSP sources
 
@@ -1237,24 +1297,19 @@ Furthermore, the `Repository Revocation Source` allows the implementer to define
 
 List of cached Revocation sources implemented in DSS:
 
- * JdbcRevocationSource
- ** JdbcCacheCRLSource
- ** JdbcCacheOCSPSource
+ * `JdbcRevocationSource`
+ ** `JdbcCacheCRLSource`
+ ** `JdbcCacheOCSPSource`
 
-The classes allow the following configuration:
-
- * setProxySource(proxiedSource) : allows definition of an alternative dataLoadet to be used to access a revocation from online sources if a requested revocation is not present in the repository or has been expired (see below).
- * setDefaultNextUpdateDelay(defaultNextUpdateDelay) : if "nextUpdate" field is not defined for a revocation token, the value of "defaultNextUpdateDelay" will be used in order to determine when a new revocation data should be requested. If the current time is not beyond the "thisUpdate" time + "defaultNextUpdateDelay", then a revocation data will be retrieved from the repository source, otherwise a new revocation data will be requested from a proxiedSource. Default : null (a new revocation data will be requested of "nestUpdate" field is not defined).
- * setMaxNextUpdateDelay(maxNextUpdateDelay) : defines a custom maximum possible nextUpdate delay. Allows limiting of a time interval from "thisUpdate" to "nextUpdate" defined in a revocation data. Default : null (not specified, the "nextUpdate" value provided in a revocation is used).
- * setRemoveExpired(removeExpired) : defines if a revocation should be removed on its expiration. Default : true (removes revocation from a repository if expired).
-
-Examples of usage `Repository Revocation Source` can be found below (for CRL and OCSP implementations):
+The classes allow the following configuration :
 
 [source,java,indent=0]
 .JdbcCacheCRLSource usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-cached]
 ----
+
+And an example for JdbcCacheOCSPSource :
 
 [source,java,indent=0]
 .JdbcCacheOCSPSource usage
@@ -1269,48 +1324,54 @@ Be aware that you have to initialize a table before start of working with the ca
 Such sources find the status of a certificate either from a list stored locally or using the information contained in the advanced signature or online way. Here is the list of sources already implemented in the DSS framework:
 
  * CRL sources
- ** OfflineCRLSource : This class that implements in a generic way the findCrl method that operates on the different CRLs implemented in children classes.
- *** ListCRLSource : This source maintains a list of CRLToken. 
- *** SignatureCRLSource : The advanced signature contains a list of CRL that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed CRL from a list. The child needs to retrieve the list of wrapped CRLs.
- **** CAdESCRLSource : Retrieves information from a CAdES signature.
- **** PAdESCRLSource : Retrieves information from a PAdES signature.
- **** XAdESCRLSource : Retrieves information from a XAdES signature.
- **** ExternalResourcesCRLSource : A class that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
- ** OnlineCRLSource : Retrieves CRL files from online sources.
- ** JdbcCacheCrlSource : Implementation of the 'JdbcRevocationSource'. This implementation allows storage of valid CRL entries to a defined 'DataSource' and retrieve them locally.
+ ** `OfflineCRLSource` : This class that implements in a generic way the findCrl method that operates on the different CRLs implemented in children classes.
+ *** `ListCRLSource` : This source maintains a list of CRLToken. 
+ *** `SignatureCRLSource` : The advanced signature contains a list of CRL that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed CRL from a list. The child needs to retrieve the list of wrapped CRLs.
+ **** `CAdESCRLSource` : Retrieves information from a CAdES signature.
+ **** `PAdESCRLSource` : Retrieves information from a PAdES signature.
+ **** `XAdESCRLSource` : Retrieves information from a XAdES signature.
+ **** `ExternalResourcesCRLSource` : A class that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
+ ** `OnlineCRLSource` : Retrieves CRL files from online sources.
+ ** `JdbcCacheCrlSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid CRL entries to a defined `DataSource'` and retrieve them locally.
+
  * OCSP sources
- ** OfflineOCSPSource : An abstract class that helps to implement OCSPSource with an already loaded list of OCSPToken. It implements in a generic way the getOCSPResponse method that operates on the different OCSP implementations in children classes.
- *** ListOCSPSource : Implements an OCSPSource from a list of OCSPToken.
- *** SignatureOCSPSource : The advanced signature contains a list of OCSPResp that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed OCSPResp from a list. The children need to retrieve the list of wrapped OCSPResp.
- **** CAdESOCSPSource : Retrieves information from a CAdES signature.
- **** PAdESOCSPSource : Retrieves information from a PAdES signature.
- **** XAdESOCSPSource : Retrieves information from a XAdES signature.
- **** ExternalResourcesOCSPSource : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
- ** OnlineOCSPSource : Retrieves OCSP responses from online source.
- ** JdbcCacheOcspSource : Implementation of the 'JdbcRevocationSource'. This implementation allows storage of valid OCSP entries to a defined 'DataSource' and retrieve them locally.
+ ** `OfflineOCSPSource` : An abstract class that helps to implement OCSPSource with an already loaded list of OCSPToken. It implements in a generic way the getOCSPResponse method that operates on the different OCSP implementations in children classes.
+ *** `ListOCSPSource` : Implements an OCSPSource from a list of OCSPToken.
+ *** `SignatureOCSPSource` : The advanced signature contains a list of OCSPResp that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed OCSPResp from a list. The children need to retrieve the list of wrapped OCSPResp.
+ **** `CAdESOCSPSource` : Retrieves information from a CAdES signature.
+ **** `PAdESOCSPSource` : Retrieves information from a PAdES signature.
+ **** `XAdESOCSPSource` : Retrieves information from a XAdES signature.
+ **** `ExternalResourcesOCSPSource` : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
+ ** `OnlineOCSPSource` : Retrieves OCSP responses from online source.
+ ** `JdbcCacheOcspSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid OCSP entries to a defined `DataSource` and retrieve them locally.
 
 ==== Online CRL Source
 
 This is a representation of an Online CRL repository. This implementation will contact using HTTP protocol the CRL Responder to download the CRLs from the given URI. Note that certificate"s Authority Information Access (AIA) extension is used to find issuer's resources location like CRL file and/or Online Certificate Status Protocol (OCSP). The URIs of CRL server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1.3).
 
-It allows the following configuration:
+It allows the following configuration :
 
- * setDataLoader(dataLoader) : allows setting an implementation of `DataLoader` interface, processing a querying of a remote revocation server. `CommonsDataLoader` instance is used by default.
- * setPreferredProtocol(preferredProtocol) : sets a preferred protocol that will be used for obtaining a CRL. E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined preferred protocol as FTP, the FTP url will be called first, and in case of an unsuccessful result other url calls will follow. Default : null (urls will be called in a provided order).
+[source,java,indent=0]
+.OnlineCRLSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-online]
+----
 
 ==== Online OCSP Source
 
 This is a representation of an Online OCSP repository. This implementation will contact using HTTP protocol the OCSP Responder to retrieve the OCSP response. Note that certificate's Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of OCSP server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1).
 
-It allows the following configuration:
+It allows the following configuration :
 
- * setDataLoader(dataLoader) : allows setting an implementation of `DataLoader` interface, processing a querying of a remote revocation server. `CommonsDataLoader` instance is used by default.
- * setNonceSource(nonceSource) : defines an arbitrary integer used in OCSP source querying in order to prevent a replay attack. Default : null (not used by default).
- * setCertIDDigestAlgorithm(certIDDigestAlgorithm) : defines a `DigestAlgorithm` being used to generate a CertificateID in order to complete an OCSP request. OCSP servers supporting multiple hash functions may produce a revocation response with a digest algorithm depending on the provided CertificateID's algorithm. Default : SHA1 (as a mandatory requirement to be implemented by OCSP servers).
+[source,java,indent=0]
+.OnlineOCSPSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-online]
+----
 
 == CertificateVerifier configuration
 
-The CertificateVerifier and its implementation CommonCertificateVerifier determine how DSS accesses to external resources and how it should react in some occasions. This configuration is used in both extension and validation mode.
+The CertificateVerifier and its implementation CommonCertificateVerifier determines how DSS accesses the external resources and how it should react in some occasions. This configuration is used in both extension and validation mode.
 
 [source,java,indent=0]
 .CertificateVerifier usage
@@ -1356,25 +1417,14 @@ If you want to collect your trusted certificates from trusted list(s), the Trust
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trusted-list-source]
 ----
 
+[[tlValidationJob]]
 == TLValidationJob
 
 The TLValidationJob allows to download, parse, validate the Trusted List(s) and Lists Of Trusted Lists (LOTL). Once the task is done, its result is stored in the TrustedListsCertificateSource. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient. 
 
 Trusted lists are stored on the file system. That offers the possibility to run in offline mode with the stored trusted lists. Trusted Lists can be loaded from the file system and/or from Internet.
-
-Several configurations are needed : 
-
- * the different TLSource(s) and LOTLSource(s) : specify where is the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL. 
- * the TrustedListsCertificateSource : instance of CertificateSource where all trusted certificates and their properties (service type,...) are stored.
- * the DSSFileLoader for the offline refresh (eg : initialization of a webapp at startup from the file cache)
- * the DSSFileLoader for the online refresh (eg : refresh from a cron)
- * the SynchronizationStrategy : specify how to synchronize the trusted list content and the TrustedListsCertificateSource. By default, all trusted lists (expired, invalid,...) will be synchronized.
- * the CacheCleaner (optional) : specify how expired entries are cleaned (memory and/or file-system)
- * the Alert(s) (optional) : allows to generate alert(s) on event(s) (eg : expired trusted list, LOTL location change, expired Official Journal,...)
- * the ExecutorService (optional) : allows to replace the default ExecutorService
- * the debug mode (optional) : prints in the logs the cache status before/after the synchronization.
  
-In the next chapter, the different configurations will be covered.
+In the next sections the different configurations will be covered.
 
 === TLSource and LOTLSource
 
@@ -1453,6 +1503,16 @@ Since the version 5.6 of DSS, that's possible to launch alerts in some situation
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=alerting]
 ----
 
+=== Executor Service
+
+An Executor Service parameter allows you to customize a way of the program execution on your Java machine, by configuring a number of possible threads to be running, await time and so on. 
+
+[source,java,indent=0]
+.Executor Service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=executor-service]
+----
+
 === Complete configuration for the European LOTL
 
 Below, you can find a complete configuration for the European List Of Trusted Lists. The URLs need to be externalized.
@@ -1466,7 +1526,6 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLO
 === The TL / LOTL refresh
 
 The TL / LOTL loading in DSS works as below : 
-
  * Download / parse / validate all LOTLSources from the configuration with/without pivot support (multi-threaded)
  * Analyze introduced changes and expire cache entries (new TL URLs, new signing certificates for a TL,...)
  * Create TLSources from the retrieved LOTLs
@@ -1485,6 +1544,39 @@ The refresh can be called with the offline or the online loader and run exactly 
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=refresh]
 ----
+
+==== Java Keystore Management
+
+Generally (like in case of European LOTL) DSS downloads Trusted Lists by using the SSL protocol (for resources using HTTPS extension), that requires to have a certificate of a remote source in the Java trust store. The certificates have their own validity period and can expire. If a certificated is expired, it will be replaced on a server by a new one in order to support a secure SSL connection. The easiest way to know if your Java trust store is outdated and new certificates need to be added is to check your logs during a TLValidationJob update :
+
+[source]
+--
+ERROR 14052 --- [pool-2-thread-30] e.e.e.dss.tsl.runnable.AbstractAnalysis  : Unable to process GET call for url [https://sr.riik.ee/tsl/estonian-tsl.xml]. Reason : [PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+--
+
+The `SunCertPathBuilderException` means that the certificate established the secure connection is not trusted by your Java Virtual Machine. In order to add the certificate to the trust store, you need to do the following steps (the example is based on Windows OS and Google Chrome browser):
+
+ . Open the failed URL in your browser. In our case it will be 'https://sr.riik.ee/tsl/estonian-tsl.xml' obtained from the logs.
+ . Click on a lock icon next to the URL in the tab you just opened. It will open a window about the current connection status.
+ . Click on 'Certificate' button to open the Certificate window.
+ . Go to 'Details' tab and choose 'Copy to File...'.
+ . Process the 'Certificate Export Wizard', by saving the certificate in one of '.CER' formats. Store the file in your file system. For us it will create a file 'ee.cer'.
+ . Run 'Command Prompt' with administrator permissions (right click -> 'Run As Administrator').
+ . Execute the following line (ensure that 'keytool' is installed) :
+
+.Certificate import
+[source,ruby]
+----
+keytool -import -alias newCert -file pathToCert\ee.cer -keystore pathToJavaDirectory\lib\security\cacerts -storepass changeit
+----
+
+The default password for a Java keystore is "changeit". Ensure that you have a default configuration, or use another password you have configured.
+
+NOTE: In order to apply changes, the application using Java must be rebooted.
+
+After these steps the `TLValidationJob` will successfully download the target Trusted List (i.e. Estonian in our example).
+
+NOTE: This described algorithm is not only one available solution, if you have difficulties with this, you can search in the Internet for another working for you solution.
 
 === TLValidationJobSummary
 
@@ -1531,6 +1623,7 @@ In the next table, XAdES also applies to ASiC with embedded XAdES signatures and
 NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please refer to your SmartCard/HSM provider.
 
 [cols="13*^"]
+.Supported algorithms
 |===
 | | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160
 
@@ -1581,29 +1674,37 @@ In opposition, the adjunct certificates cannot be shared. These certificates con
 
 In case of multi-threading usage, we strongly recommend caching of external resources. All external resources can be cached (AIA, CRL, OCSP) to improve performances and to avoid requesting too much time the same resources. FileCacheDataLoader and JdbcCacheCRLSource can help you in this way. 
 
-== JAXB modules useful classes
+== JAXB modules
 
-Since the version 5.5, JAXB modules are provide with a harmonized structure : 
+Since the version 5.5, DSS provides the following JAXB modules with a harmonized structure : 
 
-`*_dss-detailed-report_*`::
+ * `dss-policy-jaxb` - defines validation policy JAXB model
+ * `dss-diagnostic-jaxb` - defines Diagnostic Data JAXB model
+ * `dss-detailed-report-jaxb` - defines Detailed Report JAXB model
+ * `dss-simple-report-jaxb` - defines Simple Report JAXB model
+ * `dss-simple-certificate-report-jaxb` - defines Certificate Simple Report JAXB model
+ 
+All modules share the same logic and have the following structure (where &#42;&#42;&#42; is a model name):
+
+`*_dss-&#42;&#42;&#42;-jaxb_*`::
 	`*_src/main/java_*`:::
-		`*_eu.europa.esig.dss.detailedreport_*`::::
-			** `*_DetailedReport.java_*` wrapper(s) which ease the JAXB manipulation
+		`*_eu.europa.esig.dss.&#42;&#42;&#42;_*`::::
+			** `*_&#42;&#42;&#42;.java_*` - wrapper(s) which eases the JAXB manipulation
 			** `*_..._*`
-			** `*_DetailedReportFacade.java_*` class which allows to marshall/unmarshall jaxb objects, generate HTML/PDF content,...
-			** `*_DetailedReportXmlDefiner.java_*` class which contains the model definition (XSD, XSLT references, ObjectFactory)
-			** `*_jaxb_*` generated on compile time
-			 	*** `*_XmlDetailedReport.java_*` JAXB model
+			** `*_&#42;&#42;&#42;Facade.java_*` - class which allows marshalling/unmarshalling of jaxb objects, generation of HTML/PDF content, etc.
+			** `*_&#42;&#42;&#42;XmlDefiner.java_*` - class which contains the model definition (XSD, XSLT references, ObjectFactory)
+			** `*_jaxb_*` - generated on compile time
+			 	*** `*_Xml&#42;&#42;&#42;.java_*` - JAXB model
 				*** `*_..._*`
 	`*_src/main/resources_*`:::
 		`*_xsd_*`::::
-			** `*_DetailedReport.xsd_*` XML Schema (XSD) for the Detailed Report model
-			** `*_binding.xml_*` XJC instructions to generate the JAXB model from the XSD
+			** `*_&#42;&#42;&#42;.xsd_*` - XML Schema (XSD) for the Detailed Report model
+			** `*_binding.xml_*` - XJC instructions to generate the JAXB model from the XSD
 		`*_xslt_*`::::
 			** `*_html_*`
-			*** 	`*_detailed-report.xslt_*` XML Stylesheet for the HTML generation
+			*** 	`*_&#42;&#42;&#42;.xslt_*` - XML Stylesheet for the HTML generation
 			** `*_pdf_*`
-			***	`*_detailed-report.xslt_*` XML Stylesheet for the PDF generation
+			***	`*_&#42;&#42;&#42;.xslt_*` - XML Stylesheet for the PDF generation
 
 In the main classes, a `Facade` is present to quickly operate with the JAXB objects (eg: marshall, unmarshall, generate the HTML/PDF, validate the XML structure,...).	
 
@@ -1613,12 +1714,39 @@ In the main classes, a `Facade` is present to quickly operate with the JAXB obje
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-facade]
 ----
 
-A `XmlDefiner` is also available with the access to the embedded XML Schemas (XSD), the XML Stylesheets (XSLT) to be able to generate the HTML or the PDF content (for DSS specific JAXB) and the JAXB Object Factory. 
+A `XmlDefiner` is also available with the access to the embedded XML Schemas (XSD), the XML Stylesheets (XSLT) to be able to generate the HTML or the PDF content (for DSS specific JAXB) and the JAXB Object Factory.
+
 [source,java,indent=0]
 .DetailedReportXmlDefiner usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-xml-definer]
 ----
+
+== I18N (Internationalization)
+
+Since DSS 5.6 a new module has been introduced allowing changing of a language for reports generated by DSS. The current version of the framework allows customization of text values only for a  `DetailedReport`.
+
+A target language of the report can be set with the following code:
+
+[source,java,indent=0]
+.Language customization
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=i18n]
+----
+
+In case if no language is specified, the framework will use a default Locale obtained from OS on a running machine. If a requested language is not found, a default translation will be used.
+
+As a default configuration DSS provides English translation.
+
+In order to provide a custom translation, a new file must be created inside `src\main\resources` directory of your project with a name followed by one of the patterns: 
+
+`dss-messages_XX.properties` or 
+`dss-messages_XX_YY.properties`, where:
+
+ * XX - an abbreviation of a target language;
+ * YY - a country code.
+
+For example, for a French language a file with a name `dss-messages_fr.properties` need to be created, or `dss-messages_fr_FR.properties` to use it only in France local.
 
 == Additional features
 
@@ -1646,28 +1774,31 @@ DSS is able to retrieve the original data from a valid signature.
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/RetrieveOriginalDocumentTest.java[tags=demo]
 ----
 
-== REST Services
+== REST and SOAP Services
 
-DSS offers some REST and SOAP web services. The documentation will covers the REST calls. Additionally, we also provide a SOAP-UI project and Postman samples in the cookbook module.
+DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI project and Postman samples in the `dss-cookbook` module.
 
 The different webservices are : 
 
- * Signature webservices (dss-signature-soap / dss-signature-rest and their clients) : they expose methods to allow signing or extending a signature from a client.
- * Server-signing webservice (dss-server-signing-soap / dss-server-signing-rest and their clients) : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
- * Signature validation webservices (dss-validation-soap / dss-validation-rest and their clients) : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
- * Certificate validation webservices (dss-certificate-validation-soap / dss-certificate-validation-rest and their clients) : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
- * Timestamp webservices (dss-timestamp-remote-soap / dss-timestamp-remote-rest and their clients) : they expose methos to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digets calculation.
+ * Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing or extending a signature from a client.
+ * Server-signing webservice (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
+ * Signature validation webservices (`dss-validation-soap` / `dss-validation-rest`) and their clients : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
+ * Certificate validation webservices (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
+ * Timestamp webservices (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients : they expose methos to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digets calculation.
  
-The data structure in webservices is similar in REST and SOAP.
+The data structure in webservices is similar in both REST and SOAP modules.
+
+The documentation will covers the REST calls. All the REST services present in DSS are complaint with http://cxf.apache.org/docs/openapifeature.html[OpenAPI Specification].
 
 === REST signature service
 
 This service exposes 4 methods for one or more document(s) : 
 
- * getDataToSign : computes the digest to be signed
- * signDocument : adds the signature value in the document
- * extendDocument : extends an existing signature
- * timestampDocument : timestamps a provided document (available for PDF, ASiC-E and ASiC-S container formats)
+[source,java,indent=0]
+.Rest signature service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestSignatureServiceSnippet.java[tags=demo]
+----
  
 ==== Get data to sign
 
@@ -1718,9 +1849,11 @@ include::restdocs/timestamp-one-document/http-response.adoc[]
 
 This service also exposed 3 methods : 
 
- * getKeys : retrieves available keys on server side
- * getKey : retrieves a key on the server side by its alias
- * sign : signs the digest value with the given key
+[source,java,indent=0]
+.Rest server signing service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestServerSigningSnippet.java[tags=demo]
+----
 
 ==== Get keys
 
@@ -1753,6 +1886,8 @@ include::restdocs/sign/http-request.adoc[]
 include::restdocs/sign/http-response.adoc[]
 
 === REST validation service
+
+DSS provides also a module for documents validation.
 
 ==== Validate a document
 
@@ -1790,7 +1925,7 @@ include::restdocs/validate-cert/http-response.adoc[]
 
 ==== Get Timestamp Response
 
-This service allows the remote timestamp creation. The method takes as an input the digest to be timestamped and digest algorithm that has been used for the digest value computation. The output of the method is the generated timestamp's binaries.
+This service allows a remote timestamp creation. The method takes as an input the digest to be timestamped and digest algorithm that has been used for the digest value computation. The output of the method is the generated timestamp's binaries.
 
 .Request
 include::restdocs/get-timestamp-response/http-request.adoc[]

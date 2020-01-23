@@ -26,10 +26,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.XMLSignature;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -45,6 +47,7 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -136,6 +139,22 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			signedDocument.save("target/signed.xml");
 
 			testFinalDocument(signedDocument);
+
+			// tag::prefixes[]
+			
+			// Allows setting of a XAdES namespace (changes a XAdES format)
+			// Default : XAdESNamespaces.XADES_132 (produces XAdES 1.3.2)
+			parameters.setXadesNamespace(XAdESNamespaces.XADES_132);
+			
+			// Defines an XmlDSig prefix
+			// Default : XAdESNamespaces.XMLDSIG
+			parameters.setXmldsigNamespace(new DSSNamespace(XMLSignature.XMLNS, "myPrefix"));
+			
+			// Defines a XAdES 1.4.1 format prefix
+			// Default : XAdESNamespaces.XADES_141
+			parameters.setXades141Namespace(XAdESNamespaces.XADES_141);
+			
+			// end::prefixes[]
 		}
 		
 	}

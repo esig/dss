@@ -71,7 +71,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// Configuration of several signed attributes like ...
 			BLevelParameters bLevelParameters = parameters.bLevel();
 
-			// claimed signer role(s)
+			// Contains claimed roles assumed by the signer when creating the signature
 			bLevelParameters.setClaimedSignerRoles(Arrays.asList("Manager"));
 
 			// signer location
@@ -80,10 +80,12 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			signerLocation.setStateOrProvince("Luxembourg");
 			signerLocation.setPostalCode("1234");
 			signerLocation.setLocality("SimCity");
+			// Contains the indication of the purported place where the signer claims to have produced the signature
 			bLevelParameters.setSignerLocation(signerLocation);
 
-			// commitment type(s)
-			List<String> commitmentTypeIndications = new ArrayList<>();
+			// Identifies the commitment undertaken by the signer in signing (a) signed data object(s)
+			// in the context of the selected signature policy
+			List<String> commitmentTypeIndications = new ArrayList<String>();
 			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
 			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
@@ -92,7 +94,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			XAdESService service = new XAdESService(verifier);
 			service.setTspSource(getOnlineTSPSource());
 
-			// a content-timestamp (part of the signed attributes)
+			// Allows setting of content-timestamp (part of the signed attributes)
 			TimestampToken contentTimestamp = service.getContentTimestamp(toSignDocument, parameters);
 			parameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 
