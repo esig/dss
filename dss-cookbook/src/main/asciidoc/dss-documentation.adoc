@@ -676,7 +676,7 @@ The XAdES Profile, as well as a customizable prefixes can be set with following 
 [source,java,indent=0]
 .XAdES formats and prefixes
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=prefixes]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoPrefixes]
 ----
 
 ==== Reference Transformations
@@ -692,12 +692,20 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBW
 
 Current version of DSS supports the following transformations:
 
- * Canonicalization - any canonicalization algorithm that can be used for 'CanonicalizationMethod' can be used as a transform:
+ * Enveloped - removes the current `Signature` element from the digest calculation of the reference.
 
-[[SignXmlXadesBWithTransformsTest.java]]
+WARNING: Does not support parallel signatures!
+
 [source,java,indent=0]
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=canonicalizationTransform]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedTransform]
+----
+
+ * Canonicalization - any canonicalization algorithm that can be used for 'CanonicalizationMethod' can be used as a transform:
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoCanonicalizationTransform]
 ----
 
  * Base64 - the transform is used if application needs to sign a RAW data (binaries, images, audio or other formats). The 'Base64 Transform' is not compatible with following signature parameters:
@@ -706,26 +714,23 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBW
  ** setEmbedXML(true) - embedded setting cannot be used;
  ** setManifestSignature(true) - As is apparent from the previous point, Manifest cannot be used with the Base64 Transform as well since it also must be embedded to the signature.
 
-[[SignXmlXadesBWithTransformsTest.java]]
 [source,java,indent=0]
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=base64Transform]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoBase64Transform]
 ----
 
- * XPath - allows signing a custom nodes in a signature or embedded document. DSS contains an additional class 'XPathEnvelopedSignatureTransform' allowing to exclude the signature itself from the digested content (used for Enveloped signatures by default). Additional information about the 'XPath Transform' can be found https://www.w3.org/TR/xpath20/[by the link].
+ * XPath - allows signing a custom nodes in a signature or embedded document. DSS contains an additional class `XPathEnvelopedSignatureTransform` allowing to exclude signatures from the digested content (used for Enveloped signatures by default). Additional information about the 'XPath Transform' can be found https://www.w3.org/TR/xpath20/[by the link].
 
-[[SignXmlXadesBWithTransformsTest.java]]
 [source,java,indent=0]
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=envelopedXPathTransform]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedXPathTransform]
 ----
 
- * XPath-2-Filter - an alternative to 'XPath Transform'. Additional information about the 'XPath2Filter Transform' can be found https://www.w3.org/TR/xmldsig-filter2/[by the link].
+ * XPath-2-Filter - an alternative to 'XPath Transform'. Additional information about the 'XPath2Filter Transform' can be found https://www.w3.org/TR/xmldsig-filter2/[by the link]. DSS contains an additional class `XPath2FilterEnvelopedSignatureTransform` allowing to exclude signatures from the digest calculation.
 
-[[SignXmlXadesBWithTransformsTest.java]]
 [source,java,indent=0]
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=envelopedXPath2FilterTransform]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedXPath2FilterTransform]
 ----
 
  * XSLT Transform - This transform requires a 'org.w3.dom.Document' as an input, compatible with the normative https://www.w3.org/TR/xslt-30/[XSLT Specification]. Must be a sole transform.
