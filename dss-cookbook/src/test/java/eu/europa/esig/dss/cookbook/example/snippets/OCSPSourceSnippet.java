@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -57,7 +57,7 @@ public class OCSPSourceSnippet {
 		// Allows setting an implementation of `DataLoader` interface, 
 		// processing a querying of a remote revocation server. 
 		// `CommonsDataLoader` instance is used by default.
-		onlineOCSPSource.setDataLoader(new CommonsDataLoader());
+		onlineOCSPSource.setDataLoader(new OCSPDataLoader());
 		
 		// Defines an arbitrary integer used in OCSP source querying in order to prevent a replay attack. 
 		// Default : null (not used by default).
@@ -66,7 +66,7 @@ public class OCSPSourceSnippet {
 		// Defines a DigestAlgorithm being used to generate a CertificateID in order to complete an OCSP request. 
 		// OCSP servers supporting multiple hash functions may produce a revocation response 
 		// with a digest algorithm depending on the provided CertificateID's algorithm. 
-		// Default : SHA1 (as a mandatory requirement to be implemented by OCSP servers).
+		// Default : SHA1 (as a mandatory requirement to be implemented by OCSP servers. See RFC 5019).
 		onlineOCSPSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA1);
 		
 		// end::demo-online[]

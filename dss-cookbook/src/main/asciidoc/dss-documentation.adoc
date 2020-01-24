@@ -1788,7 +1788,7 @@ The different webservices are :
  
 The data structure in webservices is similar in both REST and SOAP modules.
 
-The documentation will covers the REST calls. All the REST services present in DSS are complaint with http://cxf.apache.org/docs/openapifeature.html[OpenAPI Specification].
+The documentation will covers the REST calls. All the REST services present in DSS are compliant with http://cxf.apache.org/docs/openapifeature.html[OpenAPI Specification].
 
 === REST signature service
 

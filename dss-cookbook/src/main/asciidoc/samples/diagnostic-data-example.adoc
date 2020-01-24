@@ -7,7 +7,7 @@
     <Signatures>
         <Signature Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1">
             <SignatureFilename>EmptyPage-signed-pades-baseline-b.pdf</SignatureFilename>
-            <DateTime>2019-08-27T14:06:11</DateTime>
+            <ClaimedSigningTime>2019-08-27T14:06:11</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
