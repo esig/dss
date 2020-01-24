@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
@@ -130,6 +131,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
+	
+	/**
+	 * Locale to use for reports generation
+	 * By default a Locale from OS is used
+	 */
+	private Locale locale = Locale.getDefault();
 
 	// Produces the ETSI Validation Report by default
 	private boolean enableEtsiValidationReport = true;
@@ -606,6 +613,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
+		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
 	}
@@ -666,6 +674,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	public void setSkipValidationContextExecution(boolean skipValidationContextExecution) {
 		this.skipValidationContextExecution = skipValidationContextExecution;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 }

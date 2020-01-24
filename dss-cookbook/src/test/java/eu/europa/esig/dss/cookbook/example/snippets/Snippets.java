@@ -38,7 +38,6 @@ import eu.europa.esig.dss.token.JKSSignatureToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -103,11 +102,8 @@ public class Snippets {
 
 		// tag::i18n[]
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		// A target Locale must be defined for a DocumentProcessExecutor
-		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
-		processExecutor.setLocale(Locale.FRENCH); // for French language
-		// The executor must be set to the validator
-		validator.setProcessExecutor(processExecutor);
+		// A target Locale must be defined for the validator
+		validator.setLocale(Locale.FRENCH); // for French language
 		// end::i18n[]
 
 	}

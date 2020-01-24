@@ -41,7 +41,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class SignedDocumentValidatorTest {
@@ -94,10 +93,8 @@ public class SignedDocumentValidatorTest {
 	}
 	
 	private void testMessages(DSSDocument document, Locale locale, String expectedErrorMessage) {
-		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
-		processExecutor.setLocale(locale);
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setProcessExecutor(processExecutor);
+		validator.setLocale(locale);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

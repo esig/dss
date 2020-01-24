@@ -57,6 +57,7 @@ public class AbstractProcessExecutor {
 	}
 
 	public void setLocale(Locale locale) {
+		Objects.requireNonNull(locale, "Locale cannot be null!");
 		i18nProvider = new I18nProvider(locale);
 	}
 	

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -37,6 +38,12 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	private Date validationTime;
 	private final CertificateToken token;
 	private CertificateVerifier certificateVerifier;
+	
+	/**
+	 * Locale to use for reports generation
+	 * By default a Locale from OS is used
+	 */
+	private Locale locale = Locale.getDefault();
 	
 	private CertificateProcessExecutor processExecutor;
 
@@ -55,6 +62,10 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
+	}
+	
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 	
 	private Date getValidationTime() {
@@ -93,6 +104,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		executor.setValidationPolicy(validationPolicy);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCertificateId(token.getDSSIdAsString());
+		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
 	}
