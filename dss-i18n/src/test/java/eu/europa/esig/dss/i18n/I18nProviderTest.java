@@ -99,7 +99,7 @@ public class I18nProviderTest {
 			Locale.setDefault(Locale.ENGLISH);
 			
 			MessageTag validationTime = MessageTag.VT_VALIDATION_TIME;
-			MessageTag messageTag = MessageTag.CERT_QUALIFICATION.setArgs(validationTime);
+			MessageTag messageTag = MessageTag.CERT_QUALIFICATION_AT_TIME.setArgs(validationTime);
 		
 			final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
 			String message = i18nProvider.getMessage(messageTag);

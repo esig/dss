@@ -91,7 +91,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	
 	@Override
 	protected MessageTag getTitle() {
-		MessageTag message = MessageTag.CERT_QUALIFICATION;
+		MessageTag message = MessageTag.CERT_QUALIFICATION_AT_TIME;
 		MessageTag param;
 		switch (validationTime) {
 			case BEST_SIGNATURE_TIME:

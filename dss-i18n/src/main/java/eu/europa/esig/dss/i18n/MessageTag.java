@@ -473,6 +473,8 @@ public enum MessageTag {
 	/* Validation Process Definitions */
 
 	CERT_QUALIFICATION,
+
+	CERT_QUALIFICATION_AT_TIME,
 	
 	DAAV,
 	
