@@ -35,41 +35,55 @@
 				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
 				<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 				<!-- Cannot conclude (untrusted chain) -->
-				<xsl:otherwise>default</xsl:otherwise>
+				<xsl:otherwise>secondary</xsl:otherwise>
 			</xsl:choose>
         </xsl:variable>
     
 		<div>
-    		<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+    		<xsl:attribute name="class">card mb-3</xsl:attribute>
     		<div>
-    			<xsl:attribute name="class">panel-heading</xsl:attribute>
+    			<xsl:attribute name="class">card-header bg-<xsl:value-of select="$indicationCssClass" /> text-white</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseCert-<xsl:value-of select="dss:id"/></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
     			Certificate
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapseCert-<xsl:value-of select="dss:id"/></xsl:attribute>
 	        	
 	        	<xsl:if test="dss:qualificationAtIssuance or dss:qualificationAtValidation">
 		        	<dl>
-			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		<xsl:attribute name="class">row</xsl:attribute>
 			    		
-			    		<dt>Qualification</dt>
+			    		<dt>
+			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			        		Qualification
+			        	</dt>
 			    		
-			    		<dd>Issuance Time (<xsl:value-of select="dss:notBefore"/>) : 
-			    			<span>
-			    				<xsl:attribute name="class">badge badge-primary</xsl:attribute>
-			    				
-			    				<xsl:value-of select="dss:qualificationAtIssuance"/>
-			    			</span>
-			    		</dd>
-			    		<dd>Validation Time (<xsl:value-of select="$validationTime"/>) : 
-			    			<span>
-			    				<xsl:attribute name="class">badge badge-primary</xsl:attribute>
-			    				
-			    				<xsl:value-of select="dss:qualificationAtValidation"/>
-			    			</span>
+			    		<dd>
+			        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+			    		
+							<ul>
+	            				<xsl:attribute name="class">list-unstyled</xsl:attribute>
+			    		
+			    				<li>
+			    					Issuance Time (<xsl:value-of select="dss:notBefore"/>) : 
+					    			<span>
+					    				<xsl:attribute name="class">badge badge-primary</xsl:attribute>
+					    				
+					    				<xsl:value-of select="dss:qualificationAtIssuance"/>
+					    			</span>
+					    		</li>
+					    		
+			    				<li>
+				    				Validation Time (<xsl:value-of select="$validationTime"/>) : 
+					    			<span>
+					    				<xsl:attribute name="class">badge badge-primary</xsl:attribute>
+					    				
+					    				<xsl:value-of select="dss:qualificationAtValidation"/>
+					    			</span>
+					    		</li>
+					    	</ul>
 			    		</dd>
 		        	</dl>
 	        	</xsl:if>
@@ -94,14 +108,27 @@
 				</xsl:if>
 					
 	        	<dl>
-	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+	        		<xsl:attribute name="class">row</xsl:attribute>
 	        		
-	        		<dt>Validity</dt>
-	        		<dd><xsl:value-of select="dss:notBefore"/> - <xsl:value-of select="dss:notAfter"/></dd>
+	        		<dt>
+		        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+		        		Validity
+			        </dt>
+	        		<dd>
+	        			<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        			<xsl:value-of select="dss:notBefore"/> - <xsl:value-of select="dss:notAfter"/>
+	        		</dd>
 	        		
 	        		<xsl:if test="not(dss:trustAnchors)">
-	       				<dt>Revocation</dt>
-	       				<dd><xsl:apply-templates select="dss:revocation"/></dd>
+	       				<dt>
+			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			        		
+			        		Revocation
+			        	</dt>
+	       				<dd>
+	        				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+		       				<xsl:apply-templates select="dss:revocation"/>
+		       			</dd>
        				</xsl:if>
 	        		
 					<xsl:apply-templates select="dss:ocspUrls"/>
@@ -110,7 +137,7 @@
 				
 	        	<xsl:if test="dss:aiaUrls or dss:cpsUrls">
 					<dl>
-			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		<xsl:attribute name="class">row</xsl:attribute>
 			    		
 						<xsl:apply-templates select="dss:aiaUrls"/>
 						<xsl:apply-templates select="dss:cpsUrls"/>
@@ -119,7 +146,7 @@
 				
 	        	<xsl:if test="dss:trustAnchors">
 					<dl>
-			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		<xsl:attribute name="class">row</xsl:attribute>
 			    		
 						<xsl:apply-templates select="dss:trustAnchors"/>
 		        	</dl>
@@ -130,65 +157,147 @@
     
     <xsl:template match="dss:subject">
      	<dl>
-		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		    <xsl:attribute name="class">row</xsl:attribute>
 	  		<xsl:if test="dss:commonName">
-		   		<dt>Common name</dt>
-		   		<dd><xsl:value-of select="dss:commonName"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Common name
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:commonName"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:givenName">
-		   		<dt>Given name</dt>
-		   		<dd><xsl:value-of select="dss:givenName"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Given name
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:givenName"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:surname">
-		   		<dt>Surname</dt>
-		   		<dd><xsl:value-of select="dss:surname"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Surname
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:surname"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:pseudonym">
-		   		<dt>Pseudonym</dt>
-		   		<dd><xsl:value-of select="dss:pseudonym"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+		        	Pseudonym
+		        </dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:pseudonym"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:organizationName">
-		   		<dt>Organization name</dt>
-		   		<dd><xsl:value-of select="dss:organizationName"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Organization name
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:organizationName"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:organizationUnit">
-		   		<dt>Organization Unit</dt>
-		   		<dd><xsl:value-of select="dss:organizationUnit"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Organization Unit
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:organizationUnit"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:email">
-		   		<dt>Email</dt>
-		   		<dd><xsl:value-of select="dss:email"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Email
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:email"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:locality">
-		   		<dt>Locality</dt>
-		   		<dd><xsl:value-of select="dss:locality"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Locality
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:locality"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:state">
-		   		<dt>State</dt>
-		   		<dd><xsl:value-of select="dss:state"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		State
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:state"/>
+	        	</dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:country">
-		   		<dt>Country</dt>
-		   		<dd><xsl:value-of select="dss:country"/></dd>
+		   		<dt>
+	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
+	        		Country
+	        	</dt>
+		   		<dd>
+	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+	        		<xsl:value-of select="dss:country"/>
+	        	</dd>
 	  		</xsl:if>
 	  	</dl>
 	</xsl:template>
 	
 	<xsl:template match="dss:keyUsages">
      	<dl>
-		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		    <xsl:attribute name="class">row</xsl:attribute>
 		    
-		    <dt>Key usages</dt>
-			<xsl:apply-templates select="dss:keyUsage"/>
+		    <dt>
+	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
+	        	Key usages
+	        </dt>
+			<dd>
+	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
+	   		
+				<ul>
+	        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+				
+					<xsl:apply-templates select="dss:keyUsage"/>
+				</ul>
+			</dd>
 		</dl>
 	</xsl:template>
 	
 	<xsl:template match="dss:extendedKeyUsages">
      	<dl>
-		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		    <xsl:attribute name="class">row</xsl:attribute>
 		    
-		    <dt>Extended key usages</dt>
-			<xsl:apply-templates select="dss:extendedKeyUsage"/>
+		    <dt>
+	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
+	        	Extended key usages
+	        </dt>
+			<dd>
+	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
+	   		
+				<ul>
+	        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+				
+					<xsl:apply-templates select="dss:extendedKeyUsage"/>
+				</ul>
+			</dd>
 		</dl>
 	</xsl:template>
 	
@@ -218,53 +327,105 @@
     
     <xsl:template match="dss:ocspUrls">
   		<dt>
+			<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			        		
   			<acronym>
   				<xsl:attribute name="title">Online Certificate Status Protocol</xsl:attribute>
   				OCSP
   			</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:ocspUrl"/>
+		<dd>
+       		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+   		
+			<ul>
+        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+   				
+   				<xsl:apply-templates select="dss:ocspUrl"/>
+   			</ul>
+   		</dd>
 	</xsl:template>
 	
   	<xsl:template match="dss:crlUrls">
   		<dt>
+			<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			
   			<acronym>
   				<xsl:attribute name="title">Certificate Revocation List</xsl:attribute>
 		  		CRL
 		  	</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:crlUrl"/>
+		<dd>
+       		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+   		
+			<ul>
+        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+   				
+				<xsl:apply-templates select="dss:crlUrl"/>
+			</ul>
+		</dd>
 	</xsl:template>
 	
 	<xsl:template match="dss:aiaUrls">
   		<dt>
+			<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			
   			<acronym>
   				<xsl:attribute name="title">Authority Information Access</xsl:attribute>
   		  		AIA
   		  	</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:aiaUrl"/>
+		<dd>
+       		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+   		
+			<ul>
+        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+   				
+				<xsl:apply-templates select="dss:aiaUrl"/>
+			</ul>
+		</dd>
 	</xsl:template>
 	
     <xsl:template match="dss:cpsUrls">
   		<dt>
+			<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			
   			<acronym>
   				<xsl:attribute name="title">Certification Practice Statements</xsl:attribute>
   		  		CPS
   		  	</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:cpsUrl"/>
+		
+		<dd>
+       		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+   		
+			<ul>
+        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+   				
+				<xsl:apply-templates select="dss:cpsUrl"/>
+			</ul>
+		</dd>
 	</xsl:template>
 	
     <xsl:template match="dss:trustAnchors">
   		<dt>
+			<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			
   			Trust Anchor
 		</dt>
-		<xsl:apply-templates select="dss:trustAnchor"/>
+		
+		<dd>
+       		<xsl:attribute name="class">col-sm-9</xsl:attribute>
+   		
+			<ul>
+        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+   				
+				<xsl:apply-templates select="dss:trustAnchor"/>
+			</ul>
+		</dd>
 	</xsl:template>
     
     <xsl:template match="dss:trustAnchor">
-    	<dd>
+    	<li>
     		<a>
     			<xsl:attribute name="href">
 	    			<xsl:value-of select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
@@ -280,7 +441,7 @@
     		</a>
     		
     		<span>
-    			<xsl:attribute name="class">fa fa-arrow-circle-right dss-arrow</xsl:attribute>
+    			<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
     		</span>
     		
     		<a>
@@ -294,26 +455,26 @@
     		</a>
     		
     		<span>
-    			<xsl:attribute name="class">fa fa-arrow-circle-right dss-arrow</xsl:attribute>
+    			<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
     		</span>
     		
     		<xsl:value-of select="dss:trustServiceName" />
-    	</dd>
+    	</li>
     </xsl:template>
     
     <xsl:template match="dss:keyUsage | dss:extendedKeyUsage">
-    	<dd><xsl:value-of select="." /></dd>
+    	<li><xsl:value-of select="." /></li>
     </xsl:template>
     
     <xsl:template match="dss:ocspUrl | dss:crlUrl | dss:aiaUrl | dss:cpsUrl | dss:pdsUrl">
-    	<dd>
+    	<li>
     		<a>
     			<xsl:attribute name="href"><xsl:value-of select="." /></xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		
     			<xsl:value-of select="." />
     		</a>
-    	</dd>
+    	</li>
     </xsl:template>
 
 </xsl:stylesheet>
