@@ -116,7 +116,7 @@
 		<profile>
 	    	<id>jdk19-plus</id>
 	      	<activation>
-	        	<jdk>[9,12)</jdk>
+	        	<jdk>[9,13)</jdk>
 	      	</activation>
 	      	<properties>
 				<maven.javadoc.skip>true</maven.javadoc.skip>
