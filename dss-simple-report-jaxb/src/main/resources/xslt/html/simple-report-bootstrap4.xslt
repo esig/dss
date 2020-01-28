@@ -30,9 +30,7 @@
     		<div>
     			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapsePolicy</xsl:attribute>
-	        	<p>
-	        		<xsl:value-of select="dss:PolicyDescription"/>
-	        	</p>
+	        	<xsl:value-of select="dss:PolicyDescription"/>
     		</div>
     	</div>
     </xsl:template>
@@ -80,7 +78,7 @@
 				
 				<xsl:if test="dss:Filename">
 					<dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			    		
 						<xsl:if test="$nodeName = 'Signature'">
 			            	<dt>
@@ -106,7 +104,7 @@
 				
 				<xsl:if test="dss:SignatureLevel | dss:TimestampLevel">
 					<dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			            	
@@ -121,8 +119,8 @@
 							<xsl:if test="dss:TimestampLevel">
 								<xsl:value-of select="dss:TimestampLevel" />
 							</xsl:if>
-							<span>
-				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-3</xsl:attribute>
+							<i>
+				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">right</xsl:attribute>
 								
@@ -132,14 +130,14 @@
 								<xsl:if test="dss:TimestampLevel">
 									<xsl:attribute name="title"><xsl:value-of select="dss:TimestampLevel/@description" /></xsl:attribute>
 								</xsl:if>
-				    		</span>					
+				    		</i>					
 			        	</dd>
 			        </dl>
 				</xsl:if>	
 
 				<xsl:if test="@SignatureFormat">
 			        <dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			            	
@@ -154,44 +152,46 @@
 		        </xsl:if>
 			
 				<dl>
-					<xsl:attribute name="class">row</xsl:attribute>
+					<xsl:attribute name="class">row mb-0</xsl:attribute>
 					<dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			            Indication:
 					</dt>
 					<dd>
 			           	<xsl:attribute name="class">col-sm-9 text-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+			
+						<div>
+			           		<xsl:attribute name="class">badge mr-2 badge-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+							<xsl:value-of select="dss:Indication" />
+						</div>
 					
 						<xsl:choose>
 							<xsl:when test="$indicationText='TOTAL_PASSED'">
-								<span>
-									<xsl:attribute name="class">fa fa-check-circle</xsl:attribute>
-								</span>
+								<i>
+									<xsl:attribute name="class">fa fa-check-circle align-middle</xsl:attribute>
+								</i>
 							</xsl:when>
 							<xsl:when test="$indicationText='PASSED'">
-								<span>
-									<xsl:attribute name="class">fa fa-check-circle</xsl:attribute>
-								</span>
+								<i>
+									<xsl:attribute name="class">fa fa-check-circle align-middle</xsl:attribute>
+								</i>
 							</xsl:when>
 							<xsl:when test="$indicationText='INDETERMINATE'">
-								<span>
-									<xsl:attribute name="class">fa fa-question-circle</xsl:attribute>
-								</span>
+								<i>
+									<xsl:attribute name="class">fa fa-exclamation-circle align-middle</xsl:attribute>
+								</i>
 							</xsl:when>
 							<xsl:when test="$indicationText='FAILED'">
-								<span>
-									<xsl:attribute name="class">fa fa-times-circle</xsl:attribute>
-								</span>
+								<i>
+									<xsl:attribute name="class">fa fa-times-circle align-middle</xsl:attribute>
+								</i>
 							</xsl:when>
 							<xsl:when test="$indicationText='TOTAL_FAILED'">
-								<span>
-									<xsl:attribute name="class">fa fa-times-circle</xsl:attribute>
-								</span>
+								<i>
+									<xsl:attribute name="class">fa fa-times-circle align-middle</xsl:attribute>
+								</i>
 							</xsl:when>
 						</xsl:choose>
-			
-						<xsl:text></xsl:text>
-						<xsl:value-of select="dss:Indication" />
 					</dd>
 				</dl>   
 		        
@@ -204,7 +204,7 @@
 		        <xsl:apply-templates select="dss:Infos" />
 		        
 		        <dl>
-	        		<xsl:attribute name="class">row</xsl:attribute>
+	        		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        	
@@ -216,16 +216,16 @@
 		            			<xsl:attribute name="class">col-sm-9</xsl:attribute>
 		            			
 		            			<ul>
-		            				<xsl:attribute name="class">list-unstyled</xsl:attribute>
+		            				<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
 		            			
 						            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
 						            	<xsl:variable name="index" select="position()"/>
 					            			
 				        				<li>
-				        					<span><xsl:attribute name="class">fa fa-link</xsl:attribute></span>
+				        					<i><xsl:attribute name="class">fa fa-link mr-2</xsl:attribute></i>
 						        			<xsl:choose>
 						        				<xsl:when test="$index = 1">
-						        					<b> <xsl:value-of select="dss:qualifiedName" /></b>
+						        					<b><xsl:value-of select="dss:qualifiedName" /></b>
 						        				</xsl:when>
 						        				<xsl:otherwise>
 													<xsl:value-of select="dss:qualifiedName" />				        				
@@ -244,7 +244,7 @@
 		        
 				<xsl:if test="dss:SigningTime">
 			        <dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        		
@@ -260,7 +260,7 @@
 		        
 				<xsl:if test="dss:ProductionTime">
 			        <dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        		
@@ -276,7 +276,7 @@
 		        
 				<xsl:if test="dss:BestSignatureTime">
 			        <dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			            	
@@ -286,21 +286,21 @@
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
 			            	
 			            	<xsl:value-of select="dss:BestSignatureTime"/>
-			            	<span>
-				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-3</xsl:attribute>
+			            	<i>
+				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">right</xsl:attribute>
 								<xsl:attribute name="title">
 									Lowest time at which there exists a proof of existence for the signature 
 								</xsl:attribute>
-				    		</span>		
+				    		</i>		
 			            </dd>
 			        </dl>
 		        </xsl:if>
 		        
 				<xsl:if test="$nodeName = 'Signature'">
 			        <dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        		
@@ -317,7 +317,7 @@
 				<xsl:if test="dss:SignatureScope">
 			        <xsl:for-each select="dss:SignatureScope">
 				        <dl>
-				    		<xsl:attribute name="class">row</xsl:attribute>
+				    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 				            <dt>
 			        			<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        			
@@ -340,23 +340,25 @@
 	<xsl:template match="dss:SubIndication">
 		<xsl:param name="indicationClass" />
 		<dl>
-    		<xsl:attribute name="class">row</xsl:attribute>
+    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
 				
 				Sub indication:
 			</dt>
 			<dd>
-				<xsl:attribute name="class">col-sm-9 text-<xsl:value-of select="$indicationClass" /></xsl:attribute>
-				
-				<xsl:value-of select="." />
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+				<div>
+					<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationClass" /></xsl:attribute>
+					<xsl:value-of select="." />
+				</div>
 			</dd>
 		</dl>
 	</xsl:template>
 	
 	<xsl:template match="dss:Errors">
 		<dl>
-    		<xsl:attribute name="class">row</xsl:attribute>
+    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			</dt>
@@ -369,7 +371,7 @@
 	
 	<xsl:template match="dss:Warnings">
 		<dl>
-    		<xsl:attribute name="class">row</xsl:attribute>
+    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			</dt>
@@ -382,7 +384,7 @@
 	
 	<xsl:template match="dss:Infos">
 		<dl>
-    		<xsl:attribute name="class">row</xsl:attribute>
+    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			</dt>
@@ -408,7 +410,7 @@
 	        	
 				<xsl:if test="dss:ContainerType">
 			        <dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        		
@@ -422,7 +424,7 @@
 			        </dl>
 		        </xsl:if>
 	        	<dl>
-		    		<xsl:attribute name="class">row</xsl:attribute>
+		    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        	
@@ -441,7 +443,7 @@
 		            </dd>
 		        </dl>
 		        <dl>
-		    		<xsl:attribute name="class">row</xsl:attribute>
+		    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
 			        	

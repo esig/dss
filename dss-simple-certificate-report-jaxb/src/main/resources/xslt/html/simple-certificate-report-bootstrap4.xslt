@@ -53,7 +53,7 @@
 	        	
 	        	<xsl:if test="dss:qualificationAtIssuance or dss:qualificationAtValidation">
 		        	<dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			    		
 			    		<dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
@@ -64,7 +64,7 @@
 			        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
 			    		
 							<ul>
-	            				<xsl:attribute name="class">list-unstyled</xsl:attribute>
+	            				<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
 			    		
 			    				<li>
 			    					Issuance Time (<xsl:value-of select="dss:notBefore"/>) : 
@@ -92,7 +92,7 @@
 				
 				<xsl:if test="dss:keyUsages or dss:extendedKeyUsages">
 					<div>
-						<xsl:attribute name="class">row</xsl:attribute>
+						<xsl:attribute name="class">row mb-0</xsl:attribute>
 						
 						<div>
 							<xsl:attribute name="class">col-md-6</xsl:attribute>
@@ -108,7 +108,7 @@
 				</xsl:if>
 					
 	        	<dl>
-	        		<xsl:attribute name="class">row</xsl:attribute>
+	        		<xsl:attribute name="class">row mb-0</xsl:attribute>
 	        		
 	        		<dt>
 		        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
@@ -137,7 +137,7 @@
 				
 	        	<xsl:if test="dss:aiaUrls or dss:cpsUrls">
 					<dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			    		
 						<xsl:apply-templates select="dss:aiaUrls"/>
 						<xsl:apply-templates select="dss:cpsUrls"/>
@@ -146,7 +146,7 @@
 				
 	        	<xsl:if test="dss:trustAnchors">
 					<dl>
-			    		<xsl:attribute name="class">row</xsl:attribute>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			    		
 						<xsl:apply-templates select="dss:trustAnchors"/>
 		        	</dl>
@@ -157,7 +157,7 @@
     
     <xsl:template match="dss:subject">
      	<dl>
-		    <xsl:attribute name="class">row</xsl:attribute>
+		    <xsl:attribute name="class">row mb-0</xsl:attribute>
 	  		<xsl:if test="dss:commonName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
@@ -263,7 +263,7 @@
 	
 	<xsl:template match="dss:keyUsages">
      	<dl>
-		    <xsl:attribute name="class">row</xsl:attribute>
+		    <xsl:attribute name="class">row mb-0</xsl:attribute>
 		    
 		    <dt>
 	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
@@ -273,7 +273,7 @@
 	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
 	   		
 				<ul>
-	        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+	        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
 				
 					<xsl:apply-templates select="dss:keyUsage"/>
 				</ul>
@@ -283,7 +283,7 @@
 	
 	<xsl:template match="dss:extendedKeyUsages">
      	<dl>
-		    <xsl:attribute name="class">row</xsl:attribute>
+		    <xsl:attribute name="class">row mb-0</xsl:attribute>
 		    
 		    <dt>
 	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
@@ -293,7 +293,7 @@
 	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
 	   		
 				<ul>
-	        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+	        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
 				
 					<xsl:apply-templates select="dss:extendedKeyUsage"/>
 				</ul>
@@ -304,23 +304,23 @@
     <xsl:template match="dss:revocation">
     	<xsl:choose>
 			<xsl:when test="dss:revocationDate">
-				<span>
+				<i>
 					<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
 					<xsl:attribute name="title">Revoked</xsl:attribute>
-				</span>
+				</i>
      			Revoked (reason:<xsl:value-of select="dss:revocationReason" /> @ <xsl:value-of select="dss:revocationDate" />)
 			</xsl:when>    	
 			<xsl:when test="dss:productionDate">
-      			<span>
+      			<i>
 					<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
 					<xsl:attribute name="title">Not Revoked</xsl:attribute>
-				</span>
+				</i>
 			</xsl:when>
 			<xsl:otherwise>
-      			<span>
+      			<i>
 					<xsl:attribute name="class">fa fa-question-circle text-muted</xsl:attribute>
 					<xsl:attribute name="title">No revocation data available</xsl:attribute>
-				</span>
+				</i>
 			</xsl:otherwise>
     	</xsl:choose>
     </xsl:template>
@@ -338,7 +338,7 @@
        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
    		
 			<ul>
-        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
    				
    				<xsl:apply-templates select="dss:ocspUrl"/>
    			</ul>
@@ -358,7 +358,7 @@
        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
    		
 			<ul>
-        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
    				
 				<xsl:apply-templates select="dss:crlUrl"/>
 			</ul>
@@ -378,7 +378,7 @@
        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
    		
 			<ul>
-        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
    				
 				<xsl:apply-templates select="dss:aiaUrl"/>
 			</ul>
@@ -399,7 +399,7 @@
        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
    		
 			<ul>
-        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
    				
 				<xsl:apply-templates select="dss:cpsUrl"/>
 			</ul>
@@ -417,7 +417,7 @@
        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
    		
 			<ul>
-        		<xsl:attribute name="class">list-unstyled</xsl:attribute>
+        		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
    				
 				<xsl:apply-templates select="dss:trustAnchor"/>
 			</ul>
@@ -440,9 +440,9 @@
 	    		</span>
     		</a>
     		
-    		<span>
-    			<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
-    		</span>
+    		<i>
+    			<xsl:attribute name="class">fa fa-arrow-circle-right ml-2 mr-2</xsl:attribute>
+    		</i>
     		
     		<a>
 	    		<xsl:attribute name="href">
@@ -454,9 +454,9 @@
 	    		<xsl:value-of select="dss:trustServiceProvider" /> 
     		</a>
     		
-    		<span>
+    		<i>
     			<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
-    		</span>
+    		</i>
     		
     		<xsl:value-of select="dss:trustServiceName" />
     	</li>

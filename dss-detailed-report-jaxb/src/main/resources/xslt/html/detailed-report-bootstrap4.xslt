@@ -147,10 +147,10 @@
 	 			<xsl:value-of select="concat(@Title, ' ')"/>
 				
 				<xsl:if test="dss:ProofOfExistence/dss:Time">
-					<span>
+					<i>
 						<xsl:attribute name="class">fa fa-clock-o</xsl:attribute>
 						<xsl:attribute name="title">Best signature time : <xsl:value-of select="dss:ProofOfExistence/dss:Time" /></xsl:attribute>
-	       			</span>
+	       			</i>
        			</xsl:if>
        			
 			</div>
@@ -183,10 +183,10 @@
 	 			
 	 			<xsl:value-of select="concat(@Type, ' ')"/>
 		       
-				<span>
+				<i>
 					<xsl:attribute name="class">fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="title">Production time : <xsl:value-of select="@ProductionTime"/></xsl:attribute>
-       			</span>
+       			</i>
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
@@ -288,10 +288,10 @@
 		        
 	 			<xsl:value-of select="concat(@Title, ' ')"/>
 	       		
-				<span>
+				<i>
 					<xsl:attribute name="class">fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="title"><xsl:value-of select="@DateTime"/></xsl:attribute>
-       			</span>
+       			</i>
 	        </div>
     		<div>
     			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
@@ -382,10 +382,10 @@
 			       	
 					<xsl:choose>
       					<xsl:when test="@TrustAnchor = 'true'">
-			       			<span>
+			       			<i>
 								<xsl:attribute name="class">fa fa-certificate float-right</xsl:attribute>
 								<xsl:attribute name="title">Trust Anchor</xsl:attribute>		       			
-			       			</span>
+			       			</i>
 		       			</xsl:when>
 			       		<xsl:otherwise>
 							<xsl:call-template name="badge-conclusion">
@@ -441,9 +441,9 @@
 	    				</xsl:choose>
 						<xsl:attribute name="title">Details</xsl:attribute>
 						<xsl:attribute name="class">ml-2</xsl:attribute>
-						<span>
+						<i>
 							<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
-						</span>
+						</i>
 					</a>
 	    		</xsl:if>
 	    	</div>
@@ -452,43 +452,43 @@
 	        	<xsl:variable name="statusText" select="dss:Status"/>
 	        	<xsl:choose>
 					<xsl:when test="$statusText='OK'">
-						<span>
+						<i>
 							<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
 							<xsl:attribute name="title">OK</xsl:attribute>
-						</span>
+						</i>
 					</xsl:when>
 					<xsl:when test="$statusText='NOT OK'">
-						<span>
+						<i>
 							<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
 							<xsl:attribute name="title"><xsl:value-of select="dss:Error" /></xsl:attribute>
-						</span>
+						</i>
 					</xsl:when>
 					<xsl:when test="$statusText='WARNING'">
-						<span>
+						<i>
 							<xsl:attribute name="class">fa fa-exclamation-circle text-warning</xsl:attribute>
 							<xsl:attribute name="title"><xsl:value-of select="dss:Warning" /></xsl:attribute>
-						</span>
+						</i>
 					</xsl:when>
 					<xsl:when test="$statusText='INFORMATION'">
-						<span>
+						<i>
 							<xsl:attribute name="class">fa fa-info-circle text-info</xsl:attribute>
 							<xsl:attribute name="title"><xsl:value-of select="dss:Info" /></xsl:attribute>
-						</span>
+						</i>
 					</xsl:when>
 					<xsl:otherwise>
-						<span>
+						<i>
 							<xsl:value-of select="dss:Status" />
-						</span>
+						</i>
 					</xsl:otherwise>
 	    		</xsl:choose>
 	    		
 	    		<xsl:if test="dss:AdditionalInfo">
-		    		<span>
+		    		<i>
 		    			<xsl:attribute name="class">fa fa-plus-circle text-info ml-2</xsl:attribute>
 						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 						<xsl:attribute name="data-placement">right</xsl:attribute>
 						<xsl:attribute name="title"><xsl:value-of select="dss:AdditionalInfo" /></xsl:attribute>
-		    		</span>
+		    		</i>
 	    		</xsl:if>
 	    	</div>
 	    </div>
