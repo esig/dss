@@ -27,10 +27,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
@@ -53,9 +53,9 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 			ltvSubIndication = longTermValidationResult.getConclusion().getSubIndication();
 			ltvErrors = longTermValidationResult.getConclusion().getErrors();
 
-			return Indication.PASSED.equals(ltvIndication)
-					|| (Indication.INDETERMINATE.equals(ltvIndication) && (SubIndication.REVOKED_NO_POE.equals(ltvSubIndication)
-							|| SubIndication.REVOKED_CA_NO_POE.equals(ltvSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(ltvSubIndication)
+			return Indication.PASSED.equals(ltvIndication) || (Indication.INDETERMINATE.equals(ltvIndication)
+					&& (SubIndication.REVOKED_NO_POE.equals(ltvSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(ltvSubIndication)
+							|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(ltvSubIndication) || SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(ltvSubIndication)
 							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(ltvSubIndication)));
 		}
 		return false;

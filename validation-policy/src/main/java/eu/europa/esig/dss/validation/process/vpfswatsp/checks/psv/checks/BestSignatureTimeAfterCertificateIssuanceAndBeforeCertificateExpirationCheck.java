@@ -35,13 +35,15 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 
 	private final Date controlTime;
 	private final CertificateWrapper certificate;
+	private final SubIndication currentTimeSubIndication;
 
-	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(I18nProvider i18nProvider, 
-			XmlPSV result, Date controlTime, CertificateWrapper certificate, LevelConstraint constraint) {
+	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(I18nProvider i18nProvider, XmlPSV result, Date controlTime,
+			CertificateWrapper certificate, SubIndication currentTimeSubIndication, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.controlTime = controlTime;
 		this.certificate = certificate;
+		this.currentTimeSubIndication = currentTimeSubIndication;
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.OUT_OF_BOUNDS_NO_POE;
+		return currentTimeSubIndication;
 	}
 
 }

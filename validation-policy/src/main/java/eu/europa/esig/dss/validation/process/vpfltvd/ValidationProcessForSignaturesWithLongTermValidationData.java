@@ -223,7 +223,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * OUT_OF_BOUNDS_NO_POE.
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime()));
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime(), bsConclusion.getSubIndication()));
 		}
 
 		/*
@@ -244,6 +244,17 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			// check validity of revocation data
 			item = revocationDataReliableAtBestSignatureTime(item, revocationDataToUse, bestSignatureTime.getTime());
 			
+		}
+
+		/*
+		 * d) If step 2) returned the indication INDETERMINATE with the sub-indication OUT_OF_BOUNDS_NOT_REVOKED: If
+		 * best-signature-time is before the issuance date of the signing certificate, the process shall return the indication
+		 * FAILED with the sub-indication NOT_YET_VALID. If best-signature-time is before the expiration date of the signing
+		 * certificate, the process shall perform step 4-e). Otherwise, the process shall return the indication
+		 * INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED
+		 */
+		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(bsConclusion.getSubIndication())) {
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime(), bsConclusion.getSubIndication()));
 		}
 
 		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
@@ -455,9 +466,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return item;
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
+	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime,
+			SubIndication currentSubIndication) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(i18nProvider, result, bestSignatureTime, signingCertificate,
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(i18nProvider, result, bestSignatureTime, signingCertificate, currentSubIndication,
 				policy.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint());
 	}
 

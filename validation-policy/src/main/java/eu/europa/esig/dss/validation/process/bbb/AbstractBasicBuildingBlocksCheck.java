@@ -190,7 +190,8 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			 * shall continue with step 5).
 			 */
 			else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
-					&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
+					&& (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())
+							|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(xcvConclusion.getSubIndication()))) {
 
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
 				if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, getExpirationDateForSigningCertificate(currentSignature))) {

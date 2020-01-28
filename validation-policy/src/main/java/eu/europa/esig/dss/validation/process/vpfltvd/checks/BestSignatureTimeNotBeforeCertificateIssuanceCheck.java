@@ -41,13 +41,15 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 
 	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
+	private final SubIndication currentSubIndication;
 
 	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, Date bestSignatureTime,
-			CertificateWrapper signingCertificate, LevelConstraint constraint) {
+			CertificateWrapper signingCertificate, SubIndication currentSubIndication, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;
+		this.currentSubIndication = currentSubIndication;
 	}
 
 	@Override
@@ -88,7 +90,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 
 	@Override
 	protected SubIndication getSuccessSubIndication() {
-		return SubIndication.OUT_OF_BOUNDS_NO_POE;
+		return currentSubIndication;
 	}
 
 }

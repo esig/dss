@@ -51,7 +51,7 @@ public class CertificateExpirationCheckTest extends AbstractTestCheck {
 		xc.setNotBefore(new Date(nowMil - 86400000)); // 24 hours ago
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateExpirationCheck cec = new CertificateExpirationCheck(i18nProvider, result, new CertificateWrapper(xc), new Date(),
+		CertificateExpirationCheck cec = new CertificateExpirationCheck(i18nProvider, result, new CertificateWrapper(xc), null, new Date(),
 				constraint);
 		cec.execute();
 
@@ -72,7 +72,7 @@ public class CertificateExpirationCheckTest extends AbstractTestCheck {
 		xc.setNotBefore(new Date(nowMil - 172800000)); // 48 hours ago
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateExpirationCheck cec = new CertificateExpirationCheck(i18nProvider, result, new CertificateWrapper(xc), new Date(),
+		CertificateExpirationCheck cec = new CertificateExpirationCheck(i18nProvider, result, new CertificateWrapper(xc), null, new Date(),
 				constraint);
 		cec.execute();
 

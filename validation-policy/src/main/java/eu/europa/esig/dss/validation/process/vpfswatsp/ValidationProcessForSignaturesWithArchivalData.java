@@ -315,13 +315,13 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
 		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelConstraint());
 	}
-	
+
 	private boolean shouldPerformPastSignatureValidationProcess(XmlConclusion conclusion) {
-		return Indication.INDETERMINATE.equals(conclusion.getIndication()) && 
-				   (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication()) || 
-					SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication()) ||
-					SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()) ||
-					SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication()));
+		return Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication()) || SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
+						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication()));
 	}
 	
 	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {

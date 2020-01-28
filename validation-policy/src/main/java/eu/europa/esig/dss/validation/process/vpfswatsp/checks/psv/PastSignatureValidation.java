@@ -119,24 +119,25 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			}
 
 			/*
-			 * If current time indication/sub-indication is INDETERMINATE/OUT_OF_BOUNDS_NO_POE:
+			 * If current time indication/sub-indication is INDETERMINATE/OUT_OF_BOUNDS_NO_POE or OUT_OF_BOUNDS_NOT_REVOKED:
 			 * 
-			 * a) If best-signature-time (lowest time at which there exists a POE for the signature value in the set of
-			 * POEs) is before the issuance date of the signing certificate (notBefore field), the building block
-			 * shall return the indication INDETERMINATE with the sub-indication NOT_YET_VALID.
+			 * a) If best-signature-time (lowest time at which there exists a POE for the signature value in the set of POEs) is
+			 * before the issuance date of the signing certificate (notBefore field), the building block shall return the indication
+			 * FAILED with the sub-indication NOT_YET_VALID.
 			 * 
-			 * b) If best-signature-time (lowest time at which there exists a POE for the signature value in the set of
-			 * POEs) is after the issuance date and before the expiration date of the signing certificate, the
-			 * building block shall return the status indication PASSED.
+			 * b) If best-signature-time (lowest time at which there exists a POE for the signature value in the set of POEs) is
+			 * after the issuance date and before the expiration date of the signing certificate, the building block shall return
+			 * the status indication PASSED.
 			 */
-
-			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)) {
+			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)
+					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(currentTimeSubIndication))) {
 
 				Date bestSignatureTime = poe.getLowestPOETime(token.getId(), controlTime);
 				CertificateWrapper signingCertificate = token.getSigningCertificate();
 
 				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
-				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate));
+				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate,
+						currentTimeSubIndication));
 				return;
 			}
 
@@ -183,9 +184,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	}
 
 	private ChainItem<XmlPSV> bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(Date bestSignatureTime,
-			CertificateWrapper signingCertificate) {
+			CertificateWrapper signingCertificate, SubIndication currentTimeSubIndication) {
 		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(i18nProvider, result, bestSignatureTime, signingCertificate,
-				getFailLevelConstraint());
+				currentTimeSubIndication, getFailLevelConstraint());
 	}
 
 	private CryptographicCheck<XmlPSV> tokenUsedAlgorithmsAreSecureAtPoeTime(TokenProxy currentToken, Context context) {

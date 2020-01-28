@@ -65,7 +65,8 @@ public class ValidationProcessUtils {
 						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication()) 
 						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.TRY_LATER.equals(conclusion.getSubIndication())
-						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()) ));
+						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())));
 	}
 	
 	/**

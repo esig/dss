@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -36,19 +37,36 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 
 	private final Date currentTime;
 	private final CertificateWrapper certificate;
+	private final CertificateRevocationWrapper usedCertificateRevocation;
 
-	public CertificateExpirationCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, Date currentTime, LevelConstraint constraint) {
+	private SubIndication subIndication;
+
+	public CertificateExpirationCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+			CertificateRevocationWrapper usedCertificateRevocation, Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;
 		this.certificate = certificate;
+		this.usedCertificateRevocation = usedCertificateRevocation;
 	}
 
 	@Override
 	protected boolean process() {
+		boolean inValidityRange = isInValidityRange();
+		if (!inValidityRange) {
+			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
+			if (!ValidationProcessUtils.isRevocationNoNeedCheck(certificate, currentTime)) {
+				if (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked()) {
+					subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
+				}
+			}
+		}
+		return inValidityRange;
+	}
+
+	private boolean isInValidityRange() {
 		Date notBefore = certificate.getNotBefore();
 		Date notAfter = certificate.getNotAfter();
-		return (notBefore != null && (currentTime.compareTo(notBefore) >= 0))
-				&& (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
+		return (notBefore != null && (currentTime.compareTo(notBefore) >= 0)) && (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
 	}
 
 	@Override
@@ -76,6 +94,6 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.OUT_OF_BOUNDS_NO_POE;
+		return subIndication;
 	}
 }

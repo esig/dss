@@ -88,7 +88,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
 
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
-		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstTimestampId()));
 
 		checkReports(reports);
 	}

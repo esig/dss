@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>seal-cz.pdf</DocumentName>
+    <ValidationDate>2020-01-28T09:44:51</ValidationDate>
+    <Signatures>
+        <Signature Id="S-6EAFAC65BDFAA7722923D43ECCBE9B9CFF2E55FF88F712D58CECDE53DF383FCE">
+            <SignatureFilename>seal-cz.pdf</SignatureFilename>
+            <ClaimedSigningTime>2018-09-01T14:28:46</ClaimedSigningTime>
+            <SignatureFormat>PKCS7-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>m14O3+6kvVBXbZJXx1SNvbkQTCp77pKBcrWQycU//18=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-40FE2CE068AB7D4277E897FA4B10CCF338CE9FC8101F787BEA7700E20F80AC92">
+                <AttributePresent>false</AttributePresent>
+                <DigestValuePresent>false</DigestValuePresent>
+                <DigestValueMatch>false</DigestValueMatch>
+                <IssuerSerialMatch>false</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Certificate="C-40FE2CE068AB7D4277E897FA4B10CCF338CE9FC8101F787BEA7700E20F80AC92"/>
+                <ChainItem Certificate="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <SignatureProductionPlace>
+                <CountryName>ČÚZK, Praha</CountryName>
+            </SignatureProductionPlace>
+            <CommitmentTypeIndication/>
+            <PDFRevision>
+                <SignatureFieldName>Signature1</SignatureFieldName>
+                <SignerInformationStore>
+                    <SignerInfo Processed="true">
+                        <Issuer>C=CZ,O=Česká pošta\, s.p. [IČ 47114983],CN=PostSignum Qualified CA 2</Issuer>
+                        <SerialNumber>3391929</SerialNumber>
+                    </SignerInfo>
+                </SignerInformationStore>
+                <PDFSignatureDictionary>
+                    <SignerName>R - eský úad zemmický a katastrální</SignerName>
+                    <Filter>Adobe.PPKMS</Filter>
+                    <SubFilter>adbe.pkcs7.detached</SubFilter>
+                    <Reason>Výstup z informačního systému veřejné správy</Reason>
+                    <SignatureByteRange>0 160 20642 139755</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-40FE2CE068AB7D4277E897FA4B10CCF338CE9FC8101F787BEA7700E20F80AC92">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-8E984A6D6E07210B29CAC22D7C050B166D8D067B9C1BBC873BB22DDB5520FE32">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>dmC/B8DK+G1X+KIiIZL1fPlgj5dQlfO1Jq3AeX9Rgb4=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>lIZ7Ui5eQbiLZhqKg7TfLc0fKyAtBQvme9cR+I2z9ywNWG55vb/tNasxMjg/ghMtdEPldsoujJAgmFJ+edrBUZqRA5pdmpdXmFqK3h5egVz7vndPPhkDihj0gPFKZBDUs6x61zCZheqNhoS6tm6wH2K2203j5KbwNrNMgjALbQ07pK0BJFwXbX9j1D9E0y+RFKp+rkGYYkP8sHZXJ1oDO9ddx4SK5SGch4VQpE+K7OVDjqrJ6L6D94DNBmng33nHVLoDo1YlzvXD5K8oEo+0tUlL1CVQcBiRrdH6tGdXUy3mmyttXvAm0FR355xUyOTMR0697J6LK0Ii2aOYlpG0qQ==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+            <SubjectDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PostSignum Qualified CA 2,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 2,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</IssuerDistinguishedName>
+            <SerialNumber>113</SerialNumber>
+            <CommonName>PostSignum Qualified CA 2</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>Česká pošta, s.p. [IČ 47114983]</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.postsignum.cz/crt/psrootqca2.crt</aiaUrl>
+                <aiaUrl>http://www2.postsignum.cz/crt/psrootqca2.crt</aiaUrl>
+                <aiaUrl>http://postsignum.ttc.cz/crt/psrootqca2.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2020-01-19T11:30:20</NotAfter>
+            <NotBefore>2010-01-19T11:31:20</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">Česká pošta, s.p.</TSPName>
+                        <TSPName lang="en">The Czech Post, s.p.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-08-30T22:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <EndDate>2017-08-30T22:00:00</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2010-01-19T11:31:20</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>OuT03l8+IHChGEW9/m3KbkErt+TthP1PG3tJbK3/LKw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-40FE2CE068AB7D4277E897FA4B10CCF338CE9FC8101F787BEA7700E20F80AC92">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1306533133343337,cn=čr - český úřad zeměměřický a katastrální,ou=český úřad zeměměřický a katastrální,o=čr - český úřad zeměměřický a katastrální [ič 00025712],2.5.4.97=#130e4e5452435a2d3030303235373132,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1306533133343337,CN=ČR - Český úřad zeměměřický a katastrální,OU=Český úřad zeměměřický a katastrální,O=ČR - Český úřad zeměměřický a katastrální [IČ 00025712],2.5.4.97=#130e4e5452435a2d3030303235373132,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PostSignum Qualified CA 2,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</IssuerDistinguishedName>
+            <SerialNumber>3391929</SerialNumber>
+            <CommonName>ČR - Český úřad zeměměřický a katastrální</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>ČR - Český úřad zeměměřický a katastrální [IČ 00025712]</OrganizationName>
+            <OrganizationalUnit>Český úřad zeměměřický a katastrální</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.postsignum.cz/crt/psqualifiedca2.crt</aiaUrl>
+                <aiaUrl>http://www2.postsignum.cz/crt/psqualifiedca2.crt</aiaUrl>
+                <aiaUrl>http://postsignum.ttc.cz/crt/psqualifiedca2.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
+                <crlUrl>http://www2.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
+                <crlUrl>http://postsignum.ttc.cz/crl/psqualifiedca2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.postsignum.cz/OCSP/QCA2/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-06-05T12:43:41</NotAfter>
+            <NotBefore>2018-06-05T12:43:41</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+                <KeyUsage>keyEncipherment</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.postsignum.cz">2.23.134.1.4.1.18.110</certificatePolicy>
+                <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes>
+                <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
+            </QCTypes>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">Česká pošta, s.p.</TSPName>
+                        <TSPName lang="en">The Czech Post, s.p.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-08-30T22:00:00</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-D53E84F350FF6FECDC6DD74DFD52298950DF169B104732A411FF3A2F9F341E50">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QP4s4GirfUJ36Jf6SxDM8zjOn8gQH3h76ncA4g+ArJI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+            <SubjectDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 2,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 2,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</IssuerDistinguishedName>
+            <SerialNumber>100</SerialNumber>
+            <CommonName>PostSignum Root QCA 2</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>Česká pošta, s.p. [IČ 47114983]</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2025-01-19T08:04:31</NotAfter>
+            <NotBefore>2010-01-19T08:04:31</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rQFvlYBQ4Ofkb659zFAZftjj/wpLJi5d3Ns+3dx9ZXg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-D53E84F350FF6FECDC6DD74DFD52298950DF169B104732A411FF3A2F9F341E50">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://www.postsignum.cz/crl/psqualifiedca2.crl</SourceAddress>
+            <ProductionDate>2020-01-19T11:29:09</ProductionDate>
+            <ThisUpdate>2020-01-19T11:29:09</ThisUpdate>
+            <NextUpdate>2020-01-20T08:20:00</NextUpdate>
+            <ExpiredCertsOnCRL>2010-01-19T11:44:47</ExpiredCertsOnCRL>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>1T6E81D/b+zcbddN/VIpiVDfFpsQRzKkEf86L580HlA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OrphanTokens/>
+    <OriginalDocuments>
+        <SignerData Id="D-8E984A6D6E07210B29CAC22D7C050B166D8D067B9C1BBC873BB22DDB5520FE32">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F">
+            <CountryCode>CZ</CountryCode>
+            <Url>https://tsl.gov.cz/publ/TSL_CZ.xtsl</Url>
+            <SequenceNumber>84</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-01-28T09:44:09</LastLoading>
+            <IssueDate>2019-12-13T09:00:00</IssueDate>
+            <NextUpdate>2020-06-13T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>255</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-01-28T09:44:07</LastLoading>
+            <IssueDate>2020-01-07T10:00:00</IssueDate>
+            <NextUpdate>2020-07-07T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

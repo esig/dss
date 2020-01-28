@@ -153,13 +153,13 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
 
+		CertificateRevocationWrapper latestCertificateRevocation = null;
+
 		if (!ValidationProcessUtils.isRevocationNoNeedCheck(currentCertificate, currentTime)) {
 
 			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 			
 			item = item.setNextItem(revocationDataPresent(currentCertificate, subContext));
-			
-			CertificateRevocationWrapper latestCertificateRevocation = null;
 			
 			Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = getRevocationAcceptanceResult(currentCertificate);
 			for (Map.Entry<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResult : revocationAcceptanceResultMap.entrySet()) {
@@ -206,7 +206,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
 
 		if (SubContext.SIGNING_CERT == subContext) {
-			item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
+			item = item.setNextItem(certificateExpiration(currentCertificate, latestCertificateRevocation, subContext));
 		}
 	}
 
@@ -219,9 +219,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		result.setRevocationInfo(revocationInfo);
 	}
 
-	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
+	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
+			SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
-		return new CertificateExpirationCheck(i18nProvider, result, certificate, currentTime, constraint);
+		return new CertificateExpirationCheck(i18nProvider, result, certificate, usedCertificateRevocation, currentTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
