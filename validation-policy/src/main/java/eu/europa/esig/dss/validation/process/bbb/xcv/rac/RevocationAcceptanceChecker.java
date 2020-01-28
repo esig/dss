@@ -43,10 +43,9 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertifica
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
@@ -56,17 +55,10 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	private final ValidationPolicy policy;
 	
 	private final List<String> validatedTokens;
-	
-	private POEExtraction poe; // optional
 
 	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
 			Date controlTime, ValidationPolicy policy) {
-		this(i18nProvider, certificate, revocationData, controlTime, null, policy);
-	}
-
-	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-			Date controlTime, POEExtraction poe, ValidationPolicy policy) {
-		this(i18nProvider, certificate, revocationData, controlTime, poe, policy, new ArrayList<String>());
+		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<String>());
 		result.setId(revocationData.getId());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
 	}
@@ -77,12 +69,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	}
 	
 	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-			Date controlTime, POEExtraction poe, ValidationPolicy policy, List<String> validatedTokens) {
+			Date controlTime, ValidationPolicy policy, List<String> validatedTokens) {
 		super(i18nProvider, new XmlRAC());
 		this.certificate = certificate;
 		this.revocationData = revocationData;
 		this.controlTime = controlTime;
-		this.poe = poe;
 		this.policy = policy;
 		this.validatedTokens = validatedTokens;
 	}
@@ -108,11 +99,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			
 			item = item.setNextItem(certificateIntact(revocationCertificate));
 			
-			if (!ValidationProcessUtils.isRevocationNoNeedCheck(revocationCertificate, getValidationTime(revocationCertificate))) {
+			if (!ValidationProcessUtils.isRevocationNoNeedCheck(revocationCertificate, controlTime)) {
+
 				SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ? 
 						SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
 				
-				item = item.setNextItem(revocationDataPresent(revocationCertificate, subContext));
+				item = item.setNextItem(revocationDataPresentForRevocationChain(revocationCertificate, subContext));
 				
 				CertificateRevocationWrapper latestRevocationData = null;
 				XmlRAC latestRacResult = null;
@@ -183,31 +175,13 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		return new IdPkixOcspNoCheck<>(i18nProvider, result, getFailLevelConstraint());
 	}
 	
-	private ChainItem<XmlRAC> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
+	private ChainItem<XmlRAC> revocationDataPresentForRevocationChain(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
-		return new RevocationDataAvailableCheck<XmlRAC>(i18nProvider, result, certificate, constraint) {
-
-			@Override
-			protected MessageTag getAdditionalInfo() {
-				if (certificate.isIdPkixOcspNoCheck() && !certificate.isRevocationDataAvailable()) {
-					return MessageTag.VALIDATION_TIME_OUT_OF_BOUNDS.setArgs(
-							ValidationProcessUtils.getFormattedDate(getValidationTime(certificate)), certificate.getId());
-				}
-				return super.getAdditionalInfo();
-			}
-			
-		};
-	}
-	
-	private Date getValidationTime(TokenProxy token) {
-		if (poe == null) {
-			return controlTime;
-		}
-		return poe.getLowestPOETime(token.getId(), controlTime);
+		return new RevocationIssuerRevocationDataAvailableCheck(i18nProvider, result, certificate, constraint);
 	}
 	
 	private RevocationAcceptanceChecker revocationAcceptanceChecker(CertificateWrapper certificateWrapper, CertificateRevocationWrapper revocationWrapper) {
-		return new RevocationAcceptanceChecker(i18nProvider, certificateWrapper, revocationWrapper, controlTime, poe, policy, validatedTokens);
+		return new RevocationAcceptanceChecker(i18nProvider, certificateWrapper, revocationWrapper, controlTime, policy, validatedTokens);
 	}
 	
 	private ChainItem<XmlRAC> revocationAcceptanceResultCheck(XmlRAC racResult) {
