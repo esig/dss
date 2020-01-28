@@ -456,31 +456,37 @@
 					<xsl:when test="$statusText='OK'">
 						<i>
 							<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
-							<xsl:attribute name="title">OK</xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$statusText" /></xsl:attribute>
 						</i>
 					</xsl:when>
 					<xsl:when test="$statusText='NOT OK'">
 						<i>
 							<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
-							<xsl:attribute name="title"><xsl:value-of select="dss:Error" /></xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$statusText" /> : <xsl:value-of select="dss:Error" /></xsl:attribute>
 						</i>
 					</xsl:when>
 					<xsl:when test="$statusText='WARNING'">
 						<i>
 							<xsl:attribute name="class">fa fa-exclamation-circle text-warning</xsl:attribute>
-							<xsl:attribute name="title"><xsl:value-of select="dss:Warning" /></xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$statusText" /> : <xsl:value-of select="dss:Warning" /></xsl:attribute>
 						</i>
 					</xsl:when>
 					<xsl:when test="$statusText='INFORMATION'">
 						<i>
 							<xsl:attribute name="class">fa fa-info-circle text-info</xsl:attribute>
-							<xsl:attribute name="title"><xsl:value-of select="dss:Info" /></xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$statusText" /> : <xsl:value-of select="dss:Info" /></xsl:attribute>
+						</i>
+					</xsl:when>
+					<xsl:when test="$statusText='IGNORED'">
+						<i>
+							<xsl:attribute name="class">fa fa-eye-slash text-muted</xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$statusText" /> : The check is skipped by the validation policy</xsl:attribute>
 						</i>
 					</xsl:when>
 					<xsl:otherwise>
-						<i>
+						<span>
 							<xsl:value-of select="dss:Status" />
-						</i>
+						</span>
 					</xsl:otherwise>
 	    		</xsl:choose>
 	    		
