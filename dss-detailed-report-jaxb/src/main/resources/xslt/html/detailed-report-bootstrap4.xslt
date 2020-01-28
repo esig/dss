@@ -397,9 +397,11 @@
 					
 	       			<xsl:value-of select="@Title"/>
 	       			
-	       			<br />    
-			       	
-		        	<xsl:value-of select="concat('Id = ', @Id)"/>
+	       			<xsl:if test="@Id">
+		       			<br />    
+				       	
+			        	<xsl:value-of select="concat('Id = ', @Id)"/>
+		        	</xsl:if>
 		        </div>
 		        
 		       	<xsl:if test="name() != 'SubXCV' or @TrustAnchor != 'true'">
