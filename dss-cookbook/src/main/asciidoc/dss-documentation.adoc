@@ -32,7 +32,13 @@ On a more detailed manner the following concepts and features are addressed in t
  * Revocation data handling (OCSP and CRL sources);
  * Certificate chain building;
  * Signature validation and validation policy;
- * Validation of the signing certificate.
+ * Signature qualification;
+ * Validation reports (Simple, Detailed, ETSI Validation report);
+ * Management of signature tokens;
+ * Validation of the signing certificate;
+ * Timestamp creation;
+ * Timestamp validation and qualification;
+ * REST and SOAP webservices.
 
 This is not an exhaustive list of all the possibilities offered by the framework and the proposed examples cover only the most useful features. However, to discover every detail of the operational principles of the framework, the JavaDoc is available within the source code.
 

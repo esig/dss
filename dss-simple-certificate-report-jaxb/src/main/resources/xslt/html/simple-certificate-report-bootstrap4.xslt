@@ -455,7 +455,7 @@
     		</a>
     		
     		<i>
-    			<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
+    			<xsl:attribute name="class">fa fa-arrow-circle-right ml-2 mr-2</xsl:attribute>
     		</i>
     		
     		<xsl:value-of select="dss:trustServiceName" />
