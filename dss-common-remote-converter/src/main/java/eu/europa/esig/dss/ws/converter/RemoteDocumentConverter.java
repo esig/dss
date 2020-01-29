@@ -39,7 +39,7 @@ public class RemoteDocumentConverter {
 
 	public static List<DSSDocument> toDSSDocuments(List<RemoteDocument> remoteDocuments) {
 		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
-			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
+			List<DSSDocument> dssDocuments = new ArrayList<>();
 			for (RemoteDocument remoteDocument : remoteDocuments) {
 				DSSDocument dssDocument = toDSSDocument(remoteDocument);
 				if (dssDocument != null) {
@@ -65,7 +65,7 @@ public class RemoteDocumentConverter {
 	}
 
 	public static List<RemoteDocument> toRemoteDocuments(List<DSSDocument> originalDocuments) {
-		List<RemoteDocument> results = new ArrayList<RemoteDocument>();
+		List<RemoteDocument> results = new ArrayList<>();
 		for (DSSDocument originalDocument : originalDocuments) {
 			RemoteDocument remoteDocument = toRemoteDocument(originalDocument);
 			if (remoteDocument != null) {

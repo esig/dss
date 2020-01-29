@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,7 +47,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -71,14 +72,18 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
@@ -86,6 +91,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SACertIDType;
@@ -109,11 +115,13 @@ import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 
-public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
+public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSignatureParameters, 
+				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 
@@ -192,6 +200,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			fail(message);
 		}
 
+		/* Bootstrap 4 Simple Report */
 		try {
 			assertNotNull(simpleReportFacade.generateHtmlReport(marshalledSimpleReport));
 		} catch (Exception e) {
@@ -208,6 +217,24 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			fail(message);
 		}
 
+		/* Bootstrap 3 Simple Report */
+		try {
+			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(marshalledSimpleReport));
+		} catch (Exception e) {
+			String message = "Unable to generate the html simple report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(reports.getSimpleReportJaxb()));
+		} catch (Exception e) {
+			String message = "Unable to generate the html simple report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		/* PDF Simple Report */
 		try (StringWriter sw = new StringWriter()) {
 			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
 			assertTrue(Utils.isStringNotBlank(sw.toString()));
@@ -238,6 +265,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			fail(message);
 		}
 
+		/* Bootstrap 4 Detailed Report */
 		try {
 			assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
 		} catch (Exception e) {
@@ -254,6 +282,24 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			fail(message);
 		}
 
+		/* Bootstrap 3 Detailed Report */
+		try {
+			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(marshalledDetailedReport));
+		} catch (Exception e) {
+			String message = "Unable to generate the html detailed report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(reports.getDetailedReportJaxb()));
+		} catch (Exception e) {
+			String message = "Unable to generate the html detailed report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		/* PDF Detailed Report */
 		try (StringWriter sw = new StringWriter()) {
 			detailedReportFacade.generatePdfReport(marshalledDetailedReport, new StreamResult(sw));
 			assertTrue(Utils.isStringNotBlank(sw.toString()));
@@ -304,7 +350,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				}
 
 				if (!MimeType.PDF.equals(original.getMimeType())) {
-					assertTrue("Unable to retrieve the original document " + original.getName(), found);
+					assertTrue(found, "Unable to retrieve the original document " + original.getName());
 				} else if (!found) {
 					byte[] originalByteArray = DSSUtils.toByteArray(original);
 					DSSDocument retrieved = retrievedOriginalDocuments.get(0);
@@ -371,7 +417,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	 * This method returns all possible cases of the originalDocument end string
 	 */
 	private List<DSSDocument> buildCloseDocuments(DSSDocument originalDocument) throws IOException {
-		List<DSSDocument> documentList = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentList = new ArrayList<>();
 		documentList.add(originalDocument);
 		documentList.add(getReducedDocument(originalDocument, 1));
 		documentList.add(getReducedDocument(originalDocument, 2));
@@ -404,7 +450,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		if (toBeCanonicalized) {
 			try {
 				// we canonicalize to ignore the header (which is not covered by the signature)
-				Canonicalizer c14n = Canonicalizer.getInstance(CanonicalizationMethod.INCLUSIVE);
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
 				byteArray = c14n.canonicalize(byteArray);
 			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
 				// Not always able to canonicalize (more than one file can be covered (XML +
@@ -413,6 +459,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 		// LOG.info("Bytes : {}", new String(byteArray));
 		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
+	}
+	
+	protected String getCanonicalizationMethod() {
+		// Inclusive by default
+		return CanonicalizationMethod.INCLUSIVE;
 	}
 
 	protected abstract List<DSSDocument> getOriginalDocuments();
@@ -441,6 +492,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
+		checkPdfRevision(diagnosticData);
+		checkStructureValidation(diagnosticData);
 
 		checkNoDuplicateCompleteCertificates(diagnosticData);
 		checkNoDuplicateCompleteRevocationData(diagnosticData);
@@ -466,6 +519,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				assertNotNull(simpleReport.getSubIndication(sigId));
 			}
 			assertNotNull(simpleReport.getSignatureQualification(sigId));
+			
+			CertificateToken certificate = getSigningCert();			
+			String name = DSSASN1Utils.getHumanReadableName(certificate);
+			assertEquals(name, simpleReport.getSignedBy(sigId));
 		}
 		assertNotNull(simpleReport.getValidationTime());
 	}
@@ -550,8 +607,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureAlgorithm().getEncryptionAlgorithm(),
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(signatureParameters.getSignatureAlgorithm().getEncryptionAlgorithm(),
 				diagnosticData.getSignatureEncryptionAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
@@ -590,8 +649,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertTrue(entry.getCertificateChain().length >= signatureCertificateChain.size());
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
@@ -621,6 +682,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertEquals(isBaselineLTA(), diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
 
@@ -649,7 +711,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			}
 		}
 
-		assertEquals(nbContentTimestamps, Utils.collectionSize(getSignatureParameters().getContentTimestamps()));
+		AbstractSignatureParameters<TP> signatureParameters = (AbstractSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(nbContentTimestamps, Utils.collectionSize(signatureParameters.getContentTimestamps()));
 
 		if (isBaselineT()) {
 			assertTrue(foundSignatureTimeStamp);
@@ -706,8 +769,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
-		DigestAlgorithm expectedDigestAlgorithm = getSignatureParameters().getReferenceDigestAlgorithm();
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		DigestAlgorithm expectedDigestAlgorithm = signatureParameters.getReferenceDigestAlgorithm();
 		if (expectedDigestAlgorithm == null) {
 			expectedDigestAlgorithm = getSignatureParameters().getDigestAlgorithm();
 		}
@@ -743,6 +808,14 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			}
 		}
 	}
+	
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
+	
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
 
 	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
 
@@ -773,6 +846,18 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
 			assertNotNull(signatureValidationStatus);
 			assertNotNull(signatureValidationStatus.getMainIndication());
+
+			List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+			if (Utils.isCollectionNotEmpty(associatedValidationReportData)) {
+				for (ValidationReportDataType validationReportDataType : associatedValidationReportData) {
+					CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
+					if (cryptoInformation != null && !cryptoInformation.isSecureAlgorithm()) {
+						Date expired = cryptoInformation.getNotAfter();
+						assertNotNull(expired);
+						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
+					}
+				}
+			}
 
 			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
 			validateETSISignatureAttributes(signatureAttributes);
@@ -949,7 +1034,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
 			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-				assertEquals("Duplicate complete certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate complete certificate in " + foundCert.getOrigins());
 			}
 		}
 	}
@@ -959,7 +1044,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlRelatedRevocation> allFoundRevocations = signatureWrapper.getRelatedRevocations();
 			for (XmlRelatedRevocation foundRevocation : allFoundRevocations) {
-				assertEquals("Duplicate complete revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate complete revocation data in " + foundRevocation.getOrigins());
 			}
 		}
 	}

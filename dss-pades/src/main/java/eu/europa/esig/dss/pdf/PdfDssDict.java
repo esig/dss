@@ -71,7 +71,7 @@ public class PdfDssDict {
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
-					vris = new ArrayList<PdfVRIDict>();
+					vris = new ArrayList<>();
 					for (String name : names) {
 						vris.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
 					}

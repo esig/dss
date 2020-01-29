@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 
-public class ReferenceDataIntactCheckTest {
+public class ReferenceDataIntactCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void referenceDataIntactCheck() throws Exception {
@@ -47,7 +48,7 @@ public class ReferenceDataIntactCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataIntactCheck rdic = new ReferenceDataIntactCheck(result, digestMatcher, constraint);
+		ReferenceDataIntactCheck rdic = new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
 		rdic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class ReferenceDataIntactCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataIntactCheck rdic = new ReferenceDataIntactCheck(result, digestMatcher, constraint);
+		ReferenceDataIntactCheck rdic = new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
 		rdic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

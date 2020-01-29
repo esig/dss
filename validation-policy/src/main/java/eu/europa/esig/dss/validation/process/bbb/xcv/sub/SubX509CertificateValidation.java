@@ -21,14 +21,18 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
@@ -36,8 +40,12 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
@@ -72,26 +80,28 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	
 	private final CertificateWrapper currentCertificate;
 	private final Date currentTime;
-	private final DiagnosticData diagnosticData;
 
 	private final Context context;
 	private final SubContext subContext;
 	private final ValidationPolicy validationPolicy;
 
-	public SubX509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, 
+	public SubX509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, Date currentTime, 
 			Context context, SubContext subContext, ValidationPolicy validationPolicy) {
-		super(new XmlSubXCV());
+		super(i18nProvider, new XmlSubXCV());
 		result.setId(currentCertificate.getId());
 		result.setTrustAnchor(currentCertificate.isTrusted());
-		result.setTitle(ValidationProcessDefinition.SUB_XCV.getTitle() + " = " + currentCertificate.getId());
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
-		this.diagnosticData = diagnosticData;
 
 		this.context = context;
 		this.subContext = subContext;
 		this.validationPolicy = validationPolicy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SUB_XCV;
 	}
 
 	@Override
@@ -137,40 +147,67 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateSignatureValid(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
-
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
 
 		item = item.setNextItem(extendedKeyUsage(currentCertificate, subContext));
 
 		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
 
-		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
+		CertificateRevocationWrapper latestCertificateRevocation = null;
 
-		// MUST check expiration before revocation (ocsp-no-check is only usable within the certificate validity)
-		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
-		
-		CertificateRevocationWrapper latestCertificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(currentCertificate);
-		if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
-			attachRevocationInformation(latestCertificateRevocation);
-		}
+		if (!ValidationProcessUtils.isRevocationNoNeedCheck(currentCertificate, currentTime)) {
 
-		item = item.setNextItem(certificateRevoked(latestCertificateRevocation, subContext));
-
-		item = item.setNextItem(certificateOnHold(latestCertificateRevocation, subContext));
-
-		if (!isRevocationNoNeedCheck(currentCertificate)) {
-			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(latestCertificateRevocation, 
+			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
+			
+			item = item.setNextItem(revocationDataPresent(currentCertificate, subContext));
+			
+			Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = getRevocationAcceptanceResult(currentCertificate);
+			for (Map.Entry<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResult : revocationAcceptanceResultMap.entrySet()) {
+				CertificateRevocationWrapper currentRevocation = revocationAcceptanceResult.getKey();
+				XmlRAC currentRAC = revocationAcceptanceResult.getValue();
+				
+				result.getRAC().add(currentRAC);
+				
+				item = item.setNextItem(revocationAcceptable(currentRAC));
+				
+				if (isValid(currentRAC) && 
+						(latestCertificateRevocation == null || currentRevocation.getProductionDate().after(latestCertificateRevocation.getProductionDate()))) {
+					latestCertificateRevocation = currentRevocation;
+				}
+				
+			}
+			
+			if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
+				attachRevocationInformation(latestCertificateRevocation);
+			}
+			
+			if (latestCertificateRevocation != null) {
+				item = item.setNextItem(latestRevocationAcceptable(revocationAcceptanceResultMap.get(latestCertificateRevocation)));
+			}
+			
+			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation, 
 					currentTime, context, subContext, validationPolicy);
 			XmlRFC rfcResult = rfc.execute();
 			result.setRFC(rfcResult);
 
 			item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
+
+			item = item.setNextItem(certificateRevoked(latestCertificateRevocation, subContext));
+
+			item = item.setNextItem(certificateOnHold(latestCertificateRevocation, subContext));
+
+			item = item.setNextItem(revocationCertHashCheck());
+			
 		} else {
 			item = item.setNextItem(idPkixOcspNoCheck());
+			
 		}
 
-		item = item.setNextItem(revocationCertHashCheck());
+		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
+
+		if (SubContext.SIGNING_CERT == subContext) {
+			item = item.setNextItem(certificateExpiration(currentCertificate, latestCertificateRevocation, subContext));
+		}
 	}
 
 	private void attachRevocationInformation(CertificateRevocationWrapper certificateRevocation) {
@@ -182,160 +219,175 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		result.setRevocationInfo(revocationInfo);
 	}
 
-	/*
-	 * A signing certificate includes the id-pkix-ocsp-nocheck extension. This extension informs the OCSP client that
-	 * the OCSP signing certificate should not be checked for revocation during the lifetime of the certificate. The
-	 * OCSP Signing certificate should therefore have a short lifetime.
-	 */
-	private boolean isRevocationNoNeedCheck(CertificateWrapper certificate) {
-		if (certificate.isIdPkixOcspNoCheck()) {
-			return currentTime.compareTo(certificate.getNotBefore()) >= 0 && currentTime.compareTo(certificate.getNotAfter()) <= 0;
-		}
-		return false;
-	}
-
-	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
+	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
+			SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
-		return new CertificateExpirationCheck(result, certificate, currentTime, constraint);
+		return new CertificateExpirationCheck(i18nProvider, result, certificate, usedCertificateRevocation, currentTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateKeyUsageConstraint(context, subContext);
-		return new KeyUsageCheck(result, certificate, constraint);
+		return new KeyUsageCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> extendedKeyUsage(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateExtendedKeyUsageConstraint(context, subContext);
-		return new ExtendedKeyUsageCheck(result, certificate, constraint);
+		return new ExtendedKeyUsageCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> aiaPresent(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateAuthorityInfoAccessPresentConstraint(context, subContext);
-		return new AuthorityInfoAccessPresentCheck(result, certificate, constraint);
+		return new AuthorityInfoAccessPresentCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> revocationInfoAccessPresent(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateRevocationInfoAccessPresentConstraint(context, subContext);
-		return new RevocationInfoAccessPresentCheck(result, certificate, constraint);
+		return new RevocationInfoAccessPresentCheck(i18nProvider, result, certificate, constraint);
+	}
+	
+	private ChainItem<XmlSubXCV> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(context, subContext);
+		return new RevocationDataAvailableCheck<>(i18nProvider, result, certificate, constraint);
+	}
+	
+	private Map<CertificateRevocationWrapper, XmlRAC> getRevocationAcceptanceResult(CertificateWrapper certificate) {
+		Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = 
+				new HashMap<>();
+		
+		for (CertificateRevocationWrapper revocationWrapper : certificate.getCertificateRevocationData()) {
+			RevocationAcceptanceChecker rac = new RevocationAcceptanceChecker(i18nProvider, certificate, revocationWrapper, currentTime, validationPolicy);
+			XmlRAC racResult = rac.execute();
+			revocationAcceptanceResultMap.put(revocationWrapper, racResult);
+		}
+		
+		return revocationAcceptanceResultMap;
+	}
+	
+	private ChainItem<XmlSubXCV> revocationAcceptable(XmlRAC racResult) {
+		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
+	}
+	
+	private ChainItem<XmlSubXCV> latestRevocationAcceptable(XmlRAC racResult) {
+		return new LatestRevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
 		LevelConstraint constraint = validationPolicy.getCertificateRevocationFreshnessConstraint(context, subContext);
-		return new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(result, rfcResult, constraint);
+		return new RevocationFreshnessCheckerResultCheck<>(i18nProvider, result, rfcResult, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> surname(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateSurnameConstraint(context, subContext);
-		return new SurnameCheck(result, certificate, constraint);
+		return new SurnameCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> givenName(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateGivenNameConstraint(context, subContext);
-		return new GivenNameCheck(result, certificate, constraint);
+		return new GivenNameCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> commonName(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateCommonNameConstraint(context, subContext);
-		return new CommonNameCheck(result, certificate, constraint);
+		return new CommonNameCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> pseudonym(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificatePseudonymConstraint(context, subContext);
-		return new PseudonymCheck(result, certificate, constraint);
+		return new PseudonymCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> country(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateCountryConstraint(context, subContext);
-		return new CountryCheck(result, certificate, constraint);
+		return new CountryCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> organizationName(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateOrganizationNameConstraint(context, subContext);
-		return new OrganizationNameCheck(result, certificate, constraint);
+		return new OrganizationNameCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> organizationUnit(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateOrganizationUnitConstraint(context, subContext);
-		return new OrganizationUnitCheck(result, certificate, constraint);
+		return new OrganizationUnitCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> serialNumber(CertificateWrapper signingCertificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSerialNumberConstraint(context, subContext);
-		return new SerialNumberCheck(result, signingCertificate, constraint);
+		return new SerialNumberCheck(i18nProvider, result, signingCertificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> pseudoUsage(CertificateWrapper signingCertificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificatePseudoUsageConstraint(context, subContext);
-		return new PseudoUsageCheck(result, signingCertificate, constraint);
+		return new PseudoUsageCheck(i18nProvider, result, signingCertificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSignatureConstraint(context, subContext);
-		return new CertificateSignatureValidCheck<XmlSubXCV>(result, certificate, constraint);
+		return new CertificateSignatureValidCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateRevoked(CertificateRevocationWrapper latestCertificateRevocation, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
-		return new CertificateRevokedCheck(result, latestCertificateRevocation, currentTime, constraint, subContext);
+		return new CertificateRevokedCheck(i18nProvider, result, latestCertificateRevocation, currentTime, constraint, subContext);
 	}
 
 	private ChainItem<XmlSubXCV> certificateOnHold(CertificateRevocationWrapper latestCertificateRevocation, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
-		return new CertificateOnHoldCheck(result, latestCertificateRevocation, currentTime, constraint);
+		return new CertificateOnHoldCheck(i18nProvider, result, latestCertificateRevocation, currentTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> notSelfSigned(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotSelfSignedConstraint(context, subContext);
-		return new CertificateNotSelfSignedCheck(result, certificate, constraint);
+		return new CertificateNotSelfSignedCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> selfSigned(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSelfSignedConstraint(context, subContext);
-		return new CertificateSelfSignedCheck(result, certificate, constraint);
+		return new CertificateSelfSignedCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificatePolicyIdsConstraint(context, subContext);
-		return new CertificatePolicyIdsCheck(result, certificate, constraint);
+		return new CertificatePolicyIdsCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateQCStatementIds(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateQCStatementIdsConstraint(context, subContext);
-		return new CertificateQCStatementIdsCheck(result, certificate, constraint);
+		return new CertificateQCStatementIdsCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
-		return new CertificateCryptographicCheck(result, certificate, currentTime, cryptographicConstraint);
+		return new CertificateCryptographicCheck(i18nProvider, result, certificate, currentTime, cryptographicConstraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateQualified(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateQualificationConstraint(context, subContext);
-		return new CertificateQualifiedCheck(result, certificate, constraint);
+		return new CertificateQualifiedCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateSupportedByQSCD(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSupportedByQSCDConstraint(context, subContext);
-		return new CertificateSupportedByQSCDCheck(result, certificate, constraint);
+		return new CertificateSupportedByQSCDCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToLegalPersonConstraint(context, subContext);
-		return new CertificateIssuedToLegalPersonCheck(result, certificate, constraint);
+		return new CertificateIssuedToLegalPersonCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateIssuedToNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToNaturalPersonConstraint(context, subContext);
-		return new CertificateIssuedToNaturalPersonCheck(result, certificate, constraint);
+		return new CertificateIssuedToNaturalPersonCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {
-		return new IdPkixOcspNoCheck(result, getFailLevelConstraint());
+		return new IdPkixOcspNoCheck<>(i18nProvider, result, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> revocationCertHashCheck() {
 		LevelConstraint constraint = validationPolicy.getRevocationCertHashMatchConstraint(context, subContext);
-		return new RevocationCertHashMatchCheck(result, currentCertificate.getCertificateRevocationData(), constraint);
+		return new RevocationCertHashMatchCheck(i18nProvider, result, currentCertificate.getCertificateRevocationData(), constraint);
 	}
 
 }

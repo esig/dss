@@ -24,7 +24,7 @@ import java.util.Date;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -33,14 +33,15 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCEXAdESLevelBInclusiveCanonicalizationTest extends AbstractASiCEXAdESTestSignature {
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
@@ -57,7 +58,7 @@ public class ASiCEXAdESLevelBInclusiveCanonicalizationTest extends AbstractASiCE
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

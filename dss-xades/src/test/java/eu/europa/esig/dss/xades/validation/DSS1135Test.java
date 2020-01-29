@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -47,7 +47,7 @@ public class DSS1135Test {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		// certificateVerifier.setDataLoader(new CommonsDataLoader());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf",
 				new FileDocument("src/test/resources/validation/dss1135/politica_de_firma.pdf"));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);

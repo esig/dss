@@ -23,15 +23,16 @@ package eu.europa.esig.dss.asic.common.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -39,6 +40,8 @@ import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
@@ -48,12 +51,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP>
-		implements MultipleDocumentsSignatureService<SP> {
+public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> 
+					extends AbstractSignatureService<SP, TP> implements MultipleDocumentsSignatureService<SP, TP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
 
-	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 	private static final String ZIP_ENTRY_MIMETYPE = "mimetype";
 
 	protected ASiCExtractResult archiveContent = new ASiCExtractResult();
@@ -71,12 +73,20 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	@Override
 	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		return getDataToSign(Arrays.asList(toSignDocument), parameters);
 	}
 
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, SP parameters, SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		return signDocument(Arrays.asList(toSignDocument), parameters, signatureValue);
+	}
+
+	@Override
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, TP parameters) {
+		Objects.requireNonNull(toTimestampDocument, "toTimestampDocument cannot be null!");
+		return timestamp(Arrays.asList(toTimestampDocument), parameters);
 	}
 
 	protected void extractCurrentArchive(DSSDocument archive) {
@@ -142,26 +152,34 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	protected abstract boolean isSignatureFilename(String name);
 	
 	private List<String> getDocumentNames(List<DSSDocument> documents) {
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		for (DSSDocument document : documents) {
 			names.add(document.getName());
 		}
 		return names;
 	}
 
-	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments,
-			ASiCParameters asicParameters) {
+	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures,
+			List<DSSDocument> documentsToStore,  ASiCParameters asicParameters, DSSDocument rootContainer) {
 
+		if (rootContainer != null) {
+			return mergeArchiveAndExtendedSignatures(rootContainer, signatures);
+		} else {
+			return buildASiCContainerType(documentsToBeSigned, signatures, documentsToStore, asicParameters);
+		}
+	}
+	
+	private DSSDocument buildASiCContainerType(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, 
+			List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+			storeMimetype(asicParameters, zos);
 			if (ASiCUtils.isASiCE(asicParameters)) {
-				storeDocuments(manifestDocuments, zos);
+				storeDocuments(metaInfFolderDocuments, zos);
 			}
-
 			storeDocuments(signatures, zos);
 			storeSignedFiles(documentsToBeSigned, zos);
-			storeMimetype(asicParameters, zos);
 			storeZipComment(asicParameters, zos);
-
+			
 			zos.finish();
 
 			return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
@@ -182,7 +200,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		for (DSSDocument detachedDocument : detachedDocuments) {
 			try (InputStream is = detachedDocument.openStream()) {
 				final String detachedDocumentName = detachedDocument.getName();
-				final String name = detachedDocumentName != null ? detachedDocumentName : ZIP_ENTRY_DETACHED_FILE;
+				final String name = detachedDocumentName != null ? detachedDocumentName : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
 				final ZipEntry entryDocument = new ZipEntry(name);
 
 				zos.setLevel(ZipEntry.DEFLATED);
@@ -193,7 +211,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	}
 
 	private void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream zos) throws IOException {
-		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes("UTF-8");
+		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes(StandardCharsets.UTF_8);
 		final ZipEntry entryMimetype = getZipEntryMimeType(mimeTypeBytes);
 		zos.putNextEntry(entryMimetype);
 		Utils.write(mimeTypeBytes, zos);

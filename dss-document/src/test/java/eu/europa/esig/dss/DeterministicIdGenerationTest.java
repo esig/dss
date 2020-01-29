@@ -20,41 +20,31 @@
  */
 package eu.europa.esig.dss;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.FileInputStream;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-@RunWith(Parameterized.class)
 public class DeterministicIdGenerationTest {
 
 	private CertificateToken signingCert;
 
-	@Parameters
-	public static List<Object[]> data() {
-		return Arrays.asList(new Object[10][0]);
-	}
-
 	public DeterministicIdGenerationTest() {
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certificates/ec.europa.eu.crt"));
 	}
 
-	@Test
+	@RepeatedTest(10)
 	public void testDifferentDeterministicId() throws InterruptedException {
 
 		Date date = new Date();
@@ -82,7 +72,7 @@ public class DeterministicIdGenerationTest {
 	}
 
 	@SuppressWarnings("serial")
-	private class SignatureParameters extends AbstractSignatureParameters {
+	private class SignatureParameters extends AbstractSignatureParameters<TimestampParameters> {
 
 	}
 

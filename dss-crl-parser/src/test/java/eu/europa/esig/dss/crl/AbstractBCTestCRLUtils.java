@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.crl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,19 +35,19 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils {
 
 	private static CertificateFactory certificateFactory;
 
-	@BeforeClass
+	@BeforeAll
 	public static void init() {
 		Security.addProvider(new BouncyCastleProvider());
 		try {
@@ -57,7 +57,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void reset() {
 		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
 	}

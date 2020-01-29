@@ -23,58 +23,72 @@ package eu.europa.esig.dss.enumerations;
 public enum RevocationOrigin {
 
 	/**
-	 * The revocation data was embedded in the signature 'revocation-values' attribute (used in CAdES and XAdES)
+	 * The revocation data was embedded in the CMS SignedData itself (used in CAdES)
 	 */
-	REVOCATION_VALUES(true),
+	CMS_SIGNED_DATA,
 
 	/**
-	 * The revocation data was embedded in the signature 'AttributeRevocationValues' attribute (used in XAdES)
+	 * The revocation data was embedded in the TimeStampToken.SignedData (used in
+	 * CAdES)
 	 */
-	ATTRIBUTE_REVOCATION_VALUES(true),
+	TIMESTAMP_SIGNED_DATA,
 
 	/**
-	 * The revocation data was embedded in the signature 'TimeStampValidationData' attribute (used in XAdES)
+	 * The revocation data was embedded in the signature 'revocation-values'
+	 * attribute (used in CAdES and XAdES)
 	 */
-	TIMESTAMP_VALIDATION_DATA(true),
+	REVOCATION_VALUES,
 
 	/**
-	 * The revocation data was embedded to the contents of DSS PDF dictionary (used in PAdES)
+	 * The revocation data was embedded in the signature 'AttributeRevocationValues'
+	 * attribute (used in XAdES)
 	 */
-	DSS_DICTIONARY(true),
+	ATTRIBUTE_REVOCATION_VALUES,
+
+	/**
+	 * The revocation data was embedded in the signature 'TimeStampValidationData'
+	 * attribute (used in XAdES)
+	 */
+	TIMESTAMP_VALIDATION_DATA,
+
+	/**
+	 * The revocation data was embedded to the contents of DSS PDF dictionary (used
+	 * in PAdES)
+	 */
+	DSS_DICTIONARY,
 
 	/**
 	 * The revocation data was embedded to VRI dictionary (used in PAdES)
 	 */
-	VRI_DICTIONARY(true),
+	VRI_DICTIONARY,
 
 	/**
 	 * The revocation value was embedded in the timestamp attribute (used in CAdES)
 	 */
-	TIMESTAMP_REVOCATION_VALUES(true),
+	TIMESTAMP_REVOCATION_VALUES,
 
 	/**
-	 * The revocation data was embedded to Signature (all internal cases)
+	 * The revocation data was obtained from the ADBE attribute
 	 */
-	SIGNATURE(true),
+	ADBE_REVOCATION_INFO_ARCHIVAL,
+
+	/**
+	 * The revocation data was embedded in signature or timestamp.
+	 */
+	INPUT_DOCUMENT,
 
 	/**
 	 * The revocation data was provided by the user or online OCSP/CRL
 	 */
-	EXTERNAL(false),
-	
+	EXTERNAL,
+
 	/**
 	 * The revocation data was obtained from a local DB or cache
 	 */
-	CACHED(false);
-	
-	private final boolean internalOrigin;
-	
-	RevocationOrigin(final boolean internalOrigin) {
-		this.internalOrigin = internalOrigin;
-	}
-	
+	CACHED;
+
 	public boolean isInternalOrigin() {
-		return internalOrigin;
+		return EXTERNAL != this && CACHED != this;
 	}
 
 }

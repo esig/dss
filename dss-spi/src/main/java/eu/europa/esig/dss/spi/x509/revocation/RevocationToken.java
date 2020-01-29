@@ -157,7 +157,6 @@ public abstract class RevocationToken extends Token {
 	 * @return {@link RevocationOrigin}
 	 */
 	public RevocationOrigin getFirstOrigin() {
-		Set<RevocationOrigin> origins = getOrigins();
 		if (Utils.isCollectionNotEmpty(origins)) {
 			return origins.iterator().next();
 		}
@@ -307,7 +306,7 @@ public abstract class RevocationToken extends Token {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((productionDate == null) ? 0 : productionDate.hashCode());
+		result = prime * result + getDSSId().hashCode();
 		result = prime * result + ((relatedCertificate == null) ? 0 : relatedCertificate.getDSSIdAsString().hashCode());
 		return result;
 	}
@@ -324,11 +323,7 @@ public abstract class RevocationToken extends Token {
 			return false;
 		}
 		RevocationToken other = (RevocationToken) obj;
-		if (productionDate == null) {
-			if (other.productionDate != null) {
-				return false;
-			}
-		} else if (!productionDate.equals(other.productionDate)) {
+		if (!getDSSId().equals(other.getDSSId())) {
 			return false;
 		}
 		if (relatedCertificate == null) {

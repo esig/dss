@@ -20,19 +20,24 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ExtensionBuilder.class);
 
 	/*
 	 * This object allows to access DOM signature representation using XPATH
@@ -80,22 +85,22 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected void ensureUnsignedProperties() {
 
-		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
+		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getQualifyingPropertiesPath());
 		if (qualifyingPropertiesNodeList.getLength() != 1) {
 			throw new DSSException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
 		}
 
 		qualifyingPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 
-		final NodeList unsignedPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
+		final NodeList unsignedPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 		final int length = unsignedPropertiesNodeList.getLength();
 		if (length == 1) {
 			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_UNSIGNED_PROPERTIES);
+			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementUnsignedProperties());
 			if (params.isPrettyPrint()) {
 				qualifyingPropertiesDom = (Element) DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
-				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
+				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 			}
 		} else {
 			throw new DSSException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
@@ -108,15 +113,15 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * @throws DSSException
 	 */
 	protected void ensureUnsignedSignatureProperties() {
-		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
 		final int length = unsignedSignaturePropertiesNodeList.getLength();
 		if (length == 1) {
 			unsignedSignaturePropertiesDom = (Element) unsignedSignaturePropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_UNSIGNED_SIGNATURE_PROPERTIES);
+			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementUnsignedSignatureProperties());
 			if (params.isPrettyPrint()) {
 				unsignedPropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedPropertiesDom);
-				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
 		} else {
 			throw new DSSException("The signature contains more then one UnsignedSignatureProperties element! Extension is not possible.");
@@ -129,7 +134,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * @throws DSSException
 	 */
 	protected void ensureSignedDataObjectProperties() {
-		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_SIGNED_DATA_OBJECT_PROPERTIES);
+		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length == 1) {
 			signedDataObjectPropertiesDom = (Element) signedDataObjectPropertiesNodeList.item(0);
@@ -153,6 +158,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		return nodeToIndent;
 	}
 	
+	@Override
 	protected void alignNodes() {
 		if (unsignedSignaturePropertiesDom != null) {
 			DSSXMLUtils.alignChildrenIndents(unsignedSignaturePropertiesDom);
@@ -181,4 +187,40 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		return text;
 	}
 
+	/**
+	 * This method returns the current used XMLDSig namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	@Override
+	protected DSSNamespace getXmldsigNamespace() {
+		DSSNamespace xmldsigNamespace = xadesSignature.getXmldSigNamespace();
+		if (xmldsigNamespace == null) {
+			LOG.warn("Current XMLDSig namespace not found in the signature");
+			xmldsigNamespace = params.getXmldsigNamespace();
+			if (xmldsigNamespace == null) {
+				LOG.warn("Current XMLDSig namespace not found in the parameters (use the default XMLDSig)");
+				xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+					
+			}
+		}
+		return xmldsigNamespace;
+	}
+
+	/**
+	 * This method returns the current used XAdES namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	@Override
+	protected DSSNamespace getXadesNamespace() {
+		DSSNamespace xadesNamespace = xadesSignature.getXadesNamespace();
+		if (xadesNamespace == null) { 
+			LOG.warn("Current XAdES namespace not found in the signature");
+			xadesNamespace = params.getXadesNamespace();
+			if (xadesNamespace == null) {
+				LOG.warn("Current XAdES namespace not found in the parameters (use the default XAdES 1.3.2)");
+				xadesNamespace = XAdESNamespaces.XADES_132;
+					
+			}
+		}
+		return xadesNamespace;
+	}
+	
 }

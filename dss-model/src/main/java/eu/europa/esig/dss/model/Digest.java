@@ -115,7 +115,7 @@ public final class Digest implements Serializable {
 	
 	@Override
 	public String toString() {
-		return algorithm.getName() + ":" + getHexValue();
+		return ((algorithm == null) ? "?" : algorithm.getName()) + ":" + ((value == null) ? "?" : getHexValue());
 	}
 	
 }

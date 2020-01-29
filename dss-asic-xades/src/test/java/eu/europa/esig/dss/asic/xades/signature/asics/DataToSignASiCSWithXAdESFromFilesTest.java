@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 	public void zipContentEquals() throws Exception {
 		Date now = new Date();
 		ASiCParameters asicParameters = new ASiCParameters();
-		List<DSSDocument> filesToBeSigned = new ArrayList<DSSDocument>();
+		List<DSSDocument> filesToBeSigned = new ArrayList<>();
 		filesToBeSigned.add(new InMemoryDocument("Hello".getBytes(), "test.xml"));
 		filesToBeSigned.add(new InMemoryDocument("Bye".getBytes(), "test2.xml"));
 		DataToSignASiCSWithXAdESFromFiles dataToSign = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);

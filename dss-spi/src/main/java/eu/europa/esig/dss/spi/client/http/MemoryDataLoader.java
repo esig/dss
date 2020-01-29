@@ -24,11 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.model.DSSException;
+
 public class MemoryDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = -2899281917849499181L;
 
-	private Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+	private Map<String, byte[]> dataMap = new HashMap<>();
 
 	public MemoryDataLoader(Map<String, byte[]> dataMap) {
 		this.dataMap.putAll(dataMap);
@@ -40,14 +42,14 @@ public class MemoryDataLoader implements DataLoader {
 	}
 
 	@Override
-	public DataAndUrl get(List<String> urlStrings) {
+	public DataAndUrl get(List<String> urlStrings) throws DSSException {
 		for (String url : urlStrings) {
 			byte[] data = get(url);
 			if (data != null) {
 				return new DataAndUrl(data, url);
 			}
 		}
-		return null;
+		throw new DSSException(String.format("A content for URLs [%s] does not exist!", urlStrings));
 	}
 
 	@Override

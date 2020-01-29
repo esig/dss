@@ -50,6 +50,11 @@ public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWi
 	}
 
 	@Override
+	public String getTimestampFilename() {
+		throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
+	}
+
+	@Override
 	public List<DSSDocument> getSignedDocuments() {
 		return filesToBeSigned;
 	}
@@ -67,7 +72,13 @@ public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWi
 	@Override
 	public List<DSSDocument> getSignatures() {
 		// new container
-		return new ArrayList<DSSDocument>();
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public DSSDocument getRootDocument() {
+		// No root container when using files
+		return null;
 	}
 
 }

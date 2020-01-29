@@ -1,18 +1,39 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -28,7 +49,8 @@ import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
@@ -60,12 +82,13 @@ public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess 
 		
 		DSSDocument doubleExtendedDocument = service.extendDocument(extendedDocument, parameters);
 		
+		XAdESPaths xadesPaths = new XAdES132Paths();
+
 		Document extendedDocDom = DomUtils.buildDOM(doubleExtendedDocument);
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
-		NodeList signatures = DomUtils.getNodeList(extendedDocDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		NodeList signatures = DomUtils.getNodeList(extendedDocDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		assertEquals(1, signatures.getLength());
 		Node signatureElement = signatures.item(0);
-		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 		Node lastArchveTST = unsignedSignatureProperties.getLastChild();
 		unsignedSignatureProperties.removeChild(lastArchveTST);
 		

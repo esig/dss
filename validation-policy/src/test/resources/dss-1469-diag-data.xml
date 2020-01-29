@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="S-8C53CF5EB069156ED529C92CCB4E5F3296502A7BDF7FF39D6A0215EEB098EC39">
             <SignatureFilename>screenshot2.png.cades-server-detached.extended.sig</SignatureFilename>
-            <DateTime>2019-05-03T18:26:31</DateTime>
+            <ClaimedSigningTime>2019-05-03T18:26:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -39,7 +39,6 @@
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
-            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
@@ -204,33 +203,32 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
-                    <CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                             <EndDate>2019-04-03T00:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2015-04-13T22:00:00</StartDate>
@@ -297,33 +295,32 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>QuoVadis Trustlink BVBA</TSPName>
-                    <TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">QuoVadis Trustlink BVBA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-02-08T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2018-02-08T00:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2016-06-13T00:00:00</StartDate>
@@ -401,20 +398,19 @@
                 <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>QuoVadis Trustlink BVBA</TSPName>
-                    <TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">QuoVadis Trustlink BVBA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-02-08T00:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -479,19 +475,18 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
-                    <CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
@@ -569,7 +564,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-F19DA13E95CC292BDD3138A6FAE8130E3E956AD636F97F1C7E8A73E9530CDB86">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2019-05-02T07:00:04</ProductionDate>
             <ThisUpdate>2019-05-02T07:00:04</ThisUpdate>
@@ -592,7 +587,7 @@
             <Base64Encoded>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</Base64Encoded>
         </Revocation>
         <Revocation Id="R-C8DB8054C56A548DAF0A81751C1E1D4709C3F1FF90C1D6927850FD5DD0F58428">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2019-05-03T17:30:30</ProductionDate>
             <ThisUpdate>2019-05-03T17:30:30</ThisUpdate>
@@ -692,7 +687,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9">
             <CountryCode>BE</CountryCode>
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>42</SequenceNumber>
@@ -702,7 +697,7 @@
             <NextUpdate>2019-09-07T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-        <TrustedList>
+        <TrustedList Id="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F">
             <CountryCode>FR</CountryCode>
             <Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
             <SequenceNumber>51</SequenceNumber>
@@ -712,15 +707,15 @@
             <NextUpdate>2019-11-09T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>241</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-06-03T13:58:02</LastLoading>
+	        <IssueDate>2019-05-28T06:00:00</IssueDate>
+	        <NextUpdate>2019-11-28T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>241</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-06-03T13:58:02</LastLoading>
-        <IssueDate>2019-05-28T06:00:00</IssueDate>
-        <NextUpdate>2019-11-28T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

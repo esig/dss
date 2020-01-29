@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.crl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,10 +36,11 @@ import java.security.cert.X509CRLEntry;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
@@ -251,15 +253,15 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 		}
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void notACRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
-
+	
 			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertThrows(DSSException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
 		}
 	}
 
@@ -343,25 +345,22 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testPSSwithoutBouncyCastle() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
-				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
-
-			CertificateToken certificateToken = loadCert(isCer);
-
-			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
+			Exception exception = assertThrows(IllegalArgumentException.class, () -> loadCert(isCer));
+			assertEquals("Unable to initialize PSS", exception.getMessage());
 		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void incompleteCRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
 			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertThrows(DSSException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
 		}
 	}
 
@@ -412,6 +411,24 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());
+			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
+		}
+	}
+
+	@Test
+	public void testPE() throws Exception {
+		String certB64 = "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";
+
+		try (InputStream crlIS = AbstractTestCRLUtils.class.getResourceAsStream("/hgcaclass2.crl");
+				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
+			CertificateToken certificateToken = loadCert(certIS);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertNotNull(validCRL);
+			assertTrue(validCRL.isSignatureIntact());
+			assertFalse(validCRL.isValid());
+			assertFalse(validCRL.isCrlSignKeyUsage());
+			assertFalse(certificateToken.checkKeyUsage(KeyUsageBit.CRL_SIGN));
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
 		}
 	}

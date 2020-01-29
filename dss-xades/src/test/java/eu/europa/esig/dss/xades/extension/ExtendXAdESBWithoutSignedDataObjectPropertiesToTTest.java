@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -37,8 +36,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -66,7 +65,7 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 
 		// certificateVerifier.setDataLoader(new CommonsDataLoader());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf",
 				new FileDocument("src/test/resources/validation/dss1135/politica_de_firma.pdf"));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
@@ -81,7 +80,7 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 		assertEquals(1, retrievedOriginalDocuments.size());
 		
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

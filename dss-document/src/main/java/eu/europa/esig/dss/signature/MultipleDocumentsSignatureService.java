@@ -23,11 +23,11 @@ package eu.europa.esig.dss.signature;
 import java.io.Serializable;
 import java.util.List;
 
-import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -35,24 +35,32 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  * extension.
  *
  */
-public interface MultipleDocumentsSignatureService<SP extends AbstractSerializableSignatureParameters> extends Serializable {
+public interface MultipleDocumentsSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocuments} and
-	 * {@code parameters}
-	 * . When
-	 * {@code toSignDocuments} contains an already existing signature the returned bytes are related to a new parallel
-	 * signature.
+	 * Creates a content-timestamp attribute (to be include in the signed-data)
 	 * 
 	 * @param toSignDocuments
-	 *            list of documents to sign
+	 *                        list of documents to sign
 	 * @param parameters
-	 *            set of the driving signing parameters
-	 * @return the data to be signed
-	 * @throws DSSException
-	 *             if an error occurred
+	 *                        set of the driving signing parameters
+	 * @return a timestamp token
 	 */
-	ToBeSigned getDataToSign(final List<DSSDocument> toSignDocuments, final SP parameters) throws DSSException;
+	TimestampToken getContentTimestamp(final List<DSSDocument> toSignDocuments, final SP parameters);
+
+	/**
+	 * Retrieves the bytes of the data that need to be signed based on the
+	 * {@code toSignDocuments} and {@code parameters}. When {@code toSignDocuments}
+	 * contains an already existing signature the returned bytes are related to a
+	 * new parallel signature.
+	 * 
+	 * @param toSignDocuments
+	 *                        list of documents to sign
+	 * @param parameters
+	 *                        set of the driving signing parameters
+	 * @return the data to be signed
+	 */
+	ToBeSigned getDataToSign(final List<DSSDocument> toSignDocuments, final SP parameters);
 
 	/**
 	 * Signs the toSignDocuments with the provided signatureValue.
@@ -64,10 +72,8 @@ public interface MultipleDocumentsSignatureService<SP extends AbstractSerializab
 	 * @param signatureValue
 	 *            the signature value to incorporate
 	 * @return the container with the signature and the documents (ASiC) or the signature file
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	DSSDocument signDocument(final List<DSSDocument> toSignDocuments, final SP parameters, SignatureValue signatureValue) throws DSSException;
+	DSSDocument signDocument(final List<DSSDocument> toSignDocuments, final SP parameters, SignatureValue signatureValue);
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -77,11 +83,18 @@ public interface MultipleDocumentsSignatureService<SP extends AbstractSerializab
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @return the extended signature
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters) throws DSSException;
+	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters);
 
-	TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, SP parameters);
+	/**
+	 * Timestamps the toSignDocuments with the provided signatureValue.
+	 *
+	 * @param toTimestampDocuments
+	 *                             list of documents to timestamp
+	 * @param parameters
+	 *                             set of the driving timestamping parameters
+	 * @return the container with the added timestamp token
+	 */
+	DSSDocument timestamp(final List<DSSDocument> toTimestampDocuments, final TP parameters);
 
 }

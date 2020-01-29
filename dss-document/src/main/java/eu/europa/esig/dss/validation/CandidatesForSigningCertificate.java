@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -31,6 +32,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  * This class holds the list of the candidates for the signing certificate of the main signature.
  */
 public class CandidatesForSigningCertificate implements Serializable {
+
+	private static final long serialVersionUID = 7965288455045066076L;
 
 	/**
 	 * This field contains the reference to the signing certificate with its validity. This reference is set after the
@@ -41,7 +44,7 @@ public class CandidatesForSigningCertificate implements Serializable {
 	/**
 	 * This list contains the candidates for the signing certificate.
 	 */
-	private List<CertificateValidity> certificateValidityList = new ArrayList<CertificateValidity>();
+	private List<CertificateValidity> certificateValidityList = new ArrayList<>();
 
 	/**
 	 * @return the list of candidates for the signing certificate.
@@ -51,10 +54,19 @@ public class CandidatesForSigningCertificate implements Serializable {
 	}
 
 	/**
+	 * This method tests if any candidate is known
+	 * 
+	 * @return true is no candidate is known
+	 */
+	public boolean isEmpty() {
+		return certificateValidityList.isEmpty();
+	}
+
+	/**
 	 * @return the list of candidates for the signing certificate.
 	 */
 	public List<CertificateToken> getSigningCertificateTokenList() {
-		final List<CertificateToken> signCertificateTokenList = new ArrayList<CertificateToken>();
+		final List<CertificateToken> signCertificateTokenList = new ArrayList<>();
 		for (final CertificateValidity certificateValidity : certificateValidityList) {
 			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
 			if (certificateToken != null) {
@@ -81,14 +93,9 @@ public class CandidatesForSigningCertificate implements Serializable {
 	 *
 	 * @param theCertificateValidity
 	 *            the certain signing certificate validity object
-	 * @throws DSSException
-	 *             if the {@code SigningCertificateValidity} is not present in the list of candidates then the
-	 *             {@code DSSException} is frown.
 	 */
-	public void setTheCertificateValidity(final CertificateValidity theCertificateValidity) throws DSSException {
-		if (theCertificateValidity == null) {
-			throw new NullPointerException();
-		}
+	public void setTheCertificateValidity(final CertificateValidity theCertificateValidity) {
+		Objects.requireNonNull(theCertificateValidity, "The CertificateValidity cannot be null");
 		if (!certificateValidityList.contains(theCertificateValidity)) {
 			throw new DSSException("theSigningCertificateValidity must be the part of the candidates!");
 		}

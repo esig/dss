@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.xml.security.signature.Reference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -55,11 +55,11 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 	@Test
 	public void test1() throws Exception {
-		List<DSSReference> refs = new ArrayList<DSSReference>();
+		List<DSSReference> refs = new ArrayList<>();
 		DSSDocument doc1 = new FileDocument(FILE1);
 		DSSDocument doc2 = new FileDocument(FILE2);
 
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
@@ -117,7 +117,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 	@Test
 	public void multiDocsEnveloping() throws Exception {
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
 
@@ -153,7 +153,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 	@Test
 	public void multiDocsDetached() throws Exception {
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
 

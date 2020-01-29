@@ -34,8 +34,10 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -53,8 +55,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	protected final Context context;
 	protected final ValidationPolicy validationPolicy;
 
-	public AbstractAcceptanceValidation(T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
-		super(new XmlSAV());
+	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
+		super(i18nProvider, new XmlSAV());
 
 		this.token = token;
 		this.currentTime = currentTime;
@@ -64,7 +66,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 	protected ChainItem<XmlSAV> cryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
+		return new CryptographicCheck<>(i18nProvider, result, token, currentTime, constraint);
 	}
 
 	@Override
@@ -94,7 +96,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 			String digestAlgoToFind = token.getDigestAlgorithm() == null ? "" : token.getDigestAlgorithm().getName();
 			notAfter = expirationDates.get(digestAlgoToFind);
 			String encryptionAlgoToFind = token.getEncryptionAlgorithm() == null ? "" : token.getEncryptionAlgorithm().name();
-			Date expirationEncryption = expirationDates.get(encryptionAlgoToFind + token.getKeyLengthUsedToSignThisToken());
+			int keySize = Utils.isStringDigits(token.getKeyLengthUsedToSignThisToken()) ? Integer.parseInt(token.getKeyLengthUsedToSignThisToken()) : 0;
+			Date expirationEncryption = wrapper.getExpirationDate(encryptionAlgoToFind, keySize);
 			if (notAfter == null || (expirationEncryption != null && notAfter.after(expirationEncryption))) {
 				notAfter = expirationEncryption;
 			}

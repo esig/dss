@@ -26,21 +26,19 @@ import java.util.List;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
-import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ValidationTimeSlidingCheck;
@@ -49,7 +47,6 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTime
 public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private final TokenProxy token;
-	private final DiagnosticData diagnosticData;
 	private final XmlBasicBuildingBlocks bbb;
 	private final POEExtraction poe;
 
@@ -58,19 +55,22 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	private final Context context;
 	private Date controlTime;
 
-	public PastCertificateValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
-			ValidationPolicy policy, Context context) {
-		super(new XmlPCV());
-		result.setTitle(BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getTitle());
+	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, XmlBasicBuildingBlocks bbb, 
+			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
+		super(i18nProvider, new XmlPCV());
 
 		this.token = token;
-		this.diagnosticData = diagnosticData;
 		this.bbb = bbb;
 		this.poe = poe;
 		this.currentTime = currentTime;
 
 		this.policy = policy;
 		this.context = context;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.PAST_CERTIFICATE_VALIDATION;
 	}
 
 	@Override
@@ -91,63 +91,30 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		ChainItem<XmlPCV> item = firstItem = prospectiveCertificateChain();
 
 		/*
-		 * 2) The building block shall run the Certification Path Validation of
-		 * IETF RFC 5280 [1], clause 6.1, with the following inputs: the
-		 * prospective chain built in the previous step, the trust anchor used
-		 * in the previous step, the X.509 parameters provided in the inputs and
-		 * a date from the intersection of the validity intervals of all the
-		 * certificates in the prospective chain. The validation shall not
-		 * include revocation checking for the signing certificate: a) If the
-		 * certificate path validation returns PASSED, the building block shall
-		 * go to the next step. b) If the certificate path validation returns a
-		 * failure indication because an intermediate CA has been determined to
-		 * be revoked, the building block shall set the current status to
-		 * INDETERMINATE/REVOKED_CA_NO_POE and shall go to step 1. c) If the
-		 * certificate path validation returns a failure indication with any
-		 * other reason, the building block shall set the current status to
-		 * INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE and shall go to step
-		 * 1. Or d) If the certificate path validation returns any other failure
-		 * indication, the building block shall go to step 1.
+		 * 2) The building block shall run the Certification Path Validation of 
+		 * IETF RFC 5280 [1], clause 6.1, with the following inputs: the prospective 
+		 * certificate chain built in the previous step, the trust anchor used in the
+		 * previous step, the X.509 parameters provided in the inputs and either:
 		 * 
-		 * ==> Simplified because DSS only uses one certificate chain
+		 * i) when the validation policy requires to use the shell model, a date from 
+		 * the intersection of the validity intervals of all the certificates in the 
+		 * prospective certificate chain; or
+		 * 
+		 * ii) when the validation policy requires to use the chain model, a date from 
+		 * the validity of the signer's certificate. The validation shall not include 
+		 * revocation checking:
+		 * 
+		 * a) If the certificate path validation returns PASSED, the building block 
+		 * shall go to the next step.
+		 * 
+		 * b) If the certificate path validation returns a failure indication, the building 
+		 * block shall set the current status to 
+		 * INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE and shall go to step 1. 
 		 */
-
-		Date intervalNotBefore = null;
-		Date intervalNotAfter = null;
-
-		List<CertificateWrapper> certificateChain = token.getCertificateChain();
-		for (CertificateWrapper certificate : certificateChain) {
-			if (certificate.isTrusted()) {
-				// There is not need to check for the trusted certificate
-				break;
-			}
-
-			SubContext subContext = SubContext.CA_CERTIFICATE;
-			if (Utils.areStringsEqual(signingCertificate.getId(), certificate.getId())) {
-				subContext = SubContext.SIGNING_CERT;
-			}
-
-			if (intervalNotBefore == null || intervalNotBefore.before(certificate.getNotBefore())) {
-				intervalNotBefore = certificate.getNotBefore();
-			}
-			if (intervalNotAfter == null || intervalNotAfter.after(certificate.getNotAfter())) {
-				intervalNotAfter = certificate.getNotAfter();
-			}
-
-			if (SubContext.CA_CERTIFICATE.equals(subContext)) {
-				CertificateRevocationWrapper latestRevocation = diagnosticData.getLatestRevocationDataForCertificate(certificate);
-				if (latestRevocation != null && latestRevocation.isRevoked()) {
-					Date caRevocationDate = latestRevocation.getRevocationDate();
-					if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {
-						intervalNotAfter = caRevocationDate;
-					}
-				}
-
-				// TODO REVOKED_CA_NO_POE
-			}
-
-			item = item.setNextItem(certificateSignatureValid(certificate, subContext));
-		}
+		
+		// Certificates are validated before (see (Sub)X509CertificateValidation)
+		
+		// TODO : process different validation models (?)
 
 		/*
 		 * 3) The building block shall perform the validation time sliding
@@ -158,6 +125,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * status to the returned indication and sub-indication and shall go
 		 * back to step 1.
 		 */
+		
 		item = item.setNextItem(validationTimeSliding());
 
 		/*
@@ -167,7 +135,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * shall go to step 1.
 		 */
 		if (controlTime != null) {
-			certificateChain = token.getCertificateChain();
+			List<CertificateWrapper> certificateChain = token.getCertificateChain();
 			for (CertificateWrapper certificate : certificateChain) {
 				if (certificate.isTrusted()) {
 					// There is not need to check for the trusted certificate
@@ -194,26 +162,25 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = policy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, token, constraint);
-	}
-
-	private ChainItem<XmlPCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = policy.getCertificateSignatureConstraint(context, subContext);
-		return new CertificateSignatureValidCheck<XmlPCV>(result, certificate, constraint);
+		return new ProspectiveCertificateChainCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlPCV> validationTimeSliding() {
-		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(token, currentTime, context, poe, policy);
+		ValidationTimeSliding validationTimeSliding = 
+				new ValidationTimeSliding(i18nProvider, token, currentTime, poe, bbb, context, policy);
+		
 		XmlVTS vts = validationTimeSliding.execute();
 		bbb.setVTS(vts);
-		controlTime = vts.getControlTime();
+		if (isValid(vts)) {
+			controlTime = vts.getControlTime();
+		}
 
-		return new ValidationTimeSlidingCheck(result, vts, getFailLevelConstraint());
+		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
 		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<XmlPCV>(result, certificate, validationTime, constraint);
+		return new CryptographicCheck<>(i18nProvider, result, certificate, validationTime, constraint);
 	}
 
 	@Override

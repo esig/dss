@@ -37,6 +37,7 @@ import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -55,12 +56,13 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	/**
 	 * This {@code Map} contains all collected OCSP responses with a set of their origins
 	 */
-	private final Map<OCSPResponseBinary, Set<RevocationOrigin>> ocspResponseOriginsMap = new HashMap<OCSPResponseBinary, Set<RevocationOrigin>>();
+	private final Map<OCSPResponseBinary, Set<RevocationOrigin>> ocspResponseOriginsMap = new HashMap<>();
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		
 		if (isEmpty()) {
+			LOG.trace("Collection of embedded OCSP responses is empty");
 			return null;
 		}
 		
@@ -82,6 +84,8 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);
 				return null;
 			}
+		} else if (LOG.isDebugEnabled()) {
+			LOG.debug("Best OCSP Response for the certificate {} is not found", certificateToken.getDSSIdAsString());
 		}
 		return null;
 	}
@@ -89,9 +93,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	private OCSPResponseBinary findBestOcspResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		OCSPResponseBinary bestOCSPResponse = null;
 		Date bestUpdate = null;
-		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 		for (final OCSPResponseBinary response : ocspResponseOriginsMap.keySet()) {
 			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
+				DigestAlgorithm usedDigestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);
+				final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, usedDigestAlgorithm);
 				if (DSSRevocationUtils.matches(certId, singleResp)) {
 					final Date thisUpdate = singleResp.getThisUpdate();
 					if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
@@ -114,7 +119,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 * @return unmodifiable collection of {@code OCSPResponse}s
 	 */
 	public Collection<OCSPResponseBinary> getOCSPResponsesList() {
-		Collection<OCSPResponseBinary> ocspResponsesList = new ArrayList<OCSPResponseBinary>();
+		Collection<OCSPResponseBinary> ocspResponsesList = new ArrayList<>();
 		if (!isEmpty()) {
 			ocspResponsesList = ocspResponseOriginsMap.keySet();
 		}
@@ -186,7 +191,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	protected void addOCSPResponse(OCSPResponseBinary ocspResponse, RevocationOrigin origin) {
 		Set<RevocationOrigin> origins = ocspResponseOriginsMap.get(ocspResponse);
 		if (origins == null) {
-			origins = new HashSet<RevocationOrigin>();
+			origins = new HashSet<>();
 			ocspResponseOriginsMap.put(ocspResponse, origins);
 		}
 		origins.add(origin);

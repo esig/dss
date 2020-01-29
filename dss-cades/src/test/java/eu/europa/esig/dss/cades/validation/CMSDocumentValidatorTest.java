@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -78,7 +78,7 @@ public class CMSDocumentValidatorTest extends AbstractTestValidator {
 
 	@Override
 	protected List<DSSDocument> getValidDocuments() {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument(PATH));
 		documents.add(new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m"));
 		documents.add(new FileDocument("src/test/resources/validation/counterSig.p7m"));

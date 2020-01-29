@@ -173,7 +173,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 	private static Map<String, SignatureAlgorithm> registerXmlAlgorithms() {
 
-		Map<String, SignatureAlgorithm> xmlAlgorithms = new HashMap<String, SignatureAlgorithm>();
+		Map<String, SignatureAlgorithm> xmlAlgorithms = new HashMap<>();
 		xmlAlgorithms.put("http://www.w3.org/2000/09/xmldsig#rsa-sha1", RSA_SHA1);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha224", RSA_SHA224);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", RSA_SHA256);
@@ -222,7 +222,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerXmlAlgorithmsForKey() {
-		Map<SignatureAlgorithm, String> xmlAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
+		Map<SignatureAlgorithm, String> xmlAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : XML_ALGORITHMS.entrySet()) {
 			xmlAlgorithms.put(entry.getValue(), entry.getKey());
 		}
@@ -235,7 +235,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 	private static Map<String, SignatureAlgorithm> registerOIDAlgorithms() {
 
-		Map<String, SignatureAlgorithm> oidAlgorithms = new HashMap<String, SignatureAlgorithm>();
+		Map<String, SignatureAlgorithm> oidAlgorithms = new HashMap<>();
 
 		oidAlgorithms.put("1.2.840.113549.1.1.5", RSA_SHA1);
 		oidAlgorithms.put("1.3.14.3.2.29", RSA_SHA1);
@@ -318,7 +318,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerOidAlgorithmsForKey() {
-		Map<SignatureAlgorithm, String> oidAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
+		Map<SignatureAlgorithm, String> oidAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : OID_ALGORITHMS.entrySet()) {
 			oidAlgorithms.put(entry.getValue(), entry.getKey());
 		}
@@ -331,7 +331,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 	private static Map<String, SignatureAlgorithm> registerJavaAlgorithms() {
 
-		Map<String, SignatureAlgorithm> javaAlgorithms = new HashMap<String, SignatureAlgorithm>();
+		Map<String, SignatureAlgorithm> javaAlgorithms = new HashMap<>();
 
 		javaAlgorithms.put("NONEwithRSA", RSA_RAW);
 		
@@ -414,7 +414,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerJavaAlgorithmsForKey() {
-		final Map<SignatureAlgorithm, String> javaAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
+		final Map<SignatureAlgorithm, String> javaAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : JAVA_ALGORITHMS.entrySet()) {
 			javaAlgorithms.put(entry.getValue(), entry.getKey());
 		}

@@ -1,16 +1,36 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -47,7 +67,6 @@ public class DSS1770Test {
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
 		assertEquals("Full XML File", xmlSignatureScope.getName());
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(3, digestMatchers.size());
 		boolean refRootFound = false;
@@ -91,7 +110,6 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
@@ -136,7 +154,6 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
@@ -183,7 +200,6 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
@@ -272,7 +288,6 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
@@ -291,7 +306,7 @@ public class DSS1770Test {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770refUriRemoved.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		List<DSSDocument> detachedDocuments = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedDocuments = new ArrayList<>();
 		detachedDocuments.add(new FileDocument("src/test/resources/sample.png"));
 		detachedDocuments.add(new FileDocument("src/test/resources/sample.xml"));
 		validator.setDetachedContents(detachedDocuments);
@@ -319,7 +334,6 @@ public class DSS1770Test {
 		}
 		assertEquals(0, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
@@ -364,7 +378,6 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
@@ -377,6 +390,5 @@ public class DSS1770Test {
 		}
 		assertTrue(refRootFound);
 	}
-	
 
 }

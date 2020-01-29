@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 
-public class SignerLocationCheckTest {
+public class SignerLocationCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signerLocationCheckTest() throws Exception {
@@ -49,7 +50,7 @@ public class SignerLocationCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SignerLocationCheck slc = new SignerLocationCheck(result, new SignatureWrapper(sig), constraint);
+		SignerLocationCheck slc = new SignerLocationCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		slc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class SignerLocationCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SignerLocationCheck slc = new SignerLocationCheck(result, new SignatureWrapper(sig), constraint);
+		SignerLocationCheck slc = new SignerLocationCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		slc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

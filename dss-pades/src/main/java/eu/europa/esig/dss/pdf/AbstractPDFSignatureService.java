@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import java.util.Map.Entry;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,131 +41,86 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
-public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
+public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
-	protected final boolean timestamp;
+	protected final PDFServiceMode serviceMode;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
 	 * Constructor for the PDFSignatureService
 	 * 
-	 * @param timestamp
-	 *                               if true, the instance is used to generate
-	 *                               DocumentTypestamp if false, it is used to
-	 *                               generate a signature layer
+	 * @param serviceMode
+	 *                               current instance is used to generate
+	 *                               DocumentTypestamp or Signature signature layer
 	 * @param signatureDrawerFactory
 	 *                               the factory of {@code SignatureDrawer}
 	 */
-	protected AbstractPDFSignatureService(boolean timestamp, SignatureDrawerFactory signatureDrawerFactory) {
-		this.timestamp = timestamp;
+	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
+		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
 	}
 
+	protected boolean isDocumentTimestampLayer() {
+		// CONTENT_TIMESTAMP is part of the signature
+		return PDFServiceMode.SIGNATURE_TIMESTAMP == serviceMode || PDFServiceMode.ARCHIVE_TIMESTAMP == serviceMode;
+	}
+
 	protected String getType() {
-		if (timestamp) {
+		if (isDocumentTimestampLayer()) {
 			return PAdESConstants.TIMESTAMP_TYPE;
 		} else {
 			return PAdESConstants.SIGNATURE_TYPE;
 		}
 	}
 
-	protected String getFilter(PAdESSignatureParameters parameters) {
-		if (timestamp) {
-			if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
-				return parameters.getTimestampFilter();
-			}
-			return PAdESConstants.TIMESTAMP_DEFAULT_FILTER;
-
-		} else {
-			if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
-				return parameters.getSignatureFilter();
-			}
-			return PAdESConstants.SIGNATURE_DEFAULT_FILTER;
+	protected DigestAlgorithm getCurrentDigestAlgorithm(PAdESSignatureParameters parameters) {
+		switch (serviceMode) {
+		case CONTENT_TIMESTAMP:
+			return parameters.getContentTimestampParameters().getDigestAlgorithm();
+		case SIGNATURE:
+			return parameters.getDigestAlgorithm();
+		case SIGNATURE_TIMESTAMP:
+			return parameters.getSignatureTimestampParameters().getDigestAlgorithm();
+		case ARCHIVE_TIMESTAMP:
+			return parameters.getArchiveTimestampParameters().getDigestAlgorithm();
+		default:
+			throw new DSSException("Unsupported service mode : " + serviceMode);
 		}
-	}
-
-	protected String getSubFilter(PAdESSignatureParameters parameters) {
-		if (timestamp) {
-			if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
-				return parameters.getTimestampSubFilter();
-			}
-			return PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER;
-		} else {
-			if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
-				return parameters.getSignatureSubFilter();
-			}
-			return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
-		}
-	}
-
-	protected SignatureImageParameters getImageParameters(PAdESSignatureParameters parameters) {
-		if (timestamp) {
-			return parameters.getTimestampImageParameters();
-		} else {
-			return parameters.getSignatureImageParameters();
-		}
-	}
-
-	protected String getSignatureName(PAdESSignatureParameters parameters) {
-		if (parameters.getSignatureName() != null) {
-			return parameters.getSignatureName();
-		} else {
-
-			CertificateToken token = parameters.getSigningCertificate();
-			Date date = parameters.bLevel().getSigningDate();
-			String encodedDate = Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
-
-			if (token == null) {
-				return "Unknown signer " + encodedDate;
-			} else {
-				return DSSASN1Utils.getHumanReadableName(token) + " " + encodedDate;
-			}
-		}
-	}
-
-	@Override
-	public DSSDocument timestamp(DSSDocument document, PAdESSignatureParameters parameters, TSPSource tspSource) {
-		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
-		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
-		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
-		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}
 
 	@Override
 	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document,
 			SignatureValidationCallback callback) {
-		List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
-		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-			callback.validate(pdfSignatureOrDocTimestampInfo);
+		List<PdfRevision> signaturesFound = getSignatures(validationCertPool, document);
+		for (PdfRevision pdfRevision : signaturesFound) {
+			callback.validate(pdfRevision);
 		}
 	}
 
-	protected abstract List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document);
+	protected abstract List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document);
 
 	/**
 	 * This method links previous signatures to the new one. This is useful to get
 	 * revision number and to know if a TSP is over the DSS dictionary
 	 */
-	protected void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
+	protected void linkSignatures(List<PdfRevision> signatures) {
 
-		Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
+		Collections.sort(signatures, new PdfRevisionComparator());
 
-		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
-		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
+		List<PdfRevision> previousList = new ArrayList<>();
+		for (PdfRevision sig : signatures) {
 			if (Utils.isCollectionNotEmpty(previousList)) {
-				for (PdfSignatureOrDocTimestampInfo previous : previousList) {
+				for (PdfRevision previous : previousList) {
 					previous.addOuterSignature(sig);
 				}
 			}
@@ -199,13 +152,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return signedContentByteArray;
 	}
 	
-	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, String signatureName) {
+	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, List<String> signatureFieldNames) {
 		boolean match = false;
 		try {
 			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
 			match = Arrays.equals(cms, cmsWithByteRange);
 			if (!match) {
-				LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signatureName);
+				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
 			}
 		} catch (IOException | IllegalArgumentException e) {
 			String message = String.format("Unable to retrieve data from the ByteRange (%s to %s)", byteRange[0] + byteRange[1], byteRange[2]);
@@ -275,6 +228,32 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			throw new DSSException("The second hash part doesn't cover anything");
 		}
 	}
+	
+	/**
+	 * Checks if the given signature dictionary represents a DocTimeStamp
+	 * 
+	 * @param pdfSigDict {@link PdfSignatureDictionary} to check
+	 * @return TRUE if the signature dictionary represents a DocTimeStamp, FALSE otherwise
+	 */
+	protected boolean isDocTimestamp(PdfSignatureDictionary pdfSigDict) {
+		String type = pdfSigDict.getType();
+		String subFilter = pdfSigDict.getSubFilter();
+		/* Support historical TS 102 778-4 and new EN 319 142-1 */
+		return (type == null || PAdESConstants.TIMESTAMP_TYPE.equals(type)) && PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
+	}
+
+	/**
+	 * Checks if the given signature dictionary represents a Signature
+	 * 
+	 * @param pdfSigDict {@link PdfSignatureDictionary} to check
+	 * @return TRUE if the signature dictionary represents a Signature, FALSE otherwise
+	 */
+	protected boolean isSignature(PdfSignatureDictionary pdfSigDict) {
+		String type = pdfSigDict.getType();
+		String subFilter = pdfSigDict.getSubFilter();
+		/* Support historical TS 102 778-4 and new EN 319 142-1 */
+		return (type == null || PAdESConstants.SIGNATURE_TYPE.equals(type)) && !PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
+	}
 
 	/**
 	 * This method builds a Map of known Objects (extracted from previous DSS
@@ -285,7 +264,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @return
 	 */
 	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
-		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, Long> result = new HashMap<>();
 		for (DSSDictionaryCallback callback : callbacks) {
 
 			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();

@@ -20,12 +20,5 @@
  */
 package plugtests;
 
-import eu.europa.esig.dss.model.DSSDocument;
-
 public class ITextETSISamplesValidationTest extends ETSISamplesValidation {
-
-	public ITextETSISamplesValidationTest(DSSDocument doc) {
-		super(doc);
-	}
-
 }

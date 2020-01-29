@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.spi.x509.revocation;
 
 import java.sql.Connection;
@@ -12,12 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Abstract class to retrieve token from a JDBC datasource
- * @param <T> - {@link CRLToken} or {@link OCSPToken}
+ * 
+ * @param <T> {@code CRLToken} or {@code OCSPToken}
  */
 public abstract class JdbcRevocationSource<T extends RevocationToken> extends RepositoryRevocationSource<T> {
 
@@ -74,6 +93,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 		this.dataSource = dataSource;
 	}
 	
+	@Override
 	protected T findRevocation(final String key, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
 		Connection c = null;
 		PreparedStatement s = null;

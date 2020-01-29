@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -61,7 +61,7 @@ public class DSS1188Test {
 	public void testSigWithAttached() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1188/Test.bin.sig");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-1188/Test.bin"));
 		validator.setDetachedContents(detachedContents);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());

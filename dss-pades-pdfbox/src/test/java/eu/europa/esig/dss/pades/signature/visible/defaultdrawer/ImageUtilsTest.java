@@ -28,10 +28,12 @@ import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -49,10 +51,10 @@ public class ImageUtilsTest {
         try (InputStream is = imageAndResolution.getInputStream()) {
             BufferedImage image = ImageIO.read(is);
             float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
-            Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
-            Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));
-            Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round(imageAndResolution.toXPoint(image.getWidth())));
-            Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round(imageAndResolution.toYPoint(image.getHeight())));
+            assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
+            assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));
+            assertEquals((int)optimalSizeDimension.getWidth(), Math.round(imageAndResolution.toXPoint(image.getWidth())));
+            assertEquals((int)optimalSizeDimension.getHeight(), Math.round(imageAndResolution.toYPoint(image.getHeight())));
         }
     }
 

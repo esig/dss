@@ -20,20 +20,31 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextDefaultSignatureDrawerFactory;
 
-public class ITextDefaultPdfObjFactory implements ITextPdfObjFactory {
+public class ITextDefaultPdfObjFactory implements IPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return new ITextPDFSignatureService(false, new ITextDefaultSignatureDrawerFactory());
+		return new ITextPDFSignatureService(PDFServiceMode.SIGNATURE, new ITextDefaultSignatureDrawerFactory());
 	}
 
 	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new ITextPDFSignatureService(true, new ITextDefaultSignatureDrawerFactory());
+	public PDFSignatureService newContentTimestampService() {
+		return new ITextPDFSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new ITextDefaultSignatureDrawerFactory());
+	}
+
+	@Override
+	public PDFSignatureService newSignatureTimestampService() {
+		return new ITextPDFSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new ITextDefaultSignatureDrawerFactory());
+	}
+
+	@Override
+	public PDFSignatureService newArchiveTimestampService() {
+		return new ITextPDFSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new ITextDefaultSignatureDrawerFactory());
 	}
 
 }

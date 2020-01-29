@@ -28,6 +28,7 @@ import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
 /**
@@ -48,9 +49,11 @@ public abstract class Token implements Serializable {
 	protected PublicKey publicKeyOfTheSigner;
 
 	/**
-	 * Indicates the token signature is valid.
+	 * Indicates a status of token's signature
+	 * Method isSignedBy(CertificateToken) must be called in order to obtain a signature validity
+	 * Default: NOT_EVALUATED
 	 */
-	protected boolean signatureValid = false;
+	protected SignatureValidity signatureValidity = SignatureValidity.NOT_EVALUATED;
 
 	/**
 	 * Indicates the token signature invalidity reason.
@@ -122,7 +125,7 @@ public abstract class Token implements Serializable {
 	public boolean isSignedBy(CertificateToken token) {
 		if (publicKeyOfTheSigner != null) {
 			return publicKeyOfTheSigner.equals(token.getPublicKey());
-		} else if (checkIsSignedBy(token)) {
+		} else if (SignatureValidity.VALID == checkIsSignedBy(token)) {
 			if (!isSelfSigned()) {
 				this.publicKeyOfTheSigner = token.getPublicKey();
 			}
@@ -131,7 +134,13 @@ public abstract class Token implements Serializable {
 		return false;
 	}
 
-	protected abstract boolean checkIsSignedBy(CertificateToken token);
+	/**
+	 * Verifies if the current token has been signed by the specified certificateToken
+	 * @param token {@link CertificateToken} signed candidate
+	 * 
+	 * @return {@link SignatureValidity}
+	 */
+	protected abstract SignatureValidity checkIsSignedBy(CertificateToken token);
 
 	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign
@@ -171,15 +180,15 @@ public abstract class Token implements Serializable {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
 	}
-
+	
 	/**
-	 * Indicates if the token's signature is intact. For each kind of token the
+	 * Indicates a status of the token's signature validity. For each kind of token the
 	 * method isSignedBy(CertificateToken) must be called to set this flag.
-	 *
-	 * @return true if the signature is valid
+	 * 
+	 * @return {@link SignatureValidity}
 	 */
-	public boolean isSignatureValid() {
-		return signatureValid;
+	public SignatureValidity getSignatureValidity() {
+		return signatureValidity;
 	}
 
 	/**

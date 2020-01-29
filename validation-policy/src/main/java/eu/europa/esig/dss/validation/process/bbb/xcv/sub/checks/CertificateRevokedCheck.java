@@ -20,21 +20,19 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 
@@ -42,9 +40,9 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	private final Date currentTime;
 	private final SubContext subContext;
 
-	public CertificateRevokedCheck(XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, Date currentTime, 
-			LevelConstraint constraint, SubContext subContext) {
-		super(result, constraint);
+	public CertificateRevokedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, 
+			Date currentTime, LevelConstraint constraint, SubContext subContext) {
+		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;
 		this.subContext = subContext;
@@ -55,19 +53,16 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 		boolean isRevoked = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
 				!RevocationReason.CERTIFICATE_HOLD.equals(certificateRevocation.getReason());
 		if (isRevoked) {
-			isRevoked = certificateRevocation.getRevocationDate() != null && currentTime.after(certificateRevocation.getRevocationDate());
+			isRevoked = certificateRevocation.getRevocationDate() != null && currentTime.compareTo(certificateRevocation.getRevocationDate()) >= 0;
 		}
 		return !isRevoked;
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (certificateRevocation != null && certificateRevocation.getRevocationDate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			String revocationDateStr = sdf.format(certificateRevocation.getRevocationDate());
-			Object[] params = new Object[] { certificateRevocation.getReason(), revocationDateStr };
-			return MessageFormat.format(AdditionalInfo.REVOCATION, params);
+			String revocationDateStr = ValidationProcessUtils.getFormattedDate(certificateRevocation.getRevocationDate());
+			return MessageTag.REVOCATION.setArgs(certificateRevocation.getReason(), revocationDateStr);
 		}
 		return null;
 	}

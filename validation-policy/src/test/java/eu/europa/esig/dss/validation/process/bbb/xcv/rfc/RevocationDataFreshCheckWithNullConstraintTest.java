@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheckWithNullConstraint;
 
-public class RevocationDataFreshCheckWithNullConstraintTest {
+public class RevocationDataFreshCheckWithNullConstraintTest extends AbstractTestCheck {
 
 	@Test
 	public void revocationDataFreshCheckWithNullConstraint() throws Exception {
@@ -53,7 +54,7 @@ public class RevocationDataFreshCheckWithNullConstraintTest {
 															// fresh
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheckWithNullConstraint rdfwncc = new RevocationDataFreshCheckWithNullConstraint(result,
+		RevocationDataFreshCheckWithNullConstraint rdfwncc = new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result,
 				new RevocationWrapper(xr), now, constraint);
 		rdfwncc.execute();
 
@@ -77,7 +78,7 @@ public class RevocationDataFreshCheckWithNullConstraintTest {
 															// not fresh
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheckWithNullConstraint rdfwncc = new RevocationDataFreshCheckWithNullConstraint(result,
+		RevocationDataFreshCheckWithNullConstraint rdfwncc = new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result,
 				new RevocationWrapper(xr), now, constraint);
 		rdfwncc.execute();
 

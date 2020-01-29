@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.FileDocument;
@@ -44,9 +45,9 @@ public class LevelBWithCertificateValueTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
-		Assert.assertEquals(1, signatureIdList.size());
+		assertEquals(1, signatureIdList.size());
 
 		SignatureLevel signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_B, signatureFormat);
+		assertEquals(SignatureLevel.XAdES_BASELINE_B, signatureFormat);
 	}
 }

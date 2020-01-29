@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -46,13 +47,13 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 
-public class ASiCECAdESLevelBMultiArchivesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCECAdESLevelBMultiArchivesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
-	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+	private List<DSSDocument> documentToSigns = new ArrayList<>();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSigns.add(new FileDocument("src/test/resources/signable/document.odt"));
 		documentToSigns.add(new FileDocument("src/test/resources/signable/test.txt"));
@@ -127,7 +128,7 @@ public class ASiCECAdESLevelBMultiArchivesTest extends AbstractPkiFactoryTestMul
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getService() {
 		return service;
 	}
 

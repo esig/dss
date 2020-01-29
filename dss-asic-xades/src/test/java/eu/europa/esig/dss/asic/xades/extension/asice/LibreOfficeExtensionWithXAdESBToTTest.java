@@ -56,4 +56,9 @@ public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractTestASiCwithX
 		// Overrided because original file contains duplicate certificate values
 	}
 
+	@Override
+	protected void deleteOriginalFile(DSSDocument originalDocument) {
+		//Skip step
+	}
+	
 }

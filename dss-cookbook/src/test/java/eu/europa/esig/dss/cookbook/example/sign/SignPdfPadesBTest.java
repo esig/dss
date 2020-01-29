@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -91,6 +92,26 @@ public class SignPdfPadesBTest extends CookbookTools {
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 			// end::demo[]
+
+			// tag::policy[]
+			// Instantiate a Policy object
+			Policy signaturePolicy = new Policy();
+			// The string representation of the OID of the signature policy to use when signing.
+			signaturePolicy.setId("1.2.3.4.5.6");
+			// Defines a description for a signature policy
+			signaturePolicy.setDescription("Perfect Signature Policy");
+			// The hash function used to compute the value of the SignaturePolicyHashValue entry. 
+			// Entries must be represented the same way as in table 257 of ISO 32000-1 (cf. <<R05>>).
+			signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA1);
+			// The value of the hash of the signature policy, computed the same way as 
+			// in clause 5.2.9 of CAdES (ETSI EN 319 122 (cf. <<R02>>)).
+			signaturePolicy.setDigestValue(new byte[] { 'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e' });
+			// Defines a URI where the policy can be accessed from
+			signaturePolicy.setSpuri("http://spuri.test");
+			// Defines a policy qualifier
+			signaturePolicy.setQualifier("OIDAsURN");
+			parameters.bLevel().setSignaturePolicy(signaturePolicy);
+			// end::policy[]
 
 			testFinalDocument(signedDocument);
 		}

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
@@ -79,6 +80,8 @@ public class DigestDocument extends CommonDocument {
 	 *            the corresponding base 64 encoded digest value
 	 */
 	public void addDigest(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
+		Objects.requireNonNull(digestAlgorithm, "The Digest Algorithm is not defined");
+		Objects.requireNonNull(base64EncodeDigest, "The digest value is not defined");
 		base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
 	}
 
@@ -86,7 +89,7 @@ public class DigestDocument extends CommonDocument {
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
-			throw new DSSException("Unknown digest value for algorithm : " + digestAlgorithm);
+			throw new DSSException("The digest document does not contain a digest value for the algorithm : " + digestAlgorithm);
 		}
 		return base64EncodeDigest;
 	}
@@ -101,12 +104,12 @@ public class DigestDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() {
-		throw new DSSException("Digest document");
+		throw new DSSException("Not possible with Digest document");
 	}
 
 	@Override
 	public void save(String filePath) throws IOException {
-		throw new DSSException("Digest document");
+		throw new DSSException("Not possible with Digest document");
 	}
 
 }

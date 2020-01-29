@@ -26,26 +26,30 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck extends ChainItem<XmlPSV> {
 
-	private final Date bestSignatureTime;
-	private final CertificateWrapper signingCertificate;
+	private final Date controlTime;
+	private final CertificateWrapper certificate;
+	private final SubIndication currentTimeSubIndication;
 
-	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(XmlPSV result, Date bestSignatureTime,
-			CertificateWrapper signingCertificate, LevelConstraint constraint) {
-		super(result, constraint);
+	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(I18nProvider i18nProvider, XmlPSV result, Date controlTime,
+			CertificateWrapper certificate, SubIndication currentTimeSubIndication, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
-		this.bestSignatureTime = bestSignatureTime;
-		this.signingCertificate = signingCertificate;
+		this.controlTime = controlTime;
+		this.certificate = certificate;
+		this.currentTimeSubIndication = currentTimeSubIndication;
 	}
 
 	@Override
 	protected boolean process() {
-		return bestSignatureTime.after(signingCertificate.getNotBefore()) && bestSignatureTime.before(signingCertificate.getNotAfter());
+		// inclusive by RFC 5280
+		return controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0;
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.OUT_OF_BOUNDS_NO_POE;
+		return currentTimeSubIndication;
 	}
 
 }

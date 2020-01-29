@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -39,17 +39,18 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/sample.png"));
 		documents.add(new FileDocument("src/test/resources/sample.txt"));
 		documents.add(new FileDocument("src/test/resources/sample.xml"));
@@ -73,7 +74,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/sample.png"));
 		documents.add(new FileDocument("src/test/resources/sample.xml"));
 
@@ -125,7 +126,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

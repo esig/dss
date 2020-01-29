@@ -1,22 +1,44 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.PublicKey;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
 public class CertificateValidityTest {
 	
-	private CertificateToken certificateToken;
+	private static CertificateToken certificateToken;
 	
-	@Before
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		certificateToken = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIC9TCCAd2gAwIBAgIBAjANBgkqhkiG9w0BAQUFADArMQswCQYDVQQGEwJBQTEMMAoGA1UEChMDRFNTMQ4wDAYDVQQDEwVJQ"
 				+ "0EgQTAeFw0xMzEyMDIxNzMzMTBaFw0xNTEyMDIxNzMzMTBaMDAxCzAJBgNVBAYTAkFBMQwwCgYDVQQKEwNEU1MxEzARBgNV"
@@ -84,14 +106,20 @@ public class CertificateValidityTest {
 		assertTrue(certificateValidity.isValid());
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void nullCertificateTokenTest() {
-		new CertificateValidity((CertificateToken) null);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			new CertificateValidity((CertificateToken) null);
+		});
+		assertEquals("CertificateToken cannot be null!", exception.getMessage());
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void nullPublicKeyTest() {
-		new CertificateValidity((PublicKey) null);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			new CertificateValidity((PublicKey) null);
+		});
+		assertEquals("PublicKey cannot be null!", exception.getMessage());
 	}
 
 }

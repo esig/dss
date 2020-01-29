@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28">
             <SignatureFilename></SignatureFilename>
-            <DateTime>2017-04-28T00:58:24</DateTime>
+            <ClaimedSigningTime>2017-04-28T00:58:24</ClaimedSigningTime>
             <SignatureFormat>PDF-NOT-ETSI</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -53,13 +53,21 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
             </Policy>
-            <PDFSignatureDictionary>
-                <Filter>PBAD_PAdES</Filter>
-                <SubFilter>PBAD.PAdES</SubFilter>
-                <ContactInfo></ContactInfo>
-                <Reason></Reason>
-                <SignatureByteRange>0 234543 300079 5547</SignatureByteRange>
-            </PDFSignatureDictionary>
+            <PDFRevision>
+            	<SignerInformationStore>
+            		<SignerInfo Processed="true">
+				        <Issuer>CN=AC SERASA RFB v2,OU=Secretaria da Receita Federal do Brasil - RFB,O=ICP-Brasil,C=BR</Issuer>
+				        <SerialNumber>6258375866132076198</SerialNumber>
+            		</SignerInfo>
+            	</SignerInformationStore>
+	            <PDFSignatureDictionary>
+	                <Filter>PBAD_PAdES</Filter>
+	                <SubFilter>PBAD.PAdES</SubFilter>
+	                <ContactInfo></ContactInfo>
+	                <Reason></Reason>
+	                <SignatureByteRange>0 234543 300079 5547</SignatureByteRange>
+	            </PDFSignatureDictionary>
+            </PDFRevision>
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>
@@ -79,7 +87,7 @@
         </Signature>
         <Signature Id="id-db705a41fda3e98f53acef69eae86ed559c9059a3cb67f9898d1488a8b8a1225">
             <SignatureFilename></SignatureFilename>
-            <DateTime>2017-04-28T00:58:36</DateTime>
+            <ClaimedSigningTime>2017-04-28T00:58:36</ClaimedSigningTime>
             <SignatureFormat>PKCS7-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -111,13 +119,21 @@
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
             
-            <PDFSignatureDictionary>
-                <Filter>Adobe.PPKMS</Filter>
-                <SubFilter>adbe.pkcs7.detached</SubFilter>
-                <ContactInfo></ContactInfo>
-                <Reason>Digitally verifiable PDF exported from www.docusign.com</Reason>
-                <SignatureByteRange>0 305954 371490 5010</SignatureByteRange>
-            </PDFSignatureDictionary>
+            <PDFRevision>
+            	<SignerInformationStore>
+            		<SignerInfo Processed="true">
+			            <Issuer>CN=docusignhq-SEA-CAS-01-CA,DC=docusignhq,DC=com</Issuer>
+			            <SerialNumber>450965617510987499327098</SerialNumber>
+            		</SignerInfo>
+            	</SignerInformationStore>
+	            <PDFSignatureDictionary>
+	                <Filter>Adobe.PPKMS</Filter>
+	                <SubFilter>adbe.pkcs7.detached</SubFilter>
+	                <ContactInfo></ContactInfo>
+	                <Reason>Digitally verifiable PDF exported from www.docusign.com</Reason>
+	                <SignatureByteRange>0 305954 371490 5010</SignatureByteRange>
+	            </PDFSignatureDictionary>
+            </PDFRevision>
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -635,5 +651,4 @@
             </DigestAlgoAndValue>
         </SignerData>
     </OriginalDocuments>
-    <TrustedLists/>
 </DiagnosticData>

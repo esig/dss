@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -36,16 +36,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 
-public class CertificateIssuedToLegalPersonCheckTest {
+public class CertificateIssuedToLegalPersonCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateIssuedToLegalPersonWithPolicyIdentifierCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> qualifiers = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_LEGAL.getOid());
 		qualifiers.add(oid);
@@ -54,7 +55,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.setCertificatePolicies(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -67,7 +68,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> qualifiers = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_NATURAL.getOid());
 		qualifiers.add(oid);
@@ -76,7 +77,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.setCertificatePolicies(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -31,11 +31,11 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class CAdESLevelLTWrongAIATest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
@@ -55,7 +55,7 @@ public class CAdESLevelLTWrongAIATest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

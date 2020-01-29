@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import java.text.ParseException;
@@ -40,7 +60,7 @@ public class CryptographicConstraintWrapper {
 	}
 
 	public Map<String, Integer> getMinimumKeySizes() {
-		Map<String, Integer> result = new HashMap<String, Integer>();
+		Map<String, Integer> result = new HashMap<>();
 		ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
 		if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
 			for (Algo algo : miniPublicKeySize.getAlgo()) {
@@ -56,14 +76,15 @@ public class CryptographicConstraintWrapper {
 	}
 	
 	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
-		TreeMap<Integer, Date> dates = new TreeMap<Integer, Date>();
+		TreeMap<Integer, Date> dates = new TreeMap<>();
 		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-		if(expirations == null) 
+		if (expirations == null) {
 			return null;
+		}
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-		
+
 		for (Algo algo : expirations.getAlgo()) {
-			if(algo.getValue().equals(algoToSearch)) {
+			if (algo.getValue().equals(algoToSearch)) {
 				String expirationDate = algo.getDate();
 				try {
 					dates.put(algo.getSize(), dateFormat.parse(expirationDate));
@@ -72,16 +93,13 @@ public class CryptographicConstraintWrapper {
 				}
 			}
 		}
-		if(dates == null || dates.isEmpty()) {
-			return null;
-		}
-		
+
 		Entry<Integer, Date> floorEntry = dates.floorEntry(keyLength);
-		
-		if(floorEntry == null)
+		if (floorEntry == null) {
 			return null;
-		
-		return floorEntry.getValue();
+		} else {
+			return floorEntry.getValue();
+		}
 	}
 
 	public Date getDigestAlgorithmExpirationDate(String digestAlgoToSearch) {
@@ -105,7 +123,7 @@ public class CryptographicConstraintWrapper {
 	}
 	
 	public Map<String, Date> getExpirationTimes() {
-		Map<String, Date> result = new HashMap<String, Date>();
+		Map<String, Date> result = new HashMap<>();
 		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
 		if (expirations != null && Utils.isCollectionNotEmpty(expirations.getAlgo())) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
@@ -123,7 +141,7 @@ public class CryptographicConstraintWrapper {
 	}	
 
 	private List<String> extract(ListAlgo listAlgo) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (listAlgo != null && Utils.isCollectionNotEmpty(listAlgo.getAlgo())) {
 			for (Algo algo : listAlgo.getAlgo()) {
 				result.add(algo.getValue());

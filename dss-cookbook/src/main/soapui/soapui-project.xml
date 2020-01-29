@@ -1015,7 +1015,7 @@
       <soap:address location="http://localhost:8080/dss-demo-webapp/services/soap/ValidationService"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/ValidationService</con:endpoint></con:endpoints><con:operation id="bc33c825-ea3f-4280-9970-9bf805813f58" isOneWay="false" action="" name="validateSignature" bindingOperationName="validateSignature" type="Request-Response" outputName="validateSignatureResponse" inputName="validateSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="a3eed62e-56b2-434f-b3a3-a1c29459dfb9" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/validation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:val="http://validation.dss.esig.europa.eu/" xmlns:pol="http://dss.esig.europa.eu/validation/policy">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/ValidationService</con:endpoint></con:endpoints><con:operation id="bc33c825-ea3f-4280-9970-9bf805813f58" isOneWay="false" action="" name="validateSignature" bindingOperationName="validateSignature" type="Request-Response" outputName="validateSignatureResponse" inputName="validateSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="a3eed62e-56b2-434f-b3a3-a1c29459dfb9" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/validation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:val="http://validation.dss.esig.europa.eu/" xmlns:pol="http://dss.esig.europa.eu/validation/policy">
    <soapenv:Header/>
    <soapenv:Body>
       <val:validateSignature>
@@ -1033,7 +1033,7 @@
          </dataToValidateDTO>
       </val:validateSignature>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://validation.dss.esig.europa.eu/SoapDocumentValidationService/validateSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="66dd2adb-201a-45ee-8bf6-e6ef4a5ba1ca" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080/services/rest/validation?_wadl</con:endpoint></con:endpoints><con:resource name="ValidateSignature" path="/dss-demo-webapp/services/rest/validation/validateSignature" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{"signedDocument":{"bytes":"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT4zc2xnUVQvTHdwRWozRVVNTmpDSWlPaXBaUDVGaVdGOC92cmM1WXpEMFZRPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPlZKSDl2ckVmM2tvOG5COUJDbkxWK0R4UDBRUXIyTzdEeGxGK1ZacWJrV2hPV1RRQ1RqTlhHbW5wWnFtWi9QbFllTUJqSXRQNWpMdHVyMHF2UjFTSEJwR2E5bWF1Y2tBTXBCYjhmSC9UUmZjMDI5UHFuUkpyV0JXZWZDY2J6L2VVcGRYckJvOUtvTnJlOUV6ckQvTjl4S0FZdVdqemRxVFVqS3RCK0ZicG1vMkR5OVk2ejJDSERabmxkOUVJVjdtYUk5d2c4RlM2U21WdWhkUVZES0NQMU85NDI0b2dzSVRjUURzZTRZMnAxaHlPeFJGRHFzNWgycGg5YllocTJzR1pYZ1FQS1B3VW1vWDcwbDBLZE00WDR6dHRrdzBWbjZCNlZ3WnF0QjhJL3pyS3Y4RjlUOHVSRTMvcmR6NElWQi9zUGVkQndmMTZzK0Zra041ZWxsQlNtQT09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDNmpDQ0FkS2dBd0lCQWdJR0U0TVUzM2R4TUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakFvTVJNd0VRWURWUVFEREFwVGFXZHVaWEpHWVd0bE1SRXdEd1lEVlFRS0RBaEVVMU10ZEdWemREQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUpieS9IbklhWUJsa1VaZ29LbnhNRDRhUnFQQktmZTQvMnNIdjd4eGVodVArR1pxYWFVSmZNMEY4UXRWTkhCMWNROXBhaHpEeXpzVk5lU3hpWllneENQVTZhV0lmSktpWFdoQmtUayswb1Q4NXJhZFhsMWFnRmJWQmJEaWpWZll1THZlQTk4enFxc2phQ1h3REJ2dXdZSEh2ejdHZDBIY0J1bE5MODVtOUFhelI4ZDU1QURLZ1htYWJ4R1Z2UWRoQUNaSlczcHlUUWdvMUJueXdhVGVabjJsVnZaZGZFZHludFV0ODhuZWZ5Tjl3czBHays2TlcwV2RtY1A4QmlRYnNWbkIwTHl4bnJua1JFL2NSaHBCNmRhNjM5d1ArQWJyQ2R3VE1oMmt4aUxQbVErek9XOHQxM3dmNjRIbzZTMU41M2pOV0M3NTVjQ21OMlBPcE1vNVJWRUNBd0VBQWFNU01CQXdEZ1lEVlIwUEFRSC9CQVFEQWdFR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQndBOVhBMkRCWXM5RWxJQkE0ZVZtQ2t5WnFTWUJNdFVSU2VqMWhuN3JpK3F4SXk0THlsRGl0djhlV3hncmN6ZEQ4TzZYVUU3ZDRtUU9kN2FSS0ZicCs1R0NXZTNSc3NRQzMramhsMEJ3NmhRcGVmTytkd3lVeWR1aTlrcVRHY0s4UVgzT3BpNS9PZVR4YUNOUGFtaUZqcUZwMUZlMjJXbnJzTUxUYnNNTGsrajJCZXY0cEEvVXdxRHAzWG5xdWFIKzg5V1pnVVdSVG01VjBkdkhMalFyZjAybjQvTzJWVU1xWE1kNjlMUmFJdXFNcDcxOXk1WnI0VVgvMWdRNC9xTmp2ektsNDNFQytCVFBBM3d1L21IV1NGQkh4R092eVBkNFhGcytxajNER25VRW1WQ09XYjlvS1NBMm16VmlWc3owdUhUNktybm8rc29hU1lTdyt0SU8yPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDOGpDQ0FkcWdBd0lCQWdJR0NtckdiTlhYTUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakF3TVJzd0dRWURWUVFEREJKU2IyOTBVMlZzWmxOcFoyNWxaRVpoYTJVeEVUQVBCZ05WQkFvTUNFUlRVeTEwWlhOME1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcHJtWC9YYVBCWFd4S1pnM0VOaEJVRlZxelFSYzZ0RDlLSCtKNXdHQUZselVzNmZ3dkRQcEVXZDhYTVBSaGlEU3QvTXF2cGM2Z2ZpK1UreXVqaHFQSFRxajJEVTJzakpWc0dqaTg5QzMwQWpXNEN3RnVKMkhnak12ci9vRWphV3RIVXhrZ2t1WkpKQ3laYzZGUTAzSG8xUFFnbUpQWlVaNzdyTFNwbHk0aXN1SVJFUHNHNzl0Rk5WNFF0L3MySFpKZlRmbmNyME9XUXZTV1JMRTJOZlBqYzF5Qjc1VDBIdDdacVk1eGxyblB4YU9PM1V2TkVjamdsQUpwWUpGWHRuRUMwNTJGaWdRalorTzdPLzVjaFdQYlZYWFhMWk5aUWpyaDYvN2ZDU0lObGh6ZmJFTWhRSlYrNElMQThRaXBSb2RhOW1IRk0rck1QMEJQOWhadW1SMm1RSURBUUFCb3hJd0VEQU9CZ05WSFE4QkFmOEVCQU1DQVFZd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFDNTBIeU5YY2RYaTlUMkhhUGJQcWZ2ZXlydXFuNEJBcUhNUmFLZlhMM3h5RklmQ2JEM2VrandwVFhGRFNuVmhlZDZFOGtUYTlkMmkzWURydytxRi9sZlF5bjFDSHNrTHI4UWRaZHRjWHJrN0paRHRYSXphYm5QMmZXeVp2di9wOUNMRDNNcGNycXBtSDRlZ2k2S2lmZFM4WitnWjZaNnFHUEtnbVM1ckp4T25FVTREaEhuTDhzdEcvUlR6M3ZhWXlFT0JleVVTK3psNGxhREJqNmNwaFFCcW5VZUVoaGp5WjhFVWlJVjRqTUl3ckF2TEZZMy9XUkYxK3BnSnhlWWZEOGovNERLYVBISnJ0MmhBVDR2K1JyTzFuUWt5WXdCYUZOTUh4TENwa3FXSFVBRkg4YURTeWxnRGVSTzZMUzhhcjhGdlVhcFF5SGdoU0p2YWNEcW5ldVk9PC9kczpYNTA5Q2VydGlmaWNhdGU+PC9kczpYNTA5RGF0YT48L2RzOktleUluZm8+PGRzOk9iamVjdD48eGFkZXM6UXVhbGlmeWluZ1Byb3BlcnRpZXMgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIgVGFyZ2V0PSIjaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjx4YWRlczpTaWduZWRQcm9wZXJ0aWVzIElkPSJ4YWRlcy1pZC0zZmNmNjE2NDY1NmZkOWI5M2YyZGRiZDgxYzFjNGI0ZCI+PHhhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25pbmdUaW1lPjIwMTYtMDEtMjVUMDg6NTA6MzJaPC94YWRlczpTaWduaW5nVGltZT48eGFkZXM6U2lnbmluZ0NlcnRpZmljYXRlPjx4YWRlczpDZXJ0Pjx4YWRlczpDZXJ0RGlnZXN0PjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSIvPjxkczpEaWdlc3RWYWx1ZT5XVDFUczhCSXoyQUM5d3JROVBnYi9oNk5Rbms9PC9kczpEaWdlc3RWYWx1ZT48L3hhZGVzOkNlcnREaWdlc3Q+PHhhZGVzOklzc3VlclNlcmlhbD48ZHM6WDUwOUlzc3Vlck5hbWU+Tz1EU1MtdGVzdCxDTj1Sb290U2VsZlNpZ25lZEZha2U8L2RzOlg1MDlJc3N1ZXJOYW1lPjxkczpYNTA5U2VyaWFsTnVtYmVyPjIxNDUzNzExODMyOTQ1PC9kczpYNTA5U2VyaWFsTnVtYmVyPjwveGFkZXM6SXNzdWVyU2VyaWFsPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZT48L3hhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjx4YWRlczpEYXRhT2JqZWN0Rm9ybWF0IE9iamVjdFJlZmVyZW5jZT0iI3ItaWQtMSI+PHhhZGVzOk1pbWVUeXBlPnRleHQveG1sPC94YWRlczpNaW1lVHlwZT48L3hhZGVzOkRhdGFPYmplY3RGb3JtYXQ+PC94YWRlczpTaWduZWREYXRhT2JqZWN0UHJvcGVydGllcz48L3hhZGVzOlNpZ25lZFByb3BlcnRpZXM+PC94YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcz48L2RzOk9iamVjdD48L2RzOlNpZ25hdHVyZT4=","name":"xades-detached.xml"},"originalDocuments":[{"bytes":"PGhlbGxvPndvcmxkPC9oZWxsbz4=","name":"sample.xml"}],"policy":null}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="one-document" path="/dss-demo-webapp/services/rest/signature/one-document/getDataToSign" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="getDataToSign" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://validation.dss.esig.europa.eu/SoapDocumentValidationService/validateSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="66dd2adb-201a-45ee-8bf6-e6ef4a5ba1ca" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080/services/rest/validation?_wadl</con:endpoint></con:endpoints><con:resource name="ValidateSignature" path="/services/rest/validation/validateSignature" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{"signedDocument":{"bytes":"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT4zc2xnUVQvTHdwRWozRVVNTmpDSWlPaXBaUDVGaVdGOC92cmM1WXpEMFZRPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPlZKSDl2ckVmM2tvOG5COUJDbkxWK0R4UDBRUXIyTzdEeGxGK1ZacWJrV2hPV1RRQ1RqTlhHbW5wWnFtWi9QbFllTUJqSXRQNWpMdHVyMHF2UjFTSEJwR2E5bWF1Y2tBTXBCYjhmSC9UUmZjMDI5UHFuUkpyV0JXZWZDY2J6L2VVcGRYckJvOUtvTnJlOUV6ckQvTjl4S0FZdVdqemRxVFVqS3RCK0ZicG1vMkR5OVk2ejJDSERabmxkOUVJVjdtYUk5d2c4RlM2U21WdWhkUVZES0NQMU85NDI0b2dzSVRjUURzZTRZMnAxaHlPeFJGRHFzNWgycGg5YllocTJzR1pYZ1FQS1B3VW1vWDcwbDBLZE00WDR6dHRrdzBWbjZCNlZ3WnF0QjhJL3pyS3Y4RjlUOHVSRTMvcmR6NElWQi9zUGVkQndmMTZzK0Zra041ZWxsQlNtQT09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDNmpDQ0FkS2dBd0lCQWdJR0U0TVUzM2R4TUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakFvTVJNd0VRWURWUVFEREFwVGFXZHVaWEpHWVd0bE1SRXdEd1lEVlFRS0RBaEVVMU10ZEdWemREQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUpieS9IbklhWUJsa1VaZ29LbnhNRDRhUnFQQktmZTQvMnNIdjd4eGVodVArR1pxYWFVSmZNMEY4UXRWTkhCMWNROXBhaHpEeXpzVk5lU3hpWllneENQVTZhV0lmSktpWFdoQmtUayswb1Q4NXJhZFhsMWFnRmJWQmJEaWpWZll1THZlQTk4enFxc2phQ1h3REJ2dXdZSEh2ejdHZDBIY0J1bE5MODVtOUFhelI4ZDU1QURLZ1htYWJ4R1Z2UWRoQUNaSlczcHlUUWdvMUJueXdhVGVabjJsVnZaZGZFZHludFV0ODhuZWZ5Tjl3czBHays2TlcwV2RtY1A4QmlRYnNWbkIwTHl4bnJua1JFL2NSaHBCNmRhNjM5d1ArQWJyQ2R3VE1oMmt4aUxQbVErek9XOHQxM3dmNjRIbzZTMU41M2pOV0M3NTVjQ21OMlBPcE1vNVJWRUNBd0VBQWFNU01CQXdEZ1lEVlIwUEFRSC9CQVFEQWdFR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQndBOVhBMkRCWXM5RWxJQkE0ZVZtQ2t5WnFTWUJNdFVSU2VqMWhuN3JpK3F4SXk0THlsRGl0djhlV3hncmN6ZEQ4TzZYVUU3ZDRtUU9kN2FSS0ZicCs1R0NXZTNSc3NRQzMramhsMEJ3NmhRcGVmTytkd3lVeWR1aTlrcVRHY0s4UVgzT3BpNS9PZVR4YUNOUGFtaUZqcUZwMUZlMjJXbnJzTUxUYnNNTGsrajJCZXY0cEEvVXdxRHAzWG5xdWFIKzg5V1pnVVdSVG01VjBkdkhMalFyZjAybjQvTzJWVU1xWE1kNjlMUmFJdXFNcDcxOXk1WnI0VVgvMWdRNC9xTmp2ektsNDNFQytCVFBBM3d1L21IV1NGQkh4R092eVBkNFhGcytxajNER25VRW1WQ09XYjlvS1NBMm16VmlWc3owdUhUNktybm8rc29hU1lTdyt0SU8yPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDOGpDQ0FkcWdBd0lCQWdJR0NtckdiTlhYTUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakF3TVJzd0dRWURWUVFEREJKU2IyOTBVMlZzWmxOcFoyNWxaRVpoYTJVeEVUQVBCZ05WQkFvTUNFUlRVeTEwWlhOME1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcHJtWC9YYVBCWFd4S1pnM0VOaEJVRlZxelFSYzZ0RDlLSCtKNXdHQUZselVzNmZ3dkRQcEVXZDhYTVBSaGlEU3QvTXF2cGM2Z2ZpK1UreXVqaHFQSFRxajJEVTJzakpWc0dqaTg5QzMwQWpXNEN3RnVKMkhnak12ci9vRWphV3RIVXhrZ2t1WkpKQ3laYzZGUTAzSG8xUFFnbUpQWlVaNzdyTFNwbHk0aXN1SVJFUHNHNzl0Rk5WNFF0L3MySFpKZlRmbmNyME9XUXZTV1JMRTJOZlBqYzF5Qjc1VDBIdDdacVk1eGxyblB4YU9PM1V2TkVjamdsQUpwWUpGWHRuRUMwNTJGaWdRalorTzdPLzVjaFdQYlZYWFhMWk5aUWpyaDYvN2ZDU0lObGh6ZmJFTWhRSlYrNElMQThRaXBSb2RhOW1IRk0rck1QMEJQOWhadW1SMm1RSURBUUFCb3hJd0VEQU9CZ05WSFE4QkFmOEVCQU1DQVFZd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFDNTBIeU5YY2RYaTlUMkhhUGJQcWZ2ZXlydXFuNEJBcUhNUmFLZlhMM3h5RklmQ2JEM2VrandwVFhGRFNuVmhlZDZFOGtUYTlkMmkzWURydytxRi9sZlF5bjFDSHNrTHI4UWRaZHRjWHJrN0paRHRYSXphYm5QMmZXeVp2di9wOUNMRDNNcGNycXBtSDRlZ2k2S2lmZFM4WitnWjZaNnFHUEtnbVM1ckp4T25FVTREaEhuTDhzdEcvUlR6M3ZhWXlFT0JleVVTK3psNGxhREJqNmNwaFFCcW5VZUVoaGp5WjhFVWlJVjRqTUl3ckF2TEZZMy9XUkYxK3BnSnhlWWZEOGovNERLYVBISnJ0MmhBVDR2K1JyTzFuUWt5WXdCYUZOTUh4TENwa3FXSFVBRkg4YURTeWxnRGVSTzZMUzhhcjhGdlVhcFF5SGdoU0p2YWNEcW5ldVk9PC9kczpYNTA5Q2VydGlmaWNhdGU+PC9kczpYNTA5RGF0YT48L2RzOktleUluZm8+PGRzOk9iamVjdD48eGFkZXM6UXVhbGlmeWluZ1Byb3BlcnRpZXMgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIgVGFyZ2V0PSIjaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjx4YWRlczpTaWduZWRQcm9wZXJ0aWVzIElkPSJ4YWRlcy1pZC0zZmNmNjE2NDY1NmZkOWI5M2YyZGRiZDgxYzFjNGI0ZCI+PHhhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25pbmdUaW1lPjIwMTYtMDEtMjVUMDg6NTA6MzJaPC94YWRlczpTaWduaW5nVGltZT48eGFkZXM6U2lnbmluZ0NlcnRpZmljYXRlPjx4YWRlczpDZXJ0Pjx4YWRlczpDZXJ0RGlnZXN0PjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSIvPjxkczpEaWdlc3RWYWx1ZT5XVDFUczhCSXoyQUM5d3JROVBnYi9oNk5Rbms9PC9kczpEaWdlc3RWYWx1ZT48L3hhZGVzOkNlcnREaWdlc3Q+PHhhZGVzOklzc3VlclNlcmlhbD48ZHM6WDUwOUlzc3Vlck5hbWU+Tz1EU1MtdGVzdCxDTj1Sb290U2VsZlNpZ25lZEZha2U8L2RzOlg1MDlJc3N1ZXJOYW1lPjxkczpYNTA5U2VyaWFsTnVtYmVyPjIxNDUzNzExODMyOTQ1PC9kczpYNTA5U2VyaWFsTnVtYmVyPjwveGFkZXM6SXNzdWVyU2VyaWFsPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZT48L3hhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjx4YWRlczpEYXRhT2JqZWN0Rm9ybWF0IE9iamVjdFJlZmVyZW5jZT0iI3ItaWQtMSI+PHhhZGVzOk1pbWVUeXBlPnRleHQveG1sPC94YWRlczpNaW1lVHlwZT48L3hhZGVzOkRhdGFPYmplY3RGb3JtYXQ+PC94YWRlczpTaWduZWREYXRhT2JqZWN0UHJvcGVydGllcz48L3hhZGVzOlNpZ25lZFByb3BlcnRpZXM+PC94YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcz48L2RzOk9iamVjdD48L2RzOlNpZ25hdHVyZT4=","name":"xades-detached.xml"},"originalDocuments":[{"bytes":"PGhlbGxvPndvcmxkPC9oZWxsbz4=","name":"sample.xml"}],"policy":null}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="one-document" path="/services/rest/signature/one-document/getDataToSign" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="getDataToSign" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
@@ -1074,7 +1074,7 @@
     "digestAlgorithm" : null,
     "name" : "RemoteDocument"
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="" value="" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="one-document" path="/dss-demo-webapp/services/rest/signature/one-document/extendDocument" id="8f4c1dd4-760c-42cd-893b-6ea1e0b52d4f"><con:settings/><con:parameters/><con:method name="Method 1" id="515327ec-1758-473d-945b-cad7517af299" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ext="http://localhost/services/rest/signature/one-document/extendDocument">ext:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="32122e73-706c-4504-b6ca-0c716ea86603" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="" value="" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="one-document" path="/services/rest/signature/one-document/extendDocument" id="8f4c1dd4-760c-42cd-893b-6ea1e0b52d4f"><con:settings/><con:parameters/><con:method name="Method 1" id="515327ec-1758-473d-945b-cad7517af299" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ext="http://localhost/services/rest/signature/one-document/extendDocument">ext:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="32122e73-706c-4504-b6ca-0c716ea86603" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "toExtendDocument" : {
     "bytes" : "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==",
     "digestAlgorithm" : null,
@@ -1117,7 +1117,7 @@
       "commitmentTypeIndications" : null
     }
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/extendDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signDocument" path="/dss-demo-webapp/services/rest/signature/one-document/signDocument" id="17961de5-8a9a-425e-9ca1-b679e641f409"><con:settings/><con:parameters/><con:method name="Method 1" id="4ef0cd8c-c950-4b5e-ab41-5ac8f7ea1aee" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/signature/one-document/signDocument">sig:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="7e9835f6-0c10-4e69-abc4-3e6f5d940ef7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/extendDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signDocument" path="/services/rest/signature/one-document/signDocument" id="17961de5-8a9a-425e-9ca1-b679e641f409"><con:settings/><con:parameters/><con:method name="Method 1" id="4ef0cd8c-c950-4b5e-ab41-5ac8f7ea1aee" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/signature/one-document/signDocument">sig:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="7e9835f6-0c10-4e69-abc4-3e6f5d940ef7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
@@ -1162,7 +1162,7 @@
     "digestAlgorithm" : null,
     "name" : "RemoteDocument"
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/signDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="extendDocument" path="/dss-demo-webapp/services/rest/signature/multiple-documents/extendDocument" id="c926eae8-3ae0-4c7e-80c3-6cdf601703d4"><con:settings/><con:parameters/><con:method name="Method 1" id="13a33ac0-fefa-4522-951d-701e51e8a5bb" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ext="http://localhost/services/rest/signature/multiple-documents/extendDocument">ext:Response</con:element></con:representation><con:request name="Request 1" id="1c7d7750-b909-4cf9-8ff9-5e411fbff318" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/signDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="extendDocument" path="/services/rest/signature/multiple-documents/extendDocument" id="c926eae8-3ae0-4c7e-80c3-6cdf601703d4"><con:settings/><con:parameters/><con:method name="Method 1" id="13a33ac0-fefa-4522-951d-701e51e8a5bb" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ext="http://localhost/services/rest/signature/multiple-documents/extendDocument">ext:Response</con:element></con:representation><con:request name="Request 1" id="1c7d7750-b909-4cf9-8ff9-5e411fbff318" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
   "toExtendDocument" : {
     "bytes" : "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==",
     "digestAlgorithm" : null,
@@ -1205,7 +1205,7 @@
       "commitmentTypeIndications" : null
     }
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/extendDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signDocument" path="/dss-demo-webapp/services/rest/signature/multiple-documents/signDocument" id="3fd3ee06-ea18-4c84-bfb3-b2bd5f7830c3"><con:settings/><con:parameters/><con:method name="Method 1" id="877f5ec8-aad8-4b22-ae0c-b08d7ca4d230" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/signature/multiple-documents/signDocument">sig:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="d722ba80-927c-489d-8560-70fef72175a7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/extendDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signDocument" path="/services/rest/signature/multiple-documents/signDocument" id="3fd3ee06-ea18-4c84-bfb3-b2bd5f7830c3"><con:settings/><con:parameters/><con:method name="Method 1" id="877f5ec8-aad8-4b22-ae0c-b08d7ca4d230" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/signature/multiple-documents/signDocument">sig:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="d722ba80-927c-489d-8560-70fef72175a7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
@@ -1254,7 +1254,7 @@
     "digestAlgorithm" : null,
     "name" : "test2.bin"
   } ]
-}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/signDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSignMultiple" path="/dss-demo-webapp/services/rest/signature/multiple-documents/getDataToSignMultiple" id="5e3f754e-6cf2-4c66-ac13-a9062cbe2930"><con:settings/><con:parameters/><con:method name="Method 1" id="14ca176c-e76b-478a-a136-642df1d06387" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple">get:Response</con:element></con:representation><con:request name="Request 1" id="775931ae-6219-45d6-aac6-9597ccf74e67" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/signDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSignMultiple" path="/services/rest/signature/multiple-documents/getDataToSignMultiple" id="5e3f754e-6cf2-4c66-ac13-a9062cbe2930"><con:settings/><con:parameters/><con:method name="Method 1" id="14ca176c-e76b-478a-a136-642df1d06387" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple">get:Response</con:element></con:representation><con:request name="Request 1" id="775931ae-6219-45d6-aac6-9597ccf74e67" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
@@ -1299,7 +1299,7 @@
     "digestAlgorithm" : null,
     "name" : "test2.bin"
   } ]
-}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="keys" path="/dss-demo-webapp/services/rest/server-signing/keys" id="9c6daa74-9fd7-4e32-8902-851cffe110ea"><con:settings/><con:parameters/><con:method name="Method 1" id="3d5dc747-8a7d-4164-9666-2724363626d4" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://wadl.dev.java.net/2009/02">ns:application</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="116b19c4-7dbc-4fb5-842f-a29ece3c4a42" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/validation/services/rest/server-signing/keys</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="certificate" path="/dss-demo-webapp/services/rest/server-signing/key/certificate" id="2bfdd2ad-5108-496c-8ee5-7bae259a3813"><con:settings/><con:parameters/><con:method name="Method 1" id="070570ad-555d-4536-a6fe-3cc37de0e70e" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cer="http://localhost/services/rest/server-signing/key/certificate">cer:Response</con:element></con:representation><con:request name="Request 1" id="86c14302-d88a-476d-b1ae-a5f61bc75f84" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/server-signing/key/certificate</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="SHA256" path="/dss-demo-webapp/services/rest/server-signing/sign/certificate/SHA256" id="a4b29f7d-cb93-4e48-825e-54831ec4f896"><con:settings/><con:parameters/><con:method name="Method 1" id="7f615f37-e7d8-4fc0-be79-1434a72d7ef9" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sha2="http://localhost/services/rest/server-signing/sign/certificate/SHA256">sha2:Response</con:element></con:representation><con:request name="Request 1" id="6fe699cd-64db-464d-8f46-c094c3116f66" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{"bytes": "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="ValidateCertificate" path="/dss-demo-webapp/services/rest/certificate-validation/validateCertificate" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="keys" path="/services/rest/server-signing/keys" id="9c6daa74-9fd7-4e32-8902-851cffe110ea"><con:settings/><con:parameters/><con:method name="Method 1" id="3d5dc747-8a7d-4164-9666-2724363626d4" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://wadl.dev.java.net/2009/02">ns:application</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="116b19c4-7dbc-4fb5-842f-a29ece3c4a42" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/validation/services/rest/server-signing/keys</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="certificate" path="/services/rest/server-signing/key/certificate" id="2bfdd2ad-5108-496c-8ee5-7bae259a3813"><con:settings/><con:parameters/><con:method name="Method 1" id="070570ad-555d-4536-a6fe-3cc37de0e70e" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cer="http://localhost/services/rest/server-signing/key/certificate">cer:Response</con:element></con:representation><con:request name="Request 1" id="86c14302-d88a-476d-b1ae-a5f61bc75f84" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/server-signing/key/certificate</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="SHA256" path="/services/rest/server-signing/sign/certificate/SHA256" id="a4b29f7d-cb93-4e48-825e-54831ec4f896"><con:settings/><con:parameters/><con:method name="Method 1" id="7f615f37-e7d8-4fc0-be79-1434a72d7ef9" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sha2="http://localhost/services/rest/server-signing/sign/certificate/SHA256">sha2:Response</con:element></con:representation><con:request name="Request 1" id="6fe699cd-64db-464d-8f46-c094c3116f66" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{"bytes": "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="ValidateCertificate" path="/services/rest/certificate-validation/validateCertificate" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
   "certificate" : {
     "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
   },
@@ -1307,15 +1307,92 @@
     "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
   } ],
   "validationTime": 1542794104583
-}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://signature.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getTimestampResponse" path="/services/rest/timestamp-service/getTimestampResponse" id="7457342e-4cc4-40ca-8aab-56f9f8d8821f"><con:settings/><con:parameters/><con:method name="Method 1" id="e08d7a97-ec7b-48f9-aa0a-e3aa71b53aaf" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/timestamp-service/getTimestampResponse">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="55e72e37-d489-49e2-b526-75ed2f249cec" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "algorithm" : "SHA1",
+  "value" : "Ir3ZcUPfazmmWvrSr2vYvyDNT3s="
+}</con:request><con:originalUri>http://localhost/services/rest/timestamp-service/getTimestampResponse</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="timestampDocument" path="/services/rest/signature/one-document/timestampDocument" id="ed96ced8-af79-43ae-84c7-d2382b1599b3"><con:settings/><con:parameters/><con:method name="Method 1" id="1ff17989-1a69-4bc7-96b1-28c7be3fe578" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:tim="http://localhost/services/rest/signature/one-document/timestampDocument">tim:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="35c9e0d6-4a8a-4715-b029-2ba86e01f7a2" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "timestampParameters" : {
+    "digestAlgorithm" : "SHA512",
+    "canonicalizationMethod" : null,
+    "timestampContainerForm" : "PDF"
+  },
+  "toTimestampDocument" : {
+    "bytes" : "JVBERi0xLjYNJeLjz9MNCjExIDAgb2JqDTw8L0xpbmVhcml6ZWQgMS9MIDQ4ODAvTyAxMy9FIDc2NC9OIDEvVCA0NTc3L0ggWyA0MzEgMTMxXT4+DWVuZG9iag0gICAgICAgICAgICAgICAgICAgICAgDQoxNCAwIG9iag08PC9EZWNvZGVQYXJtczw8L0NvbHVtbnMgMy9QcmVkaWN0b3IgMTI+Pi9GaWx0ZXIvRmxhdGVEZWNvZGUvSURbPDVGRUVEN0UwNjFCRTc0NDA4MTI5OEE3M0UwREM3NzZCPjw3OEI2REQzNUIyRThFMjQ0ODJENzhCQ0Y5NzQ2MTc4OD5dL0luZGV4WzExIDVdL0luZm8gMTAgMCBSL0xlbmd0aCAzMC9QcmV2IDQ1NzgvUm9vdCAxMiAwIFIvU2l6ZSAxNi9UeXBlL1hSZWYvV1sxIDIgMF0+PnN0cmVhbQ0KaN5iYmQQYGJgUmJiYPBhYvj3jYmB0RogwAARMAK8DQplbmRzdHJlYW0NZW5kb2JqDXN0YXJ0eHJlZg0KMA0KJSVFT0YNCiAgICAgICAgDQoxNSAwIG9iag08PC9GaWx0ZXIvRmxhdGVEZWNvZGUvSSA3Ny9MZW5ndGggNDcvTyA2MS9TIDM2Pj5zdHJlYW0NCmjeYmBgYASi3wwgUMeACVgYOJB4jFAMVwvkMP2BCt4DK2cQlIbyjwMEGAC77QTeDQplbmRzdHJlYW0NZW5kb2JqDTEyIDAgb2JqDTw8L01ldGFkYXRhIDIgMCBSL091dGxpbmVzIDYgMCBSL1BhZ2VzIDkgMCBSL1R5cGUvQ2F0YWxvZz4+DWVuZG9iag0xMyAwIG9iag08PC9Dcm9wQm94WzAuMCAwLjAgNjEyLjAgNzkyLjBdL01lZGlhQm94WzAuMCAwLjAgNjEyLjAgNzkyLjBdL1BhcmVudCA5IDAgUi9SZXNvdXJjZXM8PD4+L1JvdGF0ZSAwL1R5cGUvUGFnZT4+DWVuZG9iag0xIDAgb2JqDTw8L0ZpbHRlci9GbGF0ZURlY29kZS9GaXJzdCAxNC9MZW5ndGggMTI4L04gMy9UeXBlL09ialN0bT4+c3RyZWFtDQpo3jJTMFAwVzCxVLBQsDRWsLHRd84vzStRMNR3yywqLgFKGSgE6fskwpkhlQWp+v6lJTmZeanFdnZADY5ArSCZgMSiVKBOM4iyzJKcVA2f1NSiVIXg1MySVE2wWpdoQ2OwfERkFMhiSyOFvNKcnFj9YH33/JB8OzuAAAMA2N0nuQ0KZW5kc3RyZWFtDWVuZG9iag0yIDAgb2JqDTw8L0xlbmd0aCAzMTc1L1N1YnR5cGUvWE1ML1R5cGUvTWV0YWRhdGE+PnN0cmVhbQ0KPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS40LWMwMDYgODAuMTU5ODI1LCAyMDE2LzA5LzE2LTAzOjMxOjA4ICAgICAgICAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iCiAgICAgICAgICAgIHhtbG5zOnBkZj0iaHR0cDovL25zLmFkb2JlLmNvbS9wZGYvMS4zLyI+CiAgICAgICAgIDx4bXA6TW9kaWZ5RGF0ZT4yMDE4LTAzLTA5VDEyOjAxOjU0KzAxOjAwPC94bXA6TW9kaWZ5RGF0ZT4KICAgICAgICAgPHhtcDpDcmVhdGVEYXRlPjIwMTgtMDMtMDlUMTI6MDE6MzErMDE6MDA8L3htcDpDcmVhdGVEYXRlPgogICAgICAgICA8eG1wOk1ldGFkYXRhRGF0ZT4yMDE4LTAzLTA5VDEyOjAxOjU0KzAxOjAwPC94bXA6TWV0YWRhdGFEYXRlPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIEFjcm9iYXQgUHJvIDExLjAuMjM8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPGRjOmZvcm1hdD5hcHBsaWNhdGlvbi9wZGY8L2RjOmZvcm1hdD4KICAgICAgICAgPHhtcE1NOkRvY3VtZW50SUQ+dXVpZDo5NWZjN2FhNi02NjgxLTQ1M2EtODNiZi1hYmExYTM2ZTM1OGY8L3htcE1NOkRvY3VtZW50SUQ+CiAgICAgICAgIDx4bXBNTTpJbnN0YW5jZUlEPnV1aWQ6OTZjZDE0ZjQtYjVmYS00ODUxLTg1ZmUtZGI5ZGY0ZDIyZTgzPC94bXBNTTpJbnN0YW5jZUlEPgogICAgICAgICA8cGRmOlByb2R1Y2VyPkFkb2JlIEFjcm9iYXQgUHJvIDExLjAuMjM8L3BkZjpQcm9kdWNlcj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0IGVuZD0idyI/Pg0KZW5kc3RyZWFtDWVuZG9iag0zIDAgb2JqDTw8L0ZpbHRlci9GbGF0ZURlY29kZS9GaXJzdCA0L0xlbmd0aCA0OS9OIDEvVHlwZS9PYmpTdG0+PnN0cmVhbQ0KaN6yVDBQsLHRd84vzStRMNT3zkwpjjY0BgoGxeqHVBak6gckpqcW29kBBBgA4DULrw0KZW5kc3RyZWFtDWVuZG9iag00IDAgb2JqDTw8L0ZpbHRlci9GbGF0ZURlY29kZS9GaXJzdCA1L0xlbmd0aCAxMDYvTiAxL1R5cGUvT2JqU3RtPj5zdHJlYW0NCmjeMjRQMFCwsdF3LkpNLMnMz3NJLEnVcLEyMjC0MDA2sDQEMowNtQ0M1Q0M1DUhqvKLNBxT8pNSFRyTi/KTEksUAoryFQwN9Qz0jIw19X3zU7CYYWoCNwOoOqU0ORWfIXZ2AAEGAByrKRQNCmVuZHN0cmVhbQ1lbmRvYmoNNSAwIG9iag08PC9EZWNvZGVQYXJtczw8L0NvbHVtbnMgNC9QcmVkaWN0b3IgMTI+Pi9GaWx0ZXIvRmxhdGVEZWNvZGUvSURbPDVGRUVEN0UwNjFCRTc0NDA4MTI5OEE3M0UwREM3NzZCPjw3OEI2REQzNUIyRThFMjQ0ODJENzhCQ0Y5NzQ2MTc4OD5dL0luZm8gMTAgMCBSL0xlbmd0aCA0OC9Sb290IDEyIDAgUi9TaXplIDExL1R5cGUvWFJlZi9XWzEgMiAxXT4+c3RyZWFtDQpo3mJiAAImRqY/DEwMjPeABO8WEKsXSDAcB0q8lwexGBhhBNM/IMHIABBgALdBBh0NCmVuZHN0cmVhbQ1lbmRvYmoNc3RhcnR4cmVmDQoxMTYNCiUlRU9GDQo=",
+    "digestAlgorithm" : null,
+    "name" : "sample.pdf"
+  }
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/timestampDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="timestampDocument" path="/services/rest/signature/multiple-documents/timestampDocument" id="20600423-8d14-4fd6-9a74-e3d07499ba61"><con:settings/><con:parameters/><con:method name="Method 1" id="29a235cf-d443-4d19-8aa0-6a501cf11207" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:tim="http://localhost/services/rest/validation/services/rest/signature/multiple-documents/timestampDocument">tim:Response</con:element></con:representation><con:request name="Request 1" id="936a64ea-912c-41d4-9c04-aaa79967a328" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "timestampParameters" : {
+    "digestAlgorithm" : "SHA512",
+    "canonicalizationMethod" : null,
+    "timestampContainerForm" : "ASiC_E"
+  },
+  "toTimestampDocuments" : [ {
+    "bytes" : "77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+",
+    "digestAlgorithm" : null,
+    "name" : "sample.xml"
+  }, {
+    "bytes" : "PGNvbmZpZ3VyYXRpb24gZGVidWc9InRydWUiPg0KDQoJPGFwcGVuZGVyIG5hbWU9IlNURE9VVCIgY2xhc3M9ImNoLnFvcy5sb2diYWNrLmNvcmUuQ29uc29sZUFwcGVuZGVyIj4NCgkJPGVuY29kZXI+DQoJCQk8cGF0dGVybj4lZHtISDptbTpzcy5TU1N9IFsldGhyZWFkXSAlLTVsZXZlbCAlbG9nZ2VyezM2fSAtICVtc2clbg0KCQkJPC9wYXR0ZXJuPg0KCQk8L2VuY29kZXI+DQoJPC9hcHBlbmRlcj4NCgkNCgk8bG9nZ2VyIG5hbWU9ImV1LmV1cm9wYS5lc2lnLmRzcyIgbGV2ZWw9IklORk8iIC8+DQoJPGxvZ2dlciBuYW1lPSJvcmcuYXBhY2hlIiBsZXZlbD0iSU5GTyIgLz4NCgk8bG9nZ2VyIG5hbWU9Im9yZy5hcGFjaGUuZm9wIiBsZXZlbD0iRVJST1IiIC8+DQoJPGxvZ2dlciBuYW1lPSJvcmcuYXBhY2hlLnBkZmJveCIgbGV2ZWw9IkVSUk9SIiAvPg0KCTxsb2dnZXIgbmFtZT0ib3JnLnNwcmluZ2ZyYW1ld29yayIgbGV2ZWw9IklORk8iIC8+DQoNCgk8cm9vdCBsZXZlbD0iZGVidWciPg0KCQk8YXBwZW5kZXItcmVmIHJlZj0iU1RET1VUIiAvPg0KCTwvcm9vdD4NCjwvY29uZmlndXJhdGlvbj4=",
+    "digestAlgorithm" : null,
+    "name" : "hello.xml"
+  } ]
+}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/signature/multiple-documents/timestampDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/signature/one-document?wsdl=SoapDocumentSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="ns1:SoapDocumentSignatureService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="extendDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="extendDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="extendDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="timestampDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="timestampDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="timestampDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapDocumentSignatureServiceImplService">
+    <wsdl:port binding="tns:SoapDocumentSignatureServiceImplServiceSoapBinding" name="SoapDocumentSignatureServiceImplPort">
+      <soap:address location="http://localhost:8080/services/soap/signature/one-document"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl=SoapDocumentSignatureService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://signature.dss.esig.europa.eu/">
   <wsdl:types>
-    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://signature.dss.esig.europa.eu/">
       <xs:element name="extendDocument" type="tns:extendDocument"/>
       <xs:element name="extendDocumentResponse" type="tns:extendDocumentResponse"/>
       <xs:element name="getDataToSign" type="tns:getDataToSign"/>
       <xs:element name="getDataToSignResponse" type="tns:getDataToSignResponse"/>
       <xs:element name="signDocument" type="tns:signDocument"/>
       <xs:element name="signDocumentResponse" type="tns:signDocumentResponse"/>
+      <xs:element name="timestampDocument" type="tns:timestampDocument"/>
+      <xs:element name="timestampDocumentResponse" type="tns:timestampDocumentResponse"/>
       <xs:complexType name="extendDocument">
         <xs:sequence>
           <xs:element minOccurs="0" name="extendDocumentDTO" type="tns:extendDocumentDTO"/>
@@ -1328,28 +1405,52 @@
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteSignatureParameters">
-        <xs:complexContent>
-          <xs:extension base="tns:abstractSerializableSignatureParameters">
-            <xs:sequence>
-              <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
-              <xs:element maxOccurs="unbounded" minOccurs="0" name="certificateChain" nillable="true" type="tns:remoteCertificate"/>
-              <xs:element maxOccurs="unbounded" minOccurs="0" name="detachedContents" nillable="true" type="tns:remoteDocument"/>
-              <xs:element minOccurs="0" name="signingCertificate" type="tns:remoteCertificate"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-      <xs:complexType abstract="true" name="abstractSerializableSignatureParameters">
         <xs:sequence>
-          <xs:element minOccurs="0" name="archiveTimestampParameters" type="tns:timestampParameters"/>
-          <xs:element minOccurs="0" name="BLevelParams" type="tns:bLevelParameters"/>
-          <xs:element minOccurs="0" name="contentTimestampParameters" type="tns:timestampParameters"/>
+          <xs:element minOccurs="0" name="archiveTimestampParameters" type="tns:remoteTimestampParameters"/>
+          <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
+          <xs:element minOccurs="0" name="BLevelParams" type="tns:remoteBLevelParameters"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="certificateChain" nillable="true" type="tns:remoteCertificate"/>
+          <xs:element minOccurs="0" name="contentTimestampParameters" type="tns:remoteTimestampParameters"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="contentTimestamps" nillable="true" type="tns:timestampDTO"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="detachedContents" nillable="true" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="encryptionAlgorithm" type="tns:encryptionAlgorithm"/>
+          <xs:element name="generateTBSWithoutCertificate" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
+          <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element name="signWithExpiredCertificate" type="xs:boolean"/>
           <xs:element minOccurs="0" name="signatureLevel" type="tns:signatureLevel"/>
           <xs:element minOccurs="0" name="signaturePackaging" type="tns:signaturePackaging"/>
-          <xs:element minOccurs="0" name="signatureTimestampParameters" type="tns:timestampParameters"/>
+          <xs:element minOccurs="0" name="signatureTimestampParameters" type="tns:remoteTimestampParameters"/>
+          <xs:element minOccurs="0" name="signingCertificate" type="tns:remoteCertificate"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteTimestampParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
+          <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="signatureForm" type="tns:signatureForm"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteBLevelParameters">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyDescription" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="policyDigestValue" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="policyId" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyQualifier" type="xs:string"/>
+          <xs:element minOccurs="0" name="policySpuri" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationLocality" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="signerLocationPostalAddress" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationPostalCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStateOrProvince" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStreet" type="xs:string"/>
+          <xs:element minOccurs="0" name="signingDate" type="xs:dateTime"/>
+          <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteCertificate">
@@ -1357,55 +1458,52 @@
           <xs:element minOccurs="0" name="encodedCertificate" type="xs:base64Binary"/>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="timestampDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="binaries" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="includes" nillable="true" type="tns:timestampIncludeDTO"/>
+          <xs:element minOccurs="0" name="type" type="tns:timestampType"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampIncludeDTO">
+        <xs:sequence>
+          <xs:element name="referencedData" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="URI" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="remoteDocument">
         <xs:sequence>
           <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="mimeType" type="tns:mimeType"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="name" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="mimeType">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="mimeTypeString" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="timestampParameters">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
-          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="bLevelParameters">
-        <xs:sequence>
-          <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="signingDate" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="signaturePolicy" type="tns:policy"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndication" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="signerLocation" type="tns:signerLocation"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="policy">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="description" type="xs:string"/>
-          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="digestValue" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="id" type="xs:string"/>
-          <xs:element minOccurs="0" name="qualifier" type="xs:string"/>
-          <xs:element minOccurs="0" name="spuri" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="signerLocation">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="country" type="xs:string"/>
-          <xs:element minOccurs="0" name="locality" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="postalAddress" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="postalCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="stateOrProvince" type="xs:string"/>
-          <xs:element minOccurs="0" name="street" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="extendDocumentResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="timestampDocumentDTO" type="tns:timestampOneDocumentDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampOneDocumentDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractTimestampDocumentDTO">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="toTimestampDocument" type="tns:remoteDocument"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="abstractTimestampDocumentDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="timestampParameters" type="tns:remoteTimestampParameters"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampDocumentResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
@@ -1431,10 +1529,10 @@
       </xs:complexType>
       <xs:complexType name="getDataToSignResponse">
         <xs:sequence>
-          <xs:element minOccurs="0" name="response" type="tns:toBeSigned"/>
+          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="toBeSigned">
+      <xs:complexType name="toBeSignedDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
         </xs:sequence>
@@ -1456,10 +1554,10 @@
       <xs:complexType abstract="true" name="abstractSignDocumentDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
-          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValue"/>
+          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType final="extension restriction" name="signatureValue">
+      <xs:complexType name="signatureValueDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
           <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
@@ -1483,9 +1581,33 @@
           <xs:enumeration value="SHA256"/>
           <xs:enumeration value="SHA384"/>
           <xs:enumeration value="SHA512"/>
+          <xs:enumeration value="SHA3_224"/>
+          <xs:enumeration value="SHA3_256"/>
+          <xs:enumeration value="SHA3_384"/>
+          <xs:enumeration value="SHA3_512"/>
           <xs:enumeration value="RIPEMD160"/>
           <xs:enumeration value="MD2"/>
           <xs:enumeration value="MD5"/>
+          <xs:enumeration value="WHIRLPOOL"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signatureForm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="XAdES"/>
+          <xs:enumeration value="CAdES"/>
+          <xs:enumeration value="PAdES"/>
+          <xs:enumeration value="PKCS7"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="timestampType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="CONTENT_TIMESTAMP"/>
+          <xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP"/>
+          <xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP"/>
+          <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
+          <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
+          <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="encryptionAlgorithm">
@@ -1493,7 +1615,13 @@
           <xs:enumeration value="RSA"/>
           <xs:enumeration value="DSA"/>
           <xs:enumeration value="ECDSA"/>
+          <xs:enumeration value="PLAIN_ECDSA"/>
           <xs:enumeration value="HMAC"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="maskGenerationFunction">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="MGF1"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureLevel">
@@ -1520,6 +1648,11 @@
           <xs:enumeration value="PAdES_BASELINE_LT"/>
           <xs:enumeration value="PAdES_BASELINE_T"/>
           <xs:enumeration value="PAdES_BASELINE_B"/>
+          <xs:enumeration value="PKCS7_B"/>
+          <xs:enumeration value="PKCS7_T"/>
+          <xs:enumeration value="PKCS7_LT"/>
+          <xs:enumeration value="PKCS7_LTA"/>
+          <xs:enumeration value="UNKNOWN"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signaturePackaging">
@@ -1527,126 +1660,118 @@
           <xs:enumeration value="ENVELOPED"/>
           <xs:enumeration value="ENVELOPING"/>
           <xs:enumeration value="DETACHED"/>
+          <xs:enumeration value="INTERNALLY_DETACHED"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureAlgorithm">
         <xs:restriction base="xs:string">
+          <xs:enumeration value="RSA_RAW"/>
           <xs:enumeration value="RSA_SHA1"/>
           <xs:enumeration value="RSA_SHA224"/>
           <xs:enumeration value="RSA_SHA256"/>
           <xs:enumeration value="RSA_SHA384"/>
           <xs:enumeration value="RSA_SHA512"/>
+          <xs:enumeration value="RSA_SHA3_224"/>
+          <xs:enumeration value="RSA_SHA3_256"/>
+          <xs:enumeration value="RSA_SHA3_384"/>
+          <xs:enumeration value="RSA_SHA3_512"/>
+          <xs:enumeration value="RSA_SSA_PSS_RAW_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA1_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA512_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
           <xs:enumeration value="RSA_RIPEMD160"/>
           <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="RSA_MD2"/>
-          <xs:enumeration value="RSA_SSA_PSS"/>
+          <xs:enumeration value="ECDSA_RAW"/>
           <xs:enumeration value="ECDSA_SHA1"/>
           <xs:enumeration value="ECDSA_SHA224"/>
           <xs:enumeration value="ECDSA_SHA256"/>
           <xs:enumeration value="ECDSA_SHA384"/>
           <xs:enumeration value="ECDSA_SHA512"/>
+          <xs:enumeration value="ECDSA_SHA3_224"/>
+          <xs:enumeration value="ECDSA_SHA3_256"/>
+          <xs:enumeration value="ECDSA_SHA3_384"/>
+          <xs:enumeration value="ECDSA_SHA3_512"/>
           <xs:enumeration value="ECDSA_RIPEMD160"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA1"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
+          <xs:enumeration value="DSA_RAW"/>
           <xs:enumeration value="DSA_SHA1"/>
+          <xs:enumeration value="DSA_SHA224"/>
           <xs:enumeration value="DSA_SHA256"/>
+          <xs:enumeration value="DSA_SHA384"/>
+          <xs:enumeration value="DSA_SHA512"/>
+          <xs:enumeration value="DSA_SHA3_224"/>
+          <xs:enumeration value="DSA_SHA3_256"/>
+          <xs:enumeration value="DSA_SHA3_384"/>
+          <xs:enumeration value="DSA_SHA3_512"/>
           <xs:enumeration value="HMAC_SHA1"/>
           <xs:enumeration value="HMAC_SHA224"/>
           <xs:enumeration value="HMAC_SHA256"/>
           <xs:enumeration value="HMAC_SHA384"/>
           <xs:enumeration value="HMAC_SHA512"/>
+          <xs:enumeration value="HMAC_SHA3_224"/>
+          <xs:enumeration value="HMAC_SHA3_256"/>
+          <xs:enumeration value="HMAC_SHA3_384"/>
+          <xs:enumeration value="HMAC_SHA3_512"/>
           <xs:enumeration value="HMAC_RIPEMD160"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:element name="DSSException" type="tns:DSSException"/>
-      <xs:complexType name="DSSException">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="message" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
     </xs:schema>
   </wsdl:types>
   <wsdl:message name="getDataToSignResponse">
-    <wsdl:part element="tns:getDataToSignResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:getDataToSignResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="timestampDocumentResponse">
+    <wsdl:part element="ns1:timestampDocumentResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="timestampDocument">
+    <wsdl:part element="ns1:timestampDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="signDocument">
-    <wsdl:part element="tns:signDocument" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="DSSException">
-    <wsdl:part element="tns:DSSException" name="DSSException"></wsdl:part>
+    <wsdl:part element="ns1:signDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="extendDocument">
-    <wsdl:part element="tns:extendDocument" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:extendDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="extendDocumentResponse">
-    <wsdl:part element="tns:extendDocumentResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:extendDocumentResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="getDataToSign">
-    <wsdl:part element="tns:getDataToSign" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:getDataToSign" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="signDocumentResponse">
-    <wsdl:part element="tns:signDocumentResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:signDocumentResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="SoapDocumentSignatureService">
     <wsdl:operation name="extendDocument">
-      <wsdl:input message="tns:extendDocument" name="extendDocument"></wsdl:input>
-      <wsdl:output message="tns:extendDocumentResponse" name="extendDocumentResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:extendDocument" name="extendDocument"></wsdl:input>
+      <wsdl:output message="ns1:extendDocumentResponse" name="extendDocumentResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="timestampDocument">
+      <wsdl:input message="ns1:timestampDocument" name="timestampDocument"></wsdl:input>
+      <wsdl:output message="ns1:timestampDocumentResponse" name="timestampDocumentResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getDataToSign">
-      <wsdl:input message="tns:getDataToSign" name="getDataToSign"></wsdl:input>
-      <wsdl:output message="tns:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="signDocument">
-      <wsdl:input message="tns:signDocument" name="signDocument"></wsdl:input>
-      <wsdl:output message="tns:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:signDocument" name="signDocument"></wsdl:input>
+      <wsdl:output message="ns1:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="tns:SoapDocumentSignatureService">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="extendDocument">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="extendDocument">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="extendDocumentResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="getDataToSign">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getDataToSign">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getDataToSignResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="signDocument">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="signDocument">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="signDocumentResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="SoapDocumentSignatureServiceImplService">
-    <wsdl:port binding="tns:SoapDocumentSignatureServiceImplServiceSoapBinding" name="SoapDocumentSignatureServiceImplPort">
-      <soap:address location="http://localhost:8080/services/soap/signature/one-document"/>
-    </wsdl:port>
-  </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint></con:endpoints><con:operation id="137c0d2e-b64b-4490-b7e6-de69089bec30" isOneWay="false" action="" name="extendDocument" bindingOperationName="extendDocument" type="Request-Response" outputName="extendDocumentResponse" inputName="extendDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b88f9871-2df9-4c15-b3f9-062ebdaedef6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://client.soap.signature.ws.dss.esig.europa.eu/">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint></con:endpoints><con:operation id="137c0d2e-b64b-4490-b7e6-de69089bec30" isOneWay="false" action="" name="extendDocument" bindingOperationName="extendDocument" type="Request-Response" outputName="extendDocumentResponse" inputName="extendDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b88f9871-2df9-4c15-b3f9-062ebdaedef6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://client.soap.signature.ws.dss.esig.europa.eu/">
    <soapenv:Header/>
    <soapenv:Body>
       <sig1:extendDocument xmlns:sig1="http://signature.dss.esig.europa.eu/">
@@ -1708,7 +1833,7 @@
          </extendDocumentDTO>
       </sig1:extendDocument>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapDocumentSignatureService/extendDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="da041c5d-19c5-4eaa-989b-a7a917280098" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="0f1073d5-8f67-4380-b8cf-05444a3e98b2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapDocumentSignatureService/extendDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="da041c5d-19c5-4eaa-989b-a7a917280098" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="0f1073d5-8f67-4380-b8cf-05444a3e98b2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
    <soapenv:Body><sig:getDataToSign xmlns:ns2="http://signature.dss.esig.europa.eu/">
 <!--Optional:-->
          <dataToSignDTO><!--Optional:-->
@@ -1762,7 +1887,7 @@
          </dataToSignDTO>
       </sig:getDataToSign>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapDocumentSignatureService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="71cc88d5-cdaa-4004-bd5f-24ff03a1162f" isOneWay="false" action="" name="signDocument" bindingOperationName="signDocument" type="Request-Response" outputName="signDocumentResponse" inputName="signDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="be00672a-aaa4-4eec-8bee-9384f7b29d6e" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapDocumentSignatureService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="71cc88d5-cdaa-4004-bd5f-24ff03a1162f" isOneWay="false" action="" name="signDocument" bindingOperationName="signDocument" type="Request-Response" outputName="signDocumentResponse" inputName="signDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="be00672a-aaa4-4eec-8bee-9384f7b29d6e" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soapenv:Header/>
    <soapenv:Body>
 		<sig:signDocument xmlns:ns2="http://signature.dss.esig.europa.eu/">
@@ -1830,15 +1955,90 @@
          </signDocumentDTO>
       </sig:signDocument>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapDocumentSignatureService/signDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="355c802d-b903-4192-b07e-075fc8e3626a" wsaVersion="NONE" name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://signature.dss.esig.europa.eu/}SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/multiple-documents?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/multiple-documents?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/multiple-documents?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapMultipleDocumentsSignatureServiceImplService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapDocumentSignatureService/signDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="2f82b6fc-b18f-4cc3-ad2e-042ba30b17a7" isOneWay="false" action="" name="timestampDocument" bindingOperationName="timestampDocument" type="Request-Response" outputName="timestampDocumentResponse" inputName="timestampDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="acc1d661-fc4a-4939-9820-5198528c8d45" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:timestampDocument>\r
+         <!--Optional:-->\r
+         <timestampDocumentDTO>\r
+            <!--Optional:-->\r
+            <timestampParameters>\r
+               <!--Optional:-->\r
+               <canonicalizationMethod>null</canonicalizationMethod>\r
+               <!--Optional:-->\r
+               <digestAlgorithm>SHA512</digestAlgorithm>\r
+               <!--Optional:-->\r
+               <timestampContainerForm>PDF</timestampContainerForm>\r
+            </timestampParameters>\r
+            <!--Optional:-->\r
+            <toTimestampDocument>\r
+               <!--Optional:-->\r
+               <bytes>JVBERi0xLjYNJeLjz9MNCjExIDAgb2JqDTw8L0xpbmVhcml6ZWQgMS9MIDQ4ODAvTyAxMy9FIDc2NC9OIDEvVCA0NTc3L0ggWyA0MzEgMTMxXT4+DWVuZG9iag0gICAgICAgICAgICAgICAgICAgICAgDQoxNCAwIG9iag08PC9EZWNvZGVQYXJtczw8L0NvbHVtbnMgMy9QcmVkaWN0b3IgMTI+Pi9GaWx0ZXIvRmxhdGVEZWNvZGUvSURbPDVGRUVEN0UwNjFCRTc0NDA4MTI5OEE3M0UwREM3NzZCPjw3OEI2REQzNUIyRThFMjQ0ODJENzhCQ0Y5NzQ2MTc4OD5dL0luZGV4WzExIDVdL0luZm8gMTAgMCBSL0xlbmd0aCAzMC9QcmV2IDQ1NzgvUm9vdCAxMiAwIFIvU2l6ZSAxNi9UeXBlL1hSZWYvV1sxIDIgMF0+PnN0cmVhbQ0KaN5iYmQQYGJgUmJiYPBhYvj3jYmB0RogwAARMAK8DQplbmRzdHJlYW0NZW5kb2JqDXN0YXJ0eHJlZg0KMA0KJSVFT0YNCiAgICAgICAgDQoxNSAwIG9iag08PC9GaWx0ZXIvRmxhdGVEZWNvZGUvSSA3Ny9MZW5ndGggNDcvTyA2MS9TIDM2Pj5zdHJlYW0NCmjeYmBgYASi3wwgUMeACVgYOJB4jFAMVwvkMP2BCt4DK2cQlIbyjwMEGAC77QTeDQplbmRzdHJlYW0NZW5kb2JqDTEyIDAgb2JqDTw8L01ldGFkYXRhIDIgMCBSL091dGxpbmVzIDYgMCBSL1BhZ2VzIDkgMCBSL1R5cGUvQ2F0YWxvZz4+DWVuZG9iag0xMyAwIG9iag08PC9Dcm9wQm94WzAuMCAwLjAgNjEyLjAgNzkyLjBdL01lZGlhQm94WzAuMCAwLjAgNjEyLjAgNzkyLjBdL1BhcmVudCA5IDAgUi9SZXNvdXJjZXM8PD4+L1JvdGF0ZSAwL1R5cGUvUGFnZT4+DWVuZG9iag0xIDAgb2JqDTw8L0ZpbHRlci9GbGF0ZURlY29kZS9GaXJzdCAxNC9MZW5ndGggMTI4L04gMy9UeXBlL09ialN0bT4+c3RyZWFtDQpo3jJTMFAwVzCxVLBQsDRWsLHRd84vzStRMNR3yywqLgFKGSgE6fskwpkhlQWp+v6lJTmZeanFdnZADY5ArSCZgMSiVKBOM4iyzJKcVA2f1NSiVIXg1MySVE2wWpdoQ2OwfERkFMhiSyOFvNKcnFj9YH33/JB8OzuAAAMA2N0nuQ0KZW5kc3RyZWFtDWVuZG9iag0yIDAgb2JqDTw8L0xlbmd0aCAzMTc1L1N1YnR5cGUvWE1ML1R5cGUvTWV0YWRhdGE+PnN0cmVhbQ0KPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS40LWMwMDYgODAuMTU5ODI1LCAyMDE2LzA5LzE2LTAzOjMxOjA4ICAgICAgICAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iCiAgICAgICAgICAgIHhtbG5zOnBkZj0iaHR0cDovL25zLmFkb2JlLmNvbS9wZGYvMS4zLyI+CiAgICAgICAgIDx4bXA6TW9kaWZ5RGF0ZT4yMDE4LTAzLTA5VDEyOjAxOjU0KzAxOjAwPC94bXA6TW9kaWZ5RGF0ZT4KICAgICAgICAgPHhtcDpDcmVhdGVEYXRlPjIwMTgtMDMtMDlUMTI6MDE6MzErMDE6MDA8L3htcDpDcmVhdGVEYXRlPgogICAgICAgICA8eG1wOk1ldGFkYXRhRGF0ZT4yMDE4LTAzLTA5VDEyOjAxOjU0KzAxOjAwPC94bXA6TWV0YWRhdGFEYXRlPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIEFjcm9iYXQgUHJvIDExLjAuMjM8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPGRjOmZvcm1hdD5hcHBsaWNhdGlvbi9wZGY8L2RjOmZvcm1hdD4KICAgICAgICAgPHhtcE1NOkRvY3VtZW50SUQ+dXVpZDo5NWZjN2FhNi02NjgxLTQ1M2EtODNiZi1hYmExYTM2ZTM1OGY8L3htcE1NOkRvY3VtZW50SUQ+CiAgICAgICAgIDx4bXBNTTpJbnN0YW5jZUlEPnV1aWQ6OTZjZDE0ZjQtYjVmYS00ODUxLTg1ZmUtZGI5ZGY0ZDIyZTgzPC94bXBNTTpJbnN0YW5jZUlEPgogICAgICAgICA8cGRmOlByb2R1Y2VyPkFkb2JlIEFjcm9iYXQgUHJvIDExLjAuMjM8L3BkZjpQcm9kdWNlcj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0IGVuZD0idyI/Pg0KZW5kc3RyZWFtDWVuZG9iag0zIDAgb2JqDTw8L0ZpbHRlci9GbGF0ZURlY29kZS9GaXJzdCA0L0xlbmd0aCA0OS9OIDEvVHlwZS9PYmpTdG0+PnN0cmVhbQ0KaN6yVDBQsLHRd84vzStRMNT3zkwpjjY0BgoGxeqHVBak6gckpqcW29kBBBgA4DULrw0KZW5kc3RyZWFtDWVuZG9iag00IDAgb2JqDTw8L0ZpbHRlci9GbGF0ZURlY29kZS9GaXJzdCA1L0xlbmd0aCAxMDYvTiAxL1R5cGUvT2JqU3RtPj5zdHJlYW0NCmjeMjRQMFCwsdF3LkpNLMnMz3NJLEnVcLEyMjC0MDA2sDQEMowNtQ0M1Q0M1DUhqvKLNBxT8pNSFRyTi/KTEksUAoryFQwN9Qz0jIw19X3zU7CYYWoCNwOoOqU0ORWfIXZ2AAEGAByrKRQNCmVuZHN0cmVhbQ1lbmRvYmoNNSAwIG9iag08PC9EZWNvZGVQYXJtczw8L0NvbHVtbnMgNC9QcmVkaWN0b3IgMTI+Pi9GaWx0ZXIvRmxhdGVEZWNvZGUvSURbPDVGRUVEN0UwNjFCRTc0NDA4MTI5OEE3M0UwREM3NzZCPjw3OEI2REQzNUIyRThFMjQ0ODJENzhCQ0Y5NzQ2MTc4OD5dL0luZm8gMTAgMCBSL0xlbmd0aCA0OC9Sb290IDEyIDAgUi9TaXplIDExL1R5cGUvWFJlZi9XWzEgMiAxXT4+c3RyZWFtDQpo3mJiAAImRqY/DEwMjPeABO8WEKsXSDAcB0q8lwexGBhhBNM/IMHIABBgALdBBh0NCmVuZHN0cmVhbQ1lbmRvYmoNc3RhcnR4cmVmDQoxMTYNCiUlRU9GDQo=</bytes>\r
+               <!--Optional:-->\r
+               <digestAlgorithm>?</digestAlgorithm>\r
+               <!--Optional:-->\r
+               <name>sample.pdf</name>\r
+            </toTimestampDocument>\r
+         </timestampDocumentDTO>\r
+      </sig:timestampDocument>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapDocumentSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="355c802d-b903-4192-b07e-075fc8e3626a" wsaVersion="NONE" name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/multiple-documents?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/multiple-documents?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/multiple-documents?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapMultipleDocumentsSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/signature/multiple-documents?wsdl=SoapMultipleDocumentsSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="ns1:SoapMultipleDocumentsSignatureService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="extendDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="extendDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="extendDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="timestampDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="timestampDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="timestampDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapMultipleDocumentsSignatureServiceImplService">
+    <wsdl:port binding="tns:SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" name="SoapMultipleDocumentsSignatureServiceImplPort">
+      <soap:address location="http://localhost:8080/services/soap/signature/multiple-documents"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/signature/multiple-documents?wsdl=SoapMultipleDocumentsSignatureService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapMultipleDocumentsSignatureService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://signature.dss.esig.europa.eu/">
   <wsdl:types>
-    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://signature.dss.esig.europa.eu/">
       <xs:element name="extendDocument" type="tns:extendDocument"/>
       <xs:element name="extendDocumentResponse" type="tns:extendDocumentResponse"/>
       <xs:element name="getDataToSign" type="tns:getDataToSign"/>
       <xs:element name="getDataToSignResponse" type="tns:getDataToSignResponse"/>
       <xs:element name="signDocument" type="tns:signDocument"/>
       <xs:element name="signDocumentResponse" type="tns:signDocumentResponse"/>
+      <xs:element name="timestampDocument" type="tns:timestampDocument"/>
+      <xs:element name="timestampDocumentResponse" type="tns:timestampDocumentResponse"/>
       <xs:complexType name="extendDocument">
         <xs:sequence>
           <xs:element minOccurs="0" name="extendDocumentDTO" type="tns:extendDocumentDTO"/>
@@ -1851,28 +2051,52 @@
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteSignatureParameters">
-        <xs:complexContent>
-          <xs:extension base="tns:abstractSerializableSignatureParameters">
-            <xs:sequence>
-              <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
-              <xs:element maxOccurs="unbounded" minOccurs="0" name="certificateChain" nillable="true" type="tns:remoteCertificate"/>
-              <xs:element maxOccurs="unbounded" minOccurs="0" name="detachedContents" nillable="true" type="tns:remoteDocument"/>
-              <xs:element minOccurs="0" name="signingCertificate" type="tns:remoteCertificate"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-      <xs:complexType abstract="true" name="abstractSerializableSignatureParameters">
         <xs:sequence>
-          <xs:element minOccurs="0" name="archiveTimestampParameters" type="tns:timestampParameters"/>
-          <xs:element minOccurs="0" name="BLevelParams" type="tns:bLevelParameters"/>
-          <xs:element minOccurs="0" name="contentTimestampParameters" type="tns:timestampParameters"/>
+          <xs:element minOccurs="0" name="archiveTimestampParameters" type="tns:remoteTimestampParameters"/>
+          <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
+          <xs:element minOccurs="0" name="BLevelParams" type="tns:remoteBLevelParameters"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="certificateChain" nillable="true" type="tns:remoteCertificate"/>
+          <xs:element minOccurs="0" name="contentTimestampParameters" type="tns:remoteTimestampParameters"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="contentTimestamps" nillable="true" type="tns:timestampDTO"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="detachedContents" nillable="true" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="encryptionAlgorithm" type="tns:encryptionAlgorithm"/>
+          <xs:element name="generateTBSWithoutCertificate" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
+          <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element name="signWithExpiredCertificate" type="xs:boolean"/>
           <xs:element minOccurs="0" name="signatureLevel" type="tns:signatureLevel"/>
           <xs:element minOccurs="0" name="signaturePackaging" type="tns:signaturePackaging"/>
-          <xs:element minOccurs="0" name="signatureTimestampParameters" type="tns:timestampParameters"/>
+          <xs:element minOccurs="0" name="signatureTimestampParameters" type="tns:remoteTimestampParameters"/>
+          <xs:element minOccurs="0" name="signingCertificate" type="tns:remoteCertificate"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteTimestampParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
+          <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="signatureForm" type="tns:signatureForm"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteBLevelParameters">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyDescription" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="policyDigestValue" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="policyId" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyQualifier" type="xs:string"/>
+          <xs:element minOccurs="0" name="policySpuri" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationLocality" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="signerLocationPostalAddress" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationPostalCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStateOrProvince" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStreet" type="xs:string"/>
+          <xs:element minOccurs="0" name="signingDate" type="xs:dateTime"/>
+          <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteCertificate">
@@ -1880,55 +2104,52 @@
           <xs:element minOccurs="0" name="encodedCertificate" type="xs:base64Binary"/>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="timestampDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="binaries" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="includes" nillable="true" type="tns:timestampIncludeDTO"/>
+          <xs:element minOccurs="0" name="type" type="tns:timestampType"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampIncludeDTO">
+        <xs:sequence>
+          <xs:element name="referencedData" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="URI" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="remoteDocument">
         <xs:sequence>
           <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="mimeType" type="tns:mimeType"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="name" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="mimeType">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="mimeTypeString" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="timestampParameters">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
-          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="bLevelParameters">
-        <xs:sequence>
-          <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="signingDate" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="signaturePolicy" type="tns:policy"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndication" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="signerLocation" type="tns:signerLocation"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="policy">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="description" type="xs:string"/>
-          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="digestValue" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="id" type="xs:string"/>
-          <xs:element minOccurs="0" name="qualifier" type="xs:string"/>
-          <xs:element minOccurs="0" name="spuri" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="signerLocation">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="country" type="xs:string"/>
-          <xs:element minOccurs="0" name="locality" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="postalAddress" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="postalCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="stateOrProvince" type="xs:string"/>
-          <xs:element minOccurs="0" name="street" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="extendDocumentResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="timestampDocumentDTO" type="tns:timestampMultipleDocumentDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampMultipleDocumentDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractTimestampDocumentDTO">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="toTimestampDocuments" nillable="true" type="tns:remoteDocument"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="abstractTimestampDocumentDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="timestampParameters" type="tns:remoteTimestampParameters"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampDocumentResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
@@ -1954,10 +2175,10 @@
       </xs:complexType>
       <xs:complexType name="getDataToSignResponse">
         <xs:sequence>
-          <xs:element minOccurs="0" name="response" type="tns:toBeSigned"/>
+          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="toBeSigned">
+      <xs:complexType name="toBeSignedDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
         </xs:sequence>
@@ -1979,10 +2200,10 @@
       <xs:complexType abstract="true" name="abstractSignDocumentDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
-          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValue"/>
+          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType final="extension restriction" name="signatureValue">
+      <xs:complexType name="signatureValueDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
           <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
@@ -2006,9 +2227,33 @@
           <xs:enumeration value="SHA256"/>
           <xs:enumeration value="SHA384"/>
           <xs:enumeration value="SHA512"/>
+          <xs:enumeration value="SHA3_224"/>
+          <xs:enumeration value="SHA3_256"/>
+          <xs:enumeration value="SHA3_384"/>
+          <xs:enumeration value="SHA3_512"/>
           <xs:enumeration value="RIPEMD160"/>
           <xs:enumeration value="MD2"/>
           <xs:enumeration value="MD5"/>
+          <xs:enumeration value="WHIRLPOOL"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signatureForm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="XAdES"/>
+          <xs:enumeration value="CAdES"/>
+          <xs:enumeration value="PAdES"/>
+          <xs:enumeration value="PKCS7"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="timestampType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="CONTENT_TIMESTAMP"/>
+          <xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP"/>
+          <xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP"/>
+          <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
+          <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
+          <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="encryptionAlgorithm">
@@ -2016,7 +2261,13 @@
           <xs:enumeration value="RSA"/>
           <xs:enumeration value="DSA"/>
           <xs:enumeration value="ECDSA"/>
+          <xs:enumeration value="PLAIN_ECDSA"/>
           <xs:enumeration value="HMAC"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="maskGenerationFunction">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="MGF1"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureLevel">
@@ -2043,6 +2294,11 @@
           <xs:enumeration value="PAdES_BASELINE_LT"/>
           <xs:enumeration value="PAdES_BASELINE_T"/>
           <xs:enumeration value="PAdES_BASELINE_B"/>
+          <xs:enumeration value="PKCS7_B"/>
+          <xs:enumeration value="PKCS7_T"/>
+          <xs:enumeration value="PKCS7_LT"/>
+          <xs:enumeration value="PKCS7_LTA"/>
+          <xs:enumeration value="UNKNOWN"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signaturePackaging">
@@ -2050,126 +2306,118 @@
           <xs:enumeration value="ENVELOPED"/>
           <xs:enumeration value="ENVELOPING"/>
           <xs:enumeration value="DETACHED"/>
+          <xs:enumeration value="INTERNALLY_DETACHED"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureAlgorithm">
         <xs:restriction base="xs:string">
+          <xs:enumeration value="RSA_RAW"/>
           <xs:enumeration value="RSA_SHA1"/>
           <xs:enumeration value="RSA_SHA224"/>
           <xs:enumeration value="RSA_SHA256"/>
           <xs:enumeration value="RSA_SHA384"/>
           <xs:enumeration value="RSA_SHA512"/>
+          <xs:enumeration value="RSA_SHA3_224"/>
+          <xs:enumeration value="RSA_SHA3_256"/>
+          <xs:enumeration value="RSA_SHA3_384"/>
+          <xs:enumeration value="RSA_SHA3_512"/>
+          <xs:enumeration value="RSA_SSA_PSS_RAW_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA1_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA512_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
           <xs:enumeration value="RSA_RIPEMD160"/>
           <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="RSA_MD2"/>
-          <xs:enumeration value="RSA_SSA_PSS"/>
+          <xs:enumeration value="ECDSA_RAW"/>
           <xs:enumeration value="ECDSA_SHA1"/>
           <xs:enumeration value="ECDSA_SHA224"/>
           <xs:enumeration value="ECDSA_SHA256"/>
           <xs:enumeration value="ECDSA_SHA384"/>
           <xs:enumeration value="ECDSA_SHA512"/>
+          <xs:enumeration value="ECDSA_SHA3_224"/>
+          <xs:enumeration value="ECDSA_SHA3_256"/>
+          <xs:enumeration value="ECDSA_SHA3_384"/>
+          <xs:enumeration value="ECDSA_SHA3_512"/>
           <xs:enumeration value="ECDSA_RIPEMD160"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA1"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
+          <xs:enumeration value="DSA_RAW"/>
           <xs:enumeration value="DSA_SHA1"/>
+          <xs:enumeration value="DSA_SHA224"/>
           <xs:enumeration value="DSA_SHA256"/>
+          <xs:enumeration value="DSA_SHA384"/>
+          <xs:enumeration value="DSA_SHA512"/>
+          <xs:enumeration value="DSA_SHA3_224"/>
+          <xs:enumeration value="DSA_SHA3_256"/>
+          <xs:enumeration value="DSA_SHA3_384"/>
+          <xs:enumeration value="DSA_SHA3_512"/>
           <xs:enumeration value="HMAC_SHA1"/>
           <xs:enumeration value="HMAC_SHA224"/>
           <xs:enumeration value="HMAC_SHA256"/>
           <xs:enumeration value="HMAC_SHA384"/>
           <xs:enumeration value="HMAC_SHA512"/>
+          <xs:enumeration value="HMAC_SHA3_224"/>
+          <xs:enumeration value="HMAC_SHA3_256"/>
+          <xs:enumeration value="HMAC_SHA3_384"/>
+          <xs:enumeration value="HMAC_SHA3_512"/>
           <xs:enumeration value="HMAC_RIPEMD160"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:element name="DSSException" type="tns:DSSException"/>
-      <xs:complexType name="DSSException">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="message" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
     </xs:schema>
   </wsdl:types>
   <wsdl:message name="getDataToSignResponse">
-    <wsdl:part element="tns:getDataToSignResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:getDataToSignResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="timestampDocumentResponse">
+    <wsdl:part element="ns1:timestampDocumentResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="timestampDocument">
+    <wsdl:part element="ns1:timestampDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="signDocument">
-    <wsdl:part element="tns:signDocument" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="DSSException">
-    <wsdl:part element="tns:DSSException" name="DSSException"></wsdl:part>
+    <wsdl:part element="ns1:signDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="extendDocument">
-    <wsdl:part element="tns:extendDocument" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:extendDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="extendDocumentResponse">
-    <wsdl:part element="tns:extendDocumentResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:extendDocumentResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="getDataToSign">
-    <wsdl:part element="tns:getDataToSign" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:getDataToSign" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="signDocumentResponse">
-    <wsdl:part element="tns:signDocumentResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:signDocumentResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="SoapMultipleDocumentsSignatureService">
     <wsdl:operation name="extendDocument">
-      <wsdl:input message="tns:extendDocument" name="extendDocument"></wsdl:input>
-      <wsdl:output message="tns:extendDocumentResponse" name="extendDocumentResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:extendDocument" name="extendDocument"></wsdl:input>
+      <wsdl:output message="ns1:extendDocumentResponse" name="extendDocumentResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="timestampDocument">
+      <wsdl:input message="ns1:timestampDocument" name="timestampDocument"></wsdl:input>
+      <wsdl:output message="ns1:timestampDocumentResponse" name="timestampDocumentResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getDataToSign">
-      <wsdl:input message="tns:getDataToSign" name="getDataToSign"></wsdl:input>
-      <wsdl:output message="tns:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="signDocument">
-      <wsdl:input message="tns:signDocument" name="signDocument"></wsdl:input>
-      <wsdl:output message="tns:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:signDocument" name="signDocument"></wsdl:input>
+      <wsdl:output message="ns1:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="tns:SoapMultipleDocumentsSignatureService">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="extendDocument">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="extendDocument">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="extendDocumentResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="getDataToSign">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getDataToSign">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getDataToSignResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="signDocument">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="signDocument">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="signDocumentResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="SoapMultipleDocumentsSignatureServiceImplService">
-    <wsdl:port binding="tns:SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" name="SoapMultipleDocumentsSignatureServiceImplPort">
-      <soap:address location="http://localhost:8080/services/soap/signature/multiple-documents"/>
-    </wsdl:port>
-  </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/multiple-documents</con:endpoint></con:endpoints><con:operation id="9de63643-5f3b-4c0d-8bbd-2ccb9fb7a150" isOneWay="false" action="" name="extendDocument" bindingOperationName="extendDocument" type="Request-Response" outputName="extendDocumentResponse" inputName="extendDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e449d30f-220c-4d55-a949-acce6b8abb4f" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/multiple-documents</con:endpoint></con:endpoints><con:operation id="9de63643-5f3b-4c0d-8bbd-2ccb9fb7a150" isOneWay="false" action="" name="extendDocument" bindingOperationName="extendDocument" type="Request-Response" outputName="extendDocumentResponse" inputName="extendDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e449d30f-220c-4d55-a949-acce6b8abb4f" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
    <soapenv:Body><sig:extendDocument xmlns:ns2="http://signature.dss.esig.europa.eu/">
 <!--Optional:-->
          <extendDocumentDTO><!--Optional:-->
@@ -2217,7 +2465,7 @@
          </extendDocumentDTO>
       </sig:extendDocument>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/extendDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="7a9e20d5-d624-4c9f-a283-f8a0dd9d4d03" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="d929964e-99cb-42a0-a59c-bb233dc8edeb" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/extendDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="7a9e20d5-d624-4c9f-a283-f8a0dd9d4d03" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="d929964e-99cb-42a0-a59c-bb233dc8edeb" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
    <soapenv:Body><sig:getDataToSign xmlns:ns2="http://signature.dss.esig.europa.eu/">
 <!--Optional:-->
          <dataToSignDTO><!--Optional:-->
@@ -2267,7 +2515,7 @@
          </dataToSignDTO>
       </sig:getDataToSign>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="e1d9dd43-ce6c-437e-9909-5a780efffe2e" isOneWay="false" action="" name="signDocument" bindingOperationName="signDocument" type="Request-Response" outputName="signDocumentResponse" inputName="signDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="ca6f7de4-db6b-472f-ba63-8441f29b4f14" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="e1d9dd43-ce6c-437e-9909-5a780efffe2e" isOneWay="false" action="" name="signDocument" bindingOperationName="signDocument" type="Request-Response" outputName="signDocumentResponse" inputName="signDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="ca6f7de4-db6b-472f-ba63-8441f29b4f14" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/>
    <soapenv:Body><sig:signDocument xmlns:ns2="http://signature.dss.esig.europa.eu/">
 <!--Optional:-->
          <signDocumentDTO><!--Optional:-->
@@ -2325,7 +2573,43 @@
          </signDocumentDTO>
       </sig:signDocument>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/signDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="91435f45-5807-48a6-b1f9-73f69cd7027d" wsaVersion="NONE" name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="wsdl" bindingName="{http://token.dss.esig.europa.eu/}SoapSignatureTokenConnectionImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/server-signing?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/server-signing?wsdl"><con:part><con:url>http://localhost:8080/services/soap/server-signing?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapSignatureTokenConnectionImplService" targetNamespace="http://token.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://token.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://signature.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/signDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="cb6a3c05-c6d6-4150-8d57-e1dabc02cfd8" isOneWay="false" action="" name="timestampDocument" bindingOperationName="timestampDocument" type="Request-Response" outputName="timestampDocumentResponse" inputName="timestampDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="3507e132-0fcf-49fd-be6f-95d4be30a836" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/multiple-documents</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:timestampDocument>\r
+         <!--Optional:-->\r
+         <timestampDocumentDTO>\r
+            <!--Optional:-->\r
+            <timestampParameters>\r
+               <!--Optional:-->\r
+               <timestampContainerForm>ASiC_E</timestampContainerForm>
+               <!--Optional:-->\r
+               <canonicalizationMethod>null</canonicalizationMethod>\r
+               <!--Optional:-->\r
+               <digestAlgorithm>SHA512</digestAlgorithm>\r
+            </timestampParameters>\r
+            <!--Zero or more repetitions:-->\r
+            <toTimestampDocuments>\r
+               <!--Optional:-->\r
+               <bytes>77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+</bytes>\r
+               <!--Optional:-->\r
+               <digestAlgorithm>?</digestAlgorithm>\r
+               <!--Optional:-->\r
+               <name>sample.xml</name>\r
+            </toTimestampDocuments>\r
+            <toTimestampDocuments>
+               <!--Optional:-->
+               <bytes>PGhlbGxvPndvcmxkPC9oZWxsbz4=</bytes>
+               <!--Optional:-->
+               <digestAlgorithm>?</digestAlgorithm>
+               <!--Optional:-->
+               <name>hello.xml</name>
+            </toTimestampDocuments>
+
+         </timestampDocumentDTO>\r
+      </sig:timestampDocument>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="91435f45-5807-48a6-b1f9-73f69cd7027d" wsaVersion="NONE" name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="wsdl" bindingName="{http://token.dss.esig.europa.eu/}SoapSignatureTokenConnectionImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/server-signing?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/server-signing?wsdl"><con:part><con:url>http://localhost:8080/services/soap/server-signing?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapSignatureTokenConnectionImplService" targetNamespace="http://token.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://token.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
     <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://token.dss.esig.europa.eu/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xs:element name="getKey" type="tns:getKey"/>
@@ -2525,17 +2809,17 @@
       <soap:address location="http://localhost:8080/services/soap/ServerSigningService"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/ServerSigningService</con:endpoint></con:endpoints><con:operation id="c8f77b0b-49d2-4f0e-ad2b-516102b957c9" isOneWay="false" action="" name="getKey" bindingOperationName="getKey" type="Request-Response" outputName="getKeyResponse" inputName="getKey" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="965a2983-160f-48c3-a012-d9d298f012c2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/ServerSigningService</con:endpoint></con:endpoints><con:operation id="c8f77b0b-49d2-4f0e-ad2b-516102b957c9" isOneWay="false" action="" name="getKey" bindingOperationName="getKey" type="Request-Response" outputName="getKeyResponse" inputName="getKey" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="965a2983-160f-48c3-a012-d9d298f012c2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
    <soapenv:Header/>
    <soapenv:Body>
       <tok:getKeys/>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/getKey"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="c857fa4e-0205-4ef7-bc38-4f16c129889e" isOneWay="false" action="" name="getKeys" bindingOperationName="getKeys" type="Request-Response" outputName="getKeysResponse" inputName="getKeys" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e55fed60-c907-4a14-9b88-bd8808e24b68" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/getKey"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="c857fa4e-0205-4ef7-bc38-4f16c129889e" isOneWay="false" action="" name="getKeys" bindingOperationName="getKeys" type="Request-Response" outputName="getKeysResponse" inputName="getKeys" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e55fed60-c907-4a14-9b88-bd8808e24b68" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <tok:getKeys/>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/getKeys"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="f8b1da46-840b-45a5-a611-fb2f66859614" isOneWay="false" action="" name="sign" bindingOperationName="sign" type="Request-Response" outputName="signResponse" inputName="sign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9d7a38ca-47fa-4f0d-819f-f6b8749d41f6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/getKeys"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="f8b1da46-840b-45a5-a611-fb2f66859614" isOneWay="false" action="" name="sign" bindingOperationName="sign" type="Request-Response" outputName="signResponse" inputName="sign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9d7a38ca-47fa-4f0d-819f-f6b8749d41f6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <tok:sign>\r
@@ -3744,7 +4028,7 @@
       <wsdl:output message="ns1:validateCertificateResponse" name="validateCertificateResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation</con:endpoint></con:endpoints><con:operation id="11986fee-ec1f-4ce6-b5f9-4494fb72c458" isOneWay="false" action="" name="validateCertificate" bindingOperationName="validateCertificate" type="Request-Response" outputName="validateCertificateResponse" inputName="validateCertificate" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="ef367af6-3bbf-4d27-8407-38302a50f130" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cer="http://certificate-validation.dss.esig.europa.eu/">\r
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation</con:endpoint></con:endpoints><con:operation id="11986fee-ec1f-4ce6-b5f9-4494fb72c458" isOneWay="false" action="" name="validateCertificate" bindingOperationName="validateCertificate" type="Request-Response" outputName="validateCertificateResponse" inputName="validateCertificate" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="ef367af6-3bbf-4d27-8407-38302a50f130" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/certificate-validation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cer="http://certificate-validation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <cer:validateCertificate>\r
@@ -3764,4 +4048,90 @@
          </dataToValidateDTO>\r
       </cer:validateCertificate>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.validation.cert.ws.dss.esig.europa.eu/SoapCertificateValidationService/validateCertificate"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.validation.cert.ws.dss.esig.europa.eu/SoapCertificateValidationService/validateCertificate"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="40db4bd3-efbd-4db9-b84f-c676c255b8f1" wsaVersion="NONE" name="SoapTimestampServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.remote.timestamp.ws.dss.esig.europa.eu/}SoapTimestampServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/timestamp-service?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/timestamp-service?wsdl"><con:part><con:url>http://localhost:8080/services/soap/timestamp-service?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapTimestampServiceImplService" targetNamespace="http://soap.remote.timestamp.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.remote.timestamp.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://timestamp.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/timestamp-service?wsdl=SoapTimestampService.wsdl" namespace="http://timestamp.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapTimestampServiceImplServiceSoapBinding" type="ns1:SoapTimestampService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getTimestampResponse">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getTimestampResponse">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getTimestampResponseResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapTimestampServiceImplService">
+    <wsdl:port binding="tns:SoapTimestampServiceImplServiceSoapBinding" name="SoapTimestampServiceImplPort">
+      <soap:address location="http://localhost:8080/services/soap/timestamp-service"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/timestamp-service?wsdl=SoapTimestampService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapTimestampService" targetNamespace="http://timestamp.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://timestamp.dss.esig.europa.eu/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://timestamp.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://timestamp.dss.esig.europa.eu/">
+      <xs:element name="getTimestampResponse" type="tns:getTimestampResponse"/>
+      <xs:element name="getTimestampResponseResponse" type="tns:getTimestampResponseResponse"/>
+      <xs:complexType name="getTimestampResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="digest" type="tns:digestDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="digestDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="algorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getTimestampResponseResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="TimestampResponseDTO" type="tns:timestampResponseDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="timestampResponseDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="binaries" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="digestAlgorithm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="SHA1"/>
+          <xs:enumeration value="SHA224"/>
+          <xs:enumeration value="SHA256"/>
+          <xs:enumeration value="SHA384"/>
+          <xs:enumeration value="SHA512"/>
+          <xs:enumeration value="SHA3_224"/>
+          <xs:enumeration value="SHA3_256"/>
+          <xs:enumeration value="SHA3_384"/>
+          <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="RIPEMD160"/>
+          <xs:enumeration value="MD2"/>
+          <xs:enumeration value="MD5"/>
+          <xs:enumeration value="WHIRLPOOL"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getTimestampResponseResponse">
+    <wsdl:part element="ns1:getTimestampResponseResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTimestampResponse">
+    <wsdl:part element="ns1:getTimestampResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SoapTimestampService">
+    <wsdl:operation name="getTimestampResponse">
+      <wsdl:input message="ns1:getTimestampResponse" name="getTimestampResponse"></wsdl:input>
+      <wsdl:output message="ns1:getTimestampResponseResponse" name="getTimestampResponseResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/timestamp-service</con:endpoint></con:endpoints><con:operation id="b4194bd7-df37-4fee-b852-18957140b8cc" isOneWay="false" action="" name="getTimestampResponse" bindingOperationName="getTimestampResponse" type="Request-Response" outputName="getTimestampResponseResponse" inputName="getTimestampResponse" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="8a8d6f2a-08c1-48c2-8e60-f0e6cf45a35d" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/timestamp-service</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tim="http://timestamp.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tim:getTimestampResponse>\r
+         <digest>\r
+            <algorithm>SHA1</algorithm>\r
+            <value>Ir3ZcUPfazmmWvrSr2vYvyDNT3s=</value>\r
+         </digest>\r
+      </tim:getTimestampResponse>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.remote.timestamp.ws.dss.esig.europa.eu/SoapTimestampService/getTimestampResponse"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

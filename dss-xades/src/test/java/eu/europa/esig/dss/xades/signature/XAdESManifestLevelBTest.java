@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -32,17 +32,18 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class XAdESManifestLevelBTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/sample.png"));
 		documents.add(new FileDocument("src/test/resources/sample.txt"));
 		documents.add(new FileDocument("src/test/resources/sample.xml"));
@@ -66,7 +67,7 @@ public class XAdESManifestLevelBTest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

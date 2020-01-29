@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -39,14 +39,15 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignature {
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
@@ -70,14 +71,14 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignatur
 	@Override
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("https://www.sk.ee/repository/bdoc-spec21.pdf", new FileDocument(new File("src/test/resources/bdoc-spec21.pdf")));
 		spp.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		return spp;
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

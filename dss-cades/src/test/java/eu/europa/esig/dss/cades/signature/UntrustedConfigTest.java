@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -67,7 +68,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void untrustedCertLT() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
@@ -84,10 +85,10 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
-		service.signDocument(documentToSign, params, signatureValue);
+		assertThrows(DSSException.class, () -> service.signDocument(documentToSign, params, signatureValue));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void untrustedCertLT2() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
@@ -104,7 +105,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
-		service.signDocument(documentToSign, params, signatureValue);
+		assertThrows(DSSException.class, () -> service.signDocument(documentToSign, params, signatureValue));
 	}
 
 	@Test

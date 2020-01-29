@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
@@ -48,7 +48,7 @@ public class UniqueServiceFilterTest {
 				Collections.<String> emptyList());
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
-		List<TrustedServiceWrapper> trustServices = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
@@ -65,9 +65,10 @@ public class UniqueServiceFilterTest {
 				Collections.<String> emptyList());
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
-		List<TrustedServiceWrapper> trustServices = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setServiceNames(Arrays.asList("Test"));
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
 		trustServices.add(ts0);
 
@@ -87,13 +88,15 @@ public class UniqueServiceFilterTest {
 				Collections.<String> emptyList());
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
-		List<TrustedServiceWrapper> trustServices = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setServiceNames(Arrays.asList("Test"));
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
 		trustServices.add(ts0);
 
 		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
+		ts1.setServiceNames(Arrays.asList("Test"));
 		ts1.setCapturedQualifiers(
 				Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF, ServiceQualification.QC_FOR_ESEAL));
 		trustServices.add(ts1);

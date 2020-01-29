@@ -20,29 +20,27 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 
-public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractXAdESTestSignature.class);
+public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	@Override
 	protected List<DSSDocument> getOriginalDocuments() {
@@ -52,22 +50,16 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
-
-		// In case of enveloped / internally detached signatures, we don't know the
-		// whole XML structure
-		if (!SignaturePackaging.ENVELOPED.equals(getSignatureParameters().getSignaturePackaging())
-				&& !SignaturePackaging.INTERNALLY_DETACHED.equals(getSignatureParameters().getSignaturePackaging())) {
-			try {
-				DSSXMLUtils.validateAgainstXSD(new InMemoryDocument(byteArray));
-			} catch (Exception e) {
-				LOG.error("Invalid XML", e);
-				fail(e.getMessage());
-			}
-		}
-
 		// Check for duplicate ids
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(new InMemoryDocument(byteArray)));
-		
+	}
+	
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		super.checkStructureValidation(diagnosticData);
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(Utils.isStringEmpty(signature.getStructuralValidationMessage()));
+		}
 	}
 
 	@Override

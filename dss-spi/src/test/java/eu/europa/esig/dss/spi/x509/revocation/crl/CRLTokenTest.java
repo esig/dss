@@ -1,22 +1,42 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 public class CRLTokenTest {
 
@@ -50,7 +70,7 @@ public class CRLTokenTest {
 		assertNull(crl.getArchiveCutOff());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void wrongCRLIssuer() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument tsaCert = new FileDocument("src/test/resources/TSA_BE.cer");
@@ -62,11 +82,10 @@ public class CRLTokenTest {
 		assertFalse(crlValidity.isCrlSignKeyUsage());
 		assertFalse(crlValidity.isIssuerX509PrincipalMatches());
 
-		new CRLToken(DSSUtils.loadCertificate(tsaCert.openStream()), crlValidity);
-
+		assertThrows(DSSException.class, () -> new CRLToken(DSSUtils.loadCertificate(tsaCert.openStream()), crlValidity));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void wrongCertIssuer() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument caCert = new FileDocument("src/test/resources/belgiumrs2.crt");
@@ -78,7 +97,7 @@ public class CRLTokenTest {
 		assertTrue(crlValidity.isCrlSignKeyUsage());
 		assertTrue(crlValidity.isIssuerX509PrincipalMatches());
 
-		new CRLToken(DSSUtils.loadCertificate(caCert.openStream()), crlValidity);
+		assertThrows(DSSException.class, () -> new CRLToken(DSSUtils.loadCertificate(caCert.openStream()), crlValidity));
 	}
 
 }

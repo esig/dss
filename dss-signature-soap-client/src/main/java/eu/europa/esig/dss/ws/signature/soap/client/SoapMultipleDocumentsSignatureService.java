@@ -31,6 +31,7 @@ import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignMultipleDocumentsDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignMultipleDocumentDTO;
+import eu.europa.esig.dss.ws.signature.dto.TimestampMultipleDocumentDTO;
 
 /**
  * Interface for the Contract of the Signature Web Service. The signing web service allows to create a new signature or
@@ -76,5 +77,15 @@ public interface SoapMultipleDocumentsSignatureService extends Serializable {
 	 */
 	@WebResult(name = "response")
 	RemoteDocument extendDocument(@WebParam(name = "extendDocumentDTO") ExtendDocumentDTO extendDocument);
+
+	/**
+	 * This web service operation timestamps a given document corresponding to the provided timestamp parameters.
+	 *
+	 * @param timestampDocumentDTO
+	 *            a DTO which contains the documents to be timestamped and the parameters
+	 * @return the document with a timestamp
+	 */
+	@WebResult(name = "response")
+	RemoteDocument timestampDocument(@WebParam(name = "timestampDocumentDTO") TimestampMultipleDocumentDTO timestampDocumentDTO);
 
 }

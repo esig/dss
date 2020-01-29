@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.validation.PdfRevision;
+
 /**
  * 
  * Callback used by the PDFSignatureService to validate a specific PDF signature. 
@@ -31,8 +33,8 @@ public interface SignatureValidationCallback {
     /**
      * Validate the signature
      * 
-     * @param pdfSignatureOrDocTimestampInfo
+     * @param pdfRevision
      */
-   void validate(final PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo);
+   void validate(final PdfRevision pdfRevision);
 
 }

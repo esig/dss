@@ -24,9 +24,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.cms.CMSSignedData;
 
 import eu.europa.esig.dss.model.CommonDocument;
@@ -49,11 +51,9 @@ public class CMSSignedDocument extends CommonDocument {
 	 *            the CMSSignedData
 	 */
 	public CMSSignedDocument(final CMSSignedData data) {
+		Objects.requireNonNull(data, "The CMSSignedData cannot be null");
 		this.signedData = data;
-		if (data == null) {
-			throw new NullPointerException("The CMSSignedData cannot be null");
-		}
-		mimeType = MimeType.PKCS7;
+		this.mimeType = MimeType.PKCS7;
 	}
 
 	@Override
@@ -70,11 +70,11 @@ public class CMSSignedDocument extends CommonDocument {
 
 	public byte[] getBytes() {
 		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-			final DEROutputStream derOutputStream = new DEROutputStream(output);
+			final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(output, ASN1Encoding.DER);
 			final byte[] encoded = signedData.getEncoded();
 			final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
-			derOutputStream.writeObject(asn1Primitive);
-			derOutputStream.close();
+			asn1OutputStream.writeObject(asn1Primitive);
+			asn1OutputStream.close();
 			return output.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException(e);

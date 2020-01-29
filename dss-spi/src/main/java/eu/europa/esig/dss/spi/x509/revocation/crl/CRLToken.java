@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
+import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -64,9 +66,7 @@ public class CRLToken extends RevocationToken {
 	 *            validity of the CRL
 	 */
 	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity) {
-		if (crlValidity == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(crlValidity, "CRL Validity cannot be null");
 		this.crlValidity = crlValidity;
 		initInfo();
 		setRevocationStatus(certificateToken);
@@ -90,7 +90,7 @@ public class CRLToken extends RevocationToken {
 			this.publicKeyOfTheSigner = issuerToken.getPublicKey();
 		}
 
-		this.signatureValid = crlValidity.isSignatureIntact();
+		this.signatureValidity = SignatureValidity.get(crlValidity.isSignatureIntact());
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
 	}
 
@@ -127,7 +127,7 @@ public class CRLToken extends RevocationToken {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final CertificateToken token) {
+	protected SignatureValidity checkIsSignedBy(final CertificateToken token) {
 		throw new UnsupportedOperationException(this.getClass().getName());
 	}
 

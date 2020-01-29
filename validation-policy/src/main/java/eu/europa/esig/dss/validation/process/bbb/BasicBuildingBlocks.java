@@ -42,6 +42,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
@@ -59,13 +60,16 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.X509CertificateValidation;
  */
 public class BasicBuildingBlocks {
 
+	private final I18nProvider i18nProvider;
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 	private final ValidationPolicy policy;
 	private final Date currentTime;
 	private final Context context;
 
-	public BasicBuildingBlocks(DiagnosticData diagnosticData, TokenProxy token, Date currentTime, ValidationPolicy policy, Context context) {
+	public BasicBuildingBlocks(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token, 
+			Date currentTime, ValidationPolicy policy, Context context) {
+		this.i18nProvider = i18nProvider;
 		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.currentTime = currentTime;
@@ -169,7 +173,7 @@ public class BasicBuildingBlocks {
 
 	private XmlFC executeFormatChecking() {
 		if (Context.SIGNATURE.equals(context)) {
-			FormatChecking fc = new FormatChecking(diagnosticData, (SignatureWrapper) token, context, policy);
+			FormatChecking fc = new FormatChecking(i18nProvider, diagnosticData, (SignatureWrapper) token, context, policy);
 			return fc.execute();
 		} else {
 			return null;
@@ -178,7 +182,7 @@ public class BasicBuildingBlocks {
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
 		if (!Context.CERTIFICATE.equals(context)) {
-			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(token, context, policy);
+			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(i18nProvider, token, context, policy);
 			return isc.execute();
 		} else {
 			return null;
@@ -187,7 +191,7 @@ public class BasicBuildingBlocks {
 
 	private XmlVCI executeValidationContextInitialization() {
 		if (Context.SIGNATURE.equals(context)) {
-			ValidationContextInitialization vci = new ValidationContextInitialization((SignatureWrapper) token, context, policy);
+			ValidationContextInitialization vci = new ValidationContextInitialization(i18nProvider, (SignatureWrapper) token, context, policy);
 			return vci.execute();
 		}
 		return null;
@@ -195,7 +199,7 @@ public class BasicBuildingBlocks {
 
 	private XmlCV executeCryptographicVerification() {
 		if (!Context.CERTIFICATE.equals(context)) {
-			CryptographicVerification cv = new CryptographicVerification(diagnosticData, token, context, policy);
+			CryptographicVerification cv = new CryptographicVerification(i18nProvider, diagnosticData, token, context, policy);
 			return cv.execute();
 		} else {
 			return null;
@@ -205,22 +209,21 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		if (Context.CERTIFICATE.equals(context)) {
 			CertificateWrapper certificate = (CertificateWrapper) token;
-			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
-					certificate.getNotBefore(), context, policy);
+			X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
 			CertificateWrapper certificate = token.getSigningCertificate();
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
-							certificate.getNotBefore(), context, policy);
+					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context,
+							policy);
 					return xcv.execute();
 				} else if (Context.TIMESTAMP.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime,
 							((TimestampWrapper) token).getProductionTime(), context, policy);
 					return xcv.execute();
 				} else if (Context.REVOCATION.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime,
 							((RevocationWrapper) token).getProductionDate(), context, policy);
 					return xcv.execute();
 				}
@@ -232,11 +235,11 @@ public class BasicBuildingBlocks {
 	private XmlSAV executeSignatureAcceptanceValidation() {
 		AbstractAcceptanceValidation<?> aav = null;
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
+			aav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
 		} else if (Context.TIMESTAMP.equals(context)) {
-			aav = new TimestampAcceptanceValidation(currentTime, (TimestampWrapper) token, policy);
+			aav = new TimestampAcceptanceValidation(i18nProvider, currentTime, (TimestampWrapper) token, policy);
 		} else if (Context.REVOCATION.equals(context)) {
-			aav = new RevocationAcceptanceValidation(currentTime, (RevocationWrapper) token, policy);
+			aav = new RevocationAcceptanceValidation(i18nProvider, currentTime, (RevocationWrapper) token, policy);
 		}
 		return aav != null ? aav.execute() : null;
 	}

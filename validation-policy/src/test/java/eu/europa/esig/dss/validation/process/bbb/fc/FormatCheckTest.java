@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 
-public class FormatCheckTest {
+public class FormatCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void validFormat() throws Exception {
@@ -48,7 +49,7 @@ public class FormatCheckTest {
 		constraint.getId().add("CAdES-BASELINE-B");
 
 		XmlFC result = new XmlFC();
-		FormatCheck fc = new FormatCheck(result, new SignatureWrapper(sig), constraint);
+		FormatCheck fc = new FormatCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		fc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -66,7 +67,7 @@ public class FormatCheckTest {
 		constraint.getId().add("CAdES-BASELINE-B");
 
 		XmlFC result = new XmlFC();
-		FormatCheck fc = new FormatCheck(result, new SignatureWrapper(sig), constraint);
+		FormatCheck fc = new FormatCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		fc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

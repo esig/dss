@@ -20,28 +20,26 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
 
 	private final TokenProxy token;
 	private final CryptographicConstraint constraint;
 
-	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
-		super(result, currentTime, constraint);
+	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
+		super(i18nProvider, result, currentTime, constraint);
 		this.constraint = constraint;
 		this.token = token;
 	}
@@ -99,20 +97,13 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String addInfo = null;
-		Object[] params = null;
-		String dateTime = sdf.format(validationDate);
+	protected MessageTag getAdditionalInfo() {
+		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
 		if (Utils.isStringNotEmpty(failedAlgorithm)) {
-			addInfo = AdditionalInfo.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID;
-			params = new Object[] { failedAlgorithm, dateTime, token.getId() };
+			return MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID.setArgs(failedAlgorithm, dateTime, token.getId());
 		} else {
-			addInfo = AdditionalInfo.VALIDATION_TIME_WITH_ID;
-			params = new Object[] { dateTime, token.getId() };
+			return MessageTag.VALIDATION_TIME_WITH_ID.setArgs(dateTime, token.getId());
 		}
-		return MessageFormat.format(addInfo, params);
 	}
 
 }

@@ -20,26 +20,24 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 
 public class OfflineOCSPSourceTest {
@@ -63,7 +61,6 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getNextUpdate());
 		assertNotNull(ocspToken.getProductionDate());
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
 		assertTrue(ocspToken.getStatus());
 		assertFalse(ocspToken.isCertHashPresent());
@@ -88,7 +85,6 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getThisUpdate());
 		assertNotNull(ocspToken.getProductionDate());
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
 		assertFalse(ocspToken.isCertHashPresent());
 		assertNotNull(ocspToken.getReason());
@@ -126,7 +122,7 @@ public class OfflineOCSPSourceTest {
 		ocspToken.initInfo();
 
 		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, ocspToken.getSignatureAlgorithm());
-		assertTrue(ocspToken.isSignatureValid());
+		assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
 		assertTrue(ocspToken.isValid());
 		assertTrue(ocspToken.isCertHashPresent());
 		assertTrue(ocspToken.isCertHashMatch());

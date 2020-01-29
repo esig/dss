@@ -5,7 +5,7 @@
     <Signatures>
 	    <Signature Id="S0">
 			<SignatureFilename>MVC.xml</SignatureFilename>
-	        <DateTime>2013-10-11T14:27:54</DateTime>
+	        <ClaimedSigningTime>2013-10-11T14:27:54</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="Hello world.pdf">
@@ -199,7 +199,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2013-10-11T14:27:58</ProductionDate>
             <ThisUpdate>2013-10-11T14:27:57</ThisUpdate>

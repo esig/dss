@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -42,14 +42,15 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESLevelBInternallyDetachedMultiFilesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBInternallyDetachedMultiFilesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private XAdESService service;
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -114,7 +115,7 @@ public class XAdESLevelBInternallyDetachedMultiFilesTest extends AbstractPkiFact
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

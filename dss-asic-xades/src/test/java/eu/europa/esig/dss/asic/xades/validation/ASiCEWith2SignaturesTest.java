@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -49,7 +49,7 @@ public class ASiCEWith2SignaturesTest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(asicContainer);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("https://www.sk.ee/repository/bdoc-spec21.pdf", new FileDocument(new File("src/test/resources/bdoc-spec21.pdf")));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);

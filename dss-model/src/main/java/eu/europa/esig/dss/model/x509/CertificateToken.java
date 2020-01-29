@@ -41,6 +41,7 @@ import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 
@@ -159,20 +160,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Checks if the certificate is expired on the given date.
-	 *
-	 * @param date
-	 *            the date to be tested
-	 * @return true if the certificate was expired on the given date
-	 */
-	public boolean isExpiredOn(final Date date) {
-		if ((x509Certificate == null) || (date == null)) {
-			return true;
-		}
-		return x509Certificate.getNotAfter().before(date);
-	}
-
-	/**
 	 * Checks if the given date is in the validity period of the certificate.
 	 *
 	 * @param date
@@ -208,11 +195,13 @@ public class CertificateToken extends Token {
 				try {
 					x509Certificate.verify(x509Certificate.getPublicKey());
 					selfSigned = true;
-					signatureValid = true;
+					signatureValidity = SignatureValidity.VALID;
 				} catch (Exception e) {
 					selfSigned = false;
 				}
 			}
+		} else if (selfSigned) {
+			signatureValidity = SignatureValidity.VALID;
 		}
 		return selfSigned;
 	}
@@ -299,12 +288,12 @@ public class CertificateToken extends Token {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final CertificateToken candidate) {
-		signatureValid = false;
+	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
+		signatureValidity = SignatureValidity.INVALID;
 		signatureInvalidityReason = "";
 		try {
 			x509Certificate.verify(candidate.getPublicKey());
-			signatureValid = true;
+			signatureValidity = SignatureValidity.VALID;
 		} catch (InvalidKeyException e) {
 			signatureInvalidityReason = "InvalidKeyException - on incorrect key.";
 		} catch (CertificateException e) {
@@ -316,7 +305,7 @@ public class CertificateToken extends Token {
 		} catch (NoSuchProviderException e) { // if there's no default provider.
 			throw new DSSException(e);
 		}
-		return signatureValid;
+		return signatureValidity;
 	}
 
 	/**
@@ -361,7 +350,7 @@ public class CertificateToken extends Token {
 	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
 	public List<KeyUsageBit> getKeyUsageBits() {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
 		if (keyUsageArray != null) {
 			for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {

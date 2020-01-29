@@ -25,18 +25,19 @@ import java.util.Date;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheckWithNullConstraint;
 
@@ -57,9 +58,9 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	private final Context context;
 	private final SubContext subContext;
 
-	public RevocationFreshnessChecker(RevocationWrapper revocationData, Date validationDate, Context context, SubContext subContext, ValidationPolicy policy) {
-		super(new XmlRFC());
-		result.setTitle(BasicBuildingBlockDefinition.REVOCATION_FRESHNESS_CHECKER.getTitle());
+	public RevocationFreshnessChecker(I18nProvider i18nProvider, RevocationWrapper revocationData, Date validationDate, Context context, 
+			SubContext subContext, ValidationPolicy policy) {
+		super(i18nProvider, new XmlRFC());
 
 		if (revocationData != null) {
 			result.setId(revocationData.getId());
@@ -71,6 +72,11 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 		this.context = context;
 		this.subContext = subContext;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.REVOCATION_FRESHNESS_CHECKER;
 	}
 
 	@Override
@@ -117,12 +123,12 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	private ChainItem<XmlRFC> revocationDataAvailable(RevocationWrapper revocationData) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(context, subContext);
-		return new RevocationDataAvailableCheck(result, revocationData, constraint);
+		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRFC> nextUpdateCheck(RevocationWrapper revocationData) {
 		LevelConstraint constraint = policy.getRevocationDataNextUpdatePresentConstraint(context, subContext);
-		return new NextUpdateCheck(result, revocationData, constraint);
+		return new NextUpdateCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRFC> revocationDataFreshCheck(RevocationWrapper revocationData, TimeConstraint revocationFreshnessConstraint) {
@@ -132,7 +138,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * certificate.
 		 */
 		if (revocationFreshnessConstraint != null) {
-			return new RevocationDataFreshCheck(result, revocationData, validationDate, revocationFreshnessConstraint);
+			return new RevocationDataFreshCheck(i18nProvider, result, revocationData, validationDate, revocationFreshnessConstraint);
 		}
 		/*
 		 * If the constraints do not contain a value for the maximum accepted
@@ -143,14 +149,14 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * freshness.
 		 */
 		else {
-			return new RevocationDataFreshCheckWithNullConstraint(result, revocationData, validationDate, getFailLevelConstraint());
+			return new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result, revocationData, validationDate, getFailLevelConstraint());
 		}
 
 	}
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
-		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<XmlRFC>(result, revocationData, validationDate, cryptographicConstraint);
+		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, validationDate, cryptographicConstraint);
 	}
 
 }

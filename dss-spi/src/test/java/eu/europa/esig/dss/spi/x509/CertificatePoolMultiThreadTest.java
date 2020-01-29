@@ -1,9 +1,29 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,27 +34,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 
-@RunWith(Parameterized.class)
 public class CertificatePoolMultiThreadTest {
-
-	@Parameterized.Parameters
-	public static Object[][] data() {
-		return new Object[5][0];
-	}
 
 	public CertificatePoolMultiThreadTest() {
 	}
 
-	@Test
+	@RepeatedTest(5)
 	public void testMultiThreads() throws IOException {
 
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"), "PKCS12", "ks-password");
@@ -44,7 +54,7 @@ public class CertificatePoolMultiThreadTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
-		List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
+		List<Future<Integer>> futures = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
 			futures.add(executor.submit(new TestConcurrent(sharedPool, certificates)));
@@ -85,9 +95,9 @@ public class CertificatePoolMultiThreadTest {
 			}
 
 			for (CertificateToken certificateToken : certificates) {
-				assertTrue("Certificate should be trusted", sharedPool.isTrusted(certificateToken));
-				assertFalse("Sources for certificate shouldn't be empty", sharedPool.getSources(certificateToken).isEmpty());
-				assertFalse("Certificate by subject shoudln't be empty", sharedPool.get(certificateToken.getSubjectX500Principal()).isEmpty());
+				assertTrue(sharedPool.isTrusted(certificateToken), "Certificate should be trusted");
+				assertFalse(sharedPool.getSources(certificateToken).isEmpty(), "Sources for certificate shouldn't be empty");
+				assertFalse(sharedPool.get(certificateToken.getSubjectX500Principal()).isEmpty(), "Certificate by subject shoudln't be empty");
 			}
 
 			return sharedPool.getNumberOfCertificates();

@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pdf;
 
 import java.util.HashMap;
@@ -16,7 +36,7 @@ public class DSSDictionaryExtractionUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSDictionaryExtractionUtils.class);
 
 	public static Map<Long, byte[]> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, byte[]> crlMap = new HashMap<Long, byte[]>();
+		Map<Long, byte[]> crlMap = new HashMap<>();
 		final PdfArray crlArray = dict.getAsArray(arrayName);
 		if (crlArray != null) {
 			LOG.debug("There are {} CRLs in the '{}' dictionary", crlArray.size(), dictionaryName);
@@ -37,7 +57,7 @@ public class DSSDictionaryExtractionUtils {
 	}
 
 	public static Map<Long, CertificateToken> getCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, CertificateToken> certMap = new HashMap<Long, CertificateToken>();
+		Map<Long, CertificateToken> certMap = new HashMap<>();
 		final PdfArray certsArray = dict.getAsArray(arrayName);
 		if (certsArray != null) {
 			LOG.debug("There are {} certificates in the '{}' dictionary", certsArray.size(), dictionaryName);
@@ -58,7 +78,7 @@ public class DSSDictionaryExtractionUtils {
 	}
 
 	public static Map<Long, BasicOCSPResp> getOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, BasicOCSPResp> ocspMap = new HashMap<Long, BasicOCSPResp>();
+		Map<Long, BasicOCSPResp> ocspMap = new HashMap<>();
 		PdfArray ocspArray = dict.getAsArray(arrayName);
 		if (ocspArray != null) {
 			LOG.debug("There are {} OCSPs in the '{}' dictionary", ocspArray.size(), dictionaryName);

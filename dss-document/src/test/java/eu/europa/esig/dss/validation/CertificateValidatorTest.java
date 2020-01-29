@@ -20,18 +20,22 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
@@ -58,32 +62,45 @@ public class CertificateValidatorTest {
 		assertNotNull(marshalled);
 		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(marshalled));
 		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
+		assertNotNull(simpleCertificateReportFacade.generateHtmlBootstrap3Report(marshalled));
+		assertNotNull(simpleCertificateReportFacade.generateHtmlBootstrap3Report(reports.getSimpleReportJaxb()));
 
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
 		String marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
 		assertNotNull(marshalledDetailedReport);
 		assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
 		assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
+		assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(marshalledDetailedReport));
+		assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(reports.getDetailedReportJaxb()));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCertNull() {
-		CertificateValidator.fromCertificate(null);
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+			CertificateValidator.fromCertificate(null);
+		});
+		assertEquals("The certificate is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testPolicyNull() {
-		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
-		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		cv.validate(null);
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+			CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
+			cv.setCertificateVerifier(new CommonCertificateVerifier());
+			cv.validate(null);
+		});
+		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void testDateNull() {
+	@Test
+	public void testCustomDate() {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		cv.setValidationTime(null);
-		cv.validate();
+		GregorianCalendar gregorianCalendar = new GregorianCalendar(2019, 1, 1);
+		cv.setValidationTime(gregorianCalendar.getTime());
+		CertificateReports certificateReports = cv.validate();
+		DiagnosticData diagnosticData = certificateReports.getDiagnosticData();
+		assertEquals(gregorianCalendar.getTime(), diagnosticData.getValidationDate());
 	}
 
 }

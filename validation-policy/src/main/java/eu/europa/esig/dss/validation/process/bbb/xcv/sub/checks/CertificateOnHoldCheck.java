@@ -20,28 +20,27 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateRevocationWrapper certificateRevocation;
 	private final Date currentTime;
 
-	public CertificateOnHoldCheck(XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, Date currentTime, LevelConstraint constraint) {
-		super(result, constraint);
+	public CertificateOnHoldCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, 
+			Date currentTime, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;
 	}
@@ -51,19 +50,16 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 		boolean isOnHold = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
 				RevocationReason.CERTIFICATE_HOLD.equals(certificateRevocation.getReason());
 		if (isOnHold) {
-			isOnHold = certificateRevocation.getRevocationDate() != null && currentTime.after(certificateRevocation.getRevocationDate());
+			isOnHold = certificateRevocation.getRevocationDate() != null && currentTime.compareTo(certificateRevocation.getRevocationDate()) >= 0;
 		}
 		return !isOnHold;
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (certificateRevocation != null && certificateRevocation.getRevocationDate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			String revocationDateStr = sdf.format(certificateRevocation.getRevocationDate());
-			Object[] params = new Object[] { certificateRevocation.getReason(), revocationDateStr };
-			return MessageFormat.format(AdditionalInfo.REVOCATION, params);
+			String revocationDateStr = ValidationProcessUtils.getFormattedDate(certificateRevocation.getRevocationDate());
+			return MessageTag.REVOCATION.setArgs(certificateRevocation.getReason(), revocationDateStr);
 		}
 		return null;
 	}

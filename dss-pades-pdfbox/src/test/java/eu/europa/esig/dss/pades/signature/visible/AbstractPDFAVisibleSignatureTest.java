@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -42,8 +42,7 @@ import eu.europa.esig.dss.pades.PDFAUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -51,18 +50,12 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	protected PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	
-	/**
-	 * Set a custom instance of {@link PdfObjFactory}
-	 */
-	protected abstract void setCustomFactory();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
-		setCustomFactory();
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -72,7 +65,13 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+		setCustomFactory();
 	}
+
+	/**
+	 * Set a custom instance of {@link IPdfObjFactory}
+	 */
+	protected abstract void setCustomFactory();
 
 	@Test
 	public void testGeneratedTextOnly() throws IOException {
@@ -81,7 +80,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(true);
 	}
@@ -93,7 +92,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		textParameters.setText("My signature");
 		textParameters.setTextColor(new Color(0, 255, 0, 100));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(false);
 	}
@@ -104,7 +103,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(true);
 	}
@@ -116,7 +115,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(false);
 	}

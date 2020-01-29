@@ -22,6 +22,20 @@ package eu.europa.esig.dss.signature;
 
 public enum SigningOperation {
 
-	SIGN, EXTEND;
+	/**
+	 * Signature creation
+	 */
+	SIGN,
+
+	/**
+	 * Timestamp creation
+	 */
+	TIMESTAMP,
+
+	/**
+	 * Extension process (eg : signature basic (B-P-B) to signature with timestamp
+	 * (B-P-T))
+	 */
+	EXTEND;
 
 }

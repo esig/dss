@@ -20,16 +20,18 @@
  */
 package eu.europa.esig.dss.cookbook.example.sources;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -40,6 +42,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
  * How to configure a Composite TSP Source.
  */
 public class CompositeTSPSourceTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CompositeTSPSourceTest.class);
 
 	@Test
 	public void test() throws IOException {
@@ -54,7 +58,7 @@ public class CompositeTSPSourceTest {
 		OnlineTSPSource tsa2 = new OnlineTSPSource("http://dss.nowina.lu/pki-factory/tsa/good-tsa");
 		tsa2.setDataLoader(timestampDataLoader);
 
-		Map<String, TSPSource> tspSources = new HashMap<String, TSPSource>();
+		Map<String, TSPSource> tspSources = new HashMap<>();
 		tspSources.put("TSA1", tsa1);
 		tspSources.put("TSA2", tsa2);
 
@@ -68,13 +72,13 @@ public class CompositeTSPSourceTest {
 
 		// DSS will request the tsp sources (one by one) until getting a valid token.
 		// If none of them succeed, a DSSException is thrown.
-		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
+		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
-		System.out.println(DSSUtils.toHex(tsr.getEncoded()));
+		LOG.info(DSSUtils.toHex(tsBinary.getBytes()));
 
 		// end::demo[]
 
-		assertNotNull(tsr);
+		assertNotNull(tsBinary);
 	}
 
 }

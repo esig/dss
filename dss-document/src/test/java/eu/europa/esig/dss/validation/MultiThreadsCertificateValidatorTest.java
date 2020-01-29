@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public class MultiThreadsCertificateValidatorTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
-		List<Future<CertificateReports>> futures = new ArrayList<Future<CertificateReports>>();
+		List<Future<CertificateReports>> futures = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
 			futures.add(executor.submit(new TestConcurrent(DSSUtils.loadCertificate(new File("src/test/resources/certificates/ec.europa.eu.crt")))));

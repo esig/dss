@@ -20,17 +20,20 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
@@ -45,7 +48,7 @@ public class OnlineOCSPSourceTest {
 	private CertificateToken certificateToken;
 	private CertificateToken rootToken;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
@@ -93,13 +96,33 @@ public class OnlineOCSPSourceTest {
 	@Test
 	public void testInjectExternalUrls() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		List<String> alternativeOCSPUrls = new ArrayList<String>();
+		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
 
-		RevocationSource<OCSPToken> currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>(ocspSource,
+		RevocationSource<OCSPToken> currentOCSPSource = new AlternateUrlsSourceAdapter<>(ocspSource,
 				alternativeOCSPUrls);
 		OCSPToken ocspToken = currentOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
+	}
+	
+	@Test
+	public void customCertIDDigestAlgorithmTest() {
+		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/cert.pem"));
+		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/cert_CA.pem"));
+		
+		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setTimeoutConnection(10000);
+		dataLoader.setTimeoutSocket(10000);
+
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setDataLoader(dataLoader);
+
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value
+		
+		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);
+		ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
 	}
 
 }

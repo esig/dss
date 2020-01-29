@@ -26,14 +26,15 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 
 	private final XmlVTS vts;
 
-	public ValidationTimeSlidingCheck(XmlPCV result, XmlVTS vts, LevelConstraint constraint) {
-		super(result, constraint);
+	public ValidationTimeSlidingCheck(I18nProvider i18nProvider, XmlPCV result, XmlVTS vts, String tokenId, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, tokenId);
 
 		this.vts = vts;
 	}

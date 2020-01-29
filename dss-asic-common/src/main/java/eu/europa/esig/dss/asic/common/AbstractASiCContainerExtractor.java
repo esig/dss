@@ -63,31 +63,10 @@ public abstract class AbstractASiCContainerExtractor {
 		} else if (fileNames.size() > MAXIMAL_ALLOWED_FILE_AMOUNT) {
 			throw new DSSException("Too many files detected. Cannot extract ASiC content");
 		}
-
+		
 		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {	
-			ZipEntry entry;
-			while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
-				String entryName = entry.getName();
-				if (isMetaInfFolder(entryName)) {
-					if (isAllowedSignature(entryName)) {
-						result.getSignatureDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					} else if (isAllowedManifest(entryName)) {
-						result.getManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					} else if (isAllowedArchiveManifest(entryName)) {
-						result.getArchiveManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					} else if (isAllowedTimestamp(entryName)) {
-						result.getTimestampDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					} else if (!isFolder(entryName)) {
-						result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					}
-				} else if (!isFolder(entryName)) {
-					if (isMimetype(entryName)) {
-						result.setMimeTypeDocument(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					} else {
-						result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
-					}
-				}
-			}
+			result = zipParsing(containerSize, asicInputStream);
+			result.setRootContainer(asicContainer);
 
 			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
 				LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
@@ -98,7 +77,44 @@ public abstract class AbstractASiCContainerExtractor {
 		}
 
 		result.setZipComment(getZipComment());
+		
+		return result;
+	}
 
+	private ASiCExtractResult zipParsing(long containerSize, ZipInputStream asicInputStream) throws IOException {
+		ASiCExtractResult result = new ASiCExtractResult();
+		ZipEntry entry;
+		while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
+			String entryName = entry.getName();
+			
+			DSSDocument currentDocument = ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize);
+			if (isMetaInfFolder(entryName)) {
+				if (isAllowedSignature(entryName)) {
+					result.getSignatureDocuments().add(currentDocument);
+				} else if (isAllowedManifest(entryName)) {
+					result.getManifestDocuments().add(currentDocument);
+				} else if (isAllowedArchiveManifest(entryName)) {
+					result.getArchiveManifestDocuments().add(currentDocument);
+				} else if (isAllowedTimestamp(entryName)) {
+					result.getTimestampDocuments().add(currentDocument);
+				} else if (!isFolder(entryName)) {
+					result.getUnsupportedDocuments().add(currentDocument);
+				}
+			} else if (!isFolder(entryName)) { 
+				if (isMimetype(entryName)) {
+					result.setMimeTypeDocument(currentDocument);
+				} else {
+					result.getSignedDocuments().add(currentDocument);
+					if (ASiCUtils.isASiCSArchive(currentDocument)) {
+						result.setContainerDocuments(ASiCUtils.getPackageZipContent(currentDocument));
+					}
+				}
+			}
+			if (!isFolder(entryName)) {
+				result.getAllDocuments().add(currentDocument);
+			}
+		}
+		
 		return result;
 	}
 
@@ -141,7 +157,7 @@ public abstract class AbstractASiCContainerExtractor {
 	private boolean isMetaInfFolder(String entryName) {
 		return entryName.startsWith(ASiCUtils.META_INF_FOLDER);
 	}
-
+	
 	private boolean isFolder(String entryName) {
 		return entryName.endsWith("/");
 	}

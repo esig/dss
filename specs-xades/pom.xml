@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.5</version>
+		<version>5.6.RC1</version>
 	</parent>
 
 	<artifactId>specs-xades</artifactId>
@@ -27,9 +27,14 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+		    <groupId>org.junit.platform</groupId>
+		    <artifactId>junit-platform-launcher</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-engine</artifactId>
+		    <scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -50,6 +55,9 @@
 				<configuration>
 					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 					<schemaIncludes>
+						<schemaInclude>XAdESv111.xsd</schemaInclude>
+						<schemaInclude>XAdESv122.xsd</schemaInclude>
+						<schemaInclude>XAdESv132.xsd</schemaInclude>
 						<schemaInclude>XAdESv141.xsd</schemaInclude>
 					</schemaIncludes>
 					<catalog>src/main/resources/xsd/catalog.cat</catalog>
@@ -115,7 +123,7 @@
 		<profile>
             <id>jdk19-plus</id>
             <activation>
-                <jdk>[9,)</jdk>
+                <jdk>[9,13)</jdk>
             </activation>
             <properties>
 				<!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: javax.xml.bind.annotation.XmlSchema -->

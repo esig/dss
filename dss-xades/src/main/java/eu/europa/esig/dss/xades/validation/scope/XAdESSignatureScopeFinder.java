@@ -54,7 +54,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 	@Override
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 
-		final List<SignatureScope> result = new ArrayList<SignatureScope>();
+		final List<SignatureScope> result = new ArrayList<>();
 		
 		List<ReferenceValidation> referenceValidations = xadesSignature.getReferenceValidations();
 		for (ReferenceValidation referenceValidation : referenceValidations) {
@@ -78,8 +78,9 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.OBJECT.equals(xadesReferenceValidation.getType())) {
 				Node objectById = xadesSignature.getObjectById(uri);
-				if (objectById != null) {
-					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(objectById))));
+				if (objectById != null && objectById.hasChildNodes()) {
+					Node referencedObject = objectById.getFirstChild();
+					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(referencedObject))));
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.MANIFEST.equals(xadesReferenceValidation.getType())) {
@@ -127,39 +128,35 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		return result;
 		
 	}
-	
-	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature, final List<String> transformations, final String uri) {
-		List<SignatureScope> detachedSignatureScopes = new ArrayList<SignatureScope>();
-		
+
+	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature,
+			final List<String> transformations, final String uri) {
+		List<SignatureScope> detachedSignatureScopes = new ArrayList<>();
 		List<DSSDocument> detachedContents = xadesSignature.getDetachedContents();
 		for (DSSDocument detachedDocument : detachedContents) {
 
 			String decodedUrl = uri != null ? DSSUtils.decodeUrl(uri) : uri;
 			// if only one detached file is provided, we assume that it is the target file,
 			// otherwise check by name
-			if (detachedContents.size() == 1 || 
-					uri != null && (uri.equals(detachedDocument.getName()) || decodedUrl.equals(detachedDocument.getName())) ) {
+			if (detachedContents.size() == 1 || uri != null && (uri.equals(detachedDocument.getName()) || decodedUrl.equals(detachedDocument.getName()))) {
 				String fileName = detachedDocument.getName() != null ? detachedDocument.getName() : decodedUrl;
 				if (detachedDocument instanceof DigestDocument) {
 					DigestDocument digestDocument = (DigestDocument) detachedDocument;
 					detachedSignatureScopes.add(new DigestSignatureScope(fileName, digestDocument.getExistingDigest()));
 
 				} else if (Utils.isCollectionNotEmpty(transformations)) {
-					detachedSignatureScopes.add(new XmlFullSignatureScope(fileName, transformations,
-							getDigest(DSSUtils.toByteArray(detachedDocument))));
+					detachedSignatureScopes
+							.add(new XmlFullSignatureScope(fileName, transformations, DSSUtils.getDigest(getDefaultDigestAlgorithm(), detachedDocument)));
 
 				} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
-					detachedSignatureScopes.add(new ContainerSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
+					detachedSignatureScopes.add(new ContainerSignatureScope(decodedUrl, DSSUtils.getDigest(getDefaultDigestAlgorithm(), detachedDocument)));
 					for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
-						detachedSignatureScopes.add(
-								new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()),
-										getDigest(DSSUtils.toByteArray(archivedDocument))));
+						detachedSignatureScopes.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()),
+								DSSUtils.getDigest(getDefaultDigestAlgorithm(), archivedDocument)));
 					}
-					
-				} else {
-					detachedSignatureScopes
-							.add(new FullSignatureScope(fileName, getDigest(DSSUtils.toByteArray(detachedDocument))));
 
+				} else {
+					detachedSignatureScopes.add(new FullSignatureScope(fileName, DSSUtils.getDigest(getDefaultDigestAlgorithm(), detachedDocument)));
 				}
 			}
 		}

@@ -33,8 +33,8 @@ import java.util.Map.Entry;
 @SuppressWarnings("serial")
 public class MimeType implements Serializable {
 
-	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
-	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>();
+	private static Map<String, MimeType> mimeTypes = new HashMap<>();
+	private static Map<String, MimeType> fileExtensions = new HashMap<>();
 
 	public static final MimeType BINARY = new MimeType("application/octet-stream");
 	public static final MimeType XML = new MimeType("text/xml");
@@ -46,6 +46,8 @@ public class MimeType implements Serializable {
 	public static final MimeType ASICE = new MimeType("application/vnd.etsi.asic-e+zip");
 	public static final MimeType ODT = new MimeType("application/vnd.oasis.opendocument.text");
 	public static final MimeType ODS = new MimeType("application/vnd.oasis.opendocument.spreadsheet");
+	public static final MimeType ODP = new MimeType("application/vnd.oasis.opendocument.presentation");
+	public static final MimeType ODG = new MimeType("application/vnd.oasis.opendocument.graphics");
 	public static final MimeType TEXT = new MimeType("text/plain");
 	public static final MimeType CRL = new MimeType("application/pkix-crl");
 	public static final MimeType CER = new MimeType("application/pkix-cert");
@@ -72,9 +74,11 @@ public class MimeType implements Serializable {
 		// estonian bdoc file type is handled as asic-e document
 		fileExtensions.put("bdoc", ASICE);
 
-		// ASiC-E + XML (not XAdES)
+		// ASiC-E open-docuemnt
 		fileExtensions.put("odt", ODT);
 		fileExtensions.put("ods", ODS);
+		fileExtensions.put("odp", ODP);
+		fileExtensions.put("odg", ODG);
 
 		fileExtensions.put("txt", TEXT);
 

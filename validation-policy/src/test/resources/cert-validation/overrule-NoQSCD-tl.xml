@@ -41,18 +41,17 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>TSP-21.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>LU</CountryCode>
+                <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                            <ServiceName>TS-21.1.1 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -115,13 +114,12 @@
                 <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>TSP-21.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>LU</CountryCode>
+                <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                            <ServiceName>TS-21.1.1 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -129,7 +127,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -168,8 +166,8 @@
         </Revocation>
     </UsedRevocations>
     <TrustedLists>
-        <TrustedList>
-            <CountryCode>LU</CountryCode>
+        <TrustedList Id="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8">
+	        <CountryCode>BE</CountryCode>
             <Url>http://localhost:8080/qes-validation-web/tl/TL-21.xml</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
@@ -178,15 +176,15 @@
             <NextUpdate>2018-07-26T14:37:39</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-06-25T14:45:31</LastLoading>
+	        <IssueDate>2018-06-24T14:37:39</IssueDate>
+	        <NextUpdate>2018-07-26T14:37:39</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</Url>
-        <SequenceNumber>1</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-06-25T14:45:31</LastLoading>
-        <IssueDate>2018-06-24T14:37:39</IssueDate>
-        <NextUpdate>2018-07-26T14:37:39</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

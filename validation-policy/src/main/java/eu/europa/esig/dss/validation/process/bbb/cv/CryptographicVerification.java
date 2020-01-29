@@ -29,10 +29,11 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
@@ -53,14 +54,17 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	private final ValidationPolicy validationPolicy;
 	private final Context context;
 
-	public CryptographicVerification(DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
-		super(new XmlCV());
-		result.setTitle(BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION.getTitle());
-
+	public CryptographicVerification(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
+		super(i18nProvider, new XmlCV());
 		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.CRYPTOGRAPHIC_VERIFICATION;
 	}
 
 	@Override
@@ -148,27 +152,27 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
-		return new ReferenceDataExistenceCheck(result, digestMatcher, constraint);
+		return new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> referenceDataIntact(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataIntactConstraint(context);
-		return new ReferenceDataIntactCheck(result, digestMatcher, constraint);
+		return new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {
 		LevelConstraint constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
-		return new ManifestEntryExistenceCheck(result, digestMatchers, constraint);
+		return new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, constraint);
 	}
 
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
-		return new SignatureIntactCheck(result, token, constraint);
+		return new SignatureIntactCheck<>(i18nProvider, result, token, context, constraint);
 	}
 
 	private ChainItem<XmlCV> allFilesSignedCheck() {
 		LevelConstraint constraint = validationPolicy.getAllFilesSignedConstraint();
-		return new AllFilesSignedCheck(result, (SignatureWrapper) token, diagnosticData.getContainerInfo(), constraint);
+		return new AllFilesSignedCheck(i18nProvider, result, (SignatureWrapper) token, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

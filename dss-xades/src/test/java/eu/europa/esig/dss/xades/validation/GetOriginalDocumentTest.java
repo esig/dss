@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -210,11 +210,11 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 	@Test
 	public final void getTwoOriginalDocumentFromEnvelopingSignature() throws Exception {
-		List<DSSReference> refs = new ArrayList<DSSReference>();
+		List<DSSReference> refs = new ArrayList<>();
 		DSSDocument doc1 = new FileDocument("src/test/resources/sample.xml");
 		DSSDocument doc2 = new FileDocument("src/test/resources/sampleISO.xml");
 
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 

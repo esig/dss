@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 
-public class CertificateExpirationCheckTest {
+public class CertificateExpirationCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateExpirationCheck() throws Exception {
@@ -50,7 +51,7 @@ public class CertificateExpirationCheckTest {
 		xc.setNotBefore(new Date(nowMil - 86400000)); // 24 hours ago
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateExpirationCheck cec = new CertificateExpirationCheck(result, new CertificateWrapper(xc), new Date(),
+		CertificateExpirationCheck cec = new CertificateExpirationCheck(i18nProvider, result, new CertificateWrapper(xc), null, new Date(),
 				constraint);
 		cec.execute();
 
@@ -71,7 +72,7 @@ public class CertificateExpirationCheckTest {
 		xc.setNotBefore(new Date(nowMil - 172800000)); // 48 hours ago
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateExpirationCheck cec = new CertificateExpirationCheck(result, new CertificateWrapper(xc), new Date(),
+		CertificateExpirationCheck cec = new CertificateExpirationCheck(i18nProvider, result, new CertificateWrapper(xc), null, new Date(),
 				constraint);
 		cec.execute();
 

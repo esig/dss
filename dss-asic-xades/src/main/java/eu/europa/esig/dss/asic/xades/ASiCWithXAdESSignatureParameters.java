@@ -32,10 +32,10 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	/**
 	 * The object representing the parameters related to ASiC from of the signature.
 	 */
-	private ASiCParameters aSiCParams = new ASiCParameters();
+	private ASiCParameters asicParams = new ASiCParameters();
 
 	public ASiCParameters aSiC() {
-		return aSiCParams;
+		return asicParams;
 	}
 
 	@Override

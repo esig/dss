@@ -101,6 +101,11 @@ public abstract class AbstractReports {
 		return detailedReportWrapper.getJAXBModel();
 	}
 
+	/**
+	 * This method returns an XML representation of the JAXB SimpleReport String
+	 * 
+	 * @return a String with the XML content of the JAXB SimpleReport
+	 */
 	public abstract String getXmlSimpleReport();
 
 	/**

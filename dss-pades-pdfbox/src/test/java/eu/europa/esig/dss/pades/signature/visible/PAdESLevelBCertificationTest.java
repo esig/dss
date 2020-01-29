@@ -20,33 +20,34 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
 
@@ -63,7 +64,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("TEST FIELD");
 		signatureImageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		signatureParameters.setImageParameters(signatureImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 	}
@@ -86,7 +87,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

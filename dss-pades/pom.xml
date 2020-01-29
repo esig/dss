@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.5</version>
+		<version>5.6.RC1</version>
 	</parent>
 
 	<artifactId>dss-pades</artifactId>
@@ -16,6 +16,20 @@
 	<properties>
 		<module-name>jpms_dss_pades</module-name>
 	</properties>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>eu/**/suite/*Test.java</exclude>
+					</excludes>
+				</configuration>	
+			</plugin>
+		</plugins>
+	</build>
 
   	<dependencies>
         <dependency>

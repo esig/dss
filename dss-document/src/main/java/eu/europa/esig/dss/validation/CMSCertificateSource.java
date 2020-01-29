@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
 import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
@@ -29,7 +49,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
 
-	protected transient final AttributeTable unsignedAttributes;
+	protected final transient AttributeTable unsignedAttributes;
 
 	protected CMSCertificateSource(final AttributeTable unsignedAttributes, CertificatePool certPool) {
 		super(certPool);
@@ -52,7 +72,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private List<CertificateToken> getCertificateFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid) {
-		final List<CertificateToken> certs = new ArrayList<CertificateToken>();
+		final List<CertificateToken> certs = new ArrayList<>();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {
@@ -74,7 +94,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin location) {
-		List<CertificateRef> result = new ArrayList<CertificateRef>();
+		List<CertificateRef> result = new ArrayList<>();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {

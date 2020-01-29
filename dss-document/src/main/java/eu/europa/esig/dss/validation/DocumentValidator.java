@@ -23,20 +23,23 @@ package eu.europa.esig.dss.validation;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This is the interface to be used when implementing different signature validators.
  *
  */
-public interface DocumentValidator {
+public interface DocumentValidator extends ProcessExecutorProvider<DocumentProcessExecutor> {
 
 	/**
 	 * Retrieves the signatures found in the document
@@ -46,12 +49,26 @@ public interface DocumentValidator {
 	List<AdvancedSignature> getSignatures();
 
 	/**
+	 * Retrieves the detached timestamps found in the document
+	 *
+	 * @return a list of TimestampToken for validation purposes
+	 */
+	List<TimestampToken> getDetachedTimestamps();
+
+	/**
 	 * Provides a {@code CertificateVerifier} to be used during the validation process.
 	 *
 	 * @param certVerifier
 	 *            {@code CertificateVerifier}
 	 */
 	void setCertificateVerifier(final CertificateVerifier certVerifier);
+	
+	/**
+	 * Allows to define a custom validation time
+	 * 
+	 * @param validationTime {@link Date}
+	 */
+	void setValidationTime(Date validationTime);
 
 	/**
 	 * Sets the {@code List} of {@code DSSDocument} containing the original contents to sign, for detached signature
@@ -192,21 +209,34 @@ public interface DocumentValidator {
 	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
 	
 	/**
-	 * Prepares and fills {@code validationContext} for the signature validation
-	 * @param validationContext {@link ValidationContext} to prepare
-	 * @return list of {@link AdvancedSignature}s to be validated
+	 * Prepares the {@code validationContext} for signature validation process and
+	 * returns a list of signatures to validate
+	 * 
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param allSignatures
+	 *                          a list of all {@link AdvancedSignature}s to be
+	 *                          validated
 	 */
-	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext);
+	void prepareSignatureValidationContext(final ValidationContext validationContext, final List<AdvancedSignature> allSignatures);
+
+	/**
+	 * Prepares the {@code validationContext} for a timestamp validation process
+	 * 
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param timestamps
+	 *                          a list of detached timestamps
+	 */
+	void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, List<TimestampToken> timestamps);
 
 	/**
 	 * This method process the signature validation on the given {@code allSignatureList}
 	 * 
-	 * @param validationContext prepared and filled {@link ValidationContext}
 	 * @param allSignatureList list of {@link AdvancedSignature}s to be validated
-	 * @param structuralValidation specifies if structure of the signature must be validated
-	 * @return list of validated {@link AdvancedSignature}s
 	 */
-	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, 
-			List<AdvancedSignature> allSignatureList, boolean structuralValidation);
+	void processSignaturesValidation(List<AdvancedSignature> allSignatureList);
+
+	void findSignatureScopes(List<AdvancedSignature> currentValidatorSignatures);
 
 }

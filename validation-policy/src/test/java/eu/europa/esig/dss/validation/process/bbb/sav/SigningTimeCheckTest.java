@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -34,20 +34,21 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 
-public class SigningTimeCheckTest {
+public class SigningTimeCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signingTimeCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
-		sig.setDateTime(new Date());
+		sig.setClaimedSigningTime(new Date());
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningTimeCheck stc = new SigningTimeCheck(result, new SignatureWrapper(sig), constraint);
+		SigningTimeCheck stc = new SigningTimeCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		stc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -63,7 +64,7 @@ public class SigningTimeCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningTimeCheck stc = new SigningTimeCheck(result, new SignatureWrapper(sig), constraint);
+		SigningTimeCheck stc = new SigningTimeCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		stc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

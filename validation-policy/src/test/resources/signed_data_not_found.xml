@@ -7,7 +7,7 @@
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <ErrorMessage>The Reference for URI  has no XMLSignatureInput&lt;br/&gt;
 	Could not find a resolver for URI null and Base / XAdESSignature/Line number/1393</ErrorMessage>
-	        <DateTime>2014-10-14T14:51:00</DateTime>
+	        <ClaimedSigningTime>2014-10-14T14:51:00</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">

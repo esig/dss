@@ -30,7 +30,7 @@ public class FullyConsistentServiceFilter implements TrustedServiceFilter {
 
 	@Override
 	public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices) {
-		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> result = new ArrayList<>();
 		for (TrustedServiceWrapper service : trustedServices) {
 			if (TrustedServiceChecker.isFullyConsistent(service)) {
 				result.add(service);

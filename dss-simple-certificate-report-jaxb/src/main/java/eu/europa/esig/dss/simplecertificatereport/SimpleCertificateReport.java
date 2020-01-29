@@ -62,7 +62,7 @@ public class SimpleCertificateReport {
 	 * @return the list of certificate ids
 	 */
 	public List<String> getCertificateIds() {
-		List<String> ids = new ArrayList<String>();
+		List<String> ids = new ArrayList<>();
 		List<XmlChainItem> chain = simpleReport.getChain();
 		for (XmlChainItem xmlChainItem : chain) {
 			ids.add(xmlChainItem.getId());
@@ -407,7 +407,7 @@ public class SimpleCertificateReport {
 	 * @return a Set of VAT numbers
 	 */
 	public Set<String> getTrustAnchorVATNumbers() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		XmlChainItem cert = getTrustAnchorCertificate();
 		if (cert != null) {
 			List<XmlTrustAnchor> trustAnchors = cert.getTrustAnchors();

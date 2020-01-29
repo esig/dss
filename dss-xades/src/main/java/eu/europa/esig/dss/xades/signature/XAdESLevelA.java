@@ -25,9 +25,9 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 /**
  * Holds level A aspects of XAdES
@@ -59,7 +59,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 
 		xadesSignature.checkSignatureIntegrity();
 
-		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
+		final XAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
 		final byte[] data = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
 		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();

@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -42,7 +44,7 @@ public class CAdESLevelBRSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -72,11 +74,17 @@ public class CAdESLevelBRSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 
 		service = new CAdESService(getOfflineCertificateVerifier());
-
+	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

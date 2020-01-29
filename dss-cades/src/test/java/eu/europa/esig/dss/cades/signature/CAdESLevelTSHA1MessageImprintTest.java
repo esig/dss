@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -39,16 +39,15 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
@@ -58,7 +57,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		TimestampParameters signatureTimestampParameters = new TimestampParameters(DigestAlgorithm.SHA1);
+		CAdESTimestampParameters signatureTimestampParameters = new CAdESTimestampParameters(DigestAlgorithm.SHA1);
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
@@ -66,7 +65,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

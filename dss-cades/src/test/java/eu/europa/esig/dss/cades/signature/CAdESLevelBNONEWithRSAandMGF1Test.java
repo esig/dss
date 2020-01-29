@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -48,7 +50,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 
 	private static final String HELLO_WORLD = "Hello World";
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -56,7 +58,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 
 	@Parameters(name = "Combination {index} of NONEwithRSAandMGF1 + precomputed digest algorithm {0}")
 	public static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
 				rsaCombinations.add(digestAlgorithm);
@@ -83,6 +85,13 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 
 		service = new CAdESService(getOfflineCertificateVerifier());
 	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
 
 	@Override
 	protected DSSDocument sign() {
@@ -97,7 +106,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

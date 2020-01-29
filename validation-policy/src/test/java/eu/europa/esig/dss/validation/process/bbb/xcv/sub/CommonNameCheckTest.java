@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 
-public class CommonNameCheckTest {
+public class CommonNameCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void commonNameCheck() throws Exception {
@@ -47,7 +48,7 @@ public class CommonNameCheckTest {
 		xc.setCommonName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CommonNameCheck cnc = new CommonNameCheck(result, new CertificateWrapper(xc), constraint);
+		CommonNameCheck cnc = new CommonNameCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class CommonNameCheckTest {
 		xc.setCommonName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CommonNameCheck cnc = new CommonNameCheck(result, new CertificateWrapper(xc), constraint);
+		CommonNameCheck cnc = new CommonNameCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

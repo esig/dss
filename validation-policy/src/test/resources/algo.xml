@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test_esteid2018.asice</DocumentName>
-    <ValidationDate>2019-10-07T07:14:19</ValidationDate>
+    <ValidationDate>2019-10-04T07:14:19</ValidationDate>
     <ContainerInfo>
         <ContainerType>ASiC-E</ContainerType>
         <MimeTypeFilePresent>true</MimeTypeFilePresent>
@@ -23,7 +23,7 @@
         <Signature Id="S-B9E1CEC2D55F6C3D14143FF0CE585FD28D375F3124D2F1BA156499D601B8B55C">
             <DAIdentifier>S0</DAIdentifier>
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
-            <DateTime>2019-09-23T14:25:17</DateTime>
+            <ClaimedSigningTime>2019-09-23T14:25:17</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -155,13 +155,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
-                    <CountryCode>EE</CountryCode>
+                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
-                            <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-11-02T14:00:00</StartDate>
@@ -169,7 +168,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -223,18 +222,17 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
-                    <CountryCode>EE</CountryCode>
+                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754">
-                            <ServiceName>SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2019)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2019)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-03-10T22:00:00</StartDate>
                             <ServiceSupplyPoints>
-                                <serviceSupplyPoint>http://tsa.sk.ee</serviceSupplyPoint>
+                                <ServiceSupplyPoint>http://tsa.sk.ee</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                     </TrustedServices>
@@ -300,13 +298,12 @@
                 <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
-                    <CountryCode>EE</CountryCode>
+                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
-                            <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-11-02T14:00:00</StartDate>
@@ -314,7 +311,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -411,18 +408,17 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
-                    <CountryCode>EE</CountryCode>
+                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
-                            <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-11-02T14:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -512,7 +508,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2019-09-23T14:25:28</ProductionDate>
             <ThisUpdate>2019-09-23T14:25:28</ThisUpdate>
@@ -574,7 +570,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-EE">
             <CountryCode>EE</CountryCode>
             <Url>https://sr.riik.ee/tsl/estonian-tsl.xml</Url>
             <SequenceNumber>47</SequenceNumber>
@@ -584,15 +580,15 @@
             <NextUpdate>2020-03-05T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+        <TrustedList Id="LOTL-EU" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+	        <SequenceNumber>250</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-10-07T07:14:04</LastLoading>
+	        <IssueDate>2019-10-04T11:00:00</IssueDate>
+	        <NextUpdate>2020-04-04T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+        </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
-        <SequenceNumber>250</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-10-07T07:14:04</LastLoading>
-        <IssueDate>2019-10-04T11:00:00</IssueDate>
-        <NextUpdate>2020-04-04T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

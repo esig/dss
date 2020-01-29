@@ -49,16 +49,22 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 
 		SignaturePolicy signaturePolicy = getSignaturePolicy();
 		Digest digest = signaturePolicy.getDigest();
-
-		byte[] recalculatedDigestValue = DSSUtils.digest(digest.getAlgorithm(), signaturePolicy.getPolicyContent());
-		if (Arrays.equals(digest.getValue(), recalculatedDigestValue)) {
-			setStatus(true);
-			setDigestAlgorithmsEqual(true);
+		
+		if (digest != null) {
+			byte[] recalculatedDigestValue = DSSUtils.digest(digest.getAlgorithm(), signaturePolicy.getPolicyContent());
+			if (Arrays.equals(digest.getValue(), recalculatedDigestValue)) {
+				setStatus(true);
+				setDigestAlgorithmsEqual(true);
+			} else {
+				addError("general",
+						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
+								+ Utils.toBase64(recalculatedDigestValue) + ").");
+			}
+			
 		} else {
-			addError("general",
-					"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-							+ Utils.toBase64(recalculatedDigestValue) + ").");
+			addError("general", "The policy digest value is not defined.");
 		}
+
 	}
 
 }

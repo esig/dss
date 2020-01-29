@@ -24,9 +24,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
@@ -35,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
@@ -96,12 +96,27 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<CertificateRevocationWrapper> getCertificateRevocationData() {
-		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<CertificateRevocationWrapper>();
+		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<>();
 		List<XmlCertificateRevocation> revocations = certificate.getRevocations();
 		for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 			certRevocationWrappers.add(new CertificateRevocationWrapper(xmlCertificateRevocation));
 		}
 		return certRevocationWrappers;
+	}
+	
+	/**
+	 * Returns revocation data by its id
+	 * 
+	 * @param revocationId {@link String} representing id of a revocation data to extract
+	 * @return {@link CertificateRevocationWrapper}
+	 */
+	public CertificateRevocationWrapper getRevocationDataById(String revocationId) {
+		for (CertificateRevocationWrapper revocationData : getCertificateRevocationData()) {
+			if (revocationId.equals(revocationData.getId())) {
+				return revocationData;
+			}
+		}
+		return null;
 	}
 	
 	public boolean isIdPkixOcspNoCheck() {
@@ -202,30 +217,36 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<TrustedServiceWrapper> getTrustedServices() {
-		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
+		List<TrustedServiceWrapper> result = new ArrayList<>();
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
 		if (tsps != null) {
 			for (XmlTrustedServiceProvider tsp : tsps) {
+				List<String> tspNames = getValues(tsp.getTSPNames());
 				List<XmlTrustedService> trustedServices = tsp.getTrustedServices();
 				if (trustedServices != null) {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
-						wrapper.setTspName(tsp.getTSPName());
+						wrapper.setTrustedList(tsp.getTL());
+						wrapper.setListOfTrustedLists(tsp.getLOTL());
+						wrapper.setTspNames(tspNames);
 						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
-						wrapper.setServiceName(trustedService.getServiceName());
-						wrapper.setCountryCode(tsp.getCountryCode());
+						wrapper.setServiceNames(getValues(trustedService.getServiceNames()));
 						wrapper.setStatus(trustedService.getStatus());
 						wrapper.setType(trustedService.getServiceType());
 						wrapper.setStartDate(trustedService.getStartDate());
 						wrapper.setEndDate(trustedService.getEndDate());
-						wrapper.setCapturedQualifiers(new ArrayList<String>(trustedService.getCapturedQualifiers()));
-						wrapper.setAdditionalServiceInfos(new ArrayList<String>(trustedService.getAdditionalServiceInfoUris()));
+						wrapper.setCapturedQualifiers(new ArrayList<>(trustedService.getCapturedQualifiers()));
+						wrapper.setAdditionalServiceInfos(new ArrayList<>(trustedService.getAdditionalServiceInfoUris()));
 						result.add(wrapper);
 					}
 				}
 			}
 		}
 		return result;
+	}
+
+	private List<String> getValues(List<XmlLangAndValue> langAndValues) {
+		return langAndValues.stream().map(t -> t.getValue()).collect(Collectors.toList());
 	}
 
 	public String getCertificateDN() {
@@ -260,7 +281,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getCpsUrls() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
 		if (certificatePolicyIds != null) {
 			for (XmlCertificatePolicy xmlCertificatePolicy : certificatePolicyIds) {
@@ -289,22 +310,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (xmlOids != null) {
 			for (XmlOID xmlOID : xmlOids) {
 				result.add(xmlOID.getValue());
 			}
 		}
 		return result;
-	}
-
-	public Set<String> getTrustedListCountryCodes() {
-		Set<String> countryCodes = new HashSet<String>();
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
-		for (XmlTrustedServiceProvider tsp : trustedServiceProviders) {
-			countryCodes.add(tsp.getCountryCode());
-		}
-		return countryCodes;
 	}
 
 	@Override

@@ -1,7 +1,28 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.policy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +32,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.stream.XMLStreamException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.policy.jaxb.Algo;
@@ -33,7 +54,7 @@ public class ValidationPolicyFacadeTest {
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);
-		assertEquals(128, algo.getSize().longValue());
+		assertEquals(128, algo.getSize());
 
 		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
 		assertNotNull(marshall);
@@ -69,7 +90,16 @@ public class ValidationPolicyFacadeTest {
 
 	@Test
 	public void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
-		assertNotNull(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
+		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
+		assertNotNull(trustedListValidationPolicy);
+		assertEquals("Policy to validate Trusted Lists", trustedListValidationPolicy.getPolicyDescription());
+	}
+
+	@Test
+	public void incorrectPath() throws JAXBException, XMLStreamException, IOException, SAXException {
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy("aaaa"));
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy((InputStream) null));
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy((File) null));
 	}
 
 	@Test
@@ -85,34 +115,34 @@ public class ValidationPolicyFacadeTest {
 		assertEquals(0, revocationFreshness.getValue().intValue());
 	}
 
-	@Test(expected = UnmarshalException.class)
+	@Test
 	public void testInvalid() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/invalid-policy.xml"));
+		assertThrows(UnmarshalException.class, () -> ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/invalid-policy.xml")));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNullIS() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall((InputStream) null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((InputStream) null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNullFile() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall((File) null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((File) null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNullString() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall((String) null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((String) null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void marshallNull() throws Exception {
-		ValidationPolicyFacade.newFacade().marshall(null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().marshall(null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void marshallNull2() throws Exception {
-		ValidationPolicyFacade.newFacade().marshall(null, null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().marshall(null, null));
 	}
 
 }

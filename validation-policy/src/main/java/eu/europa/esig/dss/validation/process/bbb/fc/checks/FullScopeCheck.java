@@ -28,17 +28,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.IMessageTag;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class FullScopeCheck extends ChainItem<XmlFC> {
 
 	private final SignatureWrapper signature;
 
-	public FullScopeCheck(XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
-		super(result, constraint);
+	public FullScopeCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.signature = signature;
 	}
@@ -56,12 +56,12 @@ public class FullScopeCheck extends ChainItem<XmlFC> {
 	}
 
 	@Override
-	protected IMessageTag getMessageTag() {
+	protected MessageTag getMessageTag() {
 		return MessageTag.BBB_FC_ICFD;
 	}
 
 	@Override
-	protected IMessageTag getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		return MessageTag.BBB_FC_ICFD_ANS;
 	}
 
@@ -72,7 +72,7 @@ public class FullScopeCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.SIG_CONSTRAINTS_FAILURE;
+		return SubIndication.FORMAT_FAILURE;
 	}
 
 }

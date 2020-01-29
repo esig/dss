@@ -22,18 +22,19 @@ package eu.europa.esig.dss.test.signature;
 
 import java.util.List;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 
-public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP extends AbstractSignatureParameters>
-		extends AbstractPkiFactoryTestSignature<SP> {
+public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters>
+		extends AbstractPkiFactoryTestSignature<SP, TP> {
 
 	protected abstract List<DSSDocument> getDocumentsToSign();
 
-	protected abstract MultipleDocumentsSignatureService<SP> getService();
+	protected abstract MultipleDocumentsSignatureService<SP, TP> getService();
 
 	@Override
 	protected List<DSSDocument> getOriginalDocuments() {
@@ -44,7 +45,7 @@ public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP
 	protected DSSDocument sign() {
 		List<DSSDocument> toBeSigneds = getDocumentsToSign();
 		SP params = getSignatureParameters();
-		MultipleDocumentsSignatureService<SP> service = getService();
+		MultipleDocumentsSignatureService<SP, TP> service = getService();
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigneds, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());

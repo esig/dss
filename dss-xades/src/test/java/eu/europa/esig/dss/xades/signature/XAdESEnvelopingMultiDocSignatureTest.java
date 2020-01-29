@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -33,13 +33,14 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESEnvelopingMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class XAdESEnvelopingMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"), new FileDocument("src/test/resources/sample.png"));
 
@@ -56,7 +57,7 @@ public class XAdESEnvelopingMultiDocSignatureTest extends AbstractPkiFactoryTest
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return new XAdESService(getCompleteCertificateVerifier());
 	}
 

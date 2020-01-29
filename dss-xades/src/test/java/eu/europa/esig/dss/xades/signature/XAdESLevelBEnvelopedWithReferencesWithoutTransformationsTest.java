@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -39,17 +39,18 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSDocument attachment1;
 	private DSSDocument attachment2;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -64,7 +65,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		references.add(createReference(documentToSign));
 		references.add(createReference(attachment1));
 		references.add(createReference(attachment2));
@@ -82,7 +83,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 	private DSSDocument createDocument(String filePath) throws IOException {
 		File file = new File(filePath);
 		byte[] content = Utils.toByteArray(new FileInputStream(file));
-		return new InMemoryDocument(content, filePath);
+		return new InMemoryDocument(content, file.getName());
 	}
 
 	private DSSReference createReference(DSSDocument fileDocument) {
@@ -99,7 +100,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		detachedContents.add(attachment1);
 		detachedContents.add(attachment2);
@@ -109,7 +110,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

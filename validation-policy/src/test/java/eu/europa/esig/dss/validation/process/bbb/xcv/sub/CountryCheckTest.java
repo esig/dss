@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
 
-public class CountryCheckTest {
+public class CountryCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void countryCheck() throws Exception {
@@ -47,7 +48,7 @@ public class CountryCheckTest {
 		xc.setCountryName("BE");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CountryCheck cc = new CountryCheck(result, new CertificateWrapper(xc), constraint);
+		CountryCheck cc = new CountryCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class CountryCheckTest {
 		xc.setCountryName("LU");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CountryCheck cc = new CountryCheck(result, new CertificateWrapper(xc), constraint);
+		CountryCheck cc = new CountryCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-7ceb21922594dde030caba235bdb430fd95393be854df11b513ab20f598e24a6">
             <SignatureFilename>PDF</SignatureFilename>
-            <DateTime>2019-01-22T09:47:48</DateTime>
+            <ClaimedSigningTime>2019-01-22T09:47:48</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -109,19 +109,18 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>OL</CountryCode>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T20:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -183,18 +182,17 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>OL</CountryCode>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -225,7 +223,7 @@
             	<Source>SIGNATURE</Source>
             </Sources>
             <NotAfter>2017-11-17T00:00:00</NotAfter>
-            <NotBefore>2016-05-12T00:00:00</NotBefore>
+            <NotBefore>2017-01-01T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -257,18 +255,17 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>OL</CountryCode>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -302,7 +299,7 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2016-11-17T00:00:00</NotAfter>
+            <NotAfter>2017-03-01T00:00:00</NotAfter>
             <NotBefore>2015-10-17T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
@@ -316,7 +313,7 @@
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -334,18 +331,17 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>OL</CountryCode>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -407,19 +403,18 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>OL</CountryCode>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T20:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -481,19 +476,18 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
-                    <CountryCode>OL</CountryCode>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -517,7 +511,7 @@
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -534,10 +528,12 @@
             <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
             <ProductionDate>2019-01-22T09:56:01</ProductionDate>
             <ThisUpdate>2019-01-22T09:56:01</ThisUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -554,10 +550,12 @@
             <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
             <ProductionDate>2019-01-22T09:56:01</ProductionDate>
             <ThisUpdate>2019-01-22T09:56:01</ThisUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -577,7 +575,7 @@
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -599,7 +597,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
             <CountryCode>OL</CountryCode>
             <Url>http://www.openlimit.ol/TSL-OL.xml</Url>
             <SequenceNumber>13</SequenceNumber>

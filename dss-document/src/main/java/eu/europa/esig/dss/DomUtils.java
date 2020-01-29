@@ -33,9 +33,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.XMLConstants;
-import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -63,6 +63,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -93,8 +96,7 @@ public final class DomUtils {
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
-		namespaces = new HashMap<String, String>();
-		registerDefaultNamespaces();
+		namespaces = new HashMap<>();
 
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
@@ -107,18 +109,6 @@ public final class DomUtils {
 		setSecurityFeature("http://xml.org/sax/features/external-general-entities", false);
 		setSecurityFeature("http://xml.org/sax/features/external-parameter-entities", false);
 		setSecurityFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-	}
-
-	/**
-	 * This method registers the default namespaces.
-	 */
-	private static void registerDefaultNamespaces() {
-		registerNamespace("ds", XMLSignature.XMLNS);
-		registerNamespace("dsig", XMLSignature.XMLNS);
-		registerNamespace("xades", XAdESNamespaces.getXAdESDefaultNamespace()); // 1.3.2 by default
-		registerNamespace("xades141", XAdESNamespaces.XAdES141);
-		registerNamespace("xades122", XAdESNamespaces.XAdES122);
-		registerNamespace("xades111", XAdESNamespaces.XAdES111);
 	}
 	
 	/**
@@ -165,15 +155,13 @@ public final class DomUtils {
 	/**
 	 * This method allows to register a namespace and associated prefix. If the prefix exists already it is replaced.
 	 *
-	 * @param prefix
-	 *            namespace prefix
 	 * @param namespace
-	 *            namespace
+	 *            namespace object with the prefix and the URI
 	 * @return true if this map did not already contain the specified element
 	 */
-	public static boolean registerNamespace(final String prefix, final String namespace) {
-		final String put = namespaces.put(prefix, namespace);
-		namespacePrefixMapper.registerNamespace(prefix, namespace);
+	public static boolean registerNamespace(final DSSNamespace namespace) {
+		final String put = namespaces.put(namespace.getPrefix(), namespace.getUri());
+		namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
 		return put == null;
 	}
 
@@ -245,6 +233,7 @@ public final class DomUtils {
 	 * @return a new {@link org.w3c.dom.Document} with the bytes content
 	 */
 	public static Document buildDOM(final byte[] bytes) {
+		Objects.requireNonNull(bytes, "bytes is required");
 		return buildDOM(new ByteArrayInputStream(bytes));
 	}
 
@@ -256,6 +245,7 @@ public final class DomUtils {
 	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.model.DSSDocument}
 	 */
 	public static Document buildDOM(final DSSDocument dssDocument) {
+		Objects.requireNonNull(dssDocument, "The document is null");
 		return buildDOM(dssDocument.openStream());
 	}
 
@@ -294,6 +284,27 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method adds an attribute with the namespace and the value
+	 * 
+	 * @param element
+	 *            the element where the attribute is needed
+	 * @param namespace
+	 *            the used namespace for the attribute
+	 * @param attribute
+	 *            the attribute the be added
+	 * @param value
+	 *            the value for the given attribute
+	 */
+	public static void setAttributeNS(Element element, DSSNamespace namespace, DSSAttribute attribute, String value) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(namespace.getPrefix());
+		sb.append(':');
+		sb.append(attribute.getAttributeName());
+
+		element.setAttributeNS(namespace.getUri(), sb.toString(), value);
+	}
+
+	/**
 	 * This method creates and adds a new XML {@code Element}
 	 *
 	 * @param document
@@ -301,17 +312,18 @@ public final class DomUtils {
 	 * @param parentDom
 	 *            parent node
 	 * @param namespace
-	 *            namespace
-	 * @param name
-	 *            element name
+	 *            namespace definition
+	 * @param element
+	 *            the type of element name
 	 * @return added element
 	 */
-	public static Element addElement(final Document document, final Element parentDom, final String namespace, final String name) {
-		final Element dom = document.createElementNS(namespace, name);
+	public static Element addElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element) {
+		final Element dom = createElementNS(document, namespace, element);
 		parentDom.appendChild(dom);
 		return dom;
 	}
 
+	
 	/**
 	 * This method creates a new instance of XPathExpression with the given xpath
 	 * expression
@@ -421,14 +433,14 @@ public final class DomUtils {
 	 *            parent node
 	 * @param namespace
 	 *            namespace
-	 * @param name
-	 *            element name
+	 * @param element
+	 *            element type
 	 * @param value
 	 *            element text node value
 	 * @return added element
 	 */
-	public static Element addTextElement(final Document document, final Element parentDom, final String namespace, final String name, final String value) {
-		final Element dom = document.createElementNS(namespace, name);
+	public static Element addTextElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element, final String value) {
+		final Element dom = createElementNS(document, namespace, element);
 		parentDom.appendChild(dom);
 		final Text valueNode = document.createTextNode(value);
 		dom.appendChild(valueNode);
@@ -504,7 +516,7 @@ public final class DomUtils {
 	 * @return {@code List} of children's names
 	 */
 	public static List<String> getChildrenNames(final Node xmlNode, final String xPathString) {
-		List<String> childrenNames = new ArrayList<String>();
+		List<String> childrenNames = new ArrayList<>();
 		final Element element = getElement(xmlNode, xPathString);
 		if (element != null) {
 			final NodeList unsignedProperties = element.getChildNodes();
@@ -580,7 +592,7 @@ public final class DomUtils {
 	 * @return a map with the prefix and the related URI
 	 */
 	public static Map<String, String> getCurrentNamespaces() {
-		return new HashMap<String, String>(namespaces);
+		return new HashMap<>(namespaces);
 	}
 
 	/**
@@ -627,7 +639,7 @@ public final class DomUtils {
 	 * @return true if it is an XPointer query
 	 */
 	public static boolean isXPointerQuery(String uriValue) {
-		if (uriValue.isEmpty()) {
+		if (Utils.isStringEmpty(uriValue)) {
 			return false;
 		}
 		String decodedUri = DSSUtils.decodeUrl(uriValue);
@@ -645,6 +657,21 @@ public final class DomUtils {
 			return false;
 		}
 		return true;
+	}
+
+	public static Element createElementNS(Document documentDom, DSSNamespace namespace, DSSElement element) {
+		StringBuffer elementSB = new StringBuffer();
+		elementSB.append(namespace.getPrefix());
+		elementSB.append(':');
+		elementSB.append(element.getTagName());
+		return documentDom.createElementNS(namespace.getUri(), elementSB.toString());
+	}
+
+	public static void addNamespaceAttribute(Element element, DSSNamespace namespace) {
+		StringBuffer namespaceAttribute = new StringBuffer();
+		namespaceAttribute.append("xmlns:");
+		namespaceAttribute.append(namespace.getPrefix());
+		element.setAttribute(namespaceAttribute.toString(), namespace.getUri());
 	}
 
 }

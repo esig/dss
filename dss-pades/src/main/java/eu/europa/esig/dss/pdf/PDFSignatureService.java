@@ -22,10 +22,9 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 
@@ -41,14 +40,12 @@ public interface PDFSignatureService {
 	 * @param toSignDocument
 	 *            the document to be signed
 	 * @param parameters
-	 *            the signature parameters
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used
+	 *            the signature/timestamp parameters
 	 * @return the digest value
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm);
+	byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
 	/**
 	 * Signs a PDF document
@@ -58,13 +55,11 @@ public interface PDFSignatureService {
 	 * @param signatureValue
 	 *            the signature value
 	 * @param parameters
-	 *            the signature parameters
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used
+	 *            the signature/timestamp parameters
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm);
+	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESCommonParameters parameters);
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document

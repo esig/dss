@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -35,9 +35,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 
-public class CertifiedRolesCheckTest {
+public class CertifiedRolesCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certifiedRolesCheck() throws Exception {
@@ -53,7 +54,7 @@ public class CertifiedRolesCheckTest {
 		constraint.getId().add("Valid_Role");
 
 		XmlSAV result = new XmlSAV();
-		CertifiedRolesCheck crc = new CertifiedRolesCheck(result, new SignatureWrapper(sig), constraint);
+		CertifiedRolesCheck crc = new CertifiedRolesCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		crc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -75,7 +76,7 @@ public class CertifiedRolesCheckTest {
 		constraint.getId().add("Valid_Role");
 
 		XmlSAV result = new XmlSAV();
-		CertifiedRolesCheck crc = new CertifiedRolesCheck(result, new SignatureWrapper(sig), constraint);
+		CertifiedRolesCheck crc = new CertifiedRolesCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		crc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -20,118 +20,82 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class TLInfo {
+import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.spi.tsl.identifier.TrustedListIdentifier;
 
-	private String countryCode;
-	private String url;
-	private int sequenceNumber;
-	private int version;
-	private Date issueDate;
-	private Date lastLoading;
-	private Date nextUpdate;
-	private boolean lotl;
-	private boolean wellSigned; // Indication = VALID
+/**
+ * Computes summary for a single Trusted List processing result
+ *
+ */
+public class TLInfo implements Serializable {
+	
+	private static final long serialVersionUID = -1505115221927652721L;
 
-	private int nbServiceProviders;
-	private int nbServices;
-	private int nbCertificates;
-
-	public String getCountryCode() {
-		return countryCode;
+	/**
+	 * Address of the source
+	 */
+	private final String url;
+	
+	/* DTOs */
+	private final DownloadInfoRecord downloadCacheInfo;
+	private final ParsingInfoRecord parsingCacheInfo;
+	private final ValidationInfoRecord validationCacheInfo;
+	
+	/**
+	 * The default constructor
+	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
+	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
+	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
+	 * @param url {@link String} address used to extract the entry
+	 */
+	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo, 
+			final ValidationInfoRecord validationCacheInfo, final String url) {
+		this.downloadCacheInfo = downloadCacheInfo;
+		this.parsingCacheInfo = parsingCacheInfo;
+		this.validationCacheInfo = validationCacheInfo;
+		this.url = url;
 	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
+	
+	/**
+	 * Returns Download Cache Info
+	 * @return {@link DownloadInfoRecord}
+	 */
+	public DownloadInfoRecord getDownloadCacheInfo() {
+		return downloadCacheInfo;
 	}
-
+	
+	/**
+	 * Returns Parsing Cache Info
+	 * @return {@link ParsingInfoRecord}
+	 */
+	public ParsingInfoRecord getParsingCacheInfo() {
+		return parsingCacheInfo;
+	}
+	
+	/**
+	 * Returns Validation Cache Info
+	 * @return {@link ValidationInfoRecord}
+	 */
+	public ValidationInfoRecord getValidationCacheInfo() {
+		return validationCacheInfo;
+	}
+	
+	/**
+	 * Returns a URL that was used to download the remote file
+	 * @return {@link String} url
+	 */
 	public String getUrl() {
 		return url;
 	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public int getSequenceNumber() {
-		return sequenceNumber;
-	}
-
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public Date getIssueDate() {
-		return issueDate;
-	}
-
-	public void setIssueDate(Date issueDate) {
-		this.issueDate = issueDate;
-	}
-
-	public Date getNextUpdate() {
-		return nextUpdate;
-	}
-
-	public void setNextUpdate(Date nextUpdate) {
-		this.nextUpdate = nextUpdate;
-	}
-
-	public Date getLastLoading() {
-		return lastLoading;
-	}
-
-	public void setLastLoading(Date lastLoading) {
-		this.lastLoading = lastLoading;
-	}
-
-	public boolean isLotl() {
-		return lotl;
-	}
-
-	public void setLotl(boolean lotl) {
-		this.lotl = lotl;
-	}
-
-	public boolean isWellSigned() {
-		return wellSigned;
-	}
-
-	public void setWellSigned(boolean wellSigned) {
-		this.wellSigned = wellSigned;
-	}
-
-	public int getNbServiceProviders() {
-		return nbServiceProviders;
-	}
-
-	public void setNbServiceProviders(int nbServiceProviders) {
-		this.nbServiceProviders = nbServiceProviders;
-	}
-
-	public int getNbServices() {
-		return nbServices;
-	}
-
-	public void setNbServices(int nbServices) {
-		this.nbServices = nbServices;
-	}
-
-	public int getNbCertificates() {
-		return nbCertificates;
-	}
-
-	public void setNbCertificates(int nbCertificates) {
-		this.nbCertificates = nbCertificates;
+	
+	/**
+	 * Returns the TL id
+	 * @return {@link String} id
+	 */
+	public Identifier getIdentifier() {
+		return new TrustedListIdentifier(this);
 	}
 
 }

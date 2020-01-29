@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.5</version>
+	<version>5.6.RC1</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -51,15 +51,14 @@
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
 
-		<slf4j.version>1.7.28</slf4j.version>
+		<slf4j.version>1.7.30</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
-		<bouncycastle.version>1.62</bouncycastle.version>
+		<bouncycastle.version>1.64</bouncycastle.version>
 		<xmlsec.version>2.1.4</xmlsec.version>
-		<pdfbox.version>2.0.16</pdfbox.version>
+		<pdfbox.version>2.0.18</pdfbox.version>
 		<openpdf.version>1.3.5</openpdf.version>
-		<httpclient.version>4.5.9</httpclient.version>
-
+		<httpclient.version>4.5.11</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		<commons-codec.version>1.12</commons-codec.version> <!-- Synchronized with santuario -->
 		
@@ -68,15 +67,18 @@
 		<jaxws-api.version>2.3.1</jaxws-api.version>
 		<activation.version>1.2.0</activation.version>
 
-		<junit.version>4.12</junit.version>
-		<mockito.version>2.28.2</mockito.version>
-		<h2database.version>1.4.199</h2database.version>
-		<jackson.version>2.9.9</jackson.version>
-		<jackson-databind.version>2.9.9.3</jackson-databind.version>  <!-- Upgrade against vulnerability -->
+		<junit.platform.version>1.6.0</junit.platform.version>
+		<junit.jupiter.version>5.6.0</junit.jupiter.version>
+		<junit.vintage.version>5.6.0</junit.vintage.version>
 		
+		<mockito.version>3.2.4</mockito.version>
+		<h2database.version>1.4.200</h2database.version>
+		<jackson.version>2.10.1</jackson.version>
+		
+		<sonar.java.source>1.8</sonar.java.source>
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-	    <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
+	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>	   
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../dss-jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	
 	<licenses>
@@ -95,6 +97,7 @@
 		<module>specs-xades</module>
 		<module>specs-trusted-list</module>
 		<module>specs-validation-report</module>
+		<module>specs-asic-manifest</module>
 		
 		<module>dss-policy-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
@@ -105,6 +108,8 @@
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
+		
+    	<module>dss-i18n</module>
 		
 		<module>dss-model</module>
 		<module>dss-crl-parser</module>
@@ -152,10 +157,17 @@
     	<module>dss-certificate-validation-soap-client</module>
     	<module>dss-certificate-validation-rest</module>
     	<module>dss-certificate-validation-soap</module>
+    	<module>dss-timestamp-dto</module>
+    	<module>dss-timestamp-remote</module>
+    	<module>dss-timestamp-remote-rest-client</module>
+    	<module>dss-timestamp-remote-soap-client</module>
+    	<module>dss-timestamp-remote-rest</module>
+    	<module>dss-timestamp-remote-soap</module>
 		
 		<module>dss-cookbook</module>
-
-  </modules>
+		
+		<module>dss-jacoco-coverage</module>
+	</modules>
 
 	<build>
 		<plugins>
@@ -234,38 +246,6 @@
 			        </archive>
 				</configuration>
 			</plugin>
-			
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-			    <configuration>
-					<fileSets>
-						<fileSet>
-							<directory>${project.build.directory}</directory>
-							<includes>
-								<include>*.exec</include>
-							</includes>
-						</fileSet>
-					</fileSets>
-			        <destFile>${sonar.jacoco.reportPaths}</destFile>
-			        <append>true</append>
-			    </configuration>
-				<executions>
-					<execution>
-						<id>prepare-unit-test-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate-unit-test-report</id>
-						<goals>
-							<goal>merge</goal>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -335,45 +315,16 @@
 							<goal>jar</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>aggregate</id>
+						<phase>site</phase>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		
-			<plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-site-plugin</artifactId>
-	            <inherited>false</inherited>	            
-	            <configuration>
-	                <reportPlugins>
-	                    <plugin>
-	                        <groupId>org.apache.maven.plugins</groupId>
-	                        <artifactId>maven-javadoc-plugin</artifactId>
-							<version>3.1.1</version>
-	                        <reportSets>
-	                            <reportSet>
-	                                <id>aggregate</id>
-	                                <reports>
-	                                    <report>aggregate</report>
-	                                </reports>
-	                            </reportSet>
-	                        </reportSets>
-	                        <configuration>
-                				<encoding>UTF-8</encoding>
-                				                	
-<!-- 							Requires GraphViz (see DSS-1282) -->
-<!-- 							Be sure that the complete path to graphviz\bin\dot(.exe) is in the PATH -->
-								<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
-								<docletArtifact>
-									<groupId>org.umlgraph</groupId>
-									<artifactId>umlgraph</artifactId>
-									<version>5.6.6</version>
-								</docletArtifact>
-								<additionalparam>-views -all</additionalparam>
-								<useStandardDocletOptions>true</useStandardDocletOptions>	
-	                        </configuration>
-	                    </plugin>
-	                </reportPlugins>
-	            </configuration>
-	        </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -404,16 +355,23 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.4</version>
-				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -427,7 +385,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.2</version>
+					<version>3.0.0-M3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -499,7 +457,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.5</tag>
+		<tag>5.6.RC1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -523,6 +481,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-validation-report</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-asic-manifest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -750,6 +713,36 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-validation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -786,6 +779,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-simple-certificate-report-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-i18n</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -920,10 +918,39 @@
 
 			<!-- Testing -->
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
+			    <groupId>org.junit.platform</groupId>
+			    <artifactId>junit-platform-launcher</artifactId>
+			    <version>${junit.platform.version}</version>
 			</dependency>
+			<dependency>
+			    <groupId>org.junit.jupiter</groupId>
+			    <artifactId>junit-jupiter-engine</artifactId>
+			    <version>${junit.jupiter.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.junit.jupiter</groupId>
+			    <artifactId>junit-jupiter-params</artifactId>
+			    <version>${junit.jupiter.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+			    <artifactId>junit-jupiter-api</artifactId>
+			    <version>${junit.jupiter.version}</version>
+			</dependency>	
+			<!-- JUnit 4 compatibility -->
+			<dependency>
+			    <groupId>org.junit.vintage</groupId>
+			    <artifactId>junit-vintage-engine</artifactId>
+			    <version>${junit.vintage.version}</version>
+			</dependency>
+			<!-- JUnit Test Suite compatibility -->
+			<dependency>
+			    <groupId>org.junit.platform</groupId>
+			    <artifactId>junit-platform-runner</artifactId>
+			    <version>${junit.platform.version}</version>
+			</dependency>
+
+			
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
@@ -939,13 +966,6 @@
 				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-databind</artifactId>
-			    <version>${jackson-databind.version}</version>
-			</dependency>
-						
-						
 		</dependencies>
 	</dependencyManagement>
 
@@ -972,6 +992,7 @@
 			<properties>
 				<maven.test.skip>true</maven.test.skip>
 				<maven.javadoc.skip>true</maven.javadoc.skip>
+				<jacoco.skip>true</jacoco.skip>
 			</properties>
 		</profile>
 		<profile>
@@ -1018,6 +1039,38 @@
             		</plugin>
             	</plugins>
             </build>
+		</profile>
+		<profile>
+			<id>spotless</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.diffplug.spotless</groupId>
+						<artifactId>spotless-maven-plugin</artifactId>
+						<version>1.27.0</version>
+						<configuration>
+							<java>
+								<licenseHeader>
+									<file>${user.dir}/spotless/license-header.java</file>
+								</licenseHeader>
+<!-- 								<eclipse> -->
+<!-- 									<file>${user.dir}/spotless/eclipse-fmt.xml</file> -->
+<!-- 								</eclipse> -->
+								<removeUnusedImports />
+							</java>
+						</configuration>
+						<executions>
+							<execution>
+								<id>spotless-check</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>apply</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

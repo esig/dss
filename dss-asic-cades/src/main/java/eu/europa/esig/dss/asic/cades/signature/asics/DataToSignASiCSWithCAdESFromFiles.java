@@ -51,6 +51,11 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	}
 
 	@Override
+	public String getTimestampFilename() {
+		return getTimestampFileName();
+	}
+
+	@Override
 	public DSSDocument getToBeSigned() {
 		return getSignedDocuments().get(0);
 	}
@@ -66,7 +71,7 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 			if (Utils.collectionSize(filesToBeSigned) > 1) {
 				signedDocuments = Arrays.asList(createPackageZip(filesToBeSigned, signingDate));
 			} else {
-				signedDocuments = new ArrayList<DSSDocument>(filesToBeSigned);
+				signedDocuments = new ArrayList<>(filesToBeSigned);
 			}
 		}
 		return signedDocuments;
@@ -81,7 +86,19 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	@Override
 	public List<DSSDocument> getSignatures() {
 		// new container
-		return new ArrayList<DSSDocument>();
+		return new ArrayList<>();
+	}
+
+	@Override
+	public List<DSSDocument> getArchiveManifestFiles() {
+		// not supported
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<DSSDocument> getTimestamps() {
+		// new container
+		return new ArrayList<>();
 	}
 
 }

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
+import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -32,18 +33,25 @@ import eu.europa.esig.dss.utils.Utils;
 public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
 	private final List<DSSDocument> embeddedSignatures;
+	private final List<DSSDocument> embeddedTimestamps;
 	private final List<DSSDocument> embeddedSignedFiles;
 	private final ASiCParameters asicParameters;
 
-	public DataToSignASiCSWithCAdESFromArchive(List<DSSDocument> embeddedSignatures, List<DSSDocument> embeddedSignedFiles, ASiCParameters asicParameters) {
-		this.embeddedSignatures = embeddedSignatures;
-		this.embeddedSignedFiles = embeddedSignedFiles;
+	public DataToSignASiCSWithCAdESFromArchive(final ASiCExtractResult result, final ASiCParameters asicParameters) {
+		this.embeddedSignatures = result.getSignatureDocuments();
+		this.embeddedTimestamps = result.getTimestampDocuments();
+		this.embeddedSignedFiles = result.getSignedDocuments();
 		this.asicParameters = asicParameters;
 	}
 
 	@Override
 	public String getSignatureFilename() {
 		return getSignatureFileName(asicParameters);
+	}
+
+	@Override
+	public String getTimestampFilename() {
+		return getTimestampFileName();
 	}
 
 	@Override
@@ -78,6 +86,17 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	@Override
 	public List<DSSDocument> getSignatures() {
 		return embeddedSignatures;
+	}
+
+	@Override
+	public List<DSSDocument> getArchiveManifestFiles() {
+		// not supported
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<DSSDocument> getTimestamps() {
+		return embeddedTimestamps;
 	}
 
 }

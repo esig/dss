@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.timestamp;
 
 import java.util.ArrayList;
@@ -15,6 +35,8 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -53,12 +75,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected final SignatureOCSPSource signatureOCSPSource;
 	
 	protected final String signatureId;
-	protected transient final List<SignatureScope> signatureScopes;
+	protected final transient List<SignatureScope> signatureScopes;
 	
 	protected CertificatePool certificatePool;
 	
 	/**
-	 * Revocation sources containing merged data from signature source and timestamps
+	 * Revocation sources containing merged data from timestamps
 	 */
 	protected ListCRLSource crlSource;
 	protected ListOCSPSource ocspSource;
@@ -147,7 +169,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	@Override
 	public List<TimestampToken> getAllTimestamps() {
-		List<TimestampToken> timestampTokens = new ArrayList<TimestampToken>();
+		List<TimestampToken> timestampTokens = new ArrayList<>();
 		timestampTokens.addAll(getContentTimestamps());
 		timestampTokens.addAll(getSignatureTimestamps());
 		timestampTokens.addAll(getTimestampsX1());
@@ -157,19 +179,21 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	@Override
-	public ListCRLSource getCommonCRLSource() {
-		if (crlSource == null) {
-			createAndValidate();
+	public ListCRLSource getTimestampCRLSources() {
+		ListCRLSource result = new ListCRLSource();
+		for (TimestampToken timestampToken : getAllTimestamps()) {
+			result.add(timestampToken.getCRLSource());
 		}
-		return crlSource;
+		return result;
 	}
-	
+
 	@Override
-	public ListOCSPSource getCommonOCSPSource() {
-		if (ocspSource == null) {
-			createAndValidate();
+	public ListOCSPSource getTimestampOCSPSources() {
+		ListOCSPSource result = new ListOCSPSource();
+		for (TimestampToken timestampToken : getAllTimestamps()) {
+			result.add(timestampToken.getOCSPSource());
 		}
-		return ocspSource;
+		return result;
 	}
 	
 	/**
@@ -180,7 +204,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		makeTimestampTokens();
 		validateTimestamps();
 	}
-	
+
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
 		// if timestamp tokens not created yet
@@ -188,28 +212,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			createAndValidate();
 		}
 		processExternalTimestamp(timestamp);
-		switch (timestamp.getTimeStampType()) {
-			case CONTENT_TIMESTAMP:
-			case ALL_DATA_OBJECTS_TIMESTAMP:
-			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-				contentTimestamps.add(timestamp);
-				break;
-			case SIGNATURE_TIMESTAMP:
-				signatureTimestamps.add(timestamp);
-				break;
-			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
-				refsOnlyTimestamps.add(timestamp);
-				break;
-			case VALIDATION_DATA_TIMESTAMP:
-				sigAndRefsTimestamps.add(timestamp);
-				break;
-			case ARCHIVE_TIMESTAMP:
-				archiveTimestamps.add(timestamp);
-				break;
-			default:
-				LOG.warn("The signature timestamp source does not support timestamp tokens with type [{}]. "
-						+ "The TimestampToken was not added.", timestamp.getTimeStampType().name());
-				break;
+		if (TimestampType.ARCHIVE_TIMESTAMP == timestamp.getTimeStampType()) {
+			archiveTimestamps.add(timestamp);
+		} else {
+			throw new DSSException(
+					String.format("The signature timestamp source does not support timestamp tokens with type [%s]. " + "The TimestampToken was not added.",
+							timestamp.getTimeStampType().name()));
 		}
 	}
 	
@@ -219,11 +227,11 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected void makeTimestampTokens() {
 		
 		// initialize timestamp lists
-		contentTimestamps = new ArrayList<TimestampToken>();
-		signatureTimestamps = new ArrayList<TimestampToken>();
-		sigAndRefsTimestamps = new ArrayList<TimestampToken>();
-		refsOnlyTimestamps = new ArrayList<TimestampToken>();
-		archiveTimestamps = new ArrayList<TimestampToken>();
+		contentTimestamps = new ArrayList<>();
+		signatureTimestamps = new ArrayList<>();
+		sigAndRefsTimestamps = new ArrayList<>();
+		refsOnlyTimestamps = new ArrayList<>();
+		archiveTimestamps = new ArrayList<>();
 		
 		// initialize combined revocation sources
 		crlSource = new ListCRLSource(signatureCRLSource);
@@ -259,7 +267,9 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 				
 			}
-			populateTimestampCertificateSource(timestampToken);
+			populateTimestampCertificateSource(timestampToken.getCertificates());
+			crlSource.add(timestampToken.getCRLSource());
+			ocspSource.add(timestampToken.getOCSPSource());
 			contentTimestamps.add(timestampToken);
 		}
 		
@@ -270,8 +280,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			return;
 		}
 		
-		final List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
-		final List<TimestampedReference> encapsulatedReferences = new ArrayList<TimestampedReference>();
+		final List<TimestampToken> timestamps = new ArrayList<>();
+		final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
 		
 		final List<SignatureAttribute> unsignedAttributes = unsignedSignatureProperties.getAttributes();
 		for (SignatureAttribute unsignedAttribute : unsignedAttributes) {
@@ -286,19 +296,19 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				signatureTimestamps.add(timestampToken);
 				
 			} else if (isCompleteCertificateRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedCertificateRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isAttributeCertificateRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedCertificateRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isCompleteRevocationRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedRevocationRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isAttributeRevocationRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedRevocationRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isRefsOnlyTimestamp(unsignedAttribute)) {
@@ -309,7 +319,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				refsOnlyTimestamps.add(timestampToken);
 				
 			} else if (isSigAndRefsTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+				final List<TimestampedReference> references = new ArrayList<>();
 				addReferencesForPreviousTimestamps(references, filterSignatureTimestamps(timestamps));
 				addReferences(references, encapsulatedReferences);
 				
@@ -320,15 +330,15 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				sigAndRefsTimestamps.add(timestampToken);
 				
 			} else if (isCertificateValues(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedCertificateValues(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
 				continue;
 				
 			} else if (isRevocationValues(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedRevocationValues(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
 				continue;
 				
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = new ArrayList<TimestampedReference>();;
+				final List<TimestampedReference> references = new ArrayList<>();
 				addReferencesForPreviousTimestamps(references, timestamps);
 				addReferences(references, encapsulatedReferences);
 				
@@ -342,15 +352,17 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				archiveTimestamps.add(timestampToken);
 				
 			} else if (isTimeStampValidationData(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampValidationData(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampValidationData(unsignedAttribute));
 				continue;
 				
 			} else {
-				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute.toString());
+				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute);
 				continue;
 			}
 			
-			populateTimestampCertificateSource(timestampToken);
+			populateTimestampCertificateSource(timestampToken.getCertificates());
+			crlSource.add(timestampToken.getCRLSource());
+			ocspSource.add(timestampToken.getOCSPSource());
 			timestamps.add(timestampToken);
 			
 		}
@@ -485,7 +497,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getAllContentTimestampReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
 			for (SignatureScope signatureScope : signatureScopes) {
 				addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
@@ -507,7 +519,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getSignatureTimestampReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		addReferences(references, getAllContentTimestampReferences());
 		addReference(references, new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE));
 		addReferences(references, getSigningCertificateTimestampReferences());
@@ -528,7 +540,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> createReferencesForCertificates(Collection<CertificateToken> certificates) {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		final List<TimestampedReference> references = new ArrayList<>();
 		for (CertificateToken certificateToken : certificates) {
 			addReference(references, new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
@@ -541,7 +553,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getTimestampedCertificateRefs(SignatureAttribute unsignedAttribute) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (Digest certDigest : getCertificateRefDigests(unsignedAttribute)) {
 			// firstly try to find into the signature certificate source
 			CertificateToken certificate = signatureCertificateSource.getCertificateTokenByDigest(certDigest);
@@ -575,7 +587,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getTimestampedRevocationRefs(SignatureAttribute unsignedAttribute) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (Digest refDigest : getRevocationRefCRLDigests(unsignedAttribute)) {
 			CRLBinary identifier = crlSource.getIdentifier(refDigest);
 			if (identifier != null) {
@@ -598,7 +610,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				OCSPRef ocspRef = ocspSource.getOCSPRefByDigest(refDigest);
 				if (ocspRef != null) {
 					timestampedReferences.add(new TimestampedReference(ocspRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
-					
 				}
 			}
 		}
@@ -620,7 +631,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract List<Digest> getRevocationRefOCSPDigests(SignatureAttribute unsignedAttribute);
 	
 	protected List<TimestampedReference> getTimestampedCertificateValues(SignatureAttribute unsignedAttribute) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (EncapsulatedCertificateTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(certificateIdentifier.asXmlId(), TimestampedObjectType.CERTIFICATE));
 		}
@@ -635,7 +646,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract List<EncapsulatedCertificateTokenIdentifier> getEncapsulatedCertificateIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	protected List<TimestampedReference> getTimestampedRevocationValues(SignatureAttribute unsignedAttribute) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(revocationIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
@@ -669,7 +680,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
 		// empty by default
-		return new ArrayList<TimestampedReference>();
+		return new ArrayList<>();
 	}
 
 	/**
@@ -680,7 +691,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected List<TimestampedReference> getSignatureSignedDataReferences() {
 		// empty by default
-		return new ArrayList<TimestampedReference>();
+		return new ArrayList<>();
 	}
 	
 	/**
@@ -689,7 +700,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getTimestampValidationData(SignatureAttribute unsignedAttribute) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (EncapsulatedCertificateTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(certificateIdentifier.asXmlId(), TimestampedObjectType.CERTIFICATE));
 		}
@@ -725,7 +736,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 
 	private List<TimestampToken> filterSignatureTimestamps(List<TimestampToken> previousTimestampedTimestamp) {
-		List<TimestampToken> result = new ArrayList<TimestampToken>();
+		List<TimestampToken> result = new ArrayList<>();
 		for (TimestampToken timestampToken : previousTimestampedTimestamp) {
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
 				result.add(timestampToken);
@@ -777,32 +788,32 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		 * This validates the content-timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
-			final byte[] timestampBytes = timestampDataBuilder.getContentTimestampData(timestampToken);
-			timestampToken.matchData(timestampBytes);
+			final DSSDocument timestampedData = timestampDataBuilder.getContentTimestampData(timestampToken);
+			timestampToken.matchData(timestampedData);
 		}
 
 		/*
 		 * This validates the signature timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-			final byte[] timestampBytes = timestampDataBuilder.getSignatureTimestampData(timestampToken);
-			timestampToken.matchData(timestampBytes);
+			final DSSDocument timestampedData = timestampDataBuilder.getSignatureTimestampData(timestampToken);
+			timestampToken.matchData(timestampedData);
 		}
 
 		/*
 		 * This validates the SigAndRefs timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getTimestampsX1()) {
-			final byte[] timestampBytes = timestampDataBuilder.getTimestampX1Data(timestampToken);
-			timestampToken.matchData(timestampBytes);
+			final DSSDocument timestampedData = timestampDataBuilder.getTimestampX1Data(timestampToken);
+			timestampToken.matchData(timestampedData);
 		}
 
 		/*
 		 * This validates the RefsOnly timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getTimestampsX2()) {
-			final byte[] timestampBytes = timestampDataBuilder.getTimestampX2Data(timestampToken);
-			timestampToken.matchData(timestampBytes);
+			final DSSDocument timestampedData = timestampDataBuilder.getTimestampX2Data(timestampToken);
+			timestampToken.matchData(timestampedData);
 		}
 
 		/*
@@ -810,8 +821,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		 */
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
 			if (!timestampToken.isProcessed()) {
-				final byte[] timestampData = timestampDataBuilder.getArchiveTimestampData(timestampToken);
-				timestampToken.matchData(timestampData);
+				final DSSDocument timestampedData = timestampDataBuilder.getArchiveTimestampData(timestampToken);
+				timestampToken.matchData(timestampedData);
 			}
 		}
 		
@@ -829,7 +840,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			return certificateMap;
 		}
 		
-		certificateMap = new HashMap<String, List<CertificateToken>>();
+		certificateMap = new HashMap<>();
 
 		// We can have more than one chain in the signature : signing certificate, ocsp
 		// responder, ...
@@ -866,14 +877,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	/**
-	 * Adds certificates found in the timestamp to the {@code timestampCertificateSource}
-	 * @param timestamp {@link TimestampToken}
-	 */
-	protected void populateTimestampCertificateSource(TimestampToken timestamp) {
-		populateTimestampCertificateSource(timestamp.getCertificates());
-	}
-
-	/**
 	 * Adds {@code certificates} to the {@code timestampCertificateSource}
 	 * @param certificates list of {@link CertificateToken}s
 	 */
@@ -889,7 +892,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		// add references from previously added timestamps
 		addReferencesForPreviousTimestamps(externalTimestamp.getTimestampedReferences(), getAllTimestamps());
 		// populate timestamp certificate source with values present in the timestamp
-		populateTimestampCertificateSource(externalTimestamp);
+		populateTimestampCertificateSource(externalTimestamp.getCertificates());
 	}
 
 }

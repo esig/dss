@@ -82,7 +82,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		PdfPTable table = new PdfPTable(1);
 		table.setWidthPercentage(100);
 		PdfPCell pdfPCell = new PdfPCell(image);
-		pdfPCell.setBorder(PdfPCell.NO_BORDER);
+		pdfPCell.setBorder(Rectangle.NO_BORDER);
 		table.addCell(pdfPCell);
 		
 		ct.addElement(table);

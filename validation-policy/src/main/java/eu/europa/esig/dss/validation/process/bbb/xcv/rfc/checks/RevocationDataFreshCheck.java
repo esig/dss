@@ -24,6 +24,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 
@@ -31,15 +32,15 @@ public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 
 	private final TimeConstraint timeConstraint;
 
-	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
-		super(result, revocationData, validationDate, constraint);
+	public RevocationDataFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
+		super(i18nProvider, result, revocationData, validationDate, constraint);
 		this.timeConstraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
 		if (revocationData != null) {
-			return isProductionDateNotBeforeValidationTime();
+			return isProductionDateAfterValidationTime();
 		}
 		return false;
 	}

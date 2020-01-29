@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
@@ -44,9 +47,12 @@ public class XAdESExtensionBToTWithError500TimestampTest extends AbstractTestXAd
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void test() throws Exception {
-		super.test();
+		Exception exception = assertThrows(DSSException.class, () -> {
+			super.test();
+		});
+		assertTrue(exception.getMessage().contains("Unable to process POST call for url [http://dss.nowina.lu/pki-factory//tsa/error-500/good-tsa]"));
 	}
 
 }

@@ -109,7 +109,7 @@ public class CAdESLevelBaselineB {
 	}
 
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
-		if (parameters.getSignedData() != null) {
+		if (Utils.isArrayNotEmpty(parameters.getSignedData())) {
 			LOG.debug("Using explict SignedAttributes from parameter");
 			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
 		}
@@ -128,8 +128,7 @@ public class CAdESLevelBaselineB {
 		// mime-type attribute breaks parallel signatures by adding PKCS7 as a mime-type for subsequent signers.
 		// This attribute is not mandatory, so it has been disabled.
 
-		final AttributeTable signedAttributesTable = new AttributeTable(signedAttributes);
-		return signedAttributesTable;
+		return new AttributeTable(signedAttributes);
 	}
 
 	/**
@@ -151,7 +150,7 @@ public class CAdESLevelBaselineB {
 		final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
 		if (claimedSignerRoles != null) {
 
-			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
+			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<>(claimedSignerRoles.size());
 			for (final String claimedSignerRole : claimedSignerRoles) {
 				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
 				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
@@ -377,10 +376,10 @@ public class CAdESLevelBaselineB {
 		final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
 		if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
 			if (Utils.isStringBlank(parameters.getContentIdentifierSuffix())) {
-				StringBuffer suffixBuffer = new StringBuffer();
-				suffixBuffer.append(new ASN1GeneralizedTime(new Date()).getTimeString());
-				suffixBuffer.append(new SecureRandom().nextLong());
-				parameters.setContentIdentifierSuffix(suffixBuffer.toString());
+				StringBuilder suffixBuilder = new StringBuilder();
+				suffixBuilder.append(new ASN1GeneralizedTime(new Date()).getTimeString());
+				suffixBuilder.append(new SecureRandom().nextLong());
+				parameters.setContentIdentifierSuffix(suffixBuilder.toString());
 			}
 			final String contentIdentifierString = contentIdentifierPrefix + parameters.getContentIdentifierSuffix();
 			final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());

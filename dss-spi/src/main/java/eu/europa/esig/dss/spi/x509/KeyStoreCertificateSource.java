@@ -227,7 +227,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
-		List<CertificateToken> list = new ArrayList<CertificateToken>();
+		List<CertificateToken> list = new ArrayList<>();
 		try {
 			Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {

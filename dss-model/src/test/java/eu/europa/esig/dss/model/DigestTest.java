@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,8 +38,8 @@ import java.security.SecureRandom;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +87,15 @@ public class DigestTest {
 		assertEquals(d1.hashCode(),d2.hashCode());
 
 	}
+	
+	@Test
+	public void nullValues() {
+		Digest digest = new Digest();
+		assertNull(digest.getAlgorithm());
+		assertNull(digest.getValue());
+		assertThrows(NullPointerException.class, () -> digest.getHexValue());
+		assertNotNull(digest.toString());
+	}
 
 	@Test
 	public void stateless() {
@@ -93,7 +105,7 @@ public class DigestTest {
 		assertFalse(hexValue.equals(d1.getHexValue()));
 	}
 
-	@Ignore
+	@Disabled
 	public void perfs() {
 
 		int bigIntCounter = 0;

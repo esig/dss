@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.vci;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifierCheck;
 
-public class SignaturePolicyIdentifierCheckTest {
+public class SignaturePolicyIdentifierCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signaturePolicyIdentifiedCheck() throws Exception {
@@ -51,7 +52,7 @@ public class SignaturePolicyIdentifierCheckTest {
 		constraint.getId().add("IMPLICIT_POLICY");
 
 		XmlVCI result = new XmlVCI();
-		SignaturePolicyIdentifierCheck spic = new SignaturePolicyIdentifierCheck(result, new SignatureWrapper(sig),
+		SignaturePolicyIdentifierCheck spic = new SignaturePolicyIdentifierCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		spic.execute();
 
@@ -73,7 +74,7 @@ public class SignaturePolicyIdentifierCheckTest {
 		constraint.getId().add("IMPLICIT_POLICY");
 
 		XmlVCI result = new XmlVCI();
-		SignaturePolicyIdentifierCheck spic = new SignaturePolicyIdentifierCheck(result, new SignatureWrapper(sig),
+		SignaturePolicyIdentifierCheck spic = new SignaturePolicyIdentifierCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		spic.execute();
 

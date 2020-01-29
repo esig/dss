@@ -23,8 +23,10 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -35,17 +37,18 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class Snippets {
 
-	@SuppressWarnings({ "null", "unused" })
+	@SuppressWarnings({ "null" })
 	public void demo() {
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		CertificateToken certificateToken = new CertificateToken(null);
-		List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
+		List<CertificateToken> certificateChain = new LinkedList<>();
 
 		// tag::demoCertificateChain[]
 
@@ -62,6 +65,13 @@ public class Snippets {
 		parameters.bLevel().setSigningDate(new Date());
 
 		// end::demoSigningDate[]
+
+		// tag::demoSignatureLevel[]
+		
+		// Allows to set a final signature level
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+
+		// end::demoSignatureLevel[]
 
 		CertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
@@ -89,6 +99,12 @@ public class Snippets {
 		// tag::demoSigningProcessSignDocument[]
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 		// end::demoSigningProcessSignDocument[]
+
+		// tag::i18n[]
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		// A target Locale must be defined for the validator
+		validator.setLocale(Locale.FRENCH); // for French language
+		// end::i18n[]
 
 	}
 

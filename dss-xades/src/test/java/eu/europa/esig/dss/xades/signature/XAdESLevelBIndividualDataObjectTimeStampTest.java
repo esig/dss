@@ -28,8 +28,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.apache.xml.security.signature.Reference;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -37,6 +36,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -44,17 +44,18 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -63,11 +64,11 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		// Canonicalization is optional
 		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
 
-		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
 		dssReference.setId(referenceId);
@@ -86,8 +87,8 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		signatureParameters.setReferences(references);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));
-		TimeStampToken timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
-		TimestampToken timestampToken = new TimestampToken(timeStampResponse, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		TimestampBinary timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude(referenceId, true)));
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
 		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));
@@ -99,14 +100,14 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

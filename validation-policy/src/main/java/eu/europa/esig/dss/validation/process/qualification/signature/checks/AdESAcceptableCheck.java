@@ -26,7 +26,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AdESAcceptableCheck extends ChainItem<XmlValidationSignatureQualification> {
 
@@ -34,8 +35,8 @@ public class AdESAcceptableCheck extends ChainItem<XmlValidationSignatureQualifi
 
 	private MessageTag error;
 
-	public AdESAcceptableCheck(XmlValidationSignatureQualification result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
-		super(result, constraint);
+	public AdESAcceptableCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.etsi319102Conclusion = etsi319102Conclusion;
 	}

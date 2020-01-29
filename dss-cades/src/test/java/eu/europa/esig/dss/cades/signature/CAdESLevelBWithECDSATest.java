@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -43,7 +45,7 @@ public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -57,7 +59,7 @@ public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 				DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512
 		);
 
-		List<Object[]> data = new ArrayList<Object[]>();
+		List<Object[]> data = new ArrayList<>();
 		for (DigestAlgorithm digest1 : digestAlgos) {
 			for (DigestAlgorithm digest2 : digestAlgos) {
 				data.add(new Object[] { digest1, digest2 });
@@ -85,9 +87,16 @@ public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 
 		service = new CAdESService(getOfflineCertificateVerifier());
 	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

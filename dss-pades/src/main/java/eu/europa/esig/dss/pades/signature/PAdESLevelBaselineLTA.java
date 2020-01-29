@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -33,13 +35,15 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
  */
 class PAdESLevelBaselineLTA implements SignatureExtension<PAdESSignatureParameters> {
 
+	private final TSPSource tspSource;
+	private final IPdfObjFactory pdfObjectFactory;
 	private final PAdESLevelBaselineLT padesLevelBaselineLT;
-	private final PAdESLevelBaselineT padesLevelBaselineT;
 	private final CertificateVerifier certificateVerifier;
 
-	public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
-		this.padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier);
-		this.padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
+	public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, final IPdfObjFactory pdfObjectFactory) {
+		this.tspSource = tspSource;
+		this.pdfObjectFactory = pdfObjectFactory;
+		this.padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjectFactory);
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -51,8 +55,10 @@ class PAdESLevelBaselineLTA implements SignatureExtension<PAdESSignatureParamete
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 
 		document = padesLevelBaselineLT.extendSignatures(document, parameters);
-
+		
 		// Will add a Document TimeStamp (not CMS)
-		return padesLevelBaselineT.extendSignatures(document, parameters);
+		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, pdfObjectFactory.newArchiveTimestampService());
+		return padesTimestampService.timestampDocument(document, parameters.getArchiveTimestampParameters());
 	}
+
 }

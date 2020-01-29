@@ -20,19 +20,17 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /*
  * If best-signature-time is before the issuance date of the signing certificate, the process shall return the
@@ -43,13 +41,15 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 
 	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
+	private final SubIndication currentSubIndication;
 
-	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(XmlValidationProcessLongTermData result, Date bestSignatureTime,
-			CertificateWrapper signingCertificate, LevelConstraint constraint) {
-		super(result, constraint);
+	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, Date bestSignatureTime,
+			CertificateWrapper signingCertificate, SubIndication currentSubIndication, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;
+		this.currentSubIndication = currentSubIndication;
 	}
 
 	@Override
@@ -58,11 +58,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String bestSignatureTimeStr = bestSignatureTime == null ? " ? " : sdf.format(bestSignatureTime);
-		return MessageFormat.format(AdditionalInfo.BEST_SIGNATURE_TIME, bestSignatureTimeStr);
+	protected MessageTag getAdditionalInfo() {
+		String bestSignatureTimeStr = bestSignatureTime == null ? " ? " : ValidationProcessUtils.getFormattedDate(bestSignatureTime);
+		return MessageTag.BEST_SIGNATURE_TIME.setArgs(bestSignatureTimeStr);
 	}
 
 	@Override
@@ -92,7 +90,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 
 	@Override
 	protected SubIndication getSuccessSubIndication() {
-		return SubIndication.OUT_OF_BOUNDS_NO_POE;
+		return currentSubIndication;
 	}
 
 }

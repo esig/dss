@@ -23,12 +23,12 @@ package eu.europa.esig.dss.spi.x509.tsp;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 
 /**
  * This class allows to retrieve a timestamp with different sources. The composite will try all sources until to get a
@@ -38,6 +38,8 @@ import eu.europa.esig.dss.model.DSSException;
  * 
  */
 public class CompositeTSPSource implements TSPSource {
+
+	private static final long serialVersionUID = 948088043702414489L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CompositeTSPSource.class);
 
@@ -55,16 +57,16 @@ public class CompositeTSPSource implements TSPSource {
 	}
 
 	@Override
-	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digestValue) throws DSSException {
+	public TimestampBinary getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digestValue) throws DSSException {
 		for (Entry<String, TSPSource> entry : tspSources.entrySet()) {
 			String sourceKey = entry.getKey();
 			TSPSource source = entry.getValue();
 			LOG.debug("Trying to get timestamp with TSPSource '{}'", sourceKey);
 			try {
-				TimeStampToken token = source.getTimeStampResponse(digestAlgorithm, digestValue);
-				if (token != null) {
+				TimestampBinary timestampBinary = source.getTimeStampResponse(digestAlgorithm, digestValue);
+				if (timestampBinary != null) {
 					LOG.debug("Successfully retrieved timestamp with TSPSource '{}'", sourceKey);
-					return token;
+					return timestampBinary;
 				}
 			} catch (Exception e) {
 				LOG.warn("Unable to retrieve the timestamp with TSPSource '{}' : {}", sourceKey, e.getMessage());

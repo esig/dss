@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.text.ParseException;
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.ws.signature.soap.client.DateAdapter;
 
@@ -40,19 +41,19 @@ public class DateAdapterTest {
 		assertEquals(adapter.marshal(date), adapter.marshal(adapter.unmarshal(adapter.marshal(date))));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void marshallNull() throws Exception {
-		adapter.marshal(null);
+		assertThrows(NullPointerException.class, () -> adapter.marshal(null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNull() throws Exception {
-		adapter.unmarshal(null);
+		assertThrows(NullPointerException.class, () -> adapter.unmarshal(null));
 	}
 
-	@Test(expected = ParseException.class)
+	@Test
 	public void unmarshallInvalid() throws Exception {
-		adapter.unmarshal("aa");
+		assertThrows(ParseException.class, () -> adapter.unmarshal("aa"));
 	}
 
 	@Test

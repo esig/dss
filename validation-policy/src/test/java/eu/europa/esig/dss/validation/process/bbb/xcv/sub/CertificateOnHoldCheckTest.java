@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -38,9 +38,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateOnHoldCheck;
 
-public class CertificateOnHoldCheckTest {
+public class CertificateOnHoldCheckTest extends AbstractTestCheck {
 
 	private static final Calendar CAL1 = DatatypeConverter.parseDate("2017-01-01");
 	private static final Calendar CAL2 = DatatypeConverter.parseDate("2018-01-01");
@@ -56,7 +57,7 @@ public class CertificateOnHoldCheckTest {
 		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), constraint);
+		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), constraint);
 		cohc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ public class CertificateOnHoldCheckTest {
 		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), constraint);
+		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), constraint);
 		cohc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -24,23 +24,24 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class SigningTimeAttributePresentCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
 	private final SignatureWrapper signature;
 
-	public SigningTimeAttributePresentCheck(XmlValidationProcessLongTermData result, SignatureWrapper signature, LevelConstraint constraint) {
-		super(result, constraint);
+	public SigningTimeAttributePresentCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, SignatureWrapper signature, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.signature = signature;
 	}
 
 	@Override
 	protected boolean process() {
-		return signature.getDateTime() != null;
+		return signature.getClaimedSigningTime() != null;
 	}
 
 	@Override

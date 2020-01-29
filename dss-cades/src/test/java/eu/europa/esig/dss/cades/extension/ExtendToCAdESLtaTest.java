@@ -20,15 +20,17 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -56,7 +58,7 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 	public void testValidation() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(SIGNED_DOC_PATH));
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument(DETACHED_DOC_PATH));
 		validator.setDetachedContents(detachedContents);
 		Reports reports = validator.validateDocument();
@@ -82,7 +84,7 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 		
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testExtend() throws Exception {
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -91,8 +93,11 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		DSSDocument detachedContent = new FileDocument(DETACHED_DOC_PATH);
 		parameters.setDetachedContents(Arrays.asList(detachedContent));
-		DSSDocument extendDocument = service.extendDocument(new FileDocument(SIGNED_DOC_PATH), parameters);
-		assertNotNull(extendDocument);
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(new FileDocument(SIGNED_DOC_PATH), parameters));
+		assertEquals("Cryptographic signature verification has failed.", exception.getMessage());
+		//DSSDocument extendDocument = service.extendDocument(new FileDocument(SIGNED_DOC_PATH), parameters);
+		//assertNotNull(extendDocument);
+
 	}
 
 	@Override

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -34,20 +34,23 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"),
-				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"));
+				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"),
+				new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -73,7 +76,7 @@ public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMult
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return new XAdESService(getCompleteCertificateVerifier());
 	}
 

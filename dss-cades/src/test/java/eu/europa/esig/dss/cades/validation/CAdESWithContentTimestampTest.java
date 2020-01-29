@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +37,7 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -57,7 +57,7 @@ public class CAdESWithContentTimestampTest {
 		ASN1InputStream asn1sInput = new ASN1InputStream(Utils.toByteArray(fis));
 		ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-		ASN1TaggedObject taggedObj = DERTaggedObject.getInstance(asn1Seq.getObjectAt(1));
+		ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
 		ASN1Primitive object = taggedObj.getObject();
 		SignedData signedData = SignedData.getInstance(object);
 

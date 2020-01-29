@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,15 +45,20 @@ import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
  * XAdES implementation of DocumentSignatureService
  */
-public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters> implements MultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> 
+					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	static {
 		SantuarioInitializer.init();
+
+		XAdESNamespaces.registerNamespaces();
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESService.class);
@@ -86,6 +92,9 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
 		assertSigningDateInCertificateValidityRange(parameters);
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(certificateVerifier);
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, parameters);
@@ -122,9 +131,11 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters, SignatureValue signatureValue)
 			throws DSSException {
-		if (parameters.getSignatureLevel() == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(toSignDocument, "toSignDocument is not defined!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+		
 		assertSigningDateInCertificateValidityRange(parameters);
 		parameters.getContext().setOperationKind(Operation.SIGNING);
 		SignatureProfile profile;
@@ -138,14 +149,13 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+				List<DSSDocument> detachedContents = new ArrayList<>();
 				detachedContents.add(toSignDocument);
 				parameters.setDetachedContents(detachedContents);
 			}
 			final DSSDocument dssExtendedDocument = extension.extendSignatures(signedDoc, parameters);
 			// The deterministic id is reset between two consecutive signing operations. It prevents having two
-			// signatures with the same Id within the
-			// same document.
+			// signatures with the same Id within the same document.
 			parameters.reinitDeterministicId();
 			dssExtendedDocument.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 			return dssExtendedDocument;
@@ -169,6 +179,10 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		
 		parameters.getContext().setOperationKind(Operation.EXTENDING);
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
@@ -177,6 +191,11 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			return dssDocument;
 		}
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
+	}
+
+	@Override
+	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, XAdESTimestampParameters parameters) {
+		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
 	/**

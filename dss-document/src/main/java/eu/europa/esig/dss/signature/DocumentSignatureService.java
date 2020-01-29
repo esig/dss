@@ -22,11 +22,11 @@ package eu.europa.esig.dss.signature;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -35,7 +35,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  *
  *
  */
-public interface DocumentSignatureService<SP extends AbstractSerializableSignatureParameters> extends Serializable {
+public interface DocumentSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
@@ -64,10 +64,8 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @return the data to be signed
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	ToBeSigned getDataToSign(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
+	ToBeSigned getDataToSign(final DSSDocument toSignDocument, final SP parameters);
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
@@ -79,10 +77,8 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param signatureValue
 	 *            the signature value to incorporate
 	 * @return the signed document ({@code toSignDocument} with the incorporated signature or the detached signature)
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
+	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, final SignatureValue signatureValue);
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -92,10 +88,8 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @return the extended signature
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters) throws DSSException;
+	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters);
 
 	/**
 	 * This setter allows to define the TSP (timestamp provider) source.
@@ -106,14 +100,26 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	void setTspSource(final TSPSource tspSource);
 
 	/**
-	 * This method allows to compute a content-timestamp (which is added in the signed properties)
+	 * This method allows to compute a content-timestamp (which is added in the
+	 * signed properties)
 	 * 
 	 * @param toSignDocument
-	 *            document to sign or the already existing signature
+	 *                       document to sign or the already existing signature
 	 * @param parameters
-	 *            set of the driving signing parameters
-	 * @return
+	 *                       set of the driving signing parameters
+	 * @return a timestamp token
 	 */
 	TimestampToken getContentTimestamp(final DSSDocument toSignDocument, final SP parameters);
+
+	/**
+	 * This method allows to add a timestamp to an unsigned document
+	 * 
+	 * @param toTimestampDocument
+	 *                            the document to be timestamped
+	 * @param parameters
+	 *                            set of the driving timestamping parameters
+	 * @return the timestamped document
+	 */
+	DSSDocument timestamp(final DSSDocument toTimestampDocument, final TP parameters);
 
 }

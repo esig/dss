@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * Document implementation stored on file-system.
@@ -51,9 +52,7 @@ public class FileDocument extends CommonDocument {
 	 *            {@code File}
 	 */
 	public FileDocument(final File file) {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(file, "File cannot be null");
 		if (!file.exists()) {
 			throw new DSSException("File Not Found: " + file.getAbsolutePath());
 		}

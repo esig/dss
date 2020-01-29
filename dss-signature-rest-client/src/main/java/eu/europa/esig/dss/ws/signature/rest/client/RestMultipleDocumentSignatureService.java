@@ -33,6 +33,7 @@ import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignMultipleDocumentsDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignMultipleDocumentDTO;
+import eu.europa.esig.dss.ws.signature.dto.TimestampMultipleDocumentDTO;
 
 /**
  * This REST interface provides operations for the signature creation and for its extension.
@@ -77,5 +78,16 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 	@POST
 	@Path("extendDocument")
 	RemoteDocument extendDocument(ExtendDocumentDTO extendDocument);
+
+	/**
+	 * Timestamps the toTimestampDocuments with the provided timestamp parameters.
+	 * 
+	 * @param timestampDocument
+	 *            a DTO with the needed information (one or more document(s) and timestamp parameters) to timestamp the document(s)
+	 * @return a timestamped document
+	 */
+	@POST
+	@Path("timestampDocument")
+	RemoteDocument timestampDocuments(TimestampMultipleDocumentDTO timestampDocument);
 
 }

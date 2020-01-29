@@ -20,80 +20,21 @@
  */
 package eu.europa.esig.dss.validation.process.vpftsp.checks;
 
+import java.util.Map;
+
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
-import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
 
-public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessTimestamps> {
+public class TimestampBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessTimestamp> {
 
-	private final XmlBasicBuildingBlocks timestampBBB;
-
-	private Indication indication;
-	private SubIndication subIndication;
-
-	public TimestampBasicBuildingBlocksCheck(XmlValidationProcessTimestamps result, XmlBasicBuildingBlocks timestampBBB, LevelConstraint constraint) {
-		super(result, constraint, timestampBBB.getId());
-
-		this.timestampBBB = timestampBBB;
-	}
-
-	@Override
-	protected boolean process() {
-
-		// Format check is skipped
-
-		XmlISC isc = timestampBBB.getISC();
-		if (isc != null) {
-			XmlConclusion iscConclusion = isc.getConclusion();
-			if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
-				indication = iscConclusion.getIndication();
-				subIndication = iscConclusion.getSubIndication();
-				return false;
-			}
-		}
-
-		// VCI is skipped
-
-		XmlCV cv = timestampBBB.getCV();
-		if (cv != null) {
-			XmlConclusion cvConclusion = cv.getConclusion();
-			if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
-				indication = cvConclusion.getIndication();
-				subIndication = cvConclusion.getSubIndication();
-				return false;
-			}
-		}
-
-		XmlXCV xcv = timestampBBB.getXCV();
-		if (xcv != null) {
-			XmlConclusion xcvConclusion = xcv.getConclusion();
-			if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-				indication = xcvConclusion.getIndication();
-				subIndication = xcvConclusion.getSubIndication();
-				return false;
-			}
-		}
-
-		XmlSAV sav = timestampBBB.getSAV();
-		if (sav != null) {
-			XmlConclusion savConclusion = sav.getConclusion();
-			if (!Indication.PASSED.equals(savConclusion.getIndication())) {
-				indication = savConclusion.getIndication();
-				subIndication = savConclusion.getSubIndication();
-				return false;
-			}
-		}
-
-		return true;
+	public TimestampBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessTimestamp result, DiagnosticData diagnosticData,
+			XmlBasicBuildingBlocks timestampBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+		super(i18nProvider, result, diagnosticData, timestampBBB, bbbs, constraint);
 	}
 
 	@Override
@@ -104,16 +45,6 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.ADEST_ROTVPIIC_ANS;
-	}
-
-	@Override
-	protected Indication getFailedIndicationForConclusion() {
-		return indication;
-	}
-
-	@Override
-	protected SubIndication getFailedSubIndicationForConclusion() {
-		return subIndication;
 	}
 
 }

@@ -20,44 +20,53 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 
 public class FileCacheDataLoaderTest {
 
 	static final String URL_TO_LOAD = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 
-	@Rule
-	public TemporaryFolder testFolder = new TemporaryFolder();
+	@TempDir
+	File cacheDirectory;
 
 	private FileCacheDataLoader dataLoader;
-	private File cacheDirectory;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		cacheDirectory = testFolder.newFolder("dss-file-cache");
 		dataLoader = new FileCacheDataLoader();
 		dataLoader.setDataLoader(new CommonsDataLoader());
 		dataLoader.setFileCacheDirectory(cacheDirectory);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNotDefineSubDataLoader() {
-		FileCacheDataLoader fcdl = new FileCacheDataLoader();
-		fcdl.get(URL_TO_LOAD);
+		assertThrows(NullPointerException.class, () -> {
+			FileCacheDataLoader fcdl = new FileCacheDataLoader();
+			fcdl.get(URL_TO_LOAD);
+		});
 	}
 
 	@Test
@@ -66,6 +75,7 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertEquals(cacheCreationTime, newCacheCreationTime);
+		getDSSDocumentByUrl();
 	}
 
 	@Test
@@ -75,6 +85,7 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertEquals(cacheCreationTime, newCacheCreationTime);
+		getDSSDocumentByUrl();
 	}
 
 	@Test
@@ -84,21 +95,89 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertTrue(cacheCreationTime < newCacheCreationTime);
+		getDSSDocumentByUrl();
 	}
 
 	@Test
 	public void testNotNetworkProtocol() throws IOException {
-		cacheDirectory = testFolder.newFolder();
-
 		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
 		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);
 
-		assertNull(specificDataLoader.get("1.2.3.4.5"));
-		assertNull(specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
+		assertThrows(DSSException.class, () -> specificDataLoader.get("1.2.3.4.5"));
+		assertThrows(DSSException.class, () -> specificDataLoader.getDocument("1.2.3.4.5"));
+		assertThrows(DSSException.class, () -> specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
+		specificDataLoader.createFile("1.2.3.4.5", new byte[] { 1, 2, 3 });
+		assertNotNull(specificDataLoader.get("1.2.3.4.5"));
+		assertNotNull(specificDataLoader.getDocument("1.2.3.4.5"));
 
 		specificDataLoader.setResourceLoader(new ResourceLoader(FileCacheDataLoaderTest.class));
 		assertNotNull(specificDataLoader.get("/logback.xml"));
+		assertNotNull(specificDataLoader.getDocument("/logback.xml"));
+	}
+	
+	@Test
+	public void testGetDSSDocument() {
+		DSSDocument dssDocument = getDSSDocumentByUrl();
+		assertNotNull(dssDocument.getAbsolutePath());
+		assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(dssDocument)));
+	}
+	
+	@Test
+	public void offlineDataLoaderTest() throws IOException {
+		File cacheDirectory = new File("target/cache");
+		cacheDirectory.mkdirs();
+		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
+		
+		Map<String, byte[]> dataMap = new HashMap<>();
+		dataMap.put("sample", "sample".getBytes());
+		dataMap.put("null", null);
+		dataMap.put("empty-array", new byte[] {});
+		dataMap.put("0", new byte[] { 0 });
+		dataMap.put("1.2.3.4.5", new byte[] { 1, 2, 3, 4, 5 });
+		MemoryDataLoader memoryDataLoader = new MemoryDataLoader(dataMap);
+		
+		FileCacheDataLoader offlineFileCacheDataLoader = new FileCacheDataLoader();
+		offlineFileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		offlineFileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
+		offlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+		
+		DSSException multipleException = assertThrows(DSSException.class, () -> {
+			offlineFileCacheDataLoader.get(Arrays.asList("sample", "null", "empty-array", "0", "1.2.3.4.5"));
+		});
+		assertTrue(multipleException.getMessage().contains("sample"));
+		assertTrue(multipleException.getMessage().contains("null"));
+		assertTrue(multipleException.getMessage().contains("empty-array"));
+		assertTrue(multipleException.getMessage().contains("0"));
+		assertTrue(multipleException.getMessage().contains("1.2.3.4.5"));
+		
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("sample"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("null"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("empty-array"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("0"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("1.2.3.4.5"));
+		
+		FileCacheDataLoader onlineFileCacheDataLoader = new FileCacheDataLoader();
+		onlineFileCacheDataLoader.setCacheExpirationTime(0);
+		onlineFileCacheDataLoader.setDataLoader(memoryDataLoader);
+		onlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+		
+		assertNotNull(onlineFileCacheDataLoader.get("sample"));
+		assertThrows(DSSException.class, () -> onlineFileCacheDataLoader.get("null"));
+		assertThrows(DSSException.class, () -> onlineFileCacheDataLoader.get("empty-array"));
+		assertNotNull(onlineFileCacheDataLoader.get("0"));
+		assertNotNull(onlineFileCacheDataLoader.get("1.2.3.4.5"));
+		
+		assertNotNull(offlineFileCacheDataLoader.get("sample"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("null"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("empty-array"));
+		assertNotNull(offlineFileCacheDataLoader.get("0"));
+		assertNotNull(offlineFileCacheDataLoader.get("1.2.3.4.5"));
+		
+		DataAndUrl dataAndUrl = offlineFileCacheDataLoader.get(Arrays.asList("sample", "null", "empty-array", "0", "1.2.3.4.5"));
+		assertNotNull(dataAndUrl);
+		assertEquals("sample", dataAndUrl.getUrlString());
+		assertNotNull(dataAndUrl.getData());
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {
@@ -106,6 +185,12 @@ public class FileCacheDataLoaderTest {
 		assertTrue(bytesArray.length > 0);
 		File cachedFile = getCachedFile(cacheDirectory);
 		return cachedFile.lastModified();
+	}
+	
+	private DSSDocument getDSSDocumentByUrl() {
+		DSSDocument document = dataLoader.getDocument(URL_TO_LOAD);
+		assertNotNull(document);
+		return document;
 	}
 
 	private File getCachedFile(File cacheDirectory) {

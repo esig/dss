@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.utils;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -35,22 +36,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
-import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public abstract class AbstractUtilsTest {
-
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+	
+	@TempDir
+    Path folder;
 
 	@Test
 	public void isStringEmpty() {
@@ -167,7 +166,7 @@ public abstract class AbstractUtilsTest {
 		assertEquals("", Utils.joinStrings(new ArrayList<String>(), null));
 		assertEquals("", Utils.joinStrings(new ArrayList<String>(), ","));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
@@ -257,7 +256,7 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isCollectionEmpty(null));
 		assertTrue(Utils.isCollectionEmpty(new ArrayList<String>()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
@@ -269,7 +268,7 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isCollectionNotEmpty(null));
 		assertFalse(Utils.isCollectionNotEmpty(new ArrayList<String>()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
@@ -281,7 +280,7 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isMapEmpty(null));
 		assertTrue(Utils.isMapEmpty(new HashMap<String, Integer>()));
 		
-		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Map<String, Boolean> map = new HashMap<>();
 		map.put("a", true);
 		map.put("b", false);
 		map.put("c", true);
@@ -297,7 +296,7 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isMapNotEmpty(null));
 		assertFalse(Utils.isMapNotEmpty(new HashMap<String, Integer>()));
 		
-		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		Map<String, Boolean> map = new HashMap<>();
 		map.put("a", true);
 		map.put("b", false);
 		map.put("c", true);
@@ -314,16 +313,18 @@ public abstract class AbstractUtilsTest {
 
 		assertEquals(0, Utils.collectionSize(new ArrayList<String>()));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("c");
 		assertEquals(3, Utils.collectionSize(list));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void toHexNull() {
-		Utils.toHex(null);
+		assertThrows(NullPointerException.class, () -> {
+			Utils.toHex(null);
+		});
 	}
 
 	@Test
@@ -341,9 +342,11 @@ public abstract class AbstractUtilsTest {
 		assertArrayEquals(new byte[] { 'a', 2, 'z', 'j', 9 }, Utils.fromHex("61027A6A09"));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void fromHexNull() {
-		Utils.fromHex(null);
+		assertThrows(NullPointerException.class, () -> {
+			Utils.fromHex(null);
+		});
 	}
 	
 	@Test
@@ -358,9 +361,11 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isBase64Encoded("AS.DF,GH/JK"));
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void isBase64EncodedNullPointer() {
-		assertFalse(Utils.isBase64Encoded(null));
+		assertThrows(NullPointerException.class, () -> {
+			assertFalse(Utils.isBase64Encoded(null));
+		});
 	}
 
 	@Test
@@ -437,13 +442,17 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void clearDirectory() throws IOException {
-		File tempFolder = folder.newFolder("test");
-		Utils.cleanDirectory(tempFolder);
+		Path pathToFolder = folder.resolve("test");
+		File dir = new File(pathToFolder.toString());
+		dir.mkdir();
+		Utils.cleanDirectory(dir);
 	}
 
-	@Test(expected = FileNotFoundException.class)
-	public void clearDirectoryNotFound() throws IOException {
-		Utils.cleanDirectory(new File("wrong"));
+	@Test
+	public void clearDirectoryNotFound() throws FileNotFoundException {
+		assertThrows(FileNotFoundException.class, () -> {
+			Utils.cleanDirectory(new File("wrong"));	
+		});
 	}
 
 }

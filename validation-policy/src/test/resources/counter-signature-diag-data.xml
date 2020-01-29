@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="XSIG1">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <DateTime>2017-09-21T16:04:25</DateTime>
+            <ClaimedSigningTime>2017-09-21T16:04:25</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -64,7 +64,7 @@
         </Signature>
         <Signature Id="XSIG2" CounterSignature="true" Parent="XSIG1">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <DateTime>2017-09-21T16:04:55</DateTime>
+            <ClaimedSigningTime>2017-09-21T16:04:55</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -181,5 +181,4 @@
             </DigestAlgoAndValue>
         </SignerData>
     </OriginalDocuments>
-    <TrustedLists/>
 </DiagnosticData>

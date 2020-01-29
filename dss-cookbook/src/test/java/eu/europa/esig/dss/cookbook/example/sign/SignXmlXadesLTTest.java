@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -33,14 +33,16 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.tsl.service.TSLRepository;
-import eu.europa.esig.dss.tsl.service.TSLValidationJob;
+import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.job.TLValidationJob;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -92,20 +94,26 @@ public class SignXmlXadesLTTest extends CookbookTools {
 
 			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
 					"dss-password");
+			
+			LOTLSource lotlSource = new LOTLSource();
+			lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
+			lotlSource.setCertificateSource(keyStoreCertificateSource);
+			lotlSource.setPivotSupport(true);
 
 			TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
-
-			TSLRepository tslRepository = new TSLRepository();
-			tslRepository.setTrustedListsCertificateSource(tslCertificateSource);
-
-			TSLValidationJob job = new TSLValidationJob();
-			job.setDataLoader(commonsHttpDataLoader);
-			job.setOjContentKeyStore(keyStoreCertificateSource);
-			job.setLotlUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
-			job.setOjUrl("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG");
-			job.setLotlCode("EU");
-			job.setRepository(tslRepository);
-			job.refresh();
+			
+			FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader(commonsHttpDataLoader);
+			
+			CacheCleaner cacheCleaner = new CacheCleaner();
+			cacheCleaner.setCleanFileSystem(true);
+			cacheCleaner.setDSSFileLoader(onlineFileLoader);
+			
+			TLValidationJob validationJob = new TLValidationJob();
+			validationJob.setTrustedListCertificateSource(tslCertificateSource);
+			validationJob.setOnlineDataLoader(onlineFileLoader);
+			validationJob.setCacheCleaner(cacheCleaner);
+			validationJob.setListOfTrustedListSources(lotlSource);
+			validationJob.onlineRefresh();
 
 			commonCertificateVerifier.setTrustedCertSource(tslCertificateSource);
 

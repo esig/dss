@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -35,13 +35,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 
-public class KeyUsageCheckTest {
+public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void keyUsageCheck() throws Exception {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -52,7 +53,7 @@ public class KeyUsageCheckTest {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -62,7 +63,7 @@ public class KeyUsageCheckTest {
 
 	@Test
 	public void failedKeyUsageCheck() throws Exception {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -73,7 +74,7 @@ public class KeyUsageCheckTest {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

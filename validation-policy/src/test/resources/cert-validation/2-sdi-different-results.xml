@@ -43,27 +43,26 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>TSP-5.3 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier>
-                    <CountryCode>IT</CountryCode>
+                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                            <ServiceName>TS-5.3.3 Name - A</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - A</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                            <ServiceName>TS-5.3.3 Name - B</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - B</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -127,23 +126,22 @@
                 <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>TSP-5.3 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier>
-                    <CountryCode>IT</CountryCode>
+                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                            <ServiceName>TS-5.3.3 Name - A</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - A</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                            <ServiceName>TS-5.3.3 Name - B</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - B</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -151,7 +149,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -194,7 +192,7 @@
         </Revocation>
     </UsedRevocations>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D">
             <CountryCode>IT</CountryCode>
             <Url>http://46.101.246.130:8080/esig-validation-tests/tl/TL-5.xml</Url>
             <SequenceNumber>1</SequenceNumber>
@@ -204,15 +202,15 @@
             <NextUpdate>2019-01-02T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://46.101.246.130:8080/esig-validation-tests/tl/LOTL-3.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-12-07T12:12:31</LastLoading>
+	        <IssueDate>2018-12-01T00:00:00</IssueDate>
+	        <NextUpdate>2019-01-02T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>http://46.101.246.130:8080/esig-validation-tests/tl/LOTL-3.xml</Url>
-        <SequenceNumber>1</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-12-07T12:12:31</LastLoading>
-        <IssueDate>2018-12-01T00:00:00</IssueDate>
-        <NextUpdate>2019-01-02T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

@@ -20,55 +20,46 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-@RunWith(Parameterized.class)
 public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 
-	// Run 10 times this test
-	@Parameters
-	public static List<Object[]> data() {
-		return Arrays.asList(new Object[10][0]);
-	}
-
-	public XAdESDoubleSignatureTest() {
-	}
-
-	@Test
+	@RepeatedTest(10)
 	public void testDoubleSignature() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
 
@@ -77,14 +68,14 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new XAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
 
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
-//		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
+		// doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -96,13 +87,22 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		assertEquals(2, signatureIdList.size());
 		for (String signatureId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
+			assertFalse(diagnosticData.getSignatureById(signatureId).isSignatureDuplicated());
 		}
+		
+		assertEquals(4, diagnosticData.getTimestampList().size());
 
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
 		
 		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
 		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
 		assertFalse(Arrays.equals(signatureOne.getSignatureDigestReference().getDigestValue(), signatureTwo.getSignatureDigestReference().getDigestValue()));
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertNotNull(simpleReport);
+		for (String signatureId : simpleReport.getSignatureIdList()) {
+			assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(signatureId));
+		}
 	}
 
 	@Override

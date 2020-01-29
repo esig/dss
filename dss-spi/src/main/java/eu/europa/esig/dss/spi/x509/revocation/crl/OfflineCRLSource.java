@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -53,21 +54,19 @@ public abstract class OfflineCRLSource implements CRLSource {
 	/**
 	 * This {@code Map} contains all collected CRL binaries with a set of their origins
 	 */
-	private final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, Set<RevocationOrigin>>();
+	private final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
 	 * pair of crl's id + issuer token id {@code String}. It is used for performance reasons.
 	 */
-	private Map<String, CRLValidity> crlValidityMap = new HashMap<String, CRLValidity>();
+	private Map<String, CRLValidity> crlValidityMap = new HashMap<>();
 
-	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
+	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<>();
 
 	@Override
 	public final CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
-		if (certificateToken == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(certificateToken, "The certificate to be verified cannot be null");
 
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {
@@ -118,7 +117,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 			final Date nextUpdate = crlValidity.getNextUpdate();
 			final Date notAfter = certificateToken.getNotAfter();
 			final Date notBefore = certificateToken.getNotBefore();
-			boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
+			boolean periodAreIntersecting = thisUpdate.compareTo(notAfter) <= 0 && (nextUpdate != null && nextUpdate.compareTo(notBefore) >= 0);
 			if (!periodAreIntersecting) {
 				LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
 				continue;
@@ -174,7 +173,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	protected void addCRLBinary(CRLBinary crlBinary, RevocationOrigin origin) {
 		Set<RevocationOrigin> origins = crlBinaryOriginsMap.get(crlBinary);
 		if (origins == null) {
-			origins = new HashSet<RevocationOrigin>();
+			origins = new HashSet<>();
 			crlBinaryOriginsMap.put(crlBinary, origins);
 		}
 		origins.add(origin);

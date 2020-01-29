@@ -26,7 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.xades.ManifestNamespace;
+import eu.europa.esig.dss.asic.xades.definition.ManifestAttribute;
+import eu.europa.esig.dss.asic.xades.definition.ManifestElement;
+import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 
@@ -57,20 +59,20 @@ public class ASiCEWithXAdESManifestBuilder {
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element manifestDom = documentDom.createElementNS(ManifestNamespace.NS, ManifestNamespace.MANIFEST);
-		manifestDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.VERSION, "1.2");
+		final Element manifestDom = DomUtils.createElementNS(documentDom, ManifestNamespace.NS, ManifestElement.MANIFEST);
+		DomUtils.setAttributeNS(manifestDom, ManifestNamespace.NS, ManifestAttribute.VERSION, "1.2");
 		documentDom.appendChild(manifestDom);
 
-		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);
-		rootDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.FULL_PATH, "/");
-		rootDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
+		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);
+		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, "/");
+		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
 
 		for (DSSDocument document : documents) {
-			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);
-			fileDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.FULL_PATH, document.getName());
+			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);
+			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, document.getName());
 			MimeType mimeType = document.getMimeType();
 			if (mimeType != null) {
-				fileDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.MEDIA_TYPE, mimeType.getMimeTypeString());
+				DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, mimeType.getMimeTypeString());
 			}
 		}
 

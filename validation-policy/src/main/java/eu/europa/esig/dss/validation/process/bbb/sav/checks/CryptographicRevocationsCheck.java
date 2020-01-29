@@ -1,24 +1,42 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
-	private final List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks;
+	private final List<CryptographicCheck<T>> revocationCryptographicChecks;
 	private final String certificateId;
 
-	public CryptographicRevocationsCheck(T result, List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks, 
+	public CryptographicRevocationsCheck(I18nProvider i18nProvider, T result, List<CryptographicCheck<T>> revocationCryptographicChecks, 
 			String certificateId) {
-		super(result, null);
+		super(i18nProvider, result, null);
 		this.revocationCryptographicChecks = revocationCryptographicChecks;
 		this.certificateId = certificateId;
 	}
@@ -26,7 +44,7 @@ public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> e
 	@Override
 	protected boolean process() {
 		// if at least one revocation check successed return true indication
-		for (CryptographicCheck<XmlPSV> cryptographicCheck : revocationCryptographicChecks) {
+		for (CryptographicCheck<T> cryptographicCheck : revocationCryptographicChecks) {
 			if (cryptographicCheck.process())
 				return true;
 		}
@@ -34,10 +52,8 @@ public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> e
 	}
 
 	@Override
-	protected String getAdditionalInfo() {		
-		String addInfo = AdditionalInfo.REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE;
-		Object[] params = new Object[] { certificateId };
-		return MessageFormat.format(addInfo, params);
+	protected MessageTag getAdditionalInfo() {		
+		return MessageTag.REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE.setArgs(certificateId);
 	}
 
 	@Override

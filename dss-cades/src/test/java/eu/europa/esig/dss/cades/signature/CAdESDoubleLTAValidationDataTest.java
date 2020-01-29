@@ -1,15 +1,35 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -145,13 +165,16 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			CertificateWrapper signingCertificate = timestamp.getSigningCertificate();
 			assertNotNull(signingCertificate);
 			assertTrue(signingCertificate.isRevocationDataAvailable());
-			assertTrue(timestamp.getDigestMatchers().get(0).isDataFound());
-			assertTrue(timestamp.getDigestMatchers().get(0).isDataIntact());
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
 		}
 		
-		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
-		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());
-		assertEquals(3, allTimestamps.get(2).getTimestampedRevocationIds().size());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		assertEquals(0, signature.getTimestampList().get(0).getTimestampedRevocationIds().size());
+		assertEquals(2, signature.getTimestampList().get(1).getTimestampedRevocationIds().size());
+		assertEquals(3, signature.getTimestampList().get(2).getTimestampedRevocationIds().size());
 		
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(3, revocationIdsDoubleLtaLevel.size());
@@ -159,9 +182,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			assertTrue(revocationIdsDoubleLtaLevel.contains(id));
 		}
 		
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertNotNull(signature);
-		assertEquals(1, signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(1, signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_SIGNED_DATA).size());
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		List<ValidationObjectType> validationObjects = etsiValidationReportJaxb.getSignatureValidationObjects().getValidationObject();
@@ -171,7 +192,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
 			if (poeProvisioning != null) {
 				
-				List<String> timestampedObjectIds = new ArrayList<String>();
+				List<String> timestampedObjectIds = new ArrayList<>();
 				
 				assertNotNull(poeProvisioning.getPOETime());
 				assertNotNull(poeProvisioning.getSignatureReference());

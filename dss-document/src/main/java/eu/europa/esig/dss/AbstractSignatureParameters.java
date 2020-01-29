@@ -26,6 +26,7 @@ import java.util.List;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -35,7 +36,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  * Parameters for a Signature creation/extension
  */
 @SuppressWarnings("serial")
-public abstract class AbstractSignatureParameters extends AbstractSerializableSignatureParameters {
+public abstract class AbstractSignatureParameters<TP extends SerializableTimestampParameters> extends AbstractSerializableSignatureParameters<TP> {
 
 	private String deterministicId;
 
@@ -60,7 +61,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
+	private List<CertificateToken> certificateChain = new LinkedList<>();
 
 	/*
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
@@ -125,6 +126,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 *
 	 * @return the signing certificate
 	 */
+	@Override
 	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
 	}

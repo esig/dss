@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -58,11 +58,11 @@ import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
  */
 public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getRevokedTsa());
@@ -96,7 +96,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.INDETERMINATE, indication);
 		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
-		assertEquals(SubIndication.NO_POE, subIndication);
+		assertEquals(SubIndication.TRY_LATER, subIndication);
 	}
 	
 	@Override
@@ -119,7 +119,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 				SignatureValidationReportType validationReport = vo.getValidationReport();
 				ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
 				assertEquals(Indication.INDETERMINATE, signatureValidationStatus.getMainIndication());
-				assertEquals(SubIndication.NO_POE, signatureValidationStatus.getSubIndication().get(0));
+				assertEquals(SubIndication.REVOKED_NO_POE, signatureValidationStatus.getSubIndication().get(0));
 
 				List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
 				ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
@@ -133,7 +133,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

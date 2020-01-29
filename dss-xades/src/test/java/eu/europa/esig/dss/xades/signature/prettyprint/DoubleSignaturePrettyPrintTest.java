@@ -1,15 +1,35 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.xades.signature.prettyprint;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -219,6 +239,9 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	@Test
 	public void doubleCreatedSignatureTest() {
 		
+		// Strange case with 2 signatures from the same certificate and 2 OCSP responses
+		// for the same intermediate CA. Second OCSP Response is not processed
+
 		DiagnosticData diagnosticData = validate(new FileDocument("src/test/resources/validation/doubleSignedTest.xml"));
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(2, signatures.size());
@@ -227,8 +250,8 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(0, allFoundRevocationRefs.size());
 		
-		assertEquals(1, signatureWrapper.getRelatedRevocations().size());
-		assertEquals(1, signatureWrapper.getOrphanRevocations().size());
+		assertEquals(2, signatureWrapper.getRelatedRevocations().size());
+		assertEquals(0, signatureWrapper.getOrphanRevocations().size());
 		
 		List<XmlRelatedCertificate> foundCertificatesByLocation = signatureWrapper.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
 		assertNotNull(foundCertificatesByLocation);
@@ -238,8 +261,8 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		allFoundRevocationRefs = signature2Wrapper.getAllFoundRevocationRefs();
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(2, allFoundRevocationRefs.size());
-		assertEquals(2, signature2Wrapper.getRelatedRevocations().size());
-		assertEquals(0, signature2Wrapper.getOrphanRevocations().size());
+		assertEquals(1, signature2Wrapper.getRelatedRevocations().size());
+		assertEquals(1, signature2Wrapper.getOrphanRevocations().size());
 		
 	}
 	

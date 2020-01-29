@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -65,7 +65,7 @@ public class DSS874Test {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
-		Map<String, DSSDocument> signaturePoliciesById = new HashMap<String, DSSDocument>();
+		Map<String, DSSDocument> signaturePoliciesById = new HashMap<>();
 		signaturePoliciesById.put("2.16.724.1.3.1.1.2.1.9", new FileDocument(policyDocument));
 		signaturePolicyProvider.setSignaturePoliciesById(signaturePoliciesById);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);

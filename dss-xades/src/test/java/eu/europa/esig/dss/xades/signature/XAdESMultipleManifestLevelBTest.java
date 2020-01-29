@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -35,17 +35,18 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESMultipleManifestLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class XAdESMultipleManifestLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
-	private MultipleDocumentsSignatureService<XAdESSignatureParameters> service;
+	private MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/sample.png"));
 		documents.add(new FileDocument("src/test/resources/sample.txt"));
 		documents.add(new FileDocument("src/test/resources/sample.xml"));
@@ -70,7 +71,7 @@ public class XAdESMultipleManifestLevelBTest extends AbstractPkiFactoryTestMulti
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

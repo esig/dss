@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.lowagie.text.pdf.PdfReader;
 
@@ -34,49 +36,65 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 
 public class DSS1444Test {
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void test() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf"); PdfReader r = new PdfReader(is)) {
-			// nothing
-		}
+		assertThrows(NullPointerException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf"); PdfReader r = new PdfReader(is)) {
+				// nothing
+			}		
+		});
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testValidation() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
-		}
+		Exception exception = assertThrows(DSSException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
+				PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+				val.getSignatures();
+			}
+		});
+		assertEquals("Cannot analyze signatures : null", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void test2() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf"); PdfReader r = new PdfReader(is)) {
-			// nothing
-		}
+		assertThrows(NullPointerException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf"); PdfReader r = new PdfReader(is)) {
+				// nothing
+			}
+		});
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void test2Validation() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
-		}
+		Exception exception = assertThrows(DSSException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
+				PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+				val.getSignatures();
+			}
+		});
+		assertEquals("Cannot analyze signatures : null", exception.getMessage());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void test3() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg"); PdfReader r = new PdfReader(is)) {
-			// nothing
-		}
+		Exception exception = assertThrows(IOException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/small-red.jpg"); PdfReader r = new PdfReader(is)) {
+				// nothing
+			}
+		});
+		assertEquals("PDF header signature not found.", exception.getMessage());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void test3bis() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
-		}
+		Exception exception = assertThrows(DSSException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
+				PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+				val.getSignatures();
+			}
+		});
+		assertEquals("Cannot analyze signatures : PDF header signature not found.", exception.getMessage());
 	}
 
 	@Test

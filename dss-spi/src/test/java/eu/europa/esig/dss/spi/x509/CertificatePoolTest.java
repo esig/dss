@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,15 +33,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CertificatePoolTest {
@@ -96,7 +94,7 @@ public class CertificatePoolTest {
 		CertificatePool sharedPool = new CertificatePool();
 
 		final ExecutorService threadPool = Executors.newFixedThreadPool(NB_THREADS);
-		List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
+		List<Future<Boolean>> futures = new ArrayList<>();
 
 		for (int i = 0; i < NB_THREADS; i++) {
 			futures.add(threadPool.submit(new CertPoolMergerRunnable(sharedPool, sharedCertSource)));

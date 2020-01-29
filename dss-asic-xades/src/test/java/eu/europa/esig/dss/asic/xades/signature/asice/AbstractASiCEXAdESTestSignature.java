@@ -28,8 +28,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public abstract class AbstractASiCEXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
+public abstract class AbstractASiCEXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
 	@Override
 	protected MimeType getExpectedMime() {

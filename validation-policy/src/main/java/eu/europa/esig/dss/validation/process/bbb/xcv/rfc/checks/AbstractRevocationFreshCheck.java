@@ -1,31 +1,50 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
 	protected final RevocationWrapper revocationData;
 	private final Date validationDate;
 
-	protected AbstractRevocationFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, LevelConstraint constraint) {
-		super(result, constraint);
+	protected AbstractRevocationFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, 
+			Date validationDate, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.revocationData = revocationData;
 		this.validationDate = validationDate;
 	}
 	
-	protected boolean isProductionDateNotBeforeValidationTime() {
+	protected boolean isProductionDateAfterValidationTime() {
 		long maxFreshness = getMaxFreshness();
 		long validationDateTime = validationDate.getTime();
 		long limit = validationDateTime - maxFreshness;
@@ -37,23 +56,17 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 	protected abstract long getMaxFreshness();
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		String productionTimeString = "not defined";
 		String nextUpdateString = "not defined";
 		if (revocationData != null) {
 			if (revocationData.getProductionDate() != null)
-				productionTimeString = convertDate(revocationData.getProductionDate());
+				productionTimeString = ValidationProcessUtils.getFormattedDate(revocationData.getProductionDate());
 			if (revocationData.getNextUpdate() != null)
-				nextUpdateString = convertDate(revocationData.getNextUpdate());
+				nextUpdateString = ValidationProcessUtils.getFormattedDate(revocationData.getNextUpdate());
 		}
-		Object[] params = new Object[] { convertDate(validationDate), productionTimeString, nextUpdateString };
-		return MessageFormat.format(AdditionalInfo.REVOCATION_CHECK, params);
-	}
-	
-	private String convertDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return sdf.format(date);
+		Object[] params = new Object[] { ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString, nextUpdateString };
+		return MessageTag.REVOCATION_CHECK.setArgs(params);
 	}
 
 	@Override

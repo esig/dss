@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -47,13 +47,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 
@@ -62,7 +62,7 @@ public class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+		List<DSSDocument> documentToSigns = new ArrayList<>();
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
@@ -73,7 +73,7 @@ public class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		signatureParameters.setContentTimestampParameters(new TimestampParameters(DigestAlgorithm.SHA256));
+		signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters(DigestAlgorithm.SHA256));
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 

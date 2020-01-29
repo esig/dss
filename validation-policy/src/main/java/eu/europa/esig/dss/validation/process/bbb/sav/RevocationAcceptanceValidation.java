@@ -24,8 +24,9 @@ import java.util.Date;
 
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -34,10 +35,14 @@ import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
  */
 public class RevocationAcceptanceValidation extends AbstractAcceptanceValidation<RevocationWrapper> {
 
-	public RevocationAcceptanceValidation(Date currentTime, RevocationWrapper revocationWrapper,
+	public RevocationAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, RevocationWrapper revocationWrapper,
 			ValidationPolicy validationPolicy) {
-		super(revocationWrapper, currentTime, Context.REVOCATION, validationPolicy);
-		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
+		super(i18nProvider, revocationWrapper, currentTime, Context.REVOCATION, validationPolicy);
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SIGNATURE_ACCEPTANCE_VALIDATION;
 	}
 
 	@Override

@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -47,26 +47,27 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
+public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+	private List<DSSDocument> documentToSigns = new ArrayList<>();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -75,7 +76,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		signatureParameters.setContentTimestampParameters(new TimestampParameters(DigestAlgorithm.SHA256));
+		signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters(DigestAlgorithm.SHA256));
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
@@ -120,7 +121,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		assertEquals(4, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
 		int archive = 0;
 		int archiveContent = 0;
 		for (XmlSignatureScope signatureScope : signatureScopes) {
@@ -132,7 +133,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 			}
 		}
 		assertEquals(1, archive);
-		assertEquals(2, archiveContent);
+		assertEquals(3, archiveContent);
 	}
 
 	@Override
@@ -161,7 +162,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

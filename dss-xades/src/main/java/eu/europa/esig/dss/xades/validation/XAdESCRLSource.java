@@ -33,7 +33,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
@@ -41,48 +41,68 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
 @SuppressWarnings("serial")
 public class XAdESCRLSource extends SignatureCRLSource {
 
+	private final Element signatureElement;
+	private final XAdESPaths xadesPaths;
+
 	/**
 	 * The default constructor for XAdESCRLSource.
 	 *
 	 * @param signatureElement
-	 *            {@code Element} that contains an XML signature
-	 * @param xPathQueryHolder
-	 *            adapted {@code XPathQueryHolder}
+	 *                         {@code Element} that contains an XML signature
+	 * @param xadesPaths
+	 *                         adapted {@code XAdESPaths}
 	 */
-	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {		
+	public XAdESCRLSource(final Element signatureElement, final XAdESPaths xadesPaths) {
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
-		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
+		Objects.requireNonNull(xadesPaths, "XAdESPaths cannot be null");
+
+		this.signatureElement = signatureElement;
+		this.xadesPaths = xadesPaths;
 
 		// values
-		collect(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL, RevocationOrigin.REVOCATION_VALUES);
-		collect(signatureElement, xPathQueryHolder.XPATH_ATTR_REV_ENCAPSULATED_CRL_VALUES, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
-		collect(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
-		
+		collectValues(xadesPaths.getRevocationValuesPath(), RevocationOrigin.REVOCATION_VALUES);
+		collectValues(xadesPaths.getAttributeRevocationValuesPath(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+		collectValues(xadesPaths.getTimeStampValidationDataRevocationValuesPath(), RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+
 		// references
-		collectRefs(signatureElement, xPathQueryHolder, 
-				xPathQueryHolder.XPATH_COMPLETE_REVOCATION_CRL_REFS, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
-		collectRefs(signatureElement, xPathQueryHolder, 
-				xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_CRL_REFS, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+		collectRefs(xadesPaths.getCompleteRevocationRefsPath(), RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+		collectRefs(xadesPaths.getAttributeRevocationRefsPath(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
-	private void collect(Element signatureElement, final String xPathQuery, RevocationOrigin revocationOrigin) {
-		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
-		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-			final Element crlValueEl = (Element) nodeList.item(ii);
-			addCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()), revocationOrigin);
+	private void collectValues(final String revocationValuesPath, RevocationOrigin revocationOrigin) {
+		if (revocationValuesPath == null) {
+			return;
+		}
+
+		final NodeList revocationValuesNodeList = DomUtils.getNodeList(signatureElement, revocationValuesPath);
+		for (int i = 0; i < revocationValuesNodeList.getLength(); i++) {
+			final Element revocationValuesElement = (Element) revocationValuesNodeList.item(i);
+			final NodeList crlValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentCRLValuesChildren());
+			for (int ii = 0; ii < crlValueNodes.getLength(); ii++) {
+				final Element crlValueEl = (Element) crlValueNodes.item(ii);
+				if (crlValueEl != null) {
+					addCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()), revocationOrigin);
+				}
+			}
 		}
 	}
-	
-	private void collectRefs(Element signatureElement, final XPathQueryHolder xPathQueryHolder, 
-			final String xPathQuery, RevocationRefOrigin revocationRefOrigin) {
-		final Element crlRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
-		if (crlRefsElement != null) {
-			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRLREF);
-			for (int i = 0; i < crlRefNodes.getLength(); i++) {
-				final Element crlRefNode = (Element) crlRefNodes.item(i);
-				final Digest digest = DSSXMLUtils.getRevocationDigest(crlRefNode, xPathQueryHolder);
-				CRLRef crlRef = new CRLRef(digest, revocationRefOrigin);
-				addReference(crlRef, revocationRefOrigin);
+
+	private void collectRefs(final String revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
+		if (revocationRefsPath == null) {
+			return;
+		}
+
+		final NodeList revocationRefsNodeList = DomUtils.getNodeList(signatureElement, revocationRefsPath);
+		for (int i = 0; i < revocationRefsNodeList.getLength(); i++) {
+			final Element revocationRefsElement = (Element) revocationRefsNodeList.item(i);
+			final NodeList crlRefNodes = DomUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentCRLRefsChildren());
+			for (int ii = 0; ii < crlRefNodes.getLength(); ii++) {
+				final Element crlRefNode = (Element) crlRefNodes.item(ii);
+				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRefNode, xadesPaths.getCurrentDigestAlgAndValue()));
+				if (digest != null) {
+					CRLRef crlRef = new CRLRef(digest, revocationRefOrigin);
+					addReference(crlRef, revocationRefOrigin);
+				}
 			}
 		}
 	}

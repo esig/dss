@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -42,18 +42,18 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCSXAdESLevelBTest extends AbstractASiCSXAdESTestSignature {
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
@@ -67,7 +67,8 @@ public class ASiCSXAdESLevelBTest extends AbstractASiCSXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		signatureParameters.setContentTimestampParameters(new TimestampParameters(DigestAlgorithm.SHA512));
+		
+		signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters(DigestAlgorithm.SHA512));
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
@@ -105,7 +106,7 @@ public class ASiCSXAdESLevelBTest extends AbstractASiCSXAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

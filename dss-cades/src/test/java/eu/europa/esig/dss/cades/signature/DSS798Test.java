@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
 
@@ -44,9 +45,8 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS798Test extends PKIFactoryAccess {
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testExtendDetachedWithoutFile() throws Exception {
-
 		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(Charsets.UTF_8), "bin.bin");
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
@@ -69,7 +69,7 @@ public class DSS798Test extends PKIFactoryAccess {
 
 		CAdESSignatureParameters parametersExtend = new CAdESSignatureParameters();
 		parametersExtend.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		serviceExtend.extendDocument(signedDocument, parametersExtend);
+		assertThrows(DSSException.class, () -> serviceExtend.extendDocument(signedDocument, parametersExtend));
 	}
 
 	@Test

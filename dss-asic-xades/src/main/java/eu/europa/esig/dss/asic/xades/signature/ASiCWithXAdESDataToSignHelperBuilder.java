@@ -28,8 +28,10 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignASiCEWithXAdESFromArchive;
 import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignASiCEWithXAdESFromFiles;
+import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignOpenDocument;
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromArchive;
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromFiles;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 
@@ -38,32 +40,58 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 	private ASiCWithXAdESDataToSignHelperBuilder() {
 	}
 
-	public static GetDataToSignASiCWithXAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
+	public static GetDataToSignASiCWithXAdESHelper getGetDataToSignHelper(List<DSSDocument> documents,
+			ASiCWithXAdESSignatureParameters parameters) {
 
 		BLevelParameters bLevel = parameters.bLevel();
+
+		boolean zip = ASiCUtils.isArchive(documents);
+		boolean signedAsic = ASiCUtils.isAsic(documents);
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
-		boolean asic = ASiCUtils.isAsic(documents);
 
-		if (asic) {
+		if (zip) {
 			DSSDocument archiveDoc = documents.get(0);
-			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".xml")) {
-				throw new UnsupportedOperationException("Container type doesn't match");
-			}
-
 			ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(archiveDoc);
 			ASiCExtractResult extract = extractor.extract();
-			if (asice) {
-				return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(), extract.getSignatureDocuments(), extract.getManifestDocuments(),
-						parameters.aSiC());
+			
+			boolean openDocument = ASiCUtils.isOpenDocument(extract.getMimeTypeDocument());
+			if (openDocument) {
+				return new DataToSignOpenDocument(extract.getSignedDocuments(),
+						extract.getSignatureDocuments(), extract.getManifestDocuments(), extract.getMimeTypeDocument(), extract.getRootContainer());
+			} else if (signedAsic) {
+				if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".xml")) {
+					throw new UnsupportedOperationException("Container type doesn't match");
+				}
+
+				ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc, extract.getMimeTypeDocument(), extract.getZipComment(),
+						extract.getSignedDocuments());
+
+				if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
+					return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(),
+							extract.getSignatureDocuments(), extract.getManifestDocuments(), parameters.aSiC());
+				} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
+					return new DataToSignASiCSWithXAdESFromArchive(extract.getSignatureDocuments(),
+							extract.getSignedDocuments(), parameters.aSiC());
+				} else {
+					throw new UnsupportedOperationException(
+							String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
+				}
+
 			} else {
-				return new DataToSignASiCSWithXAdESFromArchive(extract.getSignatureDocuments(), extract.getSignedDocuments(), parameters.aSiC());
+				return fromFiles(documents, parameters, bLevel, asice);
 			}
 		} else {
-			if (asice) {
-				return new DataToSignASiCEWithXAdESFromFiles(documents, parameters.aSiC());
-			} else {
-				return new DataToSignASiCSWithXAdESFromFiles(documents, bLevel.getSigningDate(), parameters.aSiC());
-			}
+			return fromFiles(documents, parameters, bLevel, asice);
 		}
 	}
+
+	private static GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents,
+			ASiCWithXAdESSignatureParameters parameters, BLevelParameters bLevel, boolean asice) {
+		if (asice) {
+			return new DataToSignASiCEWithXAdESFromFiles(documents, parameters.aSiC());
+		} else {
+			return new DataToSignASiCSWithXAdESFromFiles(documents, bLevel.getSigningDate(), parameters.aSiC());
+		}
+	}
+
 }

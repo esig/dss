@@ -34,7 +34,7 @@ class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements Trus
 	private static final Map<String, String> CORRESPONDANCE_MAP_QUALIFIER_ASI;
 
 	static {
-		CORRESPONDANCE_MAP_QUALIFIER_ASI = new HashMap<String, String>();
+		CORRESPONDANCE_MAP_QUALIFIER_ASI = new HashMap<>();
 
 		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESIG, AdditionalServiceInformation.FOR_ESIGNATURES);
 		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESEAL, AdditionalServiceInformation.FOR_ESEALS);

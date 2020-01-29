@@ -76,7 +76,7 @@ public class CreateKeyStoreApp {
 	private static void addCertificate(KeyStoreCertificateSource kscs, String certPath) throws Exception {
 		try (InputStream is = new FileInputStream(certPath)) {
 			CertificateToken cert = DSSUtils.loadCertificate(is);
-			if (!ALLOW_EXPIRED && cert.isExpiredOn(new Date())) {
+			if (!ALLOW_EXPIRED && cert.isValidOn(new Date())) {
 				throw new RuntimeException("Certificate " + DSSASN1Utils.getSubjectCommonName(cert) + " is expired");
 			}
 			displayCertificateDigests(cert);

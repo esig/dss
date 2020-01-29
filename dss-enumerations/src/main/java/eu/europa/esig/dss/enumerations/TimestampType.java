@@ -62,7 +62,7 @@ public enum TimestampType {
 	/* TRUE if the timestamp is an Archival one */
 	private boolean archivalTimestamp;
 	
-	private TimestampType(boolean contentTimestamp, boolean coversSignature, boolean coversValidationData, boolean archivalTimestamp) {
+	TimestampType(boolean contentTimestamp, boolean coversSignature, boolean coversValidationData, boolean archivalTimestamp) {
 		this.contentTimestamp = contentTimestamp;
 		this.coversSignarture = coversSignature;
 		this.coversValidationData = coversValidationData;
@@ -90,23 +90,9 @@ public enum TimestampType {
 	 * @return array of content {@link TimestampType}
 	 */
 	public static TimestampType[] getContentTimestampTypes() {
-		List<TimestampType> contentTimestamps = new ArrayList<TimestampType>();
+		List<TimestampType> contentTimestamps = new ArrayList<>();
 		for (TimestampType timestampType : values()) {
 			if (timestampType.isContentTimestamp()) {
-				contentTimestamps.add(timestampType);
-			}
-		}
-		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
-	}
-
-	/**
-	 * Returns an array of all available timestamps covering Validation Data
-	 * @return array of {@link TimestampType}s that cover Validation Data
-	 */
-	public static TimestampType[] getTimestampTypesCoveringValidationData() {
-		List<TimestampType> contentTimestamps = new ArrayList<TimestampType>();
-		for (TimestampType timestampType : values()) {
-			if (timestampType.coversValidationData()) {
 				contentTimestamps.add(timestampType);
 			}
 		}

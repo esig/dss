@@ -60,7 +60,7 @@ public class POEExtraction {
 	/**
 	 * Map of proofs of existence by token ids
 	 */
-	private Map<String, List<XmlProofOfExistence>> poe = new HashMap<String, List<XmlProofOfExistence>>();
+	private Map<String, List<XmlProofOfExistence>> poeMap = new HashMap<>();
 
 	public void init(DiagnosticData diagnosticData, XmlProofOfExistence proofOfExistence) {
 
@@ -105,10 +105,10 @@ public class POEExtraction {
 
 	private void addPOE(String tokenId, XmlProofOfExistence proofOfExistence) {
 		if (proofOfExistence != null) {
-			List<XmlProofOfExistence> poesById = poe.get(tokenId);
+			List<XmlProofOfExistence> poesById = poeMap.get(tokenId);
 			if (poesById == null) {
-				poesById = new ArrayList<XmlProofOfExistence>();
-				poe.put(tokenId, poesById);
+				poesById = new ArrayList<>();
+				poeMap.put(tokenId, poesById);
 			}
 			poesById.add(proofOfExistence);
 		}
@@ -125,10 +125,10 @@ public class POEExtraction {
 	 * 
 	 */
 	public boolean isPOEExists(final String tokenId, final Date controlTime) {
-		List<XmlProofOfExistence> poes = poe.get(tokenId);
+		List<XmlProofOfExistence> poes = poeMap.get(tokenId);
 		if (poes != null) {
 			for (XmlProofOfExistence poe : poes) {
-				if (poe.getTime().compareTo(controlTime) < 0) {
+				if (poe.getTime().compareTo(controlTime) <= 0) {
 					return true;
 				}
 			}
@@ -143,7 +143,7 @@ public class POEExtraction {
 	public XmlProofOfExistence getLowestPOE(final String tokenId, final Date controlTime) {
 		XmlProofOfExistence lowestPOE = new XmlProofOfExistence();
 		lowestPOE.setTime(controlTime);
-		List<XmlProofOfExistence> poes = poe.get(tokenId);
+		List<XmlProofOfExistence> poes = poeMap.get(tokenId);
 		if (poes != null) {
 			for (XmlProofOfExistence poe : poes) {
 				if (poe.getTime().compareTo(lowestPOE.getTime()) <= 0) {

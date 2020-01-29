@@ -1,16 +1,36 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -42,11 +62,11 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		int revocationSignatureOriginCounter = 0;
 		
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
-		Set<String> revocationIds = new HashSet<String>();
+		Set<String> revocationIds = new HashSet<>();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOrigin.SIGNATURE.equals(revocation.getOrigin())) {
+			if (RevocationOrigin.INPUT_DOCUMENT.equals(revocation.getOrigin())) {
 				revocationSignatureOriginCounter++;
 			}
 			revocationIds.add(revocation.getId());
@@ -85,11 +105,11 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		int revocationSignatureOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
-		Set<String> revocationIds = new HashSet<String>();
+		Set<String> revocationIds = new HashSet<>();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOrigin.SIGNATURE.equals(revocation.getOrigin())) {
+			if (RevocationOrigin.INPUT_DOCUMENT.equals(revocation.getOrigin())) {
 				revocationSignatureOriginCounter++;
 			}
 			revocationIds.add(revocation.getId());
@@ -142,7 +162,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(4, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 		int ocspResponses = 0;
-		List<String> revocationDigests = new ArrayList<String>();
+		List<String> revocationDigests = new ArrayList<>();
 		for (XmlRevocationRef revocationRef : signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS)) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());

@@ -21,27 +21,27 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
 import java.util.Date;
+import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 
 public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
 	private final SignatureWrapper signature;
-	private final DiagnosticData diagnosticData;
-	private final XmlBasicBuildingBlocks bbb;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 	private final POEExtraction poe;
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -50,13 +50,13 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	private Indication indication;
 	private SubIndication subIndication;
 
-	public PastSignatureValidationCheck(XmlValidationProcessArchivalData result, SignatureWrapper signature, DiagnosticData diagnosticData,
-			XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context, LevelConstraint constraint) {
-		super(result, constraint);
+	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, SignatureWrapper signature,
+			Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe, Date currentTime,
+			ValidationPolicy policy, Context context, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, signature.getId());
 
 		this.signature = signature;
-		this.diagnosticData = diagnosticData;
-		this.bbb = bbb;
+		this.bbbs = bbbs;
 		this.poe = poe;
 		this.currentTime = currentTime;
 		this.policy = policy;
@@ -65,10 +65,11 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected boolean process() {
-		PastSignatureValidation psv = new PastSignatureValidation(signature, diagnosticData, bbb, poe, currentTime, policy, context);
+		XmlBasicBuildingBlocks tokenBBB = bbbs.get(signature.getId());
+		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs, poe, currentTime, policy, context);
 		XmlPSV psvResult = psv.execute();
-		bbb.setPSV(psvResult);
-		bbb.setConclusion(psvResult.getConclusion());
+		tokenBBB.setPSV(psvResult);
+		tokenBBB.setConclusion(psvResult.getConclusion());
 
 		if (isValid(psvResult)) {
 			return true;

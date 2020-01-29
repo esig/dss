@@ -1,6 +1,28 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -10,7 +32,6 @@ import java.io.InputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +120,7 @@ public class PdfScreenshotUtils {
 		PDPageTree samplePageTree = document1.getPages();
 		PDPageTree checkPageTree = document2.getPages();
 
-		Assert.assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
+		assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
 
 		PDFRenderer sampleRenderer = new PDFRenderer(document1);
 		PDFRenderer checkRenderer = new PDFRenderer(document2);
@@ -123,10 +144,10 @@ public class PdfScreenshotUtils {
 			int checkWidth = checkImage.getWidth();
 			int checkHeight = checkImage.getHeight();
 			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
-				Assert.fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+				fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
 			}
 			if (width != checkWidth || height != checkHeight) {
-				Assert.fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+				fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
 			}
 
 			int matchingPixels = 0;

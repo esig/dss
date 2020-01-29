@@ -20,22 +20,25 @@
  */
 package eu.europa.esig.dss.asic.cades;
 
+import java.util.Date;
+
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters {
+public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters implements ASiCWithCAdESCommonParameters {
 
 	private static final long serialVersionUID = -830012801924753709L;
 
 	/**
-	 * The object representing the parameters related to ASiC from of the signature.
+	 * The object representing the parameters related to ASiC for the signature.
 	 */
-	private ASiCParameters aSiCParams = new ASiCParameters();
+	private ASiCParameters asicParams = new ASiCParameters();
 
+	@Override
 	public ASiCParameters aSiC() {
-		return aSiCParams;
+		return asicParams;
 	}
 
 	@Override
@@ -44,6 +47,11 @@ public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters {
 			throw new IllegalArgumentException("Only CAdES form is allowed !");
 		}
 		super.setSignatureLevel(signatureLevel);
+	}
+
+	@Override
+	public Date getZipCreationDate() {
+		return bLevel().getSigningDate();
 	}
 
 }

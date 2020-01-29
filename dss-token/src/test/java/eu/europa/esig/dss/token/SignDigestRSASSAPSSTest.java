@@ -1,9 +1,29 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.token;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -17,11 +37,9 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +53,6 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-@RunWith(Parameterized.class)
 public class SignDigestRSASSAPSSTest {
 
 	static {
@@ -44,11 +61,8 @@ public class SignDigestRSASSAPSSTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestRSASSAPSSTest.class);
 
-	private final DigestAlgorithm digestAlgo;
-
-	@Parameters(name = "DigestAlgorithm {index} : {0}")
-	public static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+	private static Collection<DigestAlgorithm> data() {
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
 				rsaCombinations.add(digestAlgorithm);
@@ -57,12 +71,9 @@ public class SignDigestRSASSAPSSTest {
 		return rsaCombinations;
 	}
 
-	public SignDigestRSASSAPSSTest(DigestAlgorithm digestAlgo) {
-		this.digestAlgo = digestAlgo;
-	}
-
-	@Test
-	public void testPkcs12PSS() throws IOException {
+	@ParameterizedTest(name = "DigestAlgorithm {index} : {0}")
+	@MethodSource("data")
+	public void testPkcs12PSS(DigestAlgorithm digestAlgo) throws IOException {
 		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
 				new PasswordProtection("password".toCharArray()))) {
 
@@ -80,7 +91,7 @@ public class SignDigestRSASSAPSSTest {
 				sig.update(toBeSigned.getBytes());
 				assertTrue(sig.verify(signValue.getValue()));
 			} catch (GeneralSecurityException e) {
-				Assert.fail(e.getMessage());
+				Assertions.fail(e.getMessage());
 			}
 
 			try {
@@ -90,7 +101,7 @@ public class SignDigestRSASSAPSSTest {
 				byte[] decrypted = cipher.doFinal(signValue.getValue());
 				LOG.info("Decrypted : {}", Base64.getEncoder().encodeToString(decrypted));
 			} catch (GeneralSecurityException e) {
-				Assert.fail(e.getMessage());
+				Assertions.fail(e.getMessage());
 			}
 
 			final byte[] digestBinaries = DSSUtils.digest(digestAlgo, toBeSigned.getBytes());
@@ -107,7 +118,7 @@ public class SignDigestRSASSAPSSTest {
 				sig.update(toBeSigned.getBytes());
 				assertTrue(sig.verify(signDigestValue.getValue()));
 			} catch (GeneralSecurityException e) {
-				Assert.fail(e.getMessage());
+				Assertions.fail(e.getMessage());
 			}
 
 			try {
@@ -117,7 +128,7 @@ public class SignDigestRSASSAPSSTest {
 				byte[] decrypted = cipher.doFinal(signDigestValue.getValue());
 				LOG.info("Decrypted : {}", Base64.getEncoder().encodeToString(decrypted));
 			} catch (GeneralSecurityException e) {
-				Assert.fail(e.getMessage());
+				Assertions.fail(e.getMessage());
 			}
 
 			// should not be equals

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +29,17 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public KeyUsageCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public KeyUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
 
@@ -52,7 +51,7 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	}
 
 	private List<String> toString(List<KeyUsageBit> keyUsages) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (KeyUsageBit keyUsageBit : keyUsages) {
 			result.add(keyUsageBit.getValue());
 		}
@@ -60,8 +59,8 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		return MessageFormat.format(AdditionalInfo.KEY_USAGE, Arrays.toString(certificate.getKeyUsages().toArray()));
+	protected MessageTag getAdditionalInfo() {
+		return MessageTag.KEY_USAGE.setArgs(Arrays.toString(certificate.getKeyUsages().toArray()));
 	}
 
 	@Override

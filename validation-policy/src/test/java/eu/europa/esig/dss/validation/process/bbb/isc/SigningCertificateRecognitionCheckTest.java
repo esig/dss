@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
@@ -39,9 +39,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
 
-public class SigningCertificateRecognitionCheckTest {
+public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signingCertificateRecognitionCheck() throws Exception {
@@ -63,11 +64,10 @@ public class SigningCertificateRecognitionCheckTest {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		eu.europa.esig.dss.diagnostic.DiagnosticData wrapper = new eu.europa.esig.dss.diagnostic.DiagnosticData(
-				diagnosticData);
+		new eu.europa.esig.dss.diagnostic.DiagnosticData(diagnosticData);
 		XmlISC result = new XmlISC();
 
-		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(result,
+		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(i18nProvider, result,
 				new SignatureWrapper(sig), constraint);
 
 		scrc.execute();

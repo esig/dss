@@ -36,6 +36,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,8 +51,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -65,6 +68,7 @@ import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -74,6 +78,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -181,23 +186,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given resource. The certificate must be DER-encoded and may be supplied
-	 * in binary or printable (PEM / Base64) encoding.
-	 * 
-	 * If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
-	 * {@code -----BEGIN CERTIFICATE-----}, and must be bounded at the end by {@code -----END CERTIFICATE-----}.
-	 * 
-	 *
-	 * @param path
-	 *            resource location.
-	 * @return the certificate token
-	 */
-	public static CertificateToken loadCertificate(final String path) {
-		final InputStream inputStream = DSSUtils.class.getResourceAsStream(path);
-		return loadCertificate(inputStream);
-	}
-
-	/**
 	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied
 	 * in binary or printable (PEM / Base64) encoding.
 	 * 
@@ -237,7 +225,7 @@ public final class DSSUtils {
 	}
 
 	private static List<CertificateToken> loadCertificates(InputStream is) {
-		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
+		final List<CertificateToken> certificates = new ArrayList<>();
 		try {
 			@SuppressWarnings("unchecked")
 			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory
@@ -248,13 +236,13 @@ public final class DSSUtils {
 				}
 			}
 			if (certificates.isEmpty()) {
-				throw new DSSException("Could not parse certificate(s)");
+				throw new DSSException("No certificate found in the InputStream");
 			}
 			return certificates;
 		} catch (DSSException e) {
 		  	throw e;
 		} catch (Exception e) {
-			throw new DSSException("Unable to load certificates.", e);
+			throw new DSSException("Unable to load certificate(s) : " + e.getMessage(), e);
 		}
 	}
 
@@ -272,9 +260,7 @@ public final class DSSUtils {
 	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final byte[] input) {
-		if (input == null) {
-			throw new NullPointerException("X509 certificate");
-		}
+		Objects.requireNonNull(input, "Input binary cannot be null");
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(input)) {
 			return loadCertificate(inputStream);
 		} catch (IOException e) {
@@ -362,11 +348,13 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
+		Objects.requireNonNull(data, "The data cannot be null");
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
 	}
 
 	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "The DigestAlgorithm cannot be null");
 		try {
 			return digestAlgorithm.getMessageDigest();
 		} catch (NoSuchAlgorithmException e) {
@@ -444,9 +432,7 @@ public final class DSSUtils {
 	 *         representing the contents of the file @ if an I/O error occurred
 	 */
 	public static InputStream toInputStream(final File file) {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(file, "The file cannot be null");
 		try {
 			return openInputStream(file);
 		} catch (IOException e) {
@@ -525,16 +511,14 @@ public final class DSSUtils {
 	 *
 	 * @param file
 	 *             the file to open for input, must not be {@code null}
-	 * @return a new {@link java.io.FileInputStream} for the specified file
+	 * @return a new {@link java.io.InputStream} for the specified file
 	 * @throws NullPointerException
 	 *                              if the file is null
 	 * @throws IOException
 	 *                              if the file cannot be read
 	 */
-	private static FileInputStream openInputStream(final File file) throws IOException {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+	private static InputStream openInputStream(final File file) throws IOException {
+		Objects.requireNonNull(file, "The file cannot be null");
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");
@@ -571,9 +555,7 @@ public final class DSSUtils {
 	 * @return the content of the inputstream as byte array
 	 */
 	public static byte[] toByteArray(final InputStream inputStream) {
-		if (inputStream == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(inputStream, "The InputStream cannot be null");
 		try {
 			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
@@ -595,6 +577,24 @@ public final class DSSUtils {
 		}
 	}	
 	
+	/**
+	 * Checks if the document contains a TimeStampToken
+	 * 
+	 * @param document
+	 *                 the {@link DSSDocument} to be checked
+	 * @return true if the document is a timestamp
+	 */
+	public static boolean isTimestampToken(final DSSDocument document) {
+		TimeStampToken timeStampToken = null;
+		try {
+			CMSSignedData cmsSignedData = toCMSSignedData(document);
+			timeStampToken = new TimeStampToken(cmsSignedData);
+		} catch (Exception e) {
+			// ignore
+		}
+		return timeStampToken != null;
+	}
+
 	/**		
 	 * Returns byte size of the given document
 	 * @param dssDocument {@link DSSDocument} to get size for
@@ -604,7 +604,7 @@ public final class DSSUtils {
 		try (InputStream is = dssDocument.openStream()) {
 			return Utils.getInputStreamSize(is);
 		} catch (IOException e) {
-			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()));
+			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()), e);
 		}
 	}
 
@@ -623,6 +623,24 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method replaces all special characters by an underscore
+	 * 
+	 * @param str
+	 *            the string / filename / url to normalize
+	 * @return the normalized {@link String}
+	 */
+	public static String getNormalizedString(final String str) {
+		String normalizedStr = str;
+		try {
+			normalizedStr = URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			LOG.debug("Cannot decode fileName [{}]. Reason : {}", str, e.getMessage());
+		}
+		normalizedStr = normalizedStr.replaceAll("\\W", "_");
+		return normalizedStr;
 	}
 
 	/**
@@ -670,7 +688,9 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-			return new X500Principal(x500PrincipalString);
+			Map<String, String> keywords = new HashMap<>();
+			keywords.put("ORGANIZATIONIDENTIFIER", "2.5.4.97");
+			return new X500Principal(x500PrincipalString, keywords);
 		} catch (Exception e) {
 			LOG.warn(e.getMessage());
 			return null;
@@ -712,8 +732,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and
-	 * not 78
+	 * This method returns an UTC date base on the year, the month and the day. 
+	 * The year must be encoded as 1978... and not 78
 	 *
 	 * @param year
 	 *            the value used to set the YEAR calendar field.
@@ -726,6 +746,7 @@ public final class DSSUtils {
 	public static Date getUtcDate(final int year, final int month, final int day) {
 		final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		calendar.set(year, month, day, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar.getTime();
 	}
 
@@ -756,7 +777,7 @@ public final class DSSUtils {
 		try (InputStream inputStream = dssDocument.openStream()) {
 			inputStream.read(result, 0, 1);
 		} catch (IOException e) {
-			throw new DSSException("Cannot read first byte of the document.", e);
+			throw new DSSException(String.format("Cannot read first byte of the document. Reason : %s", e.getMessage()), e);
 		}
 		return result[0];
 	}
@@ -840,7 +861,7 @@ public final class DSSUtils {
 			}
 			return skipped;
 		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!");
+			throw new DSSException("Cannot read the InputStream!", e);
 		}
 	}
 
@@ -896,8 +917,68 @@ public final class DSSUtils {
 			}
 			return read;
 		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!");
+			throw new DSSException("Cannot read the InputStream!", e);
 		}
+	}
+	
+	/**
+	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * @param fileURI the uri to be encoded
+	 * @return the encoded result
+	 */
+	public static String encodeURI(String fileURI) {
+		StringBuilder sb = new StringBuilder();
+		String uriDelimiter = "";
+		final String[] uriParts = fileURI.split("/");
+		for (String part : uriParts) {
+			sb.append(uriDelimiter );
+			sb.append(encodePartURI(part));
+			uriDelimiter = "/";
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * This method encodes a partial URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * @param uriPart the partial uri to be encoded
+	 * @return the encoded result
+	 */
+	private static String encodePartURI(String uriPart) {
+		try {
+			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
+		} catch (Exception e) {
+			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
+			return uriPart;
+		}
+	}
+	
+	/**
+	 * Returns a message retrieved from an exception,
+	 * its cause message if the first is not defined,
+	 * or exception class name if non of them is specified
+	 * 
+	 * @param e {@link Exception} to get message for
+	 * @return {@link String} exception message
+	 */
+	public static String getExceptionMessage(Exception e) {
+		if (e == null) {
+			throw new DSSException("Cannot retrieve a message. The exception is null!");
+		}
+		
+		if (e.getMessage() != null) {
+			return e.getMessage();
+			
+		} else if (e.getCause() != null && e.getCause().getMessage() != null) {
+			return e.getCause().getMessage();
+			
+		} else {
+			return e.getClass().getName();
+			
+		}
+	}
+
+	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
+		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
 
 }

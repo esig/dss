@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.io.Serializable;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
  * Parameters for a Signature creation/extension
  */
 @SuppressWarnings("serial")
-public abstract class AbstractSerializableSignatureParameters implements Serializable {
+public abstract class AbstractSerializableSignatureParameters<TP extends SerializableTimestampParameters> implements SerializableSignatureParameters {
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
@@ -89,23 +89,24 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
 	 */
-	private TimestampParameters contentTimestampParameters;
+	protected TP contentTimestampParameters;
 
 	/**
 	 * The object representing the parameters related to the signature timestamp (Baseline-T)
 	 */
-	private TimestampParameters signatureTimestampParameters;
+	protected TP signatureTimestampParameters;
 
 	/**
 	 * The object representing the parameters related to the archive timestamp (Baseline-LTA)
 	 */
-	private TimestampParameters archiveTimestampParameters;
+	protected TP archiveTimestampParameters;
 
 	/**
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
 	 *
 	 * @return true if signature with an expired certificate is allowed
 	 */
+	@Override
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
 	}
@@ -126,6 +127,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *
 	 * @return true if signing certificate is not required when generating ToBeSigned data.
 	 */
+	@Override
 	public boolean isGenerateTBSWithoutCertificate() {
 		return generateTBSWithoutCertificate;
 	}
@@ -157,9 +159,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *            the expected signature level
 	 */
 	public void setSignatureLevel(final SignatureLevel signatureLevel) {
-		if (signatureLevel == null) {
-			throw new NullPointerException("signatureLevel");
-		}
+		Objects.requireNonNull(signatureLevel, "Signature Level cannot be null");
 		this.signatureLevel = signatureLevel;
 	}
 
@@ -187,6 +187,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * 
 	 * @return the digest algorithm
 	 */
+	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
@@ -198,8 +199,9 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *            the digest algorithm to set
 	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+		if (this.encryptionAlgorithm != null) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
@@ -213,7 +215,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+		if (this.digestAlgorithm != null) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
@@ -243,6 +245,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		return signatureAlgorithm;
 	}
 
+	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		return maskGenerationFunction;
 	}
@@ -265,6 +268,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * 
 	 * @return the Baseline B parameters
 	 */
+	@Override
 	public BLevelParameters bLevel() {
 		return bLevelParams;
 	}
@@ -284,11 +288,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * 
 	 * @return the parameters to produce a content timestamp
 	 */
-	public TimestampParameters getContentTimestampParameters() {
-		if (contentTimestampParameters == null) {
-			contentTimestampParameters = new TimestampParameters();
-		}
-		return contentTimestampParameters;
+	public TP getContentTimestampParameters() {
+		throw new DSSException("Cannot extract ContentTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -297,7 +298,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * @param contentTimestampParameters
 	 *            the parameters to produce the content timestamp
 	 */
-	public void setContentTimestampParameters(TimestampParameters contentTimestampParameters) {
+	public void setContentTimestampParameters(TP contentTimestampParameters) {
 		this.contentTimestampParameters = contentTimestampParameters;
 	}
 
@@ -306,11 +307,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * 
 	 * @return the parameters to produce a signature timestamp
 	 */
-	public TimestampParameters getSignatureTimestampParameters() {
-		if (signatureTimestampParameters == null) {
-			signatureTimestampParameters = new TimestampParameters();
-		}
-		return signatureTimestampParameters;
+	public TP getSignatureTimestampParameters() {
+		throw new DSSException("Cannot extract SignatureTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -319,7 +317,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * @param signatureTimestampParameters
 	 *            the parameters to produce the signature timestamp
 	 */
-	public void setSignatureTimestampParameters(TimestampParameters signatureTimestampParameters) {
+	public void setSignatureTimestampParameters(TP signatureTimestampParameters) {
 		this.signatureTimestampParameters = signatureTimestampParameters;
 	}
 
@@ -328,11 +326,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * 
 	 * @return the parameters to produce an archive timestamp
 	 */
-	public TimestampParameters getArchiveTimestampParameters() {
-		if (archiveTimestampParameters == null) {
-			archiveTimestampParameters = new TimestampParameters();
-		}
-		return archiveTimestampParameters;
+	public TP getArchiveTimestampParameters() {
+		throw new DSSException("Cannot extract ArchiveTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -341,7 +336,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * @param archiveTimestampParameters
 	 *            the parameters to produce the archive timestamp
 	 */
-	public void setArchiveTimestampParameters(TimestampParameters archiveTimestampParameters) {
+	public void setArchiveTimestampParameters(TP archiveTimestampParameters) {
 		this.archiveTimestampParameters = archiveTimestampParameters;
 	}
 
@@ -375,6 +370,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -386,7 +382,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		AbstractSerializableSignatureParameters other = (AbstractSerializableSignatureParameters) obj;
+		AbstractSerializableSignatureParameters<TP> other = (AbstractSerializableSignatureParameters<TP>) obj;
 		if (archiveTimestampParameters == null) {
 			if (other.archiveTimestampParameters != null) {
 				return false;

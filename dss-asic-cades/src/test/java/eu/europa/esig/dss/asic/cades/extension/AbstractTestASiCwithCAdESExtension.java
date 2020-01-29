@@ -20,13 +20,19 @@
  */
 package eu.europa.esig.dss.asic.cades.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,7 +43,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 
-public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExtension<ASiCWithCAdESSignatureParameters> {
+public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExtension<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
@@ -81,14 +87,28 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 	protected ASiCWithCAdESSignatureParameters getExtensionParameters() {
 		ASiCWithCAdESSignatureParameters extensionParameters = new ASiCWithCAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
-		extensionParameters.aSiC().setContainerType(getContainerType());
+		extensionParameters.aSiC().setContainerType(getFinalContainerType());
 		return extensionParameters;
 	}
 
 	protected abstract ASiCContainerType getContainerType();
 
+	protected ASiCContainerType getFinalContainerType() {
+		return getContainerType();
+	}
+
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getSignatureServiceToExtend() {
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		assertNotNull(containerInfo);
+
+		assertEquals(getContainerType().getReadable(), containerInfo.getContainerType());
+	}
+
+	@Override
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getSignatureServiceToExtend() {
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

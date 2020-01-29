@@ -10,6 +10,11 @@
 			<Id>ASiC-S</Id>
 			<Id>ASiC-E</Id>
 		</AcceptableContainerTypes>
+<!-- 		<ZipCommentPresent Level="WARN" /> -->
+<!-- 		<AcceptableZipComment Level="WARN"> -->
+<!-- 			<Id>mimetype=application/vnd.etsi.asic-s+zip</Id> -->
+<!-- 			<Id>mimetype=application/vnd.etsi.asic-e+zip</Id> -->
+<!-- 		</AcceptableZipComment> -->
 		<MimeTypeFilePresent Level="FAIL" />
 		<AcceptableMimeTypeFileContent Level="WARN">
 			<Id>application/vnd.etsi.asic-s+zip</Id>
@@ -19,6 +24,7 @@
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
 	<SignatureConstraints>
+		<StructuralValidation Level="WARN" />
 		<AcceptablePolicies Level="FAIL">
 			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
@@ -31,8 +37,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ManifestEntryObjectExistence Level="WARN" />
 			<SignatureIntact Level="FAIL" />
+			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
+			<SignerInformationStore Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -49,6 +58,10 @@
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
+<!-- 				<Qualification Level="WARN" /> -->
+<!-- 				<SupportedByQSCD Level="WARN" /> -->
+<!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
+<!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />
 				<Cryptographic />
 			</SigningCertificate>
@@ -71,14 +84,27 @@
 			<IssuerSerialMatch Level="WARN" />
 			<SigningTime Level="FAIL" />
 			<MessageDigestOrSignedPropertiesPresent Level="FAIL" />
+<!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
+			<ContentHints Level="FAIL" value="*" />
+			<CommitmentTypeIndication Level="FAIL">
+				<Id>1.2.840.113549.1.9.16.6.1</Id>
+				<Id>1.2.840.113549.1.9.16.6.4</Id>
+				<Id>1.2.840.113549.1.9.16.6.5</Id>
+				<Id>1.2.840.113549.1.9.16.6.6</Id>
+			</CommitmentTypeIndication>
+			<SignerLocation Level="FAIL" />
+			<ContentTimeStamp Level="FAIL" /> -->
 		</SignedAttributes>
-		<UnsignedAttributes />
+		<UnsignedAttributes>
+<!--		<CounterSignature Level="IGNORE" /> check presence -->
+		</UnsignedAttributes>
 	</SignatureConstraints>
 	<CounterSignatureConstraints>
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
+			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
@@ -118,10 +144,20 @@
 			<IssuerSerialMatch Level="WARN" />
 			<SigningTime Level="FAIL" />
 			<MessageDigestOrSignedPropertiesPresent Level="FAIL" />
+<!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
+			<ContentHints Level="FAIL" value="*" />
+			<CommitmentTypeIndication Level="FAIL">
+				<Id>1.2.840.113549.1.9.16.6.1</Id>
+				<Id>1.2.840.113549.1.9.16.6.4</Id>
+				<Id>1.2.840.113549.1.9.16.6.5</Id>
+				<Id>1.2.840.113549.1.9.16.6.6</Id>
+			</CommitmentTypeIndication>
+			<SignerLocation Level="FAIL" />
+			<ContentTimeStamp Level="FAIL" /> -->
 		</SignedAttributes>
 	</CounterSignatureConstraints>
 	<Timestamp>
-		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
+		<TimestampDelay Level="IGNORE" Unit="DAYS" Value="0" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
 		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL" />
 		<Coherence Level="WARN" />
@@ -155,65 +191,11 @@
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
 			</CACertificate>
-			<Cryptographic>
-				<AcceptableDigestAlgo>
-					<Algo>MD5</Algo>
-					<Algo>SHA1</Algo>
-					<Algo>SHA224</Algo>
-					<Algo>SHA256</Algo>
-					<Algo>SHA384</Algo>
-					<Algo>SHA512</Algo>
-					<Algo>SHA3-224</Algo>
-					<Algo>SHA3-256</Algo>
-					<Algo>SHA3-384</Algo>
-					<Algo>SHA3-512</Algo>
-					<Algo>RIPEMD160</Algo>
-					<Algo>WHIRLPOOL</Algo>
-				</AcceptableDigestAlgo>
-				<AlgoExpirationDate Format="yyyy">
-					<!-- Digest algorithms -->
-					<Algo Date="2007">MD5</Algo> 
-					<Algo Date="2009">SHA1</Algo> 
-					<Algo Date="2023">SHA224</Algo> 
-					<Algo Date="2026">SHA256</Algo> 
-					<Algo Date="2026">SHA384</Algo> 
-					<Algo Date="2026">SHA512</Algo> 
-					<Algo Date="2026">SHA3-224</Algo> 
-					<Algo Date="2026">SHA3-256</Algo> 
-					<Algo Date="2026">SHA3-384</Algo> 
-					<Algo Date="2026">SHA3-512</Algo> 
-					<Algo Date="2011">RIPEMD160</Algo> 
-					<Algo Date="2015">WHIRLPOOL</Algo>
-					<!-- end Digest algorithms -->
-					<!-- Encryption algorithms -->
-					<Algo Date="2013">DSA160</Algo> 
-					<Algo Date="2013">DSA192</Algo>
-					<Algo Date="2023">DSA224</Algo>
-					<Algo Date="2026">DSA256</Algo> 
-					<Algo Date="2009">RSA1024</Algo> 
-					<Algo Date="2016">RSA1536</Algo>
-					<Algo Date="2023">RSA2048</Algo>
-					<Algo Date="2026">RSA3072</Algo>
-					<Algo Date="2026">RSA4096</Algo> 
-					<Algo Date="2013">ECDSA160</Algo>
-					<Algo Date="2013">ECDSA192</Algo> 
-					<Algo Date="2016">ECDSA224</Algo>
-					<Algo Date="2026">ECDSA256</Algo>
-					<Algo Date="2026">ECDSA384</Algo>
-					<Algo Date="2026">ECDSA512</Algo>
-					<Algo Date="2013">PLAIN-ECDSA160</Algo> 
-					<Algo Date="2013">PLAIN-ECDSA192</Algo> 
-					<Algo Date="2016">PLAIN-ECDSA224</Algo> 
-					<Algo Date="2026">PLAIN-ECDSA256</Algo>
-					<Algo Date="2026">PLAIN-ECDSA384</Algo>
-					<Algo Date="2026">PLAIN-ECDSA512</Algo> 
-					<!-- end Encryption algorithms -->
-				</AlgoExpirationDate>
-			</Cryptographic>
+			<Cryptographic />
 		</BasicSignatureConstraints>
 	</Timestamp>
 	<Revocation>
-		<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+        <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
@@ -257,6 +239,8 @@
 			<Algo Size="160">PLAIN-ECDSA</Algo>
 		</MiniPublicKeySize>
 		<AcceptableDigestAlgo>
+			<Algo>MD2</Algo>
+			<Algo>MD5</Algo>
 			<Algo>SHA1</Algo>
 			<Algo>SHA224</Algo>
 			<Algo>SHA256</Algo>
@@ -271,44 +255,47 @@
 		</AcceptableDigestAlgo>
 		<AlgoExpirationDate Format="yyyy">
 			<!-- Digest algorithms -->
-			<Algo Date="2009">SHA1</Algo> 
-			<Algo Date="2023">SHA224</Algo> 
-			<Algo Date="2026">SHA256</Algo> 
-			<Algo Date="2026">SHA384</Algo> 
-			<Algo Date="2026">SHA512</Algo> 
-			<Algo Date="2026">SHA3-224</Algo> 
-			<Algo Date="2026">SHA3-256</Algo> 
-			<Algo Date="2026">SHA3-384</Algo> 
-			<Algo Date="2026">SHA3-512</Algo> 
-			<Algo Date="2011">RIPEMD160</Algo> 
-			<Algo Date="2015">WHIRLPOOL</Algo>
+			<Algo Date="2005">MD2</Algo> <!-- The same as for MD5 -->
+			<Algo Date="2005">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2009">SHA1</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2023">SHA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2011">RIPEMD160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2015">WHIRLPOOL</Algo> <!-- ETSI 119 312 V1.1.1 -->
 			<!-- end Digest algorithms -->
 			<!-- Encryption algorithms -->
-			<Algo Date="2013">DSA160</Algo> 
-			<Algo Date="2013">DSA192</Algo>
-			<Algo Date="2023">DSA224</Algo>
-			<Algo Date="2026">DSA256</Algo> 
-			<Algo Date="2009">RSA1024</Algo> 
-			<Algo Date="2016">RSA1536</Algo>
-			<Algo Date="2023">RSA2048</Algo>
-			<Algo Date="2026">RSA3072</Algo>
-			<Algo Date="2026">RSA4096</Algo> 
-			<Algo Date="2013">ECDSA160</Algo>
-			<Algo Date="2013">ECDSA192</Algo> 
-			<Algo Date="2016">ECDSA224</Algo>
-			<Algo Date="2026">ECDSA256</Algo>
-			<Algo Date="2026">ECDSA384</Algo>
-			<Algo Date="2026">ECDSA512</Algo>
-			<Algo Date="2013">PLAIN-ECDSA160</Algo> 
-			<Algo Date="2013">PLAIN-ECDSA192</Algo> 
-			<Algo Date="2016">PLAIN-ECDSA224</Algo> 
-			<Algo Date="2026">PLAIN-ECDSA256</Algo>
-			<Algo Date="2026">PLAIN-ECDSA384</Algo>
-			<Algo Date="2026">PLAIN-ECDSA512</Algo> 
+			<Algo Date="2013" Size="160">DSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2013" Size="192">DSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2023" Size="224">DSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026" Size="256">DSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2009" Size="1024">RSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2023" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2013" Size="160">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2013" Size="192">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2016" Size="224">ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2026" Size="256">ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026" Size="384">ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026" Size="512">ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2013" Size="160">PLAIN-ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2013" Size="192">PLAIN-ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2016" Size="224">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2026" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic> 
+	
 	<Model Value="SHELL" />
+	
 	<!-- eIDAS REGL 910/EU/2014 --> 
 	<eIDAS>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />

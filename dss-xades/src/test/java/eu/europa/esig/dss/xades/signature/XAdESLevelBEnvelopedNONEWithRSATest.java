@@ -21,10 +21,12 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -43,11 +45,12 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @RunWith(Parameterized.class)
 public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -55,7 +58,7 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 
 	@Parameters(name = "DigestAlgorithm {index} : {0}")
 	public static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			SignatureAlgorithm algorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm);
 			if (algorithm != null && Utils.isStringNotEmpty(algorithm.getUri())) {
@@ -83,6 +86,13 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
+
 	@Override
 	protected DSSDocument sign() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
@@ -102,7 +112,7 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

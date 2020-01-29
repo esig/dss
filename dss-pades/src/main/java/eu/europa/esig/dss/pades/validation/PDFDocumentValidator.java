@@ -21,22 +21,29 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
+import eu.europa.esig.dss.pdf.PdfTimestampValidationCallback;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * Validation of PDF document.
@@ -45,11 +52,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
-	private final PDFSignatureService pdfSignatureService;
+	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 
 	PDFDocumentValidator() {
-		super(null);
-		pdfSignatureService = null;
 	}
 
 	/**
@@ -58,32 +63,42 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	public PDFDocumentValidator(final DSSDocument document) {
 		super(new PAdESSignatureScopeFinder());
 		this.document = document;
-		pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 	}
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
 	}
+	
+	/**
+	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
+	 * 
+	 * @param pdfObjFactory
+	 *                      the implementation to be used.
+	 */
+	public void setPdfObjFactory(IPdfObjFactory pdfObjFactory) {
+		Objects.requireNonNull(pdfObjFactory, "PdfObjFactory is null");
+		this.pdfObjectFactory = pdfObjFactory;
+	}
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		final List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
+		final List<AdvancedSignature> signatures = new ArrayList<>();
 
+		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
-			public void validate(final PdfSignatureInfo pdfSignatureInfo) {
+			public void validate(final PdfSignatureRevision pdfSignatureRevision) {
 				try {
-					if (pdfSignatureInfo.getCades() != null) {
-
-						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureInfo, validationCertPool);
+					if (pdfSignatureRevision.getCades() != null) {
+						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureRevision, validationCertPool);
 						padesSignature.setSignatureFilename(document.getName());
 						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 						signatures.add(padesSignature);
 					}
 				} catch (Exception e) {
-					throw new DSSException(e);
+					throw new DSSException("Unable to collect signatures", e);
 				}
 			}
 		});
@@ -91,10 +106,41 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
-		if (Utils.isStringBlank(signatureId)) {
-			throw new NullPointerException("signatureId");
-		}
+	public List<TimestampToken> getDetachedTimestamps() {
+		final List<TimestampToken> timestamps = new ArrayList<>();
+
+		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
+			
+			@Override
+			public void validate(PdfDocTimestampRevision pdfDocTimestampRevision) {
+				
+				try {
+					if (pdfDocTimestampRevision.getCMSSignedData() != null) {
+						TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision, 
+								TimestampType.CONTENT_TIMESTAMP, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
+						timestampToken.setFileName(document.getName());
+						timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getSignedDocumentBytes()));
+						
+						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
+						signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+						timestampToken.setTimestampScopes(Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
+						
+						timestamps.add(timestampToken);
+						
+					}
+				} catch (Exception e) {
+					throw new DSSException("Unable to collect timestamps", e);
+				}
+				
+			}
+		});
+		return timestamps;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 		List<AdvancedSignature> signatures = getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			if (signature.getId().equals(signatureId)) {
@@ -105,9 +151,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	}
 	
 	@Override
-	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> result = new ArrayList<>();
 		InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
 		if (originalPDF != null) {
 			result.add(originalPDF);

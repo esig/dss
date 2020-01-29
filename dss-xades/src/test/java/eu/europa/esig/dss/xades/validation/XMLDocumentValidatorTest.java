@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -65,7 +65,7 @@ public class XMLDocumentValidatorTest extends AbstractTestValidator {
 
 	@Override
 	protected List<DSSDocument> getValidDocuments() {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/validation/dss-signed.xml"));
 		documents.add(new FileDocument("src/test/resources/validation/valid-xades.xml"));
 		documents.add(new FileDocument("src/test/resources/validation/xades-x-level.xml"));

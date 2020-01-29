@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
@@ -209,7 +209,7 @@ public class QSCDTest {
 	}
 
 	private List<XmlCertificatePolicy> toCertPolicies(List<String> certificatePolicyIds) {
-		List<XmlCertificatePolicy> cerPolicies = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> cerPolicies = new ArrayList<>();
 		for (String oid : certificatePolicyIds) {
 			XmlCertificatePolicy cp = new XmlCertificatePolicy();
 			cp.setValue(oid);
@@ -219,7 +219,7 @@ public class QSCDTest {
 	}
 
 	private List<XmlOID> toOids(List<String> oids) {
-		List<XmlOID> result = new ArrayList<XmlOID>();
+		List<XmlOID> result = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oids)) {
 			for (String oid : oids) {
 				XmlOID xmlOid = new XmlOID();

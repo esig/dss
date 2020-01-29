@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>test.txt.p7m</DocumentName>
+    <ValidationDate>2005-01-20T09:15:09</ValidationDate>
+    <Signatures>
+        <Signature Id="S-04689D2C3F4072A37EAE543BEEFCEF5FF69601FDA5E09C2F94C0151C7FD174D6">
+            <SignatureFilename>test.txt.p7m</SignatureFilename>
+            <ClaimedSigningTime>2004-01-15T08:30:31</ClaimedSigningTime>
+            <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>g3zLYH4xKxcPrHOD18z9YfpQcnk/GaJedfustWU5uGs=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>MD5</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-10F66EA5C47E1702AFB04D725B93EC06875CAC7A35E86A6A934F7429B408061A">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Certificate="C-10F66EA5C47E1702AFB04D725B93EC06875CAC7A35E86A6A934F7429B408061A"/>
+                <ChainItem Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndication/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-10F66EA5C47E1702AFB04D725B93EC06875CAC7A35E86A6A934F7429B408061A">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial>MIHSMIHEpIHBMIG+MSQwIgYKCZImiZPyLGQBGRYUcXVhbGlmaWVkLW5hdHVyYWwtY2ExLjAsBgNVBAMMJUluZm9Ob3RhcnkgUXVhbGlmaWVkIFBlcnNvbmFsIFNpZ24gQ0ExCzAJBgNVBAYTAkJHMQ4wDAYDVQQHDAVTb2ZpYTEXMBUGA1UECgwOSW5mb05vdGFyeSBQTEMxFjAUBgNVBAsMDVF1YWxpZmllZCBUU1AxGDAWBgNVBGEMD05UUkJHLTEzMTI3NjgyNwIJAMgm7hPLJsNq</IssuerSerial>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>EPZupcR+FwKvsE1yW5PsBodcrHo16Gpqk090KbQIBho=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-B7593FD7EB8646227CE953C520BCB5A5B43390A1A4D1ED36798BEAFDFC50FCAE">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ydrDH5mCbSxeoPQXerf+jjftrMAbOG9KEAl/mulVHtw=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>QqxKwDFpYyUu2+/Efg5Iv5+oJ+IeTpFWiXjK6gVh0snhbyTc9SvQE1PIdt0IidjMHNGMX6ppk5kVVA+XN/1F8QZS+TdjEycJK/ij7qHGeTDkWQpdAsjth0ouitWdfrjcAPGP9XmC39/9BjJuhjdz7OAO2sPhQ+ZYrUCklToRHp5txitmP7xSYALKaGnN+gKN4xeuvy//8HCzxrZWGNrBsUG8npMwgslxXYI38lk46XLKS7EhhaAndlezwvijB8/qxpC8/DRSrUyukhpIQLyEqvUPMq6mStLLdTAcchgAZoTSeO1B+uFGAtbT7Tz5XmJRd5IbFKbCmTablRzFb+mexQ==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-10F66EA5C47E1702AFB04D725B93EC06875CAC7A35E86A6A934F7429B408061A">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#72d383730393238373134341310504e4f424,l=sofia,c=bg,1.2.840.113549.1.9.1=#0696e666f6e6f746172792e636f6d16176d2e6976616e6f764,2.5.4.4=#976616e6f760c064,2.5.4.42=#6c7573680c064d69,cn=miakoish oleg,dc=#d6e61747572616c2d636116147175616c69666965642</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#72d383730393238373134341310504e4f424,L=Sofia,C=BG,1.2.840.113549.1.9.1=#0696e666f6e6f746172792e636f6d16176d2e6976616e6f764,2.5.4.4=#976616e6f760c064,2.5.4.42=#6c7573680c064d69,CN=miakoish oleg,DC=qualified-natural-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#33313237363832370c0f4e545242472d31,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary qualified personal sign ca,dc=#16147175616c69666965642d6e61747572616c2d6361</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#33313237363832370c0f4e545242472d31,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary Qualified Personal Sign CA,DC=qualified-natural-ca</IssuerDistinguishedName>
+            <SerialNumber>76625480696682144224</SerialNumber>
+            <CommonName>Miakoish Oleg</CommonName>
+            <Locality>Sofia</Locality>
+            <CountryName>BG</CountryName>
+            <GivenName>Miakoish</GivenName>
+            <Surname>Oleg</Surname>
+            <Email>m.oleg@gmail.com</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.infonotary.com/crl/qualified-natural-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.infonotary.com/qualified</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2005-04-13T08:19:19</NotAfter>
+            <NotBefore>2002-04-13T08:19:19</NotBefore>
+            <PublicKeySize>2047</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+                <KeyUsage>keyEncipherment</KeyUsage>
+                <KeyUsage>dataEncipherment</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.1.1</certificatePolicy>
+                <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid>1.3.6.1.5.5.7.11.2</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid Description="qc-retention-period">0.4.0.1862.1.3</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes>
+                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
+            </QCTypes>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-4E731CCB0E0120CD6B81A52EF384C00C1BF2B3EBC8B7BC614A3DE974C27A4CE0">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>EPZupcR+FwKvsE1yW5PsBodcrHo16Gpqk090KbQIBho=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-20DC19C0672DC61CA86B8FD5A5609A4F05BA035459F8B583769FD81313C9D8BF">
+            <SubjectDistinguishedName Format="CANONICAL">cn=infonotary qualified timestamping service 0</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=InfoNotary Qualified TimeStamping Service 0</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0f4e545242472d313331323736383237,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary qualified timestamping service ca,dc=#16167175616c69666965642d74696d657374616d702d6361</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0f4e545242472d313331323736383237,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary Qualified TimeStamping Service CA,DC=qualified-timestamp-ca</IssuerDistinguishedName>
+            <SerialNumber>18235499992496687456</SerialNumber>
+            <CommonName>InfoNotary Qualified TimeStamping Service 0</CommonName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.infonotary.com/crl/qualified-timestamp-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.infonotary.com/qualified</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2007-01-18T17:31:30</NotAfter>
+            <NotBefore>2002-01-18T17:31:30</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A4527BA3CDB627494FAC2F58069B37969A3219CF9154B324314A5C97701BDFBF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A4527BA3CDB627494FAC2F58069B37969A3219CF9154B324314A5C97701BDFBF"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.4.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-6DBDFC408C2B2F432F5C5AEA99D5CB1754A9F701B5ECDF3EA56E76F22E0D42B5">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>INwZwGctxhyoa4/VpWCaTwW6A1RZ+LWDdp/YExPJ2L8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A4527BA3CDB627494FAC2F58069B37969A3219CF9154B324314A5C97701BDFBF">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0f4e545242472d313331323736383237,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary qualified timestamping service ca,dc=#16167175616c69666965642d74696d657374616d702d6361</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0f4e545242472d313331323736383237,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary Qualified TimeStamping Service CA,DC=qualified-timestamp-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0f4e545242472d313331323736383237,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary tsp root,dc=#16117175616c69666965642d726f6f742d6361</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0f4e545242472d313331323736383237,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary TSP Root,DC=qualified-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1329227995784915883379967973956198530</SerialNumber>
+            <CommonName>InfoNotary Qualified TimeStamping Service CA</CommonName>
+            <Locality>Sofia</Locality>
+            <CountryName>BG</CountryName>
+            <OrganizationName>InfoNotary PLC</OrganizationName>
+            <OrganizationalUnit>Qualified TSP</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.infonotary.com/crl/qualified-root-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.infonotary.com/qualified</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2026-06-29T15:24:06</NotAfter>
+            <NotBefore>2001-06-29T15:24:06</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.4</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>pFJ7o822J0lPrC9YBps3lpoyGc+RVLMkMUpcl3Ab378=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0f4e545242472d313331323736383237,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary qualified personal sign ca,dc=#16147175616c69666965642d6e61747572616c2d6361</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0f4e545242472d313331323736383237,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary Qualified Personal Sign CA,DC=qualified-natural-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0f4e545242472d313331323736383237,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary tsp root,dc=#16117175616c69666965642d726f6f742d6361</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0f4e545242472d313331323736383237,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary TSP Root,DC=qualified-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1329227995784915883815909277188609622</SerialNumber>
+            <CommonName>InfoNotary Qualified Personal Sign CA</CommonName>
+            <Locality>Sofia</Locality>
+            <CountryName>BG</CountryName>
+            <OrganizationName>InfoNotary PLC</OrganizationName>
+            <OrganizationalUnit>Qualified TSP</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.infonotary.com/crl/qualified-root-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.infonotary.com/qualified</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2026-06-29T15:14:32</NotAfter>
+            <NotBefore>2001-06-29T15:14:32</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5VOr7zuFCgWwNIOBBCHO9370zTyt49EMI/rDatwLSm4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-4E731CCB0E0120CD6B81A52EF384C00C1BF2B3EBC8B7BC614A3DE974C27A4CE0">
+            <Origin>CACHED</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2004-01-20T08:00:05</ProductionDate>
+            <ThisUpdate>2004-01-20T08:00:05</ThisUpdate>
+            <NextUpdate>2004-01-21T08:00:05</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>TnMcyw4BIM1rgaUu84TADBvys+vIt7xhSj3pdMJ6TOA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-6DBDFC408C2B2F432F5C5AEA99D5CB1754A9F701B5ECDF3EA56E76F22E0D42B5">
+            <Origin>CACHED</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2003-07-18T09:00:52</ProductionDate>
+            <ThisUpdate>2003-07-18T09:00:52</ThisUpdate>
+            <NextUpdate>2004-07-17T09:00:53</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A4527BA3CDB627494FAC2F58069B37969A3219CF9154B324314A5C97701BDFBF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A4527BA3CDB627494FAC2F58069B37969A3219CF9154B324314A5C97701BDFBF"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>bb38QIwrL0MvXFrqmdXLF1Sp9wG17N8+pW528i4NQrU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OrphanTokens/>
+    <OriginalDocuments>
+        <SignerData Id="D-B7593FD7EB8646227CE953C520BCB5A5B43390A1A4D1ED36798BEAFDFC50FCAE">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>g3zLYH4xKxcPrHOD18z9YfpQcnk/GaJedfustWU5uGs=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

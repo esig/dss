@@ -82,13 +82,17 @@ public abstract class PKIFactoryAccess {
 	}
 
 	private static final String KEYSTORE_ROOT_PATH = "/keystore/";
+	private static final String CERT_ROOT_PATH = "/crt/";
+	private static final String CERT_EXTENSION = ".crt";
 
 	private static final String TSA_ROOT_PATH = "/tsa/";
 	private static final String GOOD_TSA = "good-tsa";
 	private static final String PSS_GOOD_TSA = "pss-good-tsa";
+	private static final String SHA3_GOOD_TSA = "sha3-good-tsa";
 	private static final String REVOKED_TSA = "revoked-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
 	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
+	private static final String SELF_SIGNED_TSA = "self-signed-tsa";
 
 	/* Produces timestamp with a fail status */
 	private static final String FAIL_GOOD_TSA = "fail/good-tsa";
@@ -115,8 +119,10 @@ public abstract class PKIFactoryAccess {
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
 	protected static final String SELF_SIGNED_USER = "self-signed";
 	protected static final String EE_GOOD_USER = "ee-good-user";
+	protected static final String ROOT_CA = "root-ca";
 	
 	private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
+	private static final int TIMEOUT_MS = 10000;
 
 	protected abstract String getSigningAlias();
 
@@ -130,6 +136,14 @@ public abstract class PKIFactoryAccess {
 		cv.setCrlSource(cacheCRLSource());
 		cv.setOcspSource(cacheOCSPSource());
 		cv.setTrustedCertSource(getTrustedCertificateSource());
+		return cv;
+	}
+	
+	protected CertificateVerifier getCertificateVerifierWithoutTrustSources() {
+		CertificateVerifier cv = new CommonCertificateVerifier();
+		cv.setDataLoader(getFileCacheDataLoader());
+		cv.setCrlSource(cacheCRLSource());
+		cv.setOcspSource(cacheOCSPSource());
 		return cv;
 	}
 
@@ -175,6 +189,8 @@ public abstract class PKIFactoryAccess {
 	private OnlineOCSPSource onlineOcspSource() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setTimeoutConnection(TIMEOUT_MS);
+		dataLoader.setTimeoutSocket(TIMEOUT_MS);
 		dataLoader.setProxyConfig(getProxyConfig());
 		ocspSource.setDataLoader(dataLoader);
 		return ocspSource;
@@ -208,15 +224,25 @@ public abstract class PKIFactoryAccess {
 		trusted.importAsTrusted(getTrustAnchors());
 		return trusted;
 	}
-
+	
 	private KeyStoreCertificateSource getTrustAnchors() {
 		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("trust-anchors.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
 	}
 
+	protected KeyStoreCertificateSource getSHA3PKITrustAnchors() {
+		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("sha3-pki.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
+	}
+	
+	protected KeyStoreCertificateSource getBelgiumTrustAnchors() {
+		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("belgium.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
+	}
+	
 	private DataLoader getFileCacheDataLoader() {
 		FileCacheDataLoader cacheDataLoader = new FileCacheDataLoader();
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
+		dataLoader.setTimeoutConnection(TIMEOUT_MS);
+		dataLoader.setTimeoutSocket(TIMEOUT_MS);
 		cacheDataLoader.setDataLoader(dataLoader);
 		cacheDataLoader.setFileCacheDirectory(new File("target"));
 		cacheDataLoader.setCacheExpirationTime(3600000L);
@@ -225,7 +251,7 @@ public abstract class PKIFactoryAccess {
 
 	protected TSPSource getCompositeTsa() {
 		CompositeTSPSource composite = new CompositeTSPSource();
-		Map<String, TSPSource> tspSources = new HashMap<String, TSPSource>();
+		Map<String, TSPSource> tspSources = new HashMap<>();
 		tspSources.put(FAIL_GOOD_TSA, getFailGoodTsa());
 		tspSources.put(GOOD_TSA, getGoodTsa());
 		tspSources.put(EE_GOOD_TSA, getAlternateGoodTsa());
@@ -241,6 +267,10 @@ public abstract class PKIFactoryAccess {
 		return getOnlineTSPSource(PSS_GOOD_TSA);
 	}
 	
+	protected TSPSource getSHA3GoodTsa() {
+		return getOnlineTSPSource(SHA3_GOOD_TSA);
+	}
+
 	protected TSPSource getRevokedTsa() {
 		return getOnlineTSPSource(REVOKED_TSA);
 	}
@@ -260,6 +290,10 @@ public abstract class PKIFactoryAccess {
 	protected TSPSource getGoodTsaCrossCertification() {
 		return getOnlineTSPSource(GOOD_TSA_CROSS_CERTIF);
 	}
+	
+	protected TSPSource getSelfSignedTsa() {
+		return getOnlineTSPSource(SELF_SIGNED_TSA);
+	}
 
 	private OnlineTSPSource getOnlineTSPSource(String tsaName) {
 		return getTSPSourceByUrl(getTsaUrl(tsaName));
@@ -276,6 +310,8 @@ public abstract class PKIFactoryAccess {
 	private OnlineTSPSource getTSPSourceByUrl(String tsaUrl) {
 		OnlineTSPSource tspSource = new OnlineTSPSource(tsaUrl);
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
+		dataLoader.setTimeoutConnection(TIMEOUT_MS);
+		dataLoader.setTimeoutSocket(TIMEOUT_MS);
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);
 		return tspSource;
@@ -288,6 +324,18 @@ public abstract class PKIFactoryAccess {
 	private String getTsaUrl(String tsaName, Date date) {
 		String dateString = DSSUtils.formatDateWithCustomFormat(date, DEFAULT_TSA_DATE_FORMAT);
 		return PKI_FACTORY_HOST + TSA_ROOT_PATH + dateString + "/" + tsaName;
+	}
+	
+	protected CertificateToken getCertificate(String certificateId) {
+		DataLoader dataLoader = getFileCacheDataLoader();
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + certificateId + CERT_EXTENSION;
+		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+	}
+	
+	protected CertificateToken getCertificateByPrimaryKey(String issuerName, long serialNumber) {
+		DataLoader dataLoader = getFileCacheDataLoader();
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + issuerName + "/" + serialNumber + CERT_EXTENSION;
+		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
 	}
 
 	// Allows to configure a proxy

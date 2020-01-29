@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.signature;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -31,17 +31,16 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class CAdESLevelLTAWithContentTimestampTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -55,12 +54,12 @@ public class CAdESLevelLTAWithContentTimestampTest extends AbstractCAdESTestSign
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
-		TimestampParameters contentTimestampParameters = new TimestampParameters();
+		CAdESTimestampParameters contentTimestampParameters = new CAdESTimestampParameters();
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 
-		contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters = new CAdESTimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
@@ -71,7 +70,7 @@ public class CAdESLevelLTAWithContentTimestampTest extends AbstractCAdESTestSign
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

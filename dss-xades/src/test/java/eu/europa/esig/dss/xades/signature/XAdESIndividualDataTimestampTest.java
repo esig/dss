@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,8 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -43,12 +42,13 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -72,7 +72,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		List<DSSDocument> docs = new ArrayList<DSSDocument>();
+		List<DSSDocument> docs = new ArrayList<>();
 		DSSDocument fileToBeIndividualTimestamped = new FileDocument(FILE1);
 		docs.add(fileToBeIndividualTimestamped);
 
@@ -91,9 +91,9 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		byte[] docCanonicalized = DSSXMLUtils.canonicalize(usedCanonicalizationAlgo, DSSUtils.toByteArray(fileToBeIndividualTimestamped));
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, docCanonicalized);
-		TimeStampToken bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
+		TimestampBinary bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
 
-		TimestampToken tst = new TimestampToken(bcTst, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		TimestampToken tst = new TimestampToken(bcTst.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		tst.setTimestampIncludes(Arrays.asList(new TimestampInclude("r-" + signatureParameters.getDeterministicId() + "-1", true))); // TODO
 		tst.setCanonicalizationMethod(usedCanonicalizationAlgo);
 
@@ -107,12 +107,10 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
-		processExecutor.setCurrentTime(currentTime);
+		validator.setValidationTime(currentTime);
 		validator.setProcessExecutor(processExecutor);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
-
-//		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));

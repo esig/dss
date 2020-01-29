@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -79,7 +79,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		// Provide only the digest value
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, toBeSigned.getDigest(DigestAlgorithm.SHA1));
 		digestDocument.setName(documentName);
 		detachedContents.add(digestDocument);
@@ -138,7 +138,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		// Provide only the digest value
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, toBeSigned.getDigest(DigestAlgorithm.SHA256));
 		digestDocument.setName("sample.xml");
 		detachedContents.add(digestDocument);

@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -47,7 +49,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -57,7 +59,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
 	public static Collection<Object[]> data() {
 
-		List<Object[]> digests = new ArrayList<Object[]>();
+		List<Object[]> digests = new ArrayList<>();
 		
 		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA224,
 				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
@@ -84,7 +86,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 		// Due to
 		// org.bouncycastle.cms.DefaultCMSSignatureEncryptionAlgorithmFinder.findEncryptionAlgorithm(AlgorithmIdentifier)
-		List<DigestAlgorithm> digestAlgosWithSha1 = new ArrayList<DigestAlgorithm>(digestAlgos);
+		List<DigestAlgorithm> digestAlgosWithSha1 = new ArrayList<>(digestAlgos);
 		digestAlgosWithSha1.add(DigestAlgorithm.SHA1);
 		for (DigestAlgorithm digest : digestAlgosWithSha1) {
 			digests.add(new Object[] { DigestAlgorithm.SHA1, digest });
@@ -113,6 +115,13 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 		service = new CAdESService(getOfflineCertificateVerifier());
 	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
 
 	@Override
 	protected DSSDocument sign() {
@@ -128,7 +137,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

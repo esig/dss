@@ -20,14 +20,16 @@
  */
 package eu.europa.esig.dss.cookbook.example.sources;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -36,6 +38,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
  * How to initialize online TSP source.
  */
 public class OnlineTSPSourceTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSourceTest.class);
 
 	@Test
 	public void test() throws IOException {
@@ -49,12 +53,12 @@ public class OnlineTSPSourceTest {
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 		final byte[] toDigest = "Hello world".getBytes("UTF-8");
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
-		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
+		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
-		System.out.println(DSSUtils.toHex(tsr.getEncoded()));
+		LOG.info(DSSUtils.toHex(tsBinary.getBytes()));
 
 		// end::demo[]
 
-		assertNotNull(tsr);
+		assertNotNull(tsBinary);
 	}
 }

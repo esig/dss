@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -33,17 +33,18 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSDocument attachment1;
 	private DSSDocument attachment2;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
@@ -58,7 +59,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA1);
 
-		List<DSSReference> references = new ArrayList<DSSReference>();
+		List<DSSReference> references = new ArrayList<>();
 		references.add(createReference(documentToSign));
 		references.add(createReference(attachment1));
 		references.add(createReference(attachment2));
@@ -83,7 +84,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		detachedContents.add(attachment1);
 		detachedContents.add(attachment2);
@@ -93,7 +94,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

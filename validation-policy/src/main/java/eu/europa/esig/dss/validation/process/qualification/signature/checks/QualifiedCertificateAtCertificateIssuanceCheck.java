@@ -26,15 +26,16 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class QualifiedCertificateAtCertificateIssuanceCheck extends ChainItem<XmlValidationSignatureQualification> {
 
 	private final CertificateQualification qualificationAtIssuance;
 
-	public QualifiedCertificateAtCertificateIssuanceCheck(XmlValidationSignatureQualification result, CertificateQualification qualificationAtIssuance,
-			LevelConstraint constraint) {
-		super(result, constraint);
+	public QualifiedCertificateAtCertificateIssuanceCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result, 
+			CertificateQualification qualificationAtIssuance, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.qualificationAtIssuance = qualificationAtIssuance;
 	}

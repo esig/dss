@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.simplecertificatereport;
 
 import java.io.IOException;
@@ -41,6 +61,9 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 		return SimpleCertificateReportXmlDefiner.OBJECT_FACTORY.createSimpleCertificateReport(simpleCertificateReport);
 	}
 
+    /**
+     * Generates a Bootstrap 4 Simple Certificate report
+     */
 	public String generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlReport(simpleCertificateReport, new StreamResult(stringWriter));
@@ -49,7 +72,7 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 	}
 
 	public void generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleCertificateReport)), result);
 	}
 
@@ -61,6 +84,33 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 	}
 
 	public void generateHtmlReport(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
+	}
+
+    /**
+     * Generates a Bootstrap 3 Simple Certificate report
+     */
+	public String generateHtmlBootstrap3Report(XmlSimpleCertificateReport simpleCertificateReport) throws IOException, TransformerException, JAXBException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(simpleCertificateReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleCertificateReport)), result);
+	}
+
+	public String generateHtmlBootstrap3Report(String marshalledSimpleCertificateReport) throws IOException, TransformerException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(marshalledSimpleCertificateReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
 	}

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
 
-public class SigningCertificateAttributePresentCheckTest {
+public class SigningCertificateAttributePresentCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signingCertificateAttributePresentCheck() throws Exception {
@@ -50,7 +51,7 @@ public class SigningCertificateAttributePresentCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(result,
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
 				new SignatureWrapper(sig), constraint);
 		scapc.execute();
 
@@ -71,7 +72,7 @@ public class SigningCertificateAttributePresentCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(result,
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
 				new SignatureWrapper(sig), constraint);
 		scapc.execute();
 

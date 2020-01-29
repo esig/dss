@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +30,7 @@ import java.security.Security;
 import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
@@ -42,25 +43,44 @@ public class DigestDocumentTest {
 		assertEquals(base64EncodeDigest, doc.getDigest(DigestAlgorithm.SHA1));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
+	public void testNullDigestAlgo() {
+		assertThrows(NullPointerException.class, () -> new DigestDocument(null, "aaaa"));
+	}
+
+	@Test
+	public void testNullDigestAlgoValue() {
+		assertThrows(NullPointerException.class, () -> new DigestDocument(DigestAlgorithm.SHA1, null));
+	}
+
+	@Test
 	public void testUnknownDigest() {
-		String base64EncodeDigest = "aaa";
-		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		doc.getDigest(DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(DSSException.class, () -> {
+			String base64EncodeDigest = "aaa";
+			DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
+			doc.getDigest(DigestAlgorithm.SHA256);
+		});
+		assertEquals("The digest document does not contain a digest value for the algorithm : SHA256", exception.getMessage());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testOpenStream() {
-		String base64EncodeDigest = "aaa";
-		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		doc.openStream();
+		Exception exception = assertThrows(DSSException.class, () -> {
+			String base64EncodeDigest = "aaa";
+			DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
+			doc.openStream();
+		});
+		assertEquals("Not possible with Digest document", exception.getMessage());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testSave() throws IOException {
-		String base64EncodeDigest = "aaa";
-		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		doc.save("target/test");
+		Exception exception = assertThrows(DSSException.class, () -> {
+			String base64EncodeDigest = "aaa";
+			DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
+			doc.save("target/test");
+		});
+		assertEquals("Not possible with Digest document", exception.getMessage());
 	}
 
 	@Test

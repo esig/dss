@@ -20,23 +20,31 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
  * four different types of sources to be defined:<br>
- * -
- * Trusted certificates source;<br>
+ * - Trusted certificates source;<br>
  * - Adjunct certificates source (not trusted);<br>
  * - OCSP source;<br>
  * - CRL source.<br>
@@ -47,12 +55,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 public class CommonCertificateVerifier implements CertificateVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateVerifier.class);
-
+	
 	/**
-	 * This field contains the reference to the trusted certificate source. This source is fixed, it means that the same
-	 * source is used for different validations.
+	 * This field contains the reference to multiple trusted certificate sources. These sources are fixed, it means that the same
+	 * sources are used for different validations.
 	 */
-	private CertificateSource trustedCertSource;
+	private List<CertificateSource> trustedCertSources = new ArrayList<>();
 
 	/**
 	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate
@@ -63,12 +71,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This field contains the reference to the {@code OCSPSource}.
 	 */
-	private OCSPSource ocspSource;
+	private RevocationSource<OCSPToken> ocspSource;
 
 	/**
 	 * This field contains the reference to the {@code CRLSource}.
 	 */
-	private CRLSource crlSource;
+	private RevocationSource<CRLToken> crlSource;
 
 	/**
 	 * The data loader used to access AIA certificate source.
@@ -101,7 +109,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	
 	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
-	 * of digests for validation tokns and signed data
+	 * of digests for validation tokens and signed data
 	 * Default: SHA256
 	 */
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
@@ -177,8 +185,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * The constructor with key parameters.
 	 *
-	 * @param trustedCertSource
-	 *            the reference to the trusted certificate source.
+	 * @param trustedCertSources
+	 *            the reference to the trusted certificate sources.
 	 * @param crlSource
 	 *            contains the reference to the {@code OCSPSource}.
 	 * @param ocspSource
@@ -186,11 +194,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * @param dataLoader
 	 *            contains the reference to a data loader used to access AIA certificate source.
 	 */
-	public CommonCertificateVerifier(final CertificateSource trustedCertSource, final CRLSource crlSource, final OCSPSource ocspSource,
+	public CommonCertificateVerifier(final List<CertificateSource> trustedCertSources, final CRLSource crlSource, final OCSPSource ocspSource,
 			final DataLoader dataLoader) {
 
 		LOG.info("+ New CommonCertificateVerifier created with parameters.");
-		this.trustedCertSource = trustedCertSource;
+		this.trustedCertSources = trustedCertSources;
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 		this.dataLoader = dataLoader;
@@ -200,33 +208,53 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public CertificateSource getTrustedCertSource() {
-		return trustedCertSource;
+	public List<CertificateSource> getTrustedCertSources() {
+		return Collections.unmodifiableList(trustedCertSources);
 	}
 
 	@Override
-	public OCSPSource getOcspSource() {
+	public RevocationSource<OCSPToken> getOcspSource() {
 		return ocspSource;
 	}
 
 	@Override
-	public CRLSource getCrlSource() {
+	public RevocationSource<CRLToken> getCrlSource() {
 		return crlSource;
 	}
 
 	@Override
-	public void setCrlSource(final CRLSource crlSource) {
+	public void setCrlSource(final RevocationSource<CRLToken> crlSource) {
 		this.crlSource = crlSource;
 	}
 
 	@Override
-	public void setOcspSource(final OCSPSource ocspSource) {
+	public void setOcspSource(final RevocationSource<OCSPToken> ocspSource) {
 		this.ocspSource = ocspSource;
 	}
 
 	@Override
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-		this.trustedCertSource = trustedCertSource;
+		if (CertificateSourceType.TRUSTED_STORE.equals(trustedCertSource.getCertificateSourceType()) ||
+				CertificateSourceType.TRUSTED_LIST.equals(trustedCertSource.getCertificateSourceType())) {
+			this.trustedCertSources.add(trustedCertSource);
+		} else {
+			throw new DSSException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
+					+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", trustedCertSource.getCertificateSourceType()));
+		}
+	}
+	
+	@Override
+	public void setTrustedCertSources(final CertificateSource... certSources) {
+		for (CertificateSource source : certSources) {
+			setTrustedCertSource(source);
+		}
+	}
+	
+	/**
+	 * This methods clears the list of defined trusted certificate sources
+	 */
+	public void clearTrustedCertSources() {
+		trustedCertSources.clear();
 	}
 
 	@Override
@@ -335,8 +363,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public CertificatePool createValidationPool() {
 		final CertificatePool validationPool = new CertificatePool();
-		if (trustedCertSource != null) {
-			validationPool.importCerts(trustedCertSource);
+		for (CertificateSource trustedSource : trustedCertSources) {
+			validationPool.importCerts(trustedSource);
 		}
 		if (adjunctCertSource != null) {
 			validationPool.importCerts(adjunctCertSource);

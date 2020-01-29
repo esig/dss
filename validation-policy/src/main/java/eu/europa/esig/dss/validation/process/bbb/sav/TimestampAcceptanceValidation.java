@@ -24,8 +24,9 @@ import java.util.Date;
 
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -34,9 +35,13 @@ import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
  */
 public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<TimestampWrapper> {
 
-	public TimestampAcceptanceValidation(Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(timestamp, currentTime, Context.TIMESTAMP, validationPolicy);
-		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
+	public TimestampAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
+		super(i18nProvider, timestamp, currentTime, Context.TIMESTAMP, validationPolicy);
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SIGNATURE_ACCEPTANCE_VALIDATION;
 	}
 
 	@Override

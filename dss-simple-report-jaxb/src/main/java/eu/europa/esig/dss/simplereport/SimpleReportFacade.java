@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.simplereport;
 
 import java.io.IOException;
@@ -41,6 +61,9 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 		return SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport);
 	}
 
+    /**
+     * Generates a Bootstrap 4 Simple report
+     */
 	public String generateHtmlReport(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlReport(simpleReport, new StreamResult(stringWriter));
@@ -49,7 +72,7 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 	}
 
 	public void generateHtmlReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);
 	}
 
@@ -61,10 +84,40 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 	}
 
 	public void generateHtmlReport(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
+	}
+
+    /**
+     * Generates a Bootstrap 3 Simple report
+     */
+	public String generateHtmlBootstrap3Report(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(simpleReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);
+	}
+
+	public String generateHtmlBootstrap3Report(String marshalledSimpleReport) throws IOException, TransformerException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(marshalledSimpleReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
 	}
 
+    /**
+     * Generates a PDF Simple report
+     */
 	public void generatePdfReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = SimpleReportXmlDefiner.getPdfTemplates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);

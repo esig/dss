@@ -342,7 +342,7 @@ class CRLParser {
 				LOG.debug("TBSCertList -> crlExtensions : {}", Hex.toHexString(array));
 			}
 
-			ASN1Sequence sequenceExtensions = (ASN1Sequence) ASN1Sequence.fromByteArray(array);
+			ASN1Sequence sequenceExtensions = (ASN1Sequence) ASN1Primitive.fromByteArray(array);
 			extractExtensions(sequenceExtensions, infos);
 
 			tag = DERUtil.readTag(s);

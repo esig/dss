@@ -38,6 +38,10 @@ public final class TrustedServicesFilterFactory {
 		return new CaQcServiceFilter();
 	}
 
+	public static TrustedServiceFilter createFilterByQTST() {
+		return new QTSTServiceFilter();
+	}
+
 	public static TrustedServiceFilter createFilterByDate(Date date) {
 		return new ServiceByDateFilter(date);
 	}
@@ -48,6 +52,10 @@ public final class TrustedServicesFilterFactory {
 
 	public static TrustedServiceFilter createFilterByCountries(Set<String> countryCodes) {
 		return new ServiceByCountryFilter(countryCodes);
+	}
+
+	public static TrustedServiceFilter createFilterByUrls(Set<String> urls) {
+		return new ServiceByTLUrlFilter(urls);
 	}
 
 	public static TrustedServiceFilter createUniqueServiceFilter(CertificateWrapper endEntityCertificate) {

@@ -29,7 +29,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 
@@ -37,8 +38,8 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 	private final Date currentTime;
 	private final TimeConstraint timeConstraint;
 
-	public TLFreshnessCheck(XmlTLAnalysis result, XmlTrustedList currentTL, Date currentTime, TimeConstraint timeConstraint) {
-		super(result, timeConstraint);
+	public TLFreshnessCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL, Date currentTime, TimeConstraint timeConstraint) {
+		super(i18nProvider, result, timeConstraint);
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;
 		this.timeConstraint = timeConstraint;

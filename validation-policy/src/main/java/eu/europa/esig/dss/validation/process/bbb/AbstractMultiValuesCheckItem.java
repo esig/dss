@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb;
 import java.util.List;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -33,8 +34,8 @@ public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConcl
 
 	private final MultiValuesConstraint constraint;
 
-	protected AbstractMultiValuesCheckItem(T result, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	protected AbstractMultiValuesCheckItem(I18nProvider i18nProvider, T result, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.constraint = constraint;
 	}

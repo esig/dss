@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.EnumMap;
 
@@ -38,7 +39,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 @SuppressWarnings("serial")
 public abstract class CommonDocument implements DSSDocument {
 
-	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<DigestAlgorithm, String>(
+	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<>(
 			DigestAlgorithm.class);
 
 	protected MimeType mimeType;
@@ -108,7 +109,7 @@ public abstract class CommonDocument implements DSSDocument {
 				final byte[] digestBytes = messageDigest.digest();
 				base64EncodeDigest = Base64.getEncoder().encodeToString(digestBytes);
 				base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
-			} catch (Exception e) {
+			} catch (IOException | NoSuchAlgorithmException e) {
 				throw new DSSException("Unable to compute the digest", e);
 			}
 		}

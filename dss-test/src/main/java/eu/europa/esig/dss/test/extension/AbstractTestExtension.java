@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.test.extension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -43,6 +42,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -53,7 +54,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
+public abstract class AbstractTestExtension<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
 
 	protected abstract DSSDocument getOriginalDocument();
 
@@ -63,7 +64,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
-	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend();
+	protected abstract DocumentSignatureService<SP, TP> getSignatureServiceToExtend();
 
 	protected abstract TSPSource getUsedTSPSourceAtSignatureTime();
 
@@ -121,19 +122,24 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		checkBLevelValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 
-		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
-		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete original document (IO error)", fileToBeDeleted.delete());
-		assertFalse(fileToBeDeleted.exists());
+		File fileToBeDeleted;
+		deleteOriginalFile(originalDocument);
 
 		fileToBeDeleted = new File(signedFilePath);
 		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete signed document (IO error)", fileToBeDeleted.delete());
+		assertTrue(fileToBeDeleted.delete(), "Cannot delete signed document (IO error)");
 		assertFalse(fileToBeDeleted.exists());
 
 		fileToBeDeleted = new File(extendedFilePath);
 		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete extended document (IO error)", fileToBeDeleted.delete());
+		assertTrue(fileToBeDeleted.delete(), "Cannot delete extended document (IO error)");
+		assertFalse(fileToBeDeleted.exists());
+	}
+
+	protected void deleteOriginalFile(DSSDocument originalDocument) {
+		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
+		assertTrue(fileToBeDeleted.exists());
+		assertTrue(fileToBeDeleted.delete(), "Cannot delete original document (IO error)");
 		assertFalse(fileToBeDeleted.exists());
 	}
 
@@ -142,7 +148,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
 		SP extensionParameters = getExtensionParameters();
-		DocumentSignatureService<SP> service = getSignatureServiceToExtend();
+		DocumentSignatureService<SP, TP> service = getSignatureServiceToExtend();
 
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);
@@ -164,7 +170,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
 			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-				assertEquals("Duplicate certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
 			}
 		}
 	}
@@ -174,7 +180,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
 			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
-				assertEquals("Duplicate revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
 			}
 		}
 	}

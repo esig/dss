@@ -20,21 +20,25 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
-public class SignatureIntactCheck extends ChainItem<XmlCV> {
+public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final TokenProxy token;
+	private final Context context;
 
-	public SignatureIntactCheck(XmlCV result, TokenProxy token, LevelConstraint constraint) {
-		super(result, constraint);
+	public SignatureIntactCheck(I18nProvider i18nProvider, T result, TokenProxy token, Context context, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.token = token;
+		this.context = context;
 	}
 
 	@Override
@@ -44,7 +48,16 @@ public class SignatureIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_CV_ISI;
+		switch (context) {
+			case CERTIFICATE:
+				return MessageTag.BBB_CV_ISIC;
+			case REVOCATION:
+				return MessageTag.BBB_CV_ISIR;
+			case TIMESTAMP:
+				return MessageTag.BBB_CV_ISIT;
+			default:
+				return MessageTag.BBB_CV_ISI;
+		}
 	}
 
 	@Override
@@ -60,6 +73,11 @@ public class SignatureIntactCheck extends ChainItem<XmlCV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CRYPTO_FAILURE;
+	}
+	
+	@Override
+	protected MessageTag getAdditionalInfo() {
+		return MessageTag.TOKEN_ID.setArgs(token.getId());
 	}
 
 }

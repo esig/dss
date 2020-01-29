@@ -24,10 +24,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
@@ -48,13 +49,16 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public ValidationContextInitialization(SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
-		super(new XmlVCI());
-		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION.getTitle());
-
+	public ValidationContextInitialization(I18nProvider i18nProvider, SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
+		super(i18nProvider, new XmlVCI());
 		this.signature = signature;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.VALIDATION_CONTEXT_INITIALIZATION;
 	}
 
 	@Override
@@ -74,17 +78,17 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 	}
 
 	private ChainItem<XmlVCI> signaturePolicyIdentifier(MultiValuesConstraint signaturePolicyConstraint) {
-		return new SignaturePolicyIdentifierCheck(result, signature, signaturePolicyConstraint);
+		return new SignaturePolicyIdentifierCheck(i18nProvider, result, signature, signaturePolicyConstraint);
 	}
 
 	private ChainItem<XmlVCI> signaturePolicyIdentified() {
 		LevelConstraint constraint = validationPolicy.getSignaturePolicyIdentifiedConstraint(context);
-		return new SignaturePolicyIdentifiedCheck(result, signature, constraint);
+		return new SignaturePolicyIdentifiedCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlVCI> signaturePolicyHashValid() {
 		LevelConstraint constraint = validationPolicy.getSignaturePolicyPolicyHashValid(context);
-		return new SignaturePolicyHashValidCheck(result, signature, constraint);
+		return new SignaturePolicyHashValidCheck(i18nProvider, result, signature, constraint);
 	}
 
 }

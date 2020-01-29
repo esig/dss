@@ -37,9 +37,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
@@ -324,7 +322,6 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	List<CertificateToken> getCertificates();
 	
-
 	/**
 	 * Returns a list of all certificates found into signature and timestamps
 	 * 
@@ -449,6 +446,12 @@ public interface AdvancedSignature extends Serializable {
 	 *         B,T,LT,LTA
 	 */
 	SignatureLevel[] getSignatureLevels();
+	
+	/**
+	 * Checks if all certificate chains present in the signature are self-signed
+	 * @return TRUE if all certificates are self-signed, false otherwise
+	 */
+	boolean areAllSelfSignedCertificates();
 
 	void prepareTimestamps(ValidationContext validationContext);
 
@@ -456,16 +459,6 @@ public interface AdvancedSignature extends Serializable {
 	 * This method allows the structure validation of the signature.
 	 */
 	void validateStructure();
-	
-	/**
-	 * Fills all the missing {@link CRLToken}s from the given {@code signatureCRLSource}
-	 */
-	void populateCRLTokenLists(SignatureCRLSource signatureCRLSource);
-	
-	/**
-	 * Fills all the missing {@link OCSPToken}s from the given {@code signatureOCSPSource}
-	 */
-	void populateOCSPTokenLists(SignatureOCSPSource signatureOCSPSource);
 
 	String getStructureValidationResult();
 
@@ -526,10 +519,32 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link RevocationToken}s
 	 */
 	Set<RevocationToken> getAllRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in the CMS
+	 * SignedData
+	 * 
+	 * NOTE: Applicable only for CAdES revocation sources
+	 * 
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getCMSSignedDataRevocationTokens();
 	
 	/**
-	 * Retrieves the list of all {@code RevocationToken}s present in 'RevocationValues' element
-	 * NOTE: Applicable only for CAdES and XAdES revocation sources
+	 * Retrieves the list of all {@code RevocationToken}s present in the Timestamp
+	 * token SignedData
+	 * 
+	 * NOTE: Applicable only for CAdES revocation sources
+	 * 
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getTimestampSignedDataRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in
+	 * 'RevocationValues' element NOTE: Applicable only for CAdES and XAdES
+	 * revocation sources
+	 * 
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getRevocationValuesTokens();
@@ -625,12 +640,6 @@ public interface AdvancedSignature extends Serializable {
 	List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers();
 	
 	/**
-	 * Retrieves a list of all found {@code RevocationRef}s present in the signature
-	 * @return list of {@link RevocationRef}s
-	 */
-	List<RevocationRef> getAllFoundRevocationRefs();
-	
-	/**
 	 * Returns a list of all orphan {@code RevocationRef}s found into the signature
 	 * @return list of {@link RevocationRef}s
 	 */
@@ -656,18 +665,6 @@ public interface AdvancedSignature extends Serializable {
 
 	// ------------------------ PDF Specifics for TS 119 102-2
 	
-	String getSignatureFieldName();
-
-	String getSignerName();
-
-	String getFilter();
-
-	String getSubFilter();
-
-	String getContactInfo();
-
-	String getReason();
-	
-	int[] getSignatureByteRange();
+	PdfRevision getPdfRevision();
 
 }

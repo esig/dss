@@ -23,37 +23,50 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import java.util.List;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
+import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithCAdES {
 
-	private static final String META_INF = "META-INF/";
-	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = META_INF + "signature001.p7s";
+	private static final String ASIC_MANIFEST_NAME = "ASiCManifest";
 
-	protected DSSDocument getASiCManifest(List<DSSDocument> documents, List<DSSDocument> signatures, List<DSSDocument> manifests,
-			ASiCWithCAdESSignatureParameters parameters) {
-		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(documents, parameters.getDigestAlgorithm(),
-				getSignatureFileName(parameters.aSiC(), signatures));
+	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
 
-		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), getASiCManifestFilename(manifests));
+	private static final String ZIP_ENTRY_ASICE_METAINF_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+
+	protected DSSDocument getASiCManifest(SigningOperation operation, List<DSSDocument> documents, List<DSSDocument> signatures, List<DSSDocument> timestamps,
+			List<DSSDocument> manifests, ASiCWithCAdESCommonParameters parameters) {
+
+		String uri = null;
+		if (SigningOperation.SIGN == operation) {
+			uri = getSignatureFileName(parameters.aSiC(), signatures);
+		} else {
+			uri = getTimestampFileName(timestamps);
+		}
+
+		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(operation, documents, parameters.getDigestAlgorithm(), uri);
+		String newManifestName = ASiCUtils.getNextASiCEManifestName(ASIC_MANIFEST_NAME, manifests);
+
+		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), newManifestName);
 	}
 
 	protected String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {
 		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return META_INF + asicParameters.getSignatureFileName();
+			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
 		}
 
 		int num = Utils.collectionSize(existingSignatures) + 1;
 		return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.replace("001", ASiCUtils.getPadNumber(num));
 	}
 
-	private String getASiCManifestFilename(List<DSSDocument> existingManifests) {
-		String suffix = Utils.isCollectionEmpty(existingManifests) ? Utils.EMPTY_STRING : String.valueOf(existingManifests.size());
-		return META_INF + "ASiCManifest" + suffix + ".xml";
+	protected String getTimestampFileName(List<DSSDocument> existingTimestamps) {
+		int num = Utils.collectionSize(existingTimestamps) + 1;
+		return ZIP_ENTRY_ASICE_METAINF_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
 	}
 
 }

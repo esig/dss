@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -34,13 +34,14 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
 
-public class CommitmentTypeIndicationsCheckTest {
+public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void commitmentTypeIndicationsCheck() throws Exception {
-		List<String> commitmentTypeIndication = new ArrayList<String>();
+		List<String> commitmentTypeIndication = new ArrayList<>();
 		commitmentTypeIndication.add("1");
 		commitmentTypeIndication.add("2");
 
@@ -54,7 +55,7 @@ public class CommitmentTypeIndicationsCheckTest {
 		constraint.getId().add("3");
 
 		XmlSAV result = new XmlSAV();
-		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(result, new SignatureWrapper(sig),
+		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		ctic.execute();
 
@@ -65,7 +66,7 @@ public class CommitmentTypeIndicationsCheckTest {
 
 	@Test
 	public void failedCommitmentTypeIndicationsCheck() throws Exception {
-		List<String> commitmentTypeIndication = new ArrayList<String>();
+		List<String> commitmentTypeIndication = new ArrayList<>();
 		commitmentTypeIndication.add("1");
 		commitmentTypeIndication.add("4");
 
@@ -79,7 +80,7 @@ public class CommitmentTypeIndicationsCheckTest {
 		constraint.getId().add("3");
 
 		XmlSAV result = new XmlSAV();
-		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(result, new SignatureWrapper(sig),
+		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		ctic.execute();
 
@@ -99,7 +100,7 @@ public class CommitmentTypeIndicationsCheckTest {
 		constraint.getId().add("3");
 
 		XmlSAV result = new XmlSAV();
-		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(result, new SignatureWrapper(sig),
+		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		ctic.execute();
 

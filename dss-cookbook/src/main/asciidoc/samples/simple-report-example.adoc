@@ -1,39 +1,40 @@
 [source,xml]
 ----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <SimpleReport xmlns="http://dss.esig.europa.eu/validation/simple-report">
-    <Policy>
+    <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
-		Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
-		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
-	</PolicyDescription>
-    </Policy>
-    <ValidationTime>2019-07-25T06:28:44</ValidationTime>
-    <DocumentName>sample-signed-xades-baseline-lta.xml</DocumentName>
+                Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+                signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <ValidationTime>2020-01-21T06:07:03</ValidationTime>
+    <DocumentName>EmptyPage-signed-pades-baseline-b.pdf</DocumentName>
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <Signature Id="S-F55073FB926640BC883BC1E6D8D262776621E3E8CCFB1C53485CB62EAD435C2F" SignatureFormat="XAdES-BASELINE-LTA">
-        <SigningTime>2019-07-25T06:28:24</SigningTime>
-        <BestSignatureTime>2019-07-25T06:28:27</BestSignatureTime>
-        <SignedBy>C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352</SignedBy>
+    <Signature SignatureFormat="PAdES-BASELINE-B" Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1">
         <CertificateChain>
             <Certificate>
-                <id>C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352</id>
-                <qualifiedName>good-user</qualifiedName>
+                <id>C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F</id>
+                <qualifiedName>Pierrick Vandenbroucke (Signature)</qualifiedName>
             </Certificate>
             <Certificate>
-                <id>C-FE7DFD7173311743BAFD5D919292663470D94A18FCF4300BE49C80AF0C4180F3</id>
-                <qualifiedName>good-ca</qualifiedName>
+                <id>C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA</id>
+                <qualifiedName>Citizen CA</qualifiedName>
             </Certificate>
             <Certificate>
-                <id>C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8</id>
-                <qualifiedName>root-ca</qualifiedName>
+                <id>C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0</id>
+                <qualifiedName>Belgium Root CA4</qualifiedName>
             </Certificate>
         </CertificateChain>
-        <SignatureLevel description="Not applicable">N/A</SignatureLevel>
         <Indication>TOTAL_PASSED</Indication>
-        <Errors>The certificate path is not trusted!</Errors>
-        <SignatureScope name="o-id-87e10c3267a50d56de93241478704549-1" scope="PARTIAL">The XML element with ID 'o-id-87e10c3267a50d56de93241478704549-1' with transformations.</SignatureScope>
+        <Warnings>The organization name is missing in the trusted certificate!</Warnings>
+        <SigningTime>2019-08-27T14:06:11</SigningTime>
+        <BestSignatureTime>2020-01-21T06:07:03</BestSignatureTime>
+        <SignedBy>Pierrick Vandenbroucke (Signature)</SignedBy>
+        <SignatureLevel description="Qualified Electronic Signature">QESig</SignatureLevel>
+        <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
     </Signature>
 </SimpleReport>
 ----

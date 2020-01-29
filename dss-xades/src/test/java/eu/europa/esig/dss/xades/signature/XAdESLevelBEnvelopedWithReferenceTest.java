@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -35,8 +37,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -50,17 +51,18 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		SantuarioInitializer.init();
 
@@ -74,13 +76,13 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setXPathLocationString("//placeOfSignature");
 
-		List<DSSReference> dssReferences = new ArrayList<DSSReference>();
+		List<DSSReference> dssReferences = new ArrayList<>();
 		DSSReference reference1 = new DSSReference();
 		reference1.setContents(documentToSign);
 		reference1.setId("REF-ID1");
 		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference1.setUri("#data1");
-		List<DSSTransform> transforms1 = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms1 = new ArrayList<>();
 		CanonicalizationTransform transform1 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms1.add(transform1);
 		reference1.setTransforms(transforms1);
@@ -91,7 +93,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		reference2.setId("REF-ID2");
 		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference2.setUri("#data2");
-		List<DSSTransform> transforms2 = new ArrayList<DSSTransform>();
+		List<DSSTransform> transforms2 = new ArrayList<>();
 		CanonicalizationTransform transform2 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms2.add(transform2);
 		reference2.setTransforms(transforms2);
@@ -117,7 +119,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
 
-			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=",
+			assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=",
 					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
@@ -125,7 +127,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			c14nBytes = c14n.canonicalizeSubtree(node);
 
-			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=",
+			assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=",
 					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -138,7 +140,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 
@@ -158,6 +160,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 	}
 
 	private static final class Name implements NamespaceContext {
+		
 		@Override
 		public Iterator getPrefixes(String namespaceURI) {
 			// TODO Auto-generated method stub
@@ -182,5 +185,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			// "http://uri.etsi.org/19132/v1.1.1#"
 			return null;
 		}
+		
 	}
 }

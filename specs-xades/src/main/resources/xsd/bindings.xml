@@ -19,6 +19,18 @@
 				<jaxb:package name="eu.europa.esig.xades.jaxb.xades132" />
 			</jaxb:schemaBindings>
 		</jaxb:bindings>
+	
+		<jaxb:bindings schemaLocation="XAdESv122.xsd" node="/xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.xades.jaxb.xades122" />
+			</jaxb:schemaBindings>
+		</jaxb:bindings>
+		
+		<jaxb:bindings schemaLocation="XAdESv111.xsd" node="/xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.xades.jaxb.xades111" />
+			</jaxb:schemaBindings>
+		</jaxb:bindings>
 	</jaxb:bindings>
 
 </jaxb:bindings>

@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
 
 public class ITextPdfObjFactoryTest {
@@ -38,25 +37,29 @@ public class ITextPdfObjFactoryTest {
 
 	@Test
 	public void testSystemProperty() {
-		PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
+		IPdfObjFactory ipof = new ServiceLoaderPdfObjFactory();
+
+		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
-		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
+		PDFSignatureService timestampService = ipof.newSignatureTimestampService();
 		assertNotNull(timestampService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, timestampService.getClass().getSimpleName());
 	}
 
 	@Test
 	public void testRuntimeChange() {
-		PdfObjFactory.setInstance(new EmptyPdfObjectFactory());
-		PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
+
+		IPdfObjFactory ipof = new EmptyPdfObjectFactory();
+
+		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
 		assertNull(signatureService);
-		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
+		PDFSignatureService timestampService = ipof.newSignatureTimestampService();
 		assertNull(timestampService);
 
-		PdfObjFactory.setInstance(new ITextDefaultPdfObjFactory());
+		ipof = new ITextDefaultPdfObjFactory();
 
-		signatureService = PdfObjFactory.newPAdESSignatureService();
+		signatureService = ipof.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
 	}
@@ -69,9 +72,20 @@ public class ITextPdfObjFactoryTest {
 		}
 
 		@Override
-		public PDFTimestampService newTimestampSignatureService() {
+		public PDFSignatureService newContentTimestampService() {
 			return null;
 		}
+
+		@Override
+		public PDFSignatureService newSignatureTimestampService() {
+			return null;
+		}
+
+		@Override
+		public PDFSignatureService newArchiveTimestampService() {
+			return null;
+		}
+
 
 	}
 

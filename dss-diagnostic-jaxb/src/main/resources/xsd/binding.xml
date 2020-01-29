@@ -185,6 +185,9 @@
   	<jaxb:bindings node="//xs:complexType[@name='RevocationRef']//xs:element[@name='Origin']">
 		<jaxb:property name="Origins" />
 	</jaxb:bindings>
+  	<jaxb:bindings node="//xs:complexType[@name='Timestamp']//xs:element[@name='DigestMatcher']">
+		<jaxb:property name="DigestMatchers" />
+	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">
         <jaxb:property>
@@ -246,6 +249,16 @@
     <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:attribute[@name='ServiceDigitalIdentifier']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='TrustedServiceProvider']//xs:attribute[@name='TL']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='TrustedServiceProvider']//xs:attribute[@name='LOTL']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
         </jaxb:property>
     </jaxb:bindings>
 

@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.extension;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +37,8 @@ import java.util.zip.ZipInputStream;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -44,8 +48,9 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters> {
+public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
@@ -89,14 +94,28 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	protected ASiCWithXAdESSignatureParameters getExtensionParameters() {
 		ASiCWithXAdESSignatureParameters extensionParameters = new ASiCWithXAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
-		extensionParameters.aSiC().setContainerType(getContainerType());
+		extensionParameters.aSiC().setContainerType(getFinalContainerType());
 		return extensionParameters;
 	}
 
 	protected abstract ASiCContainerType getContainerType();
 
+	protected ASiCContainerType getFinalContainerType() {
+		return getContainerType();
+	}
+
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getSignatureServiceToExtend() {
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		assertNotNull(containerInfo);
+
+		assertEquals(getContainerType().getReadable(), containerInfo.getContainerType());
+	}
+
+	@Override
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getSignatureServiceToExtend() {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
@@ -120,7 +139,7 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	}
 
 	private List<String> getFilesNames(DSSDocument doc) {
-		List<String> filenames = new ArrayList<String>();
+		List<String> filenames = new ArrayList<>();
 		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {

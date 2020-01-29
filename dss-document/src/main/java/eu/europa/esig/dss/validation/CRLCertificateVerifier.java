@@ -74,7 +74,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 			}
 			crlToken.setRelatedCertificate(certificateToken);
 			if (!crlToken.isValid()) {
-				LOG.warn("{} : The CRL is not valid !", crlSource.getClass().getSimpleName());
+				LOG.warn("{} : The CRL {} is not valid !", crlSource.getClass().getSimpleName(), crlToken.getDSSIdAsString());
 				return null;
 			}
 			return crlToken;

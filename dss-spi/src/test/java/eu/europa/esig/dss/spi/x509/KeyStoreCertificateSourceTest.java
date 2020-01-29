@@ -20,20 +20,20 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 
 public class KeyStoreCertificateSourceTest {
@@ -87,16 +87,21 @@ public class KeyStoreCertificateSourceTest {
 		assertEquals(1, Utils.collectionSize(kscs2.getCertificates()));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void wrongPassword() throws IOException {
-		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, "wrong password");
-		assertNotNull(kscs);
+		assertThrows(DSSException.class, () -> {
+			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, "wrong password");
+			assertNotNull(kscs);
+		});
+		
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void wrongFile() throws IOException {
-		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/keystore.p13"), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
-		assertNotNull(kscs);
+		assertThrows(IOException.class, () -> {
+			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/keystore.p13"), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+			assertNotNull(kscs);
+		});
 	}
 
 }

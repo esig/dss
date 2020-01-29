@@ -39,7 +39,7 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 
 	@Override
 	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
-		final List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
+		final List<DSSPrivateKeyEntry> list = new ArrayList<>();
 		try {
 			final KeyStore keyStore = getKeyStore();
 			final Enumeration<String> aliases = keyStore.aliases();

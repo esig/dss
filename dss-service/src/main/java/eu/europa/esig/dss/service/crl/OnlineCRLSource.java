@@ -170,7 +170,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		try {
 			return dataLoader.get(downloadUrls);
 		} catch (DSSException e) {
-			LOG.warn("Unable to download CRL from URLs {}", downloadUrls, e);
+			LOG.warn("Unable to download CRL from URLs [{}]. Reason : [{}]", downloadUrls, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -187,7 +187,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 
 		if (preferredProtocol != null) {
 
-			final List<String> priorityUrls = new ArrayList<String>();
+			final List<String> priorityUrls = new ArrayList<>();
 			for (final String url : urls) {
 				if (preferredProtocol.isTheSame(url)) {
 					priorityUrls.add(url);

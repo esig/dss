@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,16 +32,17 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	private final TrustedServiceWrapper trustService;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
-	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustService,
+	public TrustedCertificateMatchTrustServiceCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, TrustedServiceWrapper trustService,
 			LevelConstraint constraint) {
-		super(result, constraint);
+		super(i18nProvider, result, constraint);
 
 		this.trustService = trustService;
 	}
@@ -72,7 +74,10 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 
 		List<String> candidates = Arrays.asList(trustedCert.getOrganizationName(), trustedCert.getCommonName(), trustedCert.getOrganizationalUnit(),
 				trustedCert.getCertificateDN());
-		List<String> possibleMatchers = Arrays.asList(trustService.getTspName(), trustService.getServiceName());
+
+		List<String> possibleMatchers = new ArrayList<>();
+		possibleMatchers.addAll(trustService.getTspNames());
+		possibleMatchers.addAll(trustService.getServiceNames());
 
 		for (String candidate : candidates) {
 			if (Utils.isStringBlank(candidate)) {

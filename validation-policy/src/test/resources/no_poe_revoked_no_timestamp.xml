@@ -5,7 +5,7 @@
     <Signatures>
 	    <Signature Id="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
-	        <DateTime>2014-10-14T14:49:13</DateTime>
+	        <ClaimedSigningTime>2014-10-14T14:49:13</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">
@@ -23,7 +23,7 @@
             </DigestMatchers>
 	        <BasicSignature>
 	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+	            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
@@ -113,7 +113,7 @@
             </Sources>
             <NotAfter>2014-10-30T01:00:00</NotAfter>
             <NotBefore>2014-10-08T10:46:20</NotBefore>
-            <PublicKeySize>1024</PublicKeySize>
+            <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
@@ -211,6 +211,8 @@
             <ProductionDate>2016-05-04T15:03:54</ProductionDate>
             <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
             <NextUpdate>2016-05-04T21:03:54</NextUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

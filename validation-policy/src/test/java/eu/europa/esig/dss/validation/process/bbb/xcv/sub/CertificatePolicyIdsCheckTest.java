@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -35,13 +35,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
 
-public class CertificatePolicyIdsCheckTest {
+public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
-		List<XmlCertificatePolicy> policyIds = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> policyIds = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		policyIds.add(oid);
@@ -54,7 +55,7 @@ public class CertificatePolicyIdsCheckTest {
 		xc.setCertificatePolicies(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
+		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cpic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -64,7 +65,7 @@ public class CertificatePolicyIdsCheckTest {
 
 	@Test
 	public void failedCertificatePolicyIdsCheck() throws Exception {
-		List<XmlCertificatePolicy> policyIds = new ArrayList<XmlCertificatePolicy>();
+		List<XmlCertificatePolicy> policyIds = new ArrayList<>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		policyIds.add(oid);
@@ -77,7 +78,7 @@ public class CertificatePolicyIdsCheckTest {
 		xc.setCertificatePolicies(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
+		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cpic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

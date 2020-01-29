@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -30,10 +29,10 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
@@ -44,8 +43,9 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 
 	private String serviceTypeStr;
 
-	public TrustedServiceTypeIdentifierCheck(XmlXCV result, CertificateWrapper certificate, Date usageTime, Context context, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public TrustedServiceTypeIdentifierCheck(I18nProvider i18nProvider, XmlXCV result, CertificateWrapper certificate, 
+			Date usageTime, Context context, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 		this.usageTime = usageTime;
 		this.context = context;
@@ -76,10 +76,9 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (Utils.isStringNotEmpty(serviceTypeStr)) {
-			Object[] params = new Object[] { serviceTypeStr };
-			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_TYPE, params);
+			return MessageTag.TRUSTED_SERVICE_TYPE.setArgs(serviceTypeStr);
 		}
 		return null;
 	}

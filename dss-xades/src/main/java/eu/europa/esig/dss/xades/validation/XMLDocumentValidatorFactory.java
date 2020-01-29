@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 
 public class XMLDocumentValidatorFactory implements DocumentValidatorFactory {
 

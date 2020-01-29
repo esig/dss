@@ -20,18 +20,18 @@
  */
 package plugtests;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -44,36 +44,29 @@ import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
-@RunWith(Parameterized.class)
 public class ETSISamplesValidationTest {
 
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() {
+	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/plugtest");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "p7", "p7b", "p7m", "p7s", "asice", "asics", "pdf", "xml", "bdoc", "csig", "xsig", "es3" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+			dataToRun.add(Arguments.of( file ));
 		}
-		return dataToRun;
+		return dataToRun.stream();
 	}
 
-	private File fileToTest;
-
-	public ETSISamplesValidationTest(File fileToTest) {
-		this.fileToTest = fileToTest;
-	}
-
-	@Test
-	public void testValidate() {
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void testValidate(File fileToTest) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();

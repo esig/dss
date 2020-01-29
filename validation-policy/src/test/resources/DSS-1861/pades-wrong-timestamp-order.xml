@@ -1,0 +1,1263 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-P-HU_POL-4.pdf</DocumentName>
+    <ValidationDate>2019-11-05T14:09:38</ValidationDate>
+    <Signatures>
+        <Signature Id="S-EC0EA3F31F31F53BC5D37967CE983BEB955807FBE6350563BF2697E59FCABDD5">
+            <SignatureFilename>Signature-P-HU_POL-4.pdf</SignatureFilename>
+            <ClaimedSigningTime>2019-11-05T14:01:21</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>Thq1oBWH4JLJHpGGecJevgvl99AlvxNr+QAOrcx8urY=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Certificate="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC"/>
+                <ChainItem Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <SignatureProductionPlace>
+                <CountryName>Budapest, Magyarország</CountryName>
+            </SignatureProductionPlace>
+            <CommitmentTypeIndication/>
+            <PDFRevision>
+                <SignatureFieldName>Signature-20191101-150121</SignatureFieldName>
+                <SignerInformationStore>
+                	<SignerInfo Processed="true">
+                		<Issuer>CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#2d32333538343439370c0e5641544855,O=Microsec Ltd.,L=Budapest,C=HU</Issuer>
+            			<SerialNumber>22264676765912719507090342209546</SerialNumber>
+                	</SignerInfo>
+                </SignerInformationStore>
+	            <PDFSignatureDictionary>
+	                <SignerName>POLYSYS kft.</SignerName>
+	                <Filter>Adobe.PPKLite</Filter>
+	                <SubFilter>ETSI.CAdES.detached</SubFilter>
+	                <ContactInfo>info@polysys.eu</ContactInfo>
+	                <Reason>Document certification - electronic seal produced by PolySigno product from Polysys Ltd.</Reason>
+	                <SignatureByteRange>0 139747 169749 48336</SignatureByteRange>
+	            </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-8AFE59C13F25CCA072AD8E1A7A704D1277D48CE974BA5AE356D788DB539484FA">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC">
+                    <Origin>KEY_INFO</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial>MIGQMH6kfDB6MQswCQYDVQQGEwJIVTERMA8GA1UEBwwIQnVkYXBlc3QxFjAUBgNVBAoMDU1pY3Jvc2VjIEx0ZC4xFzAVBgNVBGEMDlZBVEhVLTIzNTg0NDk3MScwJQYDVQQDDB5lLVN6aWdubyBRdWFsaWZpZWQgUUNQIENBIDIwMTcCDgEZBQz3LIFZMJ9xmOgK</IssuerSerial>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>wvz0d6VcqlRwlsMYgz5fWEl7S/xv+5EEdrPiiOxpEaw=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0">
+                    <Origin>KEY_INFO</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-9077688FD079D30B438755AA1E97F2538C1DC86433809BFC5AF248651625C540">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-E23EDC1D934D61A12A13921AADC46945516A22011D1F75EA27158DEC454ADBD6">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99">
+                    <Origin>KEY_INFO</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-3066A3E28500603CEFC0647768C693AC071262D0F02AE0EB13B56F0ED3FBECC3">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-5AD135DC4966BFC398F1A8E0BB2B162D3317C2E68C411765527AEFF2D2BC7AA1">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-959B0EEBEFE82FAC94B72592DC6A5340937E93F06451E018B2401A6971B46327">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+                <OrphanRevocation Token="R-7045B3CC30FB448D655E0632460713127A260AF6EFA0FCA3C26BC3895D9FAE2D">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </OrphanRevocation>
+                <OrphanRevocation Token="R-F14EBE897CF92C9899E5E510D9FFD18C05E2B9D03A6CB87C9BC3135FD8E248DC">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </OrphanRevocation>
+                <OrphanRevocation Token="R-9F0C1F6947DADFA3B0B533EF20E37F305C9723ACB555B1A393FE04D9FA7AFD2E">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </OrphanRevocation>
+                <OrphanRevocation Token="R-9A13EEACCDB7CF28D1886FC9A02FD403BE3B005F82D2466574F5F0CB35EC4859">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </OrphanRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-D8F372BEDBB4D46B8B7ED3B03F08549F53228DCF086938DB161468DC3A438B82" Location="CAdES"/>
+                <FoundTimestamp Timestamp="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3" Location="DOC_TIMESTAMP"/>
+                <FoundTimestamp Timestamp="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F" Location="DOC_TIMESTAMP"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-1034FB49D528B8851136D9E52BD374551DCE5CD82A7DA4336AB75EE235EB449B">
+                    <Scope>PARTIAL</Scope>
+                    <Name>PDF previous version #2</Name>
+                    <Description>The document byte range: [0, 139747, 169749, 48336]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>yHGSZeMnX3TGXa7mk2W+kKdqWMT3Q+NybEyq4ybmaD8=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>MEUCICaGzcqKfxVC6dkVB9G7Wo+dghglrb3w5M5LbpyeLdpPAiEAyNBJkJN0A/x6UPta/Qo6TYpmPzfBNhLs9eTxarQz2ss=</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-8AFE59C13F25CCA072AD8E1A7A704D1277D48CE974BA5AE356D788DB539484FA">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno root ca 2017 ocsp responder,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno Root CA 2017 OCSP Responder,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno root ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Root CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>309490016014057602048831956450364768778</SerialNumber>
+            <CommonName>e-Szigno Root CA 2017 OCSP Responder</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://rootca2017-aia1.e-szigno.hu/rootca2017.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://rootca2017-ocsp1.e-szigno.hu/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-11-02T10:00:00</NotAfter>
+            <NotBefore>2019-11-01T10:00:00</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>iv5ZwT8lzKByrY4aenBNEnfUjOl0ulrjVteI21OUhPo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#2313532382e322e322e312e33313239131d312e332e362e312e342e312e333,1.2.840.113549.1.9.1=#160f696e666f40706f6c797379732e6575,cn=sys Co.,ou=sys (r),2.5.4.97=#0c0e56415448552d3130343430363538,o=sys Co.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#2313532382e322e322e312e33313239131d312e332e362e312e342e312e333,1.2.840.113549.1.9.1=#160f696e666f40706f6c797379732e6575,CN=SYS Co.,OU=sys (R),2.5.4.97=#0c0e56415448552d3130343430363538,O=SYS Co.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno qualified qcp ca 2017,2.5.4.97=#2d32333538343439370c0e5641544855,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#2d32333538343439370c0e5641544855,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>22264676765912719507090342209546</SerialNumber>
+            <CommonName>Sys com.</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Sys com</OrganizationName>
+            <OrganizationalUnit>Sys (R)</OrganizationalUnit>
+            <Email>info@sys.com</Email>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://eqcpca2017-ca1.e-szigno.hu/eqcpca2017.crt</aiaUrl>
+                <aiaUrl>http://eqcpca2017-ca2.e-szigno.hu/eqcpca2017.crt</aiaUrl>
+                <aiaUrl>http://eqcpca2017-ca3.e-szigno.hu/eqcpca2017.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://eqcpca2017-crl1.e-szigno.hu/eqcpca2017.crl</crlUrl>
+                <crlUrl>http://eqcpca2017-crl2.e-szigno.hu/eqcpca2017.crl</crlUrl>
+                <crlUrl>http://eqcpca2017-crl3.e-szigno.hu/eqcpca2017.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://eqcpca2017-ocsp1.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://eqcpca2017-ocsp2.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://eqcpca2017-ocsp3.e-szigno.hu</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2020-10-15T14:37:46</NotAfter>
+            <NotBefore>2018-10-16T14:37:46</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.183.2.7</certificatePolicy>
+                <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-retention-period">0.4.0.1862.1.3</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes>
+                <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
+            </QCTypes>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wvz0d6VcqlRwlsMYgz5fWEl7S/xv+5EEdrPiiOxpEaw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=főtanúsítványkiadó - kormányzati hitelesítés szolgáltató,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Főtanúsítványkiadó - Kormányzati Hitelesítés Szolgáltató,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=főtanúsítványkiadó - kormányzati hitelesítés szolgáltató,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Főtanúsítványkiadó - Kormányzati Hitelesítés Szolgáltató,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>8428593294730301249</SerialNumber>
+            <CommonName>Főtanúsítványkiadó - Kormányzati Hitelesítés Szolgáltató</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2033-09-13T10:27:04</NotAfter>
+            <NotBefore>2013-09-13T10:27:04</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>whVzCdmu4XvzT0316I2666V+A2HrgUy8I59NVNMpo40=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-B026C53A35DE256A30B46A484EEA72781A7C94A24B6666FFAC431A58F8942666">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp2 - minősített tanúsítványkiadó v2 - gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,2.5.4.97=#0c0e56415448552d3130353835353630,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP2 - Minősített Tanúsítványkiadó v2 - GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,2.5.4.97=#0c0e56415448552d3130353835353630,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=minősített tanúsítványkiadó v2 - gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Minősített Tanúsítványkiadó v2 - GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>3493049205310674289</SerialNumber>
+            <CommonName>OCSP2 - Minősített Tanúsítványkiadó v2 - GOV CA</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2019-11-06T12:58:05</NotAfter>
+            <NotBefore>2019-11-05T12:58:05</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>sCbFOjXeJWowtGpITupyeBp8lKJLZmb/rEMaWPiUJmY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno qualified qcp ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno root ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Root CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>48952271609417078135620790794</SerialNumber>
+            <CommonName>e-Szigno Qualified QCP CA 2017</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://rootca2017-ca1.e-szigno.hu/rootca2017.crt</aiaUrl>
+                <aiaUrl>http://rootca2017-ca2.e-szigno.hu/rootca2017.crt</aiaUrl>
+                <aiaUrl>http://rootca2017-ca3.e-szigno.hu/rootca2017.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://rootca2017-crl1.e-szigno.hu/rootca2017.crl</crlUrl>
+                <crlUrl>http://rootca2017-crl2.e-szigno.hu/rootca2017.crl</crlUrl>
+                <crlUrl>http://rootca2017-crl3.e-szigno.hu/rootca2017.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://rootca2017-ocsp1.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://rootca2017-ocsp2.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://rootca2017-ocsp3.e-szigno.hu</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2042-08-22T09:00:00</NotAfter>
+            <NotBefore>2017-09-17T21:00:00</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YIG+5bDfGRrE4mWsD294mfB4uMifBgVa4Wavkd9w1uA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno tsa ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno TSA CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno root ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Root CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>52469008899385950801647003914</SerialNumber>
+            <CommonName>e-Szigno TSA CA 2017</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://rootca2017-ca1.e-szigno.hu/rootca2017.crt</aiaUrl>
+                <aiaUrl>http://rootca2017-ca2.e-szigno.hu/rootca2017.crt</aiaUrl>
+                <aiaUrl>http://rootca2017-ca3.e-szigno.hu/rootca2017.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://rootca2017-crl1.e-szigno.hu/rootca2017.crl</crlUrl>
+                <crlUrl>http://rootca2017-crl2.e-szigno.hu/rootca2017.crl</crlUrl>
+                <crlUrl>http://rootca2017-crl3.e-szigno.hu/rootca2017.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://rootca2017-ocsp1.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://rootca2017-ocsp2.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://rootca2017-ocsp3.e-szigno.hu</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2042-08-22T09:00:00</NotAfter>
+            <NotBefore>2017-09-17T21:00:00</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>npS7itrXps5NyxII8SOdweQ0g/G36B90qQog+15cSbc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9077688FD079D30B438755AA1E97F2538C1DC86433809BFC5AF248651625C540">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno tsa ca 2017 ocsp responder,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno TSA CA 2017 OCSP Responder,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno tsa ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno TSA CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>309493815140115151312045413336024257290</SerialNumber>
+            <CommonName>e-Szigno TSA CA 2017 OCSP Responder</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-11-05T14:10:37</NotAfter>
+            <NotBefore>2019-11-05T14:00:37</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>kHdoj9B50wtDh1WqHpfyU4wdyGQzgJv8WvJIZRYlxUA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38">
+            <SubjectDistinguishedName Format="CANONICAL">cn=minősített időbélyegző tss3 2019 – gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,2.5.4.97=#0c0e56415448552d3130353835353630,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Minősített Időbélyegző TSS3 2019 – GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,2.5.4.97=#0c0e56415448552d3130353835353630,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=minősített tanúsítványkiadó v2 - gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Minősített Tanúsítványkiadó v2 - GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>4000884486347935214</SerialNumber>
+            <CommonName>Minősített Időbélyegző TSS3 2019 – GOV CA</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://qocsp.hiteles.gov.hu/ocsp</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2028-09-09T09:55:57</NotAfter>
+            <NotBefore>2019-09-10T09:55:57</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.17.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes>
+                <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
+            </QCTypes>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-97FADB0975D8597E8A892FC4AE5D05B10D490F0EFAD1842E221CCACD7ACA705F">
+                    <Status>true</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-959B0EEBEFE82FAC94B72592DC6A5340937E93F06451E018B2401A6971B46327">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>MIFr5n6AHSWU2tXNzumUZ3oPSFYreMWFJ73WMlmc7zg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-E23EDC1D934D61A12A13921AADC46945516A22011D1F75EA27158DEC454ADBD6">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp1 - minősített tanúsítványkiadó v2 - gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,2.5.4.97=#0c0e56415448552d3130353835353630,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP1 - Minősített Tanúsítványkiadó v2 - GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,2.5.4.97=#0c0e56415448552d3130353835353630,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=minősített tanúsítványkiadó v2 - gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Minősített Tanúsítványkiadó v2 - GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>6732934457960832943</SerialNumber>
+            <CommonName>OCSP1 - Minősített Tanúsítványkiadó v2 - GOV CA</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-11-06T12:50:16</NotAfter>
+            <NotBefore>2019-11-05T12:50:16</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4j7cHZNNYaEqE5IarcRpRVFqIgEdH3XqJxWN7EVK29Y=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno qualified tsa 2019 02,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno Qualified TSA 2019 02,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno tsa ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno TSA CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>25891808769333395131914444068874</SerialNumber>
+            <CommonName>e-Szigno Qualified TSA 2019 02</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017-link-rootca2009.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017-link-rootca2009.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017.crt</aiaUrl>
+                <aiaUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017-link-rootca2009.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://etsaca2017-crl1.e-szigno.hu/etsaca2017.crl</crlUrl>
+                <crlUrl>http://etsaca2017-crl2.e-szigno.hu/etsaca2017.crl</crlUrl>
+                <crlUrl>http://etsaca2017-crl3.e-szigno.hu/etsaca2017.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://etsaca2017-ocsp1.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://etsaca2017-ocsp2.e-szigno.hu</ocspServerUrl>
+                <ocspServerUrl>http://etsaca2017-ocsp3.e-szigno.hu</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2031-09-26T13:00:00</NotAfter>
+            <NotBefore>2019-09-26T13:00:00</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.182.2.11</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-limit-value">0.4.0.1862.1.2</qcStatementOid>
+                <qcStatementOid Description="qc-retention-period">0.4.0.1862.1.3</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes>
+                <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
+            </QCTypes>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>p7Z0hX9GfB9Lh7CvuX1B4nnFJup222IgoZTqQgECu5k=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
+            <SubjectDistinguishedName Format="CANONICAL">cn=minősített tanúsítványkiadó v2 - gov ca,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Minősített Tanúsítványkiadó v2 - GOV CA,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=főtanúsítványkiadó - kormányzati hitelesítés szolgáltató,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Főtanúsítványkiadó - Kormányzati Hitelesítés Szolgáltató,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>6697533090985774204</SerialNumber>
+            <CommonName>Minősített Tanúsítványkiadó v2 - GOV CA</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-ROOT.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://qocsp.hiteles.gov.hu/ocsp-root</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2029-01-22T09:24:19</NotAfter>
+            <NotBefore>2014-01-22T09:24:19</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.5.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>+YhVA++How+eld/1OwuvMbCI3w8g4U3uucnvYtRS2Ig=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno root ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno Root CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno root ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Root CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>411379200276854331539784714</SerialNumber>
+            <CommonName>e-Szigno Root CA 2017</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2042-08-22T12:07:06</NotAfter>
+            <NotBefore>2017-08-22T12:07:06</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vrALMIObm8MsMuREeQWVBkHyZCGxXtCJGYtRiuLqG5k=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-5AD135DC4966BFC398F1A8E0BB2B162D3317C2E68C411765527AEFF2D2BC7AA1">
+            <SubjectDistinguishedName Format="CANONICAL">cn=e-szigno qualified qcp ca 2017 ocsp responder,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=e-Szigno Qualified QCP CA 2017 OCSP Responder,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno qualified qcp ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>309493815139552526414490274198809814538</SerialNumber>
+            <CommonName>e-Szigno Qualified QCP CA 2017 OCSP Responder</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>Microsec Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://eqcpca2017-ca1.e-szigno.hu/eqcpca2017.crt</aiaUrl>
+                <aiaUrl>http://eqcpca2017-ca2.e-szigno.hu/eqcpca2017.crt</aiaUrl>
+                <aiaUrl>http://eqcpca2017-ca3.e-szigno.hu/eqcpca2017.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-11-05T14:10:34</NotAfter>
+            <NotBefore>2019-11-05T14:00:34</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>WtE13Elmv8OY8ajguysWLTMXwuaMQRdlUnrv8tK8eqE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-3066A3E28500603CEFC0647768C693AC071262D0F02AE0EB13B56F0ED3FBECC3">
+            <SubjectDistinguishedName Format="CANONICAL">c=hu,l=budapest,o=nisz nemzeti infokommunikációs szolgáltató zrt.,cn=főtanúsítványkiadó ocsp tanúsítvány 2 – kormányzati hitelesítés szolgáltató</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=HU,L=Budapest,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,CN=Főtanúsítványkiadó OCSP Tanúsítvány 2 – Kormányzati Hitelesítés Szolgáltató</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=főtanúsítványkiadó - kormányzati hitelesítés szolgáltató,o=nisz nemzeti infokommunikációs szolgáltató zrt.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Főtanúsítványkiadó - Kormányzati Hitelesítés Szolgáltató,O=NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>5840848248646502047</SerialNumber>
+            <CommonName>Főtanúsítványkiadó OCSP Tanúsítvány 2 – Kormányzati Hitelesítés Szolgáltató</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-11-27T08:07:42</NotAfter>
+            <NotBefore>2019-10-28T08:07:42</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.5.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>MGaj4oUAYDzvwGR3aMaTrAcSYtDwKuDrE7VvDtP77MM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-11-01T14:01:23</ProductionDate>
+            <ThisUpdate>2019-11-01T14:01:23</ThisUpdate>
+            <ArchiveCutOff>2017-09-17T21:00:00</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-5AD135DC4966BFC398F1A8E0BB2B162D3317C2E68C411765527AEFF2D2BC7AA1"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-5AD135DC4966BFC398F1A8E0BB2B162D3317C2E68C411765527AEFF2D2BC7AA1"/>
+                <ChainItem Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Ixu/aFFjtO/Hukv0br0Prd2veAEmUD7EUE6GbAJHUos=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-97FADB0975D8597E8A892FC4AE5D05B10D490F0EFAD1842E221CCACD7ACA705F">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://qocsp.hiteles.gov.hu/ocsp</SourceAddress>
+            <ProductionDate>2019-11-05T14:29:39</ProductionDate>
+            <ThisUpdate>2019-11-05T14:29:39</ThisUpdate>
+            <NextUpdate>2019-11-05T14:29:59</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-B026C53A35DE256A30B46A484EEA72781A7C94A24B6666FFAC431A58F8942666"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-B026C53A35DE256A30B46A484EEA72781A7C94A24B6666FFAC431A58F8942666"/>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>l/rbCXXYWX6KiS/Erl0FsQ1JDw760YQuIhzKzXrKcF8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-959B0EEBEFE82FAC94B72592DC6A5340937E93F06451E018B2401A6971B46327">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-11-01T14:28:04</ProductionDate>
+            <ThisUpdate>2019-11-01T14:28:04</ThisUpdate>
+            <NextUpdate>2019-11-01T14:28:24</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E23EDC1D934D61A12A13921AADC46945516A22011D1F75EA27158DEC454ADBD6"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E23EDC1D934D61A12A13921AADC46945516A22011D1F75EA27158DEC454ADBD6"/>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lZsO6+/oL6yUtyWS3GpTQJN+k/BkUeAYskAaaXG0Yyc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-D8F372BEDBB4D46B8B7ED3B03F08549F53228DCF086938DB161468DC3A438B82">
+            <ProductionTime>2019-11-01T14:01:21</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hX12iZGaAbSBeJh47lgAyTohr9sjoE6p8xGbBzn+Fjw=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99"/>
+                <ChainItem Certificate="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7"/>
+                <ChainItem Certificate="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99"/>
+            </CertificateChain>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-1034FB49D528B8851136D9E52BD374551DCE5CD82A7DA4336AB75EE235EB449B" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-EC0EA3F31F31F53BC5D37967CE983BEB955807FBE6350563BF2697E59FCABDD5" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2PNyvtu01GuLftOwPwhUn1Mijc8IaTjbFhRo3DpDi4I=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2019-11-01T14:30:50</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nWong4f2dyHCYT4G3TyeasT2QKfy60klL/rOew/Wz/4=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38"/>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <TimestampedObjects>
+                <TimestampedObject Token="T-D8F372BEDBB4D46B8B7ED3B03F08549F53228DCF086938DB161468DC3A438B82" Category="TIMESTAMP"/>
+                <TimestampedObject Token="D-1034FB49D528B8851136D9E52BD374551DCE5CD82A7DA4336AB75EE235EB449B" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-EC0EA3F31F31F53BC5D37967CE983BEB955807FBE6350563BF2697E59FCABDD5" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-5AD135DC4966BFC398F1A8E0BB2B162D3317C2E68C411765527AEFF2D2BC7AA1" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-8AFE59C13F25CCA072AD8E1A7A704D1277D48CE974BA5AE356D788DB539484FA" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-9077688FD079D30B438755AA1E97F2538C1DC86433809BFC5AF248651625C540" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-7045B3CC30FB448D655E0632460713127A260AF6EFA0FCA3C26BC3895D9FAE2D" Category="ORPHAN"/>
+                <TimestampedObject Token="R-9F0C1F6947DADFA3B0B533EF20E37F305C9723ACB555B1A393FE04D9FA7AFD2E" Category="ORPHAN"/>
+                <TimestampedObject Token="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B" Category="REVOCATION"/>
+                <TimestampedObject Token="R-9A13EEACCDB7CF28D1886FC9A02FD403BE3B005F82D2466574F5F0CB35EC4859" Category="ORPHAN"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rjvz+MMamVNV6OAuPWX156qeJ1NvEhZis4K56iIB6eM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2019-11-01T14:28:14</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>f52IOxFQMHzxNnKYzBeqDdW8ABVXaqjFMti/JhQRQEA=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38"/>
+                <ChainItem Certificate="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888"/>
+                <ChainItem Certificate="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D"/>
+            </CertificateChain>
+            <TimestampedObjects>
+                <TimestampedObject Token="T-D8F372BEDBB4D46B8B7ED3B03F08549F53228DCF086938DB161468DC3A438B82" Category="TIMESTAMP"/>
+                <TimestampedObject Token="D-1034FB49D528B8851136D9E52BD374551DCE5CD82A7DA4336AB75EE235EB449B" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-EC0EA3F31F31F53BC5D37967CE983BEB955807FBE6350563BF2697E59FCABDD5" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99" Category="CERTIFICATE"/>
+                <TimestampedObject Token="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3" Category="TIMESTAMP"/>
+                <TimestampedObject Token="C-5AD135DC4966BFC398F1A8E0BB2B162D3317C2E68C411765527AEFF2D2BC7AA1" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-8AFE59C13F25CCA072AD8E1A7A704D1277D48CE974BA5AE356D788DB539484FA" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-9077688FD079D30B438755AA1E97F2538C1DC86433809BFC5AF248651625C540" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-7045B3CC30FB448D655E0632460713127A260AF6EFA0FCA3C26BC3895D9FAE2D" Category="ORPHAN"/>
+                <TimestampedObject Token="R-9F0C1F6947DADFA3B0B533EF20E37F305C9723ACB555B1A393FE04D9FA7AFD2E" Category="ORPHAN"/>
+                <TimestampedObject Token="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B" Category="REVOCATION"/>
+                <TimestampedObject Token="R-9A13EEACCDB7CF28D1886FC9A02FD403BE3B005F82D2466574F5F0CB35EC4859" Category="ORPHAN"/>
+                <TimestampedObject Token="C-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-E23EDC1D934D61A12A13921AADC46945516A22011D1F75EA27158DEC454ADBD6" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-3066A3E28500603CEFC0647768C693AC071262D0F02AE0EB13B56F0ED3FBECC3" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-959B0EEBEFE82FAC94B72592DC6A5340937E93F06451E018B2401A6971B46327" Category="REVOCATION"/>
+                <TimestampedObject Token="R-F14EBE897CF92C9899E5E510D9FFD18C05E2B9D03A6CB87C9BC3135FD8E248DC" Category="ORPHAN"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VPw6p+Z2n4iY1w9LDbOkvZ92rX7S0WEbuI791vMtOp8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OrphanTokens>
+        <OrphanToken Id="R-9A13EEACCDB7CF28D1886FC9A02FD403BE3B005F82D2466574F5F0CB35EC4859">
+            <Type>REVOCATION</Type>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>mhPurM23zyjRiG/JoC/UA747AF+C0kZldPXwyzXsSFk=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanToken>
+        <OrphanToken Id="R-F14EBE897CF92C9899E5E510D9FFD18C05E2B9D03A6CB87C9BC3135FD8E248DC">
+            <Type>REVOCATION</Type>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8U6+iXz5LJiZ5eUQ2f/RjAXiudA6bLh8m8MTX9jiSNw=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanToken>
+        <OrphanToken Id="R-9F0C1F6947DADFA3B0B533EF20E37F305C9723ACB555B1A393FE04D9FA7AFD2E">
+            <Type>REVOCATION</Type>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nwwfaUfa36OwtTPvION/MFyXI6y1VbGjk/4E2fp6/S4=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanToken>
+        <OrphanToken Id="R-7045B3CC30FB448D655E0632460713127A260AF6EFA0FCA3C26BC3895D9FAE2D">
+            <Type>REVOCATION</Type>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cEWzzDD7RI1lXgYyRgcTEnomCvbvoPyjwmvDiV2fri0=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanToken>
+    </OrphanTokens>
+    <OriginalDocuments>
+        <SignerData Id="D-1034FB49D528B8851136D9E52BD374551DCE5CD82A7DA4336AB75EE235EB449B">
+            <ReferencedName>PDF previous version #2</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

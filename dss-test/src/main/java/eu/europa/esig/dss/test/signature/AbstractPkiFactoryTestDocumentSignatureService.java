@@ -20,23 +20,25 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public abstract class AbstractPkiFactoryTestDocumentSignatureService<SP extends AbstractSignatureParameters> extends AbstractPkiFactoryTestSignature<SP> {
+public abstract class AbstractPkiFactoryTestDocumentSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> 
+				extends AbstractPkiFactoryTestSignature<SP, TP> {
 
 	protected abstract DSSDocument getDocumentToSign();
 
-	protected abstract DocumentSignatureService<SP> getService();
+	protected abstract DocumentSignatureService<SP, TP> getService();
 
 	@Override
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
 		SP params = getSignatureParameters();
-		DocumentSignatureService<SP> service = getService();
+		DocumentSignatureService<SP, TP> service = getService();
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),

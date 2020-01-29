@@ -20,24 +20,29 @@
  */
 package eu.europa.esig.dss.crl.stream.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.bouncycastle.util.io.Streams;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.AbstractTestCRLUtils;
+import eu.europa.esig.dss.model.DSSException;
 
 public class PemToDerConverterTest {
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testException() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PemToDerConverter.convert(baos);
+		Exception exception = assertThrows(DSSException.class, () -> {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PemToDerConverter.convert(baos);
+		});
+		assertEquals("Unable to read PEM Object", exception.getMessage());
 	}
 
 	@Test

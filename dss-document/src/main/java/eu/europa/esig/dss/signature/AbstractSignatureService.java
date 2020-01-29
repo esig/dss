@@ -22,13 +22,15 @@ package eu.europa.esig.dss.signature;
 
 import java.security.Security;
 import java.util.Date;
+import java.util.Objects;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -36,7 +38,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 @SuppressWarnings("serial")
-public abstract class AbstractSignatureService<SP extends AbstractSignatureParameters> implements DocumentSignatureService<SP> {
+public abstract class AbstractSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> 
+				implements DocumentSignatureService<SP, TP> {
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -54,9 +57,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	 *            in the context of a signature.
 	 */
 	protected AbstractSignatureService(final CertificateVerifier certificateVerifier) {
-		if (certificateVerifier == null) {
-			throw new NullPointerException("CertificateVerifier cannot be null !");
-		}
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier cannot be null !");
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -72,7 +73,13 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	 *            set of driving signing parameters
 	 */
 	protected void assertSigningDateInCertificateValidityRange(final SP parameters) {
-		if (parameters.isSignWithExpiredCertificate() || (parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate())) {
+		if (parameters.getSigningCertificate() == null) {
+			if (parameters.isGenerateTBSWithoutCertificate()) {
+				return;
+			} else {
+				throw new DSSException("Signing Certificate is not defined!");
+			}
+		} else if (parameters.isSignWithExpiredCertificate()) {
 			return;
 		}
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();
@@ -85,11 +92,11 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		}
 	}
 
-	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
+	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, MimeType containerMimeType) {
 		StringBuilder finalName = new StringBuilder();
 
 		String originalName = null;
-		if (containerType != null) {
+		if (containerMimeType != null) {
 			originalName = "container";
 		} else {
 			originalName = originalFile.getName();
@@ -108,26 +115,23 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		}
 
 		if (SigningOperation.SIGN.equals(operation)) {
-			finalName.append("-signed-");
+			finalName.append("-signed");
+		} else if (SigningOperation.TIMESTAMP.equals(operation)) {
+			finalName.append("-timestamped");
 		} else if (SigningOperation.EXTEND.equals(operation)) {
-			finalName.append("-extended-");
+			finalName.append("-extended");
 		}
 
-		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
-		finalName.append('.');
+		if (level != null) {
+			finalName.append('-');
+			finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+		}
 
-		if (containerType != null) {
-			switch (containerType) {
-			case ASiC_S:
-				finalName.append("asics");
-				break;
-			case ASiC_E:
-				finalName.append("asice");
-				break;
-			default:
-				break;
-			}
-		} else {
+		finalName.append('.');
+		
+		if (containerMimeType != null) {
+			finalName.append(MimeType.getExtension(containerMimeType));
+		} else if (level != null) {
 			SignatureForm signatureForm = level.getSignatureForm();
 			switch (signatureForm) {
 			case XAdES:
@@ -140,15 +144,23 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 				finalName.append("pdf");
 				break;
 			default:
-				break;
+				throw new DSSException("Unable to generate a full document name");
 			}
+		} else {
+			finalName.append("pdf");
 		}
 
 		return finalName.toString();
 	}
 
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
-		return getFinalFileName(originalFile, operation, level, null);
+		return getFinalArchiveName(originalFile, operation, level, null);
+	}
+
+	@Override
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, TP parameters) {
+		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
 }
+

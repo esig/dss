@@ -25,12 +25,13 @@ import java.util.Date;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,14 +44,15 @@ import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBExternalSignatureTest.class);
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -68,7 +70,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
 		XAdESSignatureParameters params = getSignatureParameters();
-		DocumentSignatureService<XAdESSignatureParameters> service = getService();
+		DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service = getService();
 
 		// Generate toBeSigned without signing certificate
 		assert params.getSigningCertificate() == null;
@@ -136,7 +138,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 
@@ -168,7 +170,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		}
 
 		public byte[] getSerializedObject() {
-			Element objectDom = DomUtils.getElement(signatureDom, xPathQueryHolder.XPATH_OBJECT);
+			Element objectDom = DomUtils.getElement(signatureDom, XMLDSigPaths.OBJECT_PATH);
 			return DSSXMLUtils.serializeNode(objectDom);
 		}
 	}

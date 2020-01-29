@@ -30,7 +30,7 @@ import eu.europa.esig.dss.enumerations.QCStatement;
 
 public class OidRepository {
 
-	private static final Map<String, String> repository = new HashMap<String, String>();
+	private static final Map<String, String> repository = new HashMap<>();
 
 	static {
 		for (OidDescription oid : CertificatePolicy.values()) {
