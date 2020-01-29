@@ -72,7 +72,7 @@ public class FullScopeCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.SIG_CONSTRAINTS_FAILURE;
+		return SubIndication.FORMAT_FAILURE;
 	}
 
 }

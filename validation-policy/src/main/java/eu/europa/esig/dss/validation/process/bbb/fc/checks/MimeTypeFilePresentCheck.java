@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class MimeTypeFilePresentCheck extends ChainItem<XmlFC> {
 
@@ -59,7 +59,7 @@ public class MimeTypeFilePresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return SubIndication.FORMAT_FAILURE;
 	}
 
 }
