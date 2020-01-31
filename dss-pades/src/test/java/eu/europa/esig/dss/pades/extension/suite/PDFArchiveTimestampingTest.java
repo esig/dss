@@ -89,7 +89,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		
-		reports.print();
+		// reports.print();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		
@@ -138,6 +138,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		boolean fullDocFound = false;
 		for (XmlSignerData signerData : originalDocuments) {
 			if ("Full PDF".equals(signerData.getReferencedName())) {
+				assertEquals(originalDocDigestBase64, Utils.toBase64(signerData.getDigestAlgoAndValue().getDigestValue()));
 				fullDocFound = true;
 			}
 		}
