@@ -40,7 +40,7 @@ public class XAdES122ValidationTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/FR_NOT/Signature-X-FR_NOT-3.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-FR_NOT-3.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 

@@ -47,7 +47,7 @@ public class XAdESDoubleManifestTest {
 
 	@Test
 	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/SK_DIT/Signature-X-SK_DIT-1.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-SK_DIT-1.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		

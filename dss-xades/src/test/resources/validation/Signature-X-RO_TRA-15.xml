@@ -1,0 +1,241 @@
+﻿<test>
+This is a test file for ETSI plugtest.
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1104630516">
+	<ds:SignedInfo>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+		<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/>
+		<ds:Reference URI="">
+			<ds:Transforms>
+				<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+			</ds:Transforms>
+			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
+			<ds:DigestValue>
++5QfuAQNxGVsGQY11S+ph8ML81xs5Tg0Y1cXwvwSETsxM/eEiatVPYfGLvIkx9QW
+8dMxs9bK9i1nmVfO/xOQ0g==
+			</ds:DigestValue>
+		</ds:Reference>
+		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-1069289073">
+			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			<ds:DigestValue>PjDMI+loDwtYloJoouc2oEs8wR0=</ds:DigestValue>
+		</ds:Reference>
+	</ds:SignedInfo>
+	<ds:SignatureValue Id="SignatureValue-184813766">
+Fju5v3yNM756hcrCY7d7wwkSnz72HD4AEXYXxhJeEuls2ApyrtMTSlvsMSP8olNw
++/17P4V+S4R91qUgYBNv/E44YhdUW06lLc8VebVet5REzne+QS9v35hCu2++ivd4
+a1N5zpwGvrECwvRiWGf/ZrfsO31FrJrmhTNKZ1+zbTeZV6oAP9i63uWjrMyEx9HO
+AEoZp2Tg0CCIb3Mv6+2z/QAxNuhDF6GCZHYPV0nkH8VhlGCiBQIbuq2vzUeYT33O
+Ge/rGt6BkgccVImIW0gZPK+hE68HfcLgd5g3zv0NC8frMlNgpYTX94nqLWLUaI88
+bn9lP+JDBdn2ygBtsczPZw==
+	</ds:SignatureValue>
+	<ds:KeyInfo>
+		<ds:KeyValue>
+			<ds:RSAKeyValue>
+				<ds:Modulus>
+qPuHQADYYFTs+kD4PnRJkBSNrB8xUJ9ajeEl/scL7EX0d5yG9UYi8gE5tFQcB376
+ZnxNgWAzLpofMvmCilFp1e6gUC3ERHEjW4eIb4KDIUMdajoMlq/K5YukSWEypzWh
+FavXFH3MsWjr429sdhTdiUxMrzyZ/UIa6qv88TCbANC6nuEVByOo2KCXWhq8HC1j
+zwS531GZDhcbLLpizS0lH5cbAGp7KDmhdPAV7XnalpR1UfudDGJzhkn33uIFGpR+
+KRmaxsUPt43nb9wtfAkbvjGdWAK3qoApFBEz1lVCKhSNOcwYJfmsqu1Rqx4dCKQr
+rQTk+aq6KeB3OVZPwmqXNw==
+				</ds:Modulus>
+				<ds:Exponent>AQAB</ds:Exponent>
+			</ds:RSAKeyValue>
+		</ds:KeyValue>
+		<ds:X509Data>
+			<ds:X509IssuerSerial>
+				<ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName>
+				<ds:X509SerialNumber>130114610919472312325890885591559005888</ds:X509SerialNumber>
+			</ds:X509IssuerSerial>
+			<ds:X509SubjectName>C=RO, 2.5.4.5=200412234AAV5, 2.5.4.4=Aneci, 2.5.4.42=Adrian-Vasile, CN=Adrian-Vasile Aneci</ds:X509SubjectName>
+			<ds:X509Certificate>
+MIIGQTCCBSmgAwIBAgIQYeMpnAnj+IRoVzR6uVdmwDANBgkqhkiG9w0BAQUFADBs
+MQswCQYDVQQGEwJSTzEXMBUGA1UEChMOVHJhbnMgU3BlZCBTUkwxKzApBgNVBAsT
+IlRyYW5zIFNwZWQgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxFzAVBgNVBAMTDlRy
+YW5zIFNwZWQgUUNBMB4XDTE0MTAyODAwMDAwMFoXDTE1MTAyODIzNTk1OVowazEc
+MBoGA1UEAwwTQWRyaWFuLVZhc2lsZSBBbmVjaTEWMBQGA1UEKgwNQWRyaWFuLVZh
+c2lsZTEOMAwGA1UEBAwFQW5lY2kxFjAUBgNVBAUTDTIwMDQxMjIzNEFBVjUxCzAJ
+BgNVBAYTAlJPMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqPuHQADY
+YFTs+kD4PnRJkBSNrB8xUJ9ajeEl/scL7EX0d5yG9UYi8gE5tFQcB376ZnxNgWAz
+LpofMvmCilFp1e6gUC3ERHEjW4eIb4KDIUMdajoMlq/K5YukSWEypzWhFavXFH3M
+sWjr429sdhTdiUxMrzyZ/UIa6qv88TCbANC6nuEVByOo2KCXWhq8HC1jzwS531GZ
+DhcbLLpizS0lH5cbAGp7KDmhdPAV7XnalpR1UfudDGJzhkn33uIFGpR+KRmaxsUP
+t43nb9wtfAkbvjGdWAK3qoApFBEz1lVCKhSNOcwYJfmsqu1Rqx4dCKQrrQTk+aq6
+KeB3OVZPwmqXNwIDAQABo4IC3jCCAtowDAYDVR0TAQH/BAIwADCCARIGA1UdHwSC
+AQkwggEFMIIBAaCB/qCB+4Y2aHR0cDovL29uc2l0ZWNybC5zLXRydXN0LmRlL1Ry
+YW5zU3BlZFBLSS9MYXRlc3RDUkwuY3JshiZodHRwOi8vd3d3LnRyYW5zc3BlZC5y
+by9jcmwvdHNfcWNhLmNybIaBmGxkYXA6Ly9kaXJlY3Rvcnkucy10cnVzdC5kZS9D
+Tj1UcmFucyUyMFNwZWQlMjBRQ0EsT1U9VHJhbnMlMjBTcGVkJTIwQ2VydGlmaWNh
+dGlvbiUyMEF1dGhvcml0eSxPPVRyYW5zJTIwU3BlZCUyMFNSTCxDPVJPP2NlcnRp
+ZmljYXRlUmV2b2NhdGlvbkxpc3Q7YmluYXJ5MA4GA1UdDwEB/wQEAwIFoDApBgNV
+HSUEIjAgBggrBgEFBQcDAgYIKwYBBQUHAwQGCisGAQQBgjcUAgIwgYYGA1UdIAR/
+MH0wPwYLKwYBBAGCuB0BAQEwMDAuBggrBgEFBQcCARYiaHR0cDovL3d3dy50cmFu
+c3NwZWQucm8vcmVwb3NpdG9yeTA6BgYEAIswAQEwMDAuBggrBgEFBQcCARYiaHR0
+cDovL3d3dy50cmFuc3NwZWQucm8vcmVwb3NpdG9yeTAYBggrBgEFBQcBAwQMMAow
+CAYGBACORgEBMEkGA1UdEQRCMECgJgYKKwYBBAGCNxQCA6AYDBZhbmVjaS5hZHJp
+YW5AZ21haWwuY29tgRZhbmVjaS5hZHJpYW5AZ21haWwuY29tMB8GA1UdIwQYMBaA
+FM/7rfLiGXBjLbqdlQi+gOGOG2cGMGoGCCsGAQUFBwEBBF4wXDA2BggrBgEFBQcw
+AoYqaHR0cDovL3d3dy50cmFuc3NwZWQucm8vY2FjZXJ0cy90c19xY2EuY3J0MCIG
+CCsGAQUFBzABhhZodHRwOi8vb2NzcC5zLXRydXN0LmRlMA0GCSqGSIb3DQEBBQUA
+A4IBAQC1fmG9iWzzRYfzMVrA0ziowqrnFDvojAgCCRsod7N5QueXQMs9JzrmTyZ7
+QikE0cMPY48uI7aZgLRc1dkq2as8QY/hbDUA+zq0GIwldIykSnO/gy4+GfSAKNwZ
+cLS8XN7wxOPB02+rbY8CQe4ctOesd/6Rr6uO2KN2u2PvMBjGwsU4yIDJhrFI6JL8
+kXsGWQrbovRzHwz/wJCv7gqHgHbnunKd3bM3aoMAHSIFFF4dv56R8BBhGmT+owsR
+TZGzg9wu45hyqn9ba/NwTYjXo/vuGOVp5qdMhRoetFqw5977YB9pa+hsPt4ZMzTV
+4SximhEPABBo0ExJ2bcPMdnXc4cO
+			</ds:X509Certificate>
+		</ds:X509Data>
+	</ds:KeyInfo>
+	<ds:Object>
+		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-1104630516">
+			<xades:SignedProperties Id="SignedProperties-1069289073">
+				<xades:SignedSignatureProperties>
+					<xades:SigningTime>2014-11-10T20:39:56.293Z</xades:SigningTime>
+					<xades:SigningCertificate>
+						<xades:Cert>
+							<xades:CertDigest>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+								<ds:DigestValue>mNYyL1D+jDnRTOPF45CVJCU7mt8=</ds:DigestValue>
+							</xades:CertDigest>
+							<xades:IssuerSerial>
+								<ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName>
+								<ds:X509SerialNumber>130114610919472312325890885591559005888</ds:X509SerialNumber>
+							</xades:IssuerSerial>
+						</xades:Cert>
+					</xades:SigningCertificate>
+				</xades:SignedSignatureProperties>
+			</xades:SignedProperties>
+		
+			<xades:UnsignedProperties>
+				<xades:UnsignedSignatureProperties>
+				<xades:SignatureTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUCL/T4xaX
+MknvmE+m6+pWNJ1P/DECBwONfqedOjgYDzIwMTQxMTEwMjAzOTI1WjADAgEBAggV
+VNUBTfhxw6CBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTAyMDM5MjVaMCMG
+CSqGSIb3DQEJBDEWBBSBYpKM5WLzDdzLDE7XxPnBsUUB9jB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQCHrhm5UFXQJWLv3LH6UVo+zbed
+zIk2TSIQEm0aes4l7hRtG1wCksNbaygaKiH6vPChLoX6AZnoN8PFYfrV1uGB/jsA
+VJw/NopOtDxqjxpf149RhTWnOm2mI+Btp/XGGDBLuqfQOe3moXKo1ZfUgUNY3f3B
+qKjnVc1jB/1hy5szvke0o4df9SEzW7nIK9NU2nW+uj/M0jdx07jE7nUnmrvpXsfx
+Y12rQnVc+iPHTvCN0kzT+cTfi7ZXQPfeMSTsdP5b4v9QO067wfvgIHRG2qjyeEMo
+UidqJyuog5nbgSEuJ6YFywM1W95/CNXQYBnTfOksAYZISnIbAJqtAli1Yakn
+					</xades:EncapsulatedTimeStamp>
+				</xades:SignatureTimeStamp><xades:CompleteCertificateRefs><xades:CertRefs><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>hlJp9wD8EmzbxhMnbKrrhBsqsUU=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</ds:X509IssuerName><ds:X509SerialNumber>15937880919645689038288334719056725396</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>9DAPIeqTT8t3n2JdG9Yd6wQrLiw=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TC TrustCenter Class 3 CA II, OU=TC TrustCenter Class 3 CA, O=TC TrustCenter GmbH, C=DE</ds:X509IssuerName><ds:X509SerialNumber>810979472704977241028607898090068</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>gCXv9G5wyNRyJGWE/kA7io1q2/U=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TC TrustCenter Class 3 CA II, OU=TC TrustCenter Class 3 CA, O=TC TrustCenter GmbH, C=DE</ds:X509IssuerName><ds:X509SerialNumber>1506523511417715638772220530020799</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:CertRefs></xades:CompleteCertificateRefs><xades:CompleteRevocationRefs><xades:CRLRefs><xades:CRLRef><xades:DigestAlgAndValue><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>MoTsz6sSvUlrwsFAqUXy6fWlKf0=</ds:DigestValue></xades:DigestAlgAndValue><xades:CRLIdentifier><xades:Issuer>CN=Trans Sped QCA, OU=Trans Sped Certification Authority, O=Trans Sped SRL, C=RO</xades:Issuer><xades:IssueTime>2014-11-10T11:06:11.000Z</xades:IssueTime><xades:Number>1271</xades:Number></xades:CRLIdentifier></xades:CRLRef><xades:CRLRef><xades:DigestAlgAndValue><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>ejI0GrShHPC0a9F4mJ0yPi9XtoU=</ds:DigestValue></xades:DigestAlgAndValue><xades:CRLIdentifier><xades:Issuer>CN=TC TrustCenter Class 3 CA II, OU=TC TrustCenter Class 3 CA, O=TC TrustCenter GmbH, C=DE</xades:Issuer><xades:IssueTime>2014-11-09T22:36:15.000Z</xades:IssueTime><xades:Number>3190</xades:Number></xades:CRLIdentifier></xades:CRLRef></xades:CRLRefs><xades:OCSPRefs><xades:OCSPRef><xades:OCSPIdentifier><xades:ResponderID><xades:ByName/></xades:ResponderID><xades:ProducedAt>2014-11-10T20:39:25.000Z</xades:ProducedAt></xades:OCSPIdentifier><xades:DigestAlgAndValue><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>ZBsTP2OKytXz0EKPr8l9MJ1gXo4=</ds:DigestValue></xades:DigestAlgAndValue></xades:OCSPRef></xades:OCSPRefs></xades:CompleteRevocationRefs>
+				<xades:SigAndRefsTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUG5qE0Vxu
+DYepy+SUkM28ZIJcd64CBwONfqedOjoYDzIwMTQxMTEwMjAzOTI2WjADAgEBAggV
+VNUBTfhxw6CBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTAyMDM5MjZaMCMG
+CSqGSIb3DQEJBDEWBBSrEXYrCMZMbV0CgFLEqU5+LIJQGTB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQANtAZ/KtDSOsBMELmEvig2j75B
+X/3AwE95JXyXDJ1wtO4b/CoMReDFiQlSocWnu2vN/jdchsYHXLGHlBItuZ/nD59a
+MVlblb/XQWMBDatIpfxRyTNUlmsQA+CfkHMSJkhbmS3PUdMu0lLF+zHoHvECmhuB
++3kkjN2KjdSaJv8SXe8K+/cresIMBi3YJfworSI1WN1nbBh609qGabi+nkvDg79U
+jrPN8yxvSTXOUm5268ySFRCcGNWPu87aoR91ItL8mwA8cuvrMYuKfiCH9OyBgr1J
+7oY8EL54q81gGLRfHAid5CITbC5u7NlKxQKjxQpbhanUhaW5RnKljwZeMNQ1
+					</xades:EncapsulatedTimeStamp>
+				</xades:SigAndRefsTimeStamp>
+				<xades:RefsOnlyTimeStamp>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<xades:EncapsulatedTimeStamp Encoding="http://uri.etsi.org/01903/v1.2.2#DER">
+MIIHGQYJKoZIhvcNAQcCoIIHCjCCBwYCAQMxCTAHBgUrDgMCGjCB+wYLKoZIhvcN
+AQkQAQSggesEgegwgeUCAQEGCiqEaAGG9ncCAgUwHzAHBgUrDgMCGgQUP7pb0Yri
+/ILhI3fLlvmUrR/7M74CBwONfqedOj4YDzIwMTQxMTEwMjAzOTI2WjADAgEBAggV
+VNUBTfhxw6CBiaSBhjCBgzELMAkGA1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8g
+VGVjaG5vbG9naWVzIFMuQS4xJzAlBgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9u
+IEF1dGhvcml0eTEnMCUGA1UEAxMeQ2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9y
+aXR5oIIDrDCCA6gwggKQoAMCAQICAwR6VTANBgkqhkiG9w0BAQUFADA+MQswCQYD
+VQQGEwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlD
+ZXJ0dW0gQ0EwHhcNMDkwMzAzMTI1ODE1WhcNMjQwMzAzMTI1ODE1WjCBgzELMAkG
+A1UEBhMCUEwxIjAgBgNVBAoTGVVuaXpldG8gVGVjaG5vbG9naWVzIFMuQS4xJzAl
+BgNVBAsTHkNlcnR1bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEnMCUGA1UEAxMe
+Q2VydHVtIFRpbWUtU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA3u2pB/R2wF6wC+c/oECJYSQjU4SgAvXTsTPsT2mAl6qd
+GCxmzzX4z1yN40cn5UOG6WdmPHjW4+kEND3PBWQyKqb7ZavAsSHPd6d7YbZt1tJ/
+u81V2AM9sZIV8dJCkF4KHADdfqLyTAVAEg0dG+MfegsP0Cgu3EzsXrChz8NVdo/k
+e3f/6IUVq8jxFT2Nx7suvrw5PYOap3MQ/wMozx13kB57NZm3TAEfGjbBuJmDUlRm
+19YaUhKfRyyZKYVWxvRzwJ+s2XiHfegexpVApnnSuKTBFqtqmAVxSmPtyphsXUWX
+UpX0ZibIc++l3AnP66R7S/Sf6hsPVRx0rbHGDrPqzQIDAQABo2kwZzAWBgNVHSUB
+Af8EDDAKBggrBgEFBQcDCDAsBgNVHR8EJTAjMCGgH6AdhhtodHRwOi8vY3JsLmNl
+cnR1bS5wbC9jYS5jcmwwHwYDVR0RBBgwFoYUaHR0cDovL3RzYS5jZXJ0dW0ucGww
+DQYJKoZIhvcNAQEFBQADggEBAKqLG6LshUXrOIsKTXjPeIlTENpXWlsHWycMydm5
+xAoqZ6y/B6s1wbQOb3lMe78Tv/p21W6uzaEUmV/yBIEUV5EE54uTRa6H8rnjWuh6
+NZF8OlYOWbfHDaY1G82c0OZVOv4bOUjHX5ohlv0csnNSxP7xY7NSr+Qk5btnkGdC
+RbZ2rhPnIrcHy5ZGAei+PQ0N5yB+RkATiZYvVMo0UxMnf+zvZsSxCPcyIsIUqX9W
++THu1C+teSE9ETP3067oy7xbzxb2i2hPDZz0bLgoWONIlpXUJJJXlHA8a9o66M6b
+0jorE+D9ggBXfw3cVtCpRbzZK5IXpxZtJW/zZz2nvudgnyoxggJGMIICQgIBATBF
+MD4xCzAJBgNVBAYTAlBMMRswGQYDVQQKExJVbml6ZXRvIFNwLiB6IG8uby4xEjAQ
+BgNVBAMTCUNlcnR1bSBDQQIDBHpVMAkGBSsOAwIaBQCggdcwGgYJKoZIhvcNAQkD
+MQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0xNDExMTAyMDM5MjZaMCMG
+CSqGSIb3DQEJBDEWBBQyjq5L+dmcgNSl9c1u2oAuWgk/STB2BgsqhkiG9w0BCRAC
+DDFnMGUwYzBhBBQNLPli+00ELy8UAd5m6suoDadhEjBJMEKkQDA+MQswCQYDVQQG
+EwJQTDEbMBkGA1UEChMSVW5pemV0byBTcC4geiBvLm8uMRIwEAYDVQQDEwlDZXJ0
+dW0gQ0ECAwR6VTANBgkqhkiG9w0BAQEFAASCAQB3kNgSGyuNYnY7wNQ5+PpWeK8o
+qbEZQoviuphbddHIuw2fPveM1FvQ0yqI4/zQgY4jH+vjX83+uIqCdn1TVUcsLvXX
+jcVBv0QA28PewqmYJLlvgkK0oqZBKqptSrzENbOC3xDXB1tp5J5TOdboMIvkKX3s
+lHA39Qg8BKKMwUP6GjivpwoW/L96ZsyX/MEI53xJKJdPI4SfMw4JjnOpH4FL8BUd
+Xp6qn2Qmh2DFJ9Kpl+IwI7r3CxR6qTpaXCpLZkRO9fsSHFUmQj1P81efDElwkZ5s
+uex+oeXAnmPN0aw4zmJm+I+c//cRRKqfpYevRTskY6rR3j9VkjCElhTS0FUK
+					</xades:EncapsulatedTimeStamp>
+				</xades:RefsOnlyTimeStamp></xades:UnsignedSignatureProperties>
+			</xades:UnsignedProperties></xades:QualifyingProperties>
+	</ds:Object>
+</ds:Signature></test>

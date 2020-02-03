@@ -41,7 +41,7 @@ public class CAdESWithGeneralizedSigningTimeTest extends PKIFactoryAccess {
 	
 	@Test
 	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-Baseline_Profile_B/Sample_Set_22/Signature-CBp-B-1.p7m");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-CBp-B-1.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		

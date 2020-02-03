@@ -43,7 +43,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/AT/Signature-X-AT-1.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-AT-1.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
@@ -65,7 +65,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 
 	@Test
 	public void testEE() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/EE/Signature-X-EE-3.ddoc");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-EE-3.ddoc");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
@@ -84,7 +84,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 
 	@Test
 	public void testPT() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/PT/Signature-X-PT-4.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-PT-4.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 

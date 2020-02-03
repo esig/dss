@@ -1,6 +1,8 @@
-package eu.europa.esig.dss.integration;
+package plugtests;
 
+import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +45,10 @@ public class SignaturePoolTest {
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
 	public void testValidate(File fileToTest) {
+		assertTimeout(ofSeconds(3L), () -> execute(fileToTest));
+	}
 
+	private void execute(File fileToTest) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
 
 		// Offline validation
