@@ -474,7 +474,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			break;
 		case ARCHIVE_TIMESTAMP:
 			// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP);
+			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.ARCHIVE_TIMESTAMP);
 			timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
 			break;
 		default:

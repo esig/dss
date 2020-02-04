@@ -661,8 +661,10 @@ public final class DomUtils {
 
 	public static Element createElementNS(Document documentDom, DSSNamespace namespace, DSSElement element) {
 		StringBuffer elementSB = new StringBuffer();
-		elementSB.append(namespace.getPrefix());
-		elementSB.append(':');
+		if (Utils.isStringNotEmpty(namespace.getPrefix())) {
+			elementSB.append(namespace.getPrefix());
+			elementSB.append(':');
+		}
 		elementSB.append(element.getTagName());
 		return documentDom.createElementNS(namespace.getUri(), elementSB.toString());
 	}
