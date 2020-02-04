@@ -65,8 +65,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		return ASiCUtils.isZip(dssDocument) && (ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(dssDocument, ".p7s") ||
-				ASiCUtils.isArchiveContainsCorrectTimestamp(dssDocument));
+		return ASiCUtils.isZip(dssDocument) && ASiCUtils.isASiCWithCAdES(dssDocument);
 	}
 
 	@Override

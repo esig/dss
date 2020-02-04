@@ -200,6 +200,10 @@ public final class ASiCUtils {
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
 	
+	public static boolean isASiCWithCAdES(DSSDocument archive) {
+		return isArchiveContainsCorrectSignatureFileWithExtension(archive, ".p7s") || isArchiveContainsCorrectTimestamp(archive);
+	}
+
 	public static boolean isXAdES(final String entryName) {
 		return isSignature(entryName) && entryName.endsWith(".xml");
 	}
