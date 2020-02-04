@@ -77,7 +77,7 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 			assertNull(validCRL.getUrl());
 		}
 	}
-	
+
 	@Test
 	public void testUA() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/CA-5358AA45-Full.crl");
@@ -87,7 +87,7 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertNotNull(validCRL.getIssuerToken());
-			assertEquals(SignatureAlgorithm.ECDSA_SHA256,validCRL.getSignatureAlgorithm());
+			assertEquals(SignatureAlgorithm.ECDSA_SHA256, validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
 			assertNotNull(validCRL.getNextUpdate());
 			assertTrue(validCRL.isIssuerX509PrincipalMatches());
@@ -256,10 +256,10 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 	@Test
 	public void notACRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
-	
+
 			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
 			assertThrows(DSSException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
 		}
@@ -348,7 +348,7 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 	@Test
 	public void testPSSwithoutBouncyCastle() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
-			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
 			Exception exception = assertThrows(IllegalArgumentException.class, () -> loadCert(isCer));
 			assertEquals("Unable to initialize PSS", exception.getMessage());
 		}
@@ -357,7 +357,7 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 	@Test
 	public void incompleteCRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
 			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
 			assertThrows(DSSException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
@@ -430,6 +430,72 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 			assertFalse(validCRL.isCrlSignKeyUsage());
 			assertFalse(certificateToken.checkKeyUsage(KeyUsageBit.CRL_SIGN));
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
+		}
+	}
+
+	@Test
+	public void loopIssue() throws Exception {
+		String certB64 = "MIIDjjCCAnagAwIBAgIIKv++n6Lw6YcwDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMDcxMDA0MTAwMDAwWhcNMjExMjE1MDgwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZzQh6S/3UPi790hqc/7bIYLS2X+an7mEoj39WN4IzGMhwWLQdC1i22bi+n9fzGhYJdld61IgDMqFNAn68KNaJ6x+HK92AQZw6nUHMXU5WfIp8MXW+2QbyM69odRr2nlL/zGsvU+40OHjPIltfsjFPekx40HopQcSZYtF3CiInaYNKJIT/e1wEYNm7hLHADBGXvmAYrXR5i3FVr/mZkIV/4L+HXmymvb82fqgxG0YjFnaKVn6w/Fa7yYd/vw2uaItgscf1YHewApDgglVrH1Tdjuk+bqv5WRi5j2Qsj1Yr6tSPwiRuhFA0m2kHwOI8w7QUmecFLTqG4flVSOmlGhHUCAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zBCBgNVHSAEOzA5MDcGBWA4CQEBMC4wLAYIKwYBBQUHAgEWIGh0dHA6Ly9yZXBvc2l0b3J5LmVpZC5iZWxnaXVtLmJlMB0GA1UdDgQWBBSFiuv0xbu+DlkDlN7WgAEV4xCcOTARBglghkgBhvhCAQEEBAMCAAcwHwYDVR0jBBgwFoAUhYrr9MW7vg5ZA5Te1oABFeMQnDkwDQYJKoZIhvcNAQEFBQADggEBAFHYhd27V2/MoGy1oyCcUwnzSgEMdL8rs5qauhjyC4isHLMzr87lEwEnkoRYmhC598wUkmt0FoqW6FHvv/pKJaeJtmMrXZRY0c8RcrYeuTlBFk0pvDVTC9rejg7NqZV3JcqUWumyaa7YwBO+mPyWnIR/VRPmPIfjvCCkpDZoa01gZhz5v6yAlGYuuUGK02XThIAC71AdXkbc98m6tTR8KvPG2F9fVJ3bTc0R5/0UAoNmXsimABKgX77OFP67H6dh96tK8QYUn8pJQsKpvO2FsauBQeYNxUJpU4c5nUwfAA4+Bw11V0SoU7Q2dmSZ3G7rPUZuFF1eR1ONeE3gJ7uOhXY=";
+
+		try (InputStream crlIS = AbstractTestCRLUtils.class.getResourceAsStream("/infinite-loop.crl");
+				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
+
+			byte[] base64 = toByteArray(crlIS);
+
+			CertificateToken certificateToken = loadCert(certIS);
+			CRLBinary crlBinary = new CRLBinary(Base64.getDecoder().decode(base64));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertNotNull(validity);
+			assertNotNull(validity.getThisUpdate());
+			assertNotNull(validity.getNextUpdate());
+			assertEquals(SignatureAlgorithm.RSA_SHA256, validity.getSignatureAlgorithm());
+
+			// wrong certificate
+			assertFalse(validity.isValid());
+
+			assertNull(CRLUtils.getRevocationInfo(validity, BigInteger.ZERO));
+
+			// latest entry
+			assertNotNull(CRLUtils.getRevocationInfo(validity, new BigInteger("1938296")));
+		}
+	}
+
+	@Test
+	public void loopIssue2() throws Exception {
+		String crlB64 = "MIIDDjCCAfYCAQEwDQYJKoZIhvcNAQELBQAwgfsxCzAJBgNVBAYTAkNaMRcwFQYDVQQKDA5lSWRlbnRpdHkgYS5zLjE8MDoGA1UECwwzQWtyZWRpdG92YW7DvSBwb3NreXRvdmF0ZWwgY2VydGlmaWthxI1uw61jaCBzbHXFvmViMS8wLQYDVQQHDCZWaW5vaHJhZHNrw6EgMTg0LzIzOTYsIDEzMCAwMCwgUHJhaGEgMzFkMGIGA1UEAwxbQUNBZUlEMiAtIFF1YWxpZmllZCBSb290IENlcnRpZmljYXRlIChrdmFsaWZpa292YW7DvSBzeXN0w6ltb3bDvSBjZXJ0aWZpa8OhdCBrb8WZZW5vdsOpIENBKRcNMTYwNDIyMjAzMDIzWhcNMTYwNjIyMjAzMDIzWjCBlDAjAgQI1bqvFw0xNjAyMjIxNTEzNDNaMAwwCgYDVR0VBAMKAQQwIwIECug4YBcNMTAwNTI0MDkwMzMwWjAMMAoGA1UdFQQDCgEEMCMCBB1MvkgXDTE2MDQyMjIwMjk1OFowDDAKBgNVHRUEAwoBBTAjAgRDCeIEFw0xNjAyMjIxNTE0MDNaMAwwCgYDVR0VBAMKAQSgLzAtMB8GA1UdIwQYMBaAFJX+I1AvymNw08DBJRIhcsW65p5dMAoGA1UdFAQDAgFiMA0GCSqGSIb3DQEBCwUAA4IBAQBmyB+j4DWBsJok3NrC/fbV6iGSmnFClD2IH1sHzn1tp5MO2Q1LYRGI687Fg1Sw7z3aWxU+QbFvlJC74YyzkLTJ/Di0kxpOgTFx/6qcwBuaZp0Dx7cobjmuX7M3t0aMcg0awSQZxP0K5VkilzyuNgY+7MPnWgi5jbDDSKF3suDpfBex33zhyUgfpUew4jBX01NeoabimZwFJvRhAeb1J+iJMDsZSB5Kxxhn0kxU/czjedzQOl3wYda/GHdckyduya5Q7TAtuPLYwVV9U1/QD5dffjaG7uS5Spk7o7SWWnSCOgcDaPWzGGURRTyzeDZjacpwbKlJp27QwK7KH7430yJuDQo=";
+		String certB64 = "MIIDjjCCAnagAwIBAgIIKv++n6Lw6YcwDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMDcxMDA0MTAwMDAwWhcNMjExMjE1MDgwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZzQh6S/3UPi790hqc/7bIYLS2X+an7mEoj39WN4IzGMhwWLQdC1i22bi+n9fzGhYJdld61IgDMqFNAn68KNaJ6x+HK92AQZw6nUHMXU5WfIp8MXW+2QbyM69odRr2nlL/zGsvU+40OHjPIltfsjFPekx40HopQcSZYtF3CiInaYNKJIT/e1wEYNm7hLHADBGXvmAYrXR5i3FVr/mZkIV/4L+HXmymvb82fqgxG0YjFnaKVn6w/Fa7yYd/vw2uaItgscf1YHewApDgglVrH1Tdjuk+bqv5WRi5j2Qsj1Yr6tSPwiRuhFA0m2kHwOI8w7QUmecFLTqG4flVSOmlGhHUCAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zBCBgNVHSAEOzA5MDcGBWA4CQEBMC4wLAYIKwYBBQUHAgEWIGh0dHA6Ly9yZXBvc2l0b3J5LmVpZC5iZWxnaXVtLmJlMB0GA1UdDgQWBBSFiuv0xbu+DlkDlN7WgAEV4xCcOTARBglghkgBhvhCAQEEBAMCAAcwHwYDVR0jBBgwFoAUhYrr9MW7vg5ZA5Te1oABFeMQnDkwDQYJKoZIhvcNAQEFBQADggEBAFHYhd27V2/MoGy1oyCcUwnzSgEMdL8rs5qauhjyC4isHLMzr87lEwEnkoRYmhC598wUkmt0FoqW6FHvv/pKJaeJtmMrXZRY0c8RcrYeuTlBFk0pvDVTC9rejg7NqZV3JcqUWumyaa7YwBO+mPyWnIR/VRPmPIfjvCCkpDZoa01gZhz5v6yAlGYuuUGK02XThIAC71AdXkbc98m6tTR8KvPG2F9fVJ3bTc0R5/0UAoNmXsimABKgX77OFP67H6dh96tK8QYUn8pJQsKpvO2FsauBQeYNxUJpU4c5nUwfAA4+Bw11V0SoU7Q2dmSZ3G7rPUZuFF1eR1ONeE3gJ7uOhXY=";
+
+		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
+				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
+			CertificateToken certificateToken = loadCert(certIS);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertNotNull(validity);
+
+			// wrong certificate
+			assertFalse(validity.isValid());
+
+			assertNull(CRLUtils.getRevocationInfo(validity, BigInteger.ZERO));
+			assertNotNull(CRLUtils.getRevocationInfo(validity, new BigInteger("1124721156")));
+		}
+	}
+
+	@Test
+	public void noRevoc() throws Exception {
+		String crlB64 = "MIICYjCCAUoCAQEwDQYJKoZIhvcNAQELBQAwWzELMAkGA1UEBhMCQ1oxLDAqBgNVBAoMI8SMZXNrw6EgcG/FoXRhLCBzLnAuIFtJxIwgNDcxMTQ5ODNdMR4wHAYDVQQDExVQb3N0U2lnbnVtIFJvb3QgUUNBIDIXDTE2MDMyMjA4MDE0N1oXDTE3MDMyMjA4MDY0N1owIzAhAgIAmhcNMTMxMjEwMDgwOTM4WjAMMAoGA1UdFQQDCgEEoIGVMIGSMAoGA1UdFAQDAgEJMIGDBgNVHSMEfDB6gBQVKYzFRWmruLPD6v5LuDHY3PDndqFfpF0wWzELMAkGA1UEBhMCQ1oxLDAqBgNVBAoMI8SMZXNrw6EgcG/FoXRhLCBzLnAuIFtJxIwgNDcxMTQ5ODNdMR4wHAYDVQQDExVQb3N0U2lnbnVtIFJvb3QgUUNBIDKCAWQwDQYJKoZIhvcNAQELBQADggEBAJJgcYoG12xSqVpU9RKa7BcyjFVvOcnJQnoLfAlfoRvruQ3+9yKHc2g9VwxW29/+EOAexCu8wBB3dKb8buHfR75u6qdmxz9au0992/gTJYo6lZa1DBN+y45gR9ypw5RtkjYpwfdGP44ss/HjftUoaeYkXi6QXC6AsvXvm/DUQ3xVZt5OmZ5myL2SlOws4iAQMCrKT1HU3YCAB4DwtGzTcLskKiu6wiJzArzIk3AO3K0UFE6BrxpQiGxCsCQ3IdWy82CzLpmUG/FC7oO6GsJOftCxSo+S2ICxwHvfPEtL8r5C+msc8XYQPqO6l6kMTVRAD+iwhrLJBfc0W/2Y30lGtn0=";
+		String certB64 = "MIIDjjCCAnagAwIBAgIIKv++n6Lw6YcwDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMDcxMDA0MTAwMDAwWhcNMjExMjE1MDgwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZzQh6S/3UPi790hqc/7bIYLS2X+an7mEoj39WN4IzGMhwWLQdC1i22bi+n9fzGhYJdld61IgDMqFNAn68KNaJ6x+HK92AQZw6nUHMXU5WfIp8MXW+2QbyM69odRr2nlL/zGsvU+40OHjPIltfsjFPekx40HopQcSZYtF3CiInaYNKJIT/e1wEYNm7hLHADBGXvmAYrXR5i3FVr/mZkIV/4L+HXmymvb82fqgxG0YjFnaKVn6w/Fa7yYd/vw2uaItgscf1YHewApDgglVrH1Tdjuk+bqv5WRi5j2Qsj1Yr6tSPwiRuhFA0m2kHwOI8w7QUmecFLTqG4flVSOmlGhHUCAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zBCBgNVHSAEOzA5MDcGBWA4CQEBMC4wLAYIKwYBBQUHAgEWIGh0dHA6Ly9yZXBvc2l0b3J5LmVpZC5iZWxnaXVtLmJlMB0GA1UdDgQWBBSFiuv0xbu+DlkDlN7WgAEV4xCcOTARBglghkgBhvhCAQEEBAMCAAcwHwYDVR0jBBgwFoAUhYrr9MW7vg5ZA5Te1oABFeMQnDkwDQYJKoZIhvcNAQEFBQADggEBAFHYhd27V2/MoGy1oyCcUwnzSgEMdL8rs5qauhjyC4isHLMzr87lEwEnkoRYmhC598wUkmt0FoqW6FHvv/pKJaeJtmMrXZRY0c8RcrYeuTlBFk0pvDVTC9rejg7NqZV3JcqUWumyaa7YwBO+mPyWnIR/VRPmPIfjvCCkpDZoa01gZhz5v6yAlGYuuUGK02XThIAC71AdXkbc98m6tTR8KvPG2F9fVJ3bTc0R5/0UAoNmXsimABKgX77OFP67H6dh96tK8QYUn8pJQsKpvO2FsauBQeYNxUJpU4c5nUwfAA4+Bw11V0SoU7Q2dmSZ3G7rPUZuFF1eR1ONeE3gJ7uOhXY=";
+
+		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
+				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
+			CertificateToken certificateToken = loadCert(certIS);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertNotNull(validity);
+
+			// wrong certificate
+			assertFalse(validity.isValid());
+
+			assertNull(CRLUtils.getRevocationInfo(validity, BigInteger.ZERO));
 		}
 	}
 
