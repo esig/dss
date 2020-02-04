@@ -92,7 +92,6 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -128,8 +127,6 @@ import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerInfo;
 import eu.europa.esig.dss.validation.SignerRole;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 /**
  * CAdES Signature class helper
@@ -292,7 +289,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final SignerId signerId = getSignerId();
 		
 		// firstly check the KeyInfo attribute
-		findSigningCertificateInCollection(signerId, certSource.getKeyInfoCertificates());
+		findSigningCertificateInCollection(signerId, certSource.getCMSSignedDataCertificates());
 		
 		// check the certificate pool
 		if (signingCertificateValidity == null) {
@@ -709,23 +706,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return null;
-	}
-
-	public List<TimestampedReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
-		final List<TimestampedReference> archiveReferences = getSignatureTimestampReferences();
-		addReferencesForPreviousTimestamps(archiveReferences, timestampedTimestamps);
-		addReferences(archiveReferences, getTimestampedReferences());
-		return archiveReferences;
-	}
-
-	private List<TimestampedReference> getTimestampedReferences() {
-		final List<TimestampedReference> references = new ArrayList<>();
-		final List<CertificateToken> certs = getCertificateSource().getCompleteCertificates();
-		for (final CertificateToken certificate : certs) {
-			references.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
-		addReferencesFromRevocationData(references);
-		return references;
 	}
 
 	@Override

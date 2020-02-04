@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -52,14 +53,20 @@ public class PdfPkcs7Test {
 
 		// no signing certificate attribute
 		assertEquals(0, signatureById.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOrigin.KEY_INFO).size());
+		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOrigin.CMS_SIGNED_DATA).size());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 		AdvancedSignature advancedSignature = signatures.get(0);
 		assertEquals(SignatureForm.PKCS7, advancedSignature.getSignatureForm());
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		
+		TimestampWrapper signatureTimestamp = timestampList.get(0);
+		assertEquals(2, signatureTimestamp.getAllFoundCertificates().size());
+		assertEquals(1, signatureTimestamp.getAllFoundCertificateRefs().size());
 
-		// reports.print();
 	}
 
 }

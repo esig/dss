@@ -295,6 +295,7 @@ public class OCSPToken extends RevocationToken {
 	public String toString(String indentStr) {
 		final StringWriter out = new StringWriter();
 		out.append(indentStr).append("OCSPToken[");
+		out.append(indentStr).append("Id: ").append(getDSSIdAsString()).append('\n');
 		out.append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
 		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
 		out.append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');

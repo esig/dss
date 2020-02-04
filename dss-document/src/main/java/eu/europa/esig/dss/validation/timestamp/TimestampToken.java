@@ -205,6 +205,15 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
+	 * Returns {@code TimestampCertificateSource} for the timestamp
+	 * 
+	 * @return {@link TimestampCertificateSource}
+	 */
+	public TimestampCertificateSource getCertificateSource() {
+		return certificateSource;
+	}
+	
+	/**
 	 * Returns {@code TimestampCRLSource} for the timestamp
 	 * 
 	 * @return {@link TimestampCRLSource}

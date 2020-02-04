@@ -181,6 +181,7 @@ public class CRLToken extends RevocationToken {
 		StringBuilder out = new StringBuilder();
 		out.append(indentStr).append("CRLToken[\n");
 		indentStr += "\t";
+		out.append(indentStr).append("Id: ").append(getDSSIdAsString()).append('\n');
 		out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
 		out.append(indentStr).append("NextUpdate time: ").append(nextUpdate == null ? "?" : DSSUtils.formatInternal(nextUpdate)).append('\n');
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');

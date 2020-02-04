@@ -64,7 +64,9 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 			return;
 		}
 
-		// Timestamps can already be loaded in memory (force reload)
+		// Data sources can already be loaded in memory (force reload)
+		xadesSignature.resetCertificateSource();
+		xadesSignature.resetRevocationSources();
 		xadesSignature.resetTimestampSource();
 
 		assertExtendSignatureToLTPossible();

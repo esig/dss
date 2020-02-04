@@ -105,6 +105,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					final PdfDssDict coveredDSSDictionary = timestampInfo.getDssDictionary();
 					final PAdESCertificateSource padesCertificateSource = new PAdESCertificateSource(
 							coveredDSSDictionary, timestampInfo.getCMSSignedData(), certificatePool);
+					certificateSource.add(padesCertificateSource);
 
 					addReferences(references, createReferencesForCertificates(cmsContentCertificates));
 					addReferencesForCertificates(references, padesCertificateSource);
@@ -113,10 +114,12 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					// references embedded to timestamp's content are covered by outer timestamps
 					cmsContentCertificates.addAll(getCMSContentReferences(padesCertificateSource));
 					addReferences(timestampToken.getTimestampedReferences(), references);
+					
 					getArchiveTimestamps().add(timestampToken);
 					
 				}
-				populateTimestampCertificateSource(timestampToken.getCertificates());
+				
+				populateSources(timestampToken);
 				timestampedTimestamps.add(timestampToken);
 				
 			}
@@ -124,29 +127,25 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	}
 	
 	@Override
-	protected List<TimestampedReference> getSignatureTimestampReferences() {
+	public List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> signatureTimestampReferences = super.getSignatureTimestampReferences();
 		// timestamp covers inner signature, therefore it covers certificates included into the signature's KeyInfo
-		addReferences(signatureTimestampReferences, createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates()));
+		addReferences(signatureTimestampReferences, createReferencesForCertificates(signatureCertificateSource.getCMSSignedDataCertificates()));
 		return signatureTimestampReferences;
 	}
 	
 	private List<CertificateToken> getCMSContentReferences(final PAdESCertificateSource padesCertificateSource) {
 		// timestamp covers its own cms content
-		List<CertificateToken> keyInfoCertificates = padesCertificateSource.getKeyInfoCertificates();
-		populateTimestampCertificateSource(keyInfoCertificates);
+		List<CertificateToken> keyInfoCertificates = padesCertificateSource.getCMSSignedDataCertificates();
 		return keyInfoCertificates;
 	}
 
 	private void addReferencesForCertificates(List<TimestampedReference> references, final PAdESCertificateSource padesCertificateSource) {
-		
 		List<CertificateToken> dssDictionaryCertValues = padesCertificateSource.getDSSDictionaryCertValues();
 		addReferences(references, createReferencesForCertificates(dssDictionaryCertValues));
-		populateTimestampCertificateSource(dssDictionaryCertValues);
 		
 		List<CertificateToken> vriDictionaryCertValues = padesCertificateSource.getVRIDictionaryCertValues();
 		addReferences(references, createReferencesForCertificates(vriDictionaryCertValues));
-		populateTimestampCertificateSource(vriDictionaryCertValues);
 	}
 
 	/**

@@ -32,6 +32,8 @@ public enum TimestampedObjectType {
 
 	TIMESTAMP,
 
-	ORPHAN;
+	ORPHAN_CERTIFICATE,
+
+	ORPHAN_REVOCATION;
 
 }

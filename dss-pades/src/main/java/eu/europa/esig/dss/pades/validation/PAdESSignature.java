@@ -35,7 +35,6 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -46,7 +45,6 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateRef;
@@ -58,7 +56,6 @@ import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifier;
 import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 /**
  * Implementation of AdvancedSignature for PAdES
@@ -155,36 +152,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	protected void addReferencesForCertificates(List<TimestampedReference> references) {
-		List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
-		for (CertificateToken certificate : dssDictionaryCertValues) {
-			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
-		List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
-		for (CertificateToken certificate : vriDictionaryCertValues) {
-			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
-	}
-
-	/**
-	 * This method adds references to retrieved revocation data.
-	 * 
-	 * @param references
-	 */
-	@Override
-	protected void addReferencesFromRevocationData(List<TimestampedReference> references) {
-		List<RevocationToken> vriRevocationTokens = getVRIDictionaryRevocationTokens();
-		for (RevocationToken revocationToken : vriRevocationTokens) {
-			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
-		}
-
-		List<RevocationToken> dssRevocationTokens = getDSSDictionaryRevocationTokens();
-		for (RevocationToken revocationToken : dssRevocationTokens) {
-			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
-		}
-	}
-
-	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
@@ -194,7 +161,7 @@ public class PAdESSignature extends CAdESSignature {
 	public List<CertificateRef> getCertificateRefs() {
 		List<CertificateRef> refs = new ArrayList<>();
 		// other are unsigned and should be added in the DSS Dictionary
-		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
+		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getCMSSignedDataCertificates();
 		addCertRefs(refs, encapsulatedCertificates);
 		PdfDssDict dssDictionary = pdfSignatureRevision.getDssDictionary();
 		if (dssDictionary != null) {

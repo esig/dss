@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.diagnostic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -30,7 +31,9 @@ import java.util.Set;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
@@ -41,7 +44,6 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -657,26 +659,22 @@ public class DiagnosticData {
 	 * NOTE: can return instances with duplicate ids (some signatures can have different origins for revocation data)
 	 * @return list of {@link XmlOrphanRevocation}s
 	 */
-	public List<XmlOrphanRevocation> getAllOrphanRevocations() {
-		List<XmlOrphanRevocation> orphanRevocations = new ArrayList<>();
-		for (SignatureWrapper signatureWrapper : getSignatures()) {
-			orphanRevocations.addAll(signatureWrapper.getOrphanRevocations());
+	public List<XmlOrphanRevocationToken> getAllOrphanRevocations() {
+		if (wrapped.getOrphanTokens() != null && wrapped.getOrphanTokens().getOrphanRevocations() != null) {
+			return wrapped.getOrphanTokens().getOrphanRevocations();
 		}
-		return orphanRevocations;
+		return Collections.emptyList();
 	}
 	
 	/**
 	 * Returns a list of all found {@link XmlOrphanToken} certificates
 	 * @return list of {@link XmlOrphanToken}s
 	 */
-	public List<XmlOrphanToken> getAllOrphanCertificates() {
-		List<XmlOrphanToken> orphanCertificateTokens = new ArrayList<>();
-		for (XmlOrphanToken orphanToken : wrapped.getOrphanTokens()) {
-			if (OrphanTokenType.CERTIFICATE.equals(orphanToken.getType())) {
-				orphanCertificateTokens.add(orphanToken);
-			}
+	public List<XmlOrphanCertificateToken> getAllOrphanCertificates() {
+		if (wrapped.getOrphanTokens() != null && wrapped.getOrphanTokens().getOrphanCertificates() != null) {
+			return wrapped.getOrphanTokens().getOrphanCertificates();
 		}
-		return orphanCertificateTokens;
+		return Collections.emptyList();
 	}
 
 	/**

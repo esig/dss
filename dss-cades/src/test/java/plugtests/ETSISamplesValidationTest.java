@@ -118,15 +118,9 @@ public class ETSISamplesValidationTest {
 
 			SignatureCRLSource crlSource = advancedSignature.getCRLSource();
 			assertNotNull(crlSource);
-			assertTrue(Utils.isCollectionEmpty(crlSource.getTimestampSignedDataRevocationTokens()));
-			assertTrue(Utils.isCollectionEmpty(crlSource.getTimestampRevocationValuesTokens()));
-			assertTrue(Utils.isCollectionEmpty(crlSource.getTimestampRevocationRefs()));
 			
 			SignatureOCSPSource ocspSource = advancedSignature.getOCSPSource();
 			assertNotNull(ocspSource);
-			assertTrue(Utils.isCollectionEmpty(ocspSource.getTimestampSignedDataRevocationTokens()));
-			assertTrue(Utils.isCollectionEmpty(ocspSource.getTimestampRevocationValuesTokens()));
-			assertTrue(Utils.isCollectionEmpty(ocspSource.getTimestampRevocationRefs()));
 		}
 
 		UnmarshallingTester.unmarshallXmlReports(reports);
