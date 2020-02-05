@@ -38,7 +38,7 @@ public class ASiCEWithMalformedOCSPTest {
 
 	@Test
 	public void testFile1() {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-ASiC/EE_AS/Signature-A-EE_AS-19.asice");
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/Signature-A-EE_AS-19.asice");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();

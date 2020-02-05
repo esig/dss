@@ -33,7 +33,6 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -51,7 +50,7 @@ public class CAdESWithContentTimestampTest {
 
 	@Test
 	public void testContentTimeStamp() throws IOException {
-		File file = new File("src/test/resources/plugtest/cades/CAdES-BES/Sample_Set_11/Signature-C-BES-4.p7m");
+		File file = new File("src/test/resources/validation/Signature-C-BES-4.p7m");
 
 		FileInputStream fis = new FileInputStream(file);
 		ASN1InputStream asn1sInput = new ASN1InputStream(Utils.toByteArray(fis));

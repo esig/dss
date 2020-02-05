@@ -51,7 +51,7 @@ public class SignSignatureWithTimestampTest extends PKIFactoryAccess {
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/ES/Signature-X-ES-103.xml");
+		documentToSign = new FileDocument("src/test/resources/validation/Signature-X-ES-103.xml");
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);

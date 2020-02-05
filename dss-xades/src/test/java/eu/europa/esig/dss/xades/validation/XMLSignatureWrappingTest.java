@@ -480,7 +480,7 @@ public class XMLSignatureWrappingTest {
 	@Test
 	public void xadesManifestSignatureScopeTest() throws Exception {
 		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/CZ_SEF/Signature-X-CZ_SEF-4.xml")));
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/Signature-X-CZ_SEF-4.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -574,7 +574,7 @@ public class XMLSignatureWrappingTest {
 	@Test
 	public void validationDataRefsWithValues() {
 		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/RO_TRA/Signature-X-RO_TRA-15.xml")));
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/Signature-X-RO_TRA-15.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -706,7 +706,7 @@ public class XMLSignatureWrappingTest {
 	@Test
 	public void certificateRefToOCSPResponceCertificateTest() {
 		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/RO_TRA/Signature-X-RO_TRA-4.xml")));
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/Signature-X-RO_TRA-4.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());

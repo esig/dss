@@ -59,7 +59,7 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 	
 	@Test
 	public void signatureIdentifierTest() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/HU_POL/Signature-C-HU_POL-3.p7m");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-C-HU_POL-3.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();

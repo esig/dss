@@ -51,7 +51,7 @@ public class EtsiValidationReportCompleteTest extends PKIFactoryAccess {
 	
 	@Test
 	public void timestampTest() {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/BG_BOR/Signature-P-BG_BOR-2.pdf"));
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-BG_BOR-2.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
@@ -95,7 +95,7 @@ public class EtsiValidationReportCompleteTest extends PKIFactoryAccess {
 	
 	@Test
 	public void signatureIdentifierTest() {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/BG_BOR/Signature-P-BG_BOR-2.pdf"));
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-BG_BOR-2.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();

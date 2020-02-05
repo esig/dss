@@ -83,7 +83,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	
 	@Test
 	public void revocationOriginTest() {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/HU_POL/Signature-P-HU_POL-3.pdf"));
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-HU_POL-3.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
@@ -104,7 +104,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	
 	@Test
 	public void multiSignedDocRevocationRefTest() throws Exception {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/SK/Signature-P-SK-6.pdf"));
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-SK-6.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
@@ -148,7 +148,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	
 	@Test
 	public void dssAndVriTest() {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/BG_BOR/Signature-P-BG_BOR-2.pdf"));
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-BG_BOR-2.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();

@@ -29,18 +29,18 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PAdESNonLatinCharactersValidationTest {
+public class PAdESNonLatinCharactersValidationTest extends PKIFactoryAccess {
 	
 	@Test
 	public void test() {
 
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/BG_BOR/Signature-P-BG_BOR-1.pdf"));
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-BG_BOR-1.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 		
@@ -49,6 +49,11 @@ public class PAdESNonLatinCharactersValidationTest {
 		
 		assertEquals("ПОДПИСАН ОТ", signature.getReason());
 		
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return null;
 	}
 
 }

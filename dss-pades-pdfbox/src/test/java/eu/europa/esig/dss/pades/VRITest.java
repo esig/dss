@@ -37,7 +37,7 @@ public class VRITest {
 
 	@Test
 	public void vri() throws Exception {
-		String path = "/plugtest/esig2014/ESIG-PAdES/HU_MIC/Signature-P-HU_MIC-3.pdf";
+		String path = "/validation/Signature-P-HU_MIC-3.pdf";
 		String vriValue = "C41B1DBFE0E816D8A6F99A9DB98FD43960A5CF45";
 
 		PDDocument pdDoc = PDDocument.load(getClass().getResourceAsStream(path));

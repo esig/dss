@@ -38,7 +38,7 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 
 	@Test
 	public void test1() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/BE_ECON/Signature-X-BE_ECON-3.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-BE_ECON-3.xml");
 
 		DiagnosticData diagnosticData = getDiagnosticData(doc);
 		
@@ -55,7 +55,7 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 
 	@Test
 	public void test2() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HU_POL/Signature-X-HU_POL-3.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-HU_POL-3.xml");
 
 		DiagnosticData diagnosticData = getDiagnosticData(doc);
 		
@@ -72,7 +72,7 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 
 	@Test
 	public void test3() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/CY/Signature-X-CY-1.xml");
+		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-CY-1.xml");
 
 		DiagnosticData diagnosticData = getDiagnosticData(doc);
 		

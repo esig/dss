@@ -35,8 +35,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -44,13 +44,13 @@ import eu.europa.esig.dss.validation.reports.Reports;
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-662
  *
  */
-public class CAdESWithDEREncodedTimestampTest {
+public class CAdESWithDEREncodedTimestampTest extends PKIFactoryAccess {
 
 	@Test
 	public void testFile1() {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/DE_CRY/Signature-C-DE_CRY-3.p7m");
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/Signature-C-DE_CRY-3.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		// reports.print();
@@ -64,9 +64,9 @@ public class CAdESWithDEREncodedTimestampTest {
 
 	@Test
 	public void testFile2() {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/DE_CRY/Signature-C-DE_CRY-4.p7m");
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/Signature-C-DE_CRY-4.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		// reports.print();
@@ -80,7 +80,7 @@ public class CAdESWithDEREncodedTimestampTest {
 
 	@Test
 	public void testFile3() throws DSSException, CMSException, IOException {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/DE_CRY/Signature-C-DE_CRY-4.p7m");
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/Signature-C-DE_CRY-4.p7m");
 
 		CAdESSignature signature = new CAdESSignature(Utils.toByteArray(dssDocument.openStream()));
 		CMSSignedData cmsSignedData = signature.getCmsSignedData();
@@ -98,9 +98,14 @@ public class CAdESWithDEREncodedTimestampTest {
 		byte[] doc = Utils.fromBase64(base64TST);
 		DSSDocument dssDocument = new InMemoryDocument(doc);
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return null;
 	}
 
 }
