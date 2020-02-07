@@ -1017,6 +1017,8 @@
                 <ChainItem Certificate="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
                 <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Category="SIGNED_DATA" Token="D-EE8B1E816AC6250A46C3B781D8F8745B446A87197A79CFDA0D0169478EC1027A"/>
                 <TimestampedObject Category="SIGNATURE" Token="S-C6E5DF3BF6160BD2BAD82563A6D66773CC9C181813D3E3CA1C81407B53934692"/>
@@ -1050,6 +1052,8 @@
                 <ChainItem Certificate="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
                 <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Category="TIMESTAMP" Token="T-D49005368F0E03B30B20329431CF0F62674DEF6647AFA23079209B34145A1934"/>
                 <TimestampedObject Category="SIGNED_DATA" Token="D-EE8B1E816AC6250A46C3B781D8F8745B446A87197A79CFDA0D0169478EC1027A"/>
@@ -1087,6 +1091,8 @@
                 <ChainItem Certificate="C-3A528F2E01089B11A013258F58F9E6B7BC3C405A14831916212DA9208B5C9DAE"/>
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Category="TIMESTAMP" Token="T-D49005368F0E03B30B20329431CF0F62674DEF6647AFA23079209B34145A1934"/>
                 <TimestampedObject Category="SIGNED_DATA" Token="D-EE8B1E816AC6250A46C3B781D8F8745B446A87197A79CFDA0D0169478EC1027A"/>
@@ -1101,7 +1107,7 @@
                 <TimestampedObject Category="REVOCATION" Token="R-1A713C30D1DB0501FD5E43BDB2A78C347E4646D16FF730CD7B76BF622650D689"/>
                 <TimestampedObject Category="CERTIFICATE" Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4"/>
                 <TimestampedObject Category="CERTIFICATE" Token="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
-                <TimestampedObject Category="ORPHAN" Token="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE"/>
+                <TimestampedObject Category="ORPHAN_REVOCATION" Token="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -1110,13 +1116,13 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-        <OrphanToken Id="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE">
-            <Type>REVOCATION</Type>
+        <OrphanRevocation Id="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE">
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>y6JX5w/6yrGGheqh5PTytPe1hGy+ekjbSu7rqv0UuL4=</DigestValue>
             </DigestAlgoAndValue>
-        </OrphanToken>
+            <Type>CRL</Type>
+        </OrphanRevocation>
     </OrphanTokens>
     <OriginalDocuments>
         <SignerData Id="D-EE8B1E816AC6250A46C3B781D8F8745B446A87197A79CFDA0D0169478EC1027A">

@@ -478,6 +478,8 @@
                 <ChainItem Certificate="C-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241"/>
                 <ChainItem Certificate="C-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Token="D-3AFC2237914D382EF30873A75D0BA94541E6B4BC0BD9A99EE15FFF846AD97A2A" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="D-F2CD93AD8E861F7FFD65A0008F6F9052620FC1803F9832B74B7D468A1D6D12B4" Category="SIGNED_DATA"/>
@@ -515,6 +517,8 @@
                 <ChainItem Certificate="C-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241"/>
                 <ChainItem Certificate="C-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Token="D-77D0FF1A4F78D7288A954CDB940ACD706C8DF8771BDC81E7735B6348AA001885" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="D-F2CD93AD8E861F7FFD65A0008F6F9052620FC1803F9832B74B7D468A1D6D12B4" Category="SIGNED_DATA"/>

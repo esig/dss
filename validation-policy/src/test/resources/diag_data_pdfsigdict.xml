@@ -625,6 +625,8 @@
                 <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
                 <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Category="SIGNATURE" Token="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28" />
                 <TimestampedObject Category="CERTIFICATE" Token="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B" />
