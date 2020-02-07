@@ -205,7 +205,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param pdfSignatureDictionary a map between {@link PdfSignatureDictionary} and list of field names to sort
 	 * @return a sorted map
 	 */
-	protected Map<PdfSignatureDictionary, List<String>> sortSignatureDictionaries(Map<PdfSignatureDictionary, List<String>> pdfSignatureDictionary) {
+	private Map<PdfSignatureDictionary, List<String>> sortSignatureDictionaries(Map<PdfSignatureDictionary, List<String>> pdfSignatureDictionary) {
 		return pdfSignatureDictionary.entrySet().stream()
 				.sorted(Map.Entry.<PdfSignatureDictionary, List<String>>comparingByKey(new PdfSignatureDictionaryComparator()).reversed())
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));

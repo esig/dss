@@ -75,9 +75,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 	
 	@Override
-	protected DiagnosticDataBuilder getSignatureDiagnosticDataBuilder(final ValidationContext validationContext, List<AdvancedSignature> signatures,
+	protected DiagnosticDataBuilder getDiagnosticDataBuilderConfiguration(final ValidationContext validationContext, List<AdvancedSignature> signatures,
 			final ListCertificateSource listCertificateSource, final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
-		return super.getSignatureDiagnosticDataBuilder(validationContext, signatures, listCertificateSource, listCRLSource, listOCSPSource)
+		return super.getDiagnosticDataBuilderConfiguration(validationContext, signatures, listCertificateSource, listCRLSource, listOCSPSource)
 				.containerInfo(getContainerInfo());
 	}
 

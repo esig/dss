@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.executor.certificate.CertificateProcessExecutor;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
@@ -99,7 +98,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
-				.validationDate(getValidationTime()).completeCertificateSource(mergeCertificateSource(svc)).build();
+				.validationDate(getValidationTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
@@ -108,17 +107,6 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
-	}
-	
-	protected ListCertificateSource mergeCertificateSource(final ValidationContext validationContext) {
-		ListCertificateSource listCertificatesSource = new ListCertificateSource();
-		// processed certificates can contain additional certificates, e.g. a trusted list certificate or revocation's issuer
-		CommonCertificateSource usedCertificatesSource = new CommonCertificateSource();
-		for (CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
-			usedCertificatesSource.addCertificate(certificateToken);
-		}
-		listCertificatesSource.add(usedCertificatesSource);
-		return listCertificatesSource;
 	}
 
 	@Override

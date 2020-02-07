@@ -54,7 +54,7 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 		try (InputStream is = timestamped.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
 
-			List<String> names = af.getSignatureNames();
+			List<String> names = af.getSignedFieldNames();
 			assertEquals(1, names.size());
 
 			String first = names.get(0);
