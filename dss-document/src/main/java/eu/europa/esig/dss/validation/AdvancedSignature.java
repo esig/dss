@@ -390,19 +390,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a {@code List} of {@code AdvancedSignatures} representing the counter signatures
 	 */
 	List<AdvancedSignature> getCounterSignatures();
-
-	/**
-	 * Retrieve list of certificate ref
-	 *
-	 * @return {@code List} of {@code CertificateRef}
-	 */
-	List<CertificateRef> getCertificateRefs();
-	
-	/**
-	 * Returns a list of orphan certificate refs, that are not associated to any {@link CertificateToken}
-	 * @return list of found {@link CertificateRef}s
-	 */
-	List<CertificateRef> getOrphanCertificateRefs();
 	
 	/**
 	 * This method returns the {@link SignatureIdentifier}.

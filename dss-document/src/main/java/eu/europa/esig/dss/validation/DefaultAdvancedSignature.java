@@ -176,11 +176,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public List<CertificateRef> getOrphanCertificateRefs() {
-		return getCertificateSource().getOrphanCertificateRefs();
-	}
-	
-	@Override
 	public SignatureIdentifier getDSSId() {
 		if (signatureIdentifier == null) {
 			signatureIdentifier = buildSignatureIdentifier();

@@ -76,7 +76,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 			List<PdfVRIDict> vriDicts = dssDictionary.getVRIs();
 			if (Utils.isCollectionNotEmpty(vriDicts)) {
 				for (PdfVRIDict vriDict : vriDicts) {
-					dssCerts.putAll(vriDict.getCertMap());
+					dssCerts.putAll(vriDict.getCERTs());
 				}
 			}
 			return dssCerts;
@@ -118,7 +118,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 			List<PdfVRIDict> vris = dssDictionary.getVRIs();
 			if (vris != null) {
 				for (PdfVRIDict vri : vris) {
-					vriCerts.putAll(vri.getCertMap());
+					vriCerts.putAll(vri.getCERTs());
 				}
 			}
 			return new ArrayList<>(vriCerts.values());

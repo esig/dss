@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -31,18 +32,27 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
-import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
-import eu.europa.esig.dss.pdf.PdfTimestampValidationCallback;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
+import eu.europa.esig.dss.validation.ListCRLSource;
+import eu.europa.esig.dss.validation.ListCertificateSource;
+import eu.europa.esig.dss.validation.ListOCSPSource;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -53,6 +63,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
 	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+	
+	private List<PdfRevision> documentRevisions;
 
 	PDFDocumentValidator() {
 	}
@@ -80,62 +92,157 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		Objects.requireNonNull(pdfObjFactory, "PdfObjFactory is null");
 		this.pdfObjectFactory = pdfObjFactory;
 	}
+	
+	@Override
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
+		
+		List<AdvancedSignature> allSignatures = getAllSignatures();
+		List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
+		List<PdfDssDict> dssDictionaries = getDssDictionaries();
+		
+		ListCRLSource listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps, dssDictionaries);
+		ListOCSPSource listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps, dssDictionaries);
+        
+		prepareCertificateVerifier(listCRLSource, listOCSPSource);
+		prepareSignatureValidationContext(validationContext, allSignatures);
+        prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
+		
+		if (!skipValidationContextExecution) {
+			validateContext(validationContext);
+		}
+		
+		ListCertificateSource listCertificateSource = mergeCertificateSource(validationContext, allSignatures, detachedTimestamps, dssDictionaries);
+		
+		return getSignatureDiagnosticDataBuilder(validationContext, allSignatures, listCertificateSource, listCRLSource, listOCSPSource);
+	}
+	
+	protected ListCRLSource mergeCRLSources(Collection<AdvancedSignature> allSignatures, Collection<TimestampToken> timestampTokens, 
+			Collection<PdfDssDict> dssDictionaries) {
+		ListCRLSource listCRLSource = mergeCRLSources(allSignatures);
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (TimestampToken timestampToken : timestampTokens) {
+				listCRLSource.add(timestampToken.getCRLSource());
+			}
+		}
+		if (Utils.isCollectionNotEmpty(dssDictionaries)) {
+			for (PdfDssDict dssDictionary : dssDictionaries) {
+				listCRLSource.add(new PAdESCRLSource(dssDictionary));
+			}
+		}
+		return listCRLSource;
+	}
+ 	
+	protected ListOCSPSource mergeOCSPSources(Collection<AdvancedSignature> allSignatures, Collection<TimestampToken> timestampTokens, 
+			Collection<PdfDssDict> dssDictionaries) {
+		ListOCSPSource listOCSPSource = mergeOCSPSources(allSignatures);
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (TimestampToken timestampToken : timestampTokens) {
+				listOCSPSource.add(timestampToken.getOCSPSource());
+			}
+		}
+		if (Utils.isCollectionNotEmpty(dssDictionaries)) {
+			for (PdfDssDict dssDictionary : dssDictionaries) {
+				listOCSPSource.add(new PAdESOCSPSource(dssDictionary));
+			}
+		}
+		return listOCSPSource;
+	}
+	
+	protected ListCertificateSource mergeCertificateSource(final ValidationContext validationContext, Collection<AdvancedSignature> allSignatures, 
+			Collection<TimestampToken> timestampTokens, Collection<PdfDssDict> dssDictionaries) {
+		ListCertificateSource listCertificateSource = mergeCertificateSource(validationContext, allSignatures);
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (TimestampToken timestampToken : timestampTokens) {
+				listCertificateSource.add(timestampToken.getCertificateSource());
+			}
+		}
+		if (Utils.isCollectionNotEmpty(dssDictionaries)) {
+			for (PdfDssDict dssDictionary : dssDictionaries) {
+				CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
+				for (CertificateToken certificateToken : dssDictionary.getCERTs().values()) {
+					commonCertificateSource.addCertificate(certificateToken);
+				}
+				listCertificateSource.add(commonCertificateSource);
+			}
+		}
+		return listCertificateSource;
+	}
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatures = new ArrayList<>();
-
-		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
-		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
-
-			@Override
-			public void validate(final PdfSignatureRevision pdfSignatureRevision) {
+		
+		for (PdfRevision pdfRevision : getRevisions()) {
+			if (pdfRevision instanceof PdfSignatureRevision) {
+				PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) pdfRevision;
 				try {
-					if (pdfSignatureRevision.getCades() != null) {
-						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureRevision, validationCertPool);
-						padesSignature.setSignatureFilename(document.getName());
-						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
-						signatures.add(padesSignature);
-					}
+					final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, validationCertPool, documentRevisions);
+					padesSignature.setSignatureFilename(document.getName());
+					padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+					signatures.add(padesSignature);
+					
 				} catch (Exception e) {
-					throw new DSSException("Unable to collect signatures", e);
+					throw new DSSException(String.format("Unable to collect a signature. Reason : [%s]", e.getMessage()), e);
 				}
+				
 			}
-		});
+		}
+		Collections.reverse(signatures);
 		return signatures;
 	}
 
 	@Override
 	public List<TimestampToken> getDetachedTimestamps() {
 		final List<TimestampToken> timestamps = new ArrayList<>();
-
-		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
-		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
-			
-			@Override
-			public void validate(PdfDocTimestampRevision pdfDocTimestampRevision) {
-				
+		
+		for (PdfRevision pdfRevision : getRevisions()) {
+			if (pdfRevision instanceof PdfDocTimestampRevision) {
+				PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
 				try {
-					if (pdfDocTimestampRevision.getCMSSignedData() != null) {
-						TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision, 
-								TimestampType.CONTENT_TIMESTAMP, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
-						timestampToken.setFileName(document.getName());
-						timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getSignedDocumentBytes()));
+					TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision, 
+							TimestampType.CONTENT_TIMESTAMP, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
+					timestampToken.setFileName(document.getName());
+					timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getRevisionCoveredBytes()));
+					
+					PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
+					signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+					timestampToken.setTimestampScopes(Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
+					
+					timestamps.add(timestampToken);
 						
-						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
-						signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-						timestampToken.setTimestampScopes(Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
-						
-						timestamps.add(timestampToken);
-						
-					}
 				} catch (Exception e) {
-					throw new DSSException("Unable to collect timestamps", e);
+					throw new DSSException(String.format("Unable to collect a timestamp. Reason : [%s]", e.getMessage()), e);
 				}
 				
 			}
-		});
+		}
+		Collections.reverse(timestamps);
 		return timestamps;
+	}
+	
+	/**
+	 * Returns a list of found DSS Dictionaries across different revisions
+	 * @return list of {@link PdfDssDict}s
+	 */
+	public List<PdfDssDict> getDssDictionaries() {
+		List<PdfDssDict> docDssRevisions = new ArrayList<>();
+		
+		for (PdfRevision pdfRevision : getRevisions()) {
+			if (pdfRevision instanceof PdfDocDssRevision) {
+				PdfDocDssRevision dssRevision = (PdfDocDssRevision) pdfRevision;
+				docDssRevisions.add(dssRevision.getDssDictionary());
+			}
+		}
+		Collections.reverse(docDssRevisions);
+		return docDssRevisions;
+	}
+	
+	protected List<PdfRevision> getRevisions() {
+		if (documentRevisions == null) {
+			PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+			documentRevisions = pdfSignatureService.validateSignatures(validationCertPool, document);
+		}
+		return documentRevisions;
 	}
 
 	@Override

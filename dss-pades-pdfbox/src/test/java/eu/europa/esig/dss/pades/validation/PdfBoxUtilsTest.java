@@ -20,40 +20,50 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public class PdfBoxUtilsTest {
 
 	private static final String FILE = "/validation/doc-firmado-LT.pdf";
 
 	@Test
-	public void tesPdfBoxUtils() throws Exception {
-		PDDocument document = PDDocument.load(getClass().getResourceAsStream(FILE));
-		PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(document);
-		assertNotNull(dssDictionary);
+	public void testPdfBoxUtils() throws Exception {
+		try (PdfDocumentReader documentReader = new PdfBoxDocumentReader(new InMemoryDocument(getClass().getResourceAsStream(FILE)))) {
+			PdfDssDict dssDictionary = documentReader.getDSSDictionary();
+			assertNotNull(dssDictionary);
+		}
 	}
 	
 	@Test
-	public void tesPdfBoxUtilsEmptyDocument() throws Exception {
-		PDDocument document = new PDDocument();
-		PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(document);
-		assertNull(dssDictionary);
-	}
-	
-	@Test
-	public void tesPdfBoxUtilsNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () ->  {
-			PdfBoxUtils.getDSSDictionary(null);
+	public void testPdfBoxUtilsEmptyDocument() throws Exception {
+		Exception exception = assertThrows(DSSException.class, () ->  {
+			new PdfBoxDocumentReader(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "empty_doc"));
 		});
-		assertEquals("PDDocument cannot be null!", exception.getMessage());
+		assertTrue(exception.getMessage().contains("The document with name [empty_doc] is either not accessible or not PDF compatible."));
+	}
+	
+	@Test
+	public void testPdfBoxUtilsNull() throws Exception {
+		Exception exception = assertThrows(NullPointerException.class, () ->  {
+			new PdfBoxDocumentReader((DSSDocument)null);
+		});
+		assertEquals("The document must be defined!", exception.getMessage());
+		exception = assertThrows(NullPointerException.class, () ->  {
+			new PdfBoxDocumentReader((byte[])null);
+		});
+		assertEquals("The document binaries must be defined!", exception.getMessage());
 	}
 }

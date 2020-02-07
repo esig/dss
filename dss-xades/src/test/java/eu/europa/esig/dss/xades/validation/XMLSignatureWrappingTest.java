@@ -711,7 +711,7 @@ public class XMLSignatureWrappingTest {
 		validator.setCertificateVerifier(certificateVerifier);
 		
 		Reports reports = validator.validateDocument();
-		reports.print();
+		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 		

@@ -149,7 +149,7 @@ public class TimestampToken extends Token {
 
 	public TimestampToken(final PdfRevision pdfTimestampRevision, final TimestampType type, final CertificatePool certPool,
 			final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
-		this(pdfTimestampRevision.getCMSSignedData(), type, certPool, new ArrayList<TimestampedReference>(), timestampLocation);
+		this(new CMSSignedData(pdfTimestampRevision.getPdfSigDictInfo().getContents()), type, certPool, new ArrayList<TimestampedReference>(), timestampLocation);
 		this.pdfRevision = pdfTimestampRevision;
 	}
 

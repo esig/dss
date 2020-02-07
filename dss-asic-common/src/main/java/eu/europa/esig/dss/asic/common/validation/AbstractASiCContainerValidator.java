@@ -34,9 +34,14 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
+import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.ListCRLSource;
+import eu.europa.esig.dss.validation.ListCertificateSource;
+import eu.europa.esig.dss.validation.ListOCSPSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
@@ -48,13 +53,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
-	
-	/**
-	 * Default constructor used with reflexion (see DefaultDocumentValidator)
-	 */
-	private AbstractASiCContainerValidator() {
-		this.document = null;
-	}
 
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
 		this.document = document;
@@ -75,13 +73,19 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	public ASiCContainerType getContainerType() {
 		return containerType;
 	}
+	
+	@Override
+	protected DiagnosticDataBuilder getSignatureDiagnosticDataBuilder(final ValidationContext validationContext, List<AdvancedSignature> signatures,
+			final ListCertificateSource listCertificateSource, final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
+		return super.getSignatureDiagnosticDataBuilder(validationContext, signatures, listCertificateSource, listCRLSource, listOCSPSource)
+				.containerInfo(getContainerInfo());
+	}
 
 	/**
 	 * This method allows to retrieve the container information (ASiC Container)
 	 * 
 	 * @return a DTO with the container information
 	 */
-	@Override
 	protected ContainerInfo getContainerInfo() {
 		ContainerInfo containerInfo = new ContainerInfo();
 		containerInfo.setContainerType(containerType);

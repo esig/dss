@@ -76,7 +76,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
 		AdvancedSignature advancedSignature = signatures.get(0);
 
-		List<CertificateRef> certificateRefs = advancedSignature.getCertificateRefs();
+		List<CertificateRef> certificateRefs = advancedSignature.getCertificateSource().getAllCertificateRefs();
 		assertTrue(Utils.isCollectionNotEmpty(certificateRefs));
 		for (CertificateRef certificateRef : certificateRefs) {
 			assertNotNull(certificateRef.getCertDigest());

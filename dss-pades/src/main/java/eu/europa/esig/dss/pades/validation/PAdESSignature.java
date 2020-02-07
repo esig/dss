@@ -21,13 +21,13 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +35,9 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -47,7 +47,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateRef;
+import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
@@ -66,22 +66,27 @@ public class PAdESSignature extends CAdESSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
-	private final DSSDocument document;
-
 	private final PdfSignatureRevision pdfSignatureRevision;
+	
+	// contains a complete list of validating document revisions
+	private final List<PdfRevision> documentRevisions;
 
 	/**
 	 * The default constructor for PAdESSignature.
 	 *
-	 * @param document
-	 * @param pdfSignatureRevision
-	 * @param certPool
-	 * @throws DSSException
+	 * @param pdfSignatureRevision a related {@link PdfSignatureRevision}
+	 * @param certPool {@link CertificatePool}
+	 * @param documentRevisions a list of {@link PdfRevision} extracted from the validating document
+	 * 
+	 * @throws DSSException in case if a DSSException occurs
+	 * @throws CMSException in case of an error to create a CMSSignedData from a signed contents
 	 */
-	protected PAdESSignature(final DSSDocument document, final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool) throws DSSException {
-		super(pdfSignatureRevision.getCades().getCmsSignedData(), certPool, pdfSignatureRevision.getCades().getDetachedContents());
-		this.document = document;
+	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool, final List<PdfRevision> documentRevisions) 
+			throws DSSException, CMSException {
+		super(new CMSSignedData(pdfSignatureRevision.getPdfSigDictInfo().getContents()), 
+				certPool, new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
 		this.pdfSignatureRevision = pdfSignatureRevision;
+		this.documentRevisions = documentRevisions;
 	}
 
 	@Override
@@ -119,7 +124,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public PAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new PAdESTimestampSource(this, certPool);
+			signatureTimestampSource = new PAdESTimestampSource(this, certPool, documentRevisions);
 		}
 		return (PAdESTimestampSource) signatureTimestampSource;
 	}
@@ -156,35 +161,6 @@ public class PAdESSignature extends CAdESSignature {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
-
-	@Override
-	public List<CertificateRef> getCertificateRefs() {
-		List<CertificateRef> refs = new ArrayList<>();
-		// other are unsigned and should be added in the DSS Dictionary
-		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getCMSSignedDataCertificates();
-		addCertRefs(refs, encapsulatedCertificates);
-		PdfDssDict dssDictionary = pdfSignatureRevision.getDssDictionary();
-		if (dssDictionary != null) {
-			Map<Long, CertificateToken> certMap = dssDictionary.getCERTs();
-			addCertRefs(refs, certMap.values());
-		}
-		return refs;
-	}
-
-	private void addCertRefs(List<CertificateRef> refs, Collection<CertificateToken> encapsulatedCertificates) {
-		for (CertificateToken certificateToken : encapsulatedCertificates) {
-			CertificateRef ref = new CertificateRef();
-			ref.setCertDigest(new Digest(DigestAlgorithm.SHA1, certificateToken.getDigest(DigestAlgorithm.SHA1)));
-			refs.add(ref);
-		}
-	}
-
-	/**
-	 * @return the CAdES signature underlying this PAdES signature
-	 */
-	public CAdESSignature getCAdESSignature() {
-		return pdfSignatureRevision.getCades();
-	}
 	
 	@Override
 	public SignatureIdentifier buildSignatureIdentifier() {
@@ -194,16 +170,13 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	private String getDigestOfByteRange() {
-		int[] signatureByteRange = pdfSignatureRevision.getSignatureByteRange();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		for (int i : signatureByteRange) {
-			baos.write(i);
+		ByteRange signatureByteRange = pdfSignatureRevision.getByteRange();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			baos.write(signatureByteRange.toString().getBytes());
+			return DSSUtils.getMD5Digest(baos.toByteArray());
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot read byteRange : %s", signatureByteRange));
 		}
-		return DSSUtils.getMD5Digest(baos.toByteArray());
-	}
-
-	public int[] getSignatureByteRange() {
-		return pdfSignatureRevision.getSignatureByteRange();
 	}
 	
 	/**
@@ -215,7 +188,7 @@ public class PAdESSignature extends CAdESSignature {
 	 */
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
-		byte[] contents = pdfSignatureRevision.getContents();
+		byte[] contents = getPdfSignatureDictionary().getContents();
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, contents);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
@@ -253,7 +226,7 @@ public class PAdESSignature extends CAdESSignature {
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
-		LOG.debug("Level {} found on document {} = {}", signatureLevel, document.getName(), dataForLevelPresent);
+		LOG.debug("Level {} found on document {} = {}", signatureLevel, getSignatureFilename(), dataForLevelPresent);
 		return dataForLevelPresent;
 	}
 	
@@ -280,12 +253,8 @@ public class PAdESSignature extends CAdESSignature {
 				SignatureLevel.PKCS7_LTA };
 	}
 
-	public boolean hasOuterSignatures() {
-		return Utils.isCollectionNotEmpty(pdfSignatureRevision.getOuterSignatures());
-	}
-
 	@Override
-	public PdfRevision getPdfRevision() {
+	public PdfSignatureRevision getPdfRevision() {
 		return pdfSignatureRevision;
 	}
 	
@@ -300,7 +269,9 @@ public class PAdESSignature extends CAdESSignature {
 	public String getVRIKey() {
 		// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
 		// SHA1 digest of the signature to which it applies
-		return pdfSignatureRevision.uniqueId().toUpperCase();
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, getPdfSignatureDictionary().getContents());
+		String vriId = Utils.toHex(digest);
+		return vriId.toUpperCase();
 	}
 
 }

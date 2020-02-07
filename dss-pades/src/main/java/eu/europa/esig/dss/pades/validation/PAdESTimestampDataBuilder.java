@@ -35,13 +35,13 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
-	private final PdfRevision pdfSignatureRevision;
+	private final List<PdfRevision> documentRevisions;
 	
 	private List<TimestampToken> signatureTimestamps = new ArrayList<>();
 
-	public PAdESTimestampDataBuilder(PdfRevision pdfSignatureRevision, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
+	public PAdESTimestampDataBuilder(List<PdfRevision> documentRevisions, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
 		super(signerInformation, detacheDocuments);
-		this.pdfSignatureRevision = pdfSignatureRevision;
+		this.documentRevisions = documentRevisions;
 	}
 	
 	public void setSignatureTimestamps(List<TimestampToken> signatureTimestamps) {
@@ -82,11 +82,11 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	}
 
 	private DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
-		for (final PdfRevision signatureInfo : pdfSignatureRevision.getOuterSignatures()) {
+		for (final PdfRevision signatureInfo : documentRevisions) {
 			if (signatureInfo instanceof PdfDocTimestampRevision) {
 				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
+					final byte[] signedDocumentBytes = pdfTimestampInfo.getRevisionCoveredBytes();
 					return new InMemoryDocument(signedDocumentBytes);
 				}
 			}

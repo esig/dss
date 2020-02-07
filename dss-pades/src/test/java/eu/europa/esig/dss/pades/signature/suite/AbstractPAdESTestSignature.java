@@ -34,7 +34,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
@@ -90,14 +89,13 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(getSignatureParameters().getContactInfo(), pdfSigDict.getContactInfo());
 		assertEquals(getSignatureParameters().getLocation(), pdfSigDict.getLocation());
 		
-		PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) padesSig.getPdfRevision();
+		PdfSignatureRevision pdfSignatureRevision = padesSig.getPdfRevision();
 
 		if (padesSig.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
 			assertNotNull(pdfSignatureRevision.getDssDictionary());
 		}
 
 		assertNotNull(pdfSignatureRevision.getSigningDate());
-		assertNull(pdfSignatureRevision.getCades().getSigningTime());
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		List<String> originalSignatureFields = service.getAvailableSignatureFields(getDocumentToSign());
@@ -189,7 +187,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	protected void checkSignedAttributesOrder(PAdESSignature padesSig) {
-		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCAdESSignature().getCmsSignedData().getEncoded())) {
+		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCmsSignedData().getEncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());

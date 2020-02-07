@@ -20,51 +20,18 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.Date;
 import java.util.List;
-
-import org.bouncycastle.cms.CMSSignedData;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
+// TODO : move to dss-pades module, remove PAdES-specific methods and remove from AdvancedSignature
 public interface PdfRevision {
-
-	int[] getSignatureByteRange();
-	
-	/**
-	 * Returns byte array of decoding the hexadecimal string present within the /Contents dictionary
-	 * @return byte array
-	 */
-	byte[] getContents();
-
-	void checkIntegrity();
-	
-	Date getSigningDate();
-
-	/**
-	 * @return a byte array representing the DTBS (without a signature, but with the placeholder)
-	 */
-	byte[] getSignedDocumentBytes();
-
-	void addOuterSignature(PdfRevision signatureInfo);
-
-	/**
-	 * @return signatures that covers a document that contains this signature
-	 */
-	List<PdfRevision> getOuterSignatures();
-
-	boolean isTimestampRevision();
-
-	boolean doesSignatureCoverAllOriginalBytes();
-
-	CMSSignedData getCMSSignedData();
-
-	String uniqueId();
 	
 	/**
 	 * Returns a PDF Signature Dictionary info container
-	 * @return {@link PdfSignatureDictionary}
+	 * 
+	 * @return {@code PdfSignatureDictionary}
 	 */
 	PdfSignatureDictionary getPdfSigDictInfo();
 	
@@ -75,11 +42,11 @@ public interface PdfRevision {
 	 */
 	List<String> getFieldNames();
 	
-	/**
-	 * Returns Signature Information Store content
-	 * 
-	 * @return list of {@link SignerInfo}s
-	 */
-	List<SignerInfo> getSignatureInformationStore();
+    /**
+     * Returns Signature Information Store content
+     * 
+     * @return list of {@link SignerInfo}s
+     */
+    List<SignerInfo> getSignatureInformationStore();
 
 }

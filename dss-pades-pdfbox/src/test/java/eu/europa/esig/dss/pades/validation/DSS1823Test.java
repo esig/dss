@@ -30,15 +30,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -47,8 +47,10 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -63,8 +65,8 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1823Test extends PKIFactoryAccess {
@@ -75,17 +77,16 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 	@Test
 	public void testDataNotIntactLTWithDigest() throws Exception {
+		
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE));
 
-		PDDocument pdDocument = PDDocument.load(getClass().getResourceAsStream(FILE));
+		try (PdfDocumentReader pdDocument = new PdfBoxDocumentReader(dssDocument)) {
+			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries().keySet();
 
-		try (InputStream is = getClass().getResourceAsStream(FILE)) {
-			byte[] pdfBytes = Utils.toByteArray(is);
-			List<PDSignature> signatureDictionaries = pdDocument.getSignatureDictionaries();
+			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
-			for (PDSignature pdSignature : signatureDictionaries) {
-
-				byte[] cmsContent = pdSignature.getContents(pdfBytes);
-				byte[] signedContent = pdSignature.getSignedContent(pdfBytes);
+				byte[] cmsContent = pdSignature.getContents();
+				byte[] signedContent = PAdESUtils.getSignedContent(dssDocument, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
@@ -123,23 +124,21 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 			}
 		}
-		pdDocument.close();
 	}
 	
 	
 	@Test
 	public void testDataIntactLTWithDigest() throws Exception {
 
-		PDDocument pdDocument = PDDocument.load(getClass().getResourceAsStream(FILE));
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE));
 
-		try (InputStream is = getClass().getResourceAsStream(FILE)) {
-			byte[] pdfBytes = Utils.toByteArray(is);
-			List<PDSignature> signatureDictionaries = pdDocument.getSignatureDictionaries();
+		try (PdfDocumentReader pdDocument = new PdfBoxDocumentReader(dssDocument)) {
+			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries().keySet();
 
-			for (PDSignature pdSignature : signatureDictionaries) {
+			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
-				byte[] cmsContent = pdSignature.getContents(pdfBytes);
-				byte[] signedContent = pdSignature.getSignedContent(pdfBytes);
+				byte[] cmsContent = pdSignature.getContents();
+				byte[] signedContent = PAdESUtils.getSignedContent(dssDocument, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
@@ -177,22 +176,20 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 			}
 		}
-		pdDocument.close();
 	}
 	
 	@Test
 	public void testDataIntactLTWithCompleteDocument() throws Exception {
 
-		PDDocument pdDocument = PDDocument.load(getClass().getResourceAsStream(FILE));
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE));
 
-		try (InputStream is = getClass().getResourceAsStream(FILE)) {
-			byte[] pdfBytes = Utils.toByteArray(is);
-			List<PDSignature> signatureDictionaries = pdDocument.getSignatureDictionaries();
+		try (PdfDocumentReader pdDocument = new PdfBoxDocumentReader(dssDocument)) {
+			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries().keySet();
 
-			for (PDSignature pdSignature : signatureDictionaries) {
+			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
-				byte[] cmsContent = pdSignature.getContents(pdfBytes);
-				byte[] signedContent = pdSignature.getSignedContent(pdfBytes);
+				byte[] cmsContent = pdSignature.getContents();
+				byte[] signedContent = PAdESUtils.getSignedContent(dssDocument, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
@@ -227,10 +224,9 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 			}
 		}
-		pdDocument.close();
 	}
 	
-	private CommonCertificateVerifier getCertificateVerifier(PDDocument pdDocument) throws IOException {
+	private CommonCertificateVerifier getCertificateVerifier(PdfDocumentReader documentReader) throws IOException {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -238,7 +234,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
 		
-		PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(pdDocument);
+		PdfDssDict dssDictionary = documentReader.getDSSDictionary();
 
 		List<RevocationSource<CRLToken>> crlTokens = new ArrayList<>();
 		crlTokens.add(calculateCRLs(dssDictionary));
@@ -272,12 +268,12 @@ public class DSS1823Test extends PKIFactoryAccess {
 
 	private ExternalResourcesCRLSource calculateCRLs(PdfDssDict dssDictionary) {
 		ExternalResourcesCRLSource externalResources = null;
-		Map<Long, byte[]> CRLs = dssDictionary.getCRLs();
+		Map<Long, CRLBinary> CRLs = dssDictionary.getCRLs();
 		InputStream[] streams = new InputStream[3];
 		int i = 0;
-		for (Map.Entry<Long, byte[]> crl : CRLs.entrySet()) {
-			byte[] value = crl.getValue();
-			streams[i] = new ByteArrayInputStream(value);
+		for (Map.Entry<Long, CRLBinary> crl : CRLs.entrySet()) {
+			CRLBinary value = crl.getValue();
+			streams[i] = new ByteArrayInputStream(value.getBinaries());
 			i++;
 		}
 

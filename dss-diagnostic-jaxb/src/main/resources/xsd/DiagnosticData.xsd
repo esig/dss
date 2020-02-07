@@ -472,7 +472,7 @@
 	
 	<xs:complexType name="TimestampedObjects">
 		<xs:sequence>
-			<xs:element name="TimestampedObject" type="TimestampedObject" maxOccurs="unbounded" />
+			<xs:element name="TimestampedObject" type="TimestampedObject" maxOccurs="unbounded" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -677,7 +677,7 @@
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
 		
-					<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
+					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
 		
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />

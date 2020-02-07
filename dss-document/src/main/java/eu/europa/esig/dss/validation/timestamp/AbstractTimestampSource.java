@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +115,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @param signature {@link AdvancedSignature} is being validated
 	 */
 	protected AbstractTimestampSource(final AdvancedSignature signature) {
+		Objects.requireNonNull(signature, "The signature cannot be null!");
 		this.signatureCertificateSource = signature.getCertificateSource();
 		this.signatureCRLSource = signature.getCRLSource();
 		this.signatureOCSPSource = signature.getOCSPSource();

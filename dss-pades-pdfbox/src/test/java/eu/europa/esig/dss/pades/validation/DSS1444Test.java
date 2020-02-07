@@ -67,7 +67,7 @@ public class DSS1444Test {
 				val.getSignatures();
 			}
 		});
-		assertEquals("Cannot analyze signatures : Page tree root must be a dictionary", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Page tree root must be a dictionary"));
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class DSS1444Test {
 				val.getSignatures();
 			}
 		});
-		assertEquals("Cannot analyze signatures : Page tree root must be a dictionary", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Page tree root must be a dictionary"));
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class DSS1444Test {
 				val.getSignatures();
 			}
 		});
-		assertEquals("Cannot analyze signatures : Error: End-of-File, expected line", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Error: End-of-File, expected line"));
 	}
 
 	@Test

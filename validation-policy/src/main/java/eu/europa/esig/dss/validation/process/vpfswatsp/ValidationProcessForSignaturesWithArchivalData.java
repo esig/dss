@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -147,8 +148,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		List<TimestampWrapper> timestampsList = signature.getTimestampList();
 		if (Utils.isCollectionNotEmpty(timestampsList)) {
 			XmlConclusion latestConclusion = null;
-			
-			Collections.sort(timestampsList, new TimestampComparator());
+
+			timestampsList.sort(Comparator.comparing(TimestampWrapper::getProductionTime).reversed());
 			for (TimestampWrapper newestTimestamp : timestampsList) {
 				XmlBasicBuildingBlocks bbbTsp = bbbs.get(newestTimestamp.getId());
 				XmlConstraintsConclusion timestampValidation = getTimestampValidation(newestTimestamp);

@@ -270,7 +270,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 		PAdESSignature padesSignature = (PAdESSignature) signatures.get(0);
-		byte[] contents = padesSignature.getPdfRevision().getContents();
+		byte[] contents = padesSignature.getPdfRevision().getPdfSigDictInfo().getContents();
 		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), contents);
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());

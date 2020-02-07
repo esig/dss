@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,9 +41,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.ListCRLSource;
+import eu.europa.esig.dss.validation.ListCertificateSource;
+import eu.europa.esig.dss.validation.ListOCSPSource;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -131,12 +137,70 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	@Override
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
+		
+		List<AdvancedSignature> allSignatures = getAllSignatures();
+        List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
+        
+        ListCRLSource listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
+        ListOCSPSource listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
+		prepareCertificateVerifier(listCRLSource, listOCSPSource);
+		
+		prepareSignatureValidationContext(validationContext, allSignatures);
+        prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
+		
+		if (!skipValidationContextExecution) {
+			validateContext(validationContext);
+		}
+		
+		ListCertificateSource listCertificateSource = mergeCertificateSource(validationContext, allSignatures, detachedTimestamps);
+		
+		return getSignatureDiagnosticDataBuilder(validationContext, allSignatures, listCertificateSource, listCRLSource, listOCSPSource);
+	}
+	
+	@Override
 	public List<TimestampToken> getDetachedTimestamps() {
 		List<TimestampToken> independantTimestamps = new ArrayList<>();
 		for (DocumentValidator timestampValidator : getTimestampValidators()) {
 			independantTimestamps.addAll(timestampValidator.getDetachedTimestamps());
 		}
 		return independantTimestamps;
+	}
+	
+	protected void prepareCertificateVerifier(Collection<AdvancedSignature> allSignatures, Collection<TimestampToken> timestampTokens) {
+		certificateVerifier.setSignatureCRLSource(mergeCRLSources(allSignatures, timestampTokens));
+		certificateVerifier.setSignatureOCSPSource(mergeOCSPSources(allSignatures, timestampTokens));
+	}
+	
+	protected ListCRLSource mergeCRLSources(Collection<AdvancedSignature> allSignatures, Collection<TimestampToken> timestampTokens) {
+		ListCRLSource listCRLSource = mergeCRLSources(allSignatures);
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (TimestampToken timestampToken : timestampTokens) {
+				listCRLSource.add(timestampToken.getCRLSource());
+			}
+		}
+		return listCRLSource;
+	}
+ 	
+	protected ListOCSPSource mergeOCSPSources(Collection<AdvancedSignature> allSignatures, Collection<TimestampToken> timestampTokens) {
+		ListOCSPSource listOCSPSource = mergeOCSPSources(allSignatures);
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (TimestampToken timestampToken : timestampTokens) {
+				listOCSPSource.add(timestampToken.getOCSPSource());
+			}
+		}
+		return listOCSPSource;
+	}
+	
+	protected ListCertificateSource mergeCertificateSource(final ValidationContext validationContext, Collection<AdvancedSignature> allSignatures, 
+			Collection<TimestampToken> timestampTokens) {
+		ListCertificateSource listCertificateSource = mergeCertificateSource(validationContext, allSignatures);
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (TimestampToken timestampToken : timestampTokens) {
+				listCertificateSource.add(timestampToken.getCertificateSource());
+			}
+		}
+		return listCertificateSource;
 	}
 
 	@Override

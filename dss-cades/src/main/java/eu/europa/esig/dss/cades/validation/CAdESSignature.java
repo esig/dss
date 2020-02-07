@@ -184,9 +184,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		this(cms, DSSASN1Utils.getFirstSignerInformation(cms), certPool);
 	}
 
-	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool, List<DSSDocument> detachedContents) {
+	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool, DSSDocument detachedContent) {
 		this(cms, certPool);
-		setDetachedContents(detachedContents);
+		setDetachedContents(Arrays.asList(detachedContent));
 	}
 
 	/**
@@ -1184,11 +1184,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			collector.add(countersignature);
 			recursiveCollect(collector, counterSignerInformation, countersignature);
 		}
-	}
-
-	@Override
-	public List<CertificateRef> getCertificateRefs() {
-		return getCertificateSource().getCompleteCertificateRefs();
 	}
 
 	public DSSDocument getOriginalDocument() throws DSSException {
