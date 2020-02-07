@@ -1537,6 +1537,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLO
 === The TL / LOTL refresh
 
 The TL / LOTL loading in DSS works as below : 
+
  * Download / parse / validate all LOTLSources from the configuration with/without pivot support (multi-threaded)
  * Analyze introduced changes and expire cache entries (new TL URLs, new signing certificates for a TL,...)
  * Create TLSources from the retrieved LOTLs
