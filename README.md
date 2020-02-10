@@ -10,7 +10,7 @@ Please, use the new JIRA for project is on https://ec.europa.eu/cefdigital/track
 
 The release is published on CEF Digital repository : 
 
-https://ec.europa.eu/cefdigital/artifact/#welcome
+https://ec.europa.eu/cefdigital/artifact/#browse/welcome
 
 <pre>
 &lt;repository&gt;
