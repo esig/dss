@@ -35,13 +35,14 @@
 	
 				<fo:static-content>
 					<xsl:attribute name="flow-name">page-footer</xsl:attribute>
-					<xsl:attribute name="font-size">8pt</xsl:attribute>
+					<xsl:attribute name="font-size">5pt</xsl:attribute>
 					
 					<fo:block>
 						<xsl:attribute name="color">grey</xsl:attribute>
 						<xsl:attribute name="border-top-style">solid</xsl:attribute>
 						<xsl:attribute name="border-top-color">grey</xsl:attribute>
 						<xsl:attribute name="text-align-last">justify</xsl:attribute>
+						<xsl:attribute name="padding-top">3px</xsl:attribute>
 					
 						<fo:inline>
 							 <fo:basic-link>
@@ -64,7 +65,7 @@
 
 				<fo:flow>
 					<xsl:attribute name="flow-name">xsl-region-body</xsl:attribute>
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
+					<xsl:attribute name="font-size">8pt</xsl:attribute>
 					
 					<xsl:apply-templates select="dss:Certificate"/>
 					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='CERTIFICATE']"/>
@@ -89,12 +90,14 @@
 	<xsl:template match="dss:BasicBuildingBlocks">
 		<fo:block>
 			<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color">#0066CC</xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
+<!--        		<xsl:attribute name="padding">5px</xsl:attribute> -->
        		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+       		<xsl:attribute name="color">#004494</xsl:attribute>
+       		
+       		<xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+       		<xsl:attribute name="border-color">#004494</xsl:attribute>
+       		<xsl:attribute name="border-width">1px</xsl:attribute>
        		
     		Basic Building Blocks
     		<fo:block>
@@ -102,215 +105,237 @@
     			<xsl:value-of select="@Type"/> - <xsl:value-of select="@Id"/>
     		</fo:block>
     	</fo:block>
-    	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-        	<xsl:apply-templates/>
-   		</xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="dss:Signature">
-		<fo:block>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color">#0066CC</xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-    		Signature <xsl:value-of select="@Id" />
-    	</fo:block>
-    	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-        	<xsl:apply-templates/>
-   		</xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="dss:Timestamp">
-		<fo:block>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color">#0066CC</xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-    		Timestamp <xsl:value-of select="@Id" />
-    	</fo:block>
-    	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-        	<xsl:apply-templates/>
-   		</xsl:if>
-    </xsl:template>
-    
-	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessLongTermData|dss:ValidationProcessArchivalData|dss:TLAnalysis|dss:Certificate">
-		<fo:block>
-			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationColor">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-					<xsl:otherwise>grey</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-		
-    		<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-top">15px</xsl:attribute>
-       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-       		
-       		<xsl:value-of select="@Title" />
-    	</fo:block>
+
        	<xsl:apply-templates/>
-       	<fo:block>
-			<xsl:attribute name="margin-left">10px</xsl:attribute>	
-			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-			<xsl:call-template name="analysis-conclusion">
-				<xsl:with-param name="Conclusion" select="dss:Conclusion" />
-			</xsl:call-template>
-		</fo:block>
     </xsl:template>
     
-	<xsl:template match="dss:ValidationProcessTimestamp">
+	<xsl:template match="dss:TLAnalysis">
 		<fo:block>
-			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationColor">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-					<xsl:otherwise>grey</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-			
 			<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-top">15px</xsl:attribute>
+<!--        		<xsl:attribute name="padding">5px</xsl:attribute> -->
        		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-    		Validation Process for time-stamps 
-    		<fo:block>
-	    		<xsl:attribute name="font-size">7pt</xsl:attribute>
-	    		<xsl:value-of select="@Type"/> - <xsl:value-of select="@Id"/>
-    		</fo:block>
+       		<xsl:attribute name="color">#004494</xsl:attribute>
+       		
+       		<xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+       		<xsl:attribute name="border-color">#004494</xsl:attribute>
+       		<xsl:attribute name="border-width">1px</xsl:attribute>
+       		
+       		<xsl:value-of select="@Title"/>
     	</fo:block>
-    	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-        	<xsl:apply-templates/>
-        	<fo:block>
-				<xsl:attribute name="margin-left">10px</xsl:attribute>	
-				<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-				<xsl:call-template name="analysis-conclusion">
-					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
-				</xsl:call-template>
-			</fo:block>
-   		</xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="dss:ValidationSignatureQualification">
-		<fo:block>
-			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationColor">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-					<xsl:otherwise>grey</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-		
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-top">15px</xsl:attribute>
-       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-    		
-       		<xsl:value-of select="@Title" /> : <xsl:value-of select="@SignatureQualification"/>
-    	</fo:block>
-    	
-       	<xsl:apply-templates/>
-    </xsl:template>
-     
-    <xsl:template match="dss:ValidationTimestampQualification">
-		<fo:block>
-			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationColor">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-					<xsl:otherwise>grey</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-		
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-top">15px</xsl:attribute>
-       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-    		
-       		<xsl:value-of select="@Title" /> : <xsl:value-of select="@TimestampQualification"/>
-    	</fo:block>
-    	
+
        	<xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="dss:ValidationCertificateQualification">
+    <xsl:template match="dss:Signature|dss:Timestamp">
+	    
+			<fo:table>
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="keep-with-next">always</xsl:attribute>
+							<xsl:attribute name="font-weight">bold</xsl:attribute>
+				       		
+				       		<xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+				       		<xsl:attribute name="border-color">#004494</xsl:attribute>
+				       		<xsl:attribute name="border-width">1px</xsl:attribute>
+				       		
+				       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+				       		
+				       		<xsl:value-of select="name(.)" />
+							<xsl:text> </xsl:text>
+				       		<xsl:value-of select="@Id" />
+				    	</fo:block>
+	    			</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+    	
 		<fo:block>
-			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationColor">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-					<xsl:otherwise>grey</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-		
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-       		<xsl:attribute name="color">white</xsl:attribute>
-       		<xsl:attribute name="padding">5px</xsl:attribute>
-       		<xsl:attribute name="margin-top">15px</xsl:attribute>
-       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-			
-       		<xsl:value-of select="@Title" />
+       		<xsl:attribute name="border-left-style">solid</xsl:attribute>
+       		<xsl:attribute name="border-color">#004494</xsl:attribute>
+       		<xsl:attribute name="border-width">1px</xsl:attribute>
+<!-- 				       		<xsl:attribute name="margin-left">10px</xsl:attribute> -->
+       					
+	   		<xsl:apply-templates/>
     	</fo:block>
-        
-        <xsl:apply-templates/>
+	    	
     </xsl:template>
     
-    <xsl:template match="dss:Conclusion" />
+	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessTimestamp|dss:ValidationProcessLongTermData|dss:ValidationProcessArchivalData|dss:Certificate">
 	
-    <xsl:template match="dss:ISC|dss:VCI|dss:RAC|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PCV|dss:VTS">
-    	<fo:table>
+		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+        <xsl:variable name="indicationColor">
+        	<xsl:choose>
+				<xsl:when test="$indicationText='PASSED'">green</xsl:when>
+				<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+				<xsl:when test="$indicationText='FAILED'">red</xsl:when>
+				<xsl:otherwise>grey</xsl:otherwise>
+			</xsl:choose>
+        </xsl:variable>
+
+		<fo:table>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+<!-- 	       			<xsl:attribute name="padding-left">5px</xsl:attribute> -->
 			
 			<fo:table-column>
-				<xsl:attribute name="column-width">70%</xsl:attribute>
+				<xsl:attribute name="column-width">80%</xsl:attribute>
 			</fo:table-column>
 			<fo:table-column>
-				<xsl:attribute name="column-width">30%</xsl:attribute>
+				<xsl:attribute name="column-width">20%</xsl:attribute>
 			</fo:table-column>
 			
 			<fo:table-body>
+		    	<fo:table-row>
+					<xsl:attribute name="margin-left">5px</xsl:attribute>
+		       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+		       		
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+
+				       		<xsl:value-of select="@Title" />
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+							<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+							
+							<xsl:value-of select="dss:Conclusion/dss:Indication" />
+							
+							<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
+								<xsl:text> - </xsl:text>
+								<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
+							</xsl:if>
+							
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+
+			</fo:table-body>
+		</fo:table>
+		
+		<fo:block>
+      		<xsl:attribute name="border-left-style">solid</xsl:attribute>
+      		<xsl:attribute name="border-color">#004494</xsl:attribute>
+      		<xsl:attribute name="border-width">1px</xsl:attribute>
+      		<xsl:attribute name="margin-left">5px</xsl:attribute>
+	
+			<xsl:apply-templates />
+		</fo:block>
+    </xsl:template>
+    
+    <xsl:template match="dss:ValidationSignatureQualification|dss:ValidationTimestampQualification|dss:ValidationCertificateQualification">
+    	<fo:table>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+<!-- 			<xsl:attribute name="margin-left">5px</xsl:attribute> -->
+					<xsl:attribute name="margin-left">0px</xsl:attribute>
+			
+			<fo:table-column>
+				<xsl:attribute name="column-width">60%</xsl:attribute>
+			</fo:table-column>
+			<fo:table-column>
+				<xsl:attribute name="column-width">40%</xsl:attribute>
+			</fo:table-column>
+    
+    		<fo:table-body>
+		    	<fo:table-row>
+					<xsl:attribute name="margin-left">5px</xsl:attribute>
+		       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+		       		
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+    
+    						<xsl:value-of select="@Title" />
+    					</fo:block>
+    				</fo:table-cell>
+    				
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+		    				
+		    				<xsl:choose>
+					    		<xsl:when test="@SignatureQualification">
+					       			<xsl:value-of select="@SignatureQualification"/>
+					       		</xsl:when>
+					    		<xsl:when test="@TimestampQualification">
+					       			<xsl:value-of select="@TimestampQualification"/>
+					       		</xsl:when>
+					    		<xsl:when test="@CertificateQualification">
+					       			<xsl:value-of select="@CertificateQualification"/>
+					       		</xsl:when>
+				       		</xsl:choose>
+				       	</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+
+
+			</fo:table-body>
+		</fo:table>
+
+		<fo:block>
+       		<xsl:attribute name="border-left-style">solid</xsl:attribute>
+       		<xsl:attribute name="border-color">#004494</xsl:attribute>
+       		<xsl:attribute name="border-width">1px</xsl:attribute>
+      		<xsl:attribute name="margin-left">5px</xsl:attribute>
+			<xsl:apply-templates />
+		</fo:block>
+
+<!--     	<fo:block> -->
+<!--        		<xsl:attribute name="border-left-style">solid</xsl:attribute> -->
+<!--        		<xsl:attribute name="border-color">#004494</xsl:attribute> -->
+<!--        		<xsl:attribute name="border-width">1px</xsl:attribute> -->
+<!--        		<xsl:attribute name="margin-bottom">10px</xsl:attribute> -->
+<!--         		<xsl:attribute name="margin-left">10px</xsl:attribute> -->
+<!--  			<xsl:attribute name="margin-left">5px</xsl:attribute> -->
+		
+<!--        	</fo:block> -->
+    </xsl:template>
+     
+    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:RAC|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PCV|dss:VTS">
+		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication"/>
+        <xsl:variable name="indicationColor">
+        	<xsl:choose>
+				<xsl:when test="$indicationText='PASSED'">green</xsl:when>
+				<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+				<xsl:when test="$indicationText='FAILED'">red</xsl:when>
+				<xsl:otherwise>grey</xsl:otherwise>
+			</xsl:choose>
+        </xsl:variable>
+        
+    	<fo:table>
+			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+			<xsl:attribute name="margin-left">5px</xsl:attribute>
+			
+			<fo:table-column>
+				<xsl:attribute name="column-width">60%</xsl:attribute>
+			</fo:table-column>
+			<fo:table-column>
+				<xsl:attribute name="column-width">40%</xsl:attribute>
+			</fo:table-column>
+			
+			<fo:table-body>
 		    	<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+<!-- 		       				<xsl:attribute name="margin-left">5px</xsl:attribute> -->
+		       		
 		    				<xsl:choose>
 								<xsl:when test="name(.) = 'SubXCV'">
 									<xsl:choose>
 										<xsl:when test="@TrustAnchor ='true'">Trust Anchor</xsl:when>
-										<xsl:otherwise>Certificate : </xsl:otherwise>
+										<xsl:otherwise>Certificate <xsl:value-of select="@Id"/> : </xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
 								<xsl:otherwise>
@@ -320,76 +345,92 @@
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
-						<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication"/>
-				        <xsl:variable name="indicationColor">
-				        	<xsl:choose>
-								<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-								<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-								<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-								<xsl:otherwise>grey</xsl:otherwise>
-							</xsl:choose>
-				        </xsl:variable>
-					
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+		    				<xsl:attribute name="text-align">center</xsl:attribute>
 							<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
 							
-							<xsl:value-of select="dss:Conclusion/dss:Indication" />
+							<xsl:choose>
+								<xsl:when test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
+									<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="dss:Conclusion/dss:Indication" />
+								</xsl:otherwise>
+							</xsl:choose>
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>	
+				
 			</fo:table-body>
 		</fo:table>
-		<xsl:apply-templates />
+		
+		<fo:table>
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell>
+						<fo:block>
+							<xsl:apply-templates />
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+		
     </xsl:template>
     
     <xsl:template match="dss:Constraint">
     	<fo:table>
-			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-			
+					<xsl:attribute name="margin-left">0px</xsl:attribute>
+    		
 			<fo:table-column>
-				<xsl:attribute name="column-width">70%</xsl:attribute>
+				<xsl:attribute name="column-width">80%</xsl:attribute>
 			</fo:table-column>
 			<fo:table-column>
-				<xsl:attribute name="column-width">30%</xsl:attribute>
+				<xsl:attribute name="column-width">20%</xsl:attribute>
 			</fo:table-column>
-			
+    	
 			<fo:table-body>
-    
 		    	<fo:table-row>
+					<xsl:attribute name="margin-left">5px</xsl:attribute>
 					<fo:table-cell>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+		    				<xsl:attribute name="font-weight">normal</xsl:attribute>
+    						<xsl:attribute name="font-size">6pt</xsl:attribute>
+		    				
 							<xsl:value-of select="dss:Name"/>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>			
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>	
+		    				<xsl:attribute name="font-weight">normal</xsl:attribute>		
+							<xsl:attribute name="font-size">6pt</xsl:attribute>
+							<xsl:attribute name="text-align">right</xsl:attribute>
 							
 							<xsl:variable name="statusText" select="dss:Status"/>
 				        	<xsl:choose>
 								<xsl:when test="$statusText='OK'">
-									<fo:external-graphic>
-										<xsl:attribute name="src">data:image/jpg;base64,/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCAAQABADAREAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABQMG/8QAGAEAAwEBAAAAAAAAAAAAAAAAAgMFAAH/2gAMAwEAAhADEAAAAdLOmqO1gM7q/wD/xAAWEAEBAQAAAAAAAAAAAAAAAAAFBAb/2gAIAQEAAQUC0DqKaRliuftrlSzTZZSTzf8A/8QAGxEBAAMAAwEAAAAAAAAAAAAAAgABAxESMUH/2gAIAQMBAT8B20VrqfkK0y4teXGXnp3MovZ8qf/EABwRAQACAgMBAAAAAAAAAAAAAAIAAQMREiEiQf/aAAgBAgEBPwFNu/MFoKgvs08V3qupiCtc1P/EAB8QAAEEAgIDAAAAAAAAAAAAAAIBAwQRABIFMSEigf/aAAgBAQAGPwKRHhK6LLFpTF2tdqtZCb5BxXI8vxqZbEC49MhslKiPrsQAl/MCdPA2mgJC90rroUTP/8QAHRABAAICAgMAAAAAAAAAAAAAAREhADFBUWHB4f/aAAgBAQABPyFSkpuCFW3kXhb8GObEk8X3pdI1EpVUFiKw/TL/AKJ90pXE++c//9oADAMBAAIAAwAAABCDz//EAB4RAQABAwUBAAAAAAAAAAAAAAEAETFRIUFhobHw/9oACAEDAQE/EF9cML6XiLeB2iI6jc+6YNOgeYJ//8QAHxEAAAUEAwAAAAAAAAAAAAAAAAEhQfARUaGxcYHh/9oACAECAQE/EDWqhWjhelnM8BKaNMaxY/tuiH//xAAaEAEBAAMBAQAAAAAAAAAAAAABEQAhMUFh/9oACAEBAAE/EIX+7F5QOAsk0qqszASAiuyKlYZxi5ueqIIqARIzBmq2WHx3FeSlVv8A/9k=</xsl:attribute>
-										<xsl:attribute name="content-width">8px</xsl:attribute>
-										<xsl:attribute name="height">8px</xsl:attribute>
-									</fo:external-graphic>
+									<fo:instream-foreign-object content-height="8px" content-width="8px" height="8px" width="8px">
+										<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path style="fill:green" d="M1412 734q0-28-18-46l-91-90q-19-19-45-19t-45 19l-408 407-226-226q-19-19-45-19t-45 19l-91 90q-18 18-18 46 0 27 18 45l362 362q19 19 45 19 27 0 46-19l543-543q18-18 18-45zm252 162q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+									</fo:instream-foreign-object>
 								</xsl:when>
 								<xsl:when test="$statusText='NOT OK'">
-									<fo:external-graphic>
-										<xsl:attribute name="src">data:image/jpg;base64,/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCAAQABADAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAXAQEBAQEAAAAAAAAAAAAAAAABAgQG/9oADAMBAAIQAxAAAAGhYuhWIVn/xAAWEAEBAQAAAAAAAAAAAAAAAAAEBQb/2gAIAQEAAQUCWt+krEW/N1lkfm6xCP0lb//EABoRAAIDAQEAAAAAAAAAAAAAAAIDAAEEERL/2gAIAQMBAT8BAE41CbB7ZRi1a0k1Y+bqAadihBhcsYxisiSUsvV3P//EABkRAQADAQEAAAAAAAAAAAAAAAEAAhEDEv/aAAgBAgEBPwHbdVxlVpfwuzLclwlRvf2mT//EABkQAAMBAQEAAAAAAAAAAAAAAAECBBEAA//aAAgBAQAGPwKuSSsSeU+gKGwuR0kldYr8qMBUtpQnq65JBX5UaQwXShPSV1yCTynwliuFyO//xAAaEAEAAQUAAAAAAAAAAAAAAAABEQAhMUGB/9oACAEBAAE/IRYC1Po1fPAihZC1Po3fPEmhYC0Pp1fPEigZC1vp3fPAmv/aAAwDAQACAAMAAAAQss//xAAbEQACAwEBAQAAAAAAAAAAAAABIRExQQBhkf/aAAgBAwEBPxBI+SSJABeqsst86ucgEB4q+Hzkj5IJgEBaq2w1zK52QAVir6fO/8QAGxEAAgEFAAAAAAAAAAAAAAAAAREAMVGx0fD/2gAIAQIBAT8QbVAUF+1AxIcxNcDQ27UDEgzP/8QAFhABAQEAAAAAAAAAAAAAAAAAASFR/9oACAEBAAE/EGLtJQNViEopiK0gLSUBRaAYC4gkYu0tAxCgGqGoJDAtIQEAiEiDqK3/2Q==</xsl:attribute>
-										<xsl:attribute name="content-width">8px</xsl:attribute>
-										<xsl:attribute name="height">8px</xsl:attribute>
-									</fo:external-graphic>
+									<fo:instream-foreign-object content-height="8px" content-width="8px" height="8px" width="8px">
+										<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path style="fill:red" d="M1277 1122q0-26-19-45l-181-181 181-181q19-19 19-45 0-27-19-46l-90-90q-19-19-46-19-26 0-45 19l-181 181-181-181q-19-19-45-19-27 0-46 19l-90 90q-19 19-19 46 0 26 19 45l181 181-181 181q-19 19-19 45 0 27 19 46l90 90q19 19 46 19 26 0 45-19l181-181 181 181q19 19 45 19 27 0 46-19l90-90q19-19 19-46zm387-226q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+									</fo:instream-foreign-object>
 								</xsl:when>
 								<xsl:when test="$statusText='WARNING'">
-									<fo:external-graphic>
-										<xsl:attribute name="src">data:image/jpg;base64,/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCAAQABADAREAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAMG/8QAFwEBAAMAAAAAAAAAAAAAAAAAAgMEBf/aAAwDAQACEAMQAAAB3mReMyjZn//EABYQAQEBAAAAAAAAAAAAAAAAAAUEA//aAAgBAQABBQK9iphuBioZtMDY9owDZBr/xAAbEQACAwEBAQAAAAAAAAAAAAABAgADEhETQf/aAAgBAwEBPwHAqTRHY6ApsT0Dpz7LLBjIn//EABwRAAICAwEBAAAAAAAAAAAAAAEDAAIREhMxQf/aAAgBAgEBPwHpZ7NAcCJbareVjmFJU3b5EpJZ0Pk//8QAHhAAAgIBBQEAAAAAAAAAAAAAAQMCBAAREhMUMkH/2gAIAQEABj8C6KLMqid5WJQ+nOi+zK2jeFmU/mCyFtbUkzk1R6jhslbVVAzk1f6ln//EABkQAQEBAQEBAAAAAAAAAAAAAAEhEQAxYf/aAAgBAQABPyE3aZBDaojU5TShFTlFVi9sHIps6ny+dgnMlk6H2+9//9oADAMBAAIAAwAAABDnX//EAB4RAAIBAwUAAAAAAAAAAAAAAAERACExgVFh0eHx/9oACAEDAQE/ELoFHniLyinjyCpAN1oE0yQirDXqf//EAB4RAAICAgIDAAAAAAAAAAAAAAERACExQWHRofDx/9oACAECAQE/EDv2JcdqUoCU9v7UAiBN8Z9fiLoQBYeSXXZn/8QAFxABAQEBAAAAAAAAAAAAAAAAAREhAP/aAAgBAQABPxC7JhAIXQQAIRLwNg4AcGghRUgzpJ4npCgihaoSbeJnMHAJFVI1UC7Z3//Z</xsl:attribute>
-										<xsl:attribute name="content-width">8px</xsl:attribute>
-										<xsl:attribute name="height">8px</xsl:attribute>
-									</fo:external-graphic>
+									<fo:instream-foreign-object content-height="8px" content-width="8px" height="8px" width="8px">
+										<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path style="fill:orange" d="M896 128q209 0 385.5 103t279.5 279.5 103 385.5-103 385.5-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103zm128 1247v-190q0-14-9-23.5t-22-9.5h-192q-13 0-23 10t-10 23v190q0 13 10 23t23 10h192q13 0 22-9.5t9-23.5zm-2-344l18-621q0-12-10-18-10-8-24-8h-220q-14 0-24 8-10 6-10 18l17 621q0 10 10 17.5t24 7.5h185q14 0 23.5-7.5t10.5-17.5z"/></svg>
+									</fo:instream-foreign-object>
+								</xsl:when>
+								<xsl:when test="$statusText='IGNORED'">
+									<fo:instream-foreign-object content-height="8px" content-width="8px" height="8px" width="8px">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792"><path style="fill:grey" d="M555 1335l78-141q-87-63-136-159t-49-203q0-121 61-225-229 117-381 353 167 258 427 375zm389-759q0-20-14-34t-34-14q-125 0-214.5 89.5t-89.5 214.5q0 20 14 34t34 14 34-14 14-34q0-86 61-147t147-61q20 0 34-14t14-34zm363-191q0 7-1 9-106 189-316 567t-315 566l-49 89q-10 16-28 16-12 0-134-70-16-10-16-28 0-12 44-87-143-65-263.5-173t-208.5-245q-20-31-20-69t20-69q153-235 380-371t496-136q89 0 180 17l54-97q10-16 28-16 5 0 18 6t31 15.5 33 18.5 31.5 18.5 19.5 11.5q16 10 16 27zm37 447q0 139-79 253.5t-209 164.5l280-502q8 45 8 84zm448 128q0 35-20 69-39 64-109 145-150 172-347.5 267t-419.5 95l74-132q212-18 392.5-137t301.5-307q-115-179-282-294l63-112q95 64 182.5 153t144.5 184q20 34 20 69z"></path></svg>
+									</fo:instream-foreign-object>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="dss:Status" />
@@ -403,69 +444,11 @@
 		</fo:table>
     </xsl:template>
     
-    
-    <xsl:template name="analysis-conclusion">
-        <xsl:param name="Conclusion"/>
-        
-        <xsl:if test="string-length($Conclusion/dss:Indication) &gt; 0">
-	        <fo:table>
-				<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-				
-				<fo:table-column>
-					<xsl:attribute name="column-width">20%</xsl:attribute>
-				</fo:table-column>
-				<fo:table-column>
-					<xsl:attribute name="column-width">70%</xsl:attribute>
-				</fo:table-column>
-				
-				<fo:table-body>
-	       			<fo:table-row>
-	       				<fo:table-cell>
-	       					<fo:block>
-	       						<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-	       						Conclusion : 
-	       					</fo:block>
-	       				</fo:table-cell>
-	
-						<fo:table-cell>
-							<xsl:variable name="indicationText" select="$Conclusion/dss:Indication"/>
-					        <xsl:variable name="indicationColor">
-					        	<xsl:choose>
-									<xsl:when test="$indicationText='PASSED'">green</xsl:when>
-									<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
-									<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-									<xsl:otherwise>grey</xsl:otherwise>
-								</xsl:choose>
-					        </xsl:variable>
-									
-							<fo:block>
-								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-			    				<xsl:attribute name="font-weight">bold</xsl:attribute>
-								<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
-								<xsl:value-of select="$Conclusion/dss:Indication" />
-								
-								<xsl:if test="string-length($Conclusion/dss:SubIndication) &gt; 0">
-									<xsl:text> - </xsl:text>
-									<xsl:value-of select="$Conclusion/dss:SubIndication"/>
-								</xsl:if>
-							</fo:block>
-							
-							<xsl:if test="string-length($Conclusion/dss:Error) &gt; 0">
-								<fo:block>
-									<xsl:value-of select="$Conclusion/dss:Error"/>
-								</fo:block>
-							</xsl:if>
-							<xsl:if test="string-length($Conclusion/dss:Warning) &gt; 0">
-								<fo:block>
-									<xsl:value-of select="$Conclusion/dss:Warning"/>
-								</fo:block>
-							</xsl:if>
-						</fo:table-cell>       			
-	       			</fo:table-row>
-	       		</fo:table-body>
-	       	</fo:table>
-		</xsl:if>
-    </xsl:template>
+    <xsl:template match="dss:Conclusion" />
+    <xsl:template match="dss:ProofOfExistence" />
+    <xsl:template match="dss:CryptographicInfo" />
+    <xsl:template match="dss:CertificateChain" />
+    <xsl:template match="dss:RevocationProductionDate" />
     
 </xsl:stylesheet>
 
