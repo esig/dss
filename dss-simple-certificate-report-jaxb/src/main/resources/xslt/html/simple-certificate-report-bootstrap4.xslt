@@ -69,7 +69,12 @@
 			    				<li>
 			    					Issuance Time (<xsl:value-of select="dss:notBefore"/>) : 
 					    			<span>
-					    				<xsl:attribute name="class">badge badge-primary</xsl:attribute>
+					    				<xsl:attribute name="class">
+					    					<xsl:choose>
+					    						<xsl:when test="dss:qualificationAtIssuance='N/A'">badge badge-secondary</xsl:when>
+					    						<xsl:otherwise>badge badge-primary</xsl:otherwise>
+					    					</xsl:choose>
+					    				</xsl:attribute>
 					    				
 					    				<xsl:value-of select="dss:qualificationAtIssuance"/>
 					    			</span>
@@ -78,7 +83,12 @@
 			    				<li>
 				    				Validation Time (<xsl:value-of select="$validationTime"/>) : 
 					    			<span>
-					    				<xsl:attribute name="class">badge badge-primary</xsl:attribute>
+					    				<xsl:attribute name="class">
+					    					<xsl:choose>
+					    						<xsl:when test="dss:qualificationAtValidation='N/A'">badge badge-secondary</xsl:when>
+					    						<xsl:otherwise>badge badge-primary</xsl:otherwise>
+					    					</xsl:choose>
+					    				</xsl:attribute>
 					    				
 					    				<xsl:value-of select="dss:qualificationAtValidation"/>
 					    			</span>
