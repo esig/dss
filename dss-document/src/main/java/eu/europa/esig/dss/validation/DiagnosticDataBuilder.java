@@ -156,8 +156,7 @@ public class DiagnosticDataBuilder {
 	private List<CertificateSource> trustedCertSources = new ArrayList<>();
 	private Date validationDate;
 	
-	// Merged validation data sources
-	private ListCertificateSource commonCertificateSource = new ListCertificateSource();
+	// Merged revocation data sources;
 	private ListCRLSource commonCRLSource = new ListCRLSource();
 	private ListOCSPSource commonOCSPSource = new ListOCSPSource();
 
@@ -346,18 +345,6 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder validationDate(Date validationDate) {
 		this.validationDate = validationDate;
-		return this;
-	}
-	
-	/**
-	 * Sets a merged Certificate Source
-	 * 
-	 * @param completeCertificateSource 
-	 * 						 {@link ListCertificateSource} computed from existing sources
-	 * @return the builder
-	 */
-	public DiagnosticDataBuilder completeCertificateSource(ListCertificateSource completeCertificateSource) {
-		this.commonCertificateSource = completeCertificateSource;
 		return this;
 	}
 	
@@ -1257,20 +1244,13 @@ public class DiagnosticDataBuilder {
 	
 	private List<XmlOrphanCertificate> getOrphanCertificates(SignatureCertificateSource certificateSource) {
 		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<>();
-		
-		// Orphan Certificate Tokens
-		for (CertificateToken certificateToken : certificateSource.getCertificates()) {
-			if (!usedCertificates.contains(certificateToken)) {
-				orphanCertificates.add(createXmlOrphanCertificate(certificateToken));
-			}
-		}
 
 		// Orphan Certificate References
 		List<CertificateRef> orphanCertificateRefs = certificateSource.getOrphanCertificateRefs();
 		for (CertificateRef orphanCertificateRef : orphanCertificateRefs) {
 			Digest certDigest = orphanCertificateRef.getCertDigest();
-			CertificateToken certificateToken = getUsedCertificateByDigest(certDigest);
-			if (certificateToken == null && commonCertificateSource.getCertificateTokenByDigest(certDigest) == null) {
+			// if certificate is not present
+			if (getUsedCertificateByDigest(certDigest) == null) {
 				orphanCertificates.add(createXmlOrphanCertificate(orphanCertificateRef));
 			}
 		}
@@ -1278,28 +1258,11 @@ public class DiagnosticDataBuilder {
 		return orphanCertificates;
 	}
 	
-	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateToken certificateToken) {
-		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
-		if (getXmlCertificateSources(certificateToken).contains(CertificateSourceType.TIMESTAMP)) {
-			orphanCertificate.getOrigins().add(CertificateOrigin.TIMESTAMP_CERTIFICATE_VALUES);
-		}
-		orphanCertificate.setToken(createXmlOrphanCertificateToken(certificateToken));
-		return orphanCertificate;
-	}
-	
 	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
 		orphanCertificate.setToken(createXmlOrphanCertificateToken(orphanCertificateRef));
 		orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef));
 		return orphanCertificate;
-	}
-	
-	private XmlOrphanCertificateToken createXmlOrphanCertificateToken(CertificateToken certificateToken) {
-		XmlOrphanCertificateToken orphanToken = new XmlOrphanCertificateToken();
-		orphanToken.setId(certificateToken.getDSSIdAsString());
-		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certificateToken.getDigest(defaultDigestAlgorithm)));
-		xmlOrphanCertificateTokensMap.put(certificateToken.getDSSIdAsString(), orphanToken);
-		return orphanToken;
 	}
 	
 	private XmlOrphanCertificateToken createXmlOrphanCertificateToken(CertificateRef orphanCertificateRef) {

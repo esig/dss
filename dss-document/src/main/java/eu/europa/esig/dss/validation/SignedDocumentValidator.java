@@ -378,7 +378,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		List<AdvancedSignature> allSignatures = getAllSignatures();
         List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
 
-		ListCertificateSource listCertificateSource = mergeCertificateSource(validationContext, allSignatures, detachedTimestamps);
         ListCRLSource listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
         ListOCSPSource listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
         
@@ -391,11 +390,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			validateContext(validationContext);
 		}
 		
-		return getDiagnosticDataBuilderConfiguration(validationContext, allSignatures, listCertificateSource, listCRLSource, listOCSPSource);
+		return getDiagnosticDataBuilderConfiguration(validationContext, allSignatures, listCRLSource, listOCSPSource);
 	}
 	
 	protected DiagnosticDataBuilder getDiagnosticDataBuilderConfiguration(final ValidationContext validationContext, List<AdvancedSignature> signatures,
-			final ListCertificateSource listCertificateSource, final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
+			final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
 		return new DiagnosticDataBuilder().document(document).usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
@@ -404,7 +403,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes()).trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).foundSignatures(signatures)
-				.completeCertificateSource(listCertificateSource).completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
+				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
 	}
 	
 	/**

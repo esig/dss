@@ -37,7 +37,6 @@ import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ListCRLSource;
-import eu.europa.esig.dss.validation.ListCertificateSource;
 import eu.europa.esig.dss.validation.ListOCSPSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -76,8 +75,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	
 	@Override
 	protected DiagnosticDataBuilder getDiagnosticDataBuilderConfiguration(final ValidationContext validationContext, List<AdvancedSignature> signatures,
-			final ListCertificateSource listCertificateSource, final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
-		return super.getDiagnosticDataBuilderConfiguration(validationContext, signatures, listCertificateSource, listCRLSource, listOCSPSource)
+			final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
+		return super.getDiagnosticDataBuilderConfiguration(validationContext, signatures, listCRLSource, listOCSPSource)
 				.containerInfo(getContainerInfo());
 	}
 
