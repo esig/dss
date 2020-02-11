@@ -48,6 +48,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -837,6 +839,50 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 	
 	@Test
+	public void revokedWithNotTrustedOCSP() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/revoked_ocsp_not_trusted.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, xcv.getConclusion().getSubIndication());
+		
+		XmlSubXCV xmlSubXCV = xcv.getSubXCV().get(0);
+		assertNotNull(xmlSubXCV);
+		List<XmlRAC> xmlRACs = xmlSubXCV.getRAC();
+		assertEquals(1, xmlRACs.size());
+		XmlRAC xmlRAC = xmlRACs.get(0);
+		assertEquals(Indication.INDETERMINATE, xmlRAC.getConclusion().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, xmlRAC.getConclusion().getSubIndication());
+		
+		XmlRFC rfc = xmlSubXCV.getRFC();
+		assertNotNull(rfc);
+		List<XmlConstraint> rfcConstraints = rfc.getConstraint();
+		assertEquals(1, rfcConstraints.size());
+		XmlConstraint constraint = rfcConstraints.get(0);
+		assertEquals(MessageTag.BBB_XCV_IARDPFC.name(), constraint.getName().getNameId());
+		assertEquals(i18nProvider.getMessage(MessageTag.BBB_XCV_IARDPFC_ANS), constraint.getError().getValue());
+		assertEquals(Indication.INDETERMINATE, rfc.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, rfc.getConclusion().getSubIndication());
+	}
+	
+	@Test
 	public void revokedCATest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/ca-revoked.xml"));
 		assertNotNull(xmlDiagnosticData);
@@ -1299,7 +1345,24 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId())); // Crypto for OCSP
 																												  // Cert not found -->
 		                                                                                                          // No acceptable revocation
+	}
+	
+	@Test
+	public void notTrustedOcspTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/lt-level-with-not-trusted-ocsp.xml"));
+		assertNotNull(diagnosticData);
 
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
 	}
 
 	@Test
