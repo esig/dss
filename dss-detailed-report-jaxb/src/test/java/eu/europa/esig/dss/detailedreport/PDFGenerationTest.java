@@ -63,4 +63,49 @@ public class PDFGenerationTest {
 		}
 	}
 
+	@Test
+	public void generateTstDetailedReport() throws Exception {
+		DetailedReportFacade facade = DetailedReportFacade.newFacade();
+
+		File file = new File("src/test/resources/dr-tst.xml");
+		XmlDetailedReport detailedReport = facade.unmarshall(file);
+
+		try (FileOutputStream fos = new FileOutputStream("target/dr-tst.pdf")) {
+
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			facade.generatePdfReport(detailedReport, result);
+		}
+	}
+
+	@Test
+	public void generateCertificateDetailedReport() throws Exception {
+		DetailedReportFacade facade = DetailedReportFacade.newFacade();
+
+		File file = new File("src/test/resources/dr-cert.xml");
+		XmlDetailedReport detailedReport = facade.unmarshall(file);
+
+		try (FileOutputStream fos = new FileOutputStream("target/dr-cert.pdf")) {
+
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			facade.generatePdfReport(detailedReport, result);
+		}
+	}
+
+	@Test
+	public void generateSigAndTstDetailedReport() throws Exception {
+		DetailedReportFacade facade = DetailedReportFacade.newFacade();
+
+		File file = new File("src/test/resources/dr-sig-and-tst.xml");
+		XmlDetailedReport detailedReport = facade.unmarshall(file);
+
+		try (FileOutputStream fos = new FileOutputStream("target/dr-sig-and-tst.pdf")) {
+
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			facade.generatePdfReport(detailedReport, result);
+		}
+	}
+
 }

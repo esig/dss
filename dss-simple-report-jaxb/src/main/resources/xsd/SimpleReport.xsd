@@ -18,7 +18,6 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="ValidationTime" type="xs:dateTime" />
 			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 			<xs:element name="ValidSignaturesCount" type="xs:int" />
 			<xs:element name="SignaturesCount" type="xs:int" />
@@ -30,6 +29,7 @@
 			</xs:choice>
 			
 		</xs:sequence>
+		<xs:attribute name="ValidationTime" type="xs:dateTime" />
 	</xs:complexType>
 	
 	<xs:complexType name="Token" abstract="true">
