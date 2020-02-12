@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.simplecertificatereport;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -34,33 +37,31 @@ public class PDFGenerationTest {
 	}
 
 	@Test
-	public void generateDetailedReport() throws Exception {
-		SimpleCertificateReportFacade facade = SimpleCertificateReportFacade.newFacade();
-
-		File file = new File("src/test/resources/simple-cert-report.xml");
-		XmlSimpleCertificateReport simpleReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/simple-cert-report.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(simpleReport, result);
-		}
+	public void generateSimpleCertificateReport() throws Exception {
+		createAndValidate("simple-cert-report.xml");
 	}
 
 	@Test
-	public void generateDetailedReport2() throws Exception {
+	public void generateSimpleCertificateReport2() throws Exception {
+		createAndValidate("simple-cert-report2.xml");
+	}
+	
+	private void createAndValidate(String filename) throws Exception {
 		SimpleCertificateReportFacade facade = SimpleCertificateReportFacade.newFacade();
 
-		File file = new File("src/test/resources/simple-cert-report2.xml");
+		File file = new File("src/test/resources/" + filename);
 		XmlSimpleCertificateReport simpleReport = facade.unmarshall(file);
 
-		try (FileOutputStream fos = new FileOutputStream("target/simple-cert-report2.pdf")) {
-
+		try (FileOutputStream fos = new FileOutputStream("target/report.pdf")) {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(simpleReport, result);
 		}
+		
+		File pdfReport = new File("target/report.pdf");
+		assertTrue(pdfReport.exists());
+		assertTrue(pdfReport.delete(), "Cannot delete PDF document (IO error)");
+		assertFalse(pdfReport.exists());
 	}
 
 }

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.detailedreport;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -35,77 +38,48 @@ public class PDFGenerationTest {
 
 	@Test
 	public void generateDetailedReport() throws Exception {
-		DetailedReportFacade facade = DetailedReportFacade.newFacade();
-
-		File file = new File("src/test/resources/dr1.xml");
-		XmlDetailedReport detailedReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/dr1.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(detailedReport, result);
-		}
+		createAndValidate("dr1.xml");
 	}
 
 	@Test
 	public void generateDetailedReport2() throws Exception {
-		DetailedReportFacade facade = DetailedReportFacade.newFacade();
-
-		File file = new File("src/test/resources/dr2.xml");
-		XmlDetailedReport detailedReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/dr2.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(detailedReport, result);
-		}
+		createAndValidate("dr2.xml");
 	}
 
 	@Test
 	public void generateTstDetailedReport() throws Exception {
-		DetailedReportFacade facade = DetailedReportFacade.newFacade();
-
-		File file = new File("src/test/resources/dr-tst.xml");
-		XmlDetailedReport detailedReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/dr-tst.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(detailedReport, result);
-		}
+		createAndValidate("dr-tst.xml");
 	}
 
 	@Test
 	public void generateCertificateDetailedReport() throws Exception {
-		DetailedReportFacade facade = DetailedReportFacade.newFacade();
-
-		File file = new File("src/test/resources/dr-cert.xml");
-		XmlDetailedReport detailedReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/dr-cert.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(detailedReport, result);
-		}
+		createAndValidate("dr-cert.xml");
 	}
 
 	@Test
 	public void generateSigAndTstDetailedReport() throws Exception {
+		createAndValidate("dr-sig-and-tst.xml");
+	}
+	
+	private void createAndValidate(String filename) throws Exception {
 		DetailedReportFacade facade = DetailedReportFacade.newFacade();
 
-		File file = new File("src/test/resources/dr-sig-and-tst.xml");
+		File file = new File("src/test/resources/" + filename);
 		XmlDetailedReport detailedReport = facade.unmarshall(file);
 
-		try (FileOutputStream fos = new FileOutputStream("target/dr-sig-and-tst.pdf")) {
+		try (FileOutputStream fos = new FileOutputStream("target/report.pdf")) {
 
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(detailedReport, result);
 		}
+		
+		File pdfReport = new File("target/report.pdf");
+		assertTrue(pdfReport.exists());
+		assertTrue(pdfReport.delete(), "Cannot delete PDF document (IO error)");
+		assertFalse(pdfReport.exists());
+		
 	}
+	
 
 }

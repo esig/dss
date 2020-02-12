@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.simplereport;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -34,48 +37,36 @@ public class PDFGenerationTest {
 	}
 
 	@Test
-	public void generateDetailedReport() throws Exception {
-		SimpleReportFacade facade = SimpleReportFacade.newFacade();
-
-		File file = new File("src/test/resources/sr1.xml");
-		XmlSimpleReport simpleReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/sr1.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(simpleReport, result);
-		}
+	public void generateSimpleReport() throws Exception {
+		createAndValidate("sr1.xml");
 	}
 
 	@Test
-	public void generateDetailedReport2() throws Exception {
-		SimpleReportFacade facade = SimpleReportFacade.newFacade();
-
-		File file = new File("src/test/resources/sr2.xml");
-		XmlSimpleReport simpleReport = facade.unmarshall(file);
-
-		try (FileOutputStream fos = new FileOutputStream("target/sr2.pdf")) {
-
-			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
-			Result result = new SAXResult(fop.getDefaultHandler());
-			facade.generatePdfReport(simpleReport, result);
-		}
+	public void generateSimpleReport2() throws Exception {
+		createAndValidate("sr2.xml");
 	}
 
 	@Test
-	public void generateSigAndTstDetailedReport() throws Exception {
+	public void generateSigAndTstSimpleReport() throws Exception {
+		createAndValidate("sr-sig-and-tst.xml");
+	}
+	
+	private void createAndValidate(String filename) throws Exception {
 		SimpleReportFacade facade = SimpleReportFacade.newFacade();
 
-		File file = new File("src/test/resources/sr-sig-and-tst.xml");
+		File file = new File("src/test/resources/" + filename);
 		XmlSimpleReport simpleReport = facade.unmarshall(file);
 
-		try (FileOutputStream fos = new FileOutputStream("target/sr-sig-and-tst.pdf")) {
-
+		try (FileOutputStream fos = new FileOutputStream("target/report.pdf")) {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(simpleReport, result);
 		}
+		
+		File pdfReport = new File("target/report.pdf");
+		assertTrue(pdfReport.exists());
+		assertTrue(pdfReport.delete(), "Cannot delete PDF document (IO error)");
+		assertFalse(pdfReport.exists());
 	}
 
 }
