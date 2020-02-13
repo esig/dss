@@ -17,6 +17,7 @@
 			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+		<xs:attribute name="ValidationTime" type="xs:dateTime" />
 	</xs:complexType>
 	
 	<xs:complexType name="Signature">

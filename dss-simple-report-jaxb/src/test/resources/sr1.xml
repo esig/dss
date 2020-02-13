@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2019-07-01T06:50:17" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+		Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+	</PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>OJ_L_2013_183_FULL.xml</DocumentName>
+    <ValidSignaturesCount>0</ValidSignaturesCount>
+    <SignaturesCount>1</SignaturesCount>
+    <Signature SignatureFormat="XAdES-BASELINE-LTA" Id="S-32E0E10DEDDA4D71E473BFF7B26966E350C5D3985F2B0DB447A5F90560769627">
+        <CertificateChain>
+            <Certificate>
+                <id>C-3F6B65DE1882F14F463AD4E8D9015E7780CD6E00D6C024E2E9D4FFE9474ED6C8</id>
+                <qualifiedName>Joaquin Romera Ramirez</qualifiedName>
+            </Certificate>
+            <Certificate>
+                <id>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</id>
+                <qualifiedName>LuxTrust Global Qualified CA</qualifiedName>
+            </Certificate>
+            <Certificate>
+                <id>C-A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950</id>
+                <qualifiedName>LuxTrust Global Root</qualifiedName>
+            </Certificate>
+        </CertificateChain>
+        <Indication>INDETERMINATE</Indication>
+        <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
+        <Errors>The past signature validation is not conclusive!</Errors>
+        <Errors>The algorithm is no longer considered reliable!</Errors>
+        <Errors>The certificate validation is not conclusive!</Errors>
+        <Errors>The revocation freshness check is not conclusive!</Errors>
+        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
+        <Warnings>The validation of manifest entries is not performed!</Warnings>
+        <Warnings>The result of the revocation data validation process is not acceptable!</Warnings>
+        <SigningTime>2013-07-02T06:03:10</SigningTime>
+        <BestSignatureTime>2013-07-02T06:03:10</BestSignatureTime>
+        <SignedBy>Joaquin Romera Ramirez</SignedBy>
+        <SignatureLevel description="Indeterminate Qualified Electronic Signature">Indeterminate QESig</SignatureLevel>
+        <SignatureScope name="L_18320130702EN.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702LT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702DA.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702NL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702SK.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702SL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702ET.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702HU.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702ES.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702HR.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702PT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702MT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702IT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702SV.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702CS.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702PL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702FI.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702LV.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702RO.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702EL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702FR.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702BG.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope name="L_18320130702DE.pdf" scope="FULL">Full document</SignatureScope>
+    </Signature>
+</SimpleReport>

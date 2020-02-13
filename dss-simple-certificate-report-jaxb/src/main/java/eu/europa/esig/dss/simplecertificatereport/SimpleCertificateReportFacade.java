@@ -114,5 +114,18 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
 	}
+	
+    /**
+     * Generates a PDF Detailed report
+     */
+	public void generatePdfReport(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getPdfTemplates().newTransformer();
+		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleCertificateReport)), result);
+	}
+
+	public void generatePdfReport(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getPdfTemplates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
+	}
 
 }

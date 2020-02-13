@@ -32,25 +32,18 @@ public class SimpleCertificateReportFacadeTest {
 
 	@Test
 	public void test() throws Exception {
-		
-		SimpleCertificateReportFacade facade = SimpleCertificateReportFacade.newFacade();
-
-		XmlSimpleCertificateReport simpleCertificateReport = facade.unmarshall(new File("src/test/resources/simple-cert-report.xml"));
-		assertNotNull(simpleCertificateReport);
-
-		String htmlReport = facade.generateHtmlReport(simpleCertificateReport);
-		assertNotNull(htmlReport);
-
-		htmlReport = facade.generateHtmlBootstrap3Report(simpleCertificateReport);
-		assertNotNull(htmlReport);
+		createAndValidate("simple-cert-report.xml");
 	}
 
 	@Test
 	public void test2() throws Exception {
-
+		createAndValidate("simple-cert-report2.xml");
+	}
+	
+	private void createAndValidate(String filename) throws Exception {
 		SimpleCertificateReportFacade facade = SimpleCertificateReportFacade.newFacade();
 
-		XmlSimpleCertificateReport simpleCertificateReport = facade.unmarshall(new File("src/test/resources/simple-cert-report2.xml"));
+		XmlSimpleCertificateReport simpleCertificateReport = facade.unmarshall(new File("src/test/resources/" + filename));
 		assertNotNull(simpleCertificateReport);
 
 		String htmlReport = facade.generateHtmlReport(simpleCertificateReport);

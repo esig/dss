@@ -43,6 +43,7 @@ public final class SimpleCertificateReportXmlDefiner {
 	public static final String SIMPLE_CERTIFICATE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleCertificateReport.xsd";
 	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-certificate-report.xslt";
 	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-certificate-report-bootstrap4.xslt";
+	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-certificate-report.xslt";
 
 	private SimpleCertificateReportXmlDefiner() {
 	}
@@ -57,6 +58,7 @@ public final class SimpleCertificateReportXmlDefiner {
 	// Thread-safe
 	private static Templates htmlBootstrap3Templates;
 	private static Templates htmlBootstrap4Templates;
+	private static Templates pdfTemplates;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
@@ -87,6 +89,13 @@ public final class SimpleCertificateReportXmlDefiner {
 			htmlBootstrap4Templates = loadTemplates(SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION);
 		}
 		return htmlBootstrap4Templates;
+	}
+
+	public static Templates getPdfTemplates() throws TransformerConfigurationException, IOException {
+		if (pdfTemplates == null) {
+			pdfTemplates = loadTemplates(SIMPLE_CERTIFICATE_REPORT_XSLT_PDF_LOCATION);
+		}
+		return pdfTemplates;
 	}
 
 	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
