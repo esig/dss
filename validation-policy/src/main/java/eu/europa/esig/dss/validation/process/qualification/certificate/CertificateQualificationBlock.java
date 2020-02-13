@@ -70,7 +70,7 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 		// cover incomplete cert chain / expired/ revoked certs
 		ChainItem<XmlCertificate> item = firstItem = isAcceptableBuildingBlockConclusion(buildingBlocksConclusion);
 
-		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
+		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null)

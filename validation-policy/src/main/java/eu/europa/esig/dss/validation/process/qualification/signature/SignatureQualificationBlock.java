@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
-import eu.europa.esig.dss.validation.process.qualification.signature.checks.CertificatePathTrustedCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.ForeSignatureAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtCertificateIssuanceCheck;
@@ -83,9 +83,9 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 		ChainItem<XmlValidationSignatureQualification> item = firstItem = isAdES(etsi319102Conclusion);
 
-		item = item.setNextItem(certificatePathTrusted(signingCertificate));
+		item = item.setNextItem(isTrustedListReachedForCertificateChain(signingCertificate));
 
-		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
+		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null)
@@ -204,8 +204,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		}
 	}
 
-	private ChainItem<XmlValidationSignatureQualification> certificatePathTrusted(CertificateWrapper signingCertificate) {
-		return new CertificatePathTrustedCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
+	private ChainItem<XmlValidationSignatureQualification> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {
+		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(

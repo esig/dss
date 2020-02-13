@@ -207,7 +207,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getDigestAlgoAndValue();
 	}
 
-	public boolean hasTrustedServices() {
+	public boolean isTrustedListReached() {
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
 		return tsps != null && tsps.size() > 0;
 	}
