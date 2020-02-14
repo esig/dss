@@ -39,6 +39,8 @@ public interface InfoRecord extends Serializable {
 	
 	Date getLastStateTransitionTime();
 	
+	Date getLastSuccessSynchronizationTime();
+	
 	String getExceptionMessage();
 	
 	String getExceptionStackTrace();

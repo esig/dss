@@ -50,6 +50,10 @@ public class CachedEntry<R extends CachedResult> {
 	public Date getLastStateTransitionTime() {
 		return cacheContext.getLastStateTransitionTime();
 	}
+	
+	public Date getLastSuccessSynchronizationTime() {
+		return cacheContext.getLastSuccessSynchronizationTime();
+	}
 
 	public R getCachedResult() {
 		return cachedResult;
@@ -59,6 +63,10 @@ public class CachedEntry<R extends CachedResult> {
 		Objects.requireNonNull(newCachedResult, "Cached result cannot be overrided with a null value");
 		cacheContext.desync(); // if transition is not allowed, cached object is not updated
 		cachedResult = newCachedResult;
+	}
+	
+	public void syncUpdateDate() {
+		cacheContext.syncUpdateDate();
 	}
 
 	public void error(CachedException exception) {
