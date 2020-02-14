@@ -29,11 +29,11 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class CertificatePathTrustedCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class TrustedListReachedForCertificateChainCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final CertificateWrapper signingCertificate;
 
-	public CertificatePathTrustedCheck(I18nProvider i18nProvider, T result, 
+	public TrustedListReachedForCertificateChainCheck(I18nProvider i18nProvider, T result, 
 			CertificateWrapper signingCertificate, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signingCertificate = signingCertificate;
@@ -41,17 +41,17 @@ public class CertificatePathTrustedCheck<T extends XmlConstraintsConclusion> ext
 
 	@Override
 	protected boolean process() {
-		return signingCertificate != null && signingCertificate.hasTrustedServices();
+		return signingCertificate != null && signingCertificate.isTrustedListReached();
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_TRUSTED_CERT_PATH;
+		return MessageTag.QUAL_CERT_TRUSTED_LIST_REACHED;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_TRUSTED_CERT_PATH_ANS;
+		return MessageTag.QUAL_CERT_TRUSTED_LIST_REACHED_ANS;
 	}
 
 	@Override

@@ -38,7 +38,7 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
-import eu.europa.esig.dss.validation.process.qualification.signature.checks.CertificatePathTrustedCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.GrantedStatusAtProductionTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.QTSTCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
@@ -66,9 +66,9 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	protected void initChain() {
 		CertificateWrapper signingCertificate = timestamp.getSigningCertificate();
 
-		ChainItem<XmlValidationTimestampQualification> item = firstItem = certificatePathTrusted(signingCertificate);
+		ChainItem<XmlValidationTimestampQualification> item = firstItem = isTrustedListReachedForCertificateChain(signingCertificate);
 		
-		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
+		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null).map(t -> t.getTrustedList().getUrl())
@@ -143,8 +143,8 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		return null;
 	}
 
-	private ChainItem<XmlValidationTimestampQualification> certificatePathTrusted(CertificateWrapper signingCertificate) {
-		return new CertificatePathTrustedCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
+	private ChainItem<XmlValidationTimestampQualification> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {
+		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationTimestampQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
