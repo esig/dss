@@ -39,7 +39,7 @@ public class RetrieveOriginalDocumentTest {
 		// tag::demo[]
 
 		// We have our signed document, we want to retrieve the original/signed data
-		DSSDocument signedDocument = new FileDocument("src/test/resources/signedXmlXadesB.xml");
+		DSSDocument signedDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
 		// We create an instance of DocumentValidator. DSS automatically selects the validator depending of the
 		// signature file

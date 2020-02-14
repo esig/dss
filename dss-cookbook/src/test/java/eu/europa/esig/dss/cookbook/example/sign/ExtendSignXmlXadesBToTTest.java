@@ -40,7 +40,7 @@ public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 
 		// tag::demo[]
 
-		DSSDocument document = new FileDocument("src/test/resources/signedXmlXadesB.xml");
+		DSSDocument document = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);

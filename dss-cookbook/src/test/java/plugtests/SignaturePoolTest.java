@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,20 +22,27 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.ValidationReportUtils;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
 public class SignaturePoolTest {
+	
+	@BeforeAll
+	public static void init() throws Exception {
+		// preload JAXB context before validation
+		ValidationReportUtils.getInstance().getJAXBContext();
+	}
 
 	private static Stream<Arguments> data() throws IOException {
 
 		// -Dsignature.pool.folder=...
 
-		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/main/soapui");
+		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/test/resources/signature-pool");
 		File folder = new File(signaturePoolFolder);
-		Collection<File> listFiles = Utils.listFiles(folder,
-				new String[] { "asice", "asics", "bdoc", "csig", "ddoc", "es3", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "xml", "xsig" }, true);
+		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "csig", "ddoc",
+				"es3", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));

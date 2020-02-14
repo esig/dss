@@ -360,7 +360,9 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledCert.getTrustedServices().size(), originalCert.getTrustedServices().size());
 			assertEquals(unmarshalledCert.getTrustServiceProviders().size(), originalCert.getTrustServiceProviders().size());
 
-			compareUnmarshalledCertificates(original, unmarshalledCert.getCertificateChain());
+			if (!unmarshalledCert.isSelfSigned() && !unmarshalledCert.getId().equals(unmarshalledCert.getSigningCertificate().getId())) {
+				compareUnmarshalledCertificates(original, unmarshalledCert.getCertificateChain());
+			}
 		}
 	}
 

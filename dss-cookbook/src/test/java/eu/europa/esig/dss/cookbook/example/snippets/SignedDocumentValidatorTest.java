@@ -52,7 +52,7 @@ public class SignedDocumentValidatorTest {
 	@Test
 	public void test() throws Exception {
 
-		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesLT.xml"));
+		DSSDocument document = new FileDocument(new File("src/test/resources/signature-pool/signedXmlXadesLT.xml"));
 
 		// tag::demo[]
 		
