@@ -29,7 +29,7 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <Errors>The certificate path is not trusted!</Errors>
+        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
         <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
         <Errors>No acceptable revocation data for the certificate!</Errors>
         <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
@@ -58,7 +58,7 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <Errors>The certificate path is not trusted!</Errors>
+        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
         <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
         <Errors>No acceptable revocation data for the certificate!</Errors>
         <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>

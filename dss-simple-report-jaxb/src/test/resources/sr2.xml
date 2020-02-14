@@ -21,7 +21,7 @@
             </Certificate>
         </CertificateChain>
         <Indication>TOTAL_PASSED</Indication>
-        <Errors>The certificate path is not trusted!</Errors>
+        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
         <Warnings>The structure of the signature is not valid!</Warnings>
         <Warnings>The authority info access is not present!</Warnings>
         <Warnings>The revocation info access is not present!</Warnings>

@@ -14,7 +14,7 @@
         </ValidationProcessTimestamp>
         <ValidationTimestampQualification TimestampQualification="QTSA" Title="Timestamp Qualification">
             <Constraint>
-                <Name NameId="QUAL_TRUSTED_CERT_PATH">Is the certificate path trusted?</Name>
+                <Name NameId="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">

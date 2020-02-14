@@ -58,14 +58,14 @@
                 <Warning NameId="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
             </Constraint>
             <Constraint>
-                <Name NameId="QUAL_TRUSTED_CERT_PATH">Is the certificate path trusted?</Name>
+                <Name NameId="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                 <Status>NOT OK</Status>
-                <Error NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Error>
+                <Error NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Error>
             </Constraint>
             <Conclusion>
                 <Indication>FAILED</Indication>
-                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
-                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
+                <Errors NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
+                <Errors NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
                 <Warnings NameId="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
             </Conclusion>
         </ValidationSignatureQualification>
@@ -128,14 +128,14 @@
                 <Warning NameId="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
             </Constraint>
             <Constraint>
-                <Name NameId="QUAL_TRUSTED_CERT_PATH">Is the certificate path trusted?</Name>
+                <Name NameId="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                 <Status>NOT OK</Status>
-                <Error NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Error>
+                <Error NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Error>
             </Constraint>
             <Conclusion>
                 <Indication>FAILED</Indication>
-                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
-                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
+                <Errors NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
+                <Errors NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
                 <Warnings NameId="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
             </Conclusion>
         </ValidationSignatureQualification>
@@ -152,13 +152,13 @@
         </ValidationProcessTimestamp>
         <ValidationTimestampQualification TimestampQualification="N/A" Title="Timestamp Qualification">
             <Constraint>
-                <Name NameId="QUAL_TRUSTED_CERT_PATH">Is the certificate path trusted?</Name>
+                <Name NameId="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                 <Status>NOT OK</Status>
-                <Error NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Error>
+                <Error NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Error>
             </Constraint>
             <Conclusion>
                 <Indication>FAILED</Indication>
-                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
+                <Errors NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
             </Conclusion>
         </ValidationTimestampQualification>
     </Timestamp>
@@ -174,13 +174,13 @@
         </ValidationProcessTimestamp>
         <ValidationTimestampQualification TimestampQualification="N/A" Title="Timestamp Qualification">
             <Constraint>
-                <Name NameId="QUAL_TRUSTED_CERT_PATH">Is the certificate path trusted?</Name>
+                <Name NameId="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                 <Status>NOT OK</Status>
-                <Error NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Error>
+                <Error NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Error>
             </Constraint>
             <Conclusion>
                 <Indication>FAILED</Indication>
-                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
+                <Errors NameId="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
             </Conclusion>
         </ValidationTimestampQualification>
     </Timestamp>
