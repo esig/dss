@@ -31,6 +31,8 @@ public class AbstractCacheDTO implements InfoRecord {
 	
 	private CacheStateEnum cacheState;
 	private Date lastStateTransitionTime;
+	private Date lastSuccessSynchronizationTime;
+
 	private String exceptionMessage;
 	private String exceptionStackTrace;
 	private Date exceptionFirstOccurrenceTime;
@@ -43,6 +45,7 @@ public class AbstractCacheDTO implements InfoRecord {
 	public AbstractCacheDTO(AbstractCacheDTO cacheDTO) {
 		this.cacheState = cacheDTO.cacheState;
 		this.lastStateTransitionTime = cacheDTO.lastStateTransitionTime;
+		this.lastSuccessSynchronizationTime = cacheDTO.lastSuccessSynchronizationTime;
 		this.exceptionMessage = cacheDTO.exceptionMessage;
 		this.exceptionStackTrace = cacheDTO.exceptionStackTrace;
 		this.exceptionFirstOccurrenceTime = cacheDTO.exceptionFirstOccurrenceTime;
@@ -65,6 +68,15 @@ public class AbstractCacheDTO implements InfoRecord {
 	
 	public void setLastStateTransitionTime(Date lastStateTransitionTime) {
 		this.lastStateTransitionTime = lastStateTransitionTime;
+	}
+	
+	@Override
+	public Date getLastSuccessSynchronizationTime() {
+		return lastSuccessSynchronizationTime;
+	}
+
+	public void setLastSuccessSynchronizationTime(Date lastSuccessSynchronizationTime) {
+		this.lastSuccessSynchronizationTime = lastSuccessSynchronizationTime;
 	}
 
 	@Override

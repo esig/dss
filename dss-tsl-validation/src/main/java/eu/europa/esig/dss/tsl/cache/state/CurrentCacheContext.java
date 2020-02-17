@@ -30,7 +30,8 @@ public class CurrentCacheContext implements CacheContext {
 	private static final Logger LOG = LoggerFactory.getLogger(CurrentCacheContext.class);
 
 	private CacheState state;
-	private Date lastStateTransitionTime;
+	private Date lastStateTransitionTime; // last time when state of the current cache context has been changed
+	private Date lastSuccessSynchronizationTime; // last time when the cache had been synchronized
 	private CachedException exception;
 
 	public CurrentCacheContext() {
@@ -48,6 +49,11 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
+	public Date getLastSuccessSynchronizationTime() {
+		return lastSuccessSynchronizationTime;
+	}
+
+	@Override
 	public void state(CacheState newState) {
 		LOG.trace("State transition from '{}' to '{}'", state, newState);
 		if (state == newState) {
@@ -57,6 +63,11 @@ public class CurrentCacheContext implements CacheContext {
 			lastStateTransitionTime = new Date();
 			exception = null;
 		}
+	}
+
+	@Override
+	public void syncUpdateDate() {
+		lastSuccessSynchronizationTime = new Date();
 	}
 
 	@Override
@@ -80,6 +91,7 @@ public class CurrentCacheContext implements CacheContext {
 	@Override
 	public void sync() {
 		state.sync(this);
+		syncUpdateDate();
 	}
 
 	@Override

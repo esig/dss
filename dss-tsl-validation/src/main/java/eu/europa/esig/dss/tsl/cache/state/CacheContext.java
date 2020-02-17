@@ -37,6 +37,14 @@ public interface CacheContext {
 	 * @return the last date when the state has had a transition
 	 */
 	Date getLastStateTransitionTime();
+	
+	/**
+	 * Returns the last time when the cache has been synchronized successfully
+	 * NOTE: can be null in case if the cache has never been synchronized
+	 * 
+	 * @return the last date when the state has been synchronized
+	 */
+	Date getLastSuccessSynchronizationTime();
 
 	/**
 	 * This method operates a state change
@@ -72,6 +80,11 @@ public interface CacheContext {
 	 * @return TRUE if a refresh is required
 	 */
 	boolean isRefreshNeeded();
+	
+	/**
+	 * Updates the lastSuccessSynchronization date
+	 */
+	void syncUpdateDate();
 
 	/**
 	 * Returns TRUE if the cache is in a error status
