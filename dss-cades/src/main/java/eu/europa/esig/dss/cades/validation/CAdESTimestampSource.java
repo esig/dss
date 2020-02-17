@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -237,14 +236,16 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		
 		// Compare values present in the timestamp's Hash Index Table with signature's SignedData item digests
 		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
-		final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
-		
-		List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
-				atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-		references.addAll(certificateReferences);
-
-		List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-		references.addAll(revocationReferences);
+		if (atsHashIndex != null) {
+			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
+			
+			List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
+					atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+			references.addAll(certificateReferences);
+	
+			List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+			references.addAll(revocationReferences);
+		}
 		
 		return references;
 	}
