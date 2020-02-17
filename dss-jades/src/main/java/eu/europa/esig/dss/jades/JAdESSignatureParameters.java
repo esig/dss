@@ -18,13 +18,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.enumerations;
+package eu.europa.esig.dss.jades;
 
-/**
- * Different signature forms.<br>
- */
-public enum SignatureForm {
+import eu.europa.esig.dss.AbstractSignatureParameters;
 
-	XAdES, CAdES, JAdES, PAdES, PKCS7;
+public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdESTimestampParameters> {
+
+	@Override
+	public JAdESTimestampParameters getContentTimestampParameters() {
+		if (contentTimestampParameters == null) {
+			contentTimestampParameters = new JAdESTimestampParameters();
+		}
+		return contentTimestampParameters;
+	}
 
 }

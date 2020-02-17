@@ -421,6 +421,42 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 		return javaAlgorithms;
 	}
 
+	private static final Map<String, SignatureAlgorithm> JWA_ALGORITHMS = registerJsonWebAlgorithms();
+
+	private static final Map<SignatureAlgorithm, String> JWA_ALGORITHMS_FOR_KEY = registerJsonWebAlgorithmsForKey();
+	
+	private static Map<String, SignatureAlgorithm> registerJsonWebAlgorithms() {
+
+		// https://tools.ietf.org/html/rfc7518#section-3.1
+		Map<String, SignatureAlgorithm> jsonWebAlgorithms = new HashMap<>();
+
+		jsonWebAlgorithms.put("HS256", HMAC_SHA256);
+		jsonWebAlgorithms.put("HS384", HMAC_SHA384);
+		jsonWebAlgorithms.put("HS512", HMAC_SHA512);
+
+		jsonWebAlgorithms.put("RS256", RSA_SHA256);
+		jsonWebAlgorithms.put("RS384", RSA_SHA384);
+		jsonWebAlgorithms.put("RS512", RSA_SHA512);
+
+		jsonWebAlgorithms.put("ES256", ECDSA_SHA256);
+		jsonWebAlgorithms.put("ES384", ECDSA_SHA384);
+		jsonWebAlgorithms.put("ES512", ECDSA_SHA512);
+		
+		jsonWebAlgorithms.put("PS256", RSA_SSA_PSS_SHA256_MGF1);
+		jsonWebAlgorithms.put("PS384", RSA_SSA_PSS_SHA384_MGF1);
+		jsonWebAlgorithms.put("PS512", RSA_SSA_PSS_SHA512_MGF1);
+	
+		return jsonWebAlgorithms;
+	}
+
+	private static Map<SignatureAlgorithm, String> registerJsonWebAlgorithmsForKey() {
+		final Map<SignatureAlgorithm, String> jsonWebAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
+		for (Entry<String, SignatureAlgorithm> entry : JWA_ALGORITHMS.entrySet()) {
+			jsonWebAlgorithms.put(entry.getValue(), entry.getKey());
+		}
+		return jsonWebAlgorithms;
+	}
+
 	public static SignatureAlgorithm forXML(final String xmlName) {
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
