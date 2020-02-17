@@ -384,6 +384,11 @@ public class SignatureValidationContext implements ValidationContext {
 		for (RevocationToken revocationToken : revocationTokens) {
 			
 			if (addTokenForVerification(revocationToken)) {
+				
+				CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
+				if (issuerCertificateToken != null) {
+					addCertificateTokenForVerification(issuerCertificateToken);
+				}
 
 				final boolean added = processedRevocations.add(revocationToken);
 				if (LOG.isTraceEnabled()) {
