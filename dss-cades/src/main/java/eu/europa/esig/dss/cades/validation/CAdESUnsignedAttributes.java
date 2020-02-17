@@ -33,6 +33,7 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.validation.timestamp.TimeStampTokenProductionComparator;
 
@@ -72,14 +73,19 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 				CAdESAttribute cadesAttribute = attributes.get(jj);
 				// if the first element is a timestamp
 				if (timestampOids.contains(cadesAttribute.getASN1Oid())) {
-					CAdESAttribute nextCAdESAttribute = attributes.get(jj+1);
+					CAdESAttribute nextCAdESAttribute = attributes.get(jj + 1);
 					// swap if the next element is not a timestamp
 					if (!timestampOids.contains(nextCAdESAttribute.getASN1Oid())) {
-						Collections.swap(attributes, jj, jj+1);
-					} 
-					// swap if the current element was generated after the following timestamp attribute
-					else if (comparator.compare(cadesAttribute.toTimeStampToken(), nextCAdESAttribute.toTimeStampToken()) > 0) {
-						Collections.swap(attributes, jj, jj+1);
+						Collections.swap(attributes, jj, jj + 1);
+					} else {
+
+						TimeStampToken current = cadesAttribute.toTimeStampToken();
+						TimeStampToken next = nextCAdESAttribute.toTimeStampToken();
+						// swap if the current element was generated after the following timestamp attribute
+						if (current != null && next != null && (comparator.compare(current, next) > 0)) {
+							Collections.swap(attributes, jj, jj + 1);
+						}
+
 					}
 				}
 			}
