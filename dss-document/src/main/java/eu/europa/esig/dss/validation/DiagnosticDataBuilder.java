@@ -1091,6 +1091,14 @@ public class DiagnosticDataBuilder {
 		xmlDistinguishedName.setValue(X500PrincipalName.getName(x500PrincipalFormat));
 		return xmlDistinguishedName;
 	}
+	
+	private List<String> getCleanedUrls(List<String> urls) {
+		List<String> cleanedUrls = new ArrayList<>();
+		for (String url : urls) {
+			cleanedUrls.add(DSSUtils.removeControlCharacters(url));
+		}
+		return cleanedUrls;
+	}
 
 	private XmlFoundCertificates getXmlFoundCertificates(AdvancedSignature signature) {
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
@@ -1459,7 +1467,7 @@ public class DiagnosticDataBuilder {
 		final XmlPolicy xmlPolicy = new XmlPolicy();
 
 		xmlPolicy.setId(signaturePolicy.getIdentifier());
-		xmlPolicy.setUrl(signaturePolicy.getUrl());
+		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setNotice(signaturePolicy.getNotice());
 		xmlPolicy.setZeroHash(signaturePolicy.isZeroHash());
@@ -1810,9 +1818,9 @@ public class DiagnosticDataBuilder {
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
 		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, x500Principal));
 
-		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
-		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken));
-		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken));
+		xmlCert.setAuthorityInformationAccessUrls(getCleanedUrls(DSSASN1Utils.getCAAccessLocations(certToken)));
+		xmlCert.setOCSPAccessUrls(getCleanedUrls(DSSASN1Utils.getOCSPAccessLocations(certToken)));
+		xmlCert.setCRLDistributionPoints(getCleanedUrls(DSSASN1Utils.getCrlUrls(certToken)));
 		
 		xmlCert.setSources(getXmlCertificateSources(certToken));
 
@@ -1878,7 +1886,7 @@ public class DiagnosticDataBuilder {
 			XmlCertificatePolicy xmlCP = new XmlCertificatePolicy();
 			xmlCP.setValue(cp.getOid());
 			xmlCP.setDescription(OidRepository.getDescription(cp.getOid()));
-			xmlCP.setCpsUrl(cp.getCpsUrl());
+			xmlCP.setCpsUrl(DSSUtils.removeControlCharacters(cp.getCpsUrl()));
 			result.add(xmlCP);
 		}
 		return result;

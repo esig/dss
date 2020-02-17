@@ -327,5 +327,18 @@ public class DSSUtilsTest {
 		Date parsedDate = dateFormat.parse(formattedDate);
 		assertEquals(date, parsedDate);
 	}
+	
+	@Test
+	public void removeControlCharactersTest() {
+		assertEquals(" ", DSSUtils.removeControlCharacters(" "));
+		assertEquals("Nowina Solutions", DSSUtils.removeControlCharacters("Nowina Solutions"));
+		assertEquals("Новина", DSSUtils.removeControlCharacters("Новина"));
+		assertEquals("πτλς", DSSUtils.removeControlCharacters("πτλς"));
+		assertEquals("ხელმოწერა", DSSUtils.removeControlCharacters("ხელმოწერა"));
+		assertEquals("", DSSUtils.removeControlCharacters("\n"));
+		assertEquals("", DSSUtils.removeControlCharacters("\r\n"));
+		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=RotCAOK", DSSUtils.removeControlCharacters(
+				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw=="))));
+	}
 
 }

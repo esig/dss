@@ -980,5 +980,22 @@ public final class DSSUtils {
 	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
 		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
+	
+	/**
+	 * Replaces null ASCII characters 00-31 and 127 with ''
+	 * 
+	 * @param str {@link String} to remove Ctrls characters from
+	 * @return {@link String} without Ctrls characters
+	 */
+	public static String removeControlCharacters(String str) {
+		if (str != null) {
+			String cleanedString = str.replaceAll("[^\\P{Cntrl}]", "");
+			if (!str.equals(cleanedString)) {
+				LOG.warn("The string [{}] contains illegal characters and was replaced to [{}]", str, cleanedString);
+			}
+			return cleanedString;
+		}
+		return null;
+	}
 
 }
