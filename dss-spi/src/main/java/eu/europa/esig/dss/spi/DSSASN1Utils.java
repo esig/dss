@@ -1100,7 +1100,7 @@ public final class DSSASN1Utils {
 			final Attribute atsHashIndexAttribute = timestampUnsignedAttributes.get(atsHashIndexVersionIdentifier);
 			if (atsHashIndexAttribute != null) {
 				final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
-				if (attrValues != null && attrValues.size() > 0) {
+				if (attrValues != null && attrValues.size() == 1) {
 					return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
 				}
 			}

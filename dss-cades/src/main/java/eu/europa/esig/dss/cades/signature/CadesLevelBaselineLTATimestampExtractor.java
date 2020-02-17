@@ -145,12 +145,16 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 *
 	 * @param signerInformation
 	 * @param timestampToken
-	 * @return
+	 * @return a re-built ats-hash-index
 	 */
 	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
 		final AttributeTable unsignedAttributes = timestampToken.getUnsignedAttributes();
 		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = DSSASN1Utils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
 		ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
+		if (atsHashIndex == null) {
+			LOG.warn("A valid atsHashIndex [oid: {}] has not been found for a timestamp with id {}",
+					atsHashIndexVersionIdentifier, timestampToken.getDSSIdAsString());
+		}
 		
 		final AlgorithmIdentifier derObjectAlgorithmIdentifier = getAlgorithmIdentifier(atsHashIndex);
 		final ASN1Sequence certificatesHashIndex = getVerifiedCertificatesHashIndex(atsHashIndex);

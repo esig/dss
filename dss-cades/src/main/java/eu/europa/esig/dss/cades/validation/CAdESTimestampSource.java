@@ -1,46 +1,5 @@
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
-import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
-import org.bouncycastle.asn1.esf.CrlListID;
-import org.bouncycastle.asn1.esf.CrlOcspRef;
-import org.bouncycastle.asn1.esf.CrlValidatedID;
-import org.bouncycastle.asn1.esf.OcspListID;
-import org.bouncycastle.asn1.esf.OcspResponsesID;
-import org.bouncycastle.asn1.esf.OtherHash;
-import org.bouncycastle.asn1.esf.RevocationValues;
-import org.bouncycastle.asn1.ess.OtherCertID;
-import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.Certificate;
-import org.bouncycastle.asn1.x509.CertificateList;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.crl.CRLBinary;
@@ -69,6 +28,46 @@ import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
+import org.bouncycastle.asn1.esf.CrlListID;
+import org.bouncycastle.asn1.esf.CrlOcspRef;
+import org.bouncycastle.asn1.esf.CrlValidatedID;
+import org.bouncycastle.asn1.esf.OcspListID;
+import org.bouncycastle.asn1.esf.OcspResponsesID;
+import org.bouncycastle.asn1.esf.OtherHash;
+import org.bouncycastle.asn1.esf.RevocationValues;
+import org.bouncycastle.asn1.ess.OtherCertID;
+import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.asn1.x509.CertificateList;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
+import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
 @SuppressWarnings("serial")
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
@@ -220,14 +219,16 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		
 		// Compare values present in the timestamp's Hash Index Table with signature's SignedData item digests
 		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
-		final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
-		
-		List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
-				atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-		references.addAll(certificateReferences);
-
-		List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-		references.addAll(revocationReferences);
+		if (atsHashIndex != null) {
+			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
+			
+			List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
+					atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+			references.addAll(certificateReferences);
+	
+			List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+			references.addAll(revocationReferences);
+		}
 		
 		return references;
 	}
