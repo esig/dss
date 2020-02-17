@@ -486,7 +486,7 @@
 	
 	<xs:complexType name="TimestampedObjects">
 		<xs:sequence>
-			<xs:element name="TimestampedObject" type="TimestampedObject" maxOccurs="unbounded" />
+			<xs:element name="TimestampedObject" type="TimestampedObject" minOccurs="0" maxOccurs="unbounded" /> <!-- Prints an empty list in case of null -->
 		</xs:sequence>
 	</xs:complexType>
 	
