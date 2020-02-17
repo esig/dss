@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
@@ -28,6 +30,8 @@ import eu.europa.esig.validationreport.ValidationReportUtils;
  * This test is only to ensure that we don't have exception with valid? files
  */
 public class SignaturePoolTest {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SignaturePoolTest.class);
 	
 	@BeforeAll
 	public static void init() throws Exception {
@@ -53,7 +57,9 @@ public class SignaturePoolTest {
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
 	public void testValidate(File fileToTest) {
+		LOG.info("Begin : {}", fileToTest.getAbsolutePath());
 		assertTimeout(ofSeconds(3L), () -> execute(fileToTest));
+		LOG.info("End : {}", fileToTest.getAbsolutePath());
 	}
 
 	private void execute(File fileToTest) {
