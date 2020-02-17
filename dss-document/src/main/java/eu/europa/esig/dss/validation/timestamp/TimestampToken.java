@@ -181,7 +181,7 @@ public class TimestampToken extends Token {
 	 *                              identify the signing certificate of the
 	 *                              timestamp
 	 */
-	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
 			final TimestampLocation timestampLocation, final CertificatePool certPool) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;

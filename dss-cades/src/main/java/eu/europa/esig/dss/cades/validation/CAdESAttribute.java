@@ -95,13 +95,19 @@ public class CAdESAttribute implements ISignatureAttribute {
 	public ASN1Encodable getASN1Object() {
 		return attribute.getAttrValues().getObjectAt(0);
 	}
-	
+
 	/**
 	 * Returns a TimeStampToken if possible
-	 * @return {@link TimeStampToken}
+	 * 
+	 * @return a {@link TimeStampToken} or null
 	 */
 	public TimeStampToken toTimeStampToken() {
-		return DSSASN1Utils.getTimeStampToken(attribute);
+		try {
+			return DSSASN1Utils.getTimeStampToken(attribute);
+		} catch (Exception e) {
+			LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
+			return null;
+		}
 	}
 	
 	@Override

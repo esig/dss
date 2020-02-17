@@ -58,6 +58,7 @@ import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,19 +206,15 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		// not applicable for CAdES
 		return false;
 	}
-	
+
 	@Override
 	protected TimestampToken makeTimestampToken(CAdESAttribute signatureAttribute, TimestampType timestampType,
 			List<TimestampedReference> references) {
-		ASN1Primitive asn1Primitive = signatureAttribute.getASN1Primitive();
-		if (asn1Primitive == null) {
+		TimeStampToken timestamp = signatureAttribute.toTimeStampToken();
+		if (timestamp == null) {
 			return null;
 		}
-		try {
-			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
-		} catch (Exception e) {
-			throw new DSSException("Cannot create a timestamp token", e);
-		}
+		return new TimestampToken(timestamp, timestampType, references, TimestampLocation.CAdES, certificatePool);
 	}
 
 	@Override
