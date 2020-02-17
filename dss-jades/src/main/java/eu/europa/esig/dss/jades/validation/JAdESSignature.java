@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import org.jose4j.json.internal.json_simple.JSONObject;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -9,6 +12,7 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
@@ -28,8 +32,13 @@ import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 
 public class JAdESSignature extends DefaultAdvancedSignature {
 
-	protected JAdESSignature(CertificatePool certPool) {
+	private static final long serialVersionUID = -3730351687600398811L;
+
+	private final CustomJsonWebSignature jws;
+
+	public JAdESSignature(CustomJsonWebSignature jws, CertificatePool certPool) {
 		super(certPool);
+		this.jws = jws;
 	}
 
 	@Override
@@ -39,26 +48,22 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		// TODO Auto-generated method stub
-		return null;
+		return SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue());
 	}
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		// TODO Auto-generated method stub
-		return null;
+		return getSignatureAlgorithm().getEncryptionAlgorithm();
 	}
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-		// TODO Auto-generated method stub
-		return null;
+		return getSignatureAlgorithm().getDigestAlgorithm();
 	}
 
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		// TODO Auto-generated method stub
-		return null;
+		return getSignatureAlgorithm().getMaskGenerationFunction();
 	}
 
 	@Override
@@ -75,14 +80,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureCRLSource getCRLSource() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JAdESCRLSource();
 	}
 
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JAdESOCSPSource();
 	}
 
 	@Override
@@ -100,24 +103,42 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public void checkSignatureIntegrity() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void checkSigningCertificate() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
-		// TODO Auto-generated method stub
+		JSONObject signaturePlace = (JSONObject) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PL);
+		if (signaturePlace != null) {
+			SignatureProductionPlace result = new SignatureProductionPlace();
+			result.setCity((String) signaturePlace.get(JAdESHeaderParameterNames.CITY));
+			result.setPostalCode((String) signaturePlace.get(JAdESHeaderParameterNames.POST_CODE));
+			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.STAT_PROV));
+			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.COUNTRY));
+			return result;
+		}
 		return null;
 	}
 
 	@Override
 	public CommitmentType getCommitmentTypeIndication() {
-		// TODO Auto-generated method stub
+		JSONObject signedCommitment = (JSONObject) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CM);
+		if (signedCommitment != null) {
+			CommitmentType result = new CommitmentType();
+
+			// TODO missing OID definition
+			//	result.addIdentifier(identifier);
+
+			return result;
+		}
 		return null;
 	}
 
@@ -159,8 +180,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -190,13 +210,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public byte[] getSignatureValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return jws.getSignatureValue();
 	}
 
 	@Override

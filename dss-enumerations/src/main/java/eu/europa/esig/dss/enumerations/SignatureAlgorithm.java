@@ -506,6 +506,14 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 		return algorithm;
 	}
+	
+	public static SignatureAlgorithm forJWA(String jsonWebAlgorithm) {
+		final SignatureAlgorithm algorithm = JWA_ALGORITHMS.get(jsonWebAlgorithm);
+		if (algorithm == null) {
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, jsonWebAlgorithm));
+		}
+		return algorithm;
+	}
 
 	/**
 	 * For given signature algorithm and digest algorithm this function returns the Java form of the signature algorithm
