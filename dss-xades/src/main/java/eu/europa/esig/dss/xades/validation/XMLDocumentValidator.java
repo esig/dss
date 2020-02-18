@@ -42,6 +42,7 @@ import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
+import org.w3c.dom.Node;
 
 /**
  * Validator of XML Signed document
@@ -114,10 +115,19 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 
 		signatures = new ArrayList<>();
-		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature) and not(parent::xades:SignedAssertion)]");
+		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
+			final Node parent = signatureEl.getParentNode();
+			final String nodeName = parent.getNodeName();
+			final String ns = parent.getNamespaceURI();
+			
+			if ("saml2:Assertion".equals(nodeName)
+				&& "urn:oasis:names:tc:SAML:2.0:assertion".equals(ns)){
+			    continue; // skip signed assertions
+			}
+
 			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xadesPathsHolders, validationCertPool);
 			xadesSignature.setSignatureFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
