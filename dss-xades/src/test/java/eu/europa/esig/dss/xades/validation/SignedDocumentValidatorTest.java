@@ -84,9 +84,9 @@ public class SignedDocumentValidatorTest {
 			Locale.setDefault(Locale.ENGLISH);
 			DSSDocument document = new FileDocument("src/test/resources/validation/dss-signed.xml");
 			testMessages(document, Locale.getDefault(), null);
-			testMessages(document, Locale.ENGLISH, "The certificate path is not trusted!");
-			testMessages(document, Locale.FRENCH, "Le chemin du certificat n'est pas de confiance !");
-			testMessages(document, Locale.GERMAN, "The certificate path is not trusted!");
+			testMessages(document, Locale.ENGLISH, "Unable to build a certificate chain until a trusted list!");
+			testMessages(document, Locale.FRENCH, "Impossible de remonter jusqu'à une liste de confiance !");
+			testMessages(document, Locale.GERMAN, "Unable to build a certificate chain until a trusted list!");
 		} finally {
 			Locale.setDefault(systemLocale); // restore default
 		}
