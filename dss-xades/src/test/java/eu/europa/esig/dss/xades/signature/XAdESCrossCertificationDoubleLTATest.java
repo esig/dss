@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +53,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
@@ -89,6 +94,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         
         CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
         customCertificateVerifier.clearTrustedCertSources();
+        customCertificateVerifier.setCrlSource(new OnlineCRLSource(getFileCacheDataLoader()));
         customCertificateVerifier.setTrustedCertSource(commonTrustedCertificateSource);
 		
         XAdESService service = new XAdESService(customCertificateVerifier);
@@ -122,8 +128,11 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         
         List<XmlRelatedCertificate> relatedCertificatesFirstLTA = signature.getRelatedCertificates();
         List<XmlRelatedRevocation> relatedRevocationsFirstLTA = signature.getRelatedRevocations();
+        
+        customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
+        customCertificateVerifier.setCrlSource(new OnlineCRLSource(getFileCacheDataLoader()));
 
-        service = new XAdESService(getCompleteCertificateVerifier());
+        service = new XAdESService(customCertificateVerifier);
         service.setTspSource(getGoodTsa());
         
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
@@ -160,6 +169,16 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         		new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
         assertNull(timeStampValidationDataElement);
 		
+	}
+	
+	private DataLoader getFileCacheDataLoader() {
+		FileCacheDataLoader cacheDataLoader = new FileCacheDataLoader();
+		CommonsDataLoader dataLoader = new CommonsDataLoader();
+		dataLoader.setProxyConfig(getProxyConfig());
+		cacheDataLoader.setDataLoader(dataLoader);
+		cacheDataLoader.setFileCacheDirectory(new File("target/test"));
+		cacheDataLoader.setCacheExpirationTime(3600000L);
+		return cacheDataLoader;
 	}
 
 	@Override
