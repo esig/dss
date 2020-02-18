@@ -1,10 +1,18 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -14,6 +22,7 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateRef;
@@ -34,11 +43,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private static final long serialVersionUID = -3730351687600398811L;
 
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignature.class);
+
+	/* Format date-time as specified in RFC 3339 5.6 */
+	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
 	private final CustomJsonWebSignature jws;
 
 	public JAdESSignature(CustomJsonWebSignature jws, CertificatePool certPool) {
 		super(certPool);
 		this.jws = jws;
+	}
+	
+	public CustomJsonWebSignature getJws() {
+		return jws;
 	}
 
 	@Override
@@ -68,14 +86,23 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public Date getSigningTime() {
-		// TODO Auto-generated method stub
+		String signingTimeStr = jws.getHeaders().getStringHeaderValue(JAdESHeaderParameterNames.SIG_T);
+		if (Utils.isStringNotEmpty(signingTimeStr)) {
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT_RFC3339);
+				sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+				return sdf.parse(signingTimeStr);
+			} catch (ParseException e) {
+				LOG.warn("Unable to parse {} with value '{}' : {}", JAdESHeaderParameterNames.SIG_T, signingTimeStr,
+						e.getMessage());
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JAdESCertificateSource(jws, certPool);
 	}
 
 	@Override
@@ -90,8 +117,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureTimestampSource getTimestampSource() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JAdESTimestampSource(this, certPool);
 	}
 
 	@Override
@@ -135,7 +161,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			CommitmentType result = new CommitmentType();
 
 			// TODO missing OID definition
-			//	result.addIdentifier(identifier);
+			// result.addIdentifier(identifier);
 
 			return result;
 		}
@@ -144,67 +170,96 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO handle sigD
+		return jws.getContentTypeHeaderValue();
 	}
 
 	@Override
 	public String getMimeType() {
-		// TODO Auto-generated method stub
-		return null;
+		return jws.getHeaders().getStringHeaderValue(HeaderParameterNames.TYPE);
 	}
 
 	@Override
 	public String getContentIdentifier() {
-		// TODO Auto-generated method stub
+		// not applicable
 		return null;
 	}
 
 	@Override
 	public String getContentHints() {
-		// TODO Auto-generated method stub
+		// not applicable
 		return null;
 	}
 
 	@Override
 	public List<SignerRole> getClaimedSignerRoles() {
-		// TODO Auto-generated method stub
-		return null;
+		List<SignerRole> claimeds = new ArrayList<>();
+		JSONObject jsonObject = getSignerAttributes();
+		if (jsonObject != null) {
+			JSONArray array = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.CLAIMED);
+			if (Utils.isCollectionNotEmpty(array)) {
+				// TODO unclear standard
+				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.CLAIMED);
+			}
+		}
+		return claimeds;
 	}
 
 	@Override
 	public List<SignerRole> getCertifiedSignerRoles() {
-		// TODO Auto-generated method stub
-		return null;
+		List<SignerRole> certifieds = new ArrayList<>();
+		JSONObject jsonObject = getSignerAttributes();
+		if (jsonObject != null) {
+			JSONArray array = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.CERTIFIED);
+			if (Utils.isCollectionNotEmpty(array)) {
+				// TODO unclear standard
+				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.CERTIFIED);
+			}
+		}
+		return certifieds;
+	}
+
+	private JSONObject getSignerAttributes() {
+		return (JSONObject) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SR_ATS);
 	}
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
+		// not supported
 		return Collections.emptyList();
 	}
 
 	@Override
 	public List<CertificateRef> getCertificateRefs() {
-		// TODO Auto-generated method stub
-		return null;
+		// not supported
+		return Collections.emptyList();
 	}
 
 	@Override
 	public String getDAIdentifier() {
-		// TODO Auto-generated method stub
+		// not applicable for JAdES
 		return null;
 	}
 
 	@Override
 	public boolean isDataForSignatureLevelPresent(SignatureLevel signatureLevel) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean dataForProfilePresent = true;
+		switch (signatureLevel) {
+		case JAdES_BASELINE_B:
+			dataForProfilePresent = getSigningTime() != null && getSignatureAlgorithm() != null;
+			break;
+		case JSON_NOT_ETSI:
+			dataForProfilePresent = true;
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown level " + signatureLevel);
+		}
+		return dataForProfilePresent;
 	}
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SignatureLevel[] { SignatureLevel.JSON_NOT_ETSI, SignatureLevel.JAdES_BASELINE_B };
 	}
 
 	@Override
