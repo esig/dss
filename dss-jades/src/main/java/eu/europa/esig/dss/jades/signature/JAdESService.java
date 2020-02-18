@@ -1,14 +1,20 @@
 package eu.europa.esig.dss.jades.signature;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -31,15 +37,27 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(DSSDocument toSignDocument, JAdESSignatureParameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
+		assertSigningDateInCertificateValidityRange(parameters);
+		
+		JAdESLevelBaselineB jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier);
+		byte[] dataToSign = jadesLevelBaselineB.getDataToSign(toSignDocument, parameters);
+		
+		return new ToBeSigned(dataToSign);
 	}
 
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		JAdESLevelBaselineB jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier);
+		String dataToSignString = jadesLevelBaselineB.getDataToSignConcatenatedString(toSignDocument, parameters);
+		
+		String signatureString = JAdESUtils.concatenate(dataToSignString, JAdESUtils.toBase64Url(signatureValue.getValue()));
+		return new InMemoryDocument(signatureString.getBytes(),
+				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JSON);
 	}
 
 	@Override

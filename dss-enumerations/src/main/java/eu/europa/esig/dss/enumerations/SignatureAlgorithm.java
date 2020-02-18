@@ -707,5 +707,14 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	public String getJCEId() {
 		return JAVA_ALGORITHMS_FOR_KEY.get(this);
 	}
+	
+	/**
+	 * Returns algorithm identifier corresponding to JWA accepted algorithms (RFC 7518)
+	 * 
+	 * @return the JWA algorithm identifier
+	 */
+	public String getJWAId() {
+		return JWA_ALGORITHMS_FOR_KEY.get(this);
+	}
 
 }

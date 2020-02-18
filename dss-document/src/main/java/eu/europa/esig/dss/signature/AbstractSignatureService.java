@@ -143,6 +143,9 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			case PAdES:
 				finalName.append("pdf");
 				break;
+			case JAdES:
+				finalName.append("json");
+				break;
 			default:
 				throw new DSSException("Unable to generate a full document name");
 			}
