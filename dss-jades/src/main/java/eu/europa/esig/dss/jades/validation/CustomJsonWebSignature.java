@@ -9,6 +9,8 @@ import eu.europa.esig.dss.model.DSSException;
 
 public class CustomJsonWebSignature extends JsonWebSignature {
 
+	public CustomJsonWebSignature() {}
+	
 	public CustomJsonWebSignature(String header, String payload, String signature) {
 		Objects.requireNonNull(header, "Header part cannot be null");
 		Objects.requireNonNull(payload, "Payload part cannot be null");

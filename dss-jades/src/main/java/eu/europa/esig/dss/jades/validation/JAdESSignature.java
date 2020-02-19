@@ -3,14 +3,17 @@ package eu.europa.esig.dss.jades.validation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,16 +24,22 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateRef;
+import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifier;
 import eu.europa.esig.dss.validation.SignatureOCSPSource;
@@ -54,7 +63,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		super(certPool);
 		this.jws = jws;
 	}
-	
+
 	public CustomJsonWebSignature getJws() {
 		return jws;
 	}
@@ -102,40 +111,162 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
-		return new JAdESCertificateSource(jws, certPool);
+		if (offlineCertificateSource == null) {
+			offlineCertificateSource = new JAdESCertificateSource(jws, certPool);
+		}
+		return offlineCertificateSource;
 	}
 
 	@Override
 	public SignatureCRLSource getCRLSource() {
-		return new JAdESCRLSource();
+		if (signatureCRLSource == null) {
+			signatureCRLSource = new JAdESCRLSource();
+		}
+		return signatureCRLSource;
 	}
 
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
-		return new JAdESOCSPSource();
+		if (signatureOCSPSource == null) {
+			signatureOCSPSource = new JAdESOCSPSource();
+		}
+		return signatureOCSPSource;
 	}
 
 	@Override
 	public SignatureTimestampSource getTimestampSource() {
-		return new JAdESTimestampSource(this, certPool);
+		if (signatureTimestampSource == null) {
+			signatureTimestampSource = new JAdESTimestampSource(this, certPool);
+		}
+		return signatureTimestampSource;
 	}
 
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (candidatesForSigningCertificate != null) {
+			return candidatesForSigningCertificate;
+		}
+
+		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
+
+		final SignatureCertificateSource certSource = getCertificateSource();
+		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
+			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+		}
+
+		if (providedSigningCertificateToken != null) {
+			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
+		}
+
+		return candidatesForSigningCertificate;
 	}
 
 	@Override
 	public void checkSignatureIntegrity() {
-		// TODO Auto-generated method stub
+
+		if (signatureCryptographicVerification != null) {
+			return;
+		}
+		signatureCryptographicVerification = new SignatureCryptographicVerification();
+		boolean coreValidity = false;
+		
+		CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
+		if (candidates.isEmpty()) {
+			signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature or certificate pool.");
+		}
+
+		jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
+		jws.setDoKeyValidation(false); // restrict on key size,...
+
+		LOG.debug("Determining signing certificate from certificate candidates list...");
+		final List<String> preliminaryErrorMessages = new ArrayList<>();
+		int certificateNumber = 0;
+		for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
+			String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
+			
+			jws.setKey(certificateValidity.getCertificateToken().getPublicKey());
+
+			try {
+				coreValidity = jws.verifySignature();
+				if (coreValidity) {
+					LOG.info("Determining signing certificate from certificate candidates list succeeded");
+					candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
+					break;
+				}
+			} catch (JoseException e) {
+				LOG.debug("Exception while probing candidate certificate as signing certificate: {}", e.getMessage());
+				preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
+			}
+
+			certificateNumber++;
+		}
+		
+		if (!coreValidity) {
+			LOG.warn("Determining signing certificate from certificate candidates list failed: {}", preliminaryErrorMessages);
+			for (String preliminaryErrorMessage : preliminaryErrorMessages) {
+				signatureCryptographicVerification.setErrorMessage(preliminaryErrorMessage);
+			}
+		}
+
+		signatureCryptographicVerification.setSignatureIntact(coreValidity);
 
 	}
 
 	@Override
 	public void checkSigningCertificate() {
-		// TODO Auto-generated method stub
 
+		getCandidatesForSigningCertificate();
+
+		Digest signingCertificateDigest = getSigningCertificateDigest();
+		IssuerSerial issuerSerial = getCurrentIssuerSerial();
+
+		for (CertificateValidity certificateValidity : candidatesForSigningCertificate.getCertificateValidityList()) {
+			CertificateToken candidate = certificateValidity.getCertificateToken();
+
+			if (signingCertificateDigest != null) {
+				certificateValidity.setAttributePresent(true);
+				certificateValidity.setDigestPresent(true);
+
+				byte[] candidateDigest = candidate.getDigest(signingCertificateDigest.getAlgorithm());
+				if (Arrays.equals(signingCertificateDigest.getValue(), candidateDigest)) {
+					certificateValidity.setDigestEqual(true);
+					candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
+				}
+			}
+
+			if (issuerSerial != null) {
+				IssuerSerial candidateIssuerSerial = DSSASN1Utils.getIssuerSerial(candidate);
+
+				if (issuerSerial.getIssuer().equals(candidateIssuerSerial.getIssuer())) {
+					certificateValidity.setDistinguishedNameEqual(true);
+				}
+
+				if (issuerSerial.getSerial().equals(candidateIssuerSerial.getSerial())) {
+					certificateValidity.setSerialNumberEqual(true);
+				}
+			}
+		}
+	}
+
+	private Digest getSigningCertificateDigest() {
+		List<CertificateRef> signingCertificates = getCertificateSource().getSigningCertificateValues();
+		if (Utils.isCollectionNotEmpty(signingCertificates)) {
+
+			// first is the signing certificate
+			CertificateRef designatedSigningCertificate = signingCertificates.iterator().next();
+			return designatedSigningCertificate.getCertDigest();
+		}
+		return null;
+	}
+
+	private IssuerSerial getCurrentIssuerSerial() {
+		String kid = jws.getKeyIdHeaderValue();
+		if (Utils.isStringNotEmpty(kid) && Utils.isBase64Encoded(kid)) {
+			byte[] binary = Utils.fromBase64(kid);
+			return DSSASN1Utils.getIssuerSerial(binary);
+		}
+		return null;
 	}
 
 	@Override
