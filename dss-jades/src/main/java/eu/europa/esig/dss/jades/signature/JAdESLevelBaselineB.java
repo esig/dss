@@ -21,13 +21,13 @@ public class JAdESLevelBaselineB {
 	}
 	
 	String getDataToSignConcatenatedString(final DSSDocument document, final JAdESSignatureParameters parameters) {
-		CustomJsonWebSignature jws = buildHeader(parameters);
+		CustomJsonWebSignature jws = buildHeader(document, parameters);
 		setPayload(jws, document);
 		return JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
 	}
 	
-	protected CustomJsonWebSignature buildHeader(final JAdESSignatureParameters parameters) {
-		JOSEHeaderBuilder joseHeaderBuilder = new JOSEHeaderBuilder(certificateVerifier, parameters);
+	protected CustomJsonWebSignature buildHeader(final DSSDocument document, final JAdESSignatureParameters parameters) {
+		JOSEHeaderBuilder joseHeaderBuilder = new JOSEHeaderBuilder(certificateVerifier, parameters, document);
 		return joseHeaderBuilder.build();
 	}
 	

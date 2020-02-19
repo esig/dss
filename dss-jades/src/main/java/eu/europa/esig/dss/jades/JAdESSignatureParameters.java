@@ -20,9 +20,23 @@
  */
 package eu.europa.esig.dss.jades;
 
+import java.util.Objects;
+
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdESTimestampParameters> {
+	
+	/**
+	 * Defines if certificate chain binaries must be included into the signed header ('x5c' attribute)
+	 */
+	private boolean includeCertificateChainBinaries = true;
+	
+	/**
+	 * The DigestAlgorithm used to create a reference to a signing certificate, 
+	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
+	 */
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA256;
 
 	@Override
 	public JAdESTimestampParameters getContentTimestampParameters() {
@@ -30,6 +44,45 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 			contentTimestampParameters = new JAdESTimestampParameters();
 		}
 		return contentTimestampParameters;
+	}
+
+	/**
+	 * Defines if complete certificate chain binaries must be included into the signed header ('x5c' attribute)
+	 * 
+	 * @return TRUE if the certificate chain must be included, FALSE otherwise
+	 */
+	public boolean isIncludeCertificateChain() {
+		return includeCertificateChainBinaries;
+	}
+
+	/**
+	 * Sets if complete certificate chain binaries must be included into the signed header
+	 * Default: TRUE (the complete binaries will be included into the signed header)
+	 * 
+	 * @param includeCertificateChain if the certificate chain binaries must be included into the signed header
+	 */
+	public void setIncludeCertificateChain(boolean includeCertificateChain) {
+		this.includeCertificateChainBinaries = includeCertificateChain;
+	}
+
+	/**
+	 * The digest method indicates the digest algorithm to be used to calculate the certificate digest
+	 * to define a signing certificate ('x5t#256' for SHA256 or 'x5t#o' for other algorithms)
+	 *
+	 * @param signingCertificateDigestMethod {@link DigestAlgorithm} to be used
+	 */
+	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
+		Objects.requireNonNull(signingCertificateDigestMethod, "SigningCertificateDigestMethod cannot be null!");
+		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
+	}
+
+	/**
+	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm)}.
+	 *
+	 * @return {@link DigestAlgorithm} to be used for signing certificate digest representation
+	 */
+	public DigestAlgorithm getSigningCertificateDigestMethod() {
+		return signingCertificateDigestMethod;
 	}
 
 }

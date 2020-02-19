@@ -9,14 +9,20 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_ATS;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CM;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jose4j.base64url.Base64Url;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.CompactSerializer;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.StringUtil;
+
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 
 public class JAdESUtils {
 	
@@ -70,6 +76,26 @@ public class JAdESUtils {
 	 */	
 	public static String[] getSupportedCriticalHeaders() {
 		return criticalHeaders.toArray(new String[criticalHeaders.size()]);
+	}
+	
+	/**
+	 * Creates a 'DigAlgVal' {@code JSONObject} from the given values
+	 * 
+	 * @param digestValue a byte array representing a hash value
+	 * @param digestAlgorithm {@link DigestAlgorithm} has been used to generate the value
+	 * @return 'DigAlgVal' {@link JSONObject}
+	 */
+	public static JSONObject getDigAndValObject(byte[] digestValue, DigestAlgorithm digestAlgorithm) {
+		Map<String, Object> digAlgValParams = new HashMap<>();
+		digAlgValParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getUri());
+		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, Utils.toBase64(digestValue));
+		
+		JSONObject digAlgValParamsObject = new JSONObject(digAlgValParams);
+		
+		Map<String, Object> digAldVal = new HashMap<>();
+		digAldVal.put(JAdESHeaderParameterNames.DIG_ALG_VAL, digAlgValParamsObject);
+		
+		return new JSONObject(digAldVal);
 	}
 
 }

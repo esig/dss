@@ -58,6 +58,7 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		if (contentTimestamp != null) {
 			signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 		}
+		//signatureParameters.setSigningCertificateDigestMethod(DigestAlgorithm.SHA512);
 		return signatureParameters;
 	}
 
