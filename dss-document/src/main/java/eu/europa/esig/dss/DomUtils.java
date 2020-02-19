@@ -500,7 +500,7 @@ public final class DomUtils {
 			final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 			final XMLGregorianCalendar xmlGregorianCalendar = datatypeFactory.newXMLGregorianCalendar(text);
 			return xmlGregorianCalendar.toGregorianCalendar().getTime();
-		} catch (DatatypeConfigurationException e) {
+		} catch (Exception e) {
 			LOG.warn("Unable to parse '{}'", text);
 		}
 		return null;

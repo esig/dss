@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -94,4 +95,10 @@ public class DomUtilsTest {
 		assertNotNull(DomUtils.getSecureTransformer());
 	}
 
+	@Test
+	public void getDate() {
+		assertNull(DomUtils.getDate("2020-02-16:T18:32:24Z"));
+		assertNotNull(DomUtils.getDate("2020-02-16T18:32:24Z"));
+	}
+	
 }
