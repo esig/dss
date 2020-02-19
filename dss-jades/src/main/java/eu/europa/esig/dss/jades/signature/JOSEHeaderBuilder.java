@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
@@ -67,7 +68,10 @@ public class JOSEHeaderBuilder {
 		
 		// EN 119-182 headers
 		incorporateSigningTime();
+		incorporateSignerCommitment();
 		incorporateSignatureProductionPlace();
+		incorporateSignerRoles();
+		incorporateContentTimestamps();
 		
 		// must be executed the last
 		incorporateCritical();
@@ -92,7 +96,25 @@ public class JOSEHeaderBuilder {
 		}
 		MimeType mimeType = signingDocument.getMimeType();
 		if (mimeType != null) {
-			jws.setContentTypeHeaderValue(mimeType.getMimeTypeString());
+			jws.setContentTypeHeaderValue(getRFC7515ConformantMimeTypeString(mimeType));
+		}
+	}
+	
+	private String getRFC7515ConformantMimeTypeString(MimeType mimeType) {
+		/*
+		 * RFC 7515 :
+		 * To keep messages compact in common situations, it is RECOMMENDED that
+		 * producers omit an "application/" prefix of a media type value in a
+		 * "cty" Header Parameter when no other '/' appears in the media type
+		 * value.
+		 */
+		String mimeTypeString = mimeType.getMimeTypeString();
+		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurance(mimeTypeString, JAdESUtils.MIME_TYPE_APPLICATION_PREFIX);
+		if (!shortMimeTypeString.contains("/")) {
+			return shortMimeTypeString;
+		} else {
+			// return original if contains other '/'
+			return mimeTypeString;
 		}
 	}
 
@@ -185,6 +207,31 @@ public class JOSEHeaderBuilder {
 	}
 
 	/**
+	 * Incorporates 5.2.3 The srCm (signer commitment) header parameter
+	 */
+	protected void incorporateSignerCommitment() {
+		if (Utils.isCollectionEmpty(parameters.bLevel().getCommitmentTypeIndications())) {
+			return;
+		}
+		// TODO : is only one allowed ?
+		if (parameters.bLevel().getCommitmentTypeIndications().size() > 1) {
+			LOG.warn("The current version supports only one CommitmentType indication. "
+					+ "All indications except the first one are omitted.");
+		}
+		String commitmentTypeIndication = parameters.bLevel().getCommitmentTypeIndications().iterator().next();
+		JSONObject oidObject = JAdESUtils.getOidObject(commitmentTypeIndication); // Only simple Oid form is supported
+		
+		Map<String, Object> srCmParams = new HashMap<>();
+		srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
+		// TODO : Qualifiers are not supported
+		// srCmParams.put(JAdESHeaderParameterNames.COMM_QUALS, quals);
+		
+		JSONObject srCmParamsObject = new JSONObject(srCmParams);
+		
+		addCriticalHeader(JAdESHeaderParameterNames.SR_CM, srCmParamsObject);
+	}
+
+	/**
 	 * Incorporates 5.2.4 The sigPl (signature production place) header parameter
 	 */
 	private void incorporateSignatureProductionPlace() {
@@ -224,6 +271,52 @@ public class JOSEHeaderBuilder {
 				
 			}
 		}
+	}
+
+	/**
+	 * Incorporates 5.2.5 The srAts (signer attributes) header parameter
+	 */
+	private void incorporateSignerRoles() {
+		if (Utils.isCollectionEmpty(parameters.bLevel().getClaimedSignerRoles())) {
+			return;
+		}
+		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
+		// TODO : is base64 required ?
+		List<String> base64Values = toBase64Strings(claimedSignerRoles);
+		
+		JSONArray claimed = new JSONArray(base64Values);
+		
+		Map<String, Object> srAtsParams = new HashMap<>();
+		srAtsParams.put(JAdESHeaderParameterNames.CLAIMED, claimed);
+		// TODO : certified and signedAssertions are not supported
+		// srAtsParams.put(JAdESHeaderParameterNames.CERTIFIED, certified);
+		// srAtsParams.put(JAdESHeaderParameterNames.SIGNED_ASSERTIONS, signedAssertions);
+		JSONObject srAtsParamsObject = new JSONObject(srAtsParams);
+		
+		addCriticalHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
+	}
+	
+	private List<String> toBase64Strings(List<String> strings) {
+		List<String> base64Strings = new ArrayList<>();
+		for (String str : strings) {
+			if (str != null) {
+				base64Strings.add(Utils.toBase64(str.getBytes()));
+			}
+		}
+		return base64Strings;
+	}
+
+	/**
+	 * Incorporates 5.2.6 The adoTst (signed data time-stamp) header parameter
+	 */
+	private void incorporateContentTimestamps() {
+		if (Utils.isCollectionEmpty(parameters.getContentTimestamps())) {
+			return;
+		}
+		
+		// canonicalization shall be null for content timestamps (see 5.2.6)
+		JSONObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
+		addCriticalHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
 	}
 	
 	/**

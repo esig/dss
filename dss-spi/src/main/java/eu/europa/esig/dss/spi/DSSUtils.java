@@ -980,5 +980,16 @@ public final class DSSUtils {
 	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
 		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
+	
+	/**
+	 * Trims the leading string if it is a leading part of the text
+	 * 
+	 * @param text {@link String} to trim
+	 * @param leading {@link String} to remove
+	 * @return trimed text {@link String}
+	 */
+	public static String stripFirstLeadingOccurance(String text, String leading) {
+		return text.replaceFirst("^"+leading, "");
+	}
 
 }

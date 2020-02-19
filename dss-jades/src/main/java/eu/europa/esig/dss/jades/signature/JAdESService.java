@@ -1,20 +1,31 @@
 package eu.europa.esig.dss.jades.signature;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -33,6 +44,42 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public JAdESService(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ JAdESService created");
+	}
+	
+	@Override
+	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, JAdESSignatureParameters parameters) {
+		return getContentTimestamp(Arrays.asList(toSignDocument), parameters);
+	}
+	
+	/**
+	 * This methods allows to create a TimestampToken for a detached JAdES (with a 'sigD' parameter).
+	 * NOTE: The toSignDocuments must be present in the same order they will be passed to signature computation process
+	 * 
+	 * @param toSignDocuments a list of {@link DSSDocument}s to be timestamped
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @return content {@link TimestampToken}
+	 */
+	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		if (tspSource == null) {
+			throw new DSSException("A TSPSource is required !");
+		}
+		if (Utils.isCollectionEmpty(toSignDocuments)) {
+			throw new DSSException("Original documents must be provided to generate a content timestamp!");
+		}
+		
+		byte[] concatenationResult = DSSUtils.EMPTY_BYTE_ARRAY;
+		for (DSSDocument document : toSignDocuments) {
+			byte[] documentBinaries = DSSUtils.toByteArray(document);
+			String base64UrlEncodedDoc = JAdESUtils.toBase64Url(documentBinaries);
+			concatenationResult = DSSUtils.concatenate(concatenationResult, base64UrlEncodedDoc.getBytes());
+		}
+		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, concatenationResult));
+		try {
+			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
+		} catch (TSPException | IOException | CMSException e) {
+			throw new DSSException("Cannot create a content TimestampToken", e);
+		}
 	}
 
 	@Override
@@ -63,12 +110,6 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, JAdESSignatureParameters parameters) {
 		throw new UnsupportedOperationException("Extension is not supported with JAdES");
-	}
-
-	@Override
-	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, JAdESSignatureParameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

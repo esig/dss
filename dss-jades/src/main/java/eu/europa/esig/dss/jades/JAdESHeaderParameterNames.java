@@ -118,5 +118,30 @@ public final class JAdESHeaderParameterNames {
 	 * Signed data
 	 */
 	public static final String SIG_D = "sigD";
+	
+	/**
+	 * Description
+	 */
+	public static final String DESC = "desc";
+	
+	/**
+	 * Document references
+	 */
+	public static final String DOC_REFS = "docRefs";
+	
+	/**
+	 * Canonicalization algorithm
+	 */
+	public static final String CANON_ALG = "canonAlg";
+	
+	/**
+	 * Timestamp tokens array
+	 */
+	public static final String TST_TOKENS = "tsTokens";
+	
+	/**
+	 * Value (i.e. Timestamp base64 value)
+	 */
+	public static final String VAL = "val";
 
 }

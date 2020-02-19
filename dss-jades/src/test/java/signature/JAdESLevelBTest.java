@@ -13,6 +13,7 @@ import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -41,16 +42,13 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		signingDate = new Date();
-		//contentTimestamp = service.getContentTimestamp(documentToSign, getSignatureParameters());
+		contentTimestamp = service.getContentTimestamp(documentToSign, getSignatureParameters());
 	}
 
 	@Override
 	protected JAdESSignatureParameters getSignatureParameters() {
 		JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(signingDate);
-		SignerLocation signerLocation = new SignerLocation();
-		signerLocation.setLocality("Kehlen");
-		signatureParameters.bLevel().setSignerLocation(signerLocation);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -58,7 +56,12 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		if (contentTimestamp != null) {
 			signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 		}
+		SignerLocation signerLocation = new SignerLocation();
+		signerLocation.setLocality("Kehlen");
+		signatureParameters.bLevel().setSignerLocation(signerLocation);
 		//signatureParameters.setSigningCertificateDigestMethod(DigestAlgorithm.SHA512);
+		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfCreation.getOid()));
+		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
 		return signatureParameters;
 	}
 
