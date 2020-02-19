@@ -25,7 +25,10 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -170,10 +173,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		boolean coreValidity = false;
-		
+
 		CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 		if (candidates.isEmpty()) {
-			signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature or certificate pool.");
+			signatureCryptographicVerification
+					.setErrorMessage("There is no signing certificate within the signature or certificate pool.");
 		}
 
 		jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
@@ -184,7 +188,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		int certificateNumber = 0;
 		for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
 			String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
-			
+
 			jws.setKey(certificateValidity.getCertificateToken().getPublicKey());
 
 			try {
@@ -201,9 +205,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 			certificateNumber++;
 		}
-		
+
 		if (!coreValidity) {
-			LOG.warn("Determining signing certificate from certificate candidates list failed: {}", preliminaryErrorMessages);
+			LOG.warn("Determining signing certificate from certificate candidates list failed: {}",
+					preliminaryErrorMessages);
 			for (String preliminaryErrorMessage : preliminaryErrorMessages) {
 				signatureCryptographicVerification.setErrorMessage(preliminaryErrorMessage);
 			}
@@ -289,12 +294,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		JSONObject signedCommitment = (JSONObject) jws.getHeaders()
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CM);
 		if (signedCommitment != null) {
-			CommitmentType result = new CommitmentType();
-
-			// TODO missing OID definition
-			// result.addIdentifier(identifier);
-
-			return result;
+			String identifier = (String) signedCommitment.get(JAdESHeaderParameterNames.COMM_ID);
+			if (Utils.isStringNotEmpty(identifier)) {
+				CommitmentType result = new CommitmentType();
+				result.addIdentifier(identifier);
+				return result;
+			}
 		}
 		return null;
 	}
@@ -412,14 +417,19 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
-		// TODO Auto-generated method stub
-		return null;
+		Digest digest = new Digest(digestAlgorithm, jws.getEncodedHeader().getBytes());
+		return new SignatureDigestReference(digest);
 	}
 
 	@Override
 	protected SignatureIdentifier buildSignatureIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		final CertificateToken certificateToken = getSigningCertificateToken();
+		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, jws.getEncodedHeader());
+	}
+
+	public DSSDocument getOriginalDocument() {
+		return new InMemoryDocument(jws.getUnverifiedPayloadBytes());
 	}
 
 }

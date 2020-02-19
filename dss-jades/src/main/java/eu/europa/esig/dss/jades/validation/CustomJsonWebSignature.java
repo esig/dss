@@ -8,7 +8,7 @@ import org.jose4j.lang.JoseException;
 import eu.europa.esig.dss.model.DSSException;
 
 public class CustomJsonWebSignature extends JsonWebSignature {
-	
+
 	/**
 	 * The default constructor creating an empty JWS object
 	 */
@@ -18,8 +18,8 @@ public class CustomJsonWebSignature extends JsonWebSignature {
 	/**
 	 * The constructor to instantiate a JSON signature object
 	 * 
-	 * @param header {@link String} base64Url encoded header
-	 * @param payload {@link String} base64Url encoded payload
+	 * @param header    {@link String} base64Url encoded header
+	 * @param payload   {@link String} base64Url encoded payload
 	 * @param signature {@link String} base64Url encoded signature
 	 */
 	public CustomJsonWebSignature(String header, String payload, String signature) {
@@ -29,6 +29,22 @@ public class CustomJsonWebSignature extends JsonWebSignature {
 
 		try {
 			setCompactSerializationParts(new String[] { header, payload, signature });
+		} catch (JoseException e) {
+			throw new DSSException("Unable to instantiate a compact JWS", e);
+		}
+	}
+
+	/**
+	 * The constructor to instantiate a JSON signature object
+	 * 
+	 * @param parts an array of String with the header, optional payload and the
+	 *              signature
+	 */
+	public CustomJsonWebSignature(String[] parts) {
+		Objects.requireNonNull(parts, "Parts part cannot be null");
+
+		try {
+			setCompactSerializationParts(parts);
 		} catch (JoseException e) {
 			throw new DSSException("Unable to instantiate a compact JWS", e);
 		}

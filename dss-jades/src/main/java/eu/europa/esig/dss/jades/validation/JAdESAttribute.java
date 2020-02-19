@@ -16,4 +16,8 @@ public class JAdESAttribute implements ISignatureAttribute {
 		return key;
 	}
 
+	public Object getValue() {
+		return value;
+	}
+	
 }
