@@ -203,7 +203,7 @@
 			<xs:enumeration value="PKCS7-LT" />
 			<xs:enumeration value="PKCS7-LTA" />
 			<xs:enumeration value="JSON-NOT-ETSI" />
-			<xs:enumeration value="JAdES_BASELINE_B" />
+			<xs:enumeration value="JAdES-BASELINE-B" />
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>

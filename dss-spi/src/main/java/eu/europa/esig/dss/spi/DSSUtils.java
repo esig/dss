@@ -110,6 +110,7 @@ public final class DSSUtils {
 
 	/**
 	 * Formats a date to use for internal purposes (logging, toString)
+	 * Example: "2019-11-19T17:28:15Z"
 	 *
 	 * @param date
 	 *            the date to be converted
@@ -118,9 +119,44 @@ public final class DSSUtils {
 	public static String formatInternal(final Date date) {
 		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT);
 	}
-	
+
+	/**
+	 * Formats the date according to the given format (with system TimeZone)
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @return {@link String} formatted date
+	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format) {
-		return (date == null) ? "N/A" : new SimpleDateFormat(format).format(date);
+		return formatDateWithCustomFormat(date, format, null);
+	}
+
+	/**
+	 * Formats a date to use according to RFC 3339. The date is aligned to UTC TimeZone
+	 * Example: "2019-11-19T17:28:15Z"
+	 *
+	 * @param date
+	 *            the date to be converted
+	 * @return the textual representation (a null date will result in "N/A")
+	 */
+	public static String formatDateToRFC(final Date date) {
+		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT, "UTC");
+	}
+	
+	/**
+	 * Formats the date according to the given format and timeZone
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @param timeZone {@link String} specifying a TimeZone
+	 * @return {@link String} formatted date
+	 */
+	public static String formatDateWithCustomFormat(final Date date, final String format, final String timeZone) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		if (Utils.isStringNotEmpty(timeZone)) {
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
+		return (date == null) ? "N/A" : simpleDateFormat.format(date);
 	}
 
 	/**

@@ -70,7 +70,7 @@ public class JWSCompactDocumentValidator extends SignedDocumentValidator {
 			String compactSerialization = scanner.next();
 			String[] parts = CompactSerializer.deserialize(compactSerialization);
 
-			CustomJsonWebSignature jws = new CustomJsonWebSignature(parts);
+			JWSCompactSerialization jws = new JWSCompactSerialization(parts);
 
 			JAdESSignature jadesSignature = new JAdESSignature(jws, validationCertPool);
 			jadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);

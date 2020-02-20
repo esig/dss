@@ -89,8 +89,11 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		assertSigningDateInCertificateValidityRange(parameters);
 		
-		JAdESLevelBaselineB jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier);
-		byte[] dataToSign = jadesLevelBaselineB.getDataToSign(toSignDocument, parameters);
+		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocument);
+		String headerAndPayloadString = jadesCompactBuilder.build();
+		
+		// The data to sign by RFC 7515 shall be ASCII-encoded
+		byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadString);
 		
 		return new ToBeSigned(dataToSign);
 	}
@@ -99,10 +102,10 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
 		
-		JAdESLevelBaselineB jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier);
-		String dataToSignString = jadesLevelBaselineB.getDataToSignConcatenatedString(toSignDocument, parameters);
+		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocument);
+		String headerAndPayloadString = jadesCompactBuilder.build();
 		
-		String signatureString = JAdESUtils.concatenate(dataToSignString, JAdESUtils.toBase64Url(signatureValue.getValue()));
+		String signatureString = JAdESUtils.concatenate(headerAndPayloadString, JAdESUtils.toBase64Url(signatureValue.getValue()));
 		return new InMemoryDocument(signatureString.getBytes(),
 				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JOSE);
 	}

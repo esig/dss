@@ -3,14 +3,15 @@ package eu.europa.esig.dss.jades.validation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.jose4j.base64url.Base64Url;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.Digest;
@@ -27,12 +28,12 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCertificateSource.class);
 
-	private final CustomJsonWebSignature jws;
+	private final JWSCompactSerialization jws;
 
 	private List<CertificateRef> signingCertificates;
 	private List<CertificateToken> certificateChain;
 
-	public JAdESCertificateSource(CustomJsonWebSignature jws, CertificatePool certPool) {
+	public JAdESCertificateSource(JWSCompactSerialization jws, CertificatePool certPool) {
 		super(certPool);
 		Objects.requireNonNull(jws, "JSON Web signature cannot be null");
 
@@ -75,6 +76,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 				.getStringHeaderValue(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA256Certificate)) {
 			CertificateRef certRef = new CertificateRef();
+			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Base64Url.decode(base64UrlSHA256Certificate)));
 			signingCertificates.add(certRef);
 		}
@@ -84,10 +86,11 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		List<?> x5to = (List<?>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
 		if (Utils.isCollectionNotEmpty(x5to)) {
 			for (Object item : x5to) {
-				if (item instanceof JSONObject) {
-					JSONObject digestValueAndAlgo = (JSONObject) item;
+				if (item instanceof Map<?,?>) {
+					Map<?,?> digestValueAndAlgo = (Map<?,?>) item;
 
 					CertificateRef certRef = new CertificateRef();
+					certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 					certRef.setCertDigest(getDigest(digestValueAndAlgo));
 
 					signingCertificates.add(certRef);
@@ -128,7 +131,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	private Digest getDigest(JSONObject digestValueAndAlgo) {
+	private Digest getDigest(Map<?,?> digestValueAndAlgo) {
 		String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
 		String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
 		return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));

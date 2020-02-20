@@ -59,14 +59,14 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	/* Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-	private final CustomJsonWebSignature jws;
+	private final JWSCompactSerialization jws;
 
-	public JAdESSignature(CustomJsonWebSignature jws, CertificatePool certPool) {
+	public JAdESSignature(JWSCompactSerialization jws, CertificatePool certPool) {
 		super(certPool);
 		this.jws = jws;
 	}
 
-	public CustomJsonWebSignature getJws() {
+	public JWSCompactSerialization getJws() {
 		return jws;
 	}
 

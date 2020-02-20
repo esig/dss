@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +45,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -78,8 +77,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
-import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
@@ -864,7 +863,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
-	private void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
+	protected void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
