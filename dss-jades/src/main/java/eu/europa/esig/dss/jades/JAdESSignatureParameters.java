@@ -33,6 +33,11 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	private boolean includeCertificateChainBinaries = true;
 	
 	/**
+	 * Defines if the signature must incorporate its MimeType definition in the signed header ('typ' attribute)
+	 */
+	private boolean includeSignatureType = true;
+	
+	/**
 	 * The DigestAlgorithm used to create a reference to a signing certificate, 
 	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
 	 */
@@ -66,14 +71,22 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	}
 
 	/**
-	 * The digest method indicates the digest algorithm to be used to calculate the certificate digest
-	 * to define a signing certificate ('x5t#256' for SHA256 or 'x5t#o' for other algorithms)
-	 *
-	 * @param signingCertificateDigestMethod {@link DigestAlgorithm} to be used
+	 * Defines if the signature MimeType string must be included into the signed header ('typ' attribute)
+	 * 
+	 * @return TRUE if the MimeType string of the produced signature must be included, FALSE otherwise
 	 */
-	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
-		Objects.requireNonNull(signingCertificateDigestMethod, "SigningCertificateDigestMethod cannot be null!");
-		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
+	public boolean isIncludeSignatureType() {
+		return includeSignatureType;
+	}
+
+	/**
+	 * Sets if the signature MimeType string must be included into the signed header ('typ' attribute)
+	 * Default: TRUE (the signature MimeTipe will be included into the signed header)
+	 *
+	 * @param includeSignatureType if the signature MimeType be included into the signed header
+	 */
+	public void setIncludeSignatureType(boolean includeSignatureType) {
+		this.includeSignatureType = includeSignatureType;
 	}
 
 	/**
@@ -83,6 +96,18 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	public DigestAlgorithm getSigningCertificateDigestMethod() {
 		return signingCertificateDigestMethod;
+	}
+
+	/**
+	 * The digest method indicates the digest algorithm to be used to calculate the certificate digest
+	 * to define a signing certificate ('x5t#256' for SHA256 or 'x5t#o' for other algorithms)
+	 * Default: DigestAlgorithm.SHA256 ('x5t#256' attribute will be created)
+	 *
+	 * @param signingCertificateDigestMethod {@link DigestAlgorithm} to be used
+	 */
+	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
+		Objects.requireNonNull(signingCertificateDigestMethod, "SigningCertificateDigestMethod cannot be null!");
+		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
 	}
 
 }

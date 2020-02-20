@@ -18,7 +18,7 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.JSON;
+		return MimeType.JOSE;
 	}
 
 	@Override

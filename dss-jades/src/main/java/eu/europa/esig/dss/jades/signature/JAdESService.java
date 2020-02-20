@@ -104,7 +104,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		String signatureString = JAdESUtils.concatenate(dataToSignString, JAdESUtils.toBase64Url(signatureValue.getValue()));
 		return new InMemoryDocument(signatureString.getBytes(),
-				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JSON);
+				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JOSE);
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
+import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,7 @@ public class JOSEHeaderBuilder {
 		incorporateSigningCertificateUri();
 		incorporateSigningCertificate();
 		incorporateCertificateChain();
+		incorporateType();
 		
 		// EN 119-182 headers
 		incorporateSigningTime();
@@ -193,6 +195,18 @@ public class JOSEHeaderBuilder {
 			x509Certificates[ii] = certificates.get(ii).getCertificate();
 		}
 		jws.setCertificateChainHeaderValue(x509Certificates);
+	}
+
+	/**
+	 * Incorporates RFC 7515 : 4.1.9. "typ" (Type) Header Parameter
+	 */
+	private void incorporateType() {
+		if (parameters.isIncludeSignatureType()) {
+			// TODO : add a support for JSON Serialization signature type
+			MimeType signatureMimeType = MimeType.JOSE;
+			String type = getRFC7515ConformantMimeTypeString(signatureMimeType);
+			jws.setHeader(HeaderParameterNames.TYPE, type);
+		}
 	}
 	
 	/**

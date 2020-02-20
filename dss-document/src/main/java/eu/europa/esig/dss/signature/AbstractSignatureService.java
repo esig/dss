@@ -144,6 +144,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 				finalName.append("pdf");
 				break;
 			case JAdES:
+				// TODO : use another extension ?
 				finalName.append("json");
 				break;
 			default:

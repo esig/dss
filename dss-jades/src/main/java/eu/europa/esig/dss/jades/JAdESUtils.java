@@ -112,12 +112,7 @@ public class JAdESUtils {
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getUri());
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, Utils.toBase64(digestValue));
 		
-		JSONObject digAlgValParamsObject = new JSONObject(digAlgValParams);
-		
-		Map<String, Object> digAldVal = new HashMap<>();
-		digAldVal.put(JAdESHeaderParameterNames.DIG_ALG_VAL, digAlgValParamsObject);
-		
-		return new JSONObject(digAldVal);
+		return new JSONObject(digAlgValParams);
 	}
 
 	/**

@@ -42,8 +42,8 @@ public class MimeType implements Serializable {
 	public static final MimeType PDF = new MimeType("application/pdf");
 	public static final MimeType PKCS7 = new MimeType("application/pkcs7-signature");
 	public static final MimeType JSON = new MimeType("application/json");
-	public static final MimeType TEXT_JSON = new MimeType("text/json");
-	public static final MimeType JAVASCRIPT = new MimeType("text/javascript");
+	public static final MimeType JOSE = new MimeType("application/jose");
+	public static final MimeType JOSE_JSON = new MimeType("application/jose+json");
 	public static final MimeType TST = new MimeType("application/vnd.etsi.timestamp-token");
 	public static final MimeType ASICS = new MimeType("application/vnd.etsi.asic-s+zip");
 	public static final MimeType ASICE = new MimeType("application/vnd.etsi.asic-e+zip");
@@ -70,7 +70,6 @@ public class MimeType implements Serializable {
 		fileExtensions.put("pdf", PDF);
 
 		fileExtensions.put("json", JSON);
-		fileExtensions.put("js", JAVASCRIPT);
 
 		fileExtensions.put("asics", ASICS);
 		fileExtensions.put("scs", ASICS);
