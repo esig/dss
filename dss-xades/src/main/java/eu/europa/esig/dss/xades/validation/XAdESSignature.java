@@ -527,9 +527,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (Utils.isStringNotEmpty(policyIdString)) {
 					policyIdString = policyIdString.replaceAll("\n", "");
 					policyIdString = policyIdString.trim();
-					if (DSSXMLUtils.isOid(policyIdString)) {
+					if (DSSUtils.isUrnOid(policyIdString)) {
 						// urn:oid:1.2.3 --> 1.2.3
-						policyIdString = DSSXMLUtils.getOidCode(policyIdString);
+						policyIdString = DSSUtils.getOidCode(policyIdString);
 					} else {
 						policyUrlString = policyIdString;
 					}

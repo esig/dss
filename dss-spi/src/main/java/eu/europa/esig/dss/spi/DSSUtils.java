@@ -980,15 +980,45 @@ public final class DSSUtils {
 	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
 		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
+
+	/**
+	 * Checks if the given id is a URN representation of OID according to IETF RFC 3061
+	 * 
+	 * @param id {@link String} to check
+	 * @return TRUE if the provided id is aURN representation of OID, FALSE otherwise
+	 */
+	public static boolean isUrnOid(String id) {
+		return id != null && id.matches("^(?i)urn:oid:.*$");
+	}
+	
+	/**
+	 * Keeps only code of the oid string
+	 * e.g. "urn:oid:1.2.3" to "1.2.3"
+	 * 
+	 * @param urnOid {@link String} uri to extract OID value from
+	 * @return OID Code
+	 */
+	public static String getOidCode(String urnOid) {
+		if (urnOid == null) {
+			return null;
+		}
+		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
+	}
 	
 	/**
 	 * Trims the leading string if it is a leading part of the text
 	 * 
 	 * @param text {@link String} to trim
 	 * @param leading {@link String} to remove
-	 * @return trimed text {@link String}
+	 * @return trimmed text {@link String}
 	 */
 	public static String stripFirstLeadingOccurance(String text, String leading) {
+		if (text == null) {
+			return null;
+		}
+		if (leading == null) {
+			return text;
+		}
 		return text.replaceFirst("^"+leading, "");
 	}
 
