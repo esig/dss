@@ -1,4 +1,4 @@
-package signature;
+package eu.europa.esig.dss.jades.signature;
 
 import java.io.File;
 import java.util.Arrays;

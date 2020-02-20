@@ -1,4 +1,4 @@
-package signature;
+package eu.europa.esig.dss.jades.signature;
 
 import java.util.Collections;
 import java.util.List;
