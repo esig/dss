@@ -63,6 +63,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationPool);
+			cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		}
 		// check if the resulted signature can be extended
 		assertExtendSignaturePossible(cadesSignature);
