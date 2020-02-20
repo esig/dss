@@ -48,7 +48,7 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setLocality("Kehlen");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
-		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfCreation.getOid()));
+		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList("urn:oid:" + CommitmentType.ProofOfCreation.getOid()));
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
 		return signatureParameters;
 	}

@@ -112,7 +112,52 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Hash algo and value
 	 */
-	public static final String HASH_AV ="hashAV";
+	public static final String HASH_AV = "hashAV";
+
+	/**
+	 * Hash policy is aligned to a specification
+	 */
+	public static final String HASH_PSP = "hashPSp";
+
+	/**
+	 * Signature policy qualifiers
+	 */
+	public static final String SIG_PQUALS = "sigPQuals";
+	
+	/**
+	 * Signature policy URL qualifier
+	 */
+	public static final String SP_URI = "spURI";
+	
+	/**
+	 * Signature policy User Notice qualifier
+	 */
+	public static final String SP_USER_NOTICE = "spUserNotice";
+	
+	/**
+	 * Notice references
+	 */
+	public static final String NOTICE_REF = "noticeRef";
+	
+	/**
+	 * Organization
+	 */
+	public static final String ORGANTIZATION = "organization";
+	
+	/**
+	 * Notice numbers
+	 */
+	public static final String NOTICE_NUMBERS = "noticeNumbers";
+	
+	/**
+	 * Explicit text
+	 */
+	public static final String EXPL_TEXT = "explText";
+	
+	/**
+	 * Signature policy Document Specification qualifier
+	 */
+	public static final String SP_DSPEC = "spDSpec";
 	
 	/**
 	 * Signed data

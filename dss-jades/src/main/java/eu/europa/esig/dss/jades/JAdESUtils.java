@@ -104,7 +104,7 @@ public class JAdESUtils {
 	 * @param digestAlgorithm {@link DigestAlgorithm} has been used to generate the value
 	 * @return 'DigAlgVal' {@link JSONObject}
 	 */
-	public static JSONObject getDigAndValObject(byte[] digestValue, DigestAlgorithm digestAlgorithm) {
+	public static JSONObject getDigAlgValObject(byte[] digestValue, DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestValue, "digestValue must be defined!");
 		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be defined!");
 		

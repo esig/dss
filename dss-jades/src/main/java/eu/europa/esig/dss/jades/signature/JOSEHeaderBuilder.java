@@ -26,6 +26,7 @@ import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.validation.CustomJsonWebSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
@@ -74,6 +75,7 @@ public class JOSEHeaderBuilder {
 		incorporateSignatureProductionPlace();
 		incorporateSignerRoles();
 		incorporateContentTimestamps();
+		incorporateSignaturePolicy();
 		
 		// must be executed the last
 		incorporateCritical();
@@ -173,7 +175,7 @@ public class JOSEHeaderBuilder {
 		List<JSONObject> digAndValues = new ArrayList<>();
 		for (CertificateToken certificateToken : certificates) {
 			byte[] digestValue = certificateToken.getDigest(digestAlgorithm);
-			JSONObject digAndVal = JAdESUtils.getDigAndValObject(digestValue, digestAlgorithm);
+			JSONObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
 			digAndValues.add(digAndVal);
 		}
 		addCriticalHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
@@ -331,6 +333,63 @@ public class JOSEHeaderBuilder {
 		// canonicalization shall be null for content timestamps (see 5.2.6)
 		JSONObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
 		addCriticalHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
+	}
+
+	/**
+	 * Incorporates 5.2.7 The sigPId (signature policy identifier) header parameter
+	 */
+	private void incorporateSignaturePolicy() {
+		Policy signaturePolicy = parameters.bLevel().getSignaturePolicy();
+		if (signaturePolicy != null) {
+			String signaturePolicyId = signaturePolicy.getId();
+			if (Utils.isStringEmpty(signaturePolicyId)) {
+				// see EN 119-182 ch. 5.2.7.1 Semantics and syntax ('id' is required)
+				LOG.warn("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
+				return;
+			}
+			
+			Map<String, Object> sigPIdParams = new HashMap<>();
+			
+			JSONObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), null);
+			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
+			
+			if ((signaturePolicy.getDigestValue() != null) && (signaturePolicy.getDigestAlgorithm() != null)) {
+				JSONObject digAlgVal = JAdESUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
+				sigPIdParams.put(JAdESHeaderParameterNames.HASH_AV, digAlgVal);
+			}
+
+			// TODO : sigPIdParams.put(JAdESHeaderParameterNames.HASH_PSP, value) // 'hashPSp' the specification is not clear
+			
+			List<JSONObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
+			if (Utils.isCollectionNotEmpty(signaturePolicyQualifiers)) {
+				sigPIdParams.put(JAdESHeaderParameterNames.SIG_PQUALS, signaturePolicyQualifiers);
+			}
+			
+			addCriticalHeader(JAdESHeaderParameterNames.SIG_PID, new JSONObject(sigPIdParams));
+		}
+	}
+
+	// TODO : refactor Qualifiers to follow the schema (as well as in XAdES)
+	private List<JSONObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
+		// TODO : 'sigPQuals' specification is not clear
+		List<JSONObject> sigPQualifiers = new ArrayList<>();
+
+		String spuri = signaturePolicy.getSpuri();
+		if (Utils.isStringNotEmpty(spuri)) {
+			/* 
+			 * Intermediate object is created in order to allow multiple instances of the same qualifiers
+			 * 
+			 * EN 119-182 ch. 5.2.7.1 Semantics and syntax:
+			 * The sigPQuals member may contain one or more qualifiers of the same type.
+			 */
+			Map<String, Object> spURI = new HashMap<>();
+			spURI.put(JAdESHeaderParameterNames.SP_URI, spuri);
+			sigPQualifiers.add(new JSONObject(spURI));
+		}
+		
+		// TODO : other policy qualifiers are not supported
+		
+		return sigPQualifiers;
 	}
 	
 	/**
