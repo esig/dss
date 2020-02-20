@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.jose4j.base64url.Base64Url;
-import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
@@ -82,7 +81,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX5TO() {
-		JSONArray x5to = (JSONArray) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
+		List<?> x5to = (List<?>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
 		if (Utils.isCollectionNotEmpty(x5to)) {
 			for (Object item : x5to) {
 				if (item instanceof JSONObject) {
@@ -113,7 +112,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX5C() {
-		JSONArray x5c = (JSONArray) jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
+		List<?> x5c = (List<?>) jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
 		if (Utils.isCollectionNotEmpty(x5c)) {
 			for (Object item : x5c) {
 				if (item instanceof String) {

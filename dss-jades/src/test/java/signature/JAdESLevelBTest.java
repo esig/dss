@@ -1,31 +1,21 @@
 package signature;
 
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.signature.JAdESService;
-import eu.europa.esig.dss.jades.validation.CustomJsonWebSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class JAdESLevelBTest extends AbstractJAdESTestSignature {
@@ -78,28 +68,6 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
-	}
-	
-	@Override
-	@Test
-	public void signAndVerify() throws IOException {
-		final DSSDocument signedDocument = sign();
-
-		assertNotNull(signedDocument.getName());
-		assertNotNull(DSSUtils.toByteArray(signedDocument));
-		assertNotNull(signedDocument.getMimeType());
-
-		 signedDocument.save("target/" + signedDocument.getName());
-		 
-		try {
-			CustomJsonWebSignature jws = new CustomJsonWebSignature();
-			jws.setCompactSerialization(new String(DSSUtils.toByteArray(signedDocument)));
-			jws.setKey(getSigningCert().getPublicKey());
-			jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
-			assertTrue(jws.verifySignature());
-		} catch (JoseException e) {
-			fail(e.getMessage());
-		}
 	}
 
 }

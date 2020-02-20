@@ -7,11 +7,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
@@ -276,11 +275,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
-		JSONObject signaturePlace = (JSONObject) jws.getHeaders()
+		Map<?, ?> signaturePlace = (Map<?, ?>) jws.getHeaders()
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PL);
 		if (signaturePlace != null) {
 			SignatureProductionPlace result = new SignatureProductionPlace();
 			result.setCity((String) signaturePlace.get(JAdESHeaderParameterNames.CITY));
+			result.setStreetAddress((String) signaturePlace.get(JAdESHeaderParameterNames.STR_ADDR));
 			result.setPostalCode((String) signaturePlace.get(JAdESHeaderParameterNames.POST_CODE));
 			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.STAT_PROV));
 			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.COUNTRY));
@@ -291,14 +291,27 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public CommitmentType getCommitmentTypeIndication() {
-		JSONObject signedCommitment = (JSONObject) jws.getHeaders()
+		Map<?, ?> signedCommitment = (Map<?, ?>) jws.getHeaders()
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CM);
 		if (signedCommitment != null) {
-			String identifier = (String) signedCommitment.get(JAdESHeaderParameterNames.COMM_ID);
-			if (Utils.isStringNotEmpty(identifier)) {
+			Map<? ,?> commIdMap = (Map<? ,?>) signedCommitment.get(JAdESHeaderParameterNames.COMM_ID);
+			String id = getIdFromOidMap(commIdMap);
+			if (Utils.isStringNotEmpty(id)) {
 				CommitmentType result = new CommitmentType();
-				result.addIdentifier(identifier);
+				result.addIdentifier(id);
 				return result;
+			}
+		}
+		return null;
+	}
+	
+	private String getIdFromOidMap(Map<? ,?> oidMap) {
+		if (Utils.isMapNotEmpty(oidMap)) {
+			Object idObject = oidMap.get(JAdESHeaderParameterNames.ID);
+			if (idObject instanceof String) {
+				return (String) idObject;
+			} else {
+				LOG.warn("Id paramater in the OID is not an instance of String! The value is skipped.");
 			}
 		}
 		return null;
@@ -330,10 +343,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<SignerRole> getClaimedSignerRoles() {
 		List<SignerRole> claimeds = new ArrayList<>();
-		JSONObject jsonObject = getSignerAttributes();
-		if (jsonObject != null) {
-			JSONArray array = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.CLAIMED);
-			if (Utils.isCollectionNotEmpty(array)) {
+		Map<?, ?> jsonMap = getSignerAttributes();
+		if (jsonMap != null) {
+			List<?> claimed = (List<?>) jsonMap.get(JAdESHeaderParameterNames.CLAIMED);
+			if (Utils.isCollectionNotEmpty(claimed)) {
 				// TODO unclear standard
 				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.CLAIMED);
 			}
@@ -344,10 +357,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<SignerRole> getCertifiedSignerRoles() {
 		List<SignerRole> certifieds = new ArrayList<>();
-		JSONObject jsonObject = getSignerAttributes();
-		if (jsonObject != null) {
-			JSONArray array = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.CERTIFIED);
-			if (Utils.isCollectionNotEmpty(array)) {
+		Map<?, ?> jsonMap = getSignerAttributes();
+		if (jsonMap != null) {
+			List<?> certified = (List<?>) jsonMap.get(JAdESHeaderParameterNames.CERTIFIED);
+			if (Utils.isCollectionNotEmpty(certified)) {
 				// TODO unclear standard
 				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.CERTIFIED);
 			}
@@ -355,8 +368,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return certifieds;
 	}
 
-	private JSONObject getSignerAttributes() {
-		return (JSONObject) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SR_ATS);
+	private Map<?, ?> getSignerAttributes() {
+		return (Map<?, ?>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SR_ATS);
 	}
 
 	@Override
