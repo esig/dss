@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-
 public class DiagnosticDataXmlDefinerTest {
 
 	@Test
@@ -37,6 +36,12 @@ public class DiagnosticDataXmlDefinerTest {
 	public void getSchema() throws Exception {
 		assertNotNull(DiagnosticDataXmlDefiner.getSchema());
 		assertNotNull(DiagnosticDataXmlDefiner.getSchema());
+	}
+
+	@Test
+	public void getSvgTemplates() throws Exception {
+		assertNotNull(DiagnosticDataXmlDefiner.getSvgTemplates());
+		assertNotNull(DiagnosticDataXmlDefiner.getSvgTemplates());
 	}
 
 }

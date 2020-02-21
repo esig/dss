@@ -26,6 +26,9 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -39,6 +42,8 @@ public final class DiagnosticDataXmlDefiner {
 
 	public static final String DIAGNOSTIC_DATA_SCHEMA_LOCATION = "/xsd/DiagnosticData.xsd";
 
+	public static final String DIAGNOSTIC_DATA_XSLT_SVG_LOCATION = "/xslt/svg/diagnostic-data.xslt";
+
 	private DiagnosticDataXmlDefiner() {
 	}
 
@@ -49,6 +54,9 @@ public final class DiagnosticDataXmlDefiner {
 	// Thread-safe
 	private static Schema schema;
 
+	// Thread-safe
+	private static Templates svgTemplates;
+	
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(ObjectFactory.class);
@@ -64,6 +72,20 @@ public final class DiagnosticDataXmlDefiner {
 			}
 		}
 		return schema;
+	}
+
+	public static Templates getSvgTemplates() throws TransformerConfigurationException, IOException {
+		if (svgTemplates == null) {
+			svgTemplates = loadTemplates(DIAGNOSTIC_DATA_XSLT_SVG_LOCATION);
+		}
+		return svgTemplates;
+	}
+	
+	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
+		try (InputStream is = DiagnosticDataXmlDefiner.class.getResourceAsStream(path)) {
+			TransformerFactory transformerFactory = XmlDefinerUtils.getSecureTransformerFactory();
+			return transformerFactory.newTemplates(new StreamSource(is));
+		}
 	}
 
 }
