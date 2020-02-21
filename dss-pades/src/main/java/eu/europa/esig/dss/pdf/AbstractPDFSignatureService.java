@@ -55,6 +55,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	protected final PDFServiceMode serviceMode;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
+	
+	protected String passwordProtection = "";
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -68,6 +70,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
 		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
+	}
+	
+
+	/**
+	 * Specify the used password for the encrypted document
+	 * @param pwd the used password
+	 */
+	public void setPasswordProtection(String pwd) {
+		this.passwordProtection = pwd;		
 	}
 
 	protected boolean isDocumentTimestampLayer() {
@@ -106,6 +117,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			callback.validate(pdfRevision);
 		}
 	}
+
+	/**
+	 * This method checks if the document is not encrypted or with limited edition
+	 * rights
+	 * 
+	 * @param toSignDocument the document which will be modified
+	 */
+	protected abstract void checkDocumentPermissions(DSSDocument toSignDocument);
 
 	protected abstract List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document);
 

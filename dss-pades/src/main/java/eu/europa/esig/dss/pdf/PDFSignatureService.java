@@ -109,4 +109,10 @@ public interface PDFSignatureService {
 	 */
 	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters);
 
+	/**
+	 * Specify the used password for the encrypted document
+	 * @param pwd the used password
+	 */
+	 void setPasswordProtection(String pwd);
+
 }

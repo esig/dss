@@ -35,6 +35,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
@@ -59,8 +60,11 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.pades.EncryptedDocumentException;
+import eu.europa.esig.dss.pades.InvalidPasswordException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
@@ -102,10 +106,26 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		super(serviceMode, signatureDrawerFactory);
 	}
 
+	protected void checkDocumentPermissions(DSSDocument toSignDocument) {
+		try (PdfReader reader = new PdfReader(toSignDocument.openStream())) {
+			if (!reader.isOpenedWithFullPermissions()) {
+				throw new ProtectedDocumentException("Protected document");
+			} else if (reader.isEncrypted()) {
+				throw new EncryptedDocumentException("Encrypted document");
+			}
+		} catch (BadPasswordException e) {
+			throw new EncryptedDocumentException("Encrypted document");
+		} catch (DSSException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new DSSException("Unable to check document permissions", e);
+		}
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
-
+		
 		PdfReader reader = new PdfReader(pdfData);
 		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
 		stp.setIncludeFileID(true);
@@ -228,6 +248,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		
+		checkDocumentPermissions(toSignDocument);
+
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
@@ -244,6 +267,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
 
+		checkDocumentPermissions(toSignDocument);
+
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
@@ -251,9 +276,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			byte[] pk = signatureValue;
 			int csize = parameters.getContentSize();
 			if (csize < pk.length) {
-				throw new DSSException(String.format("The signature size [%s] is too small for the signature value with a length [%s]", csize, pk.length));
+				throw new DSSException(
+						String.format("The signature size [%s] is too small for the signature value with a length [%s]",
+								csize, pk.length));
 			}
-			
+
 			byte[] outc = new byte[csize];
 			System.arraycopy(pk, 0, outc, 0, pk.length);
 
@@ -272,7 +299,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	protected List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
 		List<PdfRevision> result = new ArrayList<>();
-		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
+
+		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is, getPasswordBinary(passwordProtection))) {
 			AcroFields af = reader.getAcroFields();
 
 			final PdfDssDict dssDictionary = getDSSDictionary(reader);
@@ -335,6 +363,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			linkSignatures(result);
 
+		} catch (BadPasswordException e) {
+			throw new InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
 			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
@@ -480,7 +510,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
-		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
+		try (InputStream is = document.openStream();
+				PdfReader reader = new PdfReader(is, getPasswordBinary(passwordProtection))) {
 			List<String> result = new ArrayList<>();
 			AcroFields acroFields = reader.getAcroFields();
 			List<String> names = acroFields.getSignedFieldNames();
@@ -491,13 +522,26 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				}
 			}
 			return result;
-		} catch (IOException e) {
+		} catch (BadPasswordException e) {
+			throw new InvalidPasswordException(e.getMessage());
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
 
+	private byte[] getPasswordBinary(String currentPassword) {
+		byte[] password = null;
+		if (currentPassword != null) {
+			password = currentPassword.getBytes();
+		}
+		return password;
+	}
+	
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+
+		checkDocumentPermissions(document);
+		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
 				PdfReader reader = new PdfReader(is)) {

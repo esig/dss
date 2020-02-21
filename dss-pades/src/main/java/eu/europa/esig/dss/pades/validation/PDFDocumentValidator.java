@@ -53,6 +53,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
 	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+	
+	private String passwordProtection;
 
 	PDFDocumentValidator() {
 	}
@@ -80,12 +82,21 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		Objects.requireNonNull(pdfObjFactory, "PdfObjFactory is null");
 		this.pdfObjectFactory = pdfObjFactory;
 	}
+	
+	/**
+	 * Specify the used password for the encrypted document
+	 * @param pwd the used password
+	 */
+	public void setPasswordProtection(String pwd) {
+		this.passwordProtection = pwd;		
+	}
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatures = new ArrayList<>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+		pdfSignatureService.setPasswordProtection(passwordProtection);
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
@@ -110,6 +121,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		final List<TimestampToken> timestamps = new ArrayList<>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+		pdfSignatureService.setPasswordProtection(passwordProtection);
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
 			
 			@Override

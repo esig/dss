@@ -63,6 +63,11 @@ public class PdfSignatureServiceTest {
 		protected MockPdfSignatureSignature(PDFServiceMode mode, SignatureDrawerFactory signatureDrawerFactory) {
 			super(mode, signatureDrawerFactory);
 		}
+		
+		@Override
+		protected void checkDocumentPermissions(DSSDocument toSignDocument) {
+			// nothing
+		}
 
 		@Override
 		public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
