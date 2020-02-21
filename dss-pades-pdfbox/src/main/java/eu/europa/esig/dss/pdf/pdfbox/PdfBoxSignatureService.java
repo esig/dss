@@ -119,18 +119,15 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			if (!accessPermission.canModify()) {
-				throw new ProtectedDocumentException(
-						"The document cannot be modified (cannot modify the document with the password)");
+				throw new ProtectedDocumentException("Cannot modify the document");
 			}
 
 			if (!accessPermission.canModifyAnnotations()) {
-				throw new ProtectedDocumentException(
-						"The document cannot be modified (cannot modify annotation in the document with the password)");
+				throw new ProtectedDocumentException("Cannot modify the annotation");
 			}
 
 			if (!accessPermission.canFillInForm()) {
-				throw new ProtectedDocumentException(
-						"The document cannot be modified (cannot fill form with the password)");
+				throw new ProtectedDocumentException("Cannot fill in form");
 			}
 		} catch (InvalidPasswordException e) {
 			throw new EncryptedDocumentException("The document is encrypted (not supported operation)");
