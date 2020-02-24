@@ -381,8 +381,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> allTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<>();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			// ignore content-timestamps / archival-timestamps
 			if (!TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
-				break;
+				continue;
 			}
 
 			XmlBasicBuildingBlocks bbbTST = bbbs.get(timestampWrapper.getId());
