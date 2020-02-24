@@ -110,6 +110,28 @@ public class SignerLocation implements Serializable {
 		result = (prime * result) + ((street == null) ? 0 : street.hashCode());
 		return result;
 	}
+	
+	public boolean isEmpty() {
+		if (postalAddress != null && !postalAddress.isEmpty()) {
+			return false;
+		}
+		if (postalCode != null && !postalCode.isEmpty()) {
+			return false;
+		}
+		if (locality != null && !locality.isEmpty()) {
+			return false;
+		}
+		if (stateOrProvince != null && !stateOrProvince.isEmpty()) {
+			return false;
+		}
+		if (country != null && !country.isEmpty()) {
+			return false;
+		}
+		if (street != null && !street.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
