@@ -1037,7 +1037,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateSignatureProductionPlace() {
 
 		final SignerLocation signatureProductionPlace = params.bLevel().getSignerLocation();
-		if (signatureProductionPlace != null) {
+		if (signatureProductionPlace != null && !signatureProductionPlace.isEmpty()) {
 
 			final Element signatureProductionPlaceDom;
 			if (params.isEn319132()) {
