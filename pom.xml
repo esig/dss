@@ -73,7 +73,7 @@
 		
 		<mockito.version>3.2.4</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
-		<jackson.version>2.10.1</jackson.version>
+		<jackson.version>2.10.2</jackson.version>
 		
 		<sonar.java.source>1.8</sonar.java.source>
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
