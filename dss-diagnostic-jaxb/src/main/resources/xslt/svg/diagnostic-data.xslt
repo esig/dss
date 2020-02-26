@@ -82,11 +82,6 @@
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<svg>
-					<line class="join">
-						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
-					</line>	
-				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
@@ -107,16 +102,22 @@
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<svg>
-					<line class="join">
-						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
-					</line>	
-				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
+			
+			
+		<xsl:apply-templates select="diag:TimestampedObjects/diag:TimestampedObject[@Category='SIGNATURE']"/>
+			
+			
 		</use>
+	</xsl:template>
+	
+	<xsl:template match="diag:TimestampedObject">
+		<text class="svg-timestampted-signature">
+			<xsl:value-of select="@Token" />
+		</text>
 	</xsl:template>
 	
 	<xsl:template match="diag:Certificate">
@@ -134,11 +135,6 @@
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<svg>
-					<line class="join">
-						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
-					</line>	
-				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
@@ -178,11 +174,6 @@
 			</xsl:if>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<svg>
-					<line class="join">
-						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
-					</line>	
-				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
