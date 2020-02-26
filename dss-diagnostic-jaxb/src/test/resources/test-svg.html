@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+	<object data="diag-data.svg" type="image/svg+xml" width="100%" height="100%" id="svg-diag-data"></object>
+
+	<script type="text/javascript">
+	
+		 var mySVG = document.getElementById("svg-diag-data");
+		 var svgDoc;
+		 mySVG.addEventListener("load",function() {
+			svgDoc = mySVG.contentDocument;		    
+			
+			var dates = new Array();
+			collectAllDates(svgDoc, dates);
+			
+			var minDate = minDate(dates);
+			var maxDate = maxDate(dates);
+
+			var range = maxDate.getTime() - minDate.getTime();
+			
+	 		function collectAllDates(completeSvg, result) {
+	 			var elements = completeSvg.getElementsByClassName("date");
+	 			for (i = 0; i < elements.length; i++) {
+					result.push(new Date(elements[i].textContent));
+				}
+			}
+			
+	 		function minDate(dates) {
+				var minimalDate = null;
+				for (i = 0; i < dates.length; i++) {
+					var currentDate = dates[i];
+					if (minimalDate == null || minimalDate > currentDate) {
+						minimalDate = currentDate;
+					}
+				}
+				return minimalDate;
+			}
+	 			
+	 		function maxDate(dates) {
+				var maximalDate = null;
+				for (i = 0; i < dates.length; i++) {
+					var currentDate = dates[i];
+					if (maximalDate == null || maximalDate < currentDate) {
+						maximalDate = currentDate;
+					}
+				}
+				return maximalDate;
+			}
+		      
+		 }, false);
+	
+	</script>
+
+</body>
+</html>

@@ -3,7 +3,6 @@ package eu.europa.esig.dss.diagnostic;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -23,7 +22,7 @@ public class SVGGenerationTest {
 		DiagnosticDataFacade newFacade = DiagnosticDataFacade.newFacade();
 		XmlDiagnosticData diagnosticData = newFacade.unmarshall(new File("src/test/resources/diag-data.xml"));
 
-		try (FileOutputStream fos = new FileOutputStream("target/" + UUID.randomUUID().toString() + ".svg")) {
+		try (FileOutputStream fos = new FileOutputStream("target/diag-data.svg")) {
 			Result result = new StreamResult(fos);
 			newFacade.generateSVG(diagnosticData, result);
 		}
