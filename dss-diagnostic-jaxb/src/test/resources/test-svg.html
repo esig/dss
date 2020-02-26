@@ -2,11 +2,14 @@
 <html>
 <body>
 
-	<object data="diag-data.svg" type="image/svg+xml" width="100%" height="100%" id="svg-diag-data"></object>
+	<object data="diag-data.svg" type="image/svg+xml" width="800" height="600" id="svg-diag-data">
+		Your browser does not support SVGs
+	</object>
 
 	<script type="text/javascript">
 	
 		 var mySVG = document.getElementById("svg-diag-data");
+		 var frameSize = mySVG.width;
 		 var svgDoc;
 		 mySVG.addEventListener("load",function() {
 			svgDoc = mySVG.contentDocument;		    
@@ -18,7 +21,62 @@
 			var maxDate = maxDate(dates);
 
 			var range = maxDate.getTime() - minDate.getTime();
+			var ratio = frameSize/range;
+
+			signaturesPlacement(svgDoc);
+			timestampsPlacement(svgDoc);
+			certificatesPlacement(svgDoc);
 			
+			function signaturesPlacement(completeSvg) {
+	 			var elements = completeSvg.getElementsByClassName("svg-signature");
+	 			for (i = 0; i < elements.length; i++) {
+	 				var currentElement = elements[i];
+	 				var claimedSigningTime = new Date(currentElement.getElementsByClassName("svg-claimed-signing-time")[0].textContent);
+	 				var pos_signature = (claimedSigningTime.getTime() - minDate.getTime()) * ratio;
+	 				currentElement.setAttribute("x", pos_signature);
+	 			}
+			}
+			
+			function timestampsPlacement(completeSvg) {
+	 			var elements = completeSvg.getElementsByClassName("svg-timestamp");
+	 			for (i = 0; i < elements.length; i++) {
+	 				var currentElement = elements[i];
+	 				var productionTime = new Date(currentElement.getElementsByClassName("svg-production-time")[0].textContent);
+	 				var pos_timestamp = (productionTime.getTime() - minDate.getTime()) * ratio;
+	 				currentElement.setAttribute("x", pos_timestamp);
+	 			}
+			}
+			
+			function certificatesPlacement(completeSvg) {
+
+				var nbByLevel = new Array();
+				
+	 			var elements = completeSvg.getElementsByClassName("svg-certificate");
+	 			for (i = 0; i < elements.length; i++) {
+	 				var currentElement = elements[i];
+	 				
+	 				var chainLength = parseInt(currentElement.getAttribute("data-cert-chain-length"));
+	 				
+	 				var nb = nbByLevel[chainLength];
+	 				if (nb === undefined) {
+	 					nb = 0;
+	 				}
+	 				nb ++;
+	 				nbByLevel[chainLength] = nb;
+	 				
+	 				
+	 				var notBefore = new Date(currentElement.getElementsByClassName("svg-not-before")[0].textContent);
+	 				var notAfter = new Date(currentElement.getElementsByClassName("svg-not-after")[0].textContent);
+	 				var pos_x_certificate = (notBefore.getTime() - minDate.getTime()) * ratio;
+	 				var width_cer = (notAfter.getTime() - notBefore.getTime()) * ratio;
+	 				currentElement.setAttribute("x", Math.round(pos_x_certificate));
+	 				currentElement.setAttribute("width", Math.round(width_cer));
+	 				
+	 				var pos_y_certificate = (chainLength * 10) + (nb * 40);
+	 				currentElement.setAttribute("y", pos_y_certificate);
+	 			}
+			}
+
 	 		function collectAllDates(completeSvg, result) {
 	 			var elements = completeSvg.getElementsByClassName("date");
 	 			for (i = 0; i < elements.length; i++) {

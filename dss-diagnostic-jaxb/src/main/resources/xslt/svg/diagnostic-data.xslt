@@ -3,7 +3,7 @@
 <xsl:stylesheet version="2.0" 
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:diag="http://dss.esig.europa.eu/validation/diagnostic"
+    	xmlns:diag="http://dss.esig.europa.eu/validation/diagnostic"
 		xmlns="http://www.w3.org/2000/svg">
 		
  <xsl:output
@@ -15,56 +15,117 @@
    media-type="image/svg" />
  
 	<xsl:template match="/diag:DiagnosticData">
-	  <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+	  <svg xmlns="http://www.w3.org/2000/svg">
 	  
-	  		<text class="svg-validation-time date">
-				<xsl:value-of select="diag:ValidationDate" />
-			</text>
+	  	<defs>
+	  	
+			<g id="signature-symbol">
+				<circle cx="2" cy="2" r="2" fill="blue" />   
+	  		</g>
+			<g id="timestamp-symbol">
+				<circle cx="2" cy="2" r="2" fill="green" />
+	  		</g>
+			<g id="revoked-symbol">
+			    <line x1="0" y1="0" x2="10" y2="10" stroke="red" stroke-width="1" />
+			    <line x1="0" y1="10" x2="10" y2="0" stroke="red" stroke-width="1" />
+	  		</g>
+			<g id="not-revoked-symbol">
+			    <line x1="0" y1="0" x2="10" y2="10" stroke="green" stroke-width="1" />
+			    <line x1="0" y1="10" x2="10" y2="0" stroke="green" stroke-width="1" />
+	  		</g>
+	  		
+    		<g id="range">
+			    <line x1="0" y1="0" x2="0" y2="4" stroke="black" stroke-width="1" />
+			    <line x1="0" y1="2" x2="100%" y2="2" stroke="black" stroke-width="1" />
+			    <line x1="100%" y1="0" x2="100%" y2="4" stroke="black" stroke-width="1" />
+	  		</g>
+	  		
+	  		<g id="timeline">
+			    <line x1="795" y1="0" x2="800" y2="5" stroke="blue" stroke-width="1" />
+			    <line x1="795" y1="10" x2="800" y2="5" stroke="blue" stroke-width="1" />
+			    <line x1="0" y1="5" x2="800" y2="5" stroke="blue" stroke-width="1" />
+	  		</g>
+	  		
+	  	</defs>
+	  
+  		<use href="#revoked-symbol" x="50" y="100" />
+  		<use href="#not-revoked-symbol" x="150" y="100" />
+<!--   		<use href="#range" x="50" y="200" /> -->
+	  
+  		<text class="svg-validation-time date">
+			<xsl:value-of select="diag:ValidationDate" />
+		</text>
 
-			<xsl:apply-templates select="diag:Signatures/diag:Signature"/>
-			<xsl:apply-templates select="diag:UsedTimestamps/diag:Timestamp"/>
-			<xsl:apply-templates select="diag:UsedCertificates/diag:Certificate"/>
-			<xsl:apply-templates select="diag:UsedRevocations/diag:Revocation"/>
+		<xsl:apply-templates select="diag:Signatures/diag:Signature"/>
+		<xsl:apply-templates select="diag:UsedTimestamps/diag:Timestamp"/>
+		<xsl:apply-templates select="diag:UsedCertificates/diag:Certificate"/>
+		<xsl:apply-templates select="diag:UsedRevocations/diag:Revocation"/>
 			
+		<svg id="global-timeline" y="590" height="10">
+  			<use href="#timeline" />
+  		</svg>
+  		
 	  </svg>
 	</xsl:template>
 	
 	<xsl:template match="diag:Signature">
-		<rect width="200" height="10" fill="blue" class="svg-signature">
+		
+  		<use href="#signature-symbol" x="50" y="580" class="svg-signature">
+	
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
+			<xsl:attribute name="data-cert-chain-length"><xsl:value-of select="count(diag:CertificateChain/diag:ChainItem)" /></xsl:attribute>
+			
+			<title><xsl:value-of select="@Id" /></title>
 			
 			<text class="svg-claimed-signing-time date">
 				<xsl:value-of select="diag:ClaimedSigningTime" />
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
+				<svg>
+					<line class="join">
+						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
+					</line>	
+				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
-		</rect>
+			
+		</use>
 	</xsl:template>
 	
 	<xsl:template match="diag:Timestamp">
-		<rect width="200" height="10" fill="green" class="svg-timestamp">
+  		<use href="#timestamp-symbol" x="50" y="570" class="svg-timestamp">
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
+			<xsl:attribute name="data-cert-chain-length"><xsl:value-of select="count(diag:CertificateChain/diag:ChainItem)" /></xsl:attribute>
+			
+			<title><xsl:value-of select="@Id" /></title>
 			
 			<text class="svg-production-time date">
 				<xsl:value-of select="diag:ProductionTime" />
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
+				<svg>
+					<line class="join">
+						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
+					</line>	
+				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
-		</rect>
+		</use>
 	</xsl:template>
 	
 	<xsl:template match="diag:Certificate">
-		<rect width="200" height="10" fill="red" class="svg-certificate">
+		<svg class="svg-certificate" height="4" preserveAspectRatio="xMidYMid">
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>			
+			<xsl:attribute name="data-cert-chain-length"><xsl:value-of select="count(diag:CertificateChain/diag:ChainItem)" /></xsl:attribute>
 
+			<title><xsl:value-of select="@Id" /></title>
+			
 			<text class="svg-not-before date">
 				<xsl:value-of select="diag:NotBefore" />
 			</text>
@@ -73,11 +134,18 @@
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
+				<svg>
+					<line class="join">
+						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
+					</line>	
+				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
-		</rect>
+			
+  			<use href="#range"></use>
+		</svg>
 		
 		<xsl:apply-templates select="diag:Revocations/diag:CertificateRevocation"/>
 	</xsl:template>
@@ -85,6 +153,7 @@
 	<xsl:template match="diag:Revocation">
 		<rect width="200" height="10" fill="red" class="svg-revocation">
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>			
+			<xsl:attribute name="data-cert-chain-length"><xsl:value-of select="count(diag:CertificateChain/diag:ChainItem)" /></xsl:attribute>
 
 			<text class="svg-production-date date">
 				<xsl:value-of select="diag:ProductionDate" />
@@ -109,6 +178,11 @@
 			</xsl:if>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
+				<svg>
+					<line class="join">
+						<xsl:attribute name="id">line-sig-cert-<xsl:value-of select="@Id" /></xsl:attribute>
+					</line>	
+				</svg>
 				<text class="svg-signing-cert">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
@@ -124,6 +198,5 @@
 			<xsl:attribute name="data-revocation-date"><xsl:value-of select="diag:RevocationDate" /></xsl:attribute>			
 		</xsl:if>
 	</xsl:template>
-
  
 </xsl:stylesheet>
