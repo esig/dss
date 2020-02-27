@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +63,9 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -86,8 +89,17 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.enums.TypeOfProof;
+import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
+import eu.europa.esig.validationreport.jaxb.POEType;
+import eu.europa.esig.validationreport.jaxb.SignatureReferenceType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.VOReferenceType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 
 public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	
@@ -2200,6 +2212,79 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, sav.getConclusion().getSubIndication());
 		assertFalse(sav.getCryptographicInfo().isSecure());
+		
+		checkReports(reports);
+	}
+	
+	@Test
+	public void dss1988Test() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1988.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReport);
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		assertEquals(1, signatureValidationReports.size());
+		
+		SignatureValidationReportType signatureValidationReport = signatureValidationReports.get(0);
+		ValidationTimeInfoType validationTimeInfo = signatureValidationReport.getValidationTimeInfo();
+		assertNotNull(validationTimeInfo);
+		assertEquals(diagnosticData.getValidationDate(), validationTimeInfo.getValidationTime());
+		
+		POEType bestSignatureTime = validationTimeInfo.getBestSignatureTime();
+		assertNotNull(bestSignatureTime);
+		
+		assertEquals(TypeOfProof.VALIDATION, bestSignatureTime.getTypeOfProof());
+		VOReferenceType poeObject = bestSignatureTime.getPOEObject();
+		assertNotNull(poeObject);
+		
+		List<Object> voReference = poeObject.getVOReference();
+		assertNotNull(voReference);
+		assertEquals(1, voReference.size());
+		
+		Object timestampObject = voReference.get(0);
+		assertTrue(timestampObject instanceof ValidationObjectType);
+		ValidationObjectType timestampValidationObject = (ValidationObjectType) timestampObject;
+		String timestampId = timestampValidationObject.getId();
+		assertNotNull(timestampId);
+		
+		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
+		assertNotNull(signatureValidationObjects);
+		assertTrue(Utils.isCollectionNotEmpty(signatureValidationObjects.getValidationObject()));
+		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+			if (timestampId.equals(validationObject.getId())) {
+				timestampValidationObject = validationObject;
+				break;
+			}
+		}
+		
+		assertEquals(ObjectType.TIMESTAMP, timestampValidationObject.getObjectType());
+		POEProvisioningType poeProvisioning = timestampValidationObject.getPOEProvisioning();
+		assertNotNull(poeProvisioning);
+		
+		List<VOReferenceType> timestampedObjects = poeProvisioning.getValidationObject();
+		assertTrue(Utils.isCollectionNotEmpty(timestampedObjects));
+		
+		List<SignatureReferenceType> signatureReferences = poeProvisioning.getSignatureReference();
+		assertEquals(1, signatureReferences.size());
+		
+		XmlSignatureDigestReference signatureDigestReference = diagnosticData.getSignatures().get(0).getSignatureDigestReference();
+		
+		SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
+		assertEquals(signatureDigestReference.getCanonicalizationMethod(), signatureReferenceType.getCanonicalizationMethod());
+		assertEquals(signatureDigestReference.getDigestMethod(), DigestAlgorithm.forXML(signatureReferenceType.getDigestMethod()));
+		assertTrue(Arrays.equals(signatureDigestReference.getDigestValue(), signatureReferenceType.getDigestValue()));
 		
 		checkReports(reports);
 	}
