@@ -246,10 +246,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		item = item.setNextItem(pastSignatureValidation(currentContext));
 		
 		/*
-		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be prove
+		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be proved
 		 */
-		Date bestSignatureTime = poe.getLowestPOETime(signature.getId(), currentTime);
-		result.setProofOfExistence(getPOE(bestSignatureTime));
+		XmlProofOfExistence bestSignatureTime = poe.getLowestPOE(signature.getId(), currentTime);
+		result.setProofOfExistence(bestSignatureTime);
 		
 		/*
 		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
@@ -263,7 +263,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * not be rechecked.
 		 * If the signature acceptance validation process returns PASSED, the SVA shall go to the next step. 
 		 */
-		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime, currentContext));
+		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
 
 		/*
 		 * 9) Data extraction: the SVA shall return the success indication PASSED. In addition, the long term validation
