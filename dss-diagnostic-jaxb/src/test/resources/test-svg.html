@@ -23,9 +23,56 @@
 			var range = maxDate.getTime() - minDate.getTime();
 			var ratio = frameSize/range;
 
+			validationTimePlacement(svgDoc);
+			certificatesHorizontalPlacement(svgDoc);
+			displayLeafs(svgDoc);
 			signaturesPlacement(svgDoc);
 			timestampsPlacement(svgDoc);
-			certificatesPlacement(svgDoc);
+			
+			function validationTimePlacement(completeSvg) {
+	 			var validationTimeElement = completeSvg.getElementById("svg-validation-time");
+ 				var validationTime = new Date(validationTimeElement.getElementsByTagName("title")[0].textContent);
+ 				var pos_validation_time = (validationTime.getTime() - minDate.getTime()) * ratio;
+ 				validationTimeElement.setAttribute("x", pos_validation_time);
+			}
+			
+			function certificatesHorizontalPlacement(completeSvg) {
+	 			var elements = completeSvg.getElementsByClassName("svg-certificate");
+	 			for (i = 0; i < elements.length; i++) {
+	 				var currentElement = elements[i];
+	 				
+	 				var notBefore = new Date(currentElement.getElementsByClassName("svg-not-before")[0].textContent);
+	 				var notAfter = new Date(currentElement.getElementsByClassName("svg-not-after")[0].textContent);
+	 				var pos_x_certificate = (notBefore.getTime() - minDate.getTime()) * ratio;
+	 				var width_cer = (notAfter.getTime() - notBefore.getTime()) * ratio;
+	 				currentElement.setAttribute("x", Math.round(pos_x_certificate));
+	 				currentElement.setAttribute("width", Math.round(width_cer));
+	 			}
+			}
+			
+			function displayLeafs(completeSvg) {
+				var leafIds = getLeafIds(completeSvg);
+	 			var certElements = completeSvg.getElementsByClassName("svg-certificate");
+	 			for (i = 0; i < certElements.length; i++) {
+	 				var certElement = certElements[i];
+	 				var certId = certElement.getAttribute("id");
+	 				if (!leafIds.includes(certId)) {
+	 					certElement.style.display = "none";
+	 				}	else {
+	 					certElement.setAttribute("y", ((i+1) *20));
+	 				}
+	 			}
+			}
+			
+			function getLeafIds(completeSvg) {
+	 			var leafElements = completeSvg.getElementsByClassName("leaf");
+	 			var leafIds = new Array();
+	 			for (i = 0; i < leafElements.length; i++) {
+	 				var leafElement = leafElements[i];
+	 				leafIds.push(leafElement.textContent);
+	 			}
+	 			return leafIds;
+			}
 			
 			function signaturesPlacement(completeSvg) {
 	 			var elements = completeSvg.getElementsByClassName("svg-signature");
@@ -34,6 +81,10 @@
 	 				var claimedSigningTime = new Date(currentElement.getElementsByClassName("svg-claimed-signing-time")[0].textContent);
 	 				var pos_signature = (claimedSigningTime.getTime() - minDate.getTime()) * ratio;
 	 				currentElement.setAttribute("x", pos_signature);
+	 				
+	 				var sigCertId = currentElement.getElementsByClassName("svg-signing-cert")[0].textContent;
+	 				var sigCertElement = completeSvg.getElementById(sigCertId);
+	 				currentElement.setAttribute("y", sigCertElement.getAttribute("y"));
 	 			}
 			}
 			
@@ -44,38 +95,13 @@
 	 				var productionTime = new Date(currentElement.getElementsByClassName("svg-production-time")[0].textContent);
 	 				var pos_timestamp = (productionTime.getTime() - minDate.getTime()) * ratio;
 	 				currentElement.setAttribute("x", pos_timestamp);
+
+	 				var sigCertId = currentElement.getElementsByClassName("svg-signing-cert")[0].textContent;
+	 				var sigCertElement = completeSvg.getElementById(sigCertId);
+	 				currentElement.setAttribute("y", sigCertElement.getAttribute("y"));
 	 			}
 			}
 			
-			function certificatesPlacement(completeSvg) {
-
-				var nbByLevel = new Array();
-				
-	 			var elements = completeSvg.getElementsByClassName("svg-certificate");
-	 			for (i = 0; i < elements.length; i++) {
-	 				var currentElement = elements[i];
-	 				
-	 				var chainLength = parseInt(currentElement.getAttribute("data-cert-chain-length"));
-	 				
-	 				var nb = nbByLevel[chainLength];
-	 				if (nb === undefined) {
-	 					nb = 0;
-	 				}
-	 				nb ++;
-	 				nbByLevel[chainLength] = nb;
-	 				
-	 				
-	 				var notBefore = new Date(currentElement.getElementsByClassName("svg-not-before")[0].textContent);
-	 				var notAfter = new Date(currentElement.getElementsByClassName("svg-not-after")[0].textContent);
-	 				var pos_x_certificate = (notBefore.getTime() - minDate.getTime()) * ratio;
-	 				var width_cer = (notAfter.getTime() - notBefore.getTime()) * ratio;
-	 				currentElement.setAttribute("x", Math.round(pos_x_certificate));
-	 				currentElement.setAttribute("width", Math.round(width_cer));
-	 				
-	 				var pos_y_certificate = (chainLength * 10) + (nb * 40);
-	 				currentElement.setAttribute("y", pos_y_certificate);
-	 			}
-			}
 
 	 		function collectAllDates(completeSvg, result) {
 	 			var elements = completeSvg.getElementsByClassName("date");
