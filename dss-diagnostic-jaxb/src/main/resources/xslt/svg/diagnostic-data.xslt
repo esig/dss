@@ -32,12 +32,12 @@
 	  		</g>
 	  		
 			<g id="revoked-symbol">
-			    <line x1="0" y1="0" x2="10" y2="10" stroke="red" stroke-width="1" />
-			    <line x1="0" y1="10" x2="10" y2="0" stroke="red" stroke-width="1" />
+			    <line x1="0" y1="0" x2="4" y2="4" stroke="red" stroke-width="1" />
+			    <line x1="0" y1="4" x2="4" y2="0" stroke="red" stroke-width="1" />
 	  		</g>
 			<g id="not-revoked-symbol">
-			    <line x1="0" y1="0" x2="10" y2="10" stroke="green" stroke-width="1" />
-			    <line x1="0" y1="10" x2="10" y2="0" stroke="green" stroke-width="1" />
+			    <line x1="0" y1="0" x2="4" y2="4" stroke="green" stroke-width="1" />
+			    <line x1="0" y1="4" x2="4" y2="0" stroke="green" stroke-width="1" />
 	  		</g>
 	  		
     		<g id="range">
@@ -53,10 +53,6 @@
 	  		</g>
 	  		
 	  	</defs>
-	  
-  		<use href="#revoked-symbol" x="50" y="100" />
-  		<use href="#not-revoked-symbol" x="150" y="100" />
-<!--   		<use href="#range" x="50" y="200" /> -->
 	  
   		<text id="svg-validation-time" y="570">
   			<title class="date"><xsl:value-of select="diag:ValidationDate" /></title>
@@ -77,18 +73,18 @@
 	
 	<xsl:template match="diag:Signature">
 		
-  		<use href="#signature-symbol" x="50" y="540" class="svg-signature">
+  		<use href="#signature-symbol" class="svg-signature">
 	
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
 			
 			<title><xsl:value-of select="@Id" /></title>
 			
-			<text class="svg-claimed-signing-time date">
+			<text class="svg-claimed-signing-time date" style="display:none">
 				<xsl:value-of select="diag:ClaimedSigningTime" />
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<text class="svg-signing-cert leaf">
+				<text class="svg-signing-cert leaf" style="display:none">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
@@ -97,17 +93,17 @@
 	</xsl:template>
 	
 	<xsl:template match="diag:Timestamp">
-		<svg class="svg-timestamp" x="50" y="520"> 
+		<svg class="svg-timestamp"> 
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
 			
 			<title><xsl:value-of select="@Id" /></title>
 			
-			<text class="svg-production-time date">
+			<text class="svg-production-time date" style="display:none">
 				<xsl:value-of select="diag:ProductionTime" />
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<text class="svg-signing-cert leaf">
+				<text class="svg-signing-cert leaf" style="display:none">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
@@ -131,15 +127,15 @@
 
 			<title><xsl:value-of select="@Id" /></title>
 			
-			<text class="svg-not-before date">
+			<text class="svg-not-before date" style="display:none">
 				<xsl:value-of select="diag:NotBefore" />
 			</text>
-			<text class="svg-not-after date">
+			<text class="svg-not-after date" style="display:none">
 				<xsl:value-of select="diag:NotAfter" />
 			</text>
 			
 			<xsl:if test="diag:SigningCertificate/@Certificate">
-				<text class="svg-signing-cert">
+				<text class="svg-signing-cert" style="display:none">
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
@@ -187,10 +183,36 @@
 	</xsl:template>
 	
 	<xsl:template match="diag:CertificateRevocation">
-		<xsl:if test="diag:RevocationDate">
-			<xsl:attribute name="data-revocation-reason"><xsl:value-of select="diag:Reason" /></xsl:attribute>		
-			<xsl:attribute name="data-revocation-date"><xsl:value-of select="diag:RevocationDate" /></xsl:attribute>			
-		</xsl:if>
+		<xsl:variable name="revocationId"><xsl:value-of select="@Revocation" /></xsl:variable>
+		<xsl:variable name="certificateId"><xsl:value-of select="../../@Id" /></xsl:variable>
+		
+		<svg class="svg-certificate-revocation">
+			<title>
+				<xsl:value-of select="$revocationId" />
+			</title>		
+
+			<text class="certificate-id">
+				<xsl:value-of select="$certificateId" />
+			</text>
+
+			<xsl:choose>
+				<xsl:when test="diag:RevocationDate">
+					<text class="revocation-reason">
+						<xsl:value-of select="diag:Reason" />
+					</text>		
+					<text class="revocation-date date" style="display:none">
+						<xsl:value-of select="diag:RevocationDate" />
+					</text>			
+  					<use href="#revoked-symbol" />
+				</xsl:when>
+				<xsl:otherwise>
+					<text class="production-date date" style="display:none">
+						<xsl:value-of select="//diag:Revocation[@Id=$revocationId]/diag:ProductionDate" />
+					</text>		
+  					<use href="#not-revoked-symbol" />
+				</xsl:otherwise>
+			</xsl:choose>
+		</svg>
 	</xsl:template>
  
 </xsl:stylesheet>

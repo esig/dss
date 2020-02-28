@@ -26,6 +26,7 @@
 			validationTimePlacement(svgDoc);
 			certificatesHorizontalPlacement(svgDoc);
 			displayLeafs(svgDoc);
+			certificateRevocationsPlacement(svgDoc);
 			signaturesPlacement(svgDoc);
 			timestampsPlacement(svgDoc);
 			
@@ -49,17 +50,40 @@
 	 				currentElement.setAttribute("width", Math.round(width_cer));
 	 			}
 			}
+
+			function certificateRevocationsPlacement(completeSvg) {
+	 			var elements = completeSvg.getElementsByClassName("svg-certificate-revocation");
+	 			for (i = 0; i < elements.length; i++) {
+	 				var currentElement = elements[i];
+
+	 				var dateRevocOrProduction = new Date(currentElement.getElementsByClassName("date")[0].textContent);
+	 				var pos_x_revocation = (dateRevocOrProduction.getTime() - minDate.getTime()) * ratio;
+	 				currentElement.setAttribute("x", Math.round(pos_x_revocation));
+	 				
+	 				var certId = currentElement.getElementsByClassName("certificate-id")[0].textContent;
+	 				var certElement = completeSvg.getElementById(certId);
+	 				var y = certElement.getAttribute("y");
+	 				if (y != null) {
+	 					currentElement.setAttribute("y", y);
+	 				} else {
+	 					currentElement.style.display = "none";
+	 				}
+	 			}
+			}
 			
 			function displayLeafs(completeSvg) {
 				var leafIds = getLeafIds(completeSvg);
 	 			var certElements = completeSvg.getElementsByClassName("svg-certificate");
+	 			var nbDisplay = 1;
 	 			for (i = 0; i < certElements.length; i++) {
 	 				var certElement = certElements[i];
 	 				var certId = certElement.getAttribute("id");
 	 				if (!leafIds.includes(certId)) {
 	 					certElement.style.display = "none";
 	 				}	else {
-	 					certElement.setAttribute("y", ((i+1) *20));
+	 					var y = (nbDisplay * 20);
+	 					certElement.setAttribute("y", y); 					
+	 					nbDisplay++;
 	 				}
 	 			}
 			}
