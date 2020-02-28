@@ -268,11 +268,13 @@ public class TLValidationJobSnippets {
 		tlSource.setCertificateSource(getSigningCertificatesForFrenchTL());
 
 		// Optional : predicate to filter trust services which are/were granted or
-		// equivalent (pre/post eIDAS)
+		// equivalent (pre/post eIDAS).
+		// Input : implementation of TrustServicePredicate interface.
 		// Default : none (select all)
 		tlSource.setTrustServicePredicate(new GrantedTrustService());
 
 		// Optional : predicate to filter the trust service providers
+		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		tlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
 		
@@ -356,16 +358,21 @@ public class TLValidationJobSnippets {
 		lotlSource.setPivotSupport(true);
 
 		// Optional : the predicate which allows to find the LOTL definition in the LOTL
+		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : European configuration
 		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
 
 		// Optional : the predicate which allows to find and/or filter the TL
 		// definitions in the LOTL
+		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : all found trusted lists in the European LOTL
 		lotlSource.setTlPredicate(new EUTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
 
 		// Optional : a predicate which allows to find back the signing certificates for
 		// the current LOTL
+		// Input : implementation of LOTLSigningCertificatesAnnouncementSchemeInformationURI interface.
+		// Default : not defined
+		//
 		// OfficialJournalSchemeInformationURI allows to specify the Official Journal
 		// URL where are published the signing certificates
 		lotlSource.setSigningCertificatesAnnouncementPredicate(
@@ -374,11 +381,13 @@ public class TLValidationJobSnippets {
 		// Optional : predicate to filter trust services which are/were granted or
 		// equivalent (pre/post eIDAS). This parameter is applied on the related trusted
 		// lists
+		// Input : implementation of TrustServicePredicate interface.
 		// Default : none (select all)
 		lotlSource.setTrustServicePredicate(new GrantedTrustService());
 
 		// Optional : predicate to filter the trust service providers. This parameter is
 		// applied on the related trusted lists
+		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		lotlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
 		
