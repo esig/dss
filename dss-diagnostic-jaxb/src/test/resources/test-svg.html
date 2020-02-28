@@ -2,7 +2,7 @@
 <html>
 <body>
 
-	<object data="diag-data.svg" type="image/svg+xml" width="800" height="600" id="svg-diag-data">
+	<object data="diag-data.svg" type="image/svg+xml" width="800" height="300" id="svg-diag-data">
 		Your browser does not support SVGs
 	</object>
 
@@ -15,7 +15,8 @@
 			svgDoc = mySVG.contentDocument;		    
 			
 			var dates = new Array();
-			collectAllDates(svgDoc, dates);
+// 			collectDates(svgDoc, dates);
+			collectLeafDates(svgDoc, dates);
 			
 			var minDate = minDate(dates);
 			var maxDate = maxDate(dates);
@@ -81,7 +82,7 @@
 	 				if (!leafIds.includes(certId)) {
 	 					certElement.style.display = "none";
 	 				}	else {
-	 					var y = (nbDisplay * 20);
+	 					var y = 250 - (nbDisplay * 20);
 	 					certElement.setAttribute("y", y); 					
 	 					nbDisplay++;
 	 				}
@@ -126,11 +127,19 @@
 	 			}
 			}
 			
+	 		function collectLeafDates(completeSvg, result) {
+	 			var leafElements = completeSvg.getElementsByClassName("leaf");
+	 			for (leafNum = 0; leafNum < leafElements.length; leafNum++) {
+	 				var certId = leafElements[leafNum].textContent;
+	 				var certElement = completeSvg.getElementById(certId);
+	 				collectDates(certElement, result);
+				}
+			}
 
-	 		function collectAllDates(completeSvg, result) {
-	 			var elements = completeSvg.getElementsByClassName("date");
-	 			for (i = 0; i < elements.length; i++) {
-					result.push(new Date(elements[i].textContent));
+	 		function collectDates(currentElement, result) {
+	 			var dateElements = currentElement.getElementsByClassName("date");
+	 			for (i = 0; i < dateElements.length; i++) {
+					result.push(new Date(dateElements[i].textContent));
 				}
 			}
 			

@@ -20,10 +20,10 @@
 	  	<defs>
 	  	
 			<g id="signature-symbol">
-				<circle cx="2" cy="2" r="2" fill="blue" />   
+				<circle cx="3" cy="3" r="3" fill="blue" />   
 	  		</g>
 			<g id="timestamp-symbol">
-				<circle cx="2" cy="2" r="2" fill="green" />
+				<circle cx="3" cy="3" r="3" fill="green" />
 	  		</g>
 	  		
 	  		<g id="clock" width="24" height="24">
@@ -32,12 +32,12 @@
 	  		</g>
 	  		
 			<g id="revoked-symbol">
-			    <line x1="0" y1="0" x2="4" y2="4" stroke="red" stroke-width="1" />
-			    <line x1="0" y1="4" x2="4" y2="0" stroke="red" stroke-width="1" />
+			    <line x1="0" y1="0" x2="6" y2="6" stroke="red" stroke-width="1" />
+			    <line x1="0" y1="6" x2="6" y2="0" stroke="red" stroke-width="1" />
 	  		</g>
 			<g id="not-revoked-symbol">
-			    <line x1="0" y1="0" x2="4" y2="4" stroke="green" stroke-width="1" />
-			    <line x1="0" y1="4" x2="4" y2="0" stroke="green" stroke-width="1" />
+			    <line x1="0" y1="0" x2="6" y2="6" stroke="green" stroke-width="1" />
+			    <line x1="0" y1="6" x2="6" y2="0" stroke="green" stroke-width="1" />
 	  		</g>
 	  		
     		<g id="range">
@@ -54,17 +54,17 @@
 	  		
 	  	</defs>
 	  
-  		<text id="svg-validation-time" y="570">
+  		<text id="svg-validation-time" y="270">
   			<title class="date"><xsl:value-of select="diag:ValidationDate" /></title>
   			?
 		</text>
 
-		<xsl:apply-templates select="diag:Signatures/diag:Signature"/>
-		<xsl:apply-templates select="diag:UsedTimestamps/diag:Timestamp"/>
 		<xsl:apply-templates select="diag:UsedCertificates/diag:Certificate"/>
 		<xsl:apply-templates select="diag:UsedRevocations/diag:Revocation"/>
-			
-		<svg id="global-timeline" y="550" height="10">
+		<xsl:apply-templates select="diag:UsedTimestamps/diag:Timestamp"/>
+		<xsl:apply-templates select="diag:Signatures/diag:Signature"/>
+		
+		<svg id="global-timeline" y="250" height="10">
   			<use href="#timeline" />
   		</svg>
   		
@@ -88,7 +88,6 @@
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
-			
 		</use>
 	</xsl:template>
 	
@@ -191,7 +190,7 @@
 				<xsl:value-of select="$revocationId" />
 			</title>		
 
-			<text class="certificate-id">
+			<text class="certificate-id" style="display:none">
 				<xsl:value-of select="$certificateId" />
 			</text>
 
