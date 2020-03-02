@@ -402,7 +402,10 @@ public abstract class AbstractUtilsTest {
 		fos.close();
 
 		Utils.closeQuietly(new FileInputStream(newFileName));
-		Utils.closeQuietly(new FileOutputStream("target/sample3.txt"));
+		
+		FileOutputStream sampleFos = new FileOutputStream("target/sample3.txt");
+		Utils.closeQuietly(sampleFos);
+		Utils.closeQuietly(sampleFos); // must handle closed
 	}
 
 	@Test

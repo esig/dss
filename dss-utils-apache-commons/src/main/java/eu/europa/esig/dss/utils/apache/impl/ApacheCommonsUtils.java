@@ -207,7 +207,13 @@ public class ApacheCommonsUtils implements IUtils {
 
 	@Override
 	public void closeQuietly(Closeable closeable) {
-		IOUtils.closeQuietly(closeable);
+		try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (final IOException e) {
+            // ignore
+        }
 	}
 
 	@Override
