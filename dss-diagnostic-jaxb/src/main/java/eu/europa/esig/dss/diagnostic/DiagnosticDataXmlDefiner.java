@@ -59,7 +59,7 @@ public final class DiagnosticDataXmlDefiner {
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream isXSDDiagnosticData = DiagnosticDataXmlDefiner.class.getResourceAsStream(DIAGNOSTIC_DATA_SCHEMA_LOCATION)) {
-				SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
+				SchemaFactory sf = XmlDefinerUtils.getInstance().getSecureSchemaFactory();
 				schema = sf.newSchema(new Source[] { new StreamSource(isXSDDiagnosticData) });
 			}
 		}

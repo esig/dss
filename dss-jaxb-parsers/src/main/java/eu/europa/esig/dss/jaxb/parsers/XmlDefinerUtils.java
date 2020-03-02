@@ -23,9 +23,7 @@ package eu.europa.esig.dss.jaxb.parsers;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -34,6 +32,24 @@ import javax.xml.validation.Validator;
 import org.xml.sax.SAXException;
 
 public final class XmlDefinerUtils {
+	
+	private static XmlDefinerUtils singleton;
+	
+	private TransformerFactoryBuilder secureTransformerFactoryBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
+	private SchemaFactoryBuilder secureSchemaFactoryBuilder = SchemaFactoryBuilder.getSecureSchemaBuilder();
+	private ValidatorConfigurator secureValidatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
+	
+	/**
+	 * Instantiate the {@code XmlDefinerUtils}
+	 * 
+	 * @return {@link XmlDefinerUtils}
+	 */
+	public static XmlDefinerUtils getInstance() {
+		if (singleton == null) {
+			singleton = new XmlDefinerUtils();
+		}
+		return singleton;
+	}
 	
 	/**
 	 * Returns a Schema for a list of defined xsdSources
@@ -44,10 +60,19 @@ public final class XmlDefinerUtils {
 	 * @throws SAXException
 	 *                      in case of exception
 	 */
-	public static Schema getSchema(List<Source> xsdSources) throws SAXException {
+	public Schema getSchema(List<Source> xsdSources) throws SAXException {
 		Objects.requireNonNull(xsdSources, "XSD Source(s) must be provided");
 		SchemaFactory sf = getSecureSchemaFactory();
 		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+	}
+	
+	/**
+	 * Sets a pre-configured builder to instantiate a {@code SchemaFactory}
+	 * 
+	 * @param schemaFactoryBuilder {@link SchemaFactoryBuilder}
+	 */
+	public void setSchemaFactoryBuilder(SchemaFactoryBuilder schemaFactoryBuilder) {
+		this.secureSchemaFactoryBuilder = schemaFactoryBuilder;
 	}
 
 	/**
@@ -58,12 +83,17 @@ public final class XmlDefinerUtils {
 	 * @throws SAXException
 	 *                      in case of exception
 	 */
-	public static SchemaFactory getSecureSchemaFactory() throws SAXException {
-		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-		return sf;
+	public SchemaFactory getSecureSchemaFactory() throws SAXException {
+		return secureSchemaFactoryBuilder.build();
+	}
+	
+	/**
+	 * Sets a pre-configured builder to instantiate a {@code TransformerFactory}
+	 * 
+	 * @param transformerFactoryBuilder {@link TransformerFactoryBuilder}
+	 */
+	public void setTransformerFactoryBuilder(TransformerFactoryBuilder transformerFactoryBuilder) {
+		this.secureTransformerFactoryBuilder = transformerFactoryBuilder;
 	}
 
 	/**
@@ -71,30 +101,30 @@ public final class XmlDefinerUtils {
 	 * external DTD/XSD + secure processing
 	 * 
 	 * @return {@link TransformerFactory}
-	 * @throws TransformerConfigurationException
-	 *                                           in case of exception
 	 */
-	public static TransformerFactory getSecureTransformerFactory() throws TransformerConfigurationException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-		return transformerFactory;
+	public TransformerFactory getSecureTransformerFactory() {
+		return secureTransformerFactoryBuilder.build();
+	}
+	
+	/**
+	 * Sets a pre-configured builder to instantiate a {@code Validator}
+	 * 
+	 * @param validatorConfigurator {@link ValidatorConfigurator}
+	 */
+	public void setValidatorConfigurator(ValidatorConfigurator validatorConfigurator) {
+		this.secureValidatorConfigurator = validatorConfigurator;
 	}
 
 	/**
-	 * The method protects the validator against XXE
-	 * (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
+	 * The method configures the validator
 	 * 
 	 * @param validator
-	 *                  the validator to be configured against XXE
+	 *                  the validator to be configured
 	 * @throws SAXException
 	 *                      in case of exception
 	 */
-	public static void avoidXXE(Validator validator) throws SAXException {
-		Objects.requireNonNull(validator, "Validator must be provided");
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+	public void configure(Validator validator) throws SAXException {
+		secureValidatorConfigurator.configure(validator);
 	}
 
 }

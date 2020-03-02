@@ -59,7 +59,7 @@ public final class ValidationPolicyXmlDefiner {
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream inputStream = ValidationPolicyXmlDefiner.class.getResourceAsStream(VALIDATION_POLICY_SCHEMA_LOCATION)) {
-				SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
+				SchemaFactory sf = XmlDefinerUtils.getInstance().getSecureSchemaFactory();
 				schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
 			}
 		}

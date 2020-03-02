@@ -70,7 +70,7 @@ public final class SimpleReportXmlDefiner {
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream inputStream = SimpleReportXmlDefiner.class.getResourceAsStream(SIMPLE_REPORT_SCHEMA_LOCATION)) {
-				SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
+				SchemaFactory sf = XmlDefinerUtils.getInstance().getSecureSchemaFactory();
 				schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
 			}
 		}
@@ -100,7 +100,7 @@ public final class SimpleReportXmlDefiner {
 
 	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
 		try (InputStream is = SimpleReportXmlDefiner.class.getResourceAsStream(path)) {
-			TransformerFactory transformerFactory = XmlDefinerUtils.getSecureTransformerFactory();
+			TransformerFactory transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
 			return transformerFactory.newTemplates(new StreamSource(is));
 		}
 	}

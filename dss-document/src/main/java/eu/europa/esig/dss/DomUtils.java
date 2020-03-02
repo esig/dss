@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -66,6 +65,7 @@ import org.w3c.dom.Text;
 import eu.europa.esig.dss.definition.DSSAttribute;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -171,14 +171,7 @@ public final class DomUtils {
 	 * @return an instance of TransformerFactory with enabled secure features
 	 */
 	public static TransformerFactory getSecureTransformerFactory() {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		try {
-			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-		} catch (TransformerConfigurationException e) {
-			throw new DSSException(e);
-		}
+		TransformerFactory transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
 		transformerFactory.setErrorListener(new DSSXmlErrorListener());
 		return transformerFactory;
 	}

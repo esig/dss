@@ -31,12 +31,12 @@ public class XmlDefinerUtilsTest {
 
 	@Test
 	public void getSecureSchemaFactory() throws SAXException {
-		assertNotNull(XmlDefinerUtils.getSecureSchemaFactory());
+		assertNotNull(XmlDefinerUtils.getInstance().getSecureSchemaFactory());
 	}
 
 	@Test
 	public void getSecureTransformerFactory() throws TransformerConfigurationException {
-		assertNotNull(XmlDefinerUtils.getSecureTransformerFactory());
+		assertNotNull(XmlDefinerUtils.getInstance().getSecureTransformerFactory());
 	}
 
 }

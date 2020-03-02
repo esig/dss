@@ -349,7 +349,7 @@
 
 				<xsl:call-template name="badge-conclusion">
 					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
-					<xsl:with-param name="AdditionalClass" select="" />
+					<!-- AdditionalClass is empty -->
 				</xsl:call-template>
 			</div>
 		</div>

@@ -69,7 +69,7 @@ public abstract class XSDAbstractUtils {
 	 */
 	public Schema getSchema() throws SAXException {
 		if (schema == null) {
-			schema = XmlDefinerUtils.getSchema(getXSDSources());
+			schema = XmlDefinerUtils.getInstance().getSchema(getXSDSources());
 		}
 		return schema;
 	}
@@ -88,7 +88,7 @@ public abstract class XSDAbstractUtils {
 		if (sources != null) {
 			xsdSources.addAll(Arrays.asList(sources));
 		}
-		return XmlDefinerUtils.getSchema(xsdSources);
+		return XmlDefinerUtils.getInstance().getSchema(xsdSources);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public abstract class XSDAbstractUtils {
 	public void validate(final Source xmlSource, final Schema schema, boolean secureValidation) throws SAXException, IOException {
 		Validator validator = schema.newValidator();
 		if (secureValidation) {
-			XmlDefinerUtils.avoidXXE(validator);
+			XmlDefinerUtils.getInstance().configure(validator);
 		}
 		validator.validate(xmlSource);
 	}
