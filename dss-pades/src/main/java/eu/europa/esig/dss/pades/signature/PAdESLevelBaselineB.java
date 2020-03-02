@@ -37,7 +37,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
  */
 class PAdESLevelBaselineB {
 
-	AttributeTable getSignedAttributes(Map params, CAdESLevelBaselineB cadesProfile, PAdESSignatureParameters parameters, byte[] messageDigest) {
+	AttributeTable getSignedAttributes(@SuppressWarnings("rawtypes") Map params, 
+			CAdESLevelBaselineB cadesProfile, PAdESSignatureParameters parameters, byte[] messageDigest) {
 
 		AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 
