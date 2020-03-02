@@ -131,7 +131,7 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	 * 
 	 * @param factory {@code Factory} to set the attribute to
 	 * @param attribute {@link String} attribute constraint to set
-	 * @param value {@link  value} value of the attribute to add
+	 * @param value {@link Object} value of the attribute to add
 	 * @throws Exception in case if any exception occurs
 	 */
 	protected abstract void setSecurityAttribute(F factory, String attribute, Object value) throws Exception;
