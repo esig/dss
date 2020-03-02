@@ -562,8 +562,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<SignerRole> getSignerRoles() {
-		List<SignerRole> signerRoles = getClaimedSignerRoles();
-		signerRoles.addAll(getCertifiedSignerRoles());
+		List<SignerRole> signerRoles = new ArrayList<>();
+		List<SignerRole> claimedSignerRoles = getClaimedSignerRoles();
+		if (Utils.isCollectionNotEmpty(claimedSignerRoles)) {
+			signerRoles.addAll(claimedSignerRoles);
+		}
+		List<SignerRole> certifiedSignerRoles = getCertifiedSignerRoles();
+		if (Utils.isCollectionNotEmpty(certifiedSignerRoles)) {
+			signerRoles.addAll(certifiedSignerRoles);
+		}
 		return signerRoles;
 	}
 

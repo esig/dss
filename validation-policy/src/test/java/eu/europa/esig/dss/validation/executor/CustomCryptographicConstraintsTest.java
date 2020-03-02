@@ -285,7 +285,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2019-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true); // PSV is not executed
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01", 0);
@@ -309,7 +309,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true); // PSV is not executed
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
@@ -321,7 +321,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true); // PSV is not executed
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 	}
 	

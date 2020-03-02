@@ -419,7 +419,7 @@ Content-Length: 48346
       },
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
-      "Errors" : [ "The certificate path is not trusted!", "The result of the LTV validation process is not acceptable to continue the process!" ],
+      "Errors" : [ "Unable to build a certificate chain until a trusted list!", "The result of the LTV validation process is not acceptable to continue the process!" ],
       "Warnings" : [ "The signature/seal is an INDETERMINATE AdES!" ],
       "Infos" : [ ],
       "SignatureScope" : [ {
@@ -550,13 +550,13 @@ Content-Length: 48346
           "Id" : null
         }, {
           "Name" : {
-            "value" : "Is the certificate path trusted?",
-            "NameId" : "QUAL_TRUSTED_CERT_PATH"
+            "value" : "Has a trusted list been reached for the certificate chain?",
+            "NameId" : "QUAL_CERT_TRUSTED_LIST_REACHED"
           },
           "Status" : "NOT OK",
           "Error" : {
-            "value" : "The certificate path is not trusted!",
-            "NameId" : "QUAL_TRUSTED_CERT_PATH_ANS"
+            "value" : "Unable to build a certificate chain until a trusted list!",
+            "NameId" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
           },
           "Warning" : null,
           "Info" : null,
@@ -567,11 +567,11 @@ Content-Length: 48346
           "Indication" : "FAILED",
           "SubIndication" : null,
           "Errors" : [ {
-            "value" : "The certificate path is not trusted!",
-            "NameId" : "QUAL_TRUSTED_CERT_PATH_ANS"
+            "value" : "Unable to build a certificate chain until a trusted list!",
+            "NameId" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
           }, {
-            "value" : "The certificate path is not trusted!",
-            "NameId" : "QUAL_TRUSTED_CERT_PATH_ANS"
+            "value" : "Unable to build a certificate chain until a trusted list!",
+            "NameId" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
           } ],
           "Warnings" : [ {
             "value" : "The signature/seal is an INDETERMINATE AdES!",

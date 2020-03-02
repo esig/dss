@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import javax.xml.bind.JAXBElement;
 
@@ -34,7 +33,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 
-public abstract class AbstractOtherTSLPointerPredicate implements Predicate<OtherTSLPointerType> {
+public abstract class AbstractOtherTSLPointerPredicate implements OtherTSLPointerPredicate {
 
 	protected Map<String, Object> extractAdditionalInformation(OtherTSLPointerType o) {
 		Map<String, Object> result = new HashMap<>();

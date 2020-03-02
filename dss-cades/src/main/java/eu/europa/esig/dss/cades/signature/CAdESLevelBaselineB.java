@@ -208,7 +208,7 @@ public class CAdESLevelBaselineB {
 		}
 
 		final eu.europa.esig.dss.model.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
-		if (signerLocationParameter != null) {
+		if (signerLocationParameter != null && !signerLocationParameter.isEmpty()) {
 
 			final DERUTF8String country = signerLocationParameter.getCountry() == null ? null : new DERUTF8String(signerLocationParameter.getCountry());
 			final DERUTF8String locality = signerLocationParameter.getLocality() == null ? null : new DERUTF8String(signerLocationParameter.getLocality());

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.ws.signature.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -93,6 +95,13 @@ public abstract class AbstractRemoteSignatureServiceTest extends PKIFactoryAcces
 		for (TimestampWrapper timestamp : timestampList) {
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
+		}
+		if (Utils.isCollectionNotEmpty(diagnosticData.getSignatures())) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+			assertNotNull(signatureWrapper);
+			assertTrue(signatureWrapper.isSignatureIntact());
+			assertTrue(signatureWrapper.isSignatureValid());
+			assertTrue(signatureWrapper.isStructuralValidationValid());
 		}
 		return diagnosticData;
 	}

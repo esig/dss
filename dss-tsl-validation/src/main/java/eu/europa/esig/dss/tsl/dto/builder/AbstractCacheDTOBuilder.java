@@ -44,6 +44,7 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 		AbstractCacheDTO abstractCacheDTO = new AbstractCacheDTO();
 		abstractCacheDTO.setCacheState(getCurrentState());
 		abstractCacheDTO.setLastStateTransitionTime(getLastStateTransitionTime());
+		abstractCacheDTO.setLastSuccessSynchronizationTime(getLastSuccessSynchronizationTime());
 		abstractCacheDTO.setExceptionMessage(getCachedExceptionMessage());
 		abstractCacheDTO.setExceptionStackTrace(getCachedExceptionStackTrace());
 		abstractCacheDTO.setExceptionFirstOccurrenceTime(getCachedExceptionFirstOccurrenceTime());
@@ -72,6 +73,10 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 	
 	private Date getLastStateTransitionTime() {
 		return cachedEntry.getLastStateTransitionTime();
+	}
+	
+	protected Date getLastSuccessSynchronizationTime() {
+		return cachedEntry.getLastSuccessSynchronizationTime();
 	}
 	
 	private String getCachedExceptionMessage() {

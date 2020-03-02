@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -58,6 +57,7 @@ import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,19 +205,15 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		// not applicable for CAdES
 		return false;
 	}
-	
+
 	@Override
 	protected TimestampToken makeTimestampToken(CAdESAttribute signatureAttribute, TimestampType timestampType,
 			List<TimestampedReference> references) {
-		ASN1Primitive asn1Primitive = signatureAttribute.getASN1Primitive();
-		if (asn1Primitive == null) {
+		TimeStampToken timestamp = signatureAttribute.toTimeStampToken();
+		if (timestamp == null) {
 			return null;
 		}
-		try {
-			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
-		} catch (Exception e) {
-			throw new DSSException("Cannot create a timestamp token", e);
-		}
+		return new TimestampToken(timestamp, timestampType, references, TimestampLocation.CAdES, certificatePool);
 	}
 
 	@Override
@@ -240,14 +236,16 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		
 		// Compare values present in the timestamp's Hash Index Table with signature's SignedData item digests
 		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
-		final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
-		
-		List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
-				atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-		references.addAll(certificateReferences);
-
-		List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-		references.addAll(revocationReferences);
+		if (atsHashIndex != null) {
+			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
+			
+			List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
+					atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+			references.addAll(certificateReferences);
+	
+			List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+			references.addAll(revocationReferences);
+		}
 		
 		return references;
 	}
