@@ -42,7 +42,8 @@
 			<xs:element name="OrphanTokens" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="OrphanToken" type="OrphanToken" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="OrphanCertificate" type="OrphanCertificateToken" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="OrphanRevocation" type="OrphanRevocationToken" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -155,23 +156,8 @@
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="FoundCertificates">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					
-					<xs:element name="FoundRevocations">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="FoundCertificates" type="FoundCertificates" />
+					<xs:element name="FoundRevocations" type="FoundRevocations" />
 								
 					<xs:element name="FoundTimestamps">
 						<xs:complexType>
@@ -503,7 +489,8 @@
 			<xs:enumeration value="CERTIFICATE" />
 			<xs:enumeration value="REVOCATION" />
 			<xs:enumeration value="TIMESTAMP" />
-			<xs:enumeration value="ORPHAN" />
+			<xs:enumeration value="ORPHAN_CERTIFICATE" />
+			<xs:enumeration value="ORPHAN_REVOCATION" />
 		</xs:restriction>
 	</xs:simpleType>
     
@@ -597,6 +584,13 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="FoundCertificates">
+		<xs:sequence>
+			<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="FoundCertificate" abstract="true">
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateOriginType" minOccurs="0" maxOccurs="unbounded" />
@@ -644,6 +638,7 @@
 	<xs:simpleType name="CertificateOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="KEY_INFO" />
+			<xs:enumeration value="CMS_SIGNED_DATA" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
@@ -678,8 +673,11 @@
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" />
+					
+					<xs:element name="FoundCertificates" type="FoundCertificates" />
+					<xs:element name="FoundRevocations" type="FoundRevocations" />
 		
-					<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
+					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
 		
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
@@ -787,6 +785,13 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
+	<xs:complexType name="FoundRevocations">
+		<xs:sequence>
+			<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="FoundRevocation" abstract="true">
 		<xs:sequence>
 			<xs:element name="Type" type="RevocationType" />
@@ -855,11 +860,10 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="OrphanToken">
+	<xs:complexType name="OrphanToken" abstract="true">
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>
-					<xs:element name="Type" type="OrphanTokenType" />
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
 						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
@@ -869,12 +873,24 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:simpleType name="OrphanTokenType" final="restriction">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="CERTIFICATE" />
-			<xs:enumeration value="REVOCATION" />
-		</xs:restriction>
-	</xs:simpleType>
+	<xs:complexType name="OrphanCertificateToken">
+		<xs:complexContent>
+            <xs:extension base="OrphanToken">
+				<xs:sequence>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OrphanRevocationToken">
+		<xs:complexContent>
+            <xs:extension base="OrphanToken">
+				<xs:sequence>
+					<xs:element name="Type" type="RevocationType" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	
 	<xs:complexType name="SignerData">
 		<xs:complexContent>

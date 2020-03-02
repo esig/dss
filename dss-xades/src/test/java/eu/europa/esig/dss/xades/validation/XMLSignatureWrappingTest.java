@@ -49,7 +49,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
@@ -62,7 +64,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -625,26 +626,23 @@ public class XMLSignatureWrappingTest {
 		List<String> revocationIds = signature.getRevocationIds();
 		assertEquals(3, revocationIds.size());
 		
-		List<XmlOrphanToken> allOrphanCertificates = diagnosticData.getAllOrphanCertificates();
+		List<XmlOrphanCertificateToken> allOrphanCertificates = diagnosticData.getAllOrphanCertificates();
 		assertEquals(3, allOrphanCertificates.size());
 		for (XmlOrphanToken orphanCertificate : allOrphanCertificates) {
-			assertEquals(OrphanTokenType.CERTIFICATE, orphanCertificate.getType());
 			assertNotNull(orphanCertificate.getDigestAlgoAndValue());
 			assertNotNull(orphanCertificate.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(orphanCertificate.getDigestAlgoAndValue().getDigestValue());
 		}
 		
-		List<XmlOrphanRevocation> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
+		List<XmlOrphanRevocationToken> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
 		assertEquals(3, allOrphanRevocations.size());
-		for (XmlOrphanRevocation orphanRevocation : allOrphanRevocations) {
+		for (XmlOrphanRevocationToken orphanRevocation : allOrphanRevocations) {
 			assertNotNull(orphanRevocation.getType());
-			XmlOrphanToken orphanRevocationToken = orphanRevocation.getToken();
-			assertNotNull(orphanRevocationToken);
-			assertTrue(revocationIds.contains(orphanRevocationToken.getId()));
-			assertEquals(OrphanTokenType.REVOCATION, orphanRevocationToken.getType());
-			assertNotNull(orphanRevocationToken.getDigestAlgoAndValue());
-			assertNotNull(orphanRevocationToken.getDigestAlgoAndValue().getDigestMethod());
-			assertNotNull(orphanRevocationToken.getDigestAlgoAndValue().getDigestValue());
+			assertNotNull(orphanRevocation);
+			assertTrue(revocationIds.contains(orphanRevocation.getId()));
+			assertNotNull(orphanRevocation.getDigestAlgoAndValue());
+			assertNotNull(orphanRevocation.getDigestAlgoAndValue().getDigestMethod());
+			assertNotNull(orphanRevocation.getDigestAlgoAndValue().getDigestValue());
 		}
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
@@ -679,9 +677,9 @@ public class XMLSignatureWrappingTest {
 					assertNotNull(token);
 					if (token instanceof XmlOrphanToken) {
 						XmlOrphanToken orphanToken = (XmlOrphanToken) token;
-						if (OrphanTokenType.CERTIFICATE.equals(orphanToken.getType())) {
+						if (orphanToken instanceof XmlOrphanCertificateToken) {
 							orphanCertificateTokenCounter++;
-						} else if (OrphanTokenType.REVOCATION.equals(orphanToken.getType())) {
+						} else if (orphanToken instanceof XmlOrphanRevocationToken) {
 							orphanRevocationTokenCounter++;
 						}
 					}
@@ -713,6 +711,7 @@ public class XMLSignatureWrappingTest {
 		validator.setCertificateVerifier(certificateVerifier);
 		
 		Reports reports = validator.validateDocument();
+		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 		
@@ -739,9 +738,9 @@ public class XMLSignatureWrappingTest {
 		}
 		assertTrue(signatureFound);
 		
-		List<XmlOrphanToken> allOrphanCertificates = diagnosticData.getAllOrphanCertificates();
+		List<XmlOrphanCertificateToken> allOrphanCertificates = diagnosticData.getAllOrphanCertificates();
 		assertEquals(0, allOrphanCertificates.size());
-		List<XmlOrphanRevocation> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
+		List<XmlOrphanRevocationToken> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
 		assertEquals(0, allOrphanRevocations.size());
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();

@@ -264,7 +264,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 	
 	@Override
-	protected List<TimestampedReference> getSignatureTimestampReferences() {
+	public List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
 		if (isKeyInfoCovered()) {
 			addReferences(timestampedReferences, createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates()));

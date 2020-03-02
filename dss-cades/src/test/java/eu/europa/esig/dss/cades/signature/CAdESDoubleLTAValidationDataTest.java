@@ -36,7 +36,6 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -172,17 +171,36 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 
-		assertEquals(0, signature.getTimestampList().get(0).getTimestampedRevocationIds().size());
-		assertEquals(2, signature.getTimestampList().get(1).getTimestampedRevocationIds().size());
-		assertEquals(3, signature.getTimestampList().get(2).getTimestampedRevocationIds().size());
+		List<TimestampWrapper> timestampList = signature.getTimestampList();
+		
+		TimestampWrapper signatureTimestampWrapper = timestampList.get(0);
+		assertEquals(2, signatureTimestampWrapper.getAllFoundCertificates().size());
+		assertEquals(1, signatureTimestampWrapper.getAllFoundCertificateRefs().size());
+		assertEquals(0, signatureTimestampWrapper.getAllFoundRevocations().size());
+		assertEquals(0, signatureTimestampWrapper.getAllFoundRevocationRefs().size());
+		assertEquals(0, signatureTimestampWrapper.getTimestampedRevocationIds().size());
+		
+		TimestampWrapper archiveTimestampWrapper = timestampList.get(1);
+		assertEquals(4, archiveTimestampWrapper.getAllFoundCertificates().size());
+		assertEquals(1, archiveTimestampWrapper.getAllFoundCertificateRefs().size());
+		assertEquals(1, archiveTimestampWrapper.getAllFoundRevocations().size());
+		assertEquals(0, archiveTimestampWrapper.getAllFoundRevocationRefs().size());
+		assertEquals(2, archiveTimestampWrapper.getTimestampedRevocationIds().size());
+
+		TimestampWrapper secondArchiveTimestampWrapper = timestampList.get(2);
+		assertEquals(4, secondArchiveTimestampWrapper.getAllFoundCertificates().size());
+		assertEquals(1, secondArchiveTimestampWrapper.getAllFoundCertificateRefs().size());
+		assertEquals(0, secondArchiveTimestampWrapper.getAllFoundRevocations().size());
+		assertEquals(0, secondArchiveTimestampWrapper.getAllFoundRevocationRefs().size());
+		assertEquals(3, secondArchiveTimestampWrapper.getTimestampedRevocationIds().size());
 		
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
-		assertEquals(3, revocationIdsDoubleLtaLevel.size());
+		assertEquals(2, revocationIdsDoubleLtaLevel.size());
 		for (String id : revocationIdsLtaLevel) {
 			assertTrue(revocationIdsDoubleLtaLevel.contains(id));
 		}
 		
-		assertEquals(1, signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_SIGNED_DATA).size());
+		assertEquals(3, diagnosticData.getAllRevocationData().size());
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		List<ValidationObjectType> validationObjects = etsiValidationReportJaxb.getSignatureValidationObjects().getValidationObject();

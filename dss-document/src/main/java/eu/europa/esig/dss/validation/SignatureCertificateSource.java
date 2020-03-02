@@ -83,11 +83,18 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 
 	/**
-	 * Retrieves the list of all certificates present in the KeyInfos
+	 * Retrieves the list of all certificates present in the KeyInfo element (XAdES)
 	 *
-	 * @return list of all certificates present in B level
+	 * @return list of all certificates present in KeyInfo
 	 */
 	public abstract List<CertificateToken> getKeyInfoCertificates();
+	
+	/**
+	 * Retrieves the list of all certificates present in the CMS Signed data (CAdES)
+	 *
+	 * @return list of all certificates present in CMS Signed Data
+	 */
+	public abstract List<CertificateToken> getCMSSignedDataCertificates();
 
 	/**
 	 * Retrieves the list of all certificates from CertificateValues (XAdES/CAdES)

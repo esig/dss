@@ -34,13 +34,16 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
@@ -157,13 +160,43 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 			assertEquals(1, revocationRefs.size());
 			
 			XmlRevocationRef revocationRef = revocationRefs.get(0);
-			assertEquals(2, revocationRef.getOrigins().size());
+			assertEquals(1, revocationRef.getOrigins().size());
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
 		}
 		
-		List<XmlOrphanRevocation> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(2, timestampList.size());
+		
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				List<XmlFoundRevocation> timestampAllFoundRevocations = timestampWrapper.getAllFoundRevocations();
+				assertEquals(3, timestampAllFoundRevocations.size());
+				for (XmlFoundRevocation revocation : timestampAllFoundRevocations) {
+					assertNotNull(revocation.getType());
+					
+					assertTrue(revocation instanceof XmlOrphanRevocation);
+					XmlOrphanRevocation orphanRevocation = (XmlOrphanRevocation) revocation;
+					XmlOrphanToken orphanRevocationToken = orphanRevocation.getToken();
+					assertNotNull(orphanRevocationToken);
+					assertTrue(revocationIds.contains(orphanRevocationToken.getId()));
+					
+					List<XmlRevocationRef> revocationRefs = revocation.getRevocationRefs();
+					assertEquals(1, revocationRefs.size());
+					
+					XmlRevocationRef revocationRef = revocationRefs.get(0);
+					assertEquals(1, revocationRef.getOrigins().size());
+					assertNotNull(revocationRef.getDigestAlgoAndValue());
+					assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
+					assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
+				}
+			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(0, timestampWrapper.getAllFoundRevocations().size());
+			}
+		}
+		
+		List<XmlOrphanRevocationToken> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
 		assertEquals(3, allOrphanRevocations.size());
 	}
 

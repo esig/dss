@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,7 +95,7 @@ public class DSS1444Test {
 				val.getSignatures();
 			}
 		});
-		assertEquals("Cannot analyze signatures : PDF header signature not found.", exception.getMessage());
+		assertTrue(exception.getMessage().contains("PDF header signature not found."));
 	}
 
 	@Test

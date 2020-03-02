@@ -46,13 +46,11 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<>();
 
 	private List<CRLToken> cmsSignedDataCRLs = new ArrayList<>();
-	private List<CRLToken> timestampSignedDataCRLs = new ArrayList<>();
 	private List<CRLToken> revocationValuesCRLs = new ArrayList<>();
 	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<>();
 	private List<CRLToken> timestampValidationDataCRLs = new ArrayList<>();
 	private List<CRLToken> dssDictionaryCRLs = new ArrayList<>();
 	private List<CRLToken> vriDictionaryCRLs = new ArrayList<>();
-	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<>();
 	private List<CRLToken> adbeRevocationValuesCRLs = new ArrayList<>();
 	
 	private List<CRLRef> crlRefs = new ArrayList<>();
@@ -70,11 +68,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 
 	@Override
-	public List<CRLToken> getTimestampSignedDataRevocationTokens() {
-		return timestampSignedDataCRLs;
-	}
-
-	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
 		return revocationValuesCRLs;
 	}
@@ -87,11 +80,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	@Override
 	public List<CRLToken> getTimestampValidationDataTokens() {
 		return timestampValidationDataCRLs;
-	}
-
-	@Override
-	public List<CRLToken> getTimestampRevocationValuesTokens() {
-		return timestampRevocationValuesCRLs;
 	}
 
 	@Override
@@ -116,10 +104,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLRef> getAttributeRevocationRefs() {
 		return getCRLRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
-
-	public List<CRLRef> getTimestampRevocationRefs() {
-		return getCRLRefsByOrigin(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
-	}
 	
 	private List<CRLRef> getCRLRefsByOrigin(RevocationRefOrigin origin) {
 		List<CRLRef> revocationRefsCRLs = new ArrayList<>();
@@ -138,13 +122,11 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLToken> getAllCRLTokens() {
 		List<CRLToken> crlTokens = new ArrayList<>();
 		crlTokens.addAll(getCMSSignedDataRevocationTokens());
-		crlTokens.addAll(getTimestampSignedDataRevocationTokens());
 		crlTokens.addAll(getRevocationValuesTokens());
 		crlTokens.addAll(getAttributeRevocationValuesTokens());
 		crlTokens.addAll(getTimestampValidationDataTokens());
 		crlTokens.addAll(getDSSDictionaryTokens());
 		crlTokens.addAll(getVRIDictionaryTokens());
-		crlTokens.addAll(getTimestampRevocationValuesTokens());
 		crlTokens.addAll(getADBERevocationValuesTokens());
 		return crlTokens;
 	}
@@ -175,12 +157,11 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private void addToRelevantList(CRLToken crlToken, RevocationOrigin origin) {
 		switch (origin) {
 		case CMS_SIGNED_DATA:
+		case TIMESTAMP_SIGNED_DATA:
 			cmsSignedDataCRLs.add(crlToken);
 			break;
-		case TIMESTAMP_SIGNED_DATA:
-			timestampSignedDataCRLs.add(crlToken);
-			break;
 		case REVOCATION_VALUES:
+		case TIMESTAMP_REVOCATION_VALUES:
 			revocationValuesCRLs.add(crlToken);
 			break;
 		case ATTRIBUTE_REVOCATION_VALUES:
@@ -194,9 +175,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			break;
 		case VRI_DICTIONARY:
 			vriDictionaryCRLs.add(crlToken);
-			break;
-		case TIMESTAMP_REVOCATION_VALUES:
-			timestampRevocationValuesCRLs.add(crlToken);
 			break;
 		case ADBE_REVOCATION_INFO_ARCHIVAL:
 			adbeRevocationValuesCRLs.add(crlToken);

@@ -24,12 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
@@ -42,6 +44,9 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -64,25 +69,38 @@ public class CAdESLTALevelExtendedTest {
 		assertNotNull(signature);
 		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
 		assertNotNull(foundRevocations);
-		assertEquals(2, foundRevocations.size());
-		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_REVOCATION_VALUES);
+		assertEquals(1, foundRevocations.size());
+		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(RevocationOrigin.REVOCATION_VALUES);
 		assertNotNull(timestampRevocationValues);
 		assertEquals(1, timestampRevocationValues.size());
-		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
+		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		assertNotNull(timestampRevocationRefs);
 		assertEquals(1, timestampRevocationRefs.size());
 		
 		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertTrue(Utils.isCollectionNotEmpty(timestamps));
+		int signatureTimestampCounter = 0;
 		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestamps) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
 				assertEquals(11, timestamp.getTimestampedObjects().size());
 				archiveTimestampCounter++;
+			} else if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestamp.getType())) {
+				assertEquals(3, timestamp.getTimestampedObjects().size());
+				List<XmlFoundRevocation> timestampFoundRevocations = timestamp.getAllFoundRevocations();
+				assertEquals(1, timestampFoundRevocations.size());
+				XmlFoundRevocation xmlFoundRevocation = timestampFoundRevocations.get(0);
+				assertTrue(xmlFoundRevocation.getOrigins().contains(RevocationOrigin.TIMESTAMP_REVOCATION_VALUES));
+				List<XmlRevocationRef> revocationRefs = xmlFoundRevocation.getRevocationRefs();
+				assertEquals(1, revocationRefs.size());
+				XmlRevocationRef xmlRevocationRef = revocationRefs.get(0);
+				assertTrue(xmlRevocationRef.getOrigins().contains(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS));
+				signatureTimestampCounter++;
 			}
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
 		}
+		assertEquals(1, signatureTimestampCounter);
 		assertEquals(1, archiveTimestampCounter);
 		
 	}
@@ -91,7 +109,12 @@ public class CAdESLTALevelExtendedTest {
 	public void dss1469testExpired() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1469/cadesLTAwithATv2expired.p7s");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		CertificateToken tstCaCert = DSSUtils.loadCertificateFromBase64EncodedString("MIID9TCCAt2gAwIBAgIQF3Dg4iQuLQxzMPFRPs8rqDANBgkqhkiG9w0BAQsFADByMSMwIQYDVQQDExpVbml2ZXJzaWduIFRpbWVzdGFtcGluZyBDQTEcMBoGA1UECxMTMDAwMiA0MzkxMjkxNjQwMDAyNjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxCzAJBgNVBAYTAkZSMB4XDTEwMDUwNjA5MzA1OVoXDTIwMDUwNjA5MzA1OVowcjEjMCEGA1UEAxMaVW5pdmVyc2lnbiBUaW1lc3RhbXBpbmcgQ0ExHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxIDAeBgNVBAoTF0NyeXB0b2xvZyBJbnRlcm5hdGlvbmFsMQswCQYDVQQGEwJGUjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMF2r8Q+dqh3iA6fPMn0bOw50sKTsCPCocGVNPf75b6dERmkuiXj48/M6poFaPxV96Y01B8LjTUFYGQr6Vbf/15HvVskV6ZSTb8PXNZef6vv7681qnMp7NZVyrWO9zjg4NcZ9qVKFlzZe2NCGHAZi+5z7Y4Phnvg7XdLu0B92oERAIoconTcsHO6BSg9nhv0c+xDsUNdRKF1groYZtAwNO1L1j5kLY3PukPPKa0+uyrJ8j56mGGUGWKaZxLuKafn5M3tYMousgKxQ/5cDHnjntTFBXfm7+Jg0PeiJP6boM2nZDTcnPBt+wvXzo27L4GV0GvZfoi0CVa27hkURRSnsJcCAwEAAaOBhjCBgzAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBBjBBBgNVHSAEOjA4MDYGCisGAQQB+0sFAQEwKDAmBggrBgEFBQcCARYaaHR0cDovL2RvY3MudW5pdmVyc2lnbi5ldS8wHQYDVR0OBBYEFOzknxQd8GYKOfVELMDFf8PMwaW1MA0GCSqGSIb3DQEBCwUAA4IBAQAySgYJxVNszlupDmOTfKcSXRohKwxfgv/wVJhH7ypgqX9z+KM8sh0FDrO2TbEyU/rnpJwauTUwPoa40plvLcBV3zcsA72mzG9fgjmftj0D5Lxhkqsn7B13YOP/tlqoe4f1jyfysxc/JpoBKXklJIBMW5DAbPxZPehVRpBJqrd0ZJNhKZFbBZvVIZ7KO5PX10k1016yiB8LIuASeJfGMHlzvX0qorvl+98g868vQQB6xyMC8WcikEVsVrTBXnNsdD2F6EkC+HJ88qT5XfUGMxq88hvufpwfD3kTkqDm5RDhn0a0o8eIRlze2XopYWz17GWyUVyawoZcEfFYlDxjbo1p");
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		CommonCertificateSource certificateSource = new CommonCertificateSource();
+		certificateSource.addCertificate(tstCaCert);
+		certificateVerifier.setAdjunctCertSource(certificateSource);
+		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -100,13 +123,18 @@ public class CAdESLTALevelExtendedTest {
 		assertNotNull(signature);
 		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
 		assertNotNull(foundRevocations);
-		assertEquals(3, foundRevocations.size());
+		assertEquals(2, foundRevocations.size());
+		assertEquals(2, signature.getRevocationIds().size());
 		
-		List<String> revocationIds = signature.getRevocationIds();
+		List<String> revocationIds = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			revocationIds.add(revocationWrapper.getId());
+		}
 		assertEquals(3, revocationIds.size());
 		
 		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertTrue(Utils.isCollectionNotEmpty(timestamps));
+		int signatureTimestampCounter = 0;
 		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestamps) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
@@ -119,10 +147,15 @@ public class CAdESLTALevelExtendedTest {
 				}
 				assertEquals(3, foundRevocationsCounter);
 				archiveTimestampCounter++;
+			} else if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestamp.getType())) {
+				List<XmlFoundRevocation> allFoundRevocations = timestamp.getAllFoundRevocations();
+				assertEquals(1, allFoundRevocations.size());
+				signatureTimestampCounter++;
 			}
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
 		}
+		assertEquals(1, signatureTimestampCounter);
 		assertEquals(1, archiveTimestampCounter);
 	}
 	

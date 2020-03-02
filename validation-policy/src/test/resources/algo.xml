@@ -551,6 +551,8 @@
             <CertificateChain>
                 <ChainItem Certificate="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Token="D-B626D6E3DB02434C70857B8375F9010776655894E91D2934162E77BD3B6EB993" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="S-B9E1CEC2D55F6C3D14143FF0CE585FD28D375F3124D2F1BA156499D601B8B55C" Category="SIGNATURE"/>

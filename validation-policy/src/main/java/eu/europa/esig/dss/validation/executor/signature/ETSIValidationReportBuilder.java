@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.executor.signature;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +52,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
@@ -378,7 +378,7 @@ public class ETSIValidationReportBuilder {
 			addCertificate(validationObjectListType, certificate, poeExtraction);
 		}
 		
-		for (XmlOrphanToken orphanCertificate : diagnosticData.getAllOrphanCertificates()) {
+		for (XmlOrphanCertificateToken orphanCertificate : diagnosticData.getAllOrphanCertificates()) {
 			addOrphanCertificate(validationObjectListType, orphanCertificate, poeExtraction);
 		}
 
@@ -386,7 +386,7 @@ public class ETSIValidationReportBuilder {
 			addRevocationData(validationObjectListType, revocationData, poeExtraction);
 		}
 		
-		for (XmlOrphanRevocation orphanRevocation : excludeDuplicateIds(diagnosticData.getAllOrphanRevocations())) {
+		for (XmlOrphanRevocationToken orphanRevocation : diagnosticData.getAllOrphanRevocations()) {
 			addOrphanRevocation(validationObjectListType, orphanRevocation, poeExtraction);
 		}
 
@@ -525,21 +525,9 @@ public class ETSIValidationReportBuilder {
 		validationObject.setValidationReport(getValidationReport(revocationData));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
-	
-	private List<XmlOrphanRevocation> excludeDuplicateIds(List<XmlOrphanRevocation> orphanRevocations) {
-		List<XmlOrphanRevocation> uniqueIdOrphanRevocations = new ArrayList<>();
-		List<String> addedOrphanRevocationIds = new ArrayList<>();
-		for (XmlOrphanRevocation orphanRevocation : orphanRevocations) {
-			if (orphanRevocation.getToken() != null && !addedOrphanRevocationIds.contains(orphanRevocation.getToken().getId())) {
-				uniqueIdOrphanRevocations.add(orphanRevocation);
-				addedOrphanRevocationIds.add(orphanRevocation.getToken().getId());
-			}
-		}
-		return uniqueIdOrphanRevocations;
-	}
 
-	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, XmlOrphanRevocation orphanRevocation, POEExtraction poeExtraction) {
-		ValidationObjectType validationObject = createOrphanToken(orphanRevocation.getToken(), poeExtraction);
+	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, XmlOrphanRevocationToken orphanRevocation, POEExtraction poeExtraction) {
+		ValidationObjectType validationObject = createOrphanToken(orphanRevocation, poeExtraction);
 		if (RevocationType.CRL.equals(orphanRevocation.getType())) {
 			validationObject.setObjectType(ObjectType.CRL);
 		} else {

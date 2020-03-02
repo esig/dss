@@ -126,7 +126,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		validationCallback.setSignature(signature);
 
 		Set<CertificateToken> certificatesForInclusion = validationDataForInclusion.certificateTokens;
-		certificatesForInclusion.addAll(signature.getCertificateListWithinSignatureAndTimestamps());
+		certificatesForInclusion.addAll(signature.getCompleteCertificateSource().getAllCertificateTokens());
 		// DSS dictionary includes current certs + discovered with AIA,...
 		validationCallback.setCertificates(certificatesForInclusion);
 

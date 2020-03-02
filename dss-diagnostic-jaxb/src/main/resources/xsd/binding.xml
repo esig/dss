@@ -92,12 +92,6 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.printShortName" />
 		</jaxb:bindings>
 		
-  	<jaxb:bindings node="//xs:simpleType[@name='OrphanTokenType']">
-			<jaxb:javaType name="eu.europa.esig.dss.enumerations.OrphanTokenType" 
-				parseMethod="eu.europa.esig.dss.jaxb.parsers.OrphanTokenTypeParser.parse" 
-				printMethod="eu.europa.esig.dss.jaxb.parsers.OrphanTokenTypeParser.print" />
-		</jaxb:bindings>
-		
   <jaxb:bindings node="//xs:simpleType[@name='KeyUsage']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.KeyUsageBit" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.parse" 
@@ -158,16 +152,16 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureFormatParser.print" />
 		</jaxb:bindings>
 		
-  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
+  	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />
 	</jaxb:bindings>
-  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='FoundCertificates']//xs:element[@name='OrphanCertificate']">
+  	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='OrphanCertificate']">
 		<jaxb:property name="OrphanCertificates" />
 	</jaxb:bindings>
-  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='FoundRevocations']//xs:element[@name='RelatedRevocation']">
+  	<jaxb:bindings node="//xs:complexType[@name='FoundRevocations']//xs:element[@name='RelatedRevocation']">
 		<jaxb:property name="RelatedRevocations" />
 	</jaxb:bindings>
-  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='FoundRevocations']//xs:element[@name='OrphanRevocation']">
+  	<jaxb:bindings node="//xs:complexType[@name='FoundRevocations']//xs:element[@name='OrphanRevocation']">
 		<jaxb:property name="OrphanRevocations" />
 	</jaxb:bindings>
   	<jaxb:bindings node="//xs:complexType[@name='FoundCertificate']//xs:element[@name='Origin']">
@@ -188,6 +182,12 @@
   	<jaxb:bindings node="//xs:complexType[@name='Timestamp']//xs:element[@name='DigestMatcher']">
 		<jaxb:property name="DigestMatchers" />
 	</jaxb:bindings>
+  	<jaxb:bindings node="//xs:complexType[@name='DiagnosticData']//xs:element[@name='OrphanTokens']//xs:element[@name='OrphanCertificate']">
+		<jaxb:property name="OrphanCertificates" />
+	</jaxb:bindings>
+  	<jaxb:bindings node="//xs:complexType[@name='DiagnosticData']//xs:element[@name='OrphanTokens']//xs:element[@name='OrphanRevocation']">
+		<jaxb:property name="OrphanRevocations" />
+	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">
         <jaxb:property>
@@ -201,7 +201,7 @@
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='OrphanRevocation']//xs:attribute[@name='Token']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='SigningCertificate']//xs:attribute[@name='Certificate']">
@@ -221,7 +221,7 @@
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='OrphanCertificate']//xs:attribute[@name='Token']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">

@@ -49,7 +49,8 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
@@ -224,26 +225,29 @@ public abstract class AbstractTestValidationExecutor {
 
 			XmlAbstractToken token = null;
 			switch (category) {
-			case SIGNATURE:
-				token = new eu.europa.esig.dss.diagnostic.jaxb.XmlSignature();
-				break;
-			case CERTIFICATE:
-				token = new XmlCertificate();
-				break;
-			case REVOCATION:
-				token = new XmlRevocation();
-				break;
-			case TIMESTAMP:
-				token = new XmlTimestamp();
-				break;
-			case SIGNED_DATA:
-				token = new XmlSignerData();
-				break;
-			case ORPHAN:
-				token = new XmlOrphanToken();
-				break;
-			default:
-				throw new InvalidFormatException(jp, "Unsupported category value " + category, category, TimestampedObjectType.class);
+				case SIGNATURE:
+					token = new eu.europa.esig.dss.diagnostic.jaxb.XmlSignature();
+					break;
+				case CERTIFICATE:
+					token = new XmlCertificate();
+					break;
+				case REVOCATION:
+					token = new XmlRevocation();
+					break;
+				case TIMESTAMP:
+					token = new XmlTimestamp();
+					break;
+				case SIGNED_DATA:
+					token = new XmlSignerData();
+					break;
+				case ORPHAN_CERTIFICATE:
+					token = new XmlOrphanCertificateToken();
+					break;
+				case ORPHAN_REVOCATION:
+					token = new XmlOrphanRevocationToken();
+					break;
+				default:
+					throw new InvalidFormatException(jp, "Unsupported category value " + category, category, TimestampedObjectType.class);
 			}
 
 			token.setId(tokenNode.textValue());

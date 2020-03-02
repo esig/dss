@@ -86,6 +86,8 @@
                     <SignatureByteRange>0 137494 156440 536</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Token="D-85BDD38B93619949CB5724A76644B83F786E8093DFE1B8E061250310A83FFE1D" Category="SIGNED_DATA"/>
             </TimestampedObjects>

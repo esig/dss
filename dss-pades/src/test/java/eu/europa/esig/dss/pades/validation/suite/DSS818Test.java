@@ -29,7 +29,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
@@ -37,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -58,9 +56,8 @@ public class DSS818Test {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
-			CAdESSignature cades = pades.getCAdESSignature();
 
-			byte[] encoded = cades.getCmsSignedData().getEncoded();
+			byte[] encoded = pades.getCmsSignedData().getEncoded();
 
 			checkSignedAttributesOrder(encoded);
 		}
@@ -74,9 +71,8 @@ public class DSS818Test {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
-			CAdESSignature cades = pades.getCAdESSignature();
 
-			byte[] encoded = cades.getCmsSignedData().getEncoded();
+			byte[] encoded = pades.getCmsSignedData().getEncoded();
 
 			checkSignedAttributesOrder(encoded);
 		}
@@ -91,9 +87,8 @@ public class DSS818Test {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
-			CAdESSignature cades = pades.getCAdESSignature();
 
-			byte[] encoded = cades.getCmsSignedData().getEncoded();
+			byte[] encoded = pades.getCmsSignedData().getEncoded();
 
 			checkSignedAttributesOrder(encoded);
 		}

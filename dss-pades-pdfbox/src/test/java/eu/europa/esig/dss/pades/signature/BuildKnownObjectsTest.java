@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -104,8 +105,8 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		PAdESSignature pades = (PAdESSignature) signatures.get(0);
 
 		dssDictionary = pades.getDssDictionary();
-		Map<Long, byte[]> crlMap = dssDictionary.getCRLs();
-		assertEquals(3, crlMap.size()); // we don't collect newer CRLS
+		Map<Long, CRLBinary> crlMap = dssDictionary.getCRLs();
+		assertEquals(3, crlMap.size()); // we don't collect newer CRLs
 		// original duplicates must be referenced
 		assertNotNull(crlMap.get(21L));
 		assertNotNull(crlMap.get(22L));

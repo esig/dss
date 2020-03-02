@@ -48,13 +48,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private Map<OCSPResponseBinary, OCSPToken> ocspTokenMap = new HashMap<>();
 
 	private final List<OCSPToken> cmsSignedDataOCSPs = new ArrayList<>();
-	private final List<OCSPToken> timestampSignedDataOCSPs = new ArrayList<>();
 	private final List<OCSPToken> revocationValuesOCSPs = new ArrayList<>();
 	private final List<OCSPToken> attributeRevocationValuesOCSPs = new ArrayList<>();
 	private final List<OCSPToken> timestampValidationDataOCSPs = new ArrayList<>();
 	private final List<OCSPToken> dssDictionaryOCSPs = new ArrayList<>();
 	private final List<OCSPToken> vriDictionaryOCSPs = new ArrayList<>();
-	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<>();
 	private final List<OCSPToken> adbeRevocationValuesOCSPs = new ArrayList<>();
 	
 	private List<OCSPRef> ocspRefs = new ArrayList<>();
@@ -69,11 +67,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	@Override
 	public List<OCSPToken> getCMSSignedDataRevocationTokens() {
 		return cmsSignedDataOCSPs;
-	}
-
-	@Override
-	public List<OCSPToken> getTimestampSignedDataRevocationTokens() {
-		return timestampSignedDataOCSPs;
 	}
 
 	@Override
@@ -100,11 +93,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPToken> getVRIDictionaryTokens() {
 		return vriDictionaryOCSPs;
 	}
-
-	@Override
-	public List<OCSPToken> getTimestampRevocationValuesTokens() {
-		return timestampRevocationValuesOCSPs;
-	}
 	
 	@Override
 	public List<OCSPToken> getADBERevocationValuesTokens() {
@@ -117,10 +105,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 
 	public List<OCSPRef> getAttributeRevocationRefs() {
 		return getOCSPRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
-	}
-
-	public List<OCSPRef> getTimestampRevocationRefs() {
-		return getOCSPRefsByOrigin(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
 	}
 	
 	private List<OCSPRef> getOCSPRefsByOrigin(RevocationRefOrigin origin) {
@@ -140,13 +124,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPToken> getAllOCSPTokens() {
 		List<OCSPToken> ocspTokens = new ArrayList<>();
 		ocspTokens.addAll(getCMSSignedDataRevocationTokens());
-		ocspTokens.addAll(getTimestampSignedDataRevocationTokens());
 		ocspTokens.addAll(getRevocationValuesTokens());
 		ocspTokens.addAll(getAttributeRevocationValuesTokens());
 		ocspTokens.addAll(getTimestampValidationDataTokens());
 		ocspTokens.addAll(getDSSDictionaryTokens());
 		ocspTokens.addAll(getVRIDictionaryTokens());
-		ocspTokens.addAll(getTimestampRevocationValuesTokens());
 		ocspTokens.addAll(getADBERevocationValuesTokens());
 		return ocspTokens;
 	}
@@ -166,12 +148,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			for (RevocationOrigin origin : getRevocationOrigins(ocspResponse)) {
 				switch (origin) {
 				case CMS_SIGNED_DATA:
+				case TIMESTAMP_SIGNED_DATA:
 					cmsSignedDataOCSPs.add(ocspToken);
 					break;
-				case TIMESTAMP_SIGNED_DATA:
-					timestampSignedDataOCSPs.add(ocspToken);
-					break;
 				case REVOCATION_VALUES:
+				case TIMESTAMP_REVOCATION_VALUES:
 					revocationValuesOCSPs.add(ocspToken);
 					break;
 				case ATTRIBUTE_REVOCATION_VALUES:
@@ -185,9 +166,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 					break;
 				case VRI_DICTIONARY:
 					vriDictionaryOCSPs.add(ocspToken);
-					break;
-				case TIMESTAMP_REVOCATION_VALUES:
-					timestampRevocationValuesOCSPs.add(ocspToken);
 					break;
 				case ADBE_REVOCATION_INFO_ARCHIVAL:
 					adbeRevocationValuesOCSPs.add(ocspToken);

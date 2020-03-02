@@ -91,8 +91,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private final Set<ASN1ObjectIdentifier> excludedAttributesFromAtsHashIndex = new HashSet<>();
 	
 	private final CMSSignedData cmsSignedData;
-	private final Collection<CertificateToken> signatureCertificates;
-	private final Collection<CertificateToken> timestampCertificates;
+	private final Collection<CertificateToken> certificates;
 
 	/**
 	 * This is the default constructor for the {@code CadesLevelBaselineLTATimestampExtractor}.
@@ -101,17 +100,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 *            {@code CAdESSignature} related to the archive timestamp
 	 */
 	public CadesLevelBaselineLTATimestampExtractor(final CAdESSignature cadesSignature) {
-		this(cadesSignature.getCmsSignedData(), cadesSignature.getCertificates(), cadesSignature.getTimestampSourceCertificates());
+		this(cadesSignature.getCmsSignedData(), cadesSignature.getCompleteCertificateSource().getAllCertificateTokens());
 		/* these attribute are validated elsewhere */
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_certValues);
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_revocationValues);
 	}
 	
-	public CadesLevelBaselineLTATimestampExtractor(final CMSSignedData cmsSignedData, final Collection<CertificateToken> signatureCertificates, 
-			final Collection<CertificateToken> timestampCertificates) {
+	public CadesLevelBaselineLTATimestampExtractor(final CMSSignedData cmsSignedData, final Collection<CertificateToken> certificates) {
 		this.cmsSignedData = cmsSignedData;
-		this.signatureCertificates = signatureCertificates;
-		this.timestampCertificates = timestampCertificates;
+		this.certificates = certificates;
 	}
 
 	/**
@@ -206,7 +203,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final ASN1EncodableVector certificatesHashIndexVector = new ASN1EncodableVector();
 
-		final Collection<CertificateToken> certificateTokens = signatureCertificates;
+		final Collection<CertificateToken> certificateTokens = certificates;
 		for (final CertificateToken certificateToken : certificateTokens) {
 			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			if (LOG.isDebugEnabled()) {
@@ -234,8 +231,6 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence certHashes = DSSASN1Utils.getCertificatesHashIndex(timestampHashIndex);
 		final List<DEROctetString> certHashesList = DSSASN1Utils.getDEROctetStrings(certHashes);
 
-		final List<CertificateToken> certificates = new ArrayList<>(signatureCertificates);
-		certificates.addAll(timestampCertificates);
 		for (final CertificateToken certificateToken : certificates) {
 			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			final DEROctetString derOctetStringDigest = new DEROctetString(digest);

@@ -82,5 +82,10 @@ public class TimestampedReference implements Serializable {
 		}
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("TimestampedReference with Id [%s] and type [%s]", getObjectId(), getCategory());
+	}
 
 }

@@ -26,13 +26,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,20 +74,13 @@ import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
-import eu.europa.esig.dss.pdf.PdfDict;
-import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
-import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.PdfRevision;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
@@ -106,6 +97,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		super(serviceMode, signatureDrawerFactory);
 	}
 
+	@Override
 	protected void checkDocumentPermissions(DSSDocument document) {
 		try (InputStream is = document.openStream(); PDDocument pdDocument = PDDocument.load(is)) {
 
@@ -364,149 +356,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
-		List<PdfRevision> signatures = new ArrayList<>();
-		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is, passwordProtection)) {
-
-
-			final PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(doc);
-
-			Map<PdfSignatureDictionary, List<String>> sigDictionaries = extractSigDictionaries(doc);
-
-			for (Map.Entry<PdfSignatureDictionary, List<String>> sigDictEntry : sigDictionaries.entrySet()) {
-				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
-				List<String> fieldNames = sigDictEntry.getValue();
-				try {
-					final int[] byteRange = signatureDictionary.getSignatureByteRange();
-
-					validateByteRange(byteRange);
-
-					final byte[] cms = signatureDictionary.getContents();
-					byte[] signedContent = new byte[] {};
-					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
-						LOG.warn("Signature {} is skipped. SIWA detected !", fieldNames);
-					} else {
-						signedContent = getSignedContent(document, byteRange);
-					}
-
-					boolean coverAllOriginalBytes = isSignatureCoversWholeDocument(document, byteRange);
-					PdfRevision signatureInfo = null;
-
-					if (isDocTimestamp(signatureDictionary)) {
-
-						PdfDssDict timestampedDssDictionary = null;
-
-						// LT or LTA
-						if (dssDictionary != null) {
-							// check is DSS dictionary already exist
-							timestampedDssDictionary = getDSSDictionaryPresentInRevision(
-									getOriginalBytes(byteRange, signedContent));
-						}
-						signatureInfo = new PdfDocTimestampRevision(cms, signatureDictionary, timestampedDssDictionary,
-								fieldNames, validationCertPool, signedContent, coverAllOriginalBytes);
-
-					} else if (isSignature(signatureDictionary)) {
-						signatureInfo = new PdfSignatureRevision(cms, signatureDictionary, dssDictionary, fieldNames,
-								validationCertPool, signedContent, coverAllOriginalBytes);
-
-					} else {
-						LOG.warn(
-								"The entry {} is skipped. A signature dictionary entry with a type '{}' and subFilter '{}' is not acceptable configuration!",
-								fieldNames, signatureDictionary.getType(), signatureDictionary.getSubFilter());
-
-					}
-
-					if (signatureInfo != null) {
-						signatures.add(signatureInfo);
-					}
-
-				} catch (Exception e) {
-					String errorMessage = "Unable to parse signature {} . Reason : {}";
-					if (LOG.isDebugEnabled()) {
-						LOG.error(errorMessage, fieldNames, e.getMessage(), e);
-					} else {
-						LOG.error(errorMessage, fieldNames, e.getMessage());
-					}
-
-				}
-			}
-			linkSignatures(signatures);
-
-		} catch (InvalidPasswordException e) {
-			throw new eu.europa.esig.dss.pades.InvalidPasswordException(e.getMessage());
-		} catch (Exception e) {
-			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
-		}
-
-		return signatures;
-	}
-
-	private Map<PdfSignatureDictionary, List<String>> extractSigDictionaries(PDDocument doc) throws IOException {
-		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<>();
-		Map<Long, PdfSignatureDictionary> pdfObjectDictMap = new LinkedHashMap<>();
-
-		List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
-		if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
-			LOG.debug("{} signature(s) found", pdSignatureFields.size());
-
-			for (PDSignatureField signatureField : pdSignatureFields) {
-
-				String signatureFieldName = signatureField.getPartialName();
-
-				COSObject sigDictObject = signatureField.getCOSObject().getCOSObject(COSName.V);
-				if (sigDictObject == null || !(sigDictObject.getObject() instanceof COSDictionary)) {
-					LOG.warn("Signature field with name '{}' does not contain a signature", signatureFieldName);
-					continue;
-				}
-
-				long sigDictNumber = sigDictObject.getObjectNumber();
-				PdfSignatureDictionary signature = pdfObjectDictMap.get(sigDictNumber);
-				if (signature == null) {
-					PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), doc);
-					signature = new PdfSigDictWrapper(dictionary);
-
-					pdfDictionaries.put(signature, new ArrayList<>(Arrays.asList(signatureFieldName)));
-					pdfObjectDictMap.put(sigDictNumber, signature);
-
-				} else {
-					List<String> fieldNameList = pdfDictionaries.get(signature);
-					fieldNameList.add(signatureFieldName);
-					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldNameList);
-
-				}
-
-			}
-		}
-
-		return pdfDictionaries;
-	}
-
-	private boolean isSignatureCoversWholeDocument(DSSDocument document, int[] byteRange) {
-		try (InputStream is = document.openStream()) {
-			long originalBytesLength = Utils.getInputStreamSize(is);
-			// /ByteRange [0 575649 632483 10206]
-			long beforeSignatureLength = (long) byteRange[1] - byteRange[0];
-			long expectedCMSLength = (long) byteRange[2] - byteRange[1] - byteRange[0];
-			long afterSignatureLength = byteRange[3];
-			long totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
-
-			return (originalBytesLength == totalCoveredByByteRange);
-		} catch (IOException e) {
-			LOG.warn("Cannot determine the original file size for the document. Reason : {}", e.getMessage());
-			return false;
-		}
-	}
-
-	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
-		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			return PdfBoxUtils.getDSSDictionary(doc);
-		} catch (Exception e) {
-			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-			return null;
-		}
-	}
-
-	@Override
 	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
@@ -699,6 +548,16 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (Exception e) {
 			throw new DSSException("Unable to add a new signature fields", e);
 		}
+	}
+
+	@Override
+	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+		return new PdfBoxDocumentReader(dssDocument, passwordProtection);
+	}
+
+	@Override
+	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+		return new PdfBoxDocumentReader(binaries, passwordProtection);
 	}
 
 }

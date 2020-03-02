@@ -1168,11 +1168,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return false;
 	}
-
-	@Override
-	public List<CertificateRef> getCertificateRefs() {
-		return getCertificateSource().getCompleteCertificateRefs();
-	}
 	
 	@Override
 	protected SignatureIdentifier buildSignatureIdentifier() {

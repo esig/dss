@@ -42,7 +42,7 @@ public class TimestampCertificateSourceTest {
 
 		TimestampCertificateSource tcs = new TimestampCertificateSource(token, certPool);
 
-		assertEquals(4, tcs.getKeyInfoCertificates().size());
+		assertEquals(4, tcs.getCMSSignedDataCertificates().size());
 	}
 
 }

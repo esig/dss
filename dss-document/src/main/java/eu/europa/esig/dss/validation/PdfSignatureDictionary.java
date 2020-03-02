@@ -28,7 +28,7 @@ import java.util.Date;
  */
 public interface PdfSignatureDictionary {
 
-	int[] getSignatureByteRange();
+	ByteRange getByteRange();
 
 	String getSignerName();
 

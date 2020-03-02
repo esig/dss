@@ -66,7 +66,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	/**
 	 * Cached values
 	 */
-	private List<CertificateToken> keyInfoCertificates;
+	private List<CertificateToken> cmsSignedDataCertificates;
 	private List<CertificateRef> signingCertificateValues;
 
 	/**
@@ -96,27 +96,33 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 		this.signedAttributes = signerInformation.getSignedAttributes();
 
 		// Init CertPool
-		getKeyInfoCertificates();
+		getCMSSignedDataCertificates();
 		getCertificateValues();
 	}
 
 	@Override
-	public List<CertificateToken> getKeyInfoCertificates() {
-		if (keyInfoCertificates == null) {
-			keyInfoCertificates = new ArrayList<>();
+	public List<CertificateToken> getCMSSignedDataCertificates() {
+		if (cmsSignedDataCertificates == null) {
+			cmsSignedDataCertificates = new ArrayList<>();
 			try {
 				final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
 				for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
 					final CertificateToken certificateToken = addCertificate(DSSASN1Utils.getCertificate(x509CertificateHolder));
-					if (!keyInfoCertificates.contains(certificateToken)) {
-						keyInfoCertificates.add(certificateToken);
+					if (!cmsSignedDataCertificates.contains(certificateToken)) {
+						cmsSignedDataCertificates.add(certificateToken);
 					}
 				}
 			} catch (Exception e) {
 				LOG.warn("Cannot extract certificates from CMS Signed Data : {}", e.getMessage());
 			}
 		}
-		return keyInfoCertificates;
+		return cmsSignedDataCertificates;
+	}
+
+	@Override
+	public List<CertificateToken> getKeyInfoCertificates() {
+		// Not applicable for CAdES/PAdES
+		return Collections.emptyList();
 	}
 
 	@Override

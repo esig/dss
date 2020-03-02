@@ -20,43 +20,70 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
-public class PdfVRIDict {
+public class PdfVRIDict extends AbstractPdfDssDict {
 
 	private final String name;
-	private final Map<Long, byte[]> crlMap;
-	private final Map<Long, BasicOCSPResp> ocspMap;
-	private final Map<Long, CertificateToken> certMap;
 
 	public PdfVRIDict(String name, PdfDict vriDict) {
+		super(vriDict);
 		this.name = name;
-		this.certMap = DSSDictionaryExtractionUtils.getCertsFromArray(vriDict, PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
-				PAdESConstants.CERT_ARRAY_NAME_VRI);
-		this.ocspMap = DSSDictionaryExtractionUtils.getOCSPsFromArray(vriDict, PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
-				PAdESConstants.OCSP_ARRAY_NAME_VRI);
-		this.crlMap = DSSDictionaryExtractionUtils.getCRLsFromArray(vriDict, PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
-				PAdESConstants.CRL_ARRAY_NAME_VRI);
 	}
+	
+	@Override
+	protected String getDictionaryName() {
+		return PAdESConstants.VRI_DICTIONARY_NAME;
+	}
+	
+	@Override
+	protected String getCertArrayDictionaryName() {
+		return PAdESConstants.CERT_ARRAY_NAME_VRI;
+	}
+	
+	@Override
+	protected String getCRLArrayDictionaryName() {
+		return PAdESConstants.CRL_ARRAY_NAME_VRI;
+	}
+	
+	@Override
+	protected String getOCSPArrayDictionaryName() {
+		return PAdESConstants.OCSP_ARRAY_NAME_VRI;
+	}
+
 
 	public String getName() {
 		return name;
 	}
 
-	public Map<Long, byte[]> getCrlMap() {
-		return crlMap;
+	@Override
+	public List<PdfVRIDict> getVRIs() {
+		// not applicable for VRI
+		return Collections.emptyList();
 	}
 
-	public Map<Long, BasicOCSPResp> getOcspMap() {
-		return ocspMap;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + name.hashCode();
+		return result;
 	}
-
-	public Map<Long, CertificateToken> getCertMap() {
-		return certMap;
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		PdfVRIDict other = (PdfVRIDict) obj;
+		if (!name.equals(other.name)) {
+			return false;
+		}
+		return true;
 	}
 
 }

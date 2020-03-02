@@ -461,6 +461,8 @@
                 <ChainItem Certificate="C-88570AD47C9689BFB1505799EA362F65FBE2BEE501EF3A865E243104D76DC36E"/>
                 <ChainItem Certificate="C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Token="D-7769127C2FBA0C0E14968D88D52D1CECB1154D79705677873D69E868752B1052" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="S-6B6CACCA3251BBAB383718179170CB751085A2DD8BEC17F3812C0EAB3BA5AC23" Category="SIGNATURE"/>
@@ -508,6 +510,8 @@
                     <SignatureByteRange>0 166394 185340 836</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Token="T-5327C1C85F8A6249C923CA41798B877944F4D24A66BE50659D05C8D10AC6A93B" Category="TIMESTAMP"/>
                 <TimestampedObject Token="D-7769127C2FBA0C0E14968D88D52D1CECB1154D79705677873D69E868752B1052" Category="SIGNED_DATA"/>

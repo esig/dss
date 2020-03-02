@@ -61,10 +61,15 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	 
 	private transient Map<Long, BasicOCSPResp> ocspMap;
 	
+	public PAdESOCSPSource(final PdfDssDict dssDictionary) {
+		this(dssDictionary, null, null);
+	}
+	
 	public PAdESOCSPSource(final PdfDssDict dssDictionary, final String vriDictionaryName, AttributeTable signedAttributes) {
 		this.dssDictionary = dssDictionary;
 		this.vriDictionaryName = vriDictionaryName;
 		this.signedAttributes = signedAttributes;
+		appendContainedOCSPResponses();
 	}
 	
 	@Override
@@ -119,9 +124,6 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	 * @return a map of BasicOCSPResp with their object ids
 	 */
 	public Map<Long, BasicOCSPResp> getOcspMap() {
-		if (ocspMap == null) {
-			appendContainedOCSPResponses();
-		}
 		if (ocspMap != null) {
 			return ocspMap;
 		}
@@ -166,7 +168,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	private void extractVRIOCSPs() {
 		PdfVRIDict vriDictionary = findVriDict();
 		if (vriDictionary != null) {
-			for (Entry<Long, BasicOCSPResp> ocspEntry : vriDictionary.getOcspMap().entrySet()) {
+			for (Entry<Long, BasicOCSPResp> ocspEntry : vriDictionary.getOCSPs().entrySet()) {
 				if (!ocspMap.containsKey(ocspEntry.getKey())) {
 					ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
 				}

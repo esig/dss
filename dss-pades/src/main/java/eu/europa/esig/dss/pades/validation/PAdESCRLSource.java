@@ -54,9 +54,13 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	
 	private final String vriDictionaryName;
 	
-	private Map<Long, byte[]> crlMap;
+	private Map<Long, CRLBinary> crlMap;
 	
 	private final AttributeTable signedAttributes;
+	
+	public PAdESCRLSource(final PdfDssDict dssDictionary) {
+		this(dssDictionary, null, null);
+	}
 	
 	public PAdESCRLSource(final PdfDssDict dssDictionary, final String vriDictionaryName, AttributeTable signedAttributes) {
 		this.dssDictionary = dssDictionary;
@@ -113,17 +117,14 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	 * 
 	 * @return a map of CRL binaries with their object ids
 	 */
-	public Map<Long, byte[]> getCrlMap() {
-		if (crlMap == null) {
-			appendContainedCRLResponses();
-		}
+	public Map<Long, CRLBinary> getCrlMap() {
 		if (crlMap != null) {
 			return crlMap;
 		}
 		return Collections.emptyMap();
 	}
 
-	private Map<Long, byte[]> getDssCrlMap() {
+	private Map<Long, CRLBinary> getDssCrlMap() {
 		if (dssDictionary != null) {
 			crlMap = dssDictionary.getCRLs();
 			return crlMap;
@@ -132,7 +133,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	}
 
 	private void extractDSSCRLs() {
-		for (byte[] crl : getDssCrlMap().values()) {
+		for (CRLBinary crl : getDssCrlMap().values()) {
 			addCRLBinary(crl, RevocationOrigin.DSS_DICTIONARY);
 		}
 	}
@@ -156,7 +157,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	private void extractVRICRLs() {
 		PdfVRIDict vriDictionary = findVriDict();
 		if (vriDictionary != null) {
-			for (Entry<Long, byte[]> crlEntry : vriDictionary.getCrlMap().entrySet()) {
+			for (Entry<Long, CRLBinary> crlEntry : vriDictionary.getCRLs().entrySet()) {
 				if (!crlMap.containsKey(crlEntry.getKey())) {
 					crlMap.put(crlEntry.getKey(), crlEntry.getValue());
 				}

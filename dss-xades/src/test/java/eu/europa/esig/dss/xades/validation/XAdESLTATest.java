@@ -40,9 +40,15 @@ import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -51,8 +57,8 @@ import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -76,6 +82,25 @@ public class XAdESLTATest {
 		Reports reports = sdv.validateDocument();
 		assertNotNull(reports);
 		UnmarshallingTester.unmarshallXmlReports(reports);
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		assertEquals(4, signature.getAllFoundCertificates().size());
+		assertEquals(2, signature.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(3, signature.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertEquals(2, signature.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		assertEquals(0, signature.getRelatedCertificatesByOrigin(CertificateOrigin.CMS_SIGNED_DATA).size()); // not applicable for XAdES
+		
+		assertEquals(1, signature.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(1, signature.getRelatedRevocationsByType(RevocationType.CRL).size());
+		
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			assertEquals(4, timestamp.getAllFoundCertificates().size());
+			assertEquals(4, timestamp.getRelatedCertificatesByOrigin(CertificateOrigin.CMS_SIGNED_DATA).size());
+			assertEquals(1, timestamp.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		}
 	}
 
 	@Test

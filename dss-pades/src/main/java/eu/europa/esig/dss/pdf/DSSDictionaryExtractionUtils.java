@@ -28,6 +28,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -35,8 +36,8 @@ public class DSSDictionaryExtractionUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSDictionaryExtractionUtils.class);
 
-	public static Map<Long, byte[]> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, byte[]> crlMap = new HashMap<>();
+	public static Map<Long, CRLBinary> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
+		Map<Long, CRLBinary> crlMap = new HashMap<>();
 		final PdfArray crlArray = dict.getAsArray(arrayName);
 		if (crlArray != null) {
 			LOG.debug("There are {} CRLs in the '{}' dictionary", crlArray.size(), dictionaryName);
@@ -44,7 +45,7 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					long objectNumber = crlArray.getObjectNumber(ii);
 					if (!crlMap.containsKey(objectNumber)) {
-						crlMap.put(objectNumber, crlArray.getBytes(ii));
+						crlMap.put(objectNumber, new CRLBinary(crlArray.getBytes(ii)));
 					}
 				} catch (Exception e) {
 					LOG.debug("Unable to read CRL '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
