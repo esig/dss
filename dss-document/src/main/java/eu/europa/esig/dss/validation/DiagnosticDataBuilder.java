@@ -404,11 +404,20 @@ public class DiagnosticDataBuilder {
 			List<XmlTimestamp> builtTimestamps = buildXmlTimestamps(usedTimestamps);
 			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
 			linkSignaturesAndTimestamps(signatures);
-			linkTimestampsAndTimestampsObjects(usedTimestamps);
+		}
+		
+		if (!commonCRLSource.isEmpty() || !commonOCSPSource.isEmpty()) {
+			// in case if revocation sources contain revocation data not linked to signatures and/or timestamps
+			findOrphanRevocationData(commonCRLSource, commonOCSPSource); 
 		}
 
 		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
 			diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
+		}
+		
+		// timestamped objects must be linked after building of orphan tokens
+		if (Utils.isCollectionNotEmpty(usedTimestamps)) {
+			linkTimestampsAndTimestampsObjects(usedTimestamps);
 		}
 
 		if (isUseTrustedLists()) {
@@ -1514,6 +1523,31 @@ public class DiagnosticDataBuilder {
 		}
 		xmlOrphanRevocation.getRevocationRefs().add(revocationRefToXml(ref));
 		return xmlOrphanRevocation;
+	}
+	
+	private void findOrphanRevocationData(ListCRLSource crlSource, ListOCSPSource ocspSource) {
+		for (CRLBinary crlBinary : crlSource.getCRLBinaryList()) {
+			// if the token is not created yet
+			if (!xmlRevocationsMap.containsKey(crlBinary.asXmlId()) && !xmlOrphanRevocationTokensMap.containsKey(crlBinary.asXmlId())) {
+				// will be an orphan token, because it is not in the list of used revocations
+				createOrphanTokenFromRevocationIdentifier(crlBinary);
+			}
+		}
+		for (CRLRef crlRef : crlSource.getOrphanCrlRefs()) {
+			if (!xmlOrphanRevocationTokensMap.containsKey(crlRef.getDSSIdAsString())) {
+				createOrphanRevocationFromRef(crlRef);
+			}
+		}
+		for (OCSPResponseBinary ocspBinary : ocspSource.getOCSPResponsesList()) {
+			if (!xmlRevocationsMap.containsKey(ocspBinary.asXmlId()) && !xmlOrphanRevocationTokensMap.containsKey(ocspBinary.asXmlId())) {
+				createOrphanTokenFromRevocationIdentifier(ocspBinary);
+			}
+		}
+		for (OCSPRef ocspRef : ocspSource.getOrphanOCSPRefs()) {
+			if (!xmlOrphanRevocationTokensMap.containsKey(ocspRef.getDSSIdAsString())) {
+				createOrphanRevocationFromRef(ocspRef);
+			}
+		}
 	}
 
 	/**

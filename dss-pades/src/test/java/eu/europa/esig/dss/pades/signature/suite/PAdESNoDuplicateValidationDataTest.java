@@ -54,7 +54,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws IOException {
 		
-		DSSDocument toBeSigned = new InMemoryDocument(PAdESDoubleSignatureTest.class.getResourceAsStream("/sample.pdf"));
+		DSSDocument toBeSigned = new InMemoryDocument(PAdESNoDuplicateValidationDataTest.class.getResourceAsStream("/sample.pdf"));
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

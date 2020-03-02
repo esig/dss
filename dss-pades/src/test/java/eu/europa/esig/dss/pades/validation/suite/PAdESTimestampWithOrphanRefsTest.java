@@ -31,7 +31,7 @@ public class PAdESTimestampWithOrphanRefsTest {
 	@Test
 	public void test() throws Exception {
 		
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/pades-tst-with-orphan-refs.pdf"));
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1959/pades-tst-with-orphan-refs.pdf"));
 
 		PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
