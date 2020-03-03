@@ -19,8 +19,8 @@
 			<artifactId>dss-server-signing-dto</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>javax.xml.ws</groupId>
-		  <artifactId>jaxws-api</artifactId>
+		    <groupId>jakarta.xml.ws</groupId>
+		    <artifactId>jakarta.xml.ws-api</artifactId>
 		</dependency>
 	</dependencies>
 
