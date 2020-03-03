@@ -106,6 +106,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		super(serviceMode, signatureDrawerFactory);
 	}
 
+	@Override
 	protected void checkDocumentPermissions(DSSDocument document) {
 		try (InputStream is = document.openStream(); PDDocument pdDocument = PDDocument.load(is)) {
 

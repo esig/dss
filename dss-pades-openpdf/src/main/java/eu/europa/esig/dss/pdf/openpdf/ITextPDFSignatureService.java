@@ -106,8 +106,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		super(serviceMode, signatureDrawerFactory);
 	}
 
+	@Override
 	protected void checkDocumentPermissions(DSSDocument toSignDocument) {
-		try (PdfReader reader = new PdfReader(toSignDocument.openStream())) {
+		try (InputStream is = toSignDocument.openStream(); PdfReader reader = new PdfReader(is)) {
 			if (!reader.isOpenedWithFullPermissions()) {
 				throw new ProtectedDocumentException("Protected document");
 			} else if (reader.isEncrypted()) {
