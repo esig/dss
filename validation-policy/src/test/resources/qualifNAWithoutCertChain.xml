@@ -32,7 +32,7 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <ContentType>application/pdf</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

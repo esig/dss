@@ -44,7 +44,7 @@
                 <ChainItem Certificate="C-A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950"/>
             </CertificateChain>
             <MimeType>text/xml</MimeType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>

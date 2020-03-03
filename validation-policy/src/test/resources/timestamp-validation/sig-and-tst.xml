@@ -81,7 +81,7 @@
                 <ChainItem Certificate="C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023"/>
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB">
@@ -159,7 +159,7 @@
                 <ChainItem Certificate="C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023"/>
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB">

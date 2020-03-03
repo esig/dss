@@ -40,7 +40,7 @@
             <SignatureProductionPlace>
                 <CountryName>test location</CountryName>
             </SignatureProductionPlace>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

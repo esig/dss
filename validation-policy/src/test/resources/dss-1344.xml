@@ -37,7 +37,7 @@
                 <ChainItem Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4"/>
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

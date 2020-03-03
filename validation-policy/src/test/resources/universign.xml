@@ -36,7 +36,7 @@
                 <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>
@@ -79,7 +79,7 @@
                 <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

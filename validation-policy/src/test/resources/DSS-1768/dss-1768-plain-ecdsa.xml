@@ -42,7 +42,7 @@
                 <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

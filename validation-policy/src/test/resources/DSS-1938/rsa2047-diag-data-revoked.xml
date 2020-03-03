@@ -36,7 +36,7 @@
                 <ChainItem Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E"/>
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E">

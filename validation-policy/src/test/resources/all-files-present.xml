@@ -71,9 +71,11 @@
                 <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication>
-                <Indication>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</Indication>
-            </CommitmentTypeIndication>
+            <CommitmentTypeIndications>
+	            <CommitmentTypeIndication>
+	                <Identifier>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</Identifier>
+	            </CommitmentTypeIndication>
+            </CommitmentTypeIndications>
             
             <FoundCertificates/>
             <FoundRevocations/>

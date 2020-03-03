@@ -41,7 +41,7 @@
                 <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerRole Category="claimed">
             	<Role>KalańskiMichał660426140762688287kalanskimkalanskim4</Role>
             </SignerRole>
@@ -109,7 +109,7 @@
                 <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerRole Category="claimed">
             	<Role>KalańskiMichał660426140761013074kalanskimkalanskim1</Role>
             </SignerRole>
@@ -178,7 +178,7 @@
                 <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
                 <Asn1Processable>false</Asn1Processable>
@@ -244,7 +244,7 @@
                 <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
                 <Asn1Processable>false</Asn1Processable>

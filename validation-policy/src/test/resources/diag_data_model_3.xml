@@ -38,7 +38,7 @@
                 <ChainItem Certificate="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
