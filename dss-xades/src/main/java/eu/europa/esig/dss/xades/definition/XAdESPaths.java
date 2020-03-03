@@ -161,6 +161,10 @@ public interface XAdESPaths {
 
 	String getCurrentCommitmentIdentifierPath();
 
+	String getCurrentCommitmentDescriptionPath();
+
+	String getCurrentCommitmentDocumentationReferencesPath();
+
 	// --------------------------- Policy
 
 	String getCurrentSignaturePolicyId();

@@ -20,26 +20,43 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class represents the commitment type indication identifiers extracted from the signature.
  *
  */
-public class CommitmentType {
+public class CommitmentTypeIndication {
 
-    private List<String> identifiers;
-
-    public List<String> getIdentifiers() {
-        return identifiers;
+	// URI or OID
+    private final String identifier;
+    
+    private String description;
+    
+    private List<String> documentReferences;
+    
+    public CommitmentTypeIndication(String identifier) {
+    	this.identifier = identifier;
     }
 
-    public void addIdentifier(final String identifier) {
-        if (identifiers == null) {
-            identifiers = new ArrayList<>();
-        }
-        identifiers.add(identifier);
+    public String getIdentifier() {
+        return identifier;
     }
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public List<String> getDocumentReferences() {
+		return documentReferences;
+	}
+
+	public void setDocumentReferences(List<String> documentReferences) {
+		this.documentReferences = documentReferences;
+	}
 
 }

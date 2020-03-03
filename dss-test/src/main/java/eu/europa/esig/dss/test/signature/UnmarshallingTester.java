@@ -288,7 +288,7 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledSig.getCertificateChain().size(), originalSignature.getCertificateChain().size());
 			assertEquals(unmarshalledSig.getCertifiedRoles().size(), originalSignature.getCertifiedRoles().size());
 			assertEquals(unmarshalledSig.getClaimedRoles().size(), originalSignature.getClaimedRoles().size());
-			assertEquals(unmarshalledSig.getCommitmentTypeIdentifiers().size(), originalSignature.getCommitmentTypeIdentifiers().size());
+			assertEquals(unmarshalledSig.getCommitmentTypeIndications().size(), originalSignature.getCommitmentTypeIndications().size());
 			assertEquals(unmarshalledSig.getDigestMatchers().size(), originalSignature.getDigestMatchers().size());
 			assertEquals(unmarshalledSig.getTimestampList().size(), originalSignature.getTimestampList().size());
 			assertEquals(unmarshalledSig.getSignerRoles().size(), originalSignature.getSignerRoles().size());

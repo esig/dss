@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
@@ -47,6 +46,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -58,6 +58,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -65,21 +66,24 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
-import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
@@ -752,11 +756,44 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 
 	protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
-		List<String> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
+		List<CommitmentType> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundCommitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIdentifiers();
-			assertTrue(commitmentTypeIndications.equals(foundCommitmentTypeIdentifiers));
+			List<XmlCommitmentTypeIndication> foundCommitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIndications();
+			assertTrue(Utils.isCollectionNotEmpty(foundCommitmentTypeIdentifiers));
+			for (CommitmentType commitmentTypeIndication : commitmentTypeIndications) {
+				boolean commitmentFound = false;
+				for (XmlCommitmentTypeIndication xmlCommitmentTypeIndication : foundCommitmentTypeIdentifiers) {
+					String indication = xmlCommitmentTypeIndication.getIdentifier();
+					assertNotNull(indication);
+					
+					boolean uriMatch = false;
+					SignatureForm signatureForm = signatureWrapper.getSignatureFormat().getSignatureForm();
+					switch (signatureForm) {
+						case XAdES:
+							uriMatch = indication.equals(commitmentTypeIndication.getUri()) || indication.equals("urn:oid:" + commitmentTypeIndication.getOid());
+							break;
+						case CAdES:
+						case PAdES:
+							uriMatch = indication.equals(commitmentTypeIndication.getOid());
+							break;
+						default:
+							throw new DSSException(String.format("The signature format [%s] is not supported!", signatureForm));
+					}
+					
+					if (uriMatch) {
+						commitmentFound = true;
+						if (SignatureForm.XAdES.equals(signatureForm) && commitmentTypeIndication.getDescription() != null) {
+							assertEquals(commitmentTypeIndication.getDescription(), xmlCommitmentTypeIndication.getDescription());
+						}
+						if (SignatureForm.XAdES.equals(signatureForm) && Utils.isCollectionNotEmpty(commitmentTypeIndication.getDocumentationReferences())) {
+							assertEquals(commitmentTypeIndication.getDocumentationReferences(), xmlCommitmentTypeIndication.getDocumentationReferences());
+						}
+					}
+				}
+				
+				assertTrue(commitmentFound);
+			}
 		}
 	}
 
@@ -900,8 +937,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				} else if (value instanceof SACommitmentTypeIndicationType) {
 					// TODO multiple value -> multiple tag in signatureattributes ??
 					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
-					List<String> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
-					assertTrue(commitmentTypeIndications.contains(commitment.getCommitmentTypeIdentifier()));
+					List<CommitmentType> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
+					List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
+					List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
+					assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
 				} else if (value instanceof SATimestampType) {
 					SATimestampType timestamp = (SATimestampType) value;
 					assertNotNull(timestamp.getAttributeObject());

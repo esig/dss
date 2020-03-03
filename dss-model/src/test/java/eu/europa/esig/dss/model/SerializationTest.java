@@ -33,6 +33,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -126,9 +128,9 @@ public class SerializationTest {
 	public void testSerializationBLevel() throws Exception {
 		BLevelParameters blevel = new BLevelParameters();
 		blevel.setSigningDate(new Date());
-		List<String> commitmentTypeIndication = new ArrayList<>();
-		commitmentTypeIndication.add("Test commitment");
-		blevel.setCommitmentTypeIndications(commitmentTypeIndication);
+		List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
+		commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
+		blevel.setCommitmentTypeIndications(commitmentTypeIndications);
 
 		byte[] serialized = serialize(blevel);
 		BLevelParameters unserialized = unserialize(serialized, BLevelParameters.class);
@@ -159,9 +161,9 @@ public class SerializationTest {
 		testObj.setSignWithExpiredCertificate(false);
 		testObj.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		testObj.bLevel().setSigningDate(new Date());
-		List<String> commitmentTypeIndication = new ArrayList<>();
-		commitmentTypeIndication.add("Test commitment");
-		testObj.bLevel().setCommitmentTypeIndications(commitmentTypeIndication);
+		List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
+		commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
+		testObj.bLevel().setCommitmentTypeIndications(commitmentTypeIndications);
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setDescription("description");
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.MD5);

@@ -383,6 +383,16 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentCommitmentDescriptionPath() {
+		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.DESCRIPTION);
+	}
+
+	@Override
+	public String getCurrentCommitmentDocumentationReferencesPath() {
+		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.DOCUMENTATION_REFERENCES);
+	}
+
+	@Override
 	public String getCurrentInclude() {
 		return fromCurrentPosition(XAdES122Element.INCLUDE);
 	}

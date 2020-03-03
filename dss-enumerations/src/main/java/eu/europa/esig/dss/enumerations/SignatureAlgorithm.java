@@ -33,7 +33,7 @@ import java.util.Map.Entry;
  * Supported signature algorithms.
  *
  */
-public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
+public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 
 	RSA_RAW(EncryptionAlgorithm.RSA, null),
 	

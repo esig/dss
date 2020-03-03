@@ -44,6 +44,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -1104,18 +1105,35 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	private void incorporateCommitmentTypeIndications() {
 
-		final List<String> commitmentTypeIndications = params.bLevel().getCommitmentTypeIndications();
+		List<CommitmentType> commitmentTypeIndications = params.bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
-			for (final String commitmentTypeIndication : commitmentTypeIndications) {
+			for (final CommitmentType commitmentTypeIndication : commitmentTypeIndications) {
 				final Element commitmentTypeIndicationDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, 
 						getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeIndication());
 
 				final Element commitmentTypeIdDom = DomUtils.addElement(documentDom, commitmentTypeIndicationDom, 
 						getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeId());
 
+				if (commitmentTypeIndication.getUri() == null) {
+					throw new DSSException("The commitmentTypeIndication URI must be defined for XAdES creation!");
+				}
+				
 				DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier(),
-						commitmentTypeIndication);
+						commitmentTypeIndication.getUri());
+				if (commitmentTypeIndication.getDescription() != null) {
+					DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementDescription(),
+							commitmentTypeIndication.getDescription());
+				}
+				if (Utils.isCollectionNotEmpty(commitmentTypeIndication.getDocumentationReferences())) {
+					final Element documentReferencesDom = DomUtils.addElement(documentDom, commitmentTypeIdDom, 
+							getXadesNamespace(), getCurrentXAdESElements().getElementDocumentationReferences());
+					for (String ref : commitmentTypeIndication.getDocumentationReferences()) {
+						DomUtils.addTextElement(documentDom, documentReferencesDom, getXadesNamespace(), 
+								getCurrentXAdESElements().getElementDocumentationReference(), ref);
+					}
+				}
+				
 				// final Element objectReferenceDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom,
 				// XADES, "ObjectReference");
 				// or

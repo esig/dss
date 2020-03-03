@@ -75,7 +75,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.CertificateValidity;
-import eu.europa.esig.dss.validation.CommitmentType;
+import eu.europa.esig.dss.validation.CommitmentTypeIndication;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.IssuerSerialInfo;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -1279,16 +1279,45 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public CommitmentType getCommitmentTypeIndication() {
-		CommitmentType result = null;
+	public List<CommitmentTypeIndication> getCommitmentTypeIndications() {
+		List<CommitmentTypeIndication> result = null;
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getCommitmentTypeIndicationPath());
 		if (nodeList != null && nodeList.getLength() > 0) {
-			result = new CommitmentType();
+			result = new ArrayList<>();
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
-				result.addIdentifier(DomUtils.getValue(nodeList.item(ii), xadesPaths.getCurrentCommitmentIdentifierPath()));
+				Node commitmentTypeIndicationNode = nodeList.item(ii);
+				String uri = DomUtils.getValue(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentIdentifierPath());
+				if (uri == null) {
+					LOG.warn("The Identifier for a CommitmentTypeIndication is not defined! The CommitmentType is skipped.");
+					continue;
+				}
+				CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
+				
+				Element descriptionNode = DomUtils.getElement(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentDescriptionPath());
+				if (descriptionNode != null) {
+					commitmentTypeIndication.setDescription(descriptionNode.getTextContent());
+				}
+				Element docRefsNode = DomUtils.getElement(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentDocumentationReferencesPath());
+				if (docRefsNode != null) {
+					commitmentTypeIndication.setDocumentReferences(getDocumentationReferences(docRefsNode));
+				}
+				result.add(commitmentTypeIndication);
 			}
 		}
 		return result;
+	}
+	
+	private List<String> getDocumentationReferences(Element docRefsNode) {
+		NodeList docRefsChildNodes = docRefsNode.getChildNodes();
+		if (docRefsChildNodes.getLength() > 0) {
+			List<String> docRefs = new ArrayList<>();
+			for (int jj = 0; jj < docRefsChildNodes.getLength(); jj++) {
+				Node docRefNode = docRefsChildNodes.item(jj);
+				docRefs.add(docRefNode.getTextContent());
+			}
+			return docRefs;
+		}
+		return null;
 	}
 
 	public List<Reference> getReferences() {

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -85,9 +86,9 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 			// Identifies the commitment undertaken by the signer in signing (a) signed data object(s)
 			// in the context of the selected signature policy
-			List<String> commitmentTypeIndications = new ArrayList<String>();
-			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
-			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
+			List<CommitmentType> commitmentTypeIndications = new ArrayList<CommitmentType>();
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();

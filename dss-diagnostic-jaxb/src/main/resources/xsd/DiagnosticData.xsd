@@ -137,13 +137,7 @@
 					<xs:element name="ContentIdentifier" type="xs:string" minOccurs="0" />
 					<xs:element name="ContentHints" type="xs:string" minOccurs="0" />
 					<xs:element name="SignatureProductionPlace" type="SignatureProductionPlace" minOccurs="0" />
-					<xs:element name="CommitmentTypeIndication" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="Indication" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="CommitmentTypeIndications" type="CommitmentTypeIndications" minOccurs="0" />
 					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" />
@@ -529,6 +523,26 @@
 			<xs:element name="SerialNumber" type="xs:integer" />
 		</xs:sequence>
 		<xs:attribute name="Processed" type="xs:boolean" use="required" /> <!-- The framework handles only one (first) SignerInfo !!! -->
+	</xs:complexType>
+	
+	<xs:complexType name="CommitmentTypeIndications">
+		<xs:sequence>
+			<xs:element name="CommitmentTypeIndication" type="CommitmentTypeIndication" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CommitmentTypeIndication"> <!-- Represents XAdES v1.3.2 ObjectIdentifierType -->
+		<xs:sequence>
+			<xs:element name="Identifier" type="xs:string" />
+			<xs:element name="Description" type="xs:string" minOccurs="0" />
+			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="DocumentationReferences">
+		<xs:sequence>
+			<xs:element name="DocumentationReference" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="SignerRole">

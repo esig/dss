@@ -28,7 +28,8 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -46,14 +47,14 @@ public class DSS817Test {
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<String> commitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIdentifiers();
+		List<XmlCommitmentTypeIndication> commitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIndications();
 		
 		String signatureId = diagnosticData.getFirstSignatureId();
 		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 		assertEquals(1, retrievedOriginalDocuments.size());
 		
 		assertEquals(1, commitmentTypeIdentifiers.size());
-		assertEquals(CommitmentType.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0));
+		assertEquals(CommitmentTypeEnum.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0).getIdentifier());
 	}
 	
 }

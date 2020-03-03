@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import eu.europa.esig.dss.enumerations.CommitmentType;
+
 @SuppressWarnings("serial")
 public class BLevelParameters implements Serializable {
 
@@ -49,7 +51,7 @@ public class BLevelParameters implements Serializable {
 
 	private Policy signaturePolicy;
 
-	private List<String> commitmentTypeIndications;
+	private List<CommitmentType> commitmentTypeIndications;
 	
 	private SignerLocation signerLocation;
 
@@ -135,7 +137,7 @@ public class BLevelParameters implements Serializable {
 	 * 
 	 * @return the list of commitment type indications
 	 */
-	public List<String> getCommitmentTypeIndications() {
+	public List<CommitmentType> getCommitmentTypeIndications() {
 		return commitmentTypeIndications;
 	}
 
@@ -145,7 +147,7 @@ public class BLevelParameters implements Serializable {
 	 * @param commitmentTypeIndications
 	 *            a list of commitment type indications
 	 */
-	public void setCommitmentTypeIndications(List<String> commitmentTypeIndications) {
+	public void setCommitmentTypeIndications(List<CommitmentType> commitmentTypeIndications) {
 		this.commitmentTypeIndications = commitmentTypeIndications;
 	}
 

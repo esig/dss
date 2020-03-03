@@ -50,6 +50,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -701,7 +702,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setSignatureFormat(signature.getDataFoundUpToLevel());
 
 		xmlSignature.setSignatureProductionPlace(getXmlSignatureProductionPlace(signature.getSignatureProductionPlace()));
-		xmlSignature.setCommitmentTypeIndication(getXmlCommitmentTypeIndication(signature.getCommitmentTypeIndication()));
+		xmlSignature.getCommitmentTypeIndications().addAll(getXmlCommitmentTypeIndications(signature.getCommitmentTypeIndications()));
 		xmlSignature.getSignerRole().addAll(getXmlSignerRoles(signature.getSignerRoles()));
 
 		xmlSignature.setContentType(signature.getContentType());
@@ -1126,11 +1127,23 @@ public class DiagnosticDataBuilder {
 		return xmlSignerRoles;
 	}
 
-	private List<String> getXmlCommitmentTypeIndication(CommitmentType commitmentTypeIndication) {
-		if (commitmentTypeIndication != null) {
-			return commitmentTypeIndication.getIdentifiers();
+	private List<XmlCommitmentTypeIndication> getXmlCommitmentTypeIndications(List<CommitmentTypeIndication> commitmentTypeIndications) {
+		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
+			List<XmlCommitmentTypeIndication> xmlCommitmentTypeIndications = new ArrayList<>();
+			for (CommitmentTypeIndication commitmentTypeIndication : commitmentTypeIndications) {
+				xmlCommitmentTypeIndications.add(getXmlCommitmentTypeIndication(commitmentTypeIndication));
+			}
+			return xmlCommitmentTypeIndications;
 		}
 		return Collections.emptyList();
+	}
+	
+	private XmlCommitmentTypeIndication getXmlCommitmentTypeIndication(CommitmentTypeIndication commitmentTypeIndication) {
+		XmlCommitmentTypeIndication xmlCommitmentTypeIndication = new XmlCommitmentTypeIndication();
+		xmlCommitmentTypeIndication.setIdentifier(commitmentTypeIndication.getIdentifier());
+		xmlCommitmentTypeIndication.setDescription(commitmentTypeIndication.getDescription());
+		xmlCommitmentTypeIndication.setDocumentationReferences(commitmentTypeIndication.getDocumentReferences());
+		return xmlCommitmentTypeIndication;
 	}
 
 	private XmlDistinguishedName getXmlDistinguishedName(final String x500PrincipalFormat, final X500Principal X500PrincipalName) {
