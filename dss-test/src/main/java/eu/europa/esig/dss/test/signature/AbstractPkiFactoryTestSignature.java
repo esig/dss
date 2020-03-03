@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -786,8 +787,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 						if (SignatureForm.XAdES.equals(signatureForm) && commitmentTypeIndication.getDescription() != null) {
 							assertEquals(commitmentTypeIndication.getDescription(), xmlCommitmentTypeIndication.getDescription());
 						}
-						if (SignatureForm.XAdES.equals(signatureForm) && Utils.isCollectionNotEmpty(commitmentTypeIndication.getDocumentationReferences())) {
-							assertEquals(commitmentTypeIndication.getDocumentationReferences(), xmlCommitmentTypeIndication.getDocumentationReferences());
+						if (SignatureForm.XAdES.equals(signatureForm) && Utils.isArrayNotEmpty(commitmentTypeIndication.getDocumentationReferences())) {
+							assertEquals(Arrays.asList(commitmentTypeIndication.getDocumentationReferences()), xmlCommitmentTypeIndication.getDocumentationReferences());
 						}
 					}
 				}
@@ -837,6 +838,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				assertEquals(signaturePolicy.getDescription(), diagnosticData.getPolicyDescription(signature.getId()));
 			} else {
 				assertTrue(Utils.isStringEmpty(signature.getPolicyDescription()));
+			}
+			if (Utils.isArrayNotEmpty(signaturePolicy.getDocumentationReferences())) {
+				assertEquals(Arrays.asList(signaturePolicy.getDocumentationReferences()), diagnosticData.
+						getPolicyDocumentationReferences(signature.getId()));
+			} else {
+				assertTrue(Utils.isCollectionEmpty(signature.getPolicyDocumentationReferences()));
 			}
 			if (Utils.isStringNotEmpty(signaturePolicy.getSpuri())) {
 				assertEquals(signaturePolicy.getSpuri(), signature.getPolicyUrl());

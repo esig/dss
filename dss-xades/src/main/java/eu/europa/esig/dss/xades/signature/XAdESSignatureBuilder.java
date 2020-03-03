@@ -820,6 +820,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				if (Utils.isStringNotEmpty(description)) {
 					DomUtils.addTextElement(documentDom, sigPolicyIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementDescription(), description);
 				}
+				
+				String[] documentationReferences = signaturePolicy.getDocumentationReferences();
+				if (Utils.isArrayNotEmpty(documentationReferences)) {
+					incorporateDocumentationReferences(sigPolicyIdDom, documentationReferences);
+				}
 
 				if ((signaturePolicy.getDigestAlgorithm() != null) && (signaturePolicy.getDigestValue() != null)) {
 
@@ -919,14 +924,22 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method incorporates the SignedDataObjectProperties DOM element like :
-	 *
+	 * 
 	 * <pre>
 	 * 	{@code
 	 * 		<SignedDataObjectProperties> ...
-	 * 			<DataObjectFormat ObjectReference="#detached-ref-id">
-	 * 				<MimeType>text/plain</MimeType>
+	 * 			<DataObjectFormat>
 	 * 				...
 	 *			</DataObjectFormat>
+	 *          <CommitmentTypeIndication>
+	 *              ...
+	 *          </CommitmentTypeIndication>
+	 *          <AllDataObjectsTimeStamp>
+	 *              ...
+	 *          </AllDataObjectsTimeStamp>
+	 *          <IndividualDataObjectsTimeStamp>
+	 *              ...
+	 *          </IndividualDataObjectsTimeStamp>
 	 *		</SignedDataObjectProperties>
 	 * 	}
 	 * </pre>
@@ -936,6 +949,25 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		signedDataObjectPropertiesDom = DomUtils.addElement(documentDom, signedPropertiesDom, getXadesNamespace(),
 				getCurrentXAdESElements().getElementSignedDataObjectProperties());
 
+		incorporateDataObjectFormat();
+
+		incorporateCommitmentTypeIndications();
+
+		incorporateContentTimestamps();
+	}
+	/**
+	 * This method incorporates the SignedDataObjectProperties DOM element like :
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<DataObjectFormat ObjectReference="#detached-ref-id">
+	 * 			<MimeType>text/plain</MimeType>
+	 * 			...
+	 *		</DataObjectFormat>
+	 * 	}
+	 * </pre>
+	 */
+	private void incorporateDataObjectFormat() {
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 
@@ -950,10 +982,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			MimeType dataObjectFormatMimeType = getReferenceMimeType(reference);
 			DomUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getMimeTypeString());
 		}
-
-		incorporateCommitmentTypeIndications();
-
-		incorporateContentTimestamps();
 	}
 
 	/**
@@ -1121,17 +1149,16 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				
 				DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier(),
 						commitmentTypeIndication.getUri());
-				if (commitmentTypeIndication.getDescription() != null) {
+				
+				String description = commitmentTypeIndication.getDescription();
+				if (description != null) {
 					DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementDescription(),
-							commitmentTypeIndication.getDescription());
+							description);
 				}
-				if (Utils.isCollectionNotEmpty(commitmentTypeIndication.getDocumentationReferences())) {
-					final Element documentReferencesDom = DomUtils.addElement(documentDom, commitmentTypeIdDom, 
-							getXadesNamespace(), getCurrentXAdESElements().getElementDocumentationReferences());
-					for (String ref : commitmentTypeIndication.getDocumentationReferences()) {
-						DomUtils.addTextElement(documentDom, documentReferencesDom, getXadesNamespace(), 
-								getCurrentXAdESElements().getElementDocumentationReference(), ref);
-					}
+				
+				String[] documentationReferences = commitmentTypeIndication.getDocumentationReferences();
+				if (Utils.isArrayNotEmpty(documentationReferences)) {
+					incorporateDocumentationReferences(commitmentTypeIdDom, documentationReferences);
 				}
 				
 				// final Element objectReferenceDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom,
@@ -1142,6 +1169,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				// final Element commitmentTypeQualifiersDom = DSSXMLUtils.addElement(documentDom,
 				// commitmentTypeIndicationDom, XADES, "CommitmentTypeQualifiers");
 			}
+		}
+	}
+	
+	private void incorporateDocumentationReferences(Element parentElement, String[] documentationReferences) {
+		final Element documentReferencesDom = DomUtils.addElement(documentDom, parentElement, 
+				getXadesNamespace(), getCurrentXAdESElements().getElementDocumentationReferences());
+		for (String ref : documentationReferences) {
+			DomUtils.addTextElement(documentDom, documentReferencesDom, getXadesNamespace(), 
+					getCurrentXAdESElements().getElementDocumentationReference(), ref);
 		}
 	}
 

@@ -439,6 +439,18 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return "";
 	}
+	
+	/**
+	 * Returns DocumentationReferences defined for the signature policy
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getPolicyDocumentationReferences() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null && policy.getDocumentationReferences() != null) {
+			return policy.getDocumentationReferences();
+		}
+		return Collections.emptyList();
+	}
 
 	public String getPolicyNotice() {
 		XmlPolicy policy = signature.getPolicy();

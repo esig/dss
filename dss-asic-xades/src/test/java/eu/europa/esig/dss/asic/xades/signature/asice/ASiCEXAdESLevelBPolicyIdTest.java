@@ -60,6 +60,7 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignatur
 		Policy policy = new Policy();
 		policy.setId("urn:oid:1.3.6.1.4.1.10015.1000.3.2.1");
 		policy.setQualifier("OIDAsURN");
+		policy.setDocumentationReferences("http://nowina.lu/test.pdf", "https://www.test.ee/public/bdoc-spec21.pdf");
 		policy.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		policy.setDigestValue(Utils.fromBase64("gIHiaetEE94gbkCRygQ9WspxUdw="));
 		policy.setSpuri("https://www.sk.ee/repository/bdoc-spec21.pdf");

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.enumerations;
 
-import java.util.List;
-
 /**
  * Defined in ETSI TS 119 172-1 Annex B
  */
@@ -68,20 +66,20 @@ public enum CommitmentTypeEnum implements CommitmentType {
 	 */
 	private final String oid;
 	
-	private final List<String> documentReferences;
+	private final String[] documentReferences;
 
 	CommitmentTypeEnum(String uri, String oid) {
-		this(uri, oid, null);
+		this(uri, oid, (String[]) null);
 	}
 
-	CommitmentTypeEnum(String uri, String oid, List<String> documentReferences) {
+	CommitmentTypeEnum(String uri, String oid, String... documentReferences) {
 		this.uri = uri;
 		this.oid = oid;
 		this.documentReferences = documentReferences;
 	}
 
 	@Override
-	public List<String> getDocumentationReferences() {
+	public String[] getDocumentationReferences() {
 		return documentReferences;
 	}
 

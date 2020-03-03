@@ -548,6 +548,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (policyDescription != null && Utils.isStringNotEmpty(policyDescription.getTextContent())) {
 					signaturePolicy.setDescription(policyDescription.getTextContent());
 				}
+				Element docRefsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDocumentationReferences());
+				if (docRefsNode != null) {
+					signaturePolicy.setDocumentationReferences(getDocumentationReferences(docRefsNode));
+				}
 
 				signaturePolicy.setUrl(policyUrlString);
 				signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicy(policyIdString, policyUrlString));
@@ -1308,7 +1312,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private List<String> getDocumentationReferences(Element docRefsNode) {
-		NodeList docRefsChildNodes = docRefsNode.getChildNodes();
+		NodeList docRefsChildNodes = DomUtils.getNodeList(docRefsNode, xadesPaths.getCurrentDocumentationReference());
 		if (docRefsChildNodes.getLength() > 0) {
 			List<String> docRefs = new ArrayList<>();
 			for (int jj = 0; jj < docRefsChildNodes.getLength(); jj++) {

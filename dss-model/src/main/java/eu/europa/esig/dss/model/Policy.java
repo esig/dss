@@ -37,6 +37,9 @@ public class Policy implements Serializable {
 	private String qualifier;
 
 	private String description;
+	
+	/* Used in XAdES */
+	private String[] documentationReferences;
 
 	private DigestAlgorithm digestAlgorithm;
 
@@ -105,6 +108,25 @@ public class Policy implements Serializable {
 	}
 
 	/**
+	 * Get the signature policy documentation references
+	 *
+	 * @return the signature policy documentation references
+	 */
+	public String[] getDocumentationReferences() {
+		return documentationReferences;
+	}
+
+	/**
+	 * Set a list of signature documentation references
+	 * 
+	 * @param documentationReferences
+	 *            an array of {@link String} documentation references
+	 */
+	public void setDocumentationReferences(String... documentationReferences) {
+		this.documentationReferences = documentationReferences;
+	}
+
+	/**
 	 * Return the hash algorithm for the signature policy
 	 *
 	 * @return the used digest algorithm for the policy
@@ -166,6 +188,7 @@ public class Policy implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((description == null) ? 0 : description.hashCode());
+		result = (prime * result) + ((documentationReferences == null) ? 0 : documentationReferences.hashCode());
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = (prime * result) + Arrays.hashCode(digestValue);
 		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
@@ -190,6 +213,13 @@ public class Policy implements Serializable {
 				return false;
 			}
 		} else if (!description.equals(other.description)) {
+			return false;
+		}
+		if (documentationReferences == null) {
+			if (other.documentationReferences != null) {
+				return false;
+			}
+		} else if (!documentationReferences.equals(other.documentationReferences)) {
 			return false;
 		}
 		if (digestAlgorithm != other.digestAlgorithm) {
@@ -218,7 +248,7 @@ public class Policy implements Serializable {
 	@Override
 	public String toString() {
 		return "Policy [id=" + id + ", description=" + description + ", digestAlgorithm=" + digestAlgorithm + ", digestValue=" + Arrays.toString(digestValue)
-				+ ", spuri=" + spuri + "]";
+				+ ", spuri=" + spuri + ", documentationReferences=" + Arrays.toString(documentationReferences) + "]";
 	}
 
 }

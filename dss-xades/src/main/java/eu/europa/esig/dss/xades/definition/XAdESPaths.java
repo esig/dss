@@ -165,6 +165,8 @@ public interface XAdESPaths {
 
 	String getCurrentCommitmentDocumentationReferencesPath();
 
+	String getCurrentDocumentationReference();
+
 	// --------------------------- Policy
 
 	String getCurrentSignaturePolicyId();
@@ -174,6 +176,8 @@ public interface XAdESPaths {
 	String getCurrentSignaturePolicySPURI();
 
 	String getCurrentSignaturePolicyDescription();
+
+	String getCurrentSignaturePolicyDocumentationReferences();
 
 	String getCurrentSignaturePolicyImplied();
 

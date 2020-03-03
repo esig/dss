@@ -1530,6 +1530,7 @@ public class DiagnosticDataBuilder {
 		xmlPolicy.setId(signaturePolicy.getIdentifier());
 		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
+		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
 		xmlPolicy.setNotice(signaturePolicy.getNotice());
 		xmlPolicy.setZeroHash(signaturePolicy.isZeroHash());
 

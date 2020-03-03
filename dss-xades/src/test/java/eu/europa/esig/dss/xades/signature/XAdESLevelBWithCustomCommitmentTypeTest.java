@@ -1,8 +1,9 @@
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,16 +40,23 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 		
 		MockCommitmentType commitmentTypeApproval = new MockCommitmentType("http://nowina.lu/approved");
 		commitmentTypeApproval.setDescription("Approved");
-		commitmentTypeApproval.setDocumentReferences(Arrays.asList("http://nowina.lu/approved.pdf", "https://uri.etsi.org/01903/v1.2.2/ts_101903v010202p.pdf"));
+		commitmentTypeApproval.setDocumentReferences("http://nowina.lu/approved.pdf", "https://uri.etsi.org/01903/v1.2.2/ts_101903v010202p.pdf");
 		
 		MockCommitmentType commitmentTypeCreation = new MockCommitmentType("http://nowina.lu/created");
-		commitmentTypeCreation.setDocumentReferences(Collections.emptyList());
+		commitmentTypeCreation.setDocumentReferences();
 		
 		commitmentTypeIndications = Arrays.asList(commitmentTypeApproval, commitmentTypeCreation);
 
-		signatureParameters.bLevel()
-				.setCommitmentTypeIndications(commitmentTypeIndications);
+		signatureParameters.bLevel().setCommitmentTypeIndications(commitmentTypeIndications);
+	}
 
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+		String xmlContent = new String(byteArray);
+		assertTrue(xmlContent.contains(":Description>"));
+		assertTrue(xmlContent.contains(":DocumentationReferences>"));
+		assertTrue(xmlContent.contains(":DocumentationReference>"));
 	}
 
 	@Override
@@ -75,7 +83,7 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 		
 		private final String uri;
 		private String description;
-		private List<String> documentReferences;
+		private String[] documentReferences;
 		
 		public MockCommitmentType(String uri) {
 			this.uri = uri;
@@ -85,7 +93,7 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 			this.description = description;
 		}
 
-		public void setDocumentReferences(List<String> documentReferences) {
+		public void setDocumentReferences(String... documentReferences) {
 			this.documentReferences = documentReferences;
 		}
 		
@@ -105,7 +113,7 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 		}
 
 		@Override
-		public List<String> getDocumentationReferences() {
+		public String[] getDocumentationReferences() {
 			return documentReferences;
 		}
 		
