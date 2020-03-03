@@ -95,6 +95,12 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 			}
 		}
 	}
+	
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(1, diagnosticData.getAllOrphanCertificates().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocations().size());
+	}
 
 	@Override
 	protected String getSigningAlias() {

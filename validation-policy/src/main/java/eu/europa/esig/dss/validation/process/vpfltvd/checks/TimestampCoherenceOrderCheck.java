@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -34,12 +34,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.vpfltvd.TimestampByGenerationTimeComparator;
 
 public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -168,7 +167,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 				archiveTimestamps.add(timestamp);
 			}
 		}
-		Collections.sort(archiveTimestamps, new TimestampByGenerationTimeComparator());
+		archiveTimestamps.sort(Comparator.comparing(TimestampWrapper::getProductionTime));
 		return archiveTimestamps;
 	}
 

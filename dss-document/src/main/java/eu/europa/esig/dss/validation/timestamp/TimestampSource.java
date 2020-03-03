@@ -26,9 +26,14 @@ import java.util.Map;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.validation.ListCRLSource;
+import eu.europa.esig.dss.validation.ListCertificateSource;
 import eu.europa.esig.dss.validation.ListOCSPSource;
 
-public interface SignatureTimestampSource extends Serializable {
+/**
+ * The interface for handling validation data extracted from timestamps
+ *
+ */
+public interface TimestampSource extends Serializable {
 	
 	List<TimestampToken> getContentTimestamps();
 	
@@ -61,10 +66,11 @@ public interface SignatureTimestampSource extends Serializable {
 	Map<String, List<CertificateToken>> getCertificateMapWithinTimestamps(boolean skipLastArchiveTimestamp);
 	
 	/**
-	 * Returns a list of all found certificates in the timestamps
-	 * @return a list of {@link CertificateToken}s
+	 * Returns a merged {@code ListCertificateSource} of all embedded timestamp certificate sources
+	 * 
+	 * @return {@link ListCertificateSource}
 	 */
-	List<CertificateToken> getCertificates();
+	ListCertificateSource getTimestampCertificateSources();
 	
 	/**
 	 * Returns a merged {@code ListCRLSource} of all embedded timestamp CRL sources

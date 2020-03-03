@@ -30,6 +30,7 @@ import java.util.Map;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -37,16 +38,13 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
-import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
-import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class DSS1523Test extends PKIFactoryAccess {
 
@@ -54,27 +52,24 @@ public class DSS1523Test extends PKIFactoryAccess {
 	public void validation() {
 		// <</Type /DSS/Certs [20 0 R]/CRLs [21 0 R]/OCSPs [22 0 R]>>
 		DSSDocument doc = new InMemoryDocument(DSS1523Test.class.getResourceAsStream("/validation/PAdES-LTA.pdf"), "PAdES-LTA.pdf", MimeType.PDF);
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		PDFDocumentValidator validator = new PDFDocumentValidator(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
-		PAdESSignature signature = (PAdESSignature) signatures.get(0);
+		
+		List<PdfDssDict> dssDictionaries = validator.getDssDictionaries();
+		assertEquals(1, dssDictionaries.size());
+		PdfDssDict pdfDssDict = dssDictionaries.get(0);
 
-		PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
-		assertNotNull(certificateSource);
-		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
+		Map<Long, CertificateToken> certificateMap = pdfDssDict.getCERTs();
 		assertEquals(1, certificateMap.size());
 		assertNotNull(certificateMap.get(20L));
 
-		PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
-		assertNotNull(ocspSource);
-		Map<Long, BasicOCSPResp> ocspMap = ocspSource.getOcspMap();
+		Map<Long, BasicOCSPResp> ocspMap = pdfDssDict.getOCSPs();
 		assertEquals(1, ocspMap.size());
 		assertNotNull(ocspMap.get(22L));
 
-		PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
-		assertNotNull(crlSource);
-		Map<Long, byte[]> crlMap = crlSource.getCrlMap();
+		Map<Long, CRLBinary> crlMap = pdfDssDict.getCRLs();
 		assertEquals(1, crlMap.size());
 		assertNotNull(crlMap.get(21L));
 	}
@@ -95,32 +90,50 @@ public class DSS1523Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendDocument = service.extendDocument(doc, parameters);
 
-//		extendDocument.save("target/extended.pdf");
+		// extendDocument.save("target/extended.pdf");
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
+		PDFDocumentValidator validator = new PDFDocumentValidator(extendDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
-
 		assertEquals(1, signatures.size());
-		PAdESSignature signature = (PAdESSignature) signatures.get(0);
+		
+		List<PdfDssDict> dssDictionaries = validator.getDssDictionaries();
+		assertEquals(2, dssDictionaries.size());
+		
+		PdfDssDict pdfDssDict = dssDictionaries.get(1); // the last dictionary
 
-		PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
-		assertNotNull(certificateSource);
-		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
-//		assertEquals(1, certificateMap.size());
-		assertNotNull(certificateMap.get(20L));
+		Map<Long, CertificateToken> certificateMap = pdfDssDict.getCERTs();
+		CertificateToken certificateToken = certificateMap.get(20L);
+		assertNotNull(certificateToken);
+		int certAppearence = 0;
+		for (CertificateToken certToken : certificateMap.values()) {
+			if (certificateToken.equals(certToken)) {
+				++certAppearence;
+			}
+		}
+		assertEquals(1, certAppearence);;
 
-		PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
-		assertNotNull(ocspSource);
-		Map<Long, BasicOCSPResp> ocspMap = ocspSource.getOcspMap();
-//		assertEquals(1, ocspMap.size());
-		assertNotNull(ocspMap.get(22L));
+		Map<Long, BasicOCSPResp> ocspMap = pdfDssDict.getOCSPs();
+		BasicOCSPResp basicOCSPResp = ocspMap.get(22L);
+		assertNotNull(basicOCSPResp);
+		int ocspAppearence = 0;
+		for (BasicOCSPResp ocsp : ocspMap.values()) {
+			if (basicOCSPResp.equals(ocsp)) {
+				++ocspAppearence;
+			}
+		}
+		assertEquals(1, ocspAppearence);
 
-		PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
-		assertNotNull(crlSource);
-		Map<Long, byte[]> crlMap = crlSource.getCrlMap();
-//		assertEquals(1, crlMap.size());
-		assertNotNull(crlMap.get(21L));
+		Map<Long, CRLBinary> crlMap = pdfDssDict.getCRLs();
+		CRLBinary crlBinary = crlMap.get(21L);
+		assertNotNull(crlBinary);
+		int crlAppearence = 0;
+		for (CRLBinary crl : crlMap.values()) {
+			if (crlBinary.equals(crl)) {
+				++crlAppearence;
+			}
+		}
+		assertEquals(1, crlAppearence);
 	}
 
 	@Override

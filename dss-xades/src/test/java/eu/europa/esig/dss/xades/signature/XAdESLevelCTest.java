@@ -76,15 +76,15 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
 		AdvancedSignature advancedSignature = signatures.get(0);
 
-		List<CertificateRef> certificateRefs = advancedSignature.getCertificateRefs();
+		List<CertificateRef> certificateRefs = advancedSignature.getCertificateSource().getAllCertificateRefs();
 		assertTrue(Utils.isCollectionNotEmpty(certificateRefs));
 		for (CertificateRef certificateRef : certificateRefs) {
 			assertNotNull(certificateRef.getCertDigest());
 			assertNotNull(certificateRef.getIssuerInfo());
 		}
 
-		List<OCSPRef> ocspRefs = advancedSignature.getCompleteRevocationOCSPReferences();
-		List<CRLRef> crlRefs = advancedSignature.getCompleteRevocationCRLReferences();
+		List<OCSPRef> ocspRefs = advancedSignature.getOCSPSource().getCompleteRevocationRefs();
+		List<CRLRef> crlRefs = advancedSignature.getCRLSource().getCompleteRevocationRefs();
 
 		assertTrue(Utils.isCollectionNotEmpty(ocspRefs) || Utils.isCollectionNotEmpty(crlRefs));
 
@@ -112,7 +112,6 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
 			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-//				assertEquals(0, foundCert.getOrigins().size()); // only refs + can be present in KeyInfo
 				List<XmlCertificateRef> certificateRefs = foundCert.getCertificateRefs();
 				assertEquals(1, certificateRefs.size());
 				XmlCertificateRef xmlCertificateRef = certificateRefs.get(0);
@@ -136,6 +135,12 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 				assertNotNull(xmlRevocationRef.getOrigins());
 			}
 		}
+	}
+	
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(1, diagnosticData.getAllOrphanCertificates().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocations().size());
 	}
 
 	@Override

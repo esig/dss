@@ -20,22 +20,21 @@
  */
 package eu.europa.esig.dss.pades.validation.scope;
 
-import java.util.Arrays;
-
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.scope.PartialSignatureScope;
 
 public class PdfByteRangeSignatureScope extends PartialSignatureScope {
 
-	private final int[] byteRange;
+	private final ByteRange byteRange;
 
-	public PdfByteRangeSignatureScope(final String name, final int[] byteRange, final Digest digest) {
+	public PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
 		super(name, digest);
 		this.byteRange = byteRange;
 	}
 
 	@Override
 	public String getDescription() {
-		return "The document byte range: " + Arrays.toString(byteRange);
+		return "The document ByteRange : " + byteRange;
 	}
 }

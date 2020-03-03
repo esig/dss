@@ -36,7 +36,6 @@ import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
 import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -83,17 +82,17 @@ public class ArchiveTimestampCoverageTest extends PKIFactoryAccess {
 
 		PdfRevision pdfRevision = pades.getPdfRevision();
 		assertNotNull(pdfRevision);
-		List<PdfRevision> outerSignatures = pdfRevision.getOuterSignatures();
-		assertEquals(2, outerSignatures.size());
+		
+		List<PdfDssDict> dssDictionaries = validator.getDssDictionaries();
+		assertEquals(2, dssDictionaries.size());
+		
+		Iterator<PdfDssDict> iterator = dssDictionaries.iterator();
 
 		// <</Type /DSS
 		// /Certs [20 0 R]
 		// /CRLs [21 0 R 22 0 R]>>
-
-		Iterator<PdfRevision> iterator = outerSignatures.iterator();
-		PdfCMSRevision archiveTST = (PdfCMSRevision) iterator.next();
-		assertTrue(archiveTST.isTimestampRevision());
-		dssDictionary = archiveTST.getDssDictionary();
+		dssDictionary = iterator.next();
+		
 		assertNotNull(dssDictionary);
 		assertEquals(1, dssDictionary.getCERTs().size());
 		assertEquals(2, dssDictionary.getCRLs().size());
@@ -102,9 +101,8 @@ public class ArchiveTimestampCoverageTest extends PKIFactoryAccess {
 		// <</Type /DSS
 		// /Certs [20 0 R 26 0 R 30 0 R]
 		// /CRLs [21 0 R 22 0 R 27 0 R 28 0 R 29 0 R]>>
-		PdfCMSRevision archiveTST2 = (PdfCMSRevision) iterator.next();
-		assertTrue(archiveTST2.isTimestampRevision());
-		dssDictionary = archiveTST2.getDssDictionary();
+		dssDictionary = iterator.next();
+		
 		assertNotNull(dssDictionary);
 		assertEquals(3, dssDictionary.getCERTs().size());
 		assertEquals(5, dssDictionary.getCRLs().size());
@@ -132,16 +130,17 @@ public class ArchiveTimestampCoverageTest extends PKIFactoryAccess {
 
 		PdfRevision pdfRevision = pades.getPdfRevision();
 		assertNotNull(pdfRevision);
-		List<PdfRevision> outerSignatures = pdfRevision.getOuterSignatures();
-		assertEquals(3, outerSignatures.size());
+		
+		List<PdfDssDict> dssDictionaries = validator.getDssDictionaries();
+		assertEquals(3, dssDictionaries.size());
+		
+		Iterator<PdfDssDict> iterator = dssDictionaries.iterator();
 
 		// <</Type /DSS
 		// /Certs [20 0 R]
 		// /CRLs [21 0 R 22 0 R]>>
-		Iterator<PdfRevision> iterator = outerSignatures.iterator();
-		PdfCMSRevision archiveTST = (PdfCMSRevision) iterator.next();
-		assertTrue(archiveTST.isTimestampRevision());
-		dssDictionary = archiveTST.getDssDictionary();
+		dssDictionary = iterator.next();
+		
 		assertNotNull(dssDictionary);
 		assertEquals(1, dssDictionary.getCERTs().size());
 		assertEquals(2, dssDictionary.getCRLs().size());
@@ -149,9 +148,8 @@ public class ArchiveTimestampCoverageTest extends PKIFactoryAccess {
 		// <</Type /DSS
 		// /Certs [20 0 R 26 0 R 30 0 R]
 		// /CRLs [21 0 R 22 0 R 27 0 R 28 0 R 29 0 R]>>
-		archiveTST = (PdfCMSRevision) iterator.next();
-		assertTrue(archiveTST.isTimestampRevision());
-		dssDictionary = archiveTST.getDssDictionary();
+		dssDictionary = iterator.next();
+		
 		assertNotNull(dssDictionary);
 		assertEquals(3, dssDictionary.getCERTs().size());
 		assertEquals(5, dssDictionary.getCRLs().size());
@@ -160,9 +158,8 @@ public class ArchiveTimestampCoverageTest extends PKIFactoryAccess {
 		// <</Type /DSS
 		// /Certs [20 0 R 26 0 R 30 0 R 35 0 R 39 0 R 40 0 R]
 		// /CRLs [21 0 R 22 0 R 27 0 R 28 0 R 29 0 R 34 0 R 36 0 R 37 0 R 38 0 R]>>
-		archiveTST = (PdfCMSRevision) iterator.next();
-		assertTrue(archiveTST.isTimestampRevision());
-		dssDictionary = archiveTST.getDssDictionary();
+		dssDictionary = iterator.next();
+		
 		assertNotNull(dssDictionary);
 		assertEquals(6, dssDictionary.getCERTs().size());
 		assertEquals(9, dssDictionary.getCRLs().size());

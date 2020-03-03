@@ -137,6 +137,12 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		return timeStampValidationDataCertValues;
 	}
 
+	@Override
+	public List<CertificateToken> getCMSSignedDataCertificates() {
+		// not applicable for XAdES
+		return Collections.emptyList();
+	}
+
 	/**
 	 * This method extracts certificates from the given xpath query
 	 * 

@@ -24,13 +24,14 @@ import java.io.IOException;
 import java.util.Date;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	private final PdfDict dictionary;
 	
-	private int[] signatureByteRange;
+	private ByteRange signatureByteRange;
 
 	public PdfSigDictWrapper(PdfDict dictionary) {
 		this.dictionary = dictionary;
@@ -86,7 +87,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	}
 
 	@Override
-	public int[] getSignatureByteRange() {
+	public ByteRange getByteRange() {
 		if (signatureByteRange == null) {
 			PdfArray byteRangeArray = dictionary.getAsArray("ByteRange");
 			if (byteRangeArray == null) {
@@ -102,7 +103,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 					throw new DSSException("Unable to parse integer from the ByteRange", e);
 				}
 			}
-			signatureByteRange = result;
+			signatureByteRange = new ByteRange(result);
 		}
 		return signatureByteRange;
 	}

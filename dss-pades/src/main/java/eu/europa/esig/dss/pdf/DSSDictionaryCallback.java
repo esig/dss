@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
 import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
@@ -49,7 +50,7 @@ public class DSSDictionaryCallback {
 		this.signature = signature;
 	}
 
-	public Map<Long, byte[]> getStoredCrls() {
+	public Map<Long, CRLBinary> getStoredCrls() {
 		PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
 		return crlSource.getCrlMap();
 	}

@@ -180,17 +180,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				for (AdvancedSignature advancedSignature : allSignatures) {
 					if (Utils.areStringsEqual(entry.getFileName(), advancedSignature.getSignatureFilename())) {
 						CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
-						List<TimestampToken> cadesTimestamps = new ArrayList<>();
-						cadesTimestamps.addAll(cadesSig.getContentTimestamps());
-						cadesTimestamps.addAll(cadesSig.getSignatureTimestamps());
-						cadesTimestamps.addAll(cadesSig.getTimestampsX1());
-						cadesTimestamps.addAll(cadesSig.getTimestampsX2());
-						// Archive timestamp from CAdES is skipped
-
 						timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
-						timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
-						advancedSignature.addExternalTimestamp(timestamp);
-
+						
+						cadesSig.addExternalTimestamp(timestamp);
 					}
 				}
 			}

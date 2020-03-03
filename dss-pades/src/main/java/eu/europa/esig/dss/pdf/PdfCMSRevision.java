@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -34,10 +34,8 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignerInfo;
@@ -47,9 +45,6 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfCMSRevision.class);
 	
 	private final PdfSignatureDictionary signatureDictionary;
-	private final PdfDssDict dssDictionary;
-
-	private final byte[] cms;
 
 	/**
 	 * The original signed pdf document
@@ -59,84 +54,34 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private final boolean coverAllOriginalBytes;
 	
 	private final List<String> signatureFieldNames;
-	
-	/* Cached attributes */
-	private boolean verified;
-	private String uniqueId;
-	private CMSSignedData cmsSignedData;
-
-	private List<PdfRevision> outerSignatures = new ArrayList<>();
 
 	/**
 	 *
 	 * @param signatureDictionary
 	 *                              The signature dictionary
-	 * @param dssDictionary
-	 *                              the DSS dictionary
-	 * @param cms
-	 *                              the signature binary
+	 * @param signatureFieldNames
+	 *                              the list of signature field names
 	 * @param signedContent
 	 *                              {@link DSSDocument} the signed content
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
-	protected PdfCMSRevision(byte[] cms, PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, List<String> signatureFieldNames,
-			byte[] signedContent, boolean coverAllOriginalBytes) {
-		this.cms = cms;
+	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, List<String> signatureFieldNames, byte[] signedContent, 
+			boolean coverAllOriginalBytes) {
+		Objects.requireNonNull(signatureDictionary, "The signature dictionary cannot be null!");
+		Objects.requireNonNull(signatureFieldNames, "The signature field names must be defined!");
+		Objects.requireNonNull(signedContent, "The signed content cannot be null!");
 		this.signatureDictionary = signatureDictionary;
-		this.dssDictionary = dssDictionary;
 		this.signatureFieldNames = signatureFieldNames;
 		this.signedContent = signedContent;
 		this.coverAllOriginalBytes = coverAllOriginalBytes;
 	}
 
-	@Override
-	public void checkIntegrity() {
-		if (!verified) {
-			checkIntegrityOnce();
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Verify embedded CAdES Signature on signedBytes size {}.", signedContent.length);
-			}
-			verified = true;
-		}
-	}
-
-	protected abstract void checkIntegrityOnce();
-
 	/**
 	 * @return the byte of the originally signed document
 	 */
-	@Override
-	public byte[] getSignedDocumentBytes() {
+	public byte[] getRevisionCoveredBytes() {
 		return signedContent;
-	}
-
-	public PdfDssDict getDssDictionary() {
-		return dssDictionary;
-	}
-
-	@Override
-	public String uniqueId() {
-		if (uniqueId == null) {
-			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, cms);
-			uniqueId = Utils.toHex(digest);
-		}
-		return uniqueId;
-	}
-	
-	@Override
-	public byte[] getContents() {
-		return cms;
-	}
-
-	@Override
-	public void addOuterSignature(PdfRevision signatureInfo) {
-		outerSignatures.add(signatureInfo);
-	}
-
-	@Override
-	public List<PdfRevision> getOuterSignatures() {
-		return Collections.unmodifiableList(outerSignatures);
 	}
 	
 	@Override
@@ -144,33 +89,15 @@ public abstract class PdfCMSRevision implements PdfRevision {
 		return signatureDictionary;
 	}
 	
-	@Override
-	public int[] getSignatureByteRange() {
-		return signatureDictionary.getSignatureByteRange();
+	public ByteRange getByteRange() {
+		return signatureDictionary.getByteRange();
 	}
 
-	@Override
 	public Date getSigningDate() {
 		return signatureDictionary.getSigningDate();
 	}
-	
-	/**
-	 * Returns a built CMSSignedData object
-	 */
-	@Override
-	public CMSSignedData getCMSSignedData() {
-		if (cmsSignedData == null) {
-			try {
-				cmsSignedData = new CMSSignedData(cms);
-			} catch (CMSException e) {
-				LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", signatureFieldNames);
-			}
-		}
-		return cmsSignedData;
-	}
 
-	@Override
-	public boolean doesSignatureCoverAllOriginalBytes() {
+	public boolean areAllOriginalBytesCovered() {
 		return coverAllOriginalBytes;
 	}
 	
@@ -179,23 +106,32 @@ public abstract class PdfCMSRevision implements PdfRevision {
 		return signatureFieldNames;
 	}
 	
-	@Override
-	public List<SignerInfo> getSignatureInformationStore() {
-		List<SignerInfo> signerInfos = new ArrayList<>();
-		SignerInformationStore signerInformationStore = getCMSSignedData().getSignerInfos();
-		
-		Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();
-		while (it.hasNext()) {
-			SignerInformation signerInformation = it.next();
-			SignerId sid = signerInformation.getSID();
-			SignerInfo signerInfo = new SignerInfo(sid.getIssuer().toString(), sid.getSerialNumber());
-			signerInfo.setValidated(isSignerInformationValidated(signerInformation));
-			signerInfos.add(signerInfo);
+    
+    @Override
+    public List<SignerInfo> getSignatureInformationStore() {
+		try {
+	        List<SignerInfo> signerInfos = new ArrayList<>();
+	        CMSSignedData cmsSignedData = new CMSSignedData(signatureDictionary.getContents());
+	        SignerInformationStore signerInformationStore = cmsSignedData.getSignerInfos();
+
+	        boolean firstValidated = true;
+	        Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();
+	        while (it.hasNext()) {
+	            SignerInformation signerInformation = it.next();
+	            SignerId sid = signerInformation.getSID();
+	            SignerInfo signerInfo = new SignerInfo(sid.getIssuer().toString(), sid.getSerialNumber());
+	            signerInfo.setValidated(firstValidated); // TODO : do better after moving the method to a CAdESSignature class
+	            signerInfos.add(signerInfo);
+	            
+	            firstValidated = false;
+	        }
+	        
+	        return signerInfos;
+		} catch (CMSException e) {
+			LOG.warn("An error occurred during SignatureInformationStore extractiuon. Reason : {}", e.getMessage(), e);
+			return null;
+			
 		}
-		
-		return signerInfos;
-	}
-	
-	protected abstract boolean isSignerInformationValidated(SignerInformation signerInformation);
+    }
 
 }

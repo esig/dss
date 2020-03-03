@@ -1128,6 +1128,8 @@
                 <ChainItem Certificate="C-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD"/>
                 <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Category="SIGNED_DATA" Token="D-29F011998FC5576ACA341603C8EA140AAC17BA917CD25F29F09C001D5C2D1CA4"/>
                 <TimestampedObject Category="SIGNED_DATA" Token="D-F3F6F3A19D9D686C7A24420CCF0E94683705A2A5E20447F36E35E2BAE152BE68"/>

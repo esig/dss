@@ -37,16 +37,6 @@ public interface SignatureRevocationSource<T extends RevocationToken> {
 	List<T> getCMSSignedDataRevocationTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in the SignedData
-	 * of a Timestamp Token
-	 * 
-	 * NOTE: Applicable only for CAdES revocation sources
-	 * 
-	 * @return list of {@link RevocationToken}s
-	 */
-	List<T> getTimestampSignedDataRevocationTokens();
-
-	/**
 	 * Retrieves the list of all {@link RevocationToken}s present in
 	 * 'RevocationValues' element
 	 * 
@@ -95,15 +85,6 @@ public interface SignatureRevocationSource<T extends RevocationToken> {
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<T> getVRIDictionaryTokens();
-
-	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in the Timestamp
-	 * 
-	 * NOTE: Applicable only for CAdES revocation source
-	 * 
-	 * @return list of {@link RevocationToken}s
-	 */
-	List<T> getTimestampRevocationValuesTokens();
 	
 	/**
 	 * Retrieves the list of all {@link RevocationToken}s present in the ADBE element

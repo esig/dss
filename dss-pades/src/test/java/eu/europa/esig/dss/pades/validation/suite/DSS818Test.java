@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -57,9 +56,8 @@ public class DSS818Test {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
-			CAdESSignature cades = pades.getCAdESSignature();
 
-			byte[] encoded = cades.getCmsSignedData().getEncoded();
+			byte[] encoded = pades.getCmsSignedData().getEncoded();
 
 			checkSignedAttributesOrder(encoded);
 		}
@@ -73,9 +71,8 @@ public class DSS818Test {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
-			CAdESSignature cades = pades.getCAdESSignature();
 
-			byte[] encoded = cades.getCmsSignedData().getEncoded();
+			byte[] encoded = pades.getCmsSignedData().getEncoded();
 
 			checkSignedAttributesOrder(encoded);
 		}
@@ -90,9 +87,8 @@ public class DSS818Test {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
-			CAdESSignature cades = pades.getCAdESSignature();
 
-			byte[] encoded = cades.getCmsSignedData().getEncoded();
+			byte[] encoded = pades.getCmsSignedData().getEncoded();
 
 			checkSignedAttributesOrder(encoded);
 		}

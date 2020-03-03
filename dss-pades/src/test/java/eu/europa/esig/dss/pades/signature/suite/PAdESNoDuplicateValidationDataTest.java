@@ -32,6 +32,7 @@ import java.util.Map;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -53,7 +54,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws IOException {
 		
-		DSSDocument toBeSigned = new InMemoryDocument(PAdESDoubleSignatureTest.class.getResourceAsStream("/sample.pdf"));
+		DSSDocument toBeSigned = new InMemoryDocument(PAdESNoDuplicateValidationDataTest.class.getResourceAsStream("/sample.pdf"));
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -128,7 +129,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
-			Map<Long, byte[]> crlMap = crlSource.getCrlMap();
+			Map<Long, CRLBinary> crlMap = crlSource.getCrlMap();
 			assertEquals(1, crlMap.size());
 			for (Long crl : crls) {
 				assertNotNull(crlMap.get(crl));
