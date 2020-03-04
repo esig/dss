@@ -87,7 +87,7 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 				setSecurityFeature(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
 				// TODO : allow a behaviour customization with alerts
-				String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", entry.getKey(), entry.getValue());
+				String message = String.format("SECURITY : unable to set feature '%s' = '%s' (more details in LOG debug)", entry.getKey(), entry.getValue());
 				if (LOG.isDebugEnabled()) {
 					LOG.debug(message, e);
 				} else {
@@ -116,7 +116,7 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 				setSecurityAttribute(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
 				// TODO : allow a behaviour customization with alerts
-				String message = String.format("SECURITY : unable to set attribute %s = %s (more details in LOG debug)", entry.getKey(), entry.getValue());
+				String message = String.format("SECURITY : unable to set attribute '%s' = '%s' (more details in LOG debug)", entry.getKey(), entry.getValue());
 				if (LOG.isDebugEnabled()) {
 					LOG.debug(message, e);
 				} else {
