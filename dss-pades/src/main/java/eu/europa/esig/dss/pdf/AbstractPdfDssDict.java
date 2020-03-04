@@ -45,32 +45,48 @@ public abstract class AbstractPdfDssDict implements PdfDssDict {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + crlMap.hashCode();
-		result = prime * result + ocspMap.hashCode();
-		result = prime * result + certMap.hashCode();
+		int result = 1;
+		result = prime * result + ((certMap == null) ? 0 : certMap.hashCode());
+		result = prime * result + ((crlMap == null) ? 0 : crlMap.hashCode());
+		result = prime * result + ((ocspMap == null) ? 0 : ocspMap.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
 		}
+		if (obj == null) {
+			return false;
+		}
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		AbstractPdfDssDict other = (AbstractPdfDssDict) obj;
-		if (!certMap.equals(other.certMap)) {
+		if (certMap == null) {
+			if (other.certMap != null) {
+				return false;
+			}
+		} else if (!certMap.equals(other.certMap)) {
 			return false;
 		}
-		if (!crlMap.equals(other.crlMap)) {
+		if (crlMap == null) {
+			if (other.crlMap != null) {
+				return false;
+			}
+		} else if (!crlMap.equals(other.crlMap)) {
 			return false;
 		}
-		if (!ocspMap.equals(other.ocspMap)) {
+		if (ocspMap == null) {
+			if (other.ocspMap != null) {
+				return false;
+			}
+		} else if (!ocspMap.equals(other.ocspMap)) {
 			return false;
 		}
 		return true;
 	}
+
 
 }
