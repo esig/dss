@@ -638,7 +638,7 @@
 	<xs:simpleType name="CertificateOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="KEY_INFO" />
-			<xs:enumeration value="CMS_SIGNED_DATA" />
+			<xs:enumeration value="SIGNED_DATA" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />

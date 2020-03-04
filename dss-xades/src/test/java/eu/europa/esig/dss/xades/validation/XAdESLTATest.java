@@ -91,14 +91,14 @@ public class XAdESLTATest {
 		assertEquals(2, signature.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
 		assertEquals(3, signature.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 		assertEquals(2, signature.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-		assertEquals(0, signature.getRelatedCertificatesByOrigin(CertificateOrigin.CMS_SIGNED_DATA).size()); // not applicable for XAdES
+		assertEquals(0, signature.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()); // not applicable for XAdES
 		
 		assertEquals(1, signature.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
 		assertEquals(1, signature.getRelatedRevocationsByType(RevocationType.CRL).size());
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			assertEquals(4, timestamp.getAllFoundCertificates().size());
-			assertEquals(4, timestamp.getRelatedCertificatesByOrigin(CertificateOrigin.CMS_SIGNED_DATA).size());
+			assertEquals(4, timestamp.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
 			assertEquals(1, timestamp.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 		}
 	}

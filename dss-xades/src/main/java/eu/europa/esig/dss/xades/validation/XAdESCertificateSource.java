@@ -138,7 +138,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	@Override
-	public List<CertificateToken> getCMSSignedDataCertificates() {
+	public List<CertificateToken> getSignedDataCertificates() {
 		// not applicable for XAdES
 		return Collections.emptyList();
 	}

@@ -53,7 +53,7 @@ public class PdfPkcs7Test {
 
 		// no signing certificate attribute
 		assertEquals(0, signatureById.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOrigin.CMS_SIGNED_DATA).size());
+		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOrigin.SIGNED_DATA).size());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());

@@ -1217,8 +1217,8 @@ public class DiagnosticDataBuilder {
 		
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.KEY_INFO, 
 				certificateSource.getKeyInfoCertificates(), certificateSource);
-		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.CMS_SIGNED_DATA, 
-				certificateSource.getCMSSignedDataCertificates(), certificateSource);
+		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.SIGNED_DATA, 
+				certificateSource.getSignedDataCertificates(), certificateSource);
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.CERTIFICATE_VALUES, 
 				certificateSource.getCertificateValues(), certificateSource);
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES, 
