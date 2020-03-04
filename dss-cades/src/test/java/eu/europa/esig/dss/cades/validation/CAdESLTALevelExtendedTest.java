@@ -90,11 +90,11 @@ public class CAdESLTALevelExtendedTest {
 				List<XmlFoundRevocation> timestampFoundRevocations = timestamp.getAllFoundRevocations();
 				assertEquals(1, timestampFoundRevocations.size());
 				XmlFoundRevocation xmlFoundRevocation = timestampFoundRevocations.get(0);
-				assertTrue(xmlFoundRevocation.getOrigins().contains(RevocationOrigin.TIMESTAMP_REVOCATION_VALUES));
+				assertTrue(xmlFoundRevocation.getOrigins().contains(RevocationOrigin.REVOCATION_VALUES));
 				List<XmlRevocationRef> revocationRefs = xmlFoundRevocation.getRevocationRefs();
 				assertEquals(1, revocationRefs.size());
 				XmlRevocationRef xmlRevocationRef = revocationRefs.get(0);
-				assertTrue(xmlRevocationRef.getOrigins().contains(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS));
+				assertTrue(xmlRevocationRef.getOrigins().contains(RevocationRefOrigin.COMPLETE_REVOCATION_REFS));
 				signatureTimestampCounter++;
 			}
 			assertTrue(timestamp.isMessageImprintDataFound());

@@ -838,13 +838,11 @@
 	<xs:simpleType name="RevocationOriginType" final="restriction">
 		<xs:restriction base="xs:string">            
 			<xs:enumeration value="CMS_SIGNED_DATA" />
-			<xs:enumeration value="TIMESTAMP_SIGNED_DATA" />
 			<xs:enumeration value="REVOCATION_VALUES" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
-			<xs:enumeration value="TIMESTAMP_REVOCATION_VALUES" />
 			<xs:enumeration value="ADBE_REVOCATION_INFO_ARCHIVAL" />
 			<xs:enumeration value="INPUT_DOCUMENT" />
 			<xs:enumeration value="EXTERNAL" />
@@ -856,7 +854,6 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
-			<xs:enumeration value="TIMESTAMP_REVOCATION_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
 	
