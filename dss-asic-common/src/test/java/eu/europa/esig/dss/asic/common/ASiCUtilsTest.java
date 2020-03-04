@@ -21,14 +21,28 @@
 package eu.europa.esig.dss.asic.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 
 public class ASiCUtilsTest {
+
+	@Test
+	public void isZip() {
+		assertFalse(ASiCUtils.isZip(null));
+		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 0 })));
+		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'P' })));
+		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'p', 'k' })));
+		assertThrows(NullPointerException.class, () -> ASiCUtils.isZip(new InMemoryDocument()));
+
+		assertTrue(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'K' })));
+	}
 
 	@Test
 	public void getASiCContainerType() {
@@ -46,7 +60,7 @@ public class ASiCUtilsTest {
 			mt.setMimeTypeString("application/wrong");
 			ASiCUtils.getASiCContainerType(mt);
 		});
-        assertEquals("Not allowed mimetype 'application/wrong'", exception.getMessage());
+		assertEquals("Not allowed mimetype 'application/wrong'", exception.getMessage());
 	}
 
 }

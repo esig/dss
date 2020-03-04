@@ -172,12 +172,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		Objects.requireNonNull(dssDocument, "DSSDocument is null");
 		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
 		for (DocumentValidatorFactory factory : serviceLoaders) {
-			try {
-				if (factory.isSupported(dssDocument)) {
-					return factory.create(dssDocument);
-				}
-			} catch (Exception e) {
-				LOG.error(String.format("Unable to create a DocumentValidator with the factory '%s'", factory.getClass().getSimpleName()), e);
+			if (factory.isSupported(dssDocument)) {
+				return factory.create(dssDocument);
 			}
 		}
 		throw new DSSException("Document format not recognized/handled");

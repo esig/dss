@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-
-
 import java.io.File;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -46,12 +44,10 @@ public class DTDInjectionTest {
 	@Test
 	public void test() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator validator = SignedDocumentValidator
-					.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
-			validator.setCertificateVerifier(new CommonCertificateVerifier());
-			validator.validateDocument();
+			SignedDocumentValidator.fromDocument(
+					new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
 		});
-		assertEquals("Document format not recognized/handled", exception.getMessage());
+		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
 	}
 
 	@Test

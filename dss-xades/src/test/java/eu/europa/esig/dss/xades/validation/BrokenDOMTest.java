@@ -18,39 +18,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class SignedDocumentValidatorTest {
-
-	@Test
-	public void testNoDepencency() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/sample.xml"));
-		});
-		assertEquals("Document format not recognized/handled", exception.getMessage());
-	}
+public class BrokenDOMTest {
 
 	@Test
-	public void testNull() {
-		assertThrows(NullPointerException.class, () -> {
-			SignedDocumentValidator.fromDocument(null);
-		});
-	}
-
-	@Test
-	public void testEmtpyDoc() {
-		assertThrows(NullPointerException.class, () -> {
-			SignedDocumentValidator.fromDocument(new InMemoryDocument());
-		});
+	public void test() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/broken-dom.xml");
+		DSSException exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
+		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
 	}
 
 }
