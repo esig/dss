@@ -35,7 +35,5 @@ public enum CertificateOrigin {
 	DSS_DICTIONARY, /* PAdES specific */
 	
 	VRI_DICTIONARY, /* PAdES specific */
-	
-	TIMESTAMP_CERTIFICATE_VALUES, /* Certificates found in a timestamp */
 
 }

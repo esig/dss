@@ -1299,9 +1299,6 @@ public class DiagnosticDataBuilder {
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
-		if (getXmlCertificateSources(cert).contains(CertificateSourceType.TIMESTAMP)) {
-			xrc.getOrigins().add(CertificateOrigin.TIMESTAMP_CERTIFICATE_VALUES);
-		}
 		xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
 		referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
 		return xrc;
