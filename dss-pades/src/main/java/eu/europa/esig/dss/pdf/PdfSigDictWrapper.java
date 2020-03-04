@@ -23,6 +23,9 @@ package eu.europa.esig.dss.pdf;
 import java.io.IOException;
 import java.util.Date;
 
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
@@ -30,11 +33,40 @@ import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	private final PdfDict dictionary;
-	
-	private ByteRange signatureByteRange;
+
+	private final CMSSignedData cmsSignedData;
+	private final ByteRange byteRange;
 
 	public PdfSigDictWrapper(PdfDict dictionary) {
 		this.dictionary = dictionary;
+		this.cmsSignedData = buildCMSSignedData();
+		this.byteRange = buildByteRange();
+	}
+
+	private CMSSignedData buildCMSSignedData() {
+		try {
+			return new CMSSignedData(getContents());
+		} catch (CMSException e) {
+			throw new DSSException("Unable to build an instance of CMSSignedData", e);
+		}
+	}
+
+	private ByteRange buildByteRange() {
+		PdfArray byteRangeArray = dictionary.getAsArray("ByteRange");
+		if (byteRangeArray == null) {
+			throw new DSSException("Unable to retrieve the ByteRange");
+		}
+
+		int arraySize = byteRangeArray.size();
+		int[] result = new int[arraySize];
+		for (int i = 0; i < arraySize; i++) {
+			try {
+				result[i] = byteRangeArray.getInt(i);
+			} catch (IOException e) {
+				throw new DSSException("Unable to parse integer from the ByteRange", e);
+			}
+		}
+		return new ByteRange(result);
 	}
 
 	@Override
@@ -78,6 +110,11 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	}
 
 	@Override
+	public CMSSignedData getCMSSignedData() {
+		return cmsSignedData;
+	}
+
+	@Override
 	public byte[] getContents() {
 		try {
 			return dictionary.getBinariesValue("Contents");
@@ -88,24 +125,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	@Override
 	public ByteRange getByteRange() {
-		if (signatureByteRange == null) {
-			PdfArray byteRangeArray = dictionary.getAsArray("ByteRange");
-			if (byteRangeArray == null) {
-				throw new DSSException("Unable to retrieve the ByteRange");
-			}
-			
-			int arraySize = byteRangeArray.size();
-			int[] result = new int[arraySize];
-			for (int i = 0; i < arraySize; i++) {
-				try {
-					result[i] = byteRangeArray.getInt(i);
-				} catch (IOException e) {
-					throw new DSSException("Unable to parse integer from the ByteRange", e);
-				}
-			}
-			signatureByteRange = new ByteRange(result);
-		}
-		return signatureByteRange;
+		return byteRange;
 	}
 
 }

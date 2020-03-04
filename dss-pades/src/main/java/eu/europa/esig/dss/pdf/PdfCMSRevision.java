@@ -26,13 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.ByteRange;
@@ -42,8 +39,6 @@ import eu.europa.esig.dss.validation.SignerInfo;
 
 public abstract class PdfCMSRevision implements PdfRevision {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfCMSRevision.class);
-	
 	private final PdfSignatureDictionary signatureDictionary;
 
 	/**
@@ -107,31 +102,24 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	}
 	
     
-    @Override
-    public List<SignerInfo> getSignatureInformationStore() {
-		try {
-	        List<SignerInfo> signerInfos = new ArrayList<>();
-	        CMSSignedData cmsSignedData = new CMSSignedData(signatureDictionary.getContents());
-	        SignerInformationStore signerInformationStore = cmsSignedData.getSignerInfos();
+	@Override
+	public List<SignerInfo> getSignatureInformationStore() {
+		List<SignerInfo> signerInfos = new ArrayList<>();
+		CMSSignedData cmsSignedData = signatureDictionary.getCMSSignedData();
+		SignerInformationStore signerInformationStore = cmsSignedData.getSignerInfos();
 
-	        boolean firstValidated = true;
-	        Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();
-	        while (it.hasNext()) {
-	            SignerInformation signerInformation = it.next();
-	            SignerId sid = signerInformation.getSID();
-	            SignerInfo signerInfo = new SignerInfo(sid.getIssuer().toString(), sid.getSerialNumber());
-	            signerInfo.setValidated(firstValidated); // TODO : do better after moving the method to a CAdESSignature class
-	            signerInfos.add(signerInfo);
-	            
-	            firstValidated = false;
-	        }
-	        
-	        return signerInfos;
-		} catch (CMSException e) {
-			LOG.warn("An error occurred during SignatureInformationStore extractiuon. Reason : {}", e.getMessage(), e);
-			return null;
-			
+		boolean firstValidated = true;
+		Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();
+		while (it.hasNext()) {
+			SignerInformation signerInformation = it.next();
+			SignerId sid = signerInformation.getSID();
+			SignerInfo signerInfo = new SignerInfo(sid.getIssuer().toString(), sid.getSerialNumber());
+			signerInfo.setValidated(firstValidated); // TODO : do better after moving the method to a CAdESSignature class
+			signerInfos.add(signerInfo);
+
+			firstValidated = false;
 		}
-    }
+		return signerInfos;
+	}
 
 }

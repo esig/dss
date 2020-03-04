@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +65,7 @@ public class PAdESSignature extends CAdESSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final PdfSignatureRevision pdfSignatureRevision;
-	
+
 	// contains a complete list of validating document revisions
 	private final List<PdfRevision> documentRevisions;
 
@@ -75,16 +73,15 @@ public class PAdESSignature extends CAdESSignature {
 	 * The default constructor for PAdESSignature.
 	 *
 	 * @param pdfSignatureRevision a related {@link PdfSignatureRevision}
-	 * @param certPool {@link CertificatePool}
-	 * @param documentRevisions a list of {@link PdfRevision} extracted from the validating document
+	 * @param certPool             {@link CertificatePool}
+	 * @param documentRevisions    a list of {@link PdfRevision} extracted from the
+	 *                             validating document
 	 * 
-	 * @throws DSSException in case if a DSSException occurs
-	 * @throws CMSException in case of an error to create a CMSSignedData from a signed contents
 	 */
-	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool, final List<PdfRevision> documentRevisions) 
-			throws DSSException, CMSException {
-		super(new CMSSignedData(pdfSignatureRevision.getPdfSigDictInfo().getContents()), 
-				certPool, new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
+	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool,
+			final List<PdfRevision> documentRevisions) {
+		super(pdfSignatureRevision.getPdfSigDictInfo().getCMSSignedData(), certPool,
+				new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
 	}
@@ -120,7 +117,7 @@ public class PAdESSignature extends CAdESSignature {
 		}
 		return signatureOCSPSource;
 	}
-	
+
 	@Override
 	public PAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
@@ -161,7 +158,7 @@ public class PAdESSignature extends CAdESSignature {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public SignatureIdentifier buildSignatureIdentifier() {
 		final CertificateToken certificateToken = getSigningCertificateToken();
@@ -178,7 +175,7 @@ public class PAdESSignature extends CAdESSignature {
 			throw new DSSException(String.format("Cannot read byteRange : %s", signatureByteRange));
 		}
 	}
-	
+
 	/**
 	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
 	 * 
@@ -229,11 +226,11 @@ public class PAdESSignature extends CAdESSignature {
 		LOG.debug("Level {} found on document {} = {}", signatureLevel, getSignatureFilename(), dataForLevelPresent);
 		return dataForLevelPresent;
 	}
-	
+
 	private boolean hasDSSDictionary() {
 		return getDssDictionary() != null;
 	}
-	
+
 	public PdfDssDict getDssDictionary() {
 		return pdfSignatureRevision.getDssDictionary();
 	}
@@ -257,11 +254,11 @@ public class PAdESSignature extends CAdESSignature {
 	public PdfSignatureRevision getPdfRevision() {
 		return pdfSignatureRevision;
 	}
-	
+
 	public PdfSignatureDictionary getPdfSignatureDictionary() {
 		return pdfSignatureRevision.getPdfSigDictInfo();
 	}
-	
+
 	/**
 	 * Name of the related to the signature VRI dictionary
 	 * @return related {@link String} VRI dictionary name

@@ -3,7 +3,6 @@ package eu.europa.esig.dss.pdf.pdfbox;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,9 +95,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		List<PDSignatureField> pdSignatureFields = pdDocument.getSignatureFields();
 		if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
 			LOG.debug("{} signature(s) found", pdSignatureFields.size());
-			
+
 			for (PDSignatureField signatureField : pdSignatureFields) {
-				
+
 				String signatureFieldName = signatureField.getPartialName();
 
 				COSObject sigDictObject = signatureField.getCOSObject().getCOSObject(COSName.V);
@@ -106,24 +105,32 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 					LOG.warn("Signature field with name '{}' does not contain a signature", signatureFieldName);
 					continue;
 				}
-				
+
 				long sigDictNumber = sigDictObject.getObjectNumber();
 				PdfSignatureDictionary signature = pdfObjectDictMap.get(sigDictNumber);
-				if (signature == null) {					
-					PdfDict dictionary = new PdfBoxDict((COSDictionary)sigDictObject.getObject(), pdDocument);
-					signature = new PdfSigDictWrapper(dictionary);
-					
-					pdfDictionaries.put(signature, new ArrayList<>(Arrays.asList(signatureFieldName)));
+				if (signature == null) {
+					try {
+						PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), pdDocument);
+						signature = new PdfSigDictWrapper(dictionary);
+					} catch (Exception e) {
+						LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'",
+								signatureFieldName, e);
+						continue;
+					}
+
+					List<String> fieldNames = new ArrayList<>();
+					fieldNames.add(signatureFieldName);
+					pdfDictionaries.put(signature, fieldNames);
 					pdfObjectDictMap.put(sigDictNumber, signature);
-					
+
 				} else {
 					List<String> fieldNameList = pdfDictionaries.get(signature);
 					fieldNameList.add(signatureFieldName);
 					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldNameList);
-					
+
 				}
-				
-			}	
+
+			}
 		}
 		return pdfDictionaries;
 	}

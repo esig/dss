@@ -106,17 +106,24 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				int refNumber = pdfField.getAsIndirectObject(PdfName.V).getNumber();
 				PdfSigDictWrapper signature = pdfObjectDictMap.get(refNumber);
 				if (signature == null) {
-					PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
-					signature = new PdfSigDictWrapper(dictionary);
-	
-					pdfDictionaries.put(signature, new ArrayList<>(Arrays.asList(name)));
+
+					try {
+						PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
+						signature = new PdfSigDictWrapper(dictionary);
+					} catch (Exception e) {
+						LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'", name, e);
+						continue;
+					}
+
+					List<String> fieldNames = new ArrayList<>();
+					fieldNames.add(name);
+					pdfDictionaries.put(signature, fieldNames);
 					pdfObjectDictMap.put(refNumber, signature);
-					
 				} else {
 					List<String> fieldNameList = pdfDictionaries.get(signature);
 					fieldNameList.add(name);
 					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldNameList);
-					
+
 				}
 			}
 			signatureDictionaryMap = pdfDictionaries;

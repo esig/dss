@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -178,49 +179,46 @@ public class PdfSignatureDictionaryComparatorTest {
 
 		@Override
 		public String getSignerName() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getLocation() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getContactInfo() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getReason() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getType() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getFilter() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getSubFilter() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public byte[] getContents() {
-			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CMSSignedData getCMSSignedData() {
 			return null;
 		}
 
