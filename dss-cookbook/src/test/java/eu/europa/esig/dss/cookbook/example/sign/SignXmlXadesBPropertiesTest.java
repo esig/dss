@@ -89,6 +89,8 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			List<CommitmentType> commitmentTypeIndications = new ArrayList<CommitmentType>();
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
+			// NOTE: CommitmentType supports also IDQualifier and documentationReferences.
+			// To use it, you need to have a custom implementation of the interface.
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();

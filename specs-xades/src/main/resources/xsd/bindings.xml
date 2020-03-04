@@ -32,5 +32,23 @@
 			</jaxb:schemaBindings>
 		</jaxb:bindings>
 	</jaxb:bindings>
+	
+    <jaxb:bindings schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd" node="//xs:simpleType[@name='QualifierType']">
+		<jaxb:javaType name="eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier" 
+			parseMethod="eu.europa.esig.dss.jaxb.parsers.ObjectIdentifierQualifierParser.parse" 
+			printMethod="eu.europa.esig.dss.jaxb.parsers.ObjectIdentifierQualifierParser.print" />
+	</jaxb:bindings>
+	
+    <jaxb:bindings schemaLocation="XAdESv122.xsd" node="//xs:simpleType[@name='QualifierType']">
+		<jaxb:javaType name="eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier" 
+			parseMethod="eu.europa.esig.dss.jaxb.parsers.ObjectIdentifierQualifierParser.parse" 
+			printMethod="eu.europa.esig.dss.jaxb.parsers.ObjectIdentifierQualifierParser.print" />
+	</jaxb:bindings>
+	
+    <jaxb:bindings schemaLocation="XAdESv111.xsd" node="//xs:simpleType[@name='QualifierType']">
+		<jaxb:javaType name="eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier" 
+			parseMethod="eu.europa.esig.dss.jaxb.parsers.ObjectIdentifierQualifierParser.parse" 
+			printMethod="eu.europa.esig.dss.jaxb.parsers.ObjectIdentifierQualifierParser.print" />
+	</jaxb:bindings>
 
 </jaxb:bindings>

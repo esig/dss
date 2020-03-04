@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
 /**
  * This class allows to define the signature policy.
@@ -34,7 +35,7 @@ public class Policy implements Serializable {
 	private String id;
 
 	/* Qualifier attribute for XAdES Identifier */
-	private String qualifier;
+	private ObjectIdentifierQualifier qualifier;
 
 	private String description;
 	
@@ -74,7 +75,7 @@ public class Policy implements Serializable {
 	 *
 	 * @return the qualifier
 	 */
-	public String getQualifier() {
+	public ObjectIdentifierQualifier getQualifier() {
 		return qualifier;
 	}
 
@@ -84,7 +85,7 @@ public class Policy implements Serializable {
 	 * @param qualifier
 	 *            the qualifier
 	 */
-	public void setQualifier(String qualifier) {
+	public void setQualifier(ObjectIdentifierQualifier qualifier) {
 		this.qualifier = qualifier;
 	}
 

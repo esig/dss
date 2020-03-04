@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -39,6 +40,7 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		
 		MockCommitmentType commitmentTypeApproval = new MockCommitmentType("http://nowina.lu/approved");
+		commitmentTypeApproval.setQualifier(ObjectIdentifierQualifier.OID_AS_URI);
 		commitmentTypeApproval.setDescription("Approved");
 		commitmentTypeApproval.setDocumentReferences("http://nowina.lu/approved.pdf", "https://uri.etsi.org/01903/v1.2.2/ts_101903v010202p.pdf");
 		
@@ -54,6 +56,7 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		String xmlContent = new String(byteArray);
+		assertTrue(xmlContent.contains(":Identifier Qualifier=\"OIDAsURI\""));
 		assertTrue(xmlContent.contains(":Description>"));
 		assertTrue(xmlContent.contains(":DocumentationReferences>"));
 		assertTrue(xmlContent.contains(":DocumentationReference>"));
@@ -82,11 +85,16 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 	private class MockCommitmentType implements CommitmentType {
 		
 		private final String uri;
+		private ObjectIdentifierQualifier qualifier;
 		private String description;
 		private String[] documentReferences;
 		
 		public MockCommitmentType(String uri) {
 			this.uri = uri;
+		}
+		
+		public void setQualifier(ObjectIdentifierQualifier qualifier) {
+			this.qualifier = qualifier;
 		}
 
 		public void setDescription(String description) {
@@ -115,6 +123,11 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 		@Override
 		public String[] getDocumentationReferences() {
 			return documentReferences;
+		}
+
+		@Override
+		public ObjectIdentifierQualifier getQualifier() {
+			return qualifier;
 		}
 		
 	}

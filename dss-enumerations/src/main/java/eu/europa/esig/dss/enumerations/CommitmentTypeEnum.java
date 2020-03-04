@@ -66,21 +66,22 @@ public enum CommitmentTypeEnum implements CommitmentType {
 	 */
 	private final String oid;
 	
+	/**
+	 *  NOTE: The qualifier and documentationReferences are not used in the enum.
+	 *  In order to use it, please overwrite the CommitmentType interface.
+	 */
+	private final ObjectIdentifierQualifier qualifier;
 	private final String[] documentReferences;
 
 	CommitmentTypeEnum(String uri, String oid) {
-		this(uri, oid, (String[]) null);
+		this(uri, oid, null);
 	}
 
-	CommitmentTypeEnum(String uri, String oid, String... documentReferences) {
+	CommitmentTypeEnum(String uri, String oid, ObjectIdentifierQualifier qualifier, String... documentReferences) {
 		this.uri = uri;
 		this.oid = oid;
+		this.qualifier = qualifier;
 		this.documentReferences = documentReferences;
-	}
-
-	@Override
-	public String[] getDocumentationReferences() {
-		return documentReferences;
 	}
 
 	@Override
@@ -94,8 +95,18 @@ public enum CommitmentTypeEnum implements CommitmentType {
 	}
 
 	@Override
+	public ObjectIdentifierQualifier getQualifier() {
+		return qualifier;
+	}
+
+	@Override
 	public String getDescription() {
 		return name();
+	}
+
+	@Override
+	public String[] getDocumentationReferences() {
+		return documentReferences;
 	}
 
 }

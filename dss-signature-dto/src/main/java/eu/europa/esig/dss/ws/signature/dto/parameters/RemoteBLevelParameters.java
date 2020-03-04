@@ -28,6 +28,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
 @SuppressWarnings("serial")
 public class RemoteBLevelParameters implements Serializable {
@@ -54,7 +55,7 @@ public class RemoteBLevelParameters implements Serializable {
 	/* Policy */
 	private String policyId;
 	/* Qualifier attribute for XAdES Identifier */
-	private String policyQualifier;
+	private ObjectIdentifierQualifier policyQualifier;
 	private String policyDescription;
 	private DigestAlgorithm policyDigestAlgorithm;
 	private byte[] policyDigestValue;
@@ -116,7 +117,7 @@ public class RemoteBLevelParameters implements Serializable {
 	 *
 	 * @return the qualifier
 	 */
-	public String getPolicyQualifier() {
+	public ObjectIdentifierQualifier getPolicyQualifier() {
 		return policyQualifier;
 	}
 
@@ -126,7 +127,7 @@ public class RemoteBLevelParameters implements Serializable {
 	 * @param qualifier
 	 *            the qualifier
 	 */
-	public void setPolicyQualifier(String qualifier) {
+	public void setPolicyQualifier(ObjectIdentifierQualifier qualifier) {
 		this.policyQualifier = qualifier;
 	}
 

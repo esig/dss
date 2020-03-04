@@ -28,6 +28,7 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -55,7 +56,7 @@ public class ASiCEXAdESLevelBWithPolicyWithoutProviderTest extends AbstractASiCE
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		Policy policy = new Policy();
 		policy.setId("urn:oid:1.3.6.1.4.1.10015.1000.3.2.1");
-		policy.setQualifier("OIDAsURN");
+		policy.setQualifier(ObjectIdentifierQualifier.OID_AS_URN);
 		policy.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		policy.setDigestValue(Utils.fromBase64("gIHiaetEE94gbkCRygQ9WspxUdw="));
 		policy.setSpuri("https://www.sk.ee/repository/bdoc-spec21.pdf");

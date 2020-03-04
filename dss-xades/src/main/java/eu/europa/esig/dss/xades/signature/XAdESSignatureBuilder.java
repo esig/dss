@@ -48,6 +48,7 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -811,9 +812,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 				Element identifierDom = DomUtils.addTextElement(documentDom, sigPolicyIdDom, getXadesNamespace(),
 					getCurrentXAdESElements().getElementIdentifier(), signaturePolicyId);
-				String qualifier = signaturePolicy.getQualifier();
-				if (Utils.isStringNotBlank(qualifier)) {
-					identifierDom.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), qualifier);
+				
+				ObjectIdentifierQualifier qualifier = signaturePolicy.getQualifier();
+				if (qualifier != null) {
+					identifierDom.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), qualifier.getValue());
 				}
 
 				String description = signaturePolicy.getDescription();
@@ -1147,8 +1149,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					throw new DSSException("The commitmentTypeIndication URI must be defined for XAdES creation!");
 				}
 				
-				DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier(),
-						commitmentTypeIndication.getUri());
+				Element identifierDom = DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), 
+						getCurrentXAdESElements().getElementIdentifier(), commitmentTypeIndication.getUri());
+				
+				ObjectIdentifierQualifier qualifier = commitmentTypeIndication.getQualifier();
+				if (qualifier != null) {
+					identifierDom.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), qualifier.getValue());
+				}
 				
 				String description = commitmentTypeIndication.getDescription();
 				if (description != null) {
