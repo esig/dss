@@ -16,34 +16,39 @@
  
 	<xsl:template match="/diag:DiagnosticData">
 	  <svg xmlns="http://www.w3.org/2000/svg">
-	  
+		<style>
+			.trusted {
+				stroke: green;
+			}
+			.not-trusted {
+				stroke: black;
+			}
+		    
+			.revoked {
+				stroke: red;
+			}
+			.not-revoked {
+				stroke: green;
+			}
+		</style> 
 	  	<defs>
 	  	
 			<g id="signature-symbol">
-				<circle cx="3" cy="3" r="3" fill="blue" />   
+				<circle cx="2" cy="2" r="2" fill="blue" />   
 	  		</g>
 			<g id="timestamp-symbol">
-				<circle cx="3" cy="3" r="3" fill="green" />
+				<circle cx="2" cy="2" r="2" fill="green" />
 	  		</g>
 	  		
-	  		<g id="clock" width="24" height="24">
-		  		<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
-		  		<path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-	  		</g>
-	  		
-			<g id="revoked-symbol">
-			    <line x1="0" y1="0" x2="6" y2="6" stroke="red" stroke-width="1" />
-			    <line x1="0" y1="6" x2="6" y2="0" stroke="red" stroke-width="1" />
-	  		</g>
-			<g id="not-revoked-symbol">
-			    <line x1="0" y1="0" x2="6" y2="6" stroke="green" stroke-width="1" />
-			    <line x1="0" y1="6" x2="6" y2="0" stroke="green" stroke-width="1" />
+			<g id="revocation-symbol">
+			    <line x1="0" y1="0" x2="6" y2="6" stroke-width="1" />
+			    <line x1="0" y1="6" x2="6" y2="0" stroke-width="1" />
 	  		</g>
 	  		
     		<g id="range">
-			    <line x1="0" y1="0" x2="0" y2="4" stroke="black" stroke-width="1" />
-			    <line x1="0" y1="2" x2="100%" y2="2" stroke="black" stroke-width="1" />
-			    <line x1="100%" y1="0" x2="100%" y2="4" stroke="black" stroke-width="1" />
+			    <line x1="0" y1="0" x2="0" y2="4" stroke-width="1" />
+			    <line x1="0" y1="2" x2="100%" y2="2" stroke-width="1" />
+			    <line x1="100%" y1="0" x2="100%" y2="4" stroke-width="1" />
 	  		</g>
 	  		
 	  		<g id="timeline">
@@ -88,7 +93,15 @@
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
+			
+			<xsl:apply-templates select="diag:FoundTimestamps/diag:FoundTimestamp" />
 		</use>
+	</xsl:template>
+	
+	<xsl:template match="diag:FoundTimestamp">
+		<text class="svg-found-timestamp" style="display:none">
+			<xsl:value-of select="@Timestamp" />
+		</text>
 	</xsl:template>
 	
 	<xsl:template match="diag:Timestamp">
@@ -107,17 +120,8 @@
 				</text>
 			</xsl:if>
 			
-			
-			<xsl:apply-templates select="diag:TimestampedObjects/diag:TimestampedObject[@Category='SIGNATURE']"/>
-			
   			<use href="#timestamp-symbol"  />
 		</svg>
-	</xsl:template>
-	
-	<xsl:template match="diag:TimestampedObject">
-		<text class="svg-timestampted-signature">
-			<xsl:value-of select="@Token" />
-		</text>
 	</xsl:template>
 	
 	<xsl:template match="diag:Certificate">
@@ -139,7 +143,16 @@
 				</text>
 			</xsl:if>
 			
-  			<use href="#range"></use>
+  			<use href="#range">
+  				<xsl:choose>
+	  				<xsl:when test="contains(diag:Trusted,'true')">
+	  					<xsl:attribute name="class">trusted</xsl:attribute>
+	  				</xsl:when>
+	  				<xsl:otherwise>
+	  					<xsl:attribute name="class">not-trusted</xsl:attribute>
+	  				</xsl:otherwise>
+  				</xsl:choose>
+  			</use>
 		</svg>
 		
 		<xsl:apply-templates select="diag:Revocations/diag:CertificateRevocation"/>
@@ -202,13 +215,13 @@
 					<text class="revocation-date date" style="display:none">
 						<xsl:value-of select="diag:RevocationDate" />
 					</text>			
-  					<use href="#revoked-symbol" />
+  					<use href="#revocation-symbol" class="revoked" />
 				</xsl:when>
 				<xsl:otherwise>
 					<text class="production-date date" style="display:none">
 						<xsl:value-of select="//diag:Revocation[@Id=$revocationId]/diag:ProductionDate" />
 					</text>		
-  					<use href="#not-revoked-symbol" />
+  					<use href="#revocation-symbol" class="not-revoked" />
 				</xsl:otherwise>
 			</xsl:choose>
 		</svg>
