@@ -135,7 +135,7 @@
                     <Type>CRL</Type>
                     <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                     <RevocationRef>
-                        <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>S8f2IHGu/5E8TlLRmQ0UPoXI0Kxh+PP01FUIGfh9Dfrd7LfbyqBS4bJWdEFAmG2PROK71XIp8M9EGbynYfdAfA==</DigestValue>
