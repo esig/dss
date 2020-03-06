@@ -49,9 +49,9 @@ public class CAdESSignedDataExtendedAfterLTATest extends PKIFactoryAccess {
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<TimestampWrapper> allTimestamps = signatureById.getTimestampList();
 		
-		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
-		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());
-		assertEquals(3, allTimestamps.get(2).getTimestampedRevocationIds().size());
+		assertEquals(0, allTimestamps.get(0).getTimestampedRevocations().size());
+		assertEquals(2, allTimestamps.get(1).getTimestampedRevocations().size());
+		assertEquals(3, allTimestamps.get(2).getTimestampedRevocations().size());
 		
 	}
 

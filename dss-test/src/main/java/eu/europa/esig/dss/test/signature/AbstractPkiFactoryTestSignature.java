@@ -55,13 +55,15 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -819,8 +821,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		// orphan data must not be added into the signature
-		assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanCertificates()));
-		assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanRevocations()));
+		assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanCertificateObjects()));
+		assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanRevocationObjects()));
 	}
 
 	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
@@ -1006,7 +1008,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		assertNotNull(revIdList);
 		List<Serializable> crlidOrOCSPID = revIdList.getCRLIDOrOCSPID();
 		assertNotNull(crlidOrOCSPID);
-		assertTrue(crlidOrOCSPID.size() > 0);
 	}
 
 	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
@@ -1038,9 +1039,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
-			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-				assertEquals(1, foundCert.getOrigins().size(), "Duplicate complete certificate in " + foundCert.getOrigins());
+			List<RelatedCertificateWrapper> relatedCertificates = signatureWrapper.foundCertificates().getRelatedCertificates();
+			for (RelatedCertificateWrapper foundCert : relatedCertificates) {
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+			}
+			List<OrphanCertificateWrapper> orphanCertificates = signatureWrapper.foundCertificates().getOrphanCertificates();
+			for (OrphanCertificateWrapper foundCert : orphanCertificates) {
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
 			}
 		}
 	}
@@ -1048,9 +1053,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlRelatedRevocation> allFoundRevocations = signatureWrapper.getRelatedRevocations();
-			for (XmlRelatedRevocation foundRevocation : allFoundRevocations) {
-				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate complete revocation data in " + foundRevocation.getOrigins());
+			List<RelatedRevocationWrapper> relatedRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
+			for (RelatedRevocationWrapper foundRevocation : relatedRevocations) {
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+			}
+			List<OrphanRevocationWrapper> orphanRevocations = signatureWrapper.foundRevocations().getOrphanRevocationData();
+			for (OrphanRevocationWrapper foundRevocation : orphanRevocations) {
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
 			}
 		}
 	}

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.diagnostic;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -32,9 +31,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
@@ -655,26 +652,107 @@ public class DiagnosticData {
 	}
 	
 	/**
-	 * Returns a list of all found {@link XmlOrphanRevocation}s
-	 * NOTE: can return instances with duplicate ids (some signatures can have different origins for revocation data)
-	 * @return list of {@link XmlOrphanRevocation}s
+	 * Returns a list of all found {@link OrphanCertificateWrapper} values
+	 * 
+	 * @return list of {@link OrphanCertificateWrapper}s
 	 */
-	public List<XmlOrphanRevocationToken> getAllOrphanRevocations() {
-		if (wrapped.getOrphanTokens() != null && wrapped.getOrphanTokens().getOrphanRevocations() != null) {
-			return wrapped.getOrphanTokens().getOrphanRevocations();
+	public List<OrphanCertificateWrapper> getAllOrphanCertificateObjects() {
+		List<OrphanCertificateWrapper> orphanCertificateValues = new ArrayList<>();
+		for (SignatureWrapper signatureWrapper : getSignatures()) {
+			for (OrphanCertificateWrapper cerrtificate : extractOrphanCertificateObjects(signatureWrapper.foundCertificates())) {
+				if (!orphanCertificateValues.contains(cerrtificate)) {
+					orphanCertificateValues.add(cerrtificate);
+				}
+			}
 		}
-		return Collections.emptyList();
+		for (TimestampWrapper timestampWrapper : getTimestampList()) {
+			for (OrphanCertificateWrapper cerrtificate : extractOrphanCertificateObjects(timestampWrapper.foundCertificates())) {
+				if (!orphanCertificateValues.contains(cerrtificate)) {
+					orphanCertificateValues.add(cerrtificate);
+				}
+			}
+		}
+		return orphanCertificateValues;
+	}
+	
+	private List<OrphanCertificateWrapper> extractOrphanCertificateObjects(FoundCertificatesProxy foundCertificates) {
+		List<OrphanCertificateWrapper> orphanCertificateValues = new ArrayList<>();
+		List<OrphanCertificateWrapper> orphanCertificateData = foundCertificates.getOrphanCertificates();
+		for (OrphanCertificateWrapper certificate : orphanCertificateData) {
+			if (certificate.getOrigins().size() > 0) {
+				orphanCertificateValues.add(certificate);
+			}
+		}
+		return orphanCertificateValues;
 	}
 	
 	/**
-	 * Returns a list of all found {@link XmlOrphanToken} certificates
-	 * @return list of {@link XmlOrphanToken}s
+	 * Returns a list of all found orphan certificate references
+	 * 
+	 * @return list of {@link OrphanTokenWrapper}s
 	 */
-	public List<XmlOrphanCertificateToken> getAllOrphanCertificates() {
-		if (wrapped.getOrphanTokens() != null && wrapped.getOrphanTokens().getOrphanCertificates() != null) {
-			return wrapped.getOrphanTokens().getOrphanCertificates();
+	public List<OrphanTokenWrapper> getAllOrphanCertificateReferences() {
+		List<OrphanTokenWrapper> orphanCertificateRefs = new ArrayList<>();
+		List<OrphanCertificateWrapper> allOrphanCertificateObjects = getAllOrphanCertificateObjects();
+		for (XmlOrphanCertificateToken orphanCertificateToken : wrapped.getOrphanTokens().getOrphanCertificates()) {
+			OrphanTokenWrapper orphanTokenWrapper = new OrphanTokenWrapper(orphanCertificateToken);
+			if (!allOrphanCertificateObjects.contains(orphanTokenWrapper)) {
+				orphanCertificateRefs.add(orphanTokenWrapper);
+			}
 		}
-		return Collections.emptyList();
+		return orphanCertificateRefs;
+	}
+	
+	/**
+	 * Returns a list of all found {@link OrphanRevocationWrapper} values
+	 * 
+	 * @return list of {@link OrphanRevocationWrapper}s
+	 */
+	public List<OrphanRevocationWrapper> getAllOrphanRevocationObjects() {
+		List<OrphanRevocationWrapper> orphanRevocationValues = new ArrayList<>();
+		for (SignatureWrapper signatureWrapper : getSignatures()) {
+			for (OrphanRevocationWrapper revocation : extractOrphanRevocationDataObjects(signatureWrapper.foundRevocations())) {
+				if (!orphanRevocationValues.contains(revocation)) {
+					orphanRevocationValues.add(revocation);
+				}
+			}
+		}
+		for (TimestampWrapper timestampWrapper : getTimestampList()) {
+			for (OrphanRevocationWrapper revocation : extractOrphanRevocationDataObjects(timestampWrapper.foundRevocations())) {
+				if (!orphanRevocationValues.contains(revocation)) {
+					orphanRevocationValues.add(revocation);
+				}
+			}
+		}
+		return orphanRevocationValues;
+	}
+	
+	private List<OrphanRevocationWrapper> extractOrphanRevocationDataObjects(FoundRevocationsProxy foundRevocations) {
+		List<OrphanRevocationWrapper> orphanRevocationValues = new ArrayList<>();
+		List<OrphanRevocationWrapper> orphanRevocationData = foundRevocations.getOrphanRevocationData();
+		for (OrphanRevocationWrapper revocation : orphanRevocationData) {
+			if (revocation.getOrigins().size() > 0) {
+				orphanRevocationValues.add(revocation);
+			}
+		}
+		return orphanRevocationValues;
+	}
+	
+	/**
+	 * Returns a list of all found orphan revocation references
+	 * 
+	 * @return list of {@link OrphanTokenWrapper}s
+	 */
+	public List<OrphanTokenWrapper> getAllOrphanRevocationReferences() {
+		List<OrphanTokenWrapper> orphanRevocationRefs = new ArrayList<>();
+		List<OrphanRevocationWrapper> allOrphanRevocationObjects = getAllOrphanRevocationObjects();
+		for (XmlOrphanRevocationToken orphanRevocationToken : wrapped.getOrphanTokens().getOrphanRevocations()) {
+			OrphanTokenWrapper orphanTokenWrapper = new OrphanTokenWrapper(orphanRevocationToken);
+			if (!allOrphanRevocationObjects.contains(orphanTokenWrapper)) {
+				orphanRevocationRefs.add(orphanTokenWrapper);
+			}
+		}
+		return orphanRevocationRefs;
 	}
 
 	/**

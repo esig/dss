@@ -10,9 +10,8 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -99,19 +98,19 @@ public class PAdESTwoSignersLTALevelTest extends PKIFactoryAccess {
 			
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
 			assertEquals(SignatureLevel.PAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(signatureWrapper.getId()));
-			assertEquals(0, signatureWrapper.getOrphanRevocations().size());
+			assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationData().size());
 			
-			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
-			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
-				if (RevocationType.CRL.equals(foundRevocation.getType())) {
+			List<RelatedRevocationWrapper> allFoundRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
+			for (RelatedRevocationWrapper foundRevocation : allFoundRevocations) {
+				if (RevocationType.CRL.equals(foundRevocation.getRevocationType())) {
 					++crlCounter;
 				} else {
 					assertTrue(Utils.isCollectionNotEmpty(foundRevocation.getOrigins()));
 					if (foundRevocation.getOrigins().contains(RevocationOrigin.VRI_DICTIONARY)) {
-						vriOcsps.add(((XmlRelatedRevocation)foundRevocation).getRevocation().getId());
+						vriOcsps.add(foundRevocation.getId());
 						++ocspLinkedCounter;
 					} else {
-						nonVriOcsps.add(((XmlRelatedRevocation)foundRevocation).getRevocation().getId());
+						nonVriOcsps.add(foundRevocation.getId());
 						++ ocspNotLinkedCounter;
 					}
 				}

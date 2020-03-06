@@ -30,12 +30,12 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -110,11 +110,11 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
-			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-				List<XmlCertificateRef> certificateRefs = foundCert.getCertificateRefs();
+			List<RelatedCertificateWrapper> allFoundCertificates = signatureWrapper.foundCertificates().getRelatedCertificates();
+			for (RelatedCertificateWrapper foundCert : allFoundCertificates) {
+				List<CertificateRefWrapper> certificateRefs = foundCert.getReferences();
 				assertEquals(1, certificateRefs.size());
-				XmlCertificateRef xmlCertificateRef = certificateRefs.get(0);
+				CertificateRefWrapper xmlCertificateRef = certificateRefs.get(0);
 				assertNotNull(xmlCertificateRef);
 				assertNotNull(xmlCertificateRef.getOrigin());
 			}
@@ -125,12 +125,12 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
-			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
+			List<RelatedRevocationWrapper> allFoundRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
+			for (RelatedRevocationWrapper foundRevocation : allFoundRevocations) {
 				assertEquals(0, foundRevocation.getOrigins().size()); // only refs
-				List<XmlRevocationRef> revocationRefs = foundRevocation.getRevocationRefs();
+				List<RevocationRefWrappper> revocationRefs = foundRevocation.getReferences();
 				assertEquals(1, revocationRefs.size());
-				XmlRevocationRef xmlRevocationRef = revocationRefs.get(0);
+				RevocationRefWrappper xmlRevocationRef = revocationRefs.get(0);
 				assertNotNull(xmlRevocationRef);
 				assertNotNull(xmlRevocationRef.getOrigins());
 			}
@@ -139,8 +139,8 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(1, diagnosticData.getAllOrphanCertificates().size());
-		assertEquals(2, diagnosticData.getAllOrphanRevocations().size());
+		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
 	@Override

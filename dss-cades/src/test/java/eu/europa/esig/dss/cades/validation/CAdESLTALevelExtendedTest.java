@@ -31,12 +31,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -67,13 +67,14 @@ public class CAdESLTALevelExtendedTest {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
+		List<RelatedRevocationWrapper> foundRevocations = signature.foundRevocations().getRelatedRevocationData();
 		assertNotNull(foundRevocations);
 		assertEquals(1, foundRevocations.size());
-		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(RevocationOrigin.REVOCATION_VALUES);
+		List<RelatedRevocationWrapper> timestampRevocationValues = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES);
 		assertNotNull(timestampRevocationValues);
 		assertEquals(1, timestampRevocationValues.size());
-		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+		List<RelatedRevocationWrapper> timestampRevocationRefs = signature.foundRevocations()
+				.getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		assertNotNull(timestampRevocationRefs);
 		assertEquals(1, timestampRevocationRefs.size());
 		
@@ -87,13 +88,13 @@ public class CAdESLTALevelExtendedTest {
 				archiveTimestampCounter++;
 			} else if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestamp.getType())) {
 				assertEquals(3, timestamp.getTimestampedObjects().size());
-				List<XmlFoundRevocation> timestampFoundRevocations = timestamp.getAllFoundRevocations();
+				List<RelatedRevocationWrapper> timestampFoundRevocations = timestamp.foundRevocations().getRelatedRevocationData();
 				assertEquals(1, timestampFoundRevocations.size());
-				XmlFoundRevocation xmlFoundRevocation = timestampFoundRevocations.get(0);
+				RelatedRevocationWrapper xmlFoundRevocation = timestampFoundRevocations.get(0);
 				assertTrue(xmlFoundRevocation.getOrigins().contains(RevocationOrigin.REVOCATION_VALUES));
-				List<XmlRevocationRef> revocationRefs = xmlFoundRevocation.getRevocationRefs();
+				List<RevocationRefWrappper> revocationRefs = xmlFoundRevocation.getReferences();
 				assertEquals(1, revocationRefs.size());
-				XmlRevocationRef xmlRevocationRef = revocationRefs.get(0);
+				RevocationRefWrappper xmlRevocationRef = revocationRefs.get(0);
 				assertTrue(xmlRevocationRef.getOrigins().contains(RevocationRefOrigin.COMPLETE_REVOCATION_REFS));
 				signatureTimestampCounter++;
 			}
@@ -121,10 +122,9 @@ public class CAdESLTALevelExtendedTest {
 		assertNotNull(diagnosticData);
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
+		List<RelatedRevocationWrapper> foundRevocations = signature.foundRevocations().getRelatedRevocationData();
 		assertNotNull(foundRevocations);
 		assertEquals(2, foundRevocations.size());
-		assertEquals(2, signature.getRevocationIds().size());
 		
 		List<String> revocationIds = new ArrayList<>();
 		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
@@ -148,7 +148,7 @@ public class CAdESLTALevelExtendedTest {
 				assertEquals(3, foundRevocationsCounter);
 				archiveTimestampCounter++;
 			} else if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestamp.getType())) {
-				List<XmlFoundRevocation> allFoundRevocations = timestamp.getAllFoundRevocations();
+				List<RelatedRevocationWrapper> allFoundRevocations = timestamp.foundRevocations().getRelatedRevocationData();
 				assertEquals(1, allFoundRevocations.size());
 				signatureTimestampCounter++;
 			}

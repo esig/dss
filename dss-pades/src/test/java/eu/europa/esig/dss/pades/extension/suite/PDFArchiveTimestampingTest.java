@@ -128,7 +128,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 			}
 			assertTrue(timestampSource);
 			
-			assertEquals(1, timestampWrapper.getTimestampedSignedDataIds().size());
+			assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 		}
 		
 		assertTrue(Utils.isCollectionEmpty(diagnosticData.getSignatures()));

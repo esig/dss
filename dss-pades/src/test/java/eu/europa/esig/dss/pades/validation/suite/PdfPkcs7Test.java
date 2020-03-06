@@ -52,8 +52,8 @@ public class PdfPkcs7Test {
 		assertEquals(SignatureLevel.PKCS7_T, signatureById.getSignatureFormat());
 
 		// no signing certificate attribute
-		assertEquals(0, signatureById.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOrigin.SIGNED_DATA).size());
+		assertEquals(0, signatureById.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertEquals(4, signatureById.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
@@ -64,8 +64,8 @@ public class PdfPkcs7Test {
 		assertEquals(1, timestampList.size());
 		
 		TimestampWrapper signatureTimestamp = timestampList.get(0);
-		assertEquals(2, signatureTimestamp.getAllFoundCertificates().size());
-		assertEquals(1, signatureTimestamp.getAllFoundCertificateRefs().size());
+		assertEquals(2, signatureTimestamp.foundCertificates().getRelatedCertificates().size());
+		assertEquals(1, signatureTimestamp.foundCertificates().getRelatedCertificateRefs().size());
 
 	}
 

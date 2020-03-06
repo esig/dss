@@ -1554,6 +1554,11 @@ public class DiagnosticDataBuilder {
 			byte[] digestValue = revocationIdentifier.getDigestValue(defaultDigestAlgorithm);
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, digestValue));
 		}
+		if (revocationIdentifier instanceof CRLBinary) {
+			orphanToken.setType(RevocationType.CRL);
+		} else {
+			orphanToken.setType(RevocationType.OCSP);
+		}
 		xmlOrphanRevocationTokensMap.put(tokenId, orphanToken);
 		return orphanToken;
 	}

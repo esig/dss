@@ -22,32 +22,27 @@ package eu.europa.esig.dss.diagnostic;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.enumerations.CertificateOrigin;
-import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -55,6 +50,9 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 public class TimestampWrapper extends AbstractTokenProxy {
 
 	private final XmlTimestamp timestamp;
+	
+	private FoundCertificatesProxy foundCertificatesProxy;
+	private FoundRevocationsProxy foundRevocationsProxy;
 
 	public TimestampWrapper(XmlTimestamp timestamp) {
 		this.timestamp = timestamp;
@@ -78,6 +76,30 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	@Override
 	protected XmlSigningCertificate getCurrentSigningCertificate() {
 		return timestamp.getSigningCertificate();
+	}
+
+	/**
+	 * Returns FoundCertificatesProxy to access embedded certificates
+	 * 
+	 * @return {@link FoundCertificatesProxy}
+	 */
+	public FoundCertificatesProxy foundCertificates() {
+		if (foundCertificatesProxy == null) {
+			foundCertificatesProxy = new FoundCertificatesProxy(timestamp.getFoundCertificates());
+		}
+		return foundCertificatesProxy;
+	}
+
+	/**
+	 * Returns FoundRevocationsProxy to access embedded revocation data
+	 * 
+	 * @return {@link FoundRevocationsProxy}
+	 */
+	public FoundRevocationsProxy foundRevocations() {
+		if (foundRevocationsProxy == null) {
+			foundRevocationsProxy = new FoundRevocationsProxy(timestamp.getFoundRevocations());
+		}
+		return foundRevocationsProxy;
 	}
 
 	public TimestampType getType() {
@@ -125,185 +147,6 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	public List<XmlDigestMatcher> getDigestMatchers() {
 		return timestamp.getDigestMatchers();
 	}
-	
-	/**
-	 * Returns a list of all found certificates in the timestamp token
-	 * @return
-	 */
-	public List<XmlFoundCertificate> getAllFoundCertificates() {
-		List<XmlFoundCertificate> foundCertificates = new ArrayList<>();
-		for (XmlFoundCertificate foundCertificate : getRelatedCertificates()) {
-			foundCertificates.add(foundCertificate);
-		}
-		for (XmlFoundCertificate foundCertificate : getOrphanCertificates()) {
-			foundCertificates.add(foundCertificate);
-		}
-		return foundCertificates;
-	}
-	
-	/**
-	 * Returns a list of all related certificates
-	 * 
-	 * @return a list of {@link XmlRelatedCertificate}s
-	 */
-	public List<XmlRelatedCertificate> getRelatedCertificates() {
-		return timestamp.getFoundCertificates().getRelatedCertificates();
-	}
-
-	/**
-	 * Returns a list of all orphan certificates
-	 * 
-	 * @return a list of {@link XmlOrphanCertificate}s
-	 */
-	public List<XmlOrphanCertificate> getOrphanCertificates() {
-		return timestamp.getFoundCertificates().getOrphanCertificates();
-	}
-	
-	/**
-	 * Returns a list of found {@link XmlRelatedCertificate}s with the given {@code origin}
-	 * @param origin {@link CertificateOrigin} to get certificates with
-	 * @return list of {@link XmlRelatedCertificate}
-	 */
-	public List<XmlRelatedCertificate> getRelatedCertificatesByOrigin(CertificateOrigin origin) {
-		List<XmlRelatedCertificate> certificatesByOrigin = new ArrayList<>();
-		XmlFoundCertificates foundCertificates = timestamp.getFoundCertificates();
-		if (foundCertificates != null) {
-			for (XmlRelatedCertificate foundCertificate : foundCertificates.getRelatedCertificates()) {
-				if (foundCertificate.getOrigins().contains(origin)) {
-					certificatesByOrigin.add(foundCertificate);
-				}
-			}
-		}
-		return certificatesByOrigin;
-	}
-	
-	/**
-	 * Returns all found certificate references
-	 * 
-	 * @return a list of {@link XmlCertificateRef}s
-	 */
-	public List<XmlCertificateRef> getAllFoundCertificateRefs() {
-		List<XmlCertificateRef> certificateRefs = getAllRelatedCertificateRefs();
-		certificateRefs.addAll(getAllOrphanCertificateRefs());
-		return certificateRefs;
-	}
-	
-	/**
-	 * Returns a list of all related certificate references
-	 * 
-	 * @return a list of {@link XmlCertificateRef}s
-	 */
-	public List<XmlCertificateRef> getAllRelatedCertificateRefs() {
-		return getCertificateRefsFromListOfCertificates(getRelatedCertificates());
-	}
-
-	/**
-	 * Returns a list of all related orphan certificates
-	 * 
-	 * @return a list of {@link XmlCertificateRef}s
-	 */
-	public List<XmlCertificateRef> getAllOrphanCertificateRefs() {
-		return getCertificateRefsFromListOfCertificates(getOrphanCertificates());
-	}
-	
-	private <T extends XmlFoundCertificate> List<XmlCertificateRef> getCertificateRefsFromListOfCertificates(Collection<T> foundCertificates) {
-		List<XmlCertificateRef> certificateRefs = new ArrayList<>();
-		if (foundCertificates != null) {
-			for (T certificate : foundCertificates) {
-				certificateRefs.addAll(certificate.getCertificateRefs());
-			}
-		}
-		return certificateRefs;
-	}
-	
-	/**
-	 * Returns a list of found {@link XmlFoundCertificate} containing a reference
-	 * from the given {@code origin}
-	 * 
-	 * @param origin
-	 *               {@link CertificateRefOrigin} of a certificate reference
-	 * @return list of found {@link XmlFoundCertificate}
-	 */
-	public List<XmlFoundCertificate> getFoundCertificatesByRefOrigin(CertificateRefOrigin origin) {
-		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<>();
-		for (XmlFoundCertificate foundCertificate : getAllFoundCertificates()) {
-			for (XmlCertificateRef certificateRef : foundCertificate.getCertificateRefs()) {
-				if (origin.equals(certificateRef.getOrigin())) {
-					certificatesByLocation.add(foundCertificate);
-				}
-			}
-		}
-		return certificatesByLocation;
-	}
-	
-	/**
-	 * Returns a list of all found revocations
-	 * 
-	 * @return a list of {@link XmlFoundRevocation}s
-	 */
-	public List<XmlFoundRevocation> getAllFoundRevocations() {
-		List<XmlFoundRevocation> foundRevocations = new ArrayList<>();
-		foundRevocations.addAll(getRelatedRevocations());
-		foundRevocations.addAll(getOrphanRevocations());
-		return foundRevocations;
-	}
-	
-	/**
-	 * Returns a list of all related revocations
-	 * 
-	 * @return a list of {@link XmlRelatedRevocation}s
-	 */
-	public List<XmlRelatedRevocation> getRelatedRevocations() {
-		return timestamp.getFoundRevocations().getRelatedRevocations();
-	}
-	
-	/**
-	 * Returns a list of all orphan revocations
-	 * 
-	 * @return a list of {@link XmlOrphanRevocation}s
-	 */
-	public List<XmlOrphanRevocation> getOrphanRevocations() {
-		return timestamp.getFoundRevocations().getOrphanRevocations();
-	}
-	
-	/**
-	 * Returns all found revocation references
-	 * 
-	 * @return a list of {@link XmlRevocationRef}s
-	 */
-	public List<XmlRevocationRef> getAllFoundRevocationRefs() {
-		List<XmlRevocationRef> revocationRefs = getAllRelatedRevocationRefs();
-		revocationRefs.addAll(getAllOrphanRevocationRefs());
-		return revocationRefs;
-	}
-	
-	/**
-	 * Returns a list of all related revocation references
-	 * 
-	 * @return a list of {@link XmlRevocationRef}s
-	 */
-	public List<XmlRevocationRef> getAllRelatedRevocationRefs() {
-		return getRevocationRefsFromListOfRevocations(getRelatedRevocations());
-	}
-
-	/**
-	 * Returns a list of all related orphan references
-	 * 
-	 * @return a list of {@link XmlRevocationRef}s
-	 */
-	public List<XmlRevocationRef> getAllOrphanRevocationRefs() {
-		return getRevocationRefsFromListOfRevocations(getOrphanRevocations());
-	}
-	
-	private <T extends XmlFoundRevocation> List<XmlRevocationRef> getRevocationRefsFromListOfRevocations(Collection<T> foundRevocations) {
-		List<XmlRevocationRef> revocationRefs = new ArrayList<>();
-		if (foundRevocations != null) {
-			for (T revocation : foundRevocations) {
-				revocationRefs.addAll(revocation.getRevocationRefs());
-			}
-		}
-		return revocationRefs;
-	}
 
 	/**
 	 * Returns a complete list of all {@link XmlTimestampedObject}s covered by the
@@ -318,102 +161,163 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	/**
 	 * Returns a list of {@link SignatureWrapper}s covered be the current timestamp
 	 * 
-	 * @return list of ids
+	 * @return list of {@link SignatureWrapper}s
 	 */
-	public List<String> getTimestampedSignatureIds() {
-		return getTimestampedObjectByCategory(TimestampedObjectType.SIGNATURE);
+	public List<SignatureWrapper> getTimestampedSignatures() {
+		List<SignatureWrapper> signatures = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.SIGNATURE);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlSignature) {
+				signatures.add(new SignatureWrapper((XmlSignature) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.SIGNATURE));
+			}
+		}
+		return signatures;
 	}
 
 	/**
-	 * Returns a list of certificate ids covered be the current timestamp
+	 * Returns a list of certificates covered be the current timestamp
 	 * 
-	 * @return list of ids
+	 * @return list of {@link CertificateWrapper}s
 	 */
-	public List<String> getTimestampedCertificateIds() {
-		List<String> timestampedObjectIds = getTimestampedObjectByCategory(TimestampedObjectType.CERTIFICATE);
-		timestampedObjectIds.addAll(getTimestampedOrphanCertificateTokenIds());
-		return timestampedObjectIds;
+	public List<CertificateWrapper> getTimestampedCertificates() {
+		List<CertificateWrapper> certificates = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.CERTIFICATE);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlCertificate) {
+				certificates.add(new CertificateWrapper((XmlCertificate) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.CERTIFICATE));
+			}
+		}
+		return certificates;
 	}
 
 	/**
-	 * Returns a list of revocation data ids covered be the current timestamp
+	 * Returns a list of revocation data covered be the current timestamp
 	 * 
-	 * @return list of ids
+	 * @return list of {@link RevocationWrapper}s
 	 */
-	public List<String> getTimestampedRevocationIds() {
-		List<String> timestampedObjectIds = getTimestampedObjectByCategory(TimestampedObjectType.REVOCATION);
-		timestampedObjectIds.addAll(getTimestampedOrphanRevocationTokenIds());
-		return timestampedObjectIds;
+	public List<RevocationWrapper> getTimestampedRevocations() {
+		List<RevocationWrapper> revocations = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.REVOCATION);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlRevocation) {
+				revocations.add(new RevocationWrapper((XmlRevocation) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.REVOCATION));
+			}
+		}
+		return revocations;
 	}
 
 	/**
-	 * Returns a list of timestamp ids covered be the current timestamp
+	 * Returns a list of timestamps covered be the current timestamp
 	 * 
-	 * @return list of ids
+	 * @return list of {@link TimestampWrapper}s
 	 */
-	public List<String> getTimestampedTimestampIds() {
-		return getTimestampedObjectByCategory(TimestampedObjectType.TIMESTAMP);
+	public List<TimestampWrapper> getTimestampedTimestamps() {
+		List<TimestampWrapper> timestamps = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.TIMESTAMP);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlTimestamp) {
+				timestamps.add(new TimestampWrapper((XmlTimestamp) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.TIMESTAMP));
+			}
+		}
+		return timestamps;
 	}
 
 	/**
-	 * Returns a list of Signed data ids covered be the current timestamp
+	 * Returns a list of Signed data covered be the current timestamp
 	 * 
-	 * @return list of ids
+	 * @return list of {@link SignerDataWrapper}s
 	 */
-	public List<String> getTimestampedSignedDataIds() {
-		return getTimestampedObjectByCategory(TimestampedObjectType.SIGNED_DATA);
+	public List<SignerDataWrapper> getTimestampedSignedData() {
+		List<SignerDataWrapper> timestamps = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.SIGNED_DATA);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlSignerData) {
+				timestamps.add(new SignerDataWrapper((XmlSignerData) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.SIGNED_DATA));
+			}
+		}
+		return timestamps;
 	}
 
-	private List<String> getTimestampedObjectByCategory(TimestampedObjectType category) {
-		List<String> timestampedObjectIds = new ArrayList<>();
+	private List<XmlAbstractToken> getTimestampedObjectsByCategory(TimestampedObjectType category) {
+		List<XmlAbstractToken> timestampedObjectIds = new ArrayList<>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (category == timestampedObject.getCategory()) {
-				timestampedObjectIds.add(timestampedObject.getToken().getId());
+				timestampedObjectIds.add(timestampedObject.getToken());
 			}
 		}
 		return timestampedObjectIds;
 	}
 
 	/**
-	 * Returns a list of all OrphanToken ids
+	 * Returns a list of all OrphanTokens
 	 * 
-	 * @return list of ids
+	 * @return list of {@link OrphanTokenWrapper}s
 	 */
-	public List<String> getAllTimestampedOrphanTokenIds() {
-		List<String> timestampedObjectIds = new ArrayList<>();
-		timestampedObjectIds.addAll(getTimestampedOrphanCertificateTokenIds());
-		timestampedObjectIds.addAll(getTimestampedOrphanRevocationTokenIds());
+	public List<OrphanTokenWrapper> getAllTimestampedOrphanTokens() {
+		List<OrphanTokenWrapper> timestampedObjectIds = new ArrayList<>();
+		timestampedObjectIds.addAll(getTimestampedOrphanCertificates());
+		timestampedObjectIds.addAll(getTimestampedOrphanRevocations());
 		return timestampedObjectIds;
 	}
 
 	/**
-	 * Returns a list of OrphanCertificateToken ids by provided
+	 * Returns a list of OrphanCertificateTokens
 	 * 
-	 * @return list of orphan certificate ids
+	 * @return list of orphan certificates
 	 */
-	public List<String> getTimestampedOrphanCertificateTokenIds() {
-		List<String> timestampedObjectIds = new ArrayList<>();
-		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
-			if (TimestampedObjectType.ORPHAN_CERTIFICATE == timestampedObject.getCategory()) {
-				timestampedObjectIds.add(timestampedObject.getToken().getId());
+	public List<OrphanTokenWrapper> getTimestampedOrphanCertificates() {
+		List<OrphanTokenWrapper> orphanCertificates = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.ORPHAN_CERTIFICATE);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlOrphanCertificateToken) {
+				orphanCertificates.add(new OrphanTokenWrapper((XmlOrphanCertificateToken) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.ORPHAN_CERTIFICATE));
 			}
 		}
-		return timestampedObjectIds;
+		return orphanCertificates;
 	}
 
 	/**
-	 * Returns a list of OrphanRevocationToken ids by provided
+	 * Returns a list of OrphanRevocationTokens
 	 * 
-	 * @return list of orphan revocation ids
+	 * @return list of orphan revocations
 	 */
-	public List<String> getTimestampedOrphanRevocationTokenIds() {
-		List<String> timestampedObjectIds = new ArrayList<>();
-		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
-			if (TimestampedObjectType.ORPHAN_REVOCATION == timestampedObject.getCategory()) {
-				timestampedObjectIds.add(timestampedObject.getToken().getId());
+	public List<OrphanTokenWrapper> getTimestampedOrphanRevocations() {
+		List<OrphanTokenWrapper> orphanRevocations = new ArrayList<>();
+		
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.ORPHAN_REVOCATION);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlOrphanRevocationToken) {
+				orphanRevocations.add(new OrphanTokenWrapper((XmlOrphanRevocationToken) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.ORPHAN_REVOCATION));
 			}
 		}
-		return timestampedObjectIds;
+		return orphanRevocations;
 	}
 
 	@Override

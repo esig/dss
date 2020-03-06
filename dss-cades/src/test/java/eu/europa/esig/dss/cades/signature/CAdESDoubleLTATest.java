@@ -135,12 +135,12 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		
 		for (TimestampWrapper timestamp : allTimestamps) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
-				List<String> timestampedRevocationIds = timestamp.getTimestampedRevocationIds();
-				assertNotNull(timestampedRevocationIds);
-				assertEquals(2, timestampedRevocationIds.size());
-				for (String id : timestampedRevocationIds) {
-					RevocationWrapper revocation = diagnosticData.getRevocationById(id);
-					assertNotNull(revocation);
+				List<RevocationWrapper> timestampedRevocations = timestamp.getTimestampedRevocations();
+				assertNotNull(timestampedRevocations);
+				assertEquals(2, timestampedRevocations.size());
+				for (RevocationWrapper revocation : timestampedRevocations) {
+					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocation.getId());
+					assertNotNull(revocationWrapper);
 				}
 			}
 		}

@@ -32,14 +32,13 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -74,12 +73,12 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
 		assertEquals(2, revocationSignatureOriginCounter);
-		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
-		assertEquals(2, signature.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.CMS_SIGNED_DATA).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.CRL).size());
+		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.CMS_SIGNED_DATA).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY).size());
 	}
 	
 	@Test
@@ -90,13 +89,14 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		Reports report = validator.validateDocument();
 		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<XmlRevocationRef> foundRevocationRefs = signature.getAllFoundRevocationRefs();
-		assertNotNull(foundRevocationRefs);
+		List<RelatedRevocationWrapper> foundRevocations = signature.foundRevocations().getRelatedRevocationData();
+		assertNotNull(foundRevocations);
+		List<RevocationRefWrappper> foundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
 		assertEquals(3, foundRevocationRefs.size());
-		assertEquals(3, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
-		assertEquals(0, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
-		assertEquals(0, signature.getOrphanRevocations().size());
-		for (XmlRevocationRef revocationRef : foundRevocationRefs) {
+		assertEquals(3, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
+		assertEquals(0, signature.foundRevocations().getOrphanRevocationData().size());
+		for (RevocationRefWrappper revocationRef : foundRevocationRefs) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
@@ -113,18 +113,20 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<XmlRevocationRef> foundRevocationRefs = signature.getAllFoundRevocationRefs();
-		assertNotNull(foundRevocationRefs);
+		List<RelatedRevocationWrapper> foundRevocations = signature.foundRevocations().getRelatedRevocationData();
+		assertEquals(0, foundRevocations.size());
+		List<OrphanRevocationWrapper> orphanRevocations = signature.foundRevocations().getOrphanRevocationData();
+		assertEquals(3, orphanRevocations.size());
+		List<RevocationRefWrappper> foundRevocationRefs = signature.foundRevocations().getOrphanRevocationRefs();
 		assertEquals(3, foundRevocationRefs.size());
-		assertEquals(3, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
-		assertEquals(0, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
-		assertEquals(3, signature.getOrphanRevocations().size());
-		for (XmlRevocationRef revocationRef : foundRevocationRefs) {
+		assertEquals(3, signature.foundRevocations().getOrphanRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(0, signature.foundRevocations().getOrphanRevocationsByRefOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
+		for (RevocationRefWrappper revocationRef : foundRevocationRefs) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
 			assertNotNull(revocationRef.getOrigins());
-			assertNotNull(revocationRef.getProducedAt());
+			assertNotNull(revocationRef.getProductionTime());
 			assertTrue(Utils.isStringNotEmpty(revocationRef.getResponderIdName()) || Utils.isArrayNotEmpty(revocationRef.getResponderIdKey()));
 		}
 	}
@@ -139,27 +141,23 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		List<XmlRevocationRef> allFoundRevocationRefs = signature.getAllFoundRevocationRefs();
-		assertEquals(3, allFoundRevocationRefs.size());
-		
-		List<XmlFoundRevocation> allFoundRevocations = signature.getAllFoundRevocations();
+		List<OrphanRevocationWrapper> allFoundRevocations = signature.foundRevocations().getOrphanRevocationData();
 		assertEquals(3, allFoundRevocations.size());
 
+		List<RevocationRefWrappper> allFoundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
+		assertEquals(0, allFoundRevocationRefs.size());
+
 		List<String> revocationIds = new ArrayList<>();
-		for (XmlFoundRevocation revocation : allFoundRevocations) {
-			assertNotNull(revocation.getType());
+		for (OrphanRevocationWrapper revocation : allFoundRevocations) {
+			assertNotNull(revocation.getRevocationType());
 			
-			assertTrue(revocation instanceof XmlOrphanRevocation);
-			XmlOrphanRevocation orphanRevocation = (XmlOrphanRevocation) revocation;
-			XmlOrphanToken orphanRevocationToken = orphanRevocation.getToken();
-			assertNotNull(orphanRevocationToken);
-			assertFalse(revocationIds.contains(orphanRevocationToken.getId()));
-			revocationIds.add(orphanRevocationToken.getId());
+			assertFalse(revocationIds.contains(revocation.getId()));
+			revocationIds.add(revocation.getId());
 			
-			List<XmlRevocationRef> revocationRefs = revocation.getRevocationRefs();
+			List<RevocationRefWrappper> revocationRefs = revocation.getReferences();
 			assertEquals(1, revocationRefs.size());
 			
-			XmlRevocationRef revocationRef = revocationRefs.get(0);
+			RevocationRefWrappper revocationRef = revocationRefs.get(0);
 			assertEquals(1, revocationRef.getOrigins().size());
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
@@ -171,33 +169,31 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
-				List<XmlFoundRevocation> timestampAllFoundRevocations = timestampWrapper.getAllFoundRevocations();
+				List<OrphanRevocationWrapper> timestampAllFoundRevocations = timestampWrapper.foundRevocations().getOrphanRevocationData();
 				assertEquals(3, timestampAllFoundRevocations.size());
-				for (XmlFoundRevocation revocation : timestampAllFoundRevocations) {
-					assertNotNull(revocation.getType());
+				for (OrphanRevocationWrapper revocation : timestampAllFoundRevocations) {
+					assertNotNull(revocation.getRevocationType());
 					
-					assertTrue(revocation instanceof XmlOrphanRevocation);
-					XmlOrphanRevocation orphanRevocation = (XmlOrphanRevocation) revocation;
-					XmlOrphanToken orphanRevocationToken = orphanRevocation.getToken();
-					assertNotNull(orphanRevocationToken);
-					assertTrue(revocationIds.contains(orphanRevocationToken.getId()));
+					assertTrue(revocationIds.contains(revocation.getId()));
 					
-					List<XmlRevocationRef> revocationRefs = revocation.getRevocationRefs();
+					List<RevocationRefWrappper> revocationRefs = revocation.getReferences();
 					assertEquals(1, revocationRefs.size());
 					
-					XmlRevocationRef revocationRef = revocationRefs.get(0);
+					RevocationRefWrappper revocationRef = revocationRefs.get(0);
 					assertEquals(1, revocationRef.getOrigins().size());
 					assertNotNull(revocationRef.getDigestAlgoAndValue());
 					assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 					assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
 				}
 			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestampWrapper.getType())) {
-				assertEquals(0, timestampWrapper.getAllFoundRevocations().size());
+				assertEquals(0, timestampWrapper.foundRevocations().getOrphanRevocationData().size());
 			}
 		}
 		
-		List<XmlOrphanRevocationToken> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
-		assertEquals(3, allOrphanRevocations.size());
+		List<OrphanRevocationWrapper> allOrphanRevocations = diagnosticData.getAllOrphanRevocationObjects();
+		assertEquals(0, allOrphanRevocations.size());
+		List<OrphanTokenWrapper> allOrphanRevocationRefs = diagnosticData.getAllOrphanRevocationReferences();
+		assertEquals(3, allOrphanRevocationRefs.size());
 	}
 
 	@Override

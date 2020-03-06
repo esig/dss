@@ -33,11 +33,13 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -168,8 +170,12 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 	private void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
-			for (XmlFoundCertificate foundCert : allFoundCertificates) {
+			List<RelatedCertificateWrapper> relatedCertificates = signatureWrapper.foundCertificates().getRelatedCertificates();
+			for (RelatedCertificateWrapper foundCert : relatedCertificates) {
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+			}
+			List<OrphanCertificateWrapper> orphanCertificates = signatureWrapper.foundCertificates().getOrphanCertificates();
+			for (OrphanCertificateWrapper foundCert : orphanCertificates) {
 				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
 			}
 		}
@@ -178,8 +184,12 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 	private void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
-			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
+			List<RelatedRevocationWrapper> relatedRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
+			for (RelatedRevocationWrapper foundRevocation : relatedRevocations) {
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+			}
+			List<OrphanRevocationWrapper> orphanRevocations = signatureWrapper.foundRevocations().getOrphanRevocationData();
+			for (OrphanRevocationWrapper foundRevocation : orphanRevocations) {
 				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
 			}
 		}
