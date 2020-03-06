@@ -162,13 +162,15 @@ public class ListOCSPSource implements OCSPSource {
 
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		OCSPToken bestOcspToken = null;
 		for (OCSPSource ocspSource : sources) {
 			OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, issuerCertificateToken);
-			if (ocspToken != null && ocspToken.isValid()) {
-				return ocspToken;
+			if (ocspToken != null && ocspToken.isValid() &&
+					(bestOcspToken == null || ocspToken.getThisUpdate().after(bestOcspToken.getThisUpdate())) ) {
+				bestOcspToken = ocspToken;
 			}
 		}
-		return null;
+		return bestOcspToken;
 	}
 
 	public OCSPResponseBinary getIdentifier(Digest refDigest) {
