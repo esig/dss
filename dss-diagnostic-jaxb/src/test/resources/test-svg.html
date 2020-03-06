@@ -7,221 +7,31 @@
 	</object>
 	
 	<select id="select-signature">
-		<option>AAA</option>
-		<option>S-19A5A19132217D3CA7EC0FDC62C56D239091CF79DF03CFCD33E19B5196C1ABD8</option>
 	</select>
-
+	
 	<script type="text/javascript">
 		var mySVG = document.getElementById("svg-diag-data");
-		var frameSize = mySVG.width;
-		var svgDoc;
-		var ratio;
-		var minDate;
-		
+		var svgWidth = mySVG.width;
+		var svgHeight = mySVG.height;
+
 		mySVG.addEventListener("load",function() {
-			svgDoc = mySVG.contentDocument;		  
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			representation.displayFirstSignature();
+			
+			var signatureIds = mySVG.contentDocument.getSignatureIds();
+			initSignatureSelect(signatureIds);
 		});
-	
-		document.getElementById("select-signature").addEventListener("change", function() {
-			var signatureId = this.value;
-			console.log("Refreshing SVG with signature ", signatureId);
-			displaySigDetails(signatureId);
-		});
-		
-		function displaySigDetails(sigId) {
-			
-			var ids = getIdsForSignature(sigId);
-			
-			ratio = getRatio(getDatesForIds(ids));
 
-			horizontalPlacements();
-			verticalPlacements(ids);
-		}
-		
-		function getIdsForSignature(signatureId) {
-			var ids = new Array();
-			ids.push(signatureId);
-			ids = ids.concat(getSigCertIds(signatureId));
-			
-			var signatureElement = svgDoc.getElementById(signatureId);
-			var foundTimestamps = signatureElement.getElementsByClassName("svg-found-timestamp");
- 			for (var tstId = 0;  tstId < foundTimestamps.length; tstId++) {
- 				var timestampId = foundTimestamps[tstId].textContent;
- 				ids.push(timestampId);
- 				ids = ids.concat(getSigCertIds(timestampId));
- 			}
-			
-			return ids;
-		}
-		
-		function getSigCertIds(elementId) {
-			var result = new Array();
-			var element = svgDoc.getElementById(elementId);
-			var sigCertElements = element.getElementsByClassName("svg-signing-cert");
- 			for (var certId = 0;  certId < sigCertElements.length; certId++) {
- 				result.push(sigCertElements[certId].textContent);
- 			}
- 			return result;
-		}
-		
-		function horizontalPlacements() {
-			validationTimePlacement();
-			certificatesHorizontalPlacement();
-			certificateRevocationsHorizontalPlacement();
-			signaturesHorizontalPlacement();
-			timestampsHorizontalPlacement();
-		}
-		
-		function getDatesForIds(ids) {
-			var dates = new Array();
- 			for (var i in ids) {
- 				collectDates(svgDoc.getElementById(ids[i]), dates);
- 			}
- 			return dates;
-		}
-		
-		function getRatio(dates) {
-			minDate = getMinDate(dates);
-			var maxDate = getMaxDate(dates);
-			var range = maxDate.getTime() - minDate.getTime();
-			return frameSize/range;
-		}
-		
-		function validationTimePlacement() {
-			var validationTimeElement = svgDoc.getElementById("svg-validation-time");
-			var validationTime = new Date(validationTimeElement.getElementsByTagName("title")[0].textContent);
-			var pos_validation_time = (validationTime.getTime() - minDate.getTime()) * ratio;
-			validationTimeElement.setAttribute("x", pos_validation_time);
-		}
-		
-		function certificatesHorizontalPlacement() {
-			var elements = svgDoc.getElementsByClassName("svg-certificate");
- 			for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
-				var currentElement = elements[elementIdx];
-				var notBefore = new Date(currentElement.getElementsByClassName("svg-not-before")[0].textContent);
-				var notAfter = new Date(currentElement.getElementsByClassName("svg-not-after")[0].textContent);
-				var pos_x_certificate = (notBefore.getTime() - minDate.getTime()) * ratio;
-				var width_cer = (notAfter.getTime() - notBefore.getTime()) * ratio;
-				currentElement.setAttribute("x", Math.round(pos_x_certificate));
-				currentElement.setAttribute("width", Math.round(width_cer));
+		function initSignatureSelect(signatureIds) {
+			var select = document.getElementById("select-signature");
+			for (var elementIdx = 0;  elementIdx < signatureIds.length; elementIdx++) {
+				var sigId = signatureIds[elementIdx];
+				var option = document.createElement("option");
+				option.text = sigId;
+				select.add(option);
 			}
 		}
 		
-		function certificateRevocationsHorizontalPlacement() {
- 			var elements = svgDoc.getElementsByClassName("svg-certificate-revocation");
- 			for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
-				var currentElement = elements[elementIdx];
- 				var dateRevocOrProduction = new Date(currentElement.getElementsByClassName("date")[0].textContent);
- 				var pos_x_revocation = (dateRevocOrProduction.getTime() - minDate.getTime()) * ratio;
- 				currentElement.setAttribute("x", Math.round(pos_x_revocation));
- 			}
-		}
-		 
-		function signaturesHorizontalPlacement() {
-			var elements = svgDoc.getElementsByClassName("svg-signature");
- 			for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
-				var svgSignatureElement = elements[elementIdx];
-				var claimedSigningTime = new Date(svgSignatureElement.getElementsByClassName("svg-claimed-signing-time")[0].textContent);
-				var pos_signature = (claimedSigningTime.getTime() - minDate.getTime()) * ratio;
-				svgSignatureElement.setAttribute("x", pos_signature);
-			}
-		}
-
-		function timestampsHorizontalPlacement() {
-			var elements = svgDoc.getElementsByClassName("svg-timestamp");
- 			for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
-				var svgTimestampElement = elements[elementIdx];
-				var productionTime = new Date(svgTimestampElement.getElementsByClassName("svg-production-time")[0].textContent);
-				var pos_timestamp = (productionTime.getTime() - minDate.getTime()) * ratio;
-				svgTimestampElement.setAttribute("x", pos_timestamp);
-			}
-		}
-		
-		function verticalPlacements(ids) {
-			certificatesVerticalPlacement(ids);
-			certificateRevocationsVerticalPlacement(ids);
-			sigTstVerticalPlacements(svgDoc.getElementsByClassName("svg-signature"), ids);
-			sigTstVerticalPlacements(svgDoc.getElementsByClassName("svg-timestamp"), ids);
-		}
-		
-		function certificatesVerticalPlacement(ids) {
-			var nbDisplay = 0;
-			var elements = svgDoc.getElementsByClassName("svg-certificate");
-			for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
-				var currentElement = elements[elementIdx];
-				var certId = currentElement.getAttribute("id");
-				
-				if (!ids.includes(certId)) {
-					currentElement.style.display = "none";
-				} else {
-					nbDisplay++;
-					var y = 250 - (nbDisplay * 20);
-					currentElement.style.display = "";
-					currentElement.setAttribute("y", y); 					
-				}
-			}
-		}
-		
-		function certificateRevocationsVerticalPlacement(ids) {
-			var elements = svgDoc.getElementsByClassName("svg-certificate-revocation");
- 			for (i = 0; i < elements.length; i++) {
- 				var currentElement = elements[i];
- 				var certId = currentElement.getElementsByClassName("certificate-id")[0].textContent;
- 				if (!ids.includes(certId)) {
- 					currentElement.style.display = "none";
- 				} else {
-	 				var certElement = svgDoc.getElementById(certId);
- 					currentElement.style.display = "";
- 					currentElement.setAttribute("y",certElement.getAttribute("y"));
- 				}
- 			}
-		}
-
-		function sigTstVerticalPlacements(elements, ids) {
- 			for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
-				var currentElement = elements[elementIdx];
-				var sigId = currentElement.getAttribute("id");
-				
-				if (!ids.includes(sigId)) {
-					currentElement.style.display = "none";
-				} else {
-					currentElement.style.display = "";
-	 				var sigCertId = currentElement.getElementsByClassName("svg-signing-cert")[0].textContent;
-	 				var sigCertElement = svgDoc.getElementById(sigCertId);
-	 				currentElement.setAttribute("y", sigCertElement.getAttribute("y"));
-				}
- 			}
-		}
-
-		function collectDates(currentElement, result) {
-			var dateElements = currentElement.getElementsByClassName("date");
-			for (i = 0; i < dateElements.length; i++) {
-				result.push(new Date(dateElements[i].textContent));
-			}
-		}
-		 
-		function getMinDate(dates) {
-			var minimalDate = null;
-			for (i = 0; i < dates.length; i++) {
-				var currentDate = dates[i];
-				if (minimalDate == null || minimalDate > currentDate) {
-					minimalDate = currentDate;
-				}
-			}
-			return minimalDate;
-		}
-			
-		function getMaxDate(dates) {
-			var maximalDate = null;
-			for (i = 0; i < dates.length; i++) {
-				var currentDate = dates[i];
-				if (maximalDate == null || maximalDate < currentDate) {
-					maximalDate = currentDate;
-				}
-			}
-			return maximalDate;
-		}
-	
 	</script>
 
 </body>
