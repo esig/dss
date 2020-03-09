@@ -9,6 +9,9 @@
 	<select id="select-signature">
 	</select>
 	
+	<select id="select-cert-chain">
+	</select>
+	
 	<script type="text/javascript">
 		var mySVG = document.getElementById("svg-diag-data");
 		var svgWidth = mySVG.width;
@@ -20,6 +23,9 @@
 			
 			var signatureIds = mySVG.contentDocument.getSignatureIds();
 			initSignatureSelect(signatureIds);
+			
+			var leafIds = mySVG.contentDocument.getLeafIds();
+			initCertChainSelect(leafIds);
 		});
 
 		function initSignatureSelect(signatureIds) {
@@ -31,6 +37,29 @@
 				select.add(option);
 			}
 		}
+
+		function initCertChainSelect(leafIds) {
+			var select = document.getElementById("select-cert-chain");
+			for (var elementIdx = 0;  elementIdx < leafIds.length; elementIdx++) {
+				var chainId = leafIds[elementIdx];
+				var option = document.createElement("option");
+				option.text = chainId;
+				select.add(option);
+			}
+		}
+		
+		var selectSignature = document.getElementById("select-signature");
+		selectSignature.addEventListener("change", function(){
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			representation.displaySignatureById(this.value);
+		});
+		
+		var selectCertChain = document.getElementById("select-cert-chain");
+		selectCertChain.addEventListener("change", function(){
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			representation.displayCertificateChainById(this.value);
+		});
+		
 		
 	</script>
 

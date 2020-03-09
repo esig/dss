@@ -37,9 +37,28 @@
     			document.getSignatureIds = function() {
     				var ids = new Array();
     				var signatures = getSignatures();
-    				for (var elementIdx = 0;  elementIdx < signatures.length; elementIdx++) {
+    				for (var elementIdx = 0; elementIdx < signatures.length; elementIdx++) {
 						var signature = signatures[elementIdx];
 						ids.push(signature.id);
+					}
+    				return ids;	
+    			}
+    			
+    			document.getLeafIds = function() {
+    				var ids = new Array();
+    				var signatures = getSignatures();
+    				for (var elementIdx = 0; elementIdx < signatures.length; elementIdx++) {
+						var signature = signatures[elementIdx];
+						if (signature.signingCertificate != null && !ids.includes(signature.signingCertificate)) {
+							ids.push(signature.signingCertificate);
+						}
+					}
+					var timestamps = getTimestamps();
+    				for (var elementIdx = 0; elementIdx < timestamps.length; elementIdx++) {
+						var timestamp = timestamps[elementIdx];
+						if (timestamp.signingCertificate != null && !ids.includes(timestamp.signingCertificate)) {
+							ids.push(timestamp.signingCertificate);
+						}
 					}
     				return ids;	
     			}
@@ -73,7 +92,7 @@
     				}
     				
     				displaySignatureById(signatureId) {
-   						var currentElement  = getSignatureById(signatureId);
+   						var currentElement  = this.getSignatureById(signatureId);
 						this.displaySignature(currentElement);
     				}
     				
@@ -82,7 +101,37 @@
 						
 						this.computeRatio(this.collectDatesFromSignature(signature));
 						this.drawSig(signature);						
+    				}
     				
+    				displayCertificateChainById(leafId) {
+   						var currentCert  = this.getCertificateById(leafId);
+						this.displayCertificateChain(currentCert);
+    				}
+    				
+    				displayCertificateChain(leafCertificate) {
+						this.hideAll();
+						var chain = this.getCompleteCertificateChain(leafCertificate);
+						this.computeRatio(this.collectDatesFromChain(chain));
+						this.drawChain(chain);						
+    				}
+    				
+    				getCompleteCertificateChain(leafCertificate) {
+    					var chain = new Array();
+    					
+						var currentCert = leafCertificate;
+    					do {
+							chain.push(currentCert);
+							currentCert = this.getIssuer(currentCert);
+						} while (currentCert != null) ;
+    					
+    					return chain;
+    				}
+    				
+    				getIssuer(currentCert) {
+    					if (currentCert.signingCertificate !=null) {
+    						return this.getCertificateById(currentCert.signingCertificate);
+    					}
+    					return null;
     				}
     				
     				computeRatio(dates) {
@@ -95,7 +144,6 @@
 					drawSig(signature) {
 					
 						this.validationTime.posX(this.getPosX(this.validationTime.time));
-						this.validationTime.posY(260);
 						this.validationTime.show();
 					
 						var y = 230;
@@ -107,7 +155,7 @@
 						var cert = this.getCertificateById(signature.signingCertificate);
 						this.drawCert(cert, y);
 						
-	    				for (var elementIdx = 0;  elementIdx < signature.timestamps.length; elementIdx++) {
+	    				for (var elementIdx = 0; elementIdx < signature.timestamps.length; elementIdx++) {
 							var timestampId = signature.timestamps[elementIdx];
 							var timestamp = this.getTimestampById(timestampId);
 							
@@ -127,6 +175,21 @@
 						}
 					}
 					
+					drawChain(chain) {
+					
+						this.validationTime.posX(this.getPosX(this.validationTime.time));
+						this.validationTime.show();
+					
+						var y = 230;
+					
+	    				for (var elementIdx = 0; elementIdx < chain.length; elementIdx++) {
+							var cert = chain[elementIdx];
+							this.drawCert(cert, y);
+						
+							y = y -10;
+						}
+					}
+					
 					drawCert(cert, y) {
 						if (cert != null) {
 							cert.posX(this.getPosX(cert.notBefore));
@@ -135,7 +198,7 @@
 							cert.show();
 							
 							var revocs = this.getRevocationsForCertificate(cert.id);
-	    					for (var elementIdx = 0;  elementIdx < revocs.length; elementIdx++) {
+	    					for (var elementIdx = 0; elementIdx < revocs.length; elementIdx++) {
 								var certRevoc = revocs[elementIdx];
 								this.drawCertRevocation(certRevoc, y);
 							}
@@ -172,12 +235,23 @@
 						var cert = this.getCertificateById(signature.signingCertificate);
 						dates = dates.concat(this.collectDatesForCert(cert));
 
-	    				for (var elementIdx = 0;  elementIdx < signature.timestamps.length; elementIdx++) {
+	    				for (var elementIdx = 0; elementIdx < signature.timestamps.length; elementIdx++) {
 							var timestampId = signature.timestamps[elementIdx];
 							var timestamp = this.getTimestampById(timestampId);
 							dates = dates.concat(this.collectDatesForTimestamp(timestamp));
 						}
 						
+						return dates;
+					}
+					
+					collectDatesFromChain(chain) {
+    					var dates = new Array();
+						dates.push(this.validationTime.time);
+					
+	    				for (var elementIdx = 0; elementIdx < chain.length; elementIdx++) {
+							var cert = chain[elementIdx];
+							dates = dates.concat(this.collectDatesForCert(cert));
+						}
 						return dates;
 					}
 					
@@ -188,7 +262,7 @@
 							dates.push(cert.notAfter);
 							
 							var revocs = this.getRevocationsForCertificate(cert.id);
-	    					for (var elementIdx = 0;  elementIdx < revocs.length; elementIdx++) {
+	    					for (var elementIdx = 0; elementIdx < revocs.length; elementIdx++) {
 								var certRevoc = revocs[elementIdx];
 							
 								if (certRevoc.productionTime !=null) {
@@ -214,7 +288,7 @@
 					}
     				
     				getCertificateById(certId) {
-    					for (var elementIdx = 0;  elementIdx < this.certificates.length; elementIdx++) {
+    					for (var elementIdx = 0; elementIdx < this.certificates.length; elementIdx++) {
 							var currentElement = this.certificates[elementIdx];
 							if (certId == currentElement.id) {
 								return currentElement;
@@ -223,7 +297,7 @@
     				}
     				
     				getSignatureById(sigId) {
-    					for (var elementIdx = 0;  elementIdx < this.signatures.length; elementIdx++) {
+    					for (var elementIdx = 0; elementIdx < this.signatures.length; elementIdx++) {
 							var currentElement = this.signatures[elementIdx];
 							if (sigId == currentElement.id) {
 								return currentElement;
@@ -232,7 +306,7 @@
     				}
     				
     				getTimestampById(tstId) {
-    					for (var elementIdx = 0;  elementIdx < this.timestamps.length; elementIdx++) {
+    					for (var elementIdx = 0; elementIdx < this.timestamps.length; elementIdx++) {
 							var currentElement = this.timestamps[elementIdx];
 							if (tstId == currentElement.id) {
 								return currentElement;
@@ -242,7 +316,7 @@
     				
     				getRevocationsForCertificate(certId) {
     					var result = new Array();
-    					for (var elementIdx = 0;  elementIdx < this.certificateRevocations.length; elementIdx++) {
+    					for (var elementIdx = 0; elementIdx < this.certificateRevocations.length; elementIdx++) {
 							var currentElement = this.certificateRevocations[elementIdx];
 							if (certId == currentElement.certId) {
 								result.push(currentElement);
@@ -350,8 +424,11 @@
     			 
     			 function getValidationTime() {
 					var element = document.getElementById("svg-validation-time");
-					if (element != null){
-						return new ValidationTime(element, new Date(element.textContent));
+					if (element != null) {
+						var titleElements = element.getElementsByTagName("title");
+						if (titleElements.length == 1) {
+							return new ValidationTime(element, new Date(titleElements[0].textContent));
+						}
 					}
 					return null;
     			 }
@@ -359,7 +436,7 @@
     			 function getCertificates() {
 					var certificates = new Array();
 					var elements = document.getElementsByClassName("svg-certificate");
-					for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
 						var currentElement = elements[elementIdx];
 						var notBefore =  getUniqueDate(currentElement, "svg-not-before");
 						var notAfter =  getUniqueDate(currentElement, "svg-not-after");
@@ -373,7 +450,7 @@
     			function getRevocations() {
 					var revocations = new Array();
 					var elements = document.getElementsByClassName("svg-revocation");
-					for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
 						var currentElement = elements[elementIdx];
 						var productionTime =  getUniqueDate(currentElement, "svg-production-date");
 						var thisUpdate =  getUniqueDate(currentElement, "svg-this-update ");
@@ -391,7 +468,7 @@
     			function getCertificateRevocations() {
 					var certificateRevocations = new Array();
 					var elements = document.getElementsByClassName("svg-certificate-revocation");
-					for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
 						var currentElement = elements[elementIdx];
 						
 						var certId = getUniqueValue(currentElement, "certificate-id");
@@ -408,7 +485,7 @@
     			function getSignatures() {
 					var signatures = new Array();
 					var elements = document.getElementsByClassName("svg-signature");
-					for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
 						var currentElement = elements[elementIdx];
 						var claimedSigningTime = getUniqueDate(currentElement, "svg-claimed-signing-time");
 						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
@@ -422,7 +499,7 @@
     			function getTimestamps() {
 					var timestamps = new Array();
 					var elements = document.getElementsByClassName("svg-timestamp");
-					for (var elementIdx = 0;  elementIdx < elements.length; elementIdx++) {
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
 						var currentElement = elements[elementIdx];
 						var productionTime = getUniqueDate(currentElement, "svg-production-time");
 						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
@@ -434,14 +511,14 @@
     			
     			function hideGraphicItems(items) {
    					if (items !=null) {
-    					for (var elementIdx = 0;  elementIdx < items.length; elementIdx++) {
+    					for (var elementIdx = 0; elementIdx < items.length; elementIdx++) {
 							var currentElement = items[elementIdx];
 							currentElement.hide();
 						}
    					}
    				}	
     			 
-	   			 function getUniqueDate(currentElement, cssClass) {
+				function getUniqueDate(currentElement, cssClass) {
     				var date;
 					var items = currentElement.getElementsByClassName(cssClass);
 					if (items.length == 1) {
@@ -462,7 +539,7 @@
     			function getValues(currentElement, cssClass) {
     				var result = new Array();
 					var items = currentElement.getElementsByClassName(cssClass);
-					for (var elementIdx = 0;  elementIdx < items.length; elementIdx++) {
+					for (var elementIdx = 0; elementIdx < items.length; elementIdx++) {
 						var currentElement = items[elementIdx];
 						result.push(currentElement.textContent);
 					}
@@ -501,9 +578,6 @@
 			<g id="timestamp-symbol">
 				<circle cx="2" cy="2" r="2" fill="green" />
 	  		</g>
-			<g id="validation-time-symbol">
-				<text>?</text>
-	  		</g>
 	  		
 			<g id="revocation-symbol">
 			    <line x1="0" y1="0" x2="6" y2="6" stroke-width="1" />
@@ -524,12 +598,7 @@
 	  		
 	  	</defs>
 	  
-	  	<svg y="270">
-	  		<text id="svg-validation-time" style="display:none">
-				<xsl:value-of select="diag:ValidationDate" />
-			</text>
-  			<use href="#validation-time-symbol" />
-  		</svg>
+		<text id="svg-validation-time" y="275"><title><xsl:value-of select="diag:ValidationDate" /></title>?</text>
 	  
 		<xsl:apply-templates select="diag:UsedCertificates/diag:Certificate"/>
 		<xsl:apply-templates select="diag:UsedRevocations/diag:Revocation"/>
