@@ -40,7 +40,7 @@
             <SignatureProductionPlace>
                 <CountryName>Berlin</CountryName>
             </SignatureProductionPlace>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>

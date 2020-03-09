@@ -43,7 +43,7 @@
                 <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>

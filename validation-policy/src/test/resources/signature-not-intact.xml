@@ -37,7 +37,7 @@
                 <ChainItem Certificate="C-6D2795065FBDFBE6D65592927E15B619482DEEEC6B7C418DB1831C7E32D4A2AB"/>
             </CertificateChain>
             <MimeType>text/xml</MimeType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-6D2795065FBDFBE6D65592927E15B619482DEEEC6B7C418DB1831C7E32D4A2AB">

@@ -358,6 +358,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicyDocumentationReferences() {
+		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_ID, XAdES122Element.DOCUMENTATION_REFERENCES);
+	}
+
+	@Override
 	public String getCurrentSignaturePolicyImplied() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_IMPLIED);
 	}
@@ -380,6 +385,21 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentCommitmentIdentifierPath() {
 		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.IDENTIFIER);
+	}
+
+	@Override
+	public String getCurrentCommitmentDescriptionPath() {
+		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.DESCRIPTION);
+	}
+
+	@Override
+	public String getCurrentCommitmentDocumentationReferencesPath() {
+		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.DOCUMENTATION_REFERENCES);
+	}
+
+	@Override
+	public String getCurrentDocumentationReference() {
+		return fromCurrentPosition(XAdES122Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override

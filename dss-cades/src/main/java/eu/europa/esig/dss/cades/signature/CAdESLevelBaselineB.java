@@ -47,6 +47,7 @@ import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
 import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
@@ -65,6 +66,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
@@ -242,19 +245,21 @@ public class CAdESLevelBaselineB {
 	private void addCommitmentType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		// TODO (19/08/2014): commitmentTypeQualifier is not implemented
-		final List<String> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
+		final List<CommitmentType> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
 			final int size = commitmentTypeIndications.size();
 			ASN1Encodable[] asn1Encodables = new ASN1Encodable[size];
 			for (int ii = 0; ii < size; ii++) {
+				
+				final CommitmentType commitmentType = commitmentTypeIndications.get(ii);
+				if (commitmentType.getOid() == null) {
+					throw new DSSException("The commitmentTypeIndication OID must be defined for CAdES creation!");
+				}
 
-				final String commitmentTypeId = commitmentTypeIndications.get(ii);
-				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentTypeId);
-				// final CommitmentTypeIndication commitmentTypeIndication = new
-				// CommitmentTypeIndication(objectIdentifier);
-				// final ASN1Primitive asn1Primitive = commitmentTypeIndication.toASN1Primitive();
-				asn1Encodables[ii] = new DERSequence(objectIdentifier);
+				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentType.getOid());
+				final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(objectIdentifier);
+				asn1Encodables[ii] = commitmentTypeIndication.toASN1Primitive(); // DER encoded
 			}
 			final DERSet attrValues = new DERSet(asn1Encodables);
 			final Attribute attribute = new Attribute(id_aa_ets_commitmentType, attrValues);

@@ -279,6 +279,18 @@ public class DiagnosticData {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getPolicyDescription();
 	}
+	
+	/**
+	 * The documentation references of the policy
+	 * 
+	 * @param signatureId
+	 *            The identifier of the signature.
+	 * @return the policy documentation references
+	 */
+	public List<String> getPolicyDocumentationReferences(final String signatureId) {
+		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
+		return signature.getPolicyDocumentationReferences();
+	}
 
 	/**
 	 * This method returns the list of identifier of the all timestamps found during the validation.

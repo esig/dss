@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -122,9 +123,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			bLevelParameters.setSignerLocation(signerLocation);
 
 			// commitment type(s)
-			List<String> commitmentTypeIndications = new ArrayList<>();
-			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
-			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
+			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
@@ -203,9 +204,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			signerLocation.setLocality("SimCity");
 			bLevelParameters.setSignerLocation(signerLocation);
 
-			List<String> commitmentTypeIndications = new ArrayList<>();
-			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
-			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
+			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
@@ -266,9 +267,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			signerLocation.setLocality("SimCity");
 			bLevelParameters.setSignerLocation(signerLocation);
 
-			List<String> commitmentTypeIndications = new ArrayList<>();
-			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
-			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
+			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
@@ -330,9 +331,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			signerLocation.setLocality("SimCity");
 			bLevelParameters.setSignerLocation(signerLocation);
 
-			List<String> commitmentTypeIndications = new ArrayList<>();
-			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
-			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
+			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
+			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();

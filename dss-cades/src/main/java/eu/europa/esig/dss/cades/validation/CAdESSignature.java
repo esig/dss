@@ -110,7 +110,6 @@ import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.CertificateValidity;
-import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.IssuerSerialInfo;
 import eu.europa.esig.dss.validation.ManifestEntry;
@@ -557,30 +556,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public CommitmentType getCommitmentTypeIndication() {
+	public List<eu.europa.esig.dss.validation.CommitmentTypeIndication> getCommitmentTypeIndications() {
 		final Attribute commitmentTypeIndicationAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_commitmentType);
 		if (commitmentTypeIndicationAttribute == null) {
 			return null;
 		}
 
 		try {
-			CommitmentType commitmentType = null;
+			List<eu.europa.esig.dss.validation.CommitmentTypeIndication> commitmentTypeIndications = null;
 			final ASN1Set attrValues = commitmentTypeIndicationAttribute.getAttrValues();
 			final int size = attrValues.size();
 			if (size > 0) {
-				commitmentType = new CommitmentType();
+				commitmentTypeIndications = new ArrayList<>();
 				for (int ii = 0; ii < size; ii++) {
 					if (attrValues.getObjectAt(ii) instanceof ASN1Sequence) {
 						final ASN1Sequence sequence = (ASN1Sequence) attrValues.getObjectAt(ii);
 						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(sequence);
 						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
-						commitmentType.addIdentifier(commitmentTypeId.getId());
+						commitmentTypeIndications.add(new eu.europa.esig.dss.validation.CommitmentTypeIndication(commitmentTypeId.getId()));
 					} else {
 						LOG.warn("Unsupported type for CommitmentType : {}", attrValues.getObjectAt(ii).getClass());
 					}
 				}
 			}
-			return commitmentType;
+			return commitmentTypeIndications;
 		} catch (Exception e) {
 			throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
 		}

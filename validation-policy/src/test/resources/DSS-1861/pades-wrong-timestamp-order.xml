@@ -40,7 +40,7 @@
             <SignatureProductionPlace>
                 <CountryName>Budapest, Magyarország</CountryName>
             </SignatureProductionPlace>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <PDFRevision>
                 <SignatureFieldName>Signature-20191101-150121</SignatureFieldName>
                 <SignerInformationStore>

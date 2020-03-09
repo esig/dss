@@ -61,7 +61,7 @@
                 <ChainItem Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
             </CertificateChain>
             <MimeType>application/octet-stream</MimeType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87">

@@ -41,7 +41,7 @@
                 <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>
@@ -100,7 +100,7 @@
                 <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

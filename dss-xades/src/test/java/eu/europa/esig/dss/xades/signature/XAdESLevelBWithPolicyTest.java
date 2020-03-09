@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
@@ -45,6 +46,7 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
 	private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
+	private static final String SIGNATURE_POLICY_DOCUMENTATION = "http://nowina.lu/signature-policy.pdf";
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -57,6 +59,7 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setId(SIGNATURE_POLICY_ID);
 		signaturePolicy.setDescription(SIGNATURE_POLICY_DESCRIPTION);
+		signaturePolicy.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION, Utils.EMPTY_STRING); // empty is permitted as URI
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signaturePolicy.setDigestValue(new byte[] { 'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e' });
 		signaturePolicy.setSpuri(HTTP_SPURI_TEST);
@@ -78,6 +81,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 		super.onDocumentSigned(byteArray);
 		String xmlContent = new String(byteArray);
 		assertTrue(xmlContent.contains("description"));
+		assertTrue(xmlContent.contains(":DocumentationReferences>"));
+		assertTrue(xmlContent.contains(":DocumentationReference>"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));
 		assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
@@ -90,6 +95,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 		assertEquals(HTTP_SPURI_TEST, signature.getPolicyUrl());
 		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
 		assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyDescription());
+		assertEquals(SIGNATURE_POLICY_DOCUMENTATION, signature.getPolicyDocumentationReferences().get(0));
+		assertEquals(Utils.EMPTY_STRING, signature.getPolicyDocumentationReferences().get(1));
 	}
 
 	@Override

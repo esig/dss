@@ -30,7 +30,7 @@ import java.util.Map;
  * Supported Algorithms
  *
  */
-public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
+public enum DigestAlgorithm implements OidAndUriBasedEnum {
 
 	// see DEPRECATED http://www.w3.org/TR/2012/WD-xmlsec-algorithms-20120105/
 	// see http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/

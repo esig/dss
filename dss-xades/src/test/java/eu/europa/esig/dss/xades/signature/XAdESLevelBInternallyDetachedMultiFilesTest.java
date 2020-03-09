@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
-import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -72,7 +72,7 @@ public class XAdESLevelBInternallyDetachedMultiFilesTest extends AbstractPkiFact
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
 		signatureParameters.bLevel()
-				.setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfSender.getUri(), CommitmentType.ProofOfCreation.getUri()));
+				.setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfSender, CommitmentTypeEnum.ProofOfCreation));
 
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
 

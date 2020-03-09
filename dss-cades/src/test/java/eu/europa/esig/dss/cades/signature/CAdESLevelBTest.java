@@ -61,6 +61,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -99,7 +100,7 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("supplier"));
-		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList("1.2.3", "2.4.5.6"));
+		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfApproval, CommitmentTypeEnum.ProofOfCreation));
 
 		signatureParameters.setContentHintsType("1.2.840.113549.1.7.1");
 		signatureParameters.setContentHintsDescription("text/plain");

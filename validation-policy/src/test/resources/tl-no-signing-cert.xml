@@ -32,7 +32,7 @@
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
             <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
+            <CommitmentTypeIndications/>
             
             <FoundCertificates/>
             <FoundRevocations/>

@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -45,7 +45,7 @@ public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfOrigin.getOid()));
+		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfOrigin));
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("supplier"));
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());

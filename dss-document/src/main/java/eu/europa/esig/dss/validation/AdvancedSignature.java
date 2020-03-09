@@ -268,9 +268,9 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * This method obtains the information concerning commitment type indication linked to the signature
 	 *
-	 * @return {@code CommitmentType}
+	 * @return a list of {@code CommitmentTypeIndication}s
 	 */
-	CommitmentType getCommitmentTypeIndication();
+	List<CommitmentTypeIndication> getCommitmentTypeIndications();
 
 	/**
 	 * Returns the value of the signed attribute content-type

@@ -48,6 +48,7 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
@@ -1074,11 +1075,11 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addCommitmentTypeIndications(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> commitmentTypeIdentifiers = sigWrapper.getCommitmentTypeIdentifiers();
-		if (Utils.isCollectionNotEmpty(commitmentTypeIdentifiers)) {
-			for (String commitmentTypeIdentifier : commitmentTypeIdentifiers) {
+		List<XmlCommitmentTypeIndication> commitmentTypeIndications = sigWrapper.getCommitmentTypeIndications();
+		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
+			for (XmlCommitmentTypeIndication commitmentTypeIndication : commitmentTypeIndications) {
 				SACommitmentTypeIndicationType commitmentType = objectFactory.createSACommitmentTypeIndicationType();
-				commitmentType.setCommitmentTypeIdentifier(commitmentTypeIdentifier);
+				commitmentType.setCommitmentTypeIdentifier(commitmentTypeIndication.getIdentifier());
 				setSignedIfValid(sigWrapper, commitmentType);
 				sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 						.add(objectFactory.createSignatureAttributesTypeCommitmentTypeIndication(commitmentType));

@@ -32,6 +32,7 @@ import java.util.Set;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
@@ -399,8 +400,8 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return roles;
 	}
 
-	public List<String> getCommitmentTypeIdentifiers() {
-		List<String> commitmentTypeIndications = signature.getCommitmentTypeIndication();
+	public List<XmlCommitmentTypeIndication> getCommitmentTypeIndications() {
+		List<XmlCommitmentTypeIndication> commitmentTypeIndications = signature.getCommitmentTypeIndications();
 		if (commitmentTypeIndications != null) {
 			return commitmentTypeIndications;
 		}
@@ -437,6 +438,18 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return policy.getDescription();
 		}
 		return "";
+	}
+	
+	/**
+	 * Returns DocumentationReferences defined for the signature policy
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getPolicyDocumentationReferences() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null && policy.getDocumentationReferences() != null) {
+			return policy.getDocumentationReferences();
+		}
+		return Collections.emptyList();
 	}
 
 	public String getPolicyNotice() {

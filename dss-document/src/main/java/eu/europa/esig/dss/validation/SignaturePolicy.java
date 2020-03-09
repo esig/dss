@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
@@ -35,8 +37,9 @@ public class SignaturePolicy {
 	private Digest digest;
 	private DSSDocument policyContent;
 	
-	// optional parameter
+	// optional parameters (used in XAdES)
 	private String description;
+	private List<String> documentationReferences;
 
 	/**
 	 * Two qualifiers for the signature policy have been identified so far:
@@ -114,6 +117,24 @@ public class SignaturePolicy {
 	 */
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+
+	/**
+	 * Gets the documentation references
+	 * NOTE: optional, used in XAdES
+	 * 
+	 * @return a list of {@link String} documentation references
+	 */
+	public List<String> getDocumentationReferences() {
+		return documentationReferences;
+	}
+
+	/**
+	 * Sets the documentation references
+	 * @param documentationReferences a list of {@link String} documentation references
+	 */
+	public void setDocumentationReferences(List<String> documentationReferences) {
+		this.documentationReferences = documentationReferences;
 	}
 
 	public String getNotice() {
