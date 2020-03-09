@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+	<object data="diag-data.svg" type="image/svg+xml" width="800" height="300" id="svg-diag-data">
+		Your browser does not support SVGs
+	</object>
+	
+	<select id="select-signature">
+	</select>
+	
+	<select id="select-cert-chain">
+	</select>
+	
+	<script type="text/javascript">
+		var mySVG = document.getElementById("svg-diag-data");
+		var svgWidth = mySVG.width;
+		var svgHeight = mySVG.height;
+
+		mySVG.addEventListener("load",function() {
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			representation.displayFirstSignature();
+			
+			var signatureIds = mySVG.contentDocument.getSignatureIds();
+			initSignatureSelect(signatureIds);
+			
+			var leafIds = mySVG.contentDocument.getLeafIds();
+			initCertChainSelect(leafIds);
+		});
+
+		function initSignatureSelect(signatureIds) {
+			var select = document.getElementById("select-signature");
+			for (var elementIdx = 0;  elementIdx < signatureIds.length; elementIdx++) {
+				var sigId = signatureIds[elementIdx];
+				var option = document.createElement("option");
+				option.text = sigId;
+				select.add(option);
+			}
+		}
+
+		function initCertChainSelect(leafIds) {
+			var select = document.getElementById("select-cert-chain");
+			for (var elementIdx = 0;  elementIdx < leafIds.length; elementIdx++) {
+				var chainId = leafIds[elementIdx];
+				var option = document.createElement("option");
+				option.text = chainId;
+				select.add(option);
+			}
+		}
+		
+		var selectSignature = document.getElementById("select-signature");
+		selectSignature.addEventListener("change", function(){
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			representation.displaySignatureById(this.value);
+		});
+		
+		var selectCertChain = document.getElementById("select-cert-chain");
+		selectCertChain.addEventListener("change", function(){
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			representation.displayCertificateChainById(this.value);
+		});
+		
+		
+	</script>
+
+</body>
+</html>

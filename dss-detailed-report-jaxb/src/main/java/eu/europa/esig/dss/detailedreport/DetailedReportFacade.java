@@ -62,7 +62,7 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 	}
 
     /**
-     * Generates a Boostrap 4 Detailed report
+     * Generates a Bootstrap 4 Detailed report
      */
 	public String generateHtmlReport(XmlDetailedReport detailedReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
@@ -89,7 +89,7 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 	}
 
     /**
-     * Generates a Boostrap 3 Detailed report
+     * Generates a Bootstrap 3 Detailed report
      */
 	public String generateHtmlBootstrap3Report(XmlDetailedReport detailedReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
