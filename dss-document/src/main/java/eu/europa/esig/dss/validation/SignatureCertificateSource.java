@@ -21,30 +21,14 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a
@@ -53,24 +37,12 @@ import eu.europa.esig.dss.utils.Utils;
  *
  */
 @SuppressWarnings("serial")
-public abstract class SignatureCertificateSource extends CommonCertificateSource {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
+public abstract class SignatureCertificateSource extends TokenCertificateSource {
 	
 	/**
 	 * Contains a list of all found {@link CertificateRef}s
 	 */
 	private List<CertificateRef> certificateRefs;
-	
-	/**
-	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
-	 */
-	private transient Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
-	
-	/**
-	 * List of orphan {@link CertificateRef}s
-	 */
-	private List<CertificateRef> orphanCertificateRefs;
 
 	/**
 	 * The default constructor with mandatory certificates pool.
@@ -198,44 +170,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		return CertificateSourceType.SIGNATURE;
 	}
 	
-	/**
-	 * Returns list of {@link CertificateRef}s found for the given {@code certificateToken}
-	 * @param certificateToken {@link CertificateToken} to find references for
-	 * @return list of {@link CertificateRef}s
-	 */
-	public List<CertificateRef> getReferencesForCertificateToken(CertificateToken certificateToken) {
-		if (Utils.isMapEmpty(certificateRefsMap)) {
-			collectCertificateRefsMap();
-		}
-		List<CertificateRef> references = certificateRefsMap.get(certificateToken);
-		if (references != null) {
-			return references;
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
-	/**
-	 * Returns list of {@link CertificateToken}s for the provided {@link CertificateRef}s
-	 * @param certificateRefs list of {@link CertificateRef}s
-	 * @return list of {@link CertificateToken}s
-	 */
-	public List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
-		if (Utils.isMapEmpty(certificateRefsMap)) {
-			collectCertificateRefsMap();
-		}
-		List<CertificateToken> tokensFromRefs = new ArrayList<>();
-		for (Entry<CertificateToken, List<CertificateRef>> certMapEntry : certificateRefsMap.entrySet()) {
-			for (CertificateRef reference : certMapEntry.getValue()) {
-				if (certificateRefs.contains(reference)) {
-					tokensFromRefs.add(certMapEntry.getKey());
-					break;
-				}
-			}
-		}
-		return tokensFromRefs;
-	}
-	
+	@Override
 	public List<CertificateRef> getAllCertificateRefs() {
 		if (certificateRefs == null) {
 			certificateRefs = new ArrayList<>();
@@ -244,105 +179,6 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 			certificateRefs.addAll(getSigningCertificateValues());
 		}
 		return certificateRefs;
-	}
-	
-	/**
-	 * Returns a contained {@link CertificateRef} with the given {@code digest}
-	 * @param digest {@link Digest} to find a {@link CertificateRef} with
-	 * @return {@link CertificateRef}
-	 */
-	public CertificateRef getCertificateRefByDigest(Digest digest) {
-		for (CertificateRef certificateRef : getAllCertificateRefs()) {
-			if (digest.equals(certificateRef.getCertDigest())) {
-				return certificateRef;
-			}
-		}
-		return null;
-	}
-	
-	private void collectCertificateRefsMap() {
-		certificateRefsMap = new HashMap<>();
-		for (CertificateToken certificateToken : getCertificates()) {
-			for (CertificateRef certificateRef : getAllCertificateRefs()) {
-				Digest certDigest = certificateRef.getCertDigest();
-				IssuerSerialInfo issuerInfo = certificateRef.getIssuerInfo();
-				if (certDigest != null) {
-					byte[] currentDigest = certificateToken.getDigest(certDigest.getAlgorithm());
-					if (Arrays.equals(currentDigest, certDigest.getValue())) {
-						addCertificateRefToMap(certificateToken, certificateRef);
-					}
-					
-				} else if (issuerInfo != null && 
-						certificateToken.getSerialNumber().equals(issuerInfo.getSerialNumber()) && 
-						DSSUtils.x500PrincipalAreEquals(certificateToken.getIssuerX500Principal(), issuerInfo.getIssuerName())) {
-					addCertificateRefToMap(certificateToken, certificateRef);
-					
-				}
-			}
-		}
-	}
-	
-	private void addCertificateRefToMap(CertificateToken certificateToken, CertificateRef certificateRef) {
-		List<CertificateRef> currentCertificateRefs = certificateRefsMap.get(certificateToken);
-		if (currentCertificateRefs == null) {
-			currentCertificateRefs = new ArrayList<>();
-			certificateRefsMap.put(certificateToken, currentCertificateRefs);
-		}
-		currentCertificateRefs.add(certificateRef);
-	}
-	
-	/**
-	 * Returns a list of orphan certificate refs
-	 * @return list of {@link CertificateRef}s
-	 */
-	public List<CertificateRef> getOrphanCertificateRefs() {
-		if (orphanCertificateRefs == null) {
-			orphanCertificateRefs = new ArrayList<>();
-			if (Utils.isMapEmpty(certificateRefsMap)) {
-				collectCertificateRefsMap();
-			}
-			for (CertificateRef certificateRef : getAllCertificateRefs()) {
-				boolean found = false;
-				for (List<CertificateRef> assignedCertificateRefs : certificateRefsMap.values()) {
-					if (assignedCertificateRefs.contains(certificateRef)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					orphanCertificateRefs.add(certificateRef);
-				}
-			}
-		}
-		return orphanCertificateRefs;
-	}
-
-	protected IssuerSerialInfo getIssuerInfo(IssuerSerial issuerAndSerial) {
-		if (issuerAndSerial == null) {
-			return null;
-		}
-		try {
-			IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
-			GeneralNames gnames = issuerAndSerial.getIssuer();
-			if (gnames != null) {
-				GeneralName[] names = gnames.getNames();
-				if (names.length == 1) {
-					issuerInfo.setIssuerName(new X500Principal(names[0].getName().toASN1Primitive().getEncoded(ASN1Encoding.DER)));
-				} else {
-					LOG.warn("More than one GeneralName");
-				}
-			}
-
-			ASN1Integer serialNumber = issuerAndSerial.getSerial();
-			if (serialNumber != null) {
-				issuerInfo.setSerialNumber(serialNumber.getValue());
-			}
-
-			return issuerInfo;
-		} catch (Exception e) {
-			LOG.error("Unable to read the IssuerSerial object", e);
-			return null;
-		}
 	}
 
 }

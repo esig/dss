@@ -39,6 +39,7 @@ import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
@@ -75,9 +76,7 @@ public class CRLToken extends RevocationToken {
 		}
 	}
 
-	@Override
-	public void initInfo() {
-		this.revocationType = RevocationType.CRL;
+	private void initInfo() {
 		this.revocationTokenKey = crlValidity.getKey();
 		this.signatureAlgorithm = crlValidity.getSignatureAlgorithm();
 		this.thisUpdate = crlValidity.getThisUpdate();
@@ -131,6 +130,12 @@ public class CRLToken extends RevocationToken {
 		throw new UnsupportedOperationException(this.getClass().getName());
 	}
 
+	@Override
+	public RevocationCertificateSource getCertificateSource() {
+		// not supported
+		return null;
+	}
+
 	public CRLValidity getCrlValidity() {
 		return crlValidity;
 	}
@@ -147,18 +152,6 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public CertificateToken getIssuerCertificateToken() {
 		return crlValidity.getIssuerToken();
-	}
-
-	/**
-	 * This method returns the DSS abbreviation of the CRLToken. It is used for
-	 * debugging purpose.
-	 *
-	 * @return the DSS abbreviation of the CRLToken
-	 */
-	@Override
-	public String getAbbreviation() {
-		return "CRLToken[" + (productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)) + ", signedBy="
-				+ getIssuerX500Principal() + "]";
 	}
 
 	@Override
@@ -179,6 +172,23 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public boolean isValid() {
 		return crlValidity.isValid();
+	}
+
+	@Override
+	public RevocationType getRevocationType() {
+		return RevocationType.CRL;
+	}
+
+	/**
+	 * This method returns the DSS abbreviation of the CRLToken. It is used for
+	 * debugging purpose.
+	 *
+	 * @return the DSS abbreviation of the CRLToken
+	 */
+	@Override
+	public String getAbbreviation() {
+		return "CRLToken[" + (productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)) + ", signedBy="
+				+ getIssuerX500Principal() + "]";
 	}
 
 	@Override

@@ -143,6 +143,7 @@ public class JdbcCacheCrlSourceTest {
 
 		crlSource.setProxySource(new OnlineCRLSource());
 		CRLToken revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		assertNotNull(revocationToken);
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getFirstOrigin());
 		crlSource.removeRevocation(revocationToken);
 		

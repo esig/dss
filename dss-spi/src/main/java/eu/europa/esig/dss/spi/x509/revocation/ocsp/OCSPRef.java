@@ -117,7 +117,7 @@ public class OCSPRef extends RevocationRef {
 			}
 			dos.flush();
 			bytes = baos.toByteArray();
-		}  catch (IOException e) {
+		} catch (IOException e) {
 			throw new DSSException("Cannot build DSS ID for the OCSP Ref.", e);
 		}
 		return "R-" + DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)).toUpperCase();

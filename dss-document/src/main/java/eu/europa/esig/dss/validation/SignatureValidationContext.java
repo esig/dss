@@ -48,6 +48,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -240,6 +241,10 @@ public class SignatureValidationContext implements ValidationContext {
 			if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
 				issuerCertificateToken = getIssuerFromAIA((CertificateToken) token);
 			}
+			
+			if ((issuerCertificateToken == null) && (token instanceof OCSPToken)) {
+				issuerCertificateToken = getOCSPIssuer((OCSPToken) token);
+			}
 
 			if ((issuerCertificateToken == null) && (token instanceof TimestampToken)) {
 				issuerCertificateToken = getTSACertificate((TimestampToken) token);
@@ -252,16 +257,6 @@ public class SignatureValidationContext implements ValidationContext {
 		} while (issuerCertificateToken != null && !chain.contains(issuerCertificateToken));
 
 		return chain;
-	}
-
-	private CertificateToken getTSACertificate(TimestampToken timestamp) {
-		List<CertificateToken> candidates = validationCertificatePool.getBySignerId(timestamp.getSignerId());
-		for (CertificateToken candidate : candidates) {
-			if (timestamp.isSignedBy(candidate)) {
-				return candidate;
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -339,6 +334,45 @@ public class SignatureValidationContext implements ValidationContext {
 		return bestMatch;
 	}
 
+	private CertificateToken getOCSPIssuer(OCSPToken token) {
+		CertificateRef signingCertificateRef = token.getCertificateSource().getSigningCertificateRef();
+		if (signingCertificateRef != null) {
+			if (signingCertificateRef.getSki() != null) {
+				List<CertificateToken> issuerCandidates = validationCertificatePool.getBySki(signingCertificateRef.getSki());
+				return getTokenIssuerFromCandidates(token, issuerCandidates);
+			}
+			if (signingCertificateRef.getIssuerInfo() != null && signingCertificateRef.getIssuerInfo().getIssuerName() != null) {
+				Set<CertificateToken> issuerCandidates = validationCertificatePool.get(signingCertificateRef.getIssuerInfo().getIssuerName());
+				return getTokenIssuerFromCandidates(token, issuerCandidates);
+			}
+		}
+		LOG.warn("Signing certificate is not found for an OCSPToken with id '{}'.", token.getDSSIdAsString());
+		return null;
+	}
+	
+	private CertificateToken getTokenIssuerFromCandidates(Token token, Collection<CertificateToken> candidates) {
+		CertificateToken issuerCandidate = null;
+		for (CertificateToken certificateToken : candidates) {
+			if (token.isSignedBy(certificateToken)) {
+				issuerCandidate = certificateToken;
+				if (certificateToken.isValidOn(token.getCreationDate())) {
+					break;
+				}
+			}
+		}
+		return issuerCandidate;
+	}
+
+	private CertificateToken getTSACertificate(TimestampToken timestamp) {
+		List<CertificateToken> candidates = validationCertificatePool.getBySignerId(timestamp.getSignerId());
+		for (CertificateToken candidate : candidates) {
+			if (timestamp.isSignedBy(candidate)) {
+				return candidate;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Adds a new token to the list of tokens to verify only if it was not already
 	 * verified.
@@ -385,9 +419,9 @@ public class SignatureValidationContext implements ValidationContext {
 			
 			if (addTokenForVerification(revocationToken)) {
 				
-				CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
-				if (issuerCertificateToken != null) {
-					addCertificateTokenForVerification(issuerCertificateToken);
+				// only certificate sources for OCSP tokens must be processed
+				for (CertificateToken certificateToken : revocationToken.getCertificates()) {
+					addCertificateTokenForVerification(certificateToken);
 				}
 
 				final boolean added = processedRevocations.add(revocationToken);
@@ -805,12 +839,8 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private boolean isConsistent(RevocationToken revocation) {
-		CertificateToken issuerCertificateToken = revocation.getIssuerCertificateToken();
-		if (issuerCertificateToken == null) {
-			// extract by public key which is valid against thisUpdate time
-			issuerCertificateToken = validationCertificatePool.getIssuer(revocation);
-		}
-		if (issuerCertificateToken == null) {
+		List<CertificateToken> certificateTokenChain = toCertificateTokenChain(getCertChain(revocation));
+		if (Utils.isCollectionEmpty(certificateTokenChain)) {
 			LOG.debug("The revocation {} is not consistent! Issuer CertificateToken is not found.", revocation.getDSSIdAsString());
 			return false;
 		}
@@ -820,7 +850,7 @@ public class SignatureValidationContext implements ValidationContext {
 		} else {
 			// if the next update time is not defined, check the validity of the issuer's certificate
 			// useful for short-life certificates (i.e. ocsp responser)
-			return hasPOEInTheValidityRange(issuerCertificateToken);
+			return hasPOEInTheValidityRange(certificateTokenChain.iterator().next());
 		}
 	}
 	

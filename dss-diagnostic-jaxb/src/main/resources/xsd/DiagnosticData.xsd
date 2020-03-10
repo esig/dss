@@ -618,7 +618,11 @@
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateRefOriginType" />
 			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
-			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+			<xs:choice>
+				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue"/>
+				<xs:element name="IssuerName" type="xs:string" /> <!-- in case of OCSP response -->
+				<xs:element name="Ski" type="xs:base64Binary" /> <!-- in case of OCSP response -->
+			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -644,6 +648,7 @@
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
+			<xs:enumeration value="BASIC_OCSP_RESP" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -775,6 +780,9 @@
 					<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+					
+					<xs:element name="FoundCertificates" type="FoundCertificates" minOccurs="0" />
+					
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
 						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
@@ -860,7 +868,7 @@
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>
-					<xs:choice>
+					<xs:choice minOccurs="0"> <!-- not applicable for cert refs obtained from ocsp tokens -->
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
 						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 					</xs:choice>

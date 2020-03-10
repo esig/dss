@@ -694,10 +694,12 @@ public class DiagnosticData {
 	public List<OrphanTokenWrapper> getAllOrphanCertificateReferences() {
 		List<OrphanTokenWrapper> orphanCertificateRefs = new ArrayList<>();
 		List<OrphanCertificateWrapper> allOrphanCertificateObjects = getAllOrphanCertificateObjects();
-		for (XmlOrphanCertificateToken orphanCertificateToken : wrapped.getOrphanTokens().getOrphanCertificates()) {
-			OrphanTokenWrapper orphanTokenWrapper = new OrphanTokenWrapper(orphanCertificateToken);
-			if (!allOrphanCertificateObjects.contains(orphanTokenWrapper)) {
-				orphanCertificateRefs.add(orphanTokenWrapper);
+		if (wrapped.getOrphanTokens() != null && wrapped.getOrphanTokens().getOrphanCertificates() != null) {
+			for (XmlOrphanCertificateToken orphanCertificateToken : wrapped.getOrphanTokens().getOrphanCertificates()) {
+				OrphanTokenWrapper orphanTokenWrapper = new OrphanTokenWrapper(orphanCertificateToken);
+				if (!allOrphanCertificateObjects.contains(orphanTokenWrapper)) {
+					orphanCertificateRefs.add(orphanTokenWrapper);
+				}
 			}
 		}
 		return orphanCertificateRefs;
@@ -746,10 +748,12 @@ public class DiagnosticData {
 	public List<OrphanTokenWrapper> getAllOrphanRevocationReferences() {
 		List<OrphanTokenWrapper> orphanRevocationRefs = new ArrayList<>();
 		List<OrphanRevocationWrapper> allOrphanRevocationObjects = getAllOrphanRevocationObjects();
-		for (XmlOrphanRevocationToken orphanRevocationToken : wrapped.getOrphanTokens().getOrphanRevocations()) {
-			OrphanTokenWrapper orphanTokenWrapper = new OrphanTokenWrapper(orphanRevocationToken);
-			if (!allOrphanRevocationObjects.contains(orphanTokenWrapper)) {
-				orphanRevocationRefs.add(orphanTokenWrapper);
+		if (wrapped.getOrphanTokens() != null && wrapped.getOrphanTokens().getOrphanRevocations() != null) {
+			for (XmlOrphanRevocationToken orphanRevocationToken : wrapped.getOrphanTokens().getOrphanRevocations()) {
+				OrphanTokenWrapper orphanTokenWrapper = new OrphanTokenWrapper(orphanRevocationToken);
+				if (!allOrphanRevocationObjects.contains(orphanTokenWrapper)) {
+					orphanRevocationRefs.add(orphanTokenWrapper);
+				}
 			}
 		}
 		return orphanRevocationRefs;

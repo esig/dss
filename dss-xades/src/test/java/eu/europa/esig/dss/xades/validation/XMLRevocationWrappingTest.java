@@ -32,7 +32,9 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -40,6 +42,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -81,6 +84,22 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(4, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
 		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
 		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		
+		for (RevocationWrapper revocation : diagnosticData.getAllRevocationData()) {
+			assertNotNull(revocation.foundCertificates());
+			assertTrue(Utils.isCollectionNotEmpty(revocation.foundCertificates().getRelatedCertificates()));
+			assertTrue(Utils.isCollectionNotEmpty(revocation.foundCertificates().getRelatedCertificateRefs()));
+			assertTrue(Utils.isCollectionEmpty(revocation.foundCertificates().getOrphanCertificates()));;
+			assertTrue(Utils.isCollectionEmpty(revocation.foundCertificates().getOrphanCertificateRefs()));
+			
+			assertEquals(1, revocation.foundCertificates().getRelatedCertificates().size());
+			RelatedCertificateWrapper embeddedCertificate = revocation.foundCertificates().getRelatedCertificates().get(0);
+			assertEquals(1, embeddedCertificate.getReferences().size());
+			CertificateRefWrapper certificateRefWrapper = embeddedCertificate.getReferences().get(0);
+			assertEquals(CertificateRefOrigin.SIGNING_CERTIFICATE, certificateRefWrapper.getOrigin());
+			assertTrue(certificateRefWrapper.getSki() != null || certificateRefWrapper.getIssuerName() != null);
+			assertEquals(embeddedCertificate.getId(), revocation.getSigningCertificate().getId());
+		}
 		
 		XmlDiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();

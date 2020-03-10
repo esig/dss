@@ -58,6 +58,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
@@ -199,7 +200,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			}
 
 			final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
-			certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
+			certRef.setIssuerInfo(DSSASN1Utils.toIssuerInfo(issuerSerial));
 			certRef.setOrigin(location);
 
 			certificateRefs.add(certRef);
@@ -238,7 +239,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 				LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm);
 			}
 			final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
-			certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
+			certRef.setIssuerInfo(DSSASN1Utils.toIssuerInfo(issuerSerial));
 			certRef.setOrigin(location);
 			certificateRefs.add(certRef);
 		}
@@ -291,7 +292,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 						certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
 						IssuerSerial issuerSerial = otherCertId.getIssuerSerial();
 						if (issuerSerial != null) {
-							certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
+							certRef.setIssuerInfo(DSSASN1Utils.toIssuerInfo(issuerSerial));
 						}
 						certRef.setOrigin(location);
 						result.add(certRef);

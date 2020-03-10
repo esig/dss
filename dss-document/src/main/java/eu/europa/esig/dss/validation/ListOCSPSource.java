@@ -165,7 +165,7 @@ public class ListOCSPSource implements OCSPSource {
 		OCSPToken bestOcspToken = null;
 		for (OCSPSource ocspSource : sources) {
 			OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, issuerCertificateToken);
-			if (ocspToken != null && ocspToken.isValid() &&
+			if (ocspToken != null &&
 					(bestOcspToken == null || ocspToken.getThisUpdate().after(bestOcspToken.getThisUpdate())) ) {
 				bestOcspToken = ocspToken;
 			}

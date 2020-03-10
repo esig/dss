@@ -35,5 +35,7 @@ public enum CertificateOrigin {
 	DSS_DICTIONARY, /* PAdES specific */
 	
 	VRI_DICTIONARY, /* PAdES specific */
+	
+	BASIC_OCSP_RESP, /* OCSP Response */
 
 }

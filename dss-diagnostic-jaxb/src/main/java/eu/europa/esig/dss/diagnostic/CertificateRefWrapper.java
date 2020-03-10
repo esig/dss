@@ -35,6 +35,25 @@ public class CertificateRefWrapper {
 	public byte[] getIssuerSerial() {
 		return certificateRef.getIssuerSerial();
 	}
+
+	/**
+	 * Returns IssuerName
+	 * 
+	 * @return {@link String}
+	 */
+	public String getIssuerName() {
+		return certificateRef.getIssuerName();
+	}
+	
+	/**
+	 * Returns SKI of the certificate
+	 * (SHA-1 of the certificate's public key)
+	 * 
+	 * @return a byte array
+	 */
+	public byte[] getSki() {
+		return certificateRef.getSki();
+	}
 	
 	/**
 	 * Returns digest algo and value
@@ -51,7 +70,9 @@ public class CertificateRefWrapper {
 		int result = 1;
 		if (certificateRef != null) {
 			result = prime * result + ((certificateRef.getOrigin() == null) ? 0 : certificateRef.getOrigin().hashCode());
+			result = prime * result + ((certificateRef.getIssuerName() == null) ? 0 : certificateRef.getIssuerName().hashCode());
 			result = prime * result + ((certificateRef.getIssuerSerial() == null) ? 0 : Arrays.hashCode(certificateRef.getIssuerSerial()));
+			result = prime * result + ((certificateRef.getSki() == null) ? 0 : Arrays.hashCode(certificateRef.getSki()));
 			if (certificateRef.getDigestAlgoAndValue() != null) {
 				result = prime * result + ((certificateRef.getDigestAlgoAndValue().getDigestMethod() == null) ? 0 : 
 					certificateRef.getDigestAlgoAndValue().getDigestMethod().hashCode());
@@ -85,6 +106,16 @@ public class CertificateRefWrapper {
 			if (other.certificateRef.getIssuerSerial() != null)
 				return false;
 		} else if (!Arrays.equals(certificateRef.getIssuerSerial(), other.certificateRef.getIssuerSerial()))
+			return false;
+		if (certificateRef.getIssuerName() == null) {
+			if (other.certificateRef.getIssuerName() != null)
+				return false;
+		} else if (!certificateRef.getIssuerName().equals(other.certificateRef.getIssuerName()))
+			return false;
+		if (certificateRef.getSki() == null) {
+			if (other.certificateRef.getSki() != null)
+				return false;
+		} else if (!Arrays.equals(certificateRef.getSki(), other.certificateRef.getSki()))
 			return false;
 		if (certificateRef.getDigestAlgoAndValue() == null) {
 			if (other.certificateRef.getDigestAlgoAndValue() != null)

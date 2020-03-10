@@ -34,10 +34,14 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -136,6 +140,27 @@ public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess 
 		
 		allRevocationData = diagnosticData.getAllRevocationData();
 		assertEquals(2, allRevocationData.size());
+		
+		int ocspCounter = 0;
+		for (RevocationWrapper revocationWrapper : allRevocationData) {
+			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+				List<RelatedCertificateWrapper> relatedCertificates = revocationWrapper.foundCertificates().getRelatedCertificates();
+				assertEquals(2, relatedCertificates.size());
+				
+				int referenceCounter = 0;
+				for (RelatedCertificateWrapper certificateWrapper : relatedCertificates) {
+					assertNotNull(certificateWrapper.getId());
+					assertTrue(certificateWrapper.getSources().contains(CertificateSourceType.OCSP_RESPONSE));
+					referenceCounter += certificateWrapper.getReferences().size();
+					for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
+						assertNotNull(refWrapper.getSki());
+					}
+				}
+				assertEquals(1, referenceCounter);
+				++ocspCounter;
+			}
+		}
+		assertEquals(1, ocspCounter);
 
 		Document newExtendedDocDom = DomUtils.buildDOM(newExtendedDocument);
 		timestampValidationData = DomUtils.getNodeList(newExtendedDocDom, "//xades141:TimeStampValidationData");
