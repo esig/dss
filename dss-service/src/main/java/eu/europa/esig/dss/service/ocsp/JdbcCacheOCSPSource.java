@@ -41,8 +41,6 @@ import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPTokenBuilder;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPTokenUtils;
 
 /**
  * OCSPSource that retrieve information from a JDBC data-source.
@@ -141,11 +139,9 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 			final String url = rs.getString(SQL_FIND_QUERY_LOC);
 			
 			final OCSPResp ocspResp = new OCSPResp(data);
-			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(ocspResp, certificateToken, issuerCert);
-			ocspTokenBuilder.setSourceURL(url);
-			OCSPToken ocspToken = ocspTokenBuilder.build();
+			OCSPToken ocspToken = new OCSPToken(ocspResp, certificateToken, issuerCert);
+			ocspToken.setSourceURL(url);
 			ocspToken.setOrigins(Collections.singleton(RevocationOrigin.CACHED));
-			OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCert);
 			return ocspToken;
 		} catch (SQLException | IOException | OCSPException e) {
 			throw new RevocationException("An error occurred during an attempt to obtain a revocation token");

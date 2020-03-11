@@ -157,11 +157,9 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private void addToRelevantList(CRLToken crlToken, RevocationOrigin origin) {
 		switch (origin) {
 		case CMS_SIGNED_DATA:
-		case TIMESTAMP_SIGNED_DATA:
 			cmsSignedDataCRLs.add(crlToken);
 			break;
 		case REVOCATION_VALUES:
-		case TIMESTAMP_REVOCATION_VALUES:
 			revocationValuesCRLs.add(crlToken);
 			break;
 		case ATTRIBUTE_REVOCATION_VALUES:

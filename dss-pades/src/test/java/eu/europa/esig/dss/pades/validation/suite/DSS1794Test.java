@@ -28,6 +28,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -52,11 +53,9 @@ public class DSS1794Test {
 		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<String> revocationIdsByOrigin = signature.getRevocationIdsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-		assertNotNull(revocationIdsByOrigin);
-		assertEquals(1, revocationIdsByOrigin.size());
-		
-//		validateDocument.print();
+		List<RelatedRevocationWrapper> revocationsByOrigin = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+		assertNotNull(revocationsByOrigin);
+		assertEquals(1, revocationsByOrigin.size());
 	}
 	
 	@Test
@@ -74,10 +73,8 @@ public class DSS1794Test {
 		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<String> revocationIdsByOrigin = signature.getRevocationIdsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-		assertNotNull(revocationIdsByOrigin);
-		assertEquals(1, revocationIdsByOrigin.size());
-		
-//		validateDocument.print();
+		List<RelatedRevocationWrapper> revocationsByOrigin = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+		assertNotNull(revocationsByOrigin);
+		assertEquals(1, revocationsByOrigin.size());
 	}
 }

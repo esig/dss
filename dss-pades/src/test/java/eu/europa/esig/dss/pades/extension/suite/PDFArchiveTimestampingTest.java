@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -128,15 +128,15 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 			}
 			assertTrue(timestampSource);
 			
-			assertEquals(1, timestampWrapper.getTimestampedSignedDataIds().size());
+			assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 		}
 		
 		assertTrue(Utils.isCollectionEmpty(diagnosticData.getSignatures()));
 		
-		List<XmlSignerData> originalDocuments = diagnosticData.getOriginalSignerDocuments();
+		List<SignerDataWrapper> originalDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertEquals(1, originalDocuments.size());
 		boolean fullDocFound = false;
-		for (XmlSignerData signerData : originalDocuments) {
+		for (SignerDataWrapper signerData : originalDocuments) {
 			if ("Full PDF".equals(signerData.getReferencedName())) {
 				assertEquals(originalDocDigestBase64, Utils.toBase64(signerData.getDigestAlgoAndValue().getDigestValue()));
 				fullDocFound = true;

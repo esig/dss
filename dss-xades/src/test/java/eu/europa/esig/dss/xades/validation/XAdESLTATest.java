@@ -87,19 +87,19 @@ public class XAdESLTATest {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		assertEquals(4, signature.getAllFoundCertificates().size());
-		assertEquals(2, signature.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-		assertEquals(3, signature.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-		assertEquals(2, signature.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-		assertEquals(0, signature.getRelatedCertificatesByOrigin(CertificateOrigin.CMS_SIGNED_DATA).size()); // not applicable for XAdES
+		assertEquals(4, signature.foundCertificates().getRelatedCertificates().size());
+		assertEquals(2, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(3, signature.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertEquals(2, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()); // not applicable for XAdES
 		
-		assertEquals(1, signature.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(1, signature.getRelatedRevocationsByType(RevocationType.CRL).size());
+		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.CRL).size());
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			assertEquals(4, timestamp.getAllFoundCertificates().size());
-			assertEquals(4, timestamp.getRelatedCertificatesByOrigin(CertificateOrigin.CMS_SIGNED_DATA).size());
-			assertEquals(1, timestamp.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+			assertEquals(4, timestamp.foundCertificates().getRelatedCertificates().size());
+			assertEquals(4, timestamp.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+			assertEquals(1, timestamp.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 		}
 	}
 

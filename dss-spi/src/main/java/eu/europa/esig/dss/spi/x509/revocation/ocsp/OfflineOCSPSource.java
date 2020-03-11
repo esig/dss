@@ -32,7 +32,6 @@ import java.util.Set;
 
 import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.cert.ocsp.CertificateID;
-import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,17 +72,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 		OCSPResponseBinary bestOCSPResponse = findBestOcspResponse(certificateToken, issuerCertificateToken);
 		if (bestOCSPResponse != null) {
-			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestOCSPResponse.getBasicOCSPResp(), certificateToken, issuerCertificateToken);
-			try {
-				OCSPToken ocspToken = ocspTokenBuilder.build();
-				OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
-				storeOCSPToken(bestOCSPResponse, ocspToken);
-				ocspToken.setOrigins(getRevocationOrigins(bestOCSPResponse));
-				return ocspToken;
-			} catch (OCSPException e) {
-				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);
-				return null;
-			}
+			OCSPToken ocspToken = new OCSPToken(bestOCSPResponse.getBasicOCSPResp(), certificateToken, issuerCertificateToken);
+			ocspToken.setOrigins(getRevocationOrigins(bestOCSPResponse));
+			storeOCSPToken(bestOCSPResponse, ocspToken);
+			return ocspToken;
 		} else if (LOG.isDebugEnabled()) {
 			LOG.debug("Best OCSP Response for the certificate {} is not found", certificateToken.getDSSIdAsString());
 		}

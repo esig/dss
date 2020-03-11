@@ -113,9 +113,9 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(3, timestampList.size());
 		
-		assertEquals(0, timestampList.get(0).getTimestampedRevocationIds().size());
-		assertEquals(2, timestampList.get(1).getTimestampedRevocationIds().size());
-		assertEquals(3, timestampList.get(2).getTimestampedRevocationIds().size());
+		assertEquals(0, timestampList.get(0).getTimestampedRevocations().size());
+		assertEquals(2, timestampList.get(1).getTimestampedRevocations().size());
+		assertEquals(3, timestampList.get(2).getTimestampedRevocations().size());
 		
 		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleLTADoc);
         ASiCExtractResult result = extractor.extract();

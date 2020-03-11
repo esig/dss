@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
@@ -82,10 +83,10 @@ public class XPointerValidationTest {
 		assertNotNull(xmlSignatureScope.getDescription());
 		XmlSignerData xPointerSignerData = xmlSignatureScope.getSignerData();
 		
-		List<XmlSignerData> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
+		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertEquals(1, originalSignerDocuments.size());
 		
-		XmlSignerData xmlSignerData = originalSignerDocuments.get(0);
+		SignerDataWrapper xmlSignerData = originalSignerDocuments.get(0);
 		assertNotNull(xmlSignerData.getDigestAlgoAndValue());
 		
 		assertEquals(xPointerSignerData.getId(), xmlSignerData.getId());

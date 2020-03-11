@@ -25,10 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -64,31 +71,45 @@ public class DSS1647Test {
 		timestamps = signature.getTimestampList();
 		TimestampWrapper archiveTimestamp = timestamps.get(1);
 		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, archiveTimestamp.getType());
-		assertEquals(4, archiveTimestamp.getTimestampedCertificateIds().size());
-		assertEquals(3, archiveTimestamp.getTimestampedRevocationIds().size());
-		assertEquals(1, archiveTimestamp.getTimestampedTimestampIds().size());
+		assertEquals(4, archiveTimestamp.getTimestampedCertificates().size());
+		assertEquals(2, archiveTimestamp.getTimestampedRevocations().size());
+		assertEquals(1, archiveTimestamp.getTimestampedOrphanRevocations().size());
+		assertEquals(1, archiveTimestamp.getTimestampedTimestamps().size());
 		
-		List<String> timestampValidationDataCertificateIds = signature.getFoundCertificateIds(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
-		assertEquals(1, timestampValidationDataCertificateIds.size());
-		assertTrue(archiveTimestamp.getTimestampedCertificateIds().contains(timestampValidationDataCertificateIds.get(0)));
+		List<RelatedCertificateWrapper> timestampValidationDataCertificates = signature.foundCertificates()
+				.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+		assertEquals(1, timestampValidationDataCertificates.size());
+		assertTrue(archiveTimestamp.getTimestampedCertificates().stream().map(CertificateWrapper::getId)
+				.collect(Collectors.toList()).contains(timestampValidationDataCertificates.get(0).getId()));
 		
-		List<String> certificateValueIds = signature.getFoundCertificateIds(CertificateOrigin.CERTIFICATE_VALUES);
-		assertEquals(3, certificateValueIds.size());
-		for (String certId : certificateValueIds) {
-			assertTrue(archiveTimestamp.getTimestampedCertificateIds().contains(certId));
+		List<RelatedCertificateWrapper> certificateValues = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
+		assertEquals(3, certificateValues.size());
+		for (RelatedCertificateWrapper cert : certificateValues) {
+			assertTrue(archiveTimestamp.getTimestampedCertificates().stream().map(CertificateWrapper::getId)
+					.collect(Collectors.toList()).contains(cert.getId()));
 		}
 		
-		List<String> timestampValidationDataRevocationIds = signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
-		assertEquals(1, timestampValidationDataRevocationIds.size());
-		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(timestampValidationDataRevocationIds.get(0)));
+		List<RelatedRevocationWrapper> timestampValidationDataRevocations = signature.foundRevocations()
+				.getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+		assertEquals(0, timestampValidationDataRevocations.size());
+
+		List<OrphanRevocationWrapper> timestampOrphanRevocations = signature.foundRevocations()
+				.getOrphanRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+		assertEquals(1, timestampOrphanRevocations.size());
+		assertTrue(archiveTimestamp.getTimestampedOrphanRevocations().stream().map(OrphanTokenWrapper::getId)
+				.collect(Collectors.toList()).contains(timestampOrphanRevocations.get(0).getId()));
 		
-		List<String> crlRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.REVOCATION_VALUES);
-		assertEquals(1, crlRevocationValueIds.size());
-		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(crlRevocationValueIds.get(0)));
+		List<RelatedRevocationWrapper> crlRevocationValues = signature.foundRevocations()
+				.getRelatedRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.REVOCATION_VALUES);
+		assertEquals(1, crlRevocationValues.size());
+		assertTrue(archiveTimestamp.getTimestampedRevocations().stream().map(RevocationWrapper::getId)
+				.collect(Collectors.toList()).contains(crlRevocationValues.get(0).getId()));
 		
-		List<String> ocspRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES);
-		assertEquals(1, ocspRevocationValueIds.size());
-		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(ocspRevocationValueIds.get(0)));
+		List<RelatedRevocationWrapper> ocspRevocationValues = signature.foundRevocations()
+				.getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES);
+		assertEquals(1, ocspRevocationValues.size());
+		assertTrue(archiveTimestamp.getTimestampedRevocations().stream().map(RevocationWrapper::getId)
+				.collect(Collectors.toList()).contains(ocspRevocationValues.get(0).getId()));
 	}
 
 }

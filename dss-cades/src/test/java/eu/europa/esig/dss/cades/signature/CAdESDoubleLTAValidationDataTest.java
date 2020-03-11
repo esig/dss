@@ -34,6 +34,8 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -89,8 +91,9 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<String> revocationIds = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
-		assertEquals(2, revocationIds.size());
+		List<RelatedRevocationWrapper> relatedRevocationData = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId())
+				.foundRevocations().getRelatedRevocationData();
+		assertEquals(2, relatedRevocationData.size());
 		
 		// ltLevelDoc.save("target/ltLevelDoc.pkcs7");
 		
@@ -122,10 +125,11 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		extendParams.setCertificateChain(getCertificateChain());
 		
 		diagnosticData = reports.getDiagnosticData();
-		List<String> revocationIdsLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
-		assertEquals(2, revocationIdsLtaLevel.size());
-		for (String id : revocationIds) {
-			assertTrue(revocationIdsLtaLevel.contains(id));
+		List<RelatedRevocationWrapper> relatedRevocationDataLTALevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId())
+				.foundRevocations().getRelatedRevocationData();
+		assertEquals(2, relatedRevocationDataLTALevel.size());
+		for (RevocationWrapper revocationWrapper : relatedRevocationData) {
+			assertTrue(relatedRevocationDataLTALevel.contains(revocationWrapper));
 		}
 		
 		
@@ -174,30 +178,37 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
 		
 		TimestampWrapper signatureTimestampWrapper = timestampList.get(0);
-		assertEquals(2, signatureTimestampWrapper.getAllFoundCertificates().size());
-		assertEquals(1, signatureTimestampWrapper.getAllFoundCertificateRefs().size());
-		assertEquals(0, signatureTimestampWrapper.getAllFoundRevocations().size());
-		assertEquals(0, signatureTimestampWrapper.getAllFoundRevocationRefs().size());
-		assertEquals(0, signatureTimestampWrapper.getTimestampedRevocationIds().size());
+		assertEquals(2, signatureTimestampWrapper.foundCertificates().getRelatedCertificates().size());
+		assertEquals(1, signatureTimestampWrapper.foundCertificates().getRelatedCertificateRefs().size());
+		assertEquals(0, signatureTimestampWrapper.foundCertificates().getOrphanCertificateRefs().size());
+		assertEquals(0, signatureTimestampWrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, signatureTimestampWrapper.foundRevocations().getRelatedRevocationRefs().size());
+		assertEquals(0, signatureTimestampWrapper.foundRevocations().getOrphanRevocationRefs().size());
+		assertEquals(0, signatureTimestampWrapper.getTimestampedRevocations().size());
 		
 		TimestampWrapper archiveTimestampWrapper = timestampList.get(1);
-		assertEquals(4, archiveTimestampWrapper.getAllFoundCertificates().size());
-		assertEquals(1, archiveTimestampWrapper.getAllFoundCertificateRefs().size());
-		assertEquals(1, archiveTimestampWrapper.getAllFoundRevocations().size());
-		assertEquals(0, archiveTimestampWrapper.getAllFoundRevocationRefs().size());
-		assertEquals(2, archiveTimestampWrapper.getTimestampedRevocationIds().size());
+		assertEquals(4, archiveTimestampWrapper.foundCertificates().getRelatedCertificates().size());
+		assertEquals(1, archiveTimestampWrapper.foundCertificates().getRelatedCertificateRefs().size());
+		assertEquals(0, archiveTimestampWrapper.foundCertificates().getOrphanCertificateRefs().size());
+		assertEquals(1, archiveTimestampWrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, archiveTimestampWrapper.foundRevocations().getRelatedRevocationRefs().size());
+		assertEquals(0, archiveTimestampWrapper.foundRevocations().getOrphanRevocationRefs().size());
+		assertEquals(2, archiveTimestampWrapper.getTimestampedRevocations().size());
 
 		TimestampWrapper secondArchiveTimestampWrapper = timestampList.get(2);
-		assertEquals(4, secondArchiveTimestampWrapper.getAllFoundCertificates().size());
-		assertEquals(1, secondArchiveTimestampWrapper.getAllFoundCertificateRefs().size());
-		assertEquals(0, secondArchiveTimestampWrapper.getAllFoundRevocations().size());
-		assertEquals(0, secondArchiveTimestampWrapper.getAllFoundRevocationRefs().size());
-		assertEquals(3, secondArchiveTimestampWrapper.getTimestampedRevocationIds().size());
+		assertEquals(4, secondArchiveTimestampWrapper.foundCertificates().getRelatedCertificates().size());
+		assertEquals(1, secondArchiveTimestampWrapper.foundCertificates().getRelatedCertificateRefs().size());
+		assertEquals(0, secondArchiveTimestampWrapper.foundCertificates().getOrphanCertificateRefs().size());
+		assertEquals(0, secondArchiveTimestampWrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, archiveTimestampWrapper.foundRevocations().getRelatedRevocationRefs().size());
+		assertEquals(0, archiveTimestampWrapper.foundRevocations().getOrphanRevocationRefs().size());
+		assertEquals(3, secondArchiveTimestampWrapper.getTimestampedRevocations().size());
 		
-		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
-		assertEquals(2, revocationIdsDoubleLtaLevel.size());
-		for (String id : revocationIdsLtaLevel) {
-			assertTrue(revocationIdsDoubleLtaLevel.contains(id));
+		List<RelatedRevocationWrapper> revocationDataDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId())
+				.foundRevocations().getRelatedRevocationData();
+		assertEquals(2, revocationDataDoubleLtaLevel.size());
+		for (RevocationWrapper revocation : revocationDataDoubleLtaLevel) {
+			assertTrue(relatedRevocationDataLTALevel.contains(revocation));
 		}
 		
 		assertEquals(3, diagnosticData.getAllRevocationData().size());

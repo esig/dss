@@ -29,6 +29,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -70,10 +71,10 @@ public class XAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
-			List<String> timestampedSignatureIds = wrapper.getTimestampedSignatureIds();
+			List<SignatureWrapper> timestampedSignatures = wrapper.getTimestampedSignatures();
 			boolean found = false;
-			for (String id : timestampedSignatureIds) {
-				if (signatureId.equals(id)) {
+			for (SignatureWrapper signatureWrapper : timestampedSignatures) {
+				if (signatureId.equals(signatureWrapper.getId())) {
 					found = true;
 				}
 			}

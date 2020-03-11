@@ -119,14 +119,12 @@ public class OfflineOCSPSourceTest {
 		CertificateToken certUser = DSSUtils.loadCertificateFromBase64EncodedString(user);
 		CertificateToken certCA = DSSUtils.loadCertificateFromBase64EncodedString(ca);
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certUser, certCA);
-		ocspToken.initInfo();
 
 		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, ocspToken.getSignatureAlgorithm());
 		assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
 		assertTrue(ocspToken.isValid());
 		assertTrue(ocspToken.isCertHashPresent());
 		assertTrue(ocspToken.isCertHashMatch());
-		assertFalse(ocspToken.isUseNonce());
 		assertTrue(ocspToken.getStatus());
 		assertNull(ocspToken.getReason());
 		assertNull(ocspToken.getRevocationDate());

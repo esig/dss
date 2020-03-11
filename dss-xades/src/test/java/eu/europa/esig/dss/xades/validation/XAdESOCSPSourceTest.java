@@ -44,13 +44,13 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		assertEquals(5, signature.getAllFoundRevocations().size());
+		assertEquals(5, signature.foundRevocations().getRelatedRevocationData().size());
 		
-		assertEquals(4, signature.getRevocationIdsByType(RevocationType.CRL).size());
-		assertEquals(1, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(4, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.CRL).size());
+		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
 		
-		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 	}
 
 	@Test
@@ -61,13 +61,13 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		assertEquals(4, signature.getAllFoundRevocations().size());
+		assertEquals(4, signature.foundRevocations().getRelatedRevocationData().size());
 		
-		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
-		assertEquals(4, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.CRL).size());
+		assertEquals(4, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
 		
-		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 	}
 
 	@Test
@@ -78,13 +78,13 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		assertEquals(0, signature.getAllFoundRevocations().size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationData().size());
 		
-		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
-		assertEquals(0, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.CRL).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
 		
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 	}
 	
 	private DiagnosticData getDiagnosticData(DSSDocument doc) {

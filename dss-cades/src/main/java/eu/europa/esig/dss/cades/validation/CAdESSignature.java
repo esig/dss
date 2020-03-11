@@ -104,14 +104,13 @@ import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.IssuerSerialInfo;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -288,7 +287,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final SignerId signerId = getSignerId();
 		
 		// firstly check the KeyInfo attribute
-		findSigningCertificateInCollection(signerId, certSource.getCMSSignedDataCertificates());
+		findSigningCertificateInCollection(signerId, certSource.getSignedDataCertificates());
 		
 		// check the certificate pool
 		if (signingCertificateValidity == null) {

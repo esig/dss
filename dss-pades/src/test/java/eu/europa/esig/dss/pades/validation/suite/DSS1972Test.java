@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -31,17 +32,18 @@ public class DSS1972Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 		
-		assertEquals(0, diagnosticData.getAllOrphanCertificates().size());
-		assertEquals(1, diagnosticData.getAllOrphanRevocations().size());
+		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
+		assertEquals(1, diagnosticData.getAllOrphanRevocationReferences().size());
 		
-		String orphanRevocationId = diagnosticData.getAllOrphanRevocations().get(0).getId();
+		String orphanRevocationId = diagnosticData.getAllOrphanRevocationReferences().get(0).getId();
 		
 		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			if (timestampWrapper.getType().isArchivalTimestamp()) {
-				List<String> timestampedOrphanTokenIds = timestampWrapper.getAllTimestampedOrphanTokenIds();
-				assertEquals(1, timestampedOrphanTokenIds.size());
-				assertEquals(orphanRevocationId, timestampedOrphanTokenIds.get(0));
+				List<OrphanTokenWrapper> allTimestampedOrphanTokens = timestampWrapper.getAllTimestampedOrphanTokens();
+				assertEquals(1, allTimestampedOrphanTokens.size());
+				assertEquals(orphanRevocationId, allTimestampedOrphanTokens.get(0).getId());
 				
 				++archiveTimestampCounter;
 			}
