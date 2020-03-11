@@ -83,7 +83,7 @@ public final class DiagnosticDataXmlDefiner {
 	
 	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
 		try (InputStream is = DiagnosticDataXmlDefiner.class.getResourceAsStream(path)) {
-			TransformerFactory transformerFactory = XmlDefinerUtils.getSecureTransformerFactory();
+			TransformerFactory transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
 			return transformerFactory.newTemplates(new StreamSource(is));
 		}
 	}

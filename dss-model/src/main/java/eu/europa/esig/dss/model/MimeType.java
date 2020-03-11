@@ -54,6 +54,7 @@ public class MimeType implements Serializable {
 
 	public static final MimeType PNG = new MimeType("image/png");
 	public static final MimeType JPEG = new MimeType("image/jpeg");
+	public static final MimeType SVG = new MimeType("image/svg+xml");
 
 	private String mimeTypeString;
 
@@ -85,6 +86,7 @@ public class MimeType implements Serializable {
 		fileExtensions.put("png", PNG);
 		fileExtensions.put("jpg", JPEG);
 		fileExtensions.put("jpeg", JPEG);
+		fileExtensions.put("svg", SVG);
 
 		fileExtensions.put("tst", TST);
 	}
