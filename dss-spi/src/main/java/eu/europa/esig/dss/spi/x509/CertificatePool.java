@@ -270,9 +270,12 @@ public class CertificatePool implements Serializable {
 		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
 		for (CertificatePoolEntity entity : values) {
 			List<CertificateToken> equivalentCertificates = entity.getEquivalentCertificates();
-			CertificateToken token = equivalentCertificates.iterator().next();
-			X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(token);
-			Store<X509CertificateHolder> store = new CollectionStore<>(Collections.singleton(x509CertificateHolder));
+			List<X509CertificateHolder> collection = new ArrayList<>();
+			for (CertificateToken token : equivalentCertificates) {
+				collection.add(DSSASN1Utils.getX509CertificateHolder(token));
+			}
+			Store<X509CertificateHolder> store = new CollectionStore<>(collection);
+			// matches by SN + IssuerName
 			Collection<X509CertificateHolder> matches = store.getMatches(signerId);
 			if (!matches.isEmpty()) {
 				return equivalentCertificates;
