@@ -6,60 +6,82 @@
 		Your browser does not support SVGs
 	</object>
 	
-	<select id="select-signature">
+	<select id="select-visualrepresentation">
+		<optgroup label="Signatures and related timestamps" id="select-visualrepresentation-sigs">
+		
+		</optgroup>
+		<optgroup label="Certificate chains" id="select-visualrepresentation-chains">
+		
+		</optgroup>
 	</select>
-	
-	<select id="select-cert-chain">
-	</select>
-	
-	<script type="text/javascript">
-		var mySVG = document.getElementById("svg-diag-data");
-		var svgWidth = mySVG.width;
-		var svgHeight = mySVG.height;
 
+	<script type="text/javascript">
+	
+		var mySVG = document.getElementById("svg-diag-data");
+		var svgWidth = parseInt(mySVG.width);
+		var svgHeight = parseInt(mySVG.height);
+		var padding = 40;
+	
 		mySVG.addEventListener("load",function() {
-			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight, padding);
+			
 			representation.displayFirstSignature();
 			
 			var signatureIds = mySVG.contentDocument.getSignatureIds();
 			initSignatureSelect(signatureIds);
 			
-			var leafIds = mySVG.contentDocument.getLeafIds();
-			initCertChainSelect(leafIds);
+			var certificateIds = mySVG.contentDocument.getCertificateIds();
+			initCertChainSelect(certificateIds);
+			
 		});
-
+	
 		function initSignatureSelect(signatureIds) {
-			var select = document.getElementById("select-signature");
-			for (var elementIdx = 0;  elementIdx < signatureIds.length; elementIdx++) {
-				var sigId = signatureIds[elementIdx];
-				var option = document.createElement("option");
-				option.text = sigId;
-				select.add(option);
+			var optgroup = document.getElementById("select-visualrepresentation-sigs");
+			if (signatureIds == null || signatureIds.length == 0) {
+				optgroup.style.display="none";
+			} else {
+				optgroup.style.display="";
+				for (var elementIdx = 0;  elementIdx < signatureIds.length; elementIdx++) {
+					var sigId = signatureIds[elementIdx];
+					var option = document.createElement("option");
+					option.text = sigId;
+					option.className = "sig";
+					optgroup.appendChild(option);
+				}
 			}
 		}
-
-		function initCertChainSelect(leafIds) {
-			var select = document.getElementById("select-cert-chain");
-			for (var elementIdx = 0;  elementIdx < leafIds.length; elementIdx++) {
-				var chainId = leafIds[elementIdx];
-				var option = document.createElement("option");
-				option.text = chainId;
-				select.add(option);
+	
+		function initCertChainSelect(certificateIds) {
+			var optgroup = document.getElementById("select-visualrepresentation-chains");
+			if (certificateIds == null || certificateIds.length == 0) {
+				optgroup.style.display="none";
+			} else {
+				optgroup.style.display="";
+				for (var elementIdx = 0;  elementIdx < certificateIds.length; elementIdx++) {
+					var certificateId = certificateIds[elementIdx];
+					var option = document.createElement("option");
+					option.text = certificateId;
+					option.className = "chain";
+					optgroup.appendChild(option);
+				}
 			}
 		}
 		
-		var selectSignature = document.getElementById("select-signature");
-		selectSignature.addEventListener("change", function(){
-			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
-			representation.displaySignatureById(this.value);
-		});
+		var selectVisual = document.getElementById("select-visualrepresentation");
 		
-		var selectCertChain = document.getElementById("select-cert-chain");
-		selectCertChain.addEventListener("change", function(){
-			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight);
-			representation.displayCertificateChainById(this.value);
+		selectVisual.addEventListener("change", function() {
+			if (this.selectedOptions == null || this.selectedOptions.length != 1){
+				return;
+			}
+			var option = this.selectedOptions[0];
+			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight, padding);
+			if ("sig" == option.className) {
+				representation.displaySignatureById(option.value);
+			}else {
+				representation.displayCertificateChainById(option.value);
+			}
+			
 		});
-		
 		
 	</script>
 

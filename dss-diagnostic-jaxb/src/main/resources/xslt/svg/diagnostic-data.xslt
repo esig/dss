@@ -32,7 +32,7 @@
 			.not-revoked {
 				stroke: #28a745;
 			}
-			.svg-certificate-revocation { 
+			.svg-certificate-revocation, #svg-validation-time-group { 
 				overflow: visible;
 			}
 			
@@ -62,19 +62,18 @@
     			}
     			
     			document.initSVG = function(width, height, padding) {
-    				return new Representation(width, height, padding, getTimeline(), getValidationTime(), getCertificates(), getRevocations(), getCertificateRevocations(), getSignatures(), getTimestamps());
+    				return new Representation(width, height, padding, getTimeline(), getValidationTime(), getCertificates(), getCertificateRevocations(), getSignatures(), getTimestamps());
     			}
     			
     			class Representation {
     			
-    				constructor(width, height, padding, timeline, validationTime, certificates, revocations, certificateRevocations, signatures, timestamps) {
+    				constructor(width, height, padding, timeline, validationTime, certificates, certificateRevocations, signatures, timestamps) {
     					this.width = width;
     					this.height = height;
     					this.padding = padding;
     					this.timeline = timeline;
     					this.validationTime = validationTime;
 	    				this.certificates =	certificates;
-	    				this.revocations = revocations;
 	    				this.certificateRevocations = certificateRevocations;
 	    				this.signatures = signatures;
 	    				this.timestamps = timestamps;
@@ -204,6 +203,8 @@
 							cert.posX(this.getPosX(cert.notBefore));
 							cert.width(this.getWidth(cert.notBefore, cert.notAfter));
 							cert.posY(y);
+							cert.addNotBeforeTitle();
+							cert.addNotAfterTitle();
 							cert.show();
 							
 							var revocs = this.getRevocationsForCertificate(cert.id);
@@ -335,14 +336,12 @@
     				}
     				
     				hideAll() {
-<!-- 						console.log("hideAll"); -->
     					this.validationTime.hide();
     					hideGraphicItems(this.certificates);
     					hideGraphicItems(this.revocations);
     					hideGraphicItems(this.certificateRevocations);
     					hideGraphicItems(this.signatures);
     					hideGraphicItems(this.timestamps);
-<!--     					console.log("hideAll : done"); -->
     				}
     				
     			}    	
@@ -406,23 +405,21 @@
     			 }
     			
     			 class Certificate extends GraphicItem {
-    			 	constructor(svgElement, notBefore, notAfter, signingCertificate) {
+    			 	constructor(svgElement, notBeforeTitle, notAfterTitle, notBeforeDate, notAfterDate, signingCertificate) {
     			 		super(svgElement);
-    			 		this.notBefore = notBefore;
-    			 		this.notAfter = notAfter;
+    			 		this.notBeforeTitleElement = notBeforeTitle;
+    			 		this.notAfterTitleElement = notAfterTitle;
+    			 		this.notBefore = notBeforeDate;
+    			 		this.notAfter = notAfterDate;
     			 		this.signingCertificate = signingCertificate;
     			 	}
-    			 }
-    			 
-    			 class RevocationData extends GraphicItem {
-    			 	constructor(svgElement, productionTime, thisUpdate, nextUpdate, expiredCertsOnCrl, archiveCutOff, signingCertificate) {
-    			 		super(svgElement);
-    			 		this.productionTime = productionTime;
-    			 		this.thisUpdate = thisUpdate;
-    			 		this.nextUpdate = nextUpdate;
-    			 		this.expiredCertsOnCrl = expiredCertsOnCrl;
-    			 		this.archiveCutOff = archiveCutOff;
-    			 		this.signingCertificate = signingCertificate;
+    			 	
+    			 	addNotBeforeTitle() {
+    			 		this.notBeforeTitleElement.textContent = "Not Before : "+ this.notBefore.toISOString().split('.')[0];
+					}
+					
+    			 	addNotAfterTitle() {
+    			 		this.notAfterTitleElement.textContent = "Not After : "+ this.notAfter.toISOString().split('.')[0];
     			 	}
     			 }
     			 
@@ -446,11 +443,11 @@
     			 }
     			 
     			 function getValidationTime() {
-					var element = document.getElementById("svg-validation-time");
+					var element = document.getElementById("svg-validation-time-group");
 					if (element != null) {
-						var titleElements = element.getElementsByTagName("title");
-						if (titleElements.length == 1) {
-							return new ValidationTime(element, new Date(titleElements[0].textContent));
+						var dateText = element.getElementById("svg-validation-time");
+						if (dateText != null) {
+							return new ValidationTime(element, new Date(dateText.textContent));
 						}
 					}
 					return null;
@@ -464,28 +461,28 @@
 						var notBefore =  getUniqueDate(currentElement, "svg-not-before");
 						var notAfter =  getUniqueDate(currentElement, "svg-not-after");
 						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
-						var cert = new Certificate(currentElement, notBefore, notAfter, signingCertificateId);
+						
+						var notBeforeElement = null;
+						var notAfterElement = null; 
+						var notBeforeElements = document.getElementsByClassName("not-before");
+						if (notBeforeElements != null && notBeforeElements.length == 1) {
+							var titles = notBeforeElements[0].getElementsByTagName("title");
+							if (titles != null && titles.length == 1) {
+								notBeforeElement = titles[0];
+							}
+						}
+						var notAfterElements = document.getElementsByClassName("not-after");
+						if (notAfterElements != null && notAfterElements.length == 1) {
+							var titles = notAfterElements[0].getElementsByTagName("title");
+							if (titles != null && titles.length == 1) {
+								notAfterElement = titles[0];
+							}
+						}
+						
+						var cert = new Certificate(currentElement, notBeforeElement, notAfterElement, notBefore, notAfter, signingCertificateId);
 						certificates.push(cert);
 					}
 					return certificates;
-    			}
-    			
-    			function getRevocations() {
-					var revocations = new Array();
-					var elements = document.getElementsByClassName("svg-revocation");
-					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
-						var currentElement = elements[elementIdx];
-						var productionTime =  getUniqueDate(currentElement, "svg-production-date");
-						var thisUpdate =  getUniqueDate(currentElement, "svg-this-update ");
-						var nextUpdate =  getUniqueDate(currentElement, "svg-next-update");
-						var expiredCertsOnCrl =  getUniqueDate(currentElement, "svg-expired-certs-on-crl");
-						var archiveCutOff =  getUniqueDate(currentElement, "svg-archive-cut-off");
-						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
-						
-						var revocationData = new RevocationData(currentElement, productionTime, thisUpdate, nextUpdate, expiredCertsOnCrl, archiveCutOff, signingCertificateId);
-						revocations.push(revocationData);
-					}
-					return revocations;
     			}
     			
     			function getCertificateRevocations() {
@@ -612,8 +609,8 @@
   				<rect y="4" width="100%" height="4" stroke-width="0" />	
   				<rect y="8" width="100%" height="4" fill="white" stroke-width="0" />
 			    
-			    <line x1="0" y1="0" x2="0" y2="12" stroke-width="6" />
-			    <line x1="100%" y1="0" x2="100%" y2="12" stroke-width="6" />
+			    <line x1="0" y1="0" x2="0" y2="12" stroke-width="6" class="not-before"><title>NotBefore</title></line>
+			    <line x1="100%" y1="0" x2="100%" y2="12" stroke-width="6" class="not-after"><title>NotAfter</title></line>
 	  		</g>
 	  		
 	  		<g id="timeline">
@@ -624,10 +621,13 @@
 	  		
 	  	</defs>
 	  
-		<text id="svg-validation-time"><title>Validation time : <xsl:value-of select="diag:ValidationDate" /></title>?</text>
+	  	<svg id="svg-validation-time-group">
+	  		<title>Validation time : <xsl:value-of select="diag:ValidationDate" /></title>
+			<text id="svg-validation-time" style="display:none"><xsl:value-of select="diag:ValidationDate" /></text>
+			<text>?</text>
+  		</svg>
 	  
 		<xsl:apply-templates select="diag:UsedCertificates/diag:Certificate"/>
-<!-- 	<xsl:apply-templates select="diag:UsedRevocations/diag:Revocation"/> -->
 		<xsl:apply-templates select="diag:UsedTimestamps/diag:Timestamp"/>
 		<xsl:apply-templates select="diag:Signatures/diag:Signature"/>
 		
@@ -639,7 +639,6 @@
 	</xsl:template>
 	
 	<xsl:template match="diag:Signature">
-		
   		<use href="#signature-symbol" class="svg-signature">
 	
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
@@ -667,7 +666,7 @@
 	</xsl:template>
 	
 	<xsl:template match="diag:Timestamp">
-		<svg class="svg-timestamp"> 
+  		<use href="#timestamp-symbol" class="svg-timestamp">
 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
 			
 			<title>Production time : <xsl:value-of select="diag:ProductionTime" /> (<xsl:value-of select="@Id" />)</title>
@@ -681,9 +680,7 @@
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
-			
-  			<use href="#timestamp-symbol"  />
-		</svg>
+		</use>
 	</xsl:template>
 	
 	<xsl:template match="diag:Certificate">
@@ -760,39 +757,4 @@
 		</svg>
 	</xsl:template>
 	
-	
-<!-- 	<xsl:template match="diag:Revocation"> -->
-<!-- 		<rect width="200" height="10" fill="red" class="svg-revocation"> -->
-<!-- 			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>			 -->
-<!-- 			<text class="svg-production-date date"> -->
-<!-- 				<xsl:value-of select="diag:ProductionDate" /> -->
-<!-- 			</text> -->
-<!-- 			<text class="svg-this-update date"> -->
-<!-- 				<xsl:value-of select="diag:ThisUpdate" /> -->
-<!-- 			</text> -->
-<!-- 			<xsl:if test="diag:NextUpdate"> -->
-<!-- 				<text class="svg-next-update date"> -->
-<!-- 					<xsl:value-of select="diag:NextUpdate" /> -->
-<!-- 				</text> -->
-<!-- 			</xsl:if> -->
-<!-- 			<xsl:if test="diag:ExpiredCertsOnCRL"> -->
-<!-- 				<text class="svg-expired-certs-on-crl date"> -->
-<!-- 					<xsl:value-of select="diag:ExpiredCertsOnCRL" /> -->
-<!-- 				</text> -->
-<!-- 			</xsl:if> -->
-<!-- 			<xsl:if test="diag:ArchiveCutOff"> -->
-<!-- 				<text class="svg-archive-cut-off date"> -->
-<!-- 					<xsl:value-of select="diag:ArchiveCutOff" /> -->
-<!-- 				</text> -->
-<!-- 			</xsl:if> -->
-<!-- 			<xsl:if test="diag:SigningCertificate/@Certificate"> -->
-<!-- 				<text class="svg-signing-cert"> -->
-<!-- 					<xsl:value-of select="diag:SigningCertificate/@Certificate" /> -->
-<!-- 				</text> -->
-<!-- 			</xsl:if> -->
-<!-- 		</rect> -->
-<!-- 		<xsl:apply-templates select="diag:Revocations/diag:CertificateRevocation"/> -->
-<!-- 	</xsl:template> -->
-	
- 
 </xsl:stylesheet>
