@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -37,11 +39,6 @@ public abstract class RevocationToken extends Token {
 	 * Related {@link CertificateToken} to this revocation object
 	 */
 	protected CertificateToken relatedCertificate;
-	
-	/**
-	 * An identifier referencing a CRL or OCSP response has been used for determining the revocation status.
-	 */
-	protected RevocationType revocationType;
 
 	/**
 	 * Origins of the revocation data (signature or external)
@@ -108,9 +105,12 @@ public abstract class RevocationToken extends Token {
 	 */
 	protected String revocationTokenKey;
 	
-	public RevocationType getRevocationType() {
-		return revocationType;
-	}
+	/**
+	 * Returns the Revocation Token type (CRL or OCSP)
+	 * 
+	 * @return {@link RevocationType} of the token
+	 */
+	public abstract RevocationType getRevocationType();
 
 	public String getRelatedCertificateID() {
 		if (relatedCertificate != null) {
@@ -291,10 +291,25 @@ public abstract class RevocationToken extends Token {
 		this.revocationTokenKey = key;
 	}
 	
-	/**
-	 * Initialize inner attributes
+	/**	
+	 * Returns a source of embedded into a revocation token certificates
+	 * 
+	 * @return {@link RevocationCertificateSource}
 	 */
-	public abstract void initInfo();
+	public abstract RevocationCertificateSource getCertificateSource();
+	
+	/**
+	 * Returns a list of embedded {@code CertificateToken}s
+	 * 
+	 * @return a list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> getCertificates() {
+		RevocationCertificateSource certificateSource = getCertificateSource();
+		if (certificateSource != null) {
+			return certificateSource.getCertificates();
+		}
+		return Collections.emptyList();
+	}
 
 	/**
 	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the

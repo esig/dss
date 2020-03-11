@@ -24,7 +24,7 @@ public enum CertificateOrigin {
 	
 	KEY_INFO, /* XAdES specific */
 	
-	CMS_SIGNED_DATA, /* CAdES specific */
+	SIGNED_DATA, /* Certificates extracted from a signed attribute */
 	
 	CERTIFICATE_VALUES,
 	
@@ -36,6 +36,6 @@ public enum CertificateOrigin {
 	
 	VRI_DICTIONARY, /* PAdES specific */
 	
-	TIMESTAMP_CERTIFICATE_VALUES,
+	BASIC_OCSP_RESP, /* OCSP Response */
 
 }

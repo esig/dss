@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -39,9 +40,9 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateRef;
-import eu.europa.esig.dss.validation.IssuerSerialInfo;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -138,7 +139,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	@Override
-	public List<CertificateToken> getCMSSignedDataCertificates() {
+	public List<CertificateToken> getSignedDataCertificates() {
 		// not applicable for XAdES
 		return Collections.emptyList();
 	}
@@ -296,7 +297,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		}
 
 		final String textContent = issuerSerialV2Element.getTextContent();
-		return getIssuerInfo(DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent)));
+		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
+		return DSSASN1Utils.toIssuerInfo(issuerSerial);
 	}
 
 }

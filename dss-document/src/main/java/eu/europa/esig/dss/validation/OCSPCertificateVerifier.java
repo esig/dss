@@ -23,13 +23,13 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPTokenUtils;
 
 /**
  * Check the status of the certificate using an OCSPSource
@@ -73,9 +73,9 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			if (ocspToken == null) {
 				LOG.debug("{} : No matching OCSP response found for {}", ocspSource.getClass().getSimpleName(), toCheckToken.getDSSIdAsString());
 			} else {
-				LOG.trace("An OCSP Response {} is obtained. Checking its validity...", ocspToken.getDSSIdAsString());
+				LOG.trace("An OCSP Response {} is obtained.", ocspToken.getDSSIdAsString());
 				LOG.trace("OCSP Response {} status is : {}", ocspToken.getDSSIdAsString(), ocspToken.getStatus());
-				OCSPTokenUtils.checkTokenValidity(ocspToken, validationCertPool);
+				enrichCertificatePool(ocspToken);
 			}
 			return ocspToken;
 		} catch (DSSException e) {
@@ -83,6 +83,12 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			return null;
 		}
 	}
-
+	
+	private void enrichCertificatePool(OCSPToken ocspToken) {
+		CertificateSourceType certificateSourceType = ocspToken.getCertificateSource().getCertificateSourceType();
+		for (CertificateToken certificateToken : ocspToken.getCertificates()) {
+			validationCertPool.getInstance(certificateToken, certificateSourceType);
+		}
+	}
 
 }

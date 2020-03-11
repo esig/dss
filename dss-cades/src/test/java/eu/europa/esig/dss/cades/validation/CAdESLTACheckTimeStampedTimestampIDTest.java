@@ -72,9 +72,9 @@ public class CAdESLTACheckTimeStampedTimestampIDTest extends PKIFactoryAccess {
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(diagnostic.getFirstSignatureId())) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
 				boolean coverPreviousTsp = false;
-				List<String> timestampedTimestampIds = wrapper.getTimestampedTimestampIds();
-				for (String id : timestampedTimestampIds) {
-					if (timestampId.equals(id)) {
+				List<TimestampWrapper> timestampedTimestamps = wrapper.getTimestampedTimestamps();
+				for (TimestampWrapper timestamp : timestampedTimestamps) {
+					if (timestampId.equals(timestamp.getId())) {
 						coverPreviousTsp = true;
 					}
 				}

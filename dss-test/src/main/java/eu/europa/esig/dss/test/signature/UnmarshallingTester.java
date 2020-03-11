@@ -259,9 +259,9 @@ public class UnmarshallingTester {
 
 		assertEquals(original.getAllSignatures().size(), unmarshalled.getAllSignatures().size());
 		assertEquals(original.getAllCounterSignatures().size(), unmarshalled.getAllCounterSignatures().size());
-		assertEquals(original.getAllOrphanCertificates().size(), unmarshalled.getAllOrphanCertificates().size());
+		assertEquals(original.getAllOrphanCertificateObjects().size(), unmarshalled.getAllOrphanCertificateObjects().size());
 		assertEquals(original.getAllRevocationData().size(), unmarshalled.getAllRevocationData().size());
-		assertEquals(original.getAllOrphanRevocations().size(), unmarshalled.getAllOrphanRevocations().size());
+		assertEquals(original.getAllOrphanRevocationObjects().size(), unmarshalled.getAllOrphanRevocationObjects().size());
 		assertEquals(original.getListOfTrustedLists().size(), unmarshalled.getListOfTrustedLists().size());
 		assertEquals(original.getUsedCertificates().size(), unmarshalled.getUsedCertificates().size());
 		assertEquals(original.getTimestampList().size(), unmarshalled.getTimestampList().size());
@@ -283,12 +283,14 @@ public class UnmarshallingTester {
 			} else {
 				assertEquals(unmarshalledSig.getSigningCertificate().getId(), originalSignature.getSigningCertificate().getId());
 			}
-			assertEquals(unmarshalledSig.getOrphanCertificates().size(), originalSignature.getOrphanCertificates().size());
-			assertEquals(unmarshalledSig.getAllFoundCertificates().size(), originalSignature.getAllFoundCertificates().size());
-			assertEquals(unmarshalledSig.getAllFoundRevocationRefs().size(), originalSignature.getAllFoundRevocationRefs().size());
-			assertEquals(unmarshalledSig.getAllFoundRevocations().size(), originalSignature.getAllFoundRevocations().size());
-			assertEquals(unmarshalledSig.getAllOrphanRevocationRefs().size(), originalSignature.getAllOrphanRevocationRefs().size());
-			assertEquals(unmarshalledSig.getAllRelatedRevocationRefs().size(), originalSignature.getAllRelatedRevocationRefs().size());
+			assertEquals(unmarshalledSig.foundCertificates().getOrphanCertificates().size(), originalSignature.foundCertificates().getOrphanCertificates().size());
+			assertEquals(unmarshalledSig.foundCertificates().getRelatedCertificates().size(), originalSignature.foundCertificates().getRelatedCertificates().size());
+			assertEquals(unmarshalledSig.foundCertificates().getRelatedCertificateRefs().size(), originalSignature.foundCertificates().getRelatedCertificateRefs().size());
+			assertEquals(unmarshalledSig.foundCertificates().getOrphanCertificateRefs().size(), originalSignature.foundCertificates().getOrphanCertificateRefs().size());
+			assertEquals(unmarshalledSig.foundRevocations().getRelatedRevocationData().size(), originalSignature.foundRevocations().getRelatedRevocationData().size());
+			assertEquals(unmarshalledSig.foundRevocations().getOrphanRevocationData().size(), originalSignature.foundRevocations().getOrphanRevocationData().size());
+			assertEquals(unmarshalledSig.foundRevocations().getRelatedRevocationRefs().size(), originalSignature.foundRevocations().getRelatedRevocationRefs().size());
+			assertEquals(unmarshalledSig.foundRevocations().getOrphanRevocationRefs().size(), originalSignature.foundRevocations().getOrphanRevocationRefs().size());
 			assertEquals(unmarshalledSig.getCertificateChain().size(), originalSignature.getCertificateChain().size());
 			assertEquals(unmarshalledSig.getCertifiedRoles().size(), originalSignature.getCertifiedRoles().size());
 			assertEquals(unmarshalledSig.getClaimedRoles().size(), originalSignature.getClaimedRoles().size());
@@ -298,7 +300,6 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledSig.getSignerRoles().size(), originalSignature.getSignerRoles().size());
 			assertEquals(unmarshalledSig.getSignatureScopes().size(), originalSignature.getSignatureScopes().size());
 			assertEquals(unmarshalledSig.getSignatureInformationStore().size(), originalSignature.getSignatureInformationStore().size());
-			assertEquals(unmarshalledSig.getRelatedRevocations().size(), originalSignature.getRelatedRevocations().size());
 			assertEquals(unmarshalledSig.getDigestAlgorithm(), originalSignature.getDigestAlgorithm());
 			assertEquals(unmarshalledSig.getEncryptionAlgorithm(), originalSignature.getEncryptionAlgorithm());
 			assertEquals(unmarshalledSig.getMaskGenerationFunction(), originalSignature.getMaskGenerationFunction());
@@ -342,7 +343,7 @@ public class UnmarshallingTester {
 				assertEquals(unmarshalledTst.getSigningCertificate().getId(), originalTst.getSigningCertificate().getId());
 			}
 			assertEquals(unmarshalledTst.getCertificateChain().size(), originalTst.getCertificateChain().size());
-			assertEquals(unmarshalledTst.getAllTimestampedOrphanTokenIds().size(), originalTst.getAllTimestampedOrphanTokenIds().size());
+			assertEquals(unmarshalledTst.getAllTimestampedOrphanTokens().size(), originalTst.getAllTimestampedOrphanTokens().size());
 			assertEquals(unmarshalledTst.getDigestMatchers().size(), originalTst.getDigestMatchers().size());
 			assertEquals(unmarshalledTst.getCertificateChain().size(), originalTst.getCertificateChain().size());
 			assertEquals(unmarshalledTst.getTimestampedObjects().size(), originalTst.getTimestampedObjects().size());

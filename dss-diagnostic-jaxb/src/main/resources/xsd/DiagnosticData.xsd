@@ -633,7 +633,11 @@
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateRefOriginType" />
 			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
-			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+			<xs:choice>
+				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue"/>
+				<xs:element name="IssuerName" type="xs:string" /> <!-- in case of OCSP response -->
+				<xs:element name="Ski" type="xs:base64Binary" /> <!-- in case of OCSP response -->
+			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -653,13 +657,13 @@
 	<xs:simpleType name="CertificateOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="KEY_INFO" />
-			<xs:enumeration value="CMS_SIGNED_DATA" />
+			<xs:enumeration value="SIGNED_DATA" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
-			<xs:enumeration value="TIMESTAMP_CERTIFICATE_VALUES" />
+			<xs:enumeration value="BASIC_OCSP_RESP" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -791,6 +795,9 @@
 					<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+					
+					<xs:element name="FoundCertificates" type="FoundCertificates" minOccurs="0" />
+					
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
 						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
@@ -853,13 +860,11 @@
 	<xs:simpleType name="RevocationOriginType" final="restriction">
 		<xs:restriction base="xs:string">            
 			<xs:enumeration value="CMS_SIGNED_DATA" />
-			<xs:enumeration value="TIMESTAMP_SIGNED_DATA" />
 			<xs:enumeration value="REVOCATION_VALUES" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
-			<xs:enumeration value="TIMESTAMP_REVOCATION_VALUES" />
 			<xs:enumeration value="ADBE_REVOCATION_INFO_ARCHIVAL" />
 			<xs:enumeration value="INPUT_DOCUMENT" />
 			<xs:enumeration value="EXTERNAL" />
@@ -871,7 +876,6 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
-			<xs:enumeration value="TIMESTAMP_REVOCATION_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -879,7 +883,7 @@
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>
-					<xs:choice>
+					<xs:choice minOccurs="0"> <!-- not applicable for cert refs obtained from ocsp tokens -->
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
 						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 					</xs:choice>

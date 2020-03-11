@@ -189,13 +189,15 @@ public class ListCRLSource implements CRLSource {
 
 	@Override
 	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		CRLToken bestCrlToken = null;
 		for (OfflineCRLSource crlSource : sources) {
 			CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerCertificateToken);
-			if (crlToken != null && crlToken.isValid()) {
-				return crlToken;
+			if (crlToken != null && crlToken.isValid() && 
+					(bestCrlToken == null || crlToken.getThisUpdate().after(bestCrlToken.getThisUpdate())) ) {
+				bestCrlToken = crlToken;
 			}
 		}
-		return null;
+		return bestCrlToken;
 	}
 
 }

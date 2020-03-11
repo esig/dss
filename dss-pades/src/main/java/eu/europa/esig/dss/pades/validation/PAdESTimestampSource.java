@@ -160,7 +160,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	public List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> signatureTimestampReferences = super.getSignatureTimestampReferences();
 		// timestamp covers inner signature, therefore it covers certificates included into the signature's KeyInfo
-		addReferences(signatureTimestampReferences, createReferencesForCertificates(signatureCertificateSource.getCMSSignedDataCertificates()));
+		addReferences(signatureTimestampReferences, createReferencesForCertificates(signatureCertificateSource.getSignedDataCertificates()));
 		return signatureTimestampReferences;
 	}
 

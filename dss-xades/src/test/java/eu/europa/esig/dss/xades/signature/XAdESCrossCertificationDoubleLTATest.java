@@ -41,9 +41,9 @@ import eu.europa.esig.dss.definition.XPathExpressionBuilder;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -126,8 +126,8 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         }
         assertEquals(7, usedCertificates.size());
         
-        List<XmlRelatedCertificate> relatedCertificatesFirstLTA = signature.getRelatedCertificates();
-        List<XmlRelatedRevocation> relatedRevocationsFirstLTA = signature.getRelatedRevocations();
+        List<RelatedCertificateWrapper> relatedCertificatesFirstLTA = signature.foundCertificates().getRelatedCertificates();
+        List<RelatedRevocationWrapper> relatedRevocationsFirstLTA = signature.foundRevocations().getRelatedRevocationData();
         
         customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
         customCertificateVerifier.setCrlSource(new OnlineCRLSource(getFileCacheDataLoader()));
@@ -150,16 +150,18 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         diagnosticData = reports.getDiagnosticData();
         signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         
-        List<XmlRelatedCertificate> relatedCertificatesSecondLTA = signature.getRelatedCertificates();
-        List<XmlRelatedRevocation> relatedRevocationsSecondLTA = signature.getRelatedRevocations();
+        List<RelatedCertificateWrapper> relatedCertificatesSecondLTA = signature.foundCertificates().getRelatedCertificates();
+        List<RelatedRevocationWrapper> relatedRevocationsSecondLTA = signature.foundRevocations().getRelatedRevocationData();
         
         assertEquals(relatedCertificatesFirstLTA.size(), relatedCertificatesSecondLTA.size());
         assertEquals(relatedRevocationsFirstLTA.size(), relatedRevocationsSecondLTA.size());
         
-        Collection<XmlRelatedCertificate> tstValidationDataCerts = signature.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+        Collection<RelatedCertificateWrapper> tstValidationDataCerts = signature.foundCertificates()
+        		.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataCerts));
         
-        Collection<XmlRelatedRevocation> tstValidationDataRevocations = signature.getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+        Collection<RelatedRevocationWrapper> tstValidationDataRevocations = signature.foundRevocations()
+        		.getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataRevocations));
         
         Document document = DomUtils.buildDOM(doubleLTADoc);

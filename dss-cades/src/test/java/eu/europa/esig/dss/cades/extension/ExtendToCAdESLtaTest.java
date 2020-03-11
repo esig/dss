@@ -35,8 +35,9 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -74,13 +75,13 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		
-		List<XmlRelatedRevocation> relatedRevocations = signature.getRelatedRevocations();
+		List<RelatedRevocationWrapper> relatedRevocations = signature.foundRevocations().getRelatedRevocationData();
 		assertTrue(Utils.isCollectionNotEmpty(relatedRevocations));
-		for (XmlRelatedRevocation revocation : relatedRevocations) {
-			assertNotNull(revocation.getRevocation());
-			assertNotNull(revocation.getRevocation().getId());
+		for (RevocationWrapper revocation : relatedRevocations) {
+			assertNotNull(revocation);
+			assertNotNull(revocation.getId());
 		}
-		assertTrue(Utils.isCollectionEmpty(signature.getOrphanRevocations()));
+		assertTrue(Utils.isCollectionEmpty(signature.foundRevocations().getOrphanRevocationData()));
 		
 	}
 

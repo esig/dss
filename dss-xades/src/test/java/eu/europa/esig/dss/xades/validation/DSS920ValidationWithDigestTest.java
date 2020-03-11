@@ -34,9 +34,9 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -106,9 +106,9 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		}
 		assertTrue(refToDigestDocumentCreated);
 		
-		List<XmlSignerData> originalDocuments = diagnosticData.getOriginalSignerDocuments();
-		assertEquals(1, originalDocuments.size());
-		XmlSignerData originalDoc = originalDocuments.get(0);
+		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertEquals(1, originalSignerDocuments.size());
+		SignerDataWrapper originalDoc = originalSignerDocuments.get(0);
 		assertEquals(documentName, originalDoc.getReferencedName());
 		assertNotNull(originalDoc.getId());
 		assertNotNull(originalDoc.getDigestAlgoAndValue());

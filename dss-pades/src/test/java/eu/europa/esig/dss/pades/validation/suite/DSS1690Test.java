@@ -53,8 +53,8 @@ public class DSS1690Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		TimestampWrapper firstATST = diagnosticData.getTimestampById(firstTimestampId);
 		assertNotNull(firstATST, "Timestamp " + firstTimestampId + " not found");
-		List<String> timestampedTimestampsIds = firstATST.getTimestampedTimestampIds();
-		assertEquals(0, timestampedTimestampsIds.size(), "First timestamp can't cover the second one");
+		List<TimestampWrapper> timestampedTimestamps = firstATST.getTimestampedTimestamps();
+		assertEquals(0, timestampedTimestamps.size(), "First timestamp can't cover the second one");
 	}
 
 	protected CertificateVerifier getOfflineCertificateVerifier() {

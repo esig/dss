@@ -51,7 +51,6 @@ public class CommonCertificateSource implements CertificateSource {
 	 * The default constructor to generate a certificates source with an independent certificates pool.
 	 */
 	public CommonCertificateSource() {
-		// TODO useless ?
 		certPool = new CertificatePool();
 	}
 

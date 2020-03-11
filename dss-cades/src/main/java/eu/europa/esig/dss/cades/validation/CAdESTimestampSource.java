@@ -256,7 +256,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		if (signatureCertificateSource instanceof CMSCertificateSource) {
 			ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
 			List<DEROctetString> certsHashList = DSSASN1Utils.getDEROctetStrings(certsHashIndex);
-			for (CertificateToken certificate : signatureCertificateSource.getCMSSignedDataCertificates()) {
+			for (CertificateToken certificate : signatureCertificateSource.getSignedDataCertificates()) {
 				if (isDigestValuePresent(certificate.getDigest(digestAlgorithm), certsHashList)) {
 					addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 				} else {
@@ -322,7 +322,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected List<TimestampedReference> getSignatureSignedDataReferences() {
 		List<TimestampedReference> references = new ArrayList<>();
 		if (signatureCertificateSource instanceof CMSCertificateSource) {
-			addReferences(references, createReferencesForCertificates(signatureCertificateSource.getCMSSignedDataCertificates()));
+			addReferences(references, createReferencesForCertificates(signatureCertificateSource.getSignedDataCertificates()));
 		}
 		if (signatureCRLSource instanceof CMSCRLSource) {
 			for (CRLBinary crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 import eu.europa.esig.dss.pades.validation.suite.ASN1PolicyTest;
 import eu.europa.esig.dss.pades.validation.suite.ArchiveTimestampCoverageTest;
+import eu.europa.esig.dss.pades.validation.suite.BadEncodedCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS1188Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1376GetOriginalDocTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS1420Test;
@@ -45,7 +46,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESNonLatinCharactersValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
-import eu.europa.esig.dss.pades.validation.suite.BadEncodedCMSTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
 import eu.europa.esig.dss.pades.validation.suite.PolicyZeroHashTest;
@@ -60,7 +61,7 @@ import eu.europa.esig.dss.pades.validation.suite.SignatureTimestampCertificateNo
 		PAdESCorruptedSigTest.class, PAdESNonLatinCharactersValidationTest.class, ArchiveTimestampCoverageTest.class,
 		PolicyZeroHashTest.class, SIWATest.class, DSS1794Test.class, PAdESMultipleFieldSignatureReferenceTest.class,
 		DSS1899Test.class, PAdESInfiniteLoopTest.class, PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class,
-		BadEncodedCMSTest.class })
+		BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

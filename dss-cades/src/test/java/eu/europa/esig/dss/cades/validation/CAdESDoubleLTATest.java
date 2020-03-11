@@ -68,9 +68,9 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		}
 		assertEquals(2, archiveTimestampCounter);
 		
-		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
-		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());
-		assertEquals(2, allTimestamps.get(2).getTimestampedRevocationIds().size());
+		assertEquals(0, allTimestamps.get(0).getTimestampedRevocations().size());
+		assertEquals(2, allTimestamps.get(1).getTimestampedRevocations().size());
+		assertEquals(2, allTimestamps.get(2).getTimestampedRevocations().size());
 		
 	}
 

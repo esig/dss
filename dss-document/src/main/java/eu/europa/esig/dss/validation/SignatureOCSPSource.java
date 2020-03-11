@@ -148,11 +148,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			for (RevocationOrigin origin : getRevocationOrigins(ocspResponse)) {
 				switch (origin) {
 				case CMS_SIGNED_DATA:
-				case TIMESTAMP_SIGNED_DATA:
 					cmsSignedDataOCSPs.add(ocspToken);
 					break;
 				case REVOCATION_VALUES:
-				case TIMESTAMP_REVOCATION_VALUES:
 					revocationValuesOCSPs.add(ocspToken);
 					break;
 				case ATTRIBUTE_REVOCATION_VALUES:

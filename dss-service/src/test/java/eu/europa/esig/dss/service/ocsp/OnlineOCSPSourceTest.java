@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.service.ocsp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,7 +58,6 @@ public class OnlineOCSPSourceTest {
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertFalse(ocspToken.isUseNonce());
 	}
 
 	@Test
@@ -69,8 +66,6 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
-		assertTrue(ocspToken.isUseNonce());
-		assertTrue(ocspToken.isNonceMatch());
 	}
 
 	@Test
@@ -85,12 +80,10 @@ public class OnlineOCSPSourceTest {
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertFalse(ocspToken.isUseNonce());
 
 		ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertFalse(ocspToken.isUseNonce());
 	}
 
 	@Test

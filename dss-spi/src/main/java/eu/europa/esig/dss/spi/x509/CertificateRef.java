@@ -18,12 +18,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.spi.x509;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public class CertificateRef implements Serializable {
 
@@ -31,6 +36,8 @@ public class CertificateRef implements Serializable {
 	
 	private Digest certDigest;
 	private IssuerSerialInfo issuerInfo;
+	private byte[] ski; // SHA-1 hash of cert's public key (used in OCSP response)
+	
 	private CertificateRefOrigin origin;
 	
 	private String dssId;
@@ -41,6 +48,14 @@ public class CertificateRef implements Serializable {
 
 	public void setCertDigest(Digest certDigest) {
 		this.certDigest = certDigest;
+	}
+
+	public byte[] getSki() {
+		return ski;
+	}
+
+	public void setSki(byte[] ski) {
+		this.ski = ski;
 	}
 
 	public IssuerSerialInfo getIssuerInfo() {
@@ -65,14 +80,24 @@ public class CertificateRef implements Serializable {
 	 */
 	public String getDSSIdAsString() {
 		if (dssId == null) {
-			dssId = "C-" + certDigest.getHexValue().toUpperCase();
+			if (certDigest != null) {
+				dssId = "C-" + certDigest.getHexValue().toUpperCase();
+			} else if (ski != null) {
+				dssId = "C-" + Utils.toHex(ski);
+			} else if (issuerInfo != null && issuerInfo.getIssuerName() != null) {
+				dssId = "C-" + Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, issuerInfo.getIssuerName().getEncoded())).toUpperCase();
+			} else {
+				throw new DSSException("One of [certDigest, publicKeyDigest, issuerInfo] must be defined for a CertificateRef!");
+			}
 		}
 		return dssId;
 	}
 
 	@Override
 	public String toString() {
-		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + ", origin=" + origin + "]";
+		String skiValue = ski != null ? Utils.toHex(ski) : null;
+		return "CertificateRef [certDigest=" + certDigest + ", ski=" + skiValue + 
+				", issuerInfo=" + issuerInfo + ", origin=" + origin + "]";
 	}
 	
 	@Override
@@ -92,6 +117,10 @@ public class CertificateRef implements Serializable {
 				(issuerInfo != null && !issuerInfo.equals(o.getIssuerInfo()))) {
 			return false;
 		}
+		if ((ski == null && o.getSki() != null) || 
+				(ski != null && !Arrays.equals(ski, o.getSki()))) {
+			return false;
+		}
 		if ((origin == null && o.getOrigin() != null) || 
 				(origin != null && !origin.equals(o.getOrigin()))) {
 			return false;
@@ -105,6 +134,7 @@ public class CertificateRef implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((certDigest == null) ? 0 : certDigest.hashCode());
 		result = (prime * result) + ((issuerInfo == null) ? 0 : issuerInfo.hashCode());
+		result = (prime * result) + ((ski == null) ? 0 : Arrays.hashCode(ski));
 		result = (prime * result) + ((origin == null) ? 0 : origin.hashCode());
 		return result;
 	}
