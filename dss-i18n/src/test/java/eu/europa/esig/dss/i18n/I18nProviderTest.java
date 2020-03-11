@@ -119,5 +119,33 @@ public class I18nProviderTest {
 			Locale.setDefault(systemLocale); // restore default
 		}
 	}
+	
+	@Test
+	public void apostropheTest() {
+		Locale systemLocale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.ENGLISH);
+			
+			final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
+			
+			MessageTag tstIntact = MessageTag.BBB_CV_ISIT;
+			String message = i18nProvider.getMessage(tstIntact);
+			assertNotNull(message);
+			assertEquals("Is timestamp's signature intact?", message);
+			
+			MessageTag signedAttribute = MessageTag.BBB_ICS_ISASCP;
+			message = i18nProvider.getMessage(signedAttribute);
+			assertNotNull(message);
+			assertEquals("Is the signed attribute: 'signing-certificate' present?", message);
+			
+			MessageTag signedQualifyingProperty = MessageTag.BBB_SAV_ISQPMDOSPP;
+			message = i18nProvider.getMessage(signedQualifyingProperty);
+			assertNotNull(message);
+			assertEquals("Is the signed qualifying property: 'message-digest' or 'SignedProperties' present?", message);
+			
+		} finally {
+			Locale.setDefault(systemLocale); // restore default
+		}
+	}
 
 }
