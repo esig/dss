@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
@@ -61,7 +61,7 @@ public class RemoteBLevelParameters implements Serializable {
 	private byte[] policyDigestValue;
 	private String policySpuri;
 
-	private List<CommitmentType> commitmentTypeIndications;
+	private List<CommitmentTypeEnum> commitmentTypeIndications;
 
 	/* SignerLocation */
 	private List<String> signerLocationPostalAddress = new ArrayList<>();
@@ -250,17 +250,17 @@ public class RemoteBLevelParameters implements Serializable {
 	 * 
 	 * @return the list of commitment type indications
 	 */
-	public List<CommitmentType> getCommitmentTypeIndications() {
+	public List<CommitmentTypeEnum> getCommitmentTypeIndications() {
 		return commitmentTypeIndications;
 	}
 
 	/**
-	 * Set the commitment type indications (predefined values are available in {@code CommitmentTypeEnum})
+	 * Set the commitment type indications {@code CommitmentTypeEnum}
 	 * 
 	 * @param commitmentTypeIndications
 	 *            a list of commitment type indications
 	 */
-	public void setCommitmentTypeIndications(List<CommitmentType> commitmentTypeIndications) {
+	public void setCommitmentTypeIndications(List<CommitmentTypeEnum> commitmentTypeIndications) {
 		this.commitmentTypeIndications = commitmentTypeIndications;
 	}
 

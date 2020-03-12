@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
@@ -29,6 +31,8 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.BLevelParameters;
@@ -140,7 +144,9 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	private BLevelParameters toBLevelParameters(RemoteBLevelParameters remoteBLevelParameters) {
 		BLevelParameters bLevelParameters = new BLevelParameters();
 		bLevelParameters.setClaimedSignerRoles(remoteBLevelParameters.getClaimedSignerRoles());
-		bLevelParameters.setCommitmentTypeIndications(remoteBLevelParameters.getCommitmentTypeIndications());
+		if (remoteBLevelParameters.getCommitmentTypeIndications() != null) {
+			bLevelParameters.setCommitmentTypeIndications(toCommitmentTypeList(remoteBLevelParameters.getCommitmentTypeIndications()));
+		}
 		bLevelParameters.setSigningDate(remoteBLevelParameters.getSigningDate());
 		bLevelParameters.setTrustAnchorBPPolicy(remoteBLevelParameters.isTrustAnchorBPPolicy());
 		
@@ -224,6 +230,13 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	
 	protected SignatureValue toSignatureValue(SignatureValueDTO signatureValueDTO) {
 		return new SignatureValue(signatureValueDTO.getAlgorithm(), signatureValueDTO.getValue());
+	}
+	
+	protected List<CommitmentType> toCommitmentTypeList(List<CommitmentTypeEnum> commitmentTypeEnums) {
+		if (Utils.isCollectionNotEmpty(commitmentTypeEnums)) {
+			return commitmentTypeEnums.stream().map(obj -> (CommitmentType) obj).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 }
