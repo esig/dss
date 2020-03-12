@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
@@ -55,6 +56,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	private FoundRevocationsProxy foundRevocationsProxy;
 
 	public SignatureWrapper(XmlSignature signature) {
+		Objects.requireNonNull(signature, "XmlSignature cannot be null!");
 		this.signature = signature;
 	}
 

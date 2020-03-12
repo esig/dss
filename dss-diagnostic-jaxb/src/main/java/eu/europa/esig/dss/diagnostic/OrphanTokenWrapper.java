@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.diagnostic;
 
+import java.util.Objects;
+
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 
@@ -8,6 +10,7 @@ public class OrphanTokenWrapper {
 	private final XmlOrphanToken orphanToken;
 	
 	public OrphanTokenWrapper(final XmlOrphanToken orphanToken) {
+		Objects.requireNonNull(orphanToken, "XmlOrphanToken cannot be null!");
 		this.orphanToken = orphanToken;
 	}
 	
@@ -55,15 +58,10 @@ public class OrphanTokenWrapper {
 		if (!(obj instanceof OrphanTokenWrapper))
 			return false;
 		OrphanTokenWrapper other = (OrphanTokenWrapper) obj;
-		if (orphanToken == null) {
-			if (other.orphanToken != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (other.orphanToken == null)
-			return false;
-		if (orphanToken.getId() == null) {
-			if (other.orphanToken.getId() != null)
-				return false;
-		} else if (!orphanToken.getId().equals(other.orphanToken.getId()))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
@@ -48,6 +49,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	private final XmlCertificate certificate;
 
 	public CertificateWrapper(XmlCertificate certificate) {
+		Objects.requireNonNull(certificate, "XMLCertificate cannot be null!");
 		this.certificate = certificate;
 	}
 

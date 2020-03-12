@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 
@@ -44,8 +45,7 @@ public class UniqueServiceFilterTest {
 	@Test
 	public void testCanConcludeOneTrustService() {
 
-		CertificateWrapper emptyCert = new MockCertificateWrapper(AFTER_EIDAS_DATE, Collections.<String> emptyList(), Collections.<String> emptyList(),
-				Collections.<String> emptyList());
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
 		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
@@ -61,8 +61,7 @@ public class UniqueServiceFilterTest {
 	@Test
 	public void testCanConclude() {
 
-		CertificateWrapper emptyCert = new MockCertificateWrapper(AFTER_EIDAS_DATE, Collections.<String> emptyList(), Collections.<String> emptyList(),
-				Collections.<String> emptyList());
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
 		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
@@ -84,8 +83,7 @@ public class UniqueServiceFilterTest {
 	@Test
 	public void testCannotConclude() {
 
-		CertificateWrapper emptyCert = new MockCertificateWrapper(AFTER_EIDAS_DATE, Collections.<String> emptyList(), Collections.<String> emptyList(),
-				Collections.<String> emptyList());
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
 		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
 		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
@@ -104,42 +102,14 @@ public class UniqueServiceFilterTest {
 		List<TrustedServiceWrapper> filtered = filter.filter(trustServices);
 		assertTrue(Utils.isCollectionEmpty(filtered));
 	}
-
-	private class MockCertificateWrapper extends CertificateWrapper {
-
-		private final Date notBefore;
-		private final List<String> policyOids;
-		private final List<String> qcStatementOids;
-		private final List<String> qcTypesOids;
-
-		public MockCertificateWrapper(Date notBefore, List<String> policyOids, List<String> qcStatementOids, List<String> qcTypesOids) {
-			super(null);
-			this.notBefore = notBefore;
-			this.policyOids = policyOids;
-			this.qcStatementOids = qcStatementOids;
-			this.qcTypesOids = qcTypesOids;
-		}
-
-		@Override
-		public Date getNotBefore() {
-			return notBefore;
-		}
-
-		@Override
-		public List<String> getPolicyIds() {
-			return policyOids;
-		}
-
-		@Override
-		public List<String> getQCStatementIds() {
-			return qcStatementOids;
-		}
-
-		@Override
-		public List<String> getQCTypes() {
-			return qcTypesOids;
-		}
-
+	
+	private CertificateWrapper getCertificate(Date notBefore) {
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		xmlCertificate.setNotBefore(notBefore);
+		xmlCertificate.setCertificatePolicies(Collections.emptyList());
+		xmlCertificate.setQCStatementIds(Collections.emptyList());
+		xmlCertificate.setQCTypes(Collections.emptyList());
+		return new CertificateWrapper(xmlCertificate);
 	}
 
 }

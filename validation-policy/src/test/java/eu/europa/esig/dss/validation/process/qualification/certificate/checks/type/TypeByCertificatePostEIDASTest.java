@@ -22,13 +22,15 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 
@@ -36,8 +38,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void esig() {
-
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatement.QCT_ESIGN.getOid()));
+		CertificateWrapper cert = getCertificate(QCStatement.QCT_ESIGN);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESIGN, strategy.getType());
@@ -45,8 +46,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void esigDefault() {
-
-		CertificateWrapper cert = new MockCertificateWrapper(Collections.<String>emptyList());
+		CertificateWrapper cert = getCertificate();
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESIGN, strategy.getType());
@@ -54,8 +54,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void eseal() {
-
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatement.QCT_ESEAL.getOid()));
+		CertificateWrapper cert = getCertificate(QCStatement.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESEAL, strategy.getType());
@@ -63,7 +62,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void wsa() {
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatement.QCT_WEB.getOid()));
+		CertificateWrapper cert = getCertificate(QCStatement.QCT_WEB);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.WSA, strategy.getType());
@@ -72,27 +71,23 @@ public class TypeByCertificatePostEIDASTest {
 	// MUST be overruled
 	@Test
 	public void multiple() {
-		CertificateWrapper cert = new MockCertificateWrapper(
-				Arrays.asList(QCStatement.QCT_ESIGN.getOid(), QCStatement.QCT_ESEAL.getOid()));
+		CertificateWrapper cert = getCertificate(QCStatement.QCT_ESIGN, QCStatement.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.UNKNOWN, strategy.getType());
 	}
-
-	private class MockCertificateWrapper extends CertificateWrapper {
-
-		private final List<String> qcTypesOids;
-
-		public MockCertificateWrapper(List<String> qcTypesOids) {
-			super(null);
-			this.qcTypesOids = qcTypesOids;
+	
+	private CertificateWrapper getCertificate(OidDescription... qcTypesOids) {
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		List<XmlOID> oids = new ArrayList<>();
+		for (OidDescription qcTypeOid : qcTypesOids) {
+			XmlOID xmlOID = new XmlOID();
+			xmlOID.setValue(qcTypeOid.getOid());
+			xmlOID.setDescription(qcTypeOid.getDescription());
+			oids.add(xmlOID);
 		}
-
-		@Override
-		public List<String> getQCTypes() {
-			return qcTypesOids;
-		}
-
+		xmlCertificate.setQCTypes(oids);
+		return new CertificateWrapper(xmlCertificate);
 	}
 
 }

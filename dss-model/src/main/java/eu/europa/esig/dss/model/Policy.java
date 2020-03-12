@@ -189,7 +189,7 @@ public class Policy implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((description == null) ? 0 : description.hashCode());
-		result = (prime * result) + ((documentationReferences == null) ? 0 : documentationReferences.hashCode());
+		result = (prime * result) + ((documentationReferences == null) ? 0 : Arrays.hashCode(documentationReferences));
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = (prime * result) + Arrays.hashCode(digestValue);
 		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
@@ -220,7 +220,7 @@ public class Policy implements Serializable {
 			if (other.documentationReferences != null) {
 				return false;
 			}
-		} else if (!documentationReferences.equals(other.documentationReferences)) {
+		} else if (!Arrays.equals(documentationReferences, other.documentationReferences)) {
 			return false;
 		}
 		if (digestAlgorithm != other.digestAlgorithm) {

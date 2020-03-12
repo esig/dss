@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
@@ -55,6 +56,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	private FoundRevocationsProxy foundRevocationsProxy;
 
 	public TimestampWrapper(XmlTimestamp timestamp) {
+		Objects.requireNonNull(timestamp, "XmlTimestamp cannot be null!");
 		this.timestamp = timestamp;
 	}
 
