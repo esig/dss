@@ -83,6 +83,7 @@ import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
+import eu.europa.esig.dss.validation.process.vpfswatsp.POE;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.validationreport.enums.ObjectType;
@@ -373,7 +374,8 @@ public class ETSIValidationReportBuilder {
 		ValidationObjectListType validationObjectListType = objectFactory.createValidationObjectListType();
 		
 		POEExtraction poeExtraction = new POEExtraction();
-		poeExtraction.collectAllPOE(diagnosticData);
+		poeExtraction.init(diagnosticData, currentTime);
+		poeExtraction.collectAllPOE(diagnosticData.getTimestampSet());
 
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
 			addTimestamp(validationObjectListType, timestamp);
@@ -432,12 +434,10 @@ public class ETSIValidationReportBuilder {
 	
 	private POEType getPOE(String tokenId, POEExtraction poeExtraction) {
 		POEType poeType = objectFactory.createPOEType();
-		if (poeExtraction.isPOEExists(tokenId, currentTime)) {
-			XmlProofOfExistence lowestPOE = poeExtraction.getLowestPOE(tokenId, currentTime);
-			poeType.setPOETime(lowestPOE.getTime());
+		POE lowestPOE = poeExtraction.getLowestPOE(tokenId);
+		poeType.setPOETime(lowestPOE.getTime());
+		if (lowestPOE.isTimestampPoe()) {
 			poeType.setPOEObject(getVOReference(lowestPOE.getTimestampId()));
-		} else {
-			poeType.setPOETime(currentTime);
 		}
 		poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 		return poeType;

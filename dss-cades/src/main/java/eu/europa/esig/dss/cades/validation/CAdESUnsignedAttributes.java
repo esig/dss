@@ -35,7 +35,7 @@ import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.validation.timestamp.TimeStampTokenProductionComparator;
+import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	

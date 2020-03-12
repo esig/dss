@@ -73,6 +73,10 @@ public enum TimestampType {
 		return contentTimestamp;
 	}
 	
+	public boolean isSignatureTimestamp() {
+		return SIGNATURE_TIMESTAMP.equals(this);
+	}
+	
 	public boolean coversSignature() {
 		return coversSignarture;
 	}
@@ -97,6 +101,30 @@ public enum TimestampType {
 			}
 		}
 		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
+	}
+	
+	/**
+	 * Compares this TimestampType with the provided {@code timestampType}
+	 * Must be in the order: Content -> Signature -> ValidationData -> Archival
+	 * 
+	 * @param timestampType {@link TimestampType} to compare with
+	 * @return TRUE if the this timestampType must follow before the provided {@code timestampType}, FALSE otehrwise
+	 */
+	public int compare(TimestampType timestampType) {
+		if (this.isContentTimestamp() && !timestampType.isContentTimestamp()) {
+			return -1;
+		} else if (!this.isContentTimestamp() && timestampType.isContentTimestamp()) {
+			return 1;
+		} else if (this.isSignatureTimestamp() && !timestampType.isSignatureTimestamp()) {
+			return -1;
+		} else if (!this.isSignatureTimestamp() && timestampType.isSignatureTimestamp()) {
+			return 1;
+		} else if (!this.isArchivalTimestamp() && timestampType.isArchivalTimestamp()) {
+			return -1;
+		} else if (this.isArchivalTimestamp() && !timestampType.isArchivalTimestamp()) {
+			return 1;
+		}
+		return 0;
 	}
 
 }

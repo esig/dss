@@ -55,6 +55,7 @@ public class RefsOnlyTimestampTest {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(2, timestampList.size());
+		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestampList.get(0).getType());
 		
 		int signatureTimestampCounter = 0;
 		int refsOnlyTimestampCounter = 0;

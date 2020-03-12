@@ -132,7 +132,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)
 					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(currentTimeSubIndication))) {
 
-				Date bestSignatureTime = poe.getLowestPOETime(token.getId(), controlTime);
+				Date bestSignatureTime = poe.getLowestPOETime(token.getId());
 				CertificateWrapper signingCertificate = token.getSigningCertificate();
 
 				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
@@ -228,7 +228,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	}
 	
 	private Date getLowestPoeTime(TokenProxy token) {
-		return poe.getLowestPOETime(token.getId(), currentTime);
+		return poe.getLowestPOETime(token.getId());
 	}
 
 }

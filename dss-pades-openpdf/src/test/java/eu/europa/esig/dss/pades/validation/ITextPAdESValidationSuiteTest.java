@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.validation.suite.DSS1690Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1794Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1899Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1972Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1983Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS818Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS917Test;
 import eu.europa.esig.dss.pades.validation.suite.DiagnosticDataCompleteTest;
@@ -61,7 +62,7 @@ import eu.europa.esig.dss.pades.validation.suite.SignatureTimestampCertificateNo
 		PAdESCorruptedSigTest.class, PAdESNonLatinCharactersValidationTest.class, ArchiveTimestampCoverageTest.class,
 		PolicyZeroHashTest.class, SIWATest.class, DSS1794Test.class, PAdESMultipleFieldSignatureReferenceTest.class,
 		DSS1899Test.class, PAdESInfiniteLoopTest.class, PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class,
-		BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class })
+		BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

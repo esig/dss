@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXB;
 
@@ -59,7 +60,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
@@ -70,6 +73,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
@@ -845,6 +849,50 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
+		assertNotNull(signatureValidationObjects);
+		assertTrue(Utils.isCollectionNotEmpty(signatureValidationObjects.getValidationObject()));
+		
+		TimestampWrapper firstArchiveTst = null;
+		for (TimestampWrapper timestampWrapper : reports.getDiagnosticData().getTimestampList()) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				if (firstArchiveTst == null) {
+					firstArchiveTst = timestampWrapper;
+				} else if (timestampWrapper.getProductionTime().before(firstArchiveTst.getProductionTime())) {
+					firstArchiveTst = timestampWrapper;
+				} else if (timestampWrapper.getProductionTime().compareTo(firstArchiveTst.getProductionTime()) == 0 &&
+						timestampWrapper.getTimestampedObjects().size() < firstArchiveTst.getTimestampedObjects().size()) {
+					firstArchiveTst = timestampWrapper;
+				}
+			}
+		}
+		assertNotNull(firstArchiveTst);
+		
+		List<String> timestampedRevocationIds = firstArchiveTst.getTimestampedRevocations().stream().map(RevocationWrapper::getId)
+				.collect(Collectors.toList());
+		
+		int timestampedRevocationsCounter = 0;
+		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+			if (ObjectType.CRL.equals(validationObject.getObjectType())) {
+				assertNotNull(validationObject.getId());
+				POEType poe = validationObject.getPOE();
+				assertNotNull(poe);
+				assertNotNull(poe.getPOETime());
+				assertNotNull(poe.getTypeOfProof());
+				if (timestampedRevocationIds.contains(validationObject.getId())) {
+					assertNotNull(poe.getPOEObject());
+					assertEquals(1, poe.getPOEObject().getVOReference().size());
+					Object poeObject = poe.getPOEObject().getVOReference().get(0);
+					assertTrue(poeObject instanceof ValidationObjectType);
+					assertEquals(firstArchiveTst.getId(), ((ValidationObjectType) poeObject).getId());
+					assertEquals(firstArchiveTst.getProductionTime(), poe.getPOETime());
+					++timestampedRevocationsCounter;
+				}
+			}
+		}
+		assertEquals(2, timestampedRevocationsCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -1701,6 +1749,24 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		TimestampWrapper earliestTimestamp = reports.getDiagnosticData().getTimestampById("T-950D06E9BC8B0CDB73D88349F14D3BC702BF4947752A121A940EE03639C1249D");
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
+		assertNotNull(signatureValidationObjects);
+		assertTrue(Utils.isCollectionNotEmpty(signatureValidationObjects.getValidationObject()));
+		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+			if (validationObject.getPOE() != null) {
+				VOReferenceType poeObjectReference = validationObject.getPOE().getPOEObject();
+				if (poeObjectReference != null) {
+					assertEquals(earliestTimestamp.getProductionTime(), validationObject.getPOE().getPOETime());
+					Object poeObject = poeObjectReference.getVOReference().get(0);
+					assertTrue(poeObject instanceof ValidationObjectType);
+					assertEquals(earliestTimestamp.getId(), ((ValidationObjectType) poeObject).getId());
+				}
+			}
+		}
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -141,6 +140,7 @@ import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampTokenComparator;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 /**
@@ -901,14 +901,11 @@ public class DiagnosticDataBuilder {
 		List<XmlTimestamp> xmlTimestampsList = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestamps)) {
 			List<TimestampToken> tokens = new ArrayList<>(timestamps);
-			tokens.sort(Comparator.comparing(TimestampToken::getGenerationTime));
+			Collections.sort(tokens, new TimestampTokenComparator());
 			for (TimestampToken timestampToken : tokens) {
 				String id = timestampToken.getDSSIdAsString();
-				XmlTimestamp xmlTimestamp = xmlTimestampsMap.get(id);
-				if (xmlTimestamp == null) {
-					xmlTimestamp = buildDetachedXmlTimestamp(timestampToken);
-					xmlTimestampsMap.put(id, xmlTimestamp);
-				}
+				XmlTimestamp xmlTimestamp = buildDetachedXmlTimestamp(timestampToken);
+				xmlTimestampsMap.put(id, xmlTimestamp);
 				xmlTimestampsList.add(xmlTimestamp);
 			}
 		}

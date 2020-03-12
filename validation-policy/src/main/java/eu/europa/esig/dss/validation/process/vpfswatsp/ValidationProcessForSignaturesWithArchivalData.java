@@ -112,7 +112,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * NOTE 1: The set of POE in the input may have been initialized from external sources (e.g. provided from
 		 * an external archiving system). These POEs will be used without additional processing.
 		 */
-		poe.init(diagnosticData, getCurrentTime());
+		poe.init(diagnosticData, currentTime);
 
 		/*
 		 * 3) The long term validation process shall perform the validation process for Signatures with Time as per
@@ -138,7 +138,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * 4) The process shall add the best-signature-time returned in step 3 
 		 * as POE for the signature to the set of POEs.
 		 */
-		poe.addSignaturePOE(signature, validationProcessLongTermData.getProofOfExistence());
+		XmlProofOfExistence signatureProofOfExistence = validationProcessLongTermData.getProofOfExistence();
+		poe.addSignaturePOE(signature, toPOE(signatureProofOfExistence));
 
 		/*
 		 * 5) If there is at least one time-stamp attribute:
@@ -249,8 +250,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		/*
 		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be proved
 		 */
-		XmlProofOfExistence bestSignatureTime = poe.getLowestPOE(signature.getId(), currentTime);
-		result.setProofOfExistence(bestSignatureTime);
+		POE bestSignatureTime = poe.getLowestPOE(signature.getId());
+		result.setProofOfExistence(toXmlProofOfExistence(bestSignatureTime));
 		
 		/*
 		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
@@ -281,14 +282,23 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	}
 
-	private XmlProofOfExistence getCurrentTime() {
-		return getPOE(currentTime);
+	private XmlProofOfExistence toXmlProofOfExistence(POE poe) {
+		XmlProofOfExistence xmlPoe = new XmlProofOfExistence();
+		xmlPoe.setTime(poe.getTime());
+		xmlPoe.setTimestampId(poe.getTimestampId());
+		return xmlPoe;
 	}
 
-	private XmlProofOfExistence getPOE(Date time) {
-		XmlProofOfExistence xpoe = new XmlProofOfExistence();
-		xpoe.setTime(time);
-		return xpoe;
+	private POE toPOE(XmlProofOfExistence xmlProofOfExistence) {
+		String timestampId = xmlProofOfExistence.getTimestampId();
+		if (timestampId != null) {
+			for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+				if (timestampId.equals(timestamp.getId())) {
+					return new POE(timestamp);
+				}
+			}
+		}
+		return new POE(xmlProofOfExistence.getTime());
 	}
 	
 	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlBasicBuildingBlocks bbbTsp) {
