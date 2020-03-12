@@ -20,17 +20,26 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -88,11 +97,6 @@ public class XAdESLevelLTAWithContentTimestampsDetachedTest extends AbstractXAdE
 	}
 
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
-
-	@Override
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
@@ -100,6 +104,46 @@ public class XAdESLevelLTAWithContentTimestampsDetachedTest extends AbstractXAdE
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(4, timestampList.size());
+		
+		TimestampWrapper contentTimestamp = timestampList.get(0);
+		assertTrue(contentTimestamp.getType().isContentTimestamp());
+		assertEquals(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, contentTimestamp.getType());
+		
+		List<RelatedCertificateWrapper> foundCertificates = contentTimestamp.foundCertificates().getRelatedCertificates();
+		List<TimestampWrapper> contentTimestamps = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			if (timestampWrapper.getType().isContentTimestamp()) {
+				contentTimestamps.add(timestampWrapper);
+			} else {
+				List<String> certIds = timestampWrapper.getTimestampedCertificates().stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+				for (CertificateWrapper certificate : foundCertificates) {
+					assertTrue(certIds.contains(certificate.getId()));
+				}
+				List<String> tstIds = timestampWrapper.getTimestampedTimestamps().stream().map(TimestampWrapper::getId).collect(Collectors.toList());
+				for (TimestampWrapper contentTst : contentTimestamps) {
+					assertTrue(tstIds.contains(contentTst.getId()));
+				}
+			}
+			if (timestampWrapper.getType().isSignatureTimestamp()) {
+				assertEquals(2, timestampWrapper.getTimestampedTimestamps().size());
+			}
+			if (timestampWrapper.getType().isArchivalTimestamp()) {
+				assertEquals(3, timestampWrapper.getTimestampedTimestamps().size());
+			}
+		}
+		assertEquals(2, contentTimestamps.size());
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 	@Override

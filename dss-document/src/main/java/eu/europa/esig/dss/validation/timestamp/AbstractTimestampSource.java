@@ -257,13 +257,13 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			TimestampToken timestampToken;
 			
 			if (isContentTimestamp(signedAttribute)) {
-				timestampToken = makeTimestampToken(signedAttribute, TimestampType.CONTENT_TIMESTAMP, getAllContentTimestampReferences());
+				timestampToken = makeTimestampToken(signedAttribute, TimestampType.CONTENT_TIMESTAMP, getAllSignedDataReferences());
 				if (timestampToken == null) {
 					continue;
 				}
 				
 			} else if (isAllDataObjectsTimestamp(signedAttribute)) {
-				timestampToken = makeTimestampToken(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, getAllContentTimestampReferences());
+				timestampToken = makeTimestampToken(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, getAllSignedDataReferences());
 				if (timestampToken == null) {
 					continue;
 				}
@@ -504,7 +504,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * Returns a list of {@link TimestampedReference}s obtained from the {@code signatureScopes}
 	 * @return list of {@link TimestampedReference}s
 	 */
-	protected List<TimestampedReference> getAllContentTimestampReferences() {
+	protected List<TimestampedReference> getAllSignedDataReferences() {
 		final List<TimestampedReference> references = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
 			for (SignatureScope signatureScope : signatureScopes) {
@@ -528,7 +528,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	public List<TimestampedReference> getSignatureTimestampReferences() {
 		final List<TimestampedReference> references = new ArrayList<>();
-		addReferences(references, getAllContentTimestampReferences());
+		addReferencesForPreviousTimestamps(references, getContentTimestamps());
+		addReferences(references, getAllSignedDataReferences());
 		addReference(references, new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE));
 		addReferences(references, getSigningCertificateTimestampReferences());
 		return references;
