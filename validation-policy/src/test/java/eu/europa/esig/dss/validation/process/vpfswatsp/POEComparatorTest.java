@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process;
+package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,8 +15,6 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.validation.process.vpfswatsp.POE;
-import eu.europa.esig.dss.validation.process.vpfswatsp.POEComparator;
 
 public class POEComparatorTest {
 	

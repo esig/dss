@@ -20,111 +20,105 @@
  */
 package eu.europa.esig.dss.enumerations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Type of the timestamp
+ * Type of timestamp
  *
  */
 public enum TimestampType {
 	
 	// CAdES: id-aa-ets-contentTimestamp
-	CONTENT_TIMESTAMP(true, false, false, false),
+	CONTENT_TIMESTAMP(0, false),
 	
 	// XAdES: AllDataObjectsTimestamp
-	ALL_DATA_OBJECTS_TIMESTAMP(true, false, false, false),
+	ALL_DATA_OBJECTS_TIMESTAMP(0, false),
 	
 	// XAdES: IndividualDataObjectsTimeStamp
-	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP(true, false, false, false),
+	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP(0, false),
 	
 	// CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp
-	SIGNATURE_TIMESTAMP(false, true, false, false),
+	SIGNATURE_TIMESTAMP(1, true),
 	
 	// CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp
-	VALIDATION_DATA_REFSONLY_TIMESTAMP(false, false, true, false),
+	VALIDATION_DATA_REFSONLY_TIMESTAMP(2, false),
 	
 	// CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp
-	VALIDATION_DATA_TIMESTAMP(false, true, true, false),
+	VALIDATION_DATA_TIMESTAMP(2, true),
 	
 	// CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, PAdES-LTV, "document timestamp"
-	ARCHIVE_TIMESTAMP(false, true, true, true);
+	ARCHIVE_TIMESTAMP(3, true);
 	
-	/* TRUE if the timestamp is a Content timestamp */
-	private boolean contentTimestamp;
+	/**
+	 * Specifies a presence order of the timestamp in a signature
+	 * The following notation is used:
+	 * 	0 - content timestamps
+	 * 	1 - signature timestamp
+	 * 	2 - validation data timestamps
+	 * 	3 - archive timestamps
+	 */
+	private final Integer order;
 	
 	/* TRUE if the timestamp covers a Signature */
-	private boolean coversSignarture;
-
-	/* TRUE if the timestamp covers a ValidationData (certificates or revocation) */
-	private boolean coversValidationData;
+	private final boolean coversSignarture;
 	
-	/* TRUE if the timestamp is an Archival one */
-	private boolean archivalTimestamp;
-	
-	TimestampType(boolean contentTimestamp, boolean coversSignature, boolean coversValidationData, boolean archivalTimestamp) {
-		this.contentTimestamp = contentTimestamp;
+	private TimestampType(int order, boolean coversSignature) {
+		this.order = order;
 		this.coversSignarture = coversSignature;
-		this.coversValidationData = coversValidationData;
-		this.archivalTimestamp = archivalTimestamp;
 	}
 	
+	/**
+	 * Checks if the timestamp type is a content timestamp
+	 * 
+	 * @return TRUE if the type is a content timestamp, FALSE otherwise
+	 */
 	public boolean isContentTimestamp() {
-		return contentTimestamp;
+		return 0 == order;
 	}
-	
+
+	/**
+	 * Checks if the timestamp type is a signature timestamp
+	 * 
+	 * @return TRUE if the type is a signature timestamp, FALSE otherwise
+	 */
 	public boolean isSignatureTimestamp() {
-		return SIGNATURE_TIMESTAMP.equals(this);
+		return 1 == order;
+	}
+
+	/**
+	 * Checks if the timestamp type is a validation data timestamp
+	 * 
+	 * @return TRUE if the type is a validation data timestamp, FALSE otherwise
+	 */
+	public boolean isValidationDataTimestamp() {
+		return 2 == order;
+	}
+
+	/**
+	 * Checks if the timestamp type is an archive timestamp
+	 * 
+	 * @return TRUE if the type is an archive timestamp, FALSE otherwise
+	 */
+	public boolean isArchivalTimestamp() {
+		return 3 == order;
 	}
 	
+	/**
+	 * Checks if a timestamp of this type covers a signature
+	 * 
+	 * @return TRUE if a timestamp of the type covers a signature, FALSE otherwise
+	 */
 	public boolean coversSignature() {
 		return coversSignarture;
 	}
 	
-	public boolean coversValidationData() {
-		return coversValidationData;
-	}
-	
-	public boolean isArchivalTimestamp() {
-		return archivalTimestamp;
-	}
-	
-	/**
-	 * Returns an array of all available content timestamps
-	 * @return array of content {@link TimestampType}
-	 */
-	public static TimestampType[] getContentTimestampTypes() {
-		List<TimestampType> contentTimestamps = new ArrayList<>();
-		for (TimestampType timestampType : values()) {
-			if (timestampType.isContentTimestamp()) {
-				contentTimestamps.add(timestampType);
-			}
-		}
-		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
-	}
-	
 	/**
 	 * Compares this TimestampType with the provided {@code timestampType}
-	 * Must be in the order: Content -> Signature -> ValidationData -> Archival
+	 * Must be in the order: Content - Signature - ValidationData - Archival
 	 * 
 	 * @param timestampType {@link TimestampType} to compare with
-	 * @return TRUE if the this timestampType must follow before the provided {@code timestampType}, FALSE otehrwise
+	 * @return TRUE if the this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
 	 */
 	public int compare(TimestampType timestampType) {
-		if (this.isContentTimestamp() && !timestampType.isContentTimestamp()) {
-			return -1;
-		} else if (!this.isContentTimestamp() && timestampType.isContentTimestamp()) {
-			return 1;
-		} else if (this.isSignatureTimestamp() && !timestampType.isSignatureTimestamp()) {
-			return -1;
-		} else if (!this.isSignatureTimestamp() && timestampType.isSignatureTimestamp()) {
-			return 1;
-		} else if (!this.isArchivalTimestamp() && timestampType.isArchivalTimestamp()) {
-			return -1;
-		} else if (this.isArchivalTimestamp() && !timestampType.isArchivalTimestamp()) {
-			return 1;
-		}
-		return 0;
+		return order.compareTo(timestampType.order);
 	}
 
 }
