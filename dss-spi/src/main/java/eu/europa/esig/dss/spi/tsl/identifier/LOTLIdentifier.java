@@ -27,12 +27,7 @@ public class LOTLIdentifier extends AbstractTLIdentifier {
 	private static final long serialVersionUID = 8038937216737566183L;
 
 	public LOTLIdentifier(LOTLInfo lotlInfo) {
-		super(lotlInfo);
-	}
-	
-	@Override
-	public String asXmlId() {
-		return "LOTL-" + super.asXmlId();
+		super("LOTL-", lotlInfo);
 	}
 
 }

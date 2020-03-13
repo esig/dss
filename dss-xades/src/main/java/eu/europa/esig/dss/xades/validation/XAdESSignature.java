@@ -66,7 +66,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -1175,9 +1174,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	@Override
 	protected SignatureIdentifier buildSignatureIdentifier() {
-		final CertificateToken certificateToken = getSigningCertificateToken();
-		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDAIdentifier(), getSignatureValueBase64());
+		return new XAdESSignatureIdentifier(this);
 	}
 	
 	@Override

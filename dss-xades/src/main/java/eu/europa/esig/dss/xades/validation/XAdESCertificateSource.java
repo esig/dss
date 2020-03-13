@@ -159,8 +159,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certificateElement = (Element) nodeList.item(ii);
-			final byte[] derEncoded = Utils.fromBase64(certificateElement.getTextContent());
 			try {
+				final byte[] derEncoded = Utils.fromBase64(certificateElement.getTextContent());
 				final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
 				final CertificateToken certToken = addCertificate(cert);
 				if (!list.contains(certToken)) {

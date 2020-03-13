@@ -101,10 +101,17 @@ public abstract class Token implements Serializable {
 	 */
 	public TokenIdentifier getDSSId() {
 		if (tokenIdentifier == null) {
-			tokenIdentifier = new TokenIdentifier(this);
+			tokenIdentifier = buildTokenIdentifier();
 		}
 		return tokenIdentifier;
 	}
+	
+	/**
+	 * Builds a token unique identifier
+	 * 
+	 * @return {@link TokenIdentifier}
+	 */
+	protected abstract TokenIdentifier buildTokenIdentifier();
 
 	/**
 	 * Returns a string representation of the unique DSS token identifier.

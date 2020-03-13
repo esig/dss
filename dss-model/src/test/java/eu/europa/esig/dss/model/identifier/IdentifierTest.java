@@ -54,7 +54,7 @@ public class IdentifierTest {
 		private static final long serialVersionUID = 473449731636785224L;
 
 		MockIdentifier(byte[] data) {
-			super(data);
+			super("M-", data);
 		}
 
 	}

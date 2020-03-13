@@ -27,8 +27,8 @@ public abstract class AbstractTLIdentifier extends MultipleDigestIdentifier {
 
 	private static final long serialVersionUID = -250692069626295484L;
 
-	protected AbstractTLIdentifier(TLInfo tlInfo) {
-		super(tlInfo.getUrl().getBytes());
+	protected AbstractTLIdentifier(final String prefix, TLInfo tlInfo) {
+		super(prefix, tlInfo.getUrl().getBytes());
 	}
 
 }

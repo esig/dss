@@ -38,6 +38,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -185,7 +186,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public String getId() {
-		return "S-" + getDSSId().asXmlId();
+		return getDSSId().asXmlId();
 	}
 
 	@Override
@@ -386,7 +387,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		final Set<CertificateToken> certificatesForInclusion = getCompleteCertificateSource().getAllCertificateTokens();
 
 		// avoid adding of cross-certificates to the list
-		final List<String> publicKeys = getEntityIdentifierList(certificatesForInclusion);
+		final List<EntityIdentifier> publicKeys = getEntityIdentifierList(certificatesForInclusion);
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
 			if (!publicKeys.contains(certificateToken.getEntityKey())) {
 				certificatesForInclusion.add(certificateToken);
@@ -420,8 +421,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certificateMap;
 	}
 	
-	private List<String> getEntityIdentifierList(Collection<CertificateToken> certificateTokens) {
-		final List<String> entityIdentifiers = new ArrayList<>();
+	private List<EntityIdentifier> getEntityIdentifierList(Collection<CertificateToken> certificateTokens) {
+		final List<EntityIdentifier> entityIdentifiers = new ArrayList<>();
 		for (CertificateToken certificateToken : certificateTokens) {
 			entityIdentifiers.add(certificateToken.getEntityKey());
 		}

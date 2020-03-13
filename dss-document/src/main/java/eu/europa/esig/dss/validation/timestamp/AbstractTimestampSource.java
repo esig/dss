@@ -39,9 +39,8 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
@@ -357,7 +356,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 					continue;
 				}
 				timestampToken.setArchiveTimestampType(getArchiveTimestampType(unsignedAttribute));
-				addReferences(timestampToken.getTimestampedReferences(), getSignedDataReferences(timestampToken));
+				addReferences(timestampToken.getTimestampedReferences(), getArchiveTimestampOtherReferences(timestampToken));
 				
 				archiveTimestamps.add(timestampToken);
 				
@@ -651,56 +650,53 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	protected List<TimestampedReference> getTimestampedCertificateValues(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		for (EncapsulatedCertificateTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
+		for (Identifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(certificateIdentifier.asXmlId(), TimestampedObjectType.CERTIFICATE));
 		}
 		return timestampedReferences;
 	}
 	
 	/**
-	 * Returns a list of {@link EncapsulatedCertificateTokenIdentifier}s obtained from the given {@code unsignedAttribute}
+	 * Returns a list of {@link Identifier}s obtained from the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get certificate identifiers from
-	 * @return list of {@link EncapsulatedCertificateTokenIdentifier}s
+	 * @return list of {@link Identifier}s
 	 */
-	protected abstract List<EncapsulatedCertificateTokenIdentifier> getEncapsulatedCertificateIdentifiers(SignatureAttribute unsignedAttribute);
+	protected abstract List<Identifier> getEncapsulatedCertificateIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	protected List<TimestampedReference> getTimestampedRevocationValues(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
+		for (Identifier revocationIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(revocationIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
-		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
+		for (Identifier revocationIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(revocationIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
 		return timestampedReferences;
 	}
 	
 	/**
-	 * Returns a list of {@link CRLBinary}s obtained from the given {@code unsignedAttribute}
+	 * Returns a list of {@link Identifier}s obtained from the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get CRL identifiers from
-	 * @return list of {@link CRLBinary}s
+	 * @return list of {@link Identifier}s
 	 */
-	protected abstract List<CRLBinary> getEncapsulatedCRLIdentifiers(SignatureAttribute unsignedAttribute);
+	protected abstract List<Identifier> getEncapsulatedCRLIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Returns a list of {@link OCSPResponseBinary}s obtained from the given {@code unsignedAttribute}
+	 * Returns a list of {@link Identifier}s obtained from the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get OCSP identifiers from
-	 * @return list of {@link OCSPResponseBinary}s
+	 * @return list of {@link Identifier}s
 	 */
-	protected abstract List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
+	protected abstract List<Identifier> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Returns a list of {@code TimestampedReference}s for the given {@code timestampToken} 
-	 * found into signed properties of the signature
-	 * NOTE: used only in CAdES. Needs {@code timestampToken} to be initialized before
+	 * Returns a list of {@code TimestampedReference}s for the given archive {@code timestampToken}
+	 * that cannot be extracted from signature attributes (signed or unsigned),
+	 * depending on its format (signedData for CAdES or, keyInfo for XAdES)
 	 * 
-	 * @param timestampToken {@link TimestampToken} to get SignedData references for
+	 * @param timestampToken {@link TimestampToken} to get archive timestamp references for
 	 * @return list of {@link TimestampedReference}s
 	 */
-	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
-		// empty by default
-		return new ArrayList<>();
-	}
+	protected abstract List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken);
 
 	/**
 	 * Returns a list of all {@code TimestampedReference}s found into CMS SignedData of the signature
@@ -720,13 +716,13 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected List<TimestampedReference> getTimestampValidationData(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		for (EncapsulatedCertificateTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
+		for (Identifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(certificateIdentifier.asXmlId(), TimestampedObjectType.CERTIFICATE));
 		}
-		for (EncapsulatedRevocationTokenIdentifier crlIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
+		for (Identifier crlIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
-		for (EncapsulatedRevocationTokenIdentifier ocspIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
+		for (Identifier ocspIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
 		return timestampedReferences;

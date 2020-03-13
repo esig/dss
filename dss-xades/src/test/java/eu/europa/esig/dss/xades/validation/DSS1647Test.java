@@ -71,7 +71,7 @@ public class DSS1647Test {
 		timestamps = signature.getTimestampList();
 		TimestampWrapper archiveTimestamp = timestamps.get(1);
 		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, archiveTimestamp.getType());
-		assertEquals(4, archiveTimestamp.getTimestampedCertificates().size());
+		assertEquals(5, archiveTimestamp.getTimestampedCertificates().size());
 		assertEquals(2, archiveTimestamp.getTimestampedRevocations().size());
 		assertEquals(1, archiveTimestamp.getTimestampedOrphanRevocations().size());
 		assertEquals(1, archiveTimestamp.getTimestampedTimestamps().size());

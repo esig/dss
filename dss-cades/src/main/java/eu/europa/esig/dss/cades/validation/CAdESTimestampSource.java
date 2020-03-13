@@ -33,7 +33,6 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocat
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +71,8 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -223,6 +222,10 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 	
 	@Override
+	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
+		return getSignedDataReferences(timestampToken);
+	}
+	
 	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
 		
 		if (ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType()) ||
@@ -400,31 +403,42 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
-	protected List<EncapsulatedCertificateTokenIdentifier> getEncapsulatedCertificateIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<EncapsulatedCertificateTokenIdentifier> certificateIdentifiers = new ArrayList<>();
+	protected List<Identifier> getEncapsulatedCertificateIdentifiers(CAdESAttribute unsignedAttribute) {
+		List<Identifier> certificateIdentifiers = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
 		for (int ii = 0; ii < seq.size(); ii++) {
-			final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
 			try {
-				certificateIdentifiers.add(new EncapsulatedCertificateTokenIdentifier(cs.getEncoded()));
-			} catch (IOException e) {
-				LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
+				final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
+				CertificateToken certificateToken = DSSUtils.loadCertificate(cs.getEncoded());
+				certificateIdentifiers.add(certificateToken.getDSSId());
+			} catch (Exception e) {
+				String errorMessage = "Unable to parse an encapsulated certificate : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, e.getMessage());
+				}
 			}
 		}
 		return certificateIdentifiers;
 	}
 
 	@Override
-	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<CRLBinary> crlBinaryIdentifiers = new ArrayList<>();
+	protected List<Identifier> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
+		List<Identifier> crlBinaryIdentifiers = new ArrayList<>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
 		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
 		if (revocationValues != null) {
 			for (final CertificateList revValue : revocationValues.getCrlVals()) {
 				try {
 					crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
-				} catch (IOException e) {
-					LOG.warn("Unable to parse revocation value : {}", e.getMessage());
+				} catch (Exception e) {
+					String errorMessage = "Unable to parse CRL binaries : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
 				}
 			}
 		}
@@ -432,14 +446,23 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
-	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
+	protected List<Identifier> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
+		List<Identifier> ocspIdentifiers = new ArrayList<>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
 		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
 		if (revocationValues != null) {
 			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-				final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-				ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
+				try {
+					final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+					ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
+				} catch (Exception e) {
+					String errorMessage = "Unable to parse OCSP response binaries : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
+				}
 			}
 		}
 		return ocspIdentifiers;

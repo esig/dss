@@ -68,7 +68,7 @@ public class CertificatePool implements Serializable {
 	 * 
 	 * All entries share the same keypair
 	 */
-	private Map<String, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<>();
+	private Map<EntityIdentifier, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/*
 	 * Map of tokens, the key is the canonicalized SubjectX500Principal
@@ -99,7 +99,7 @@ public class CertificatePool implements Serializable {
 		}
 
 		synchronized (entriesByPublicKeyHash) {
-			final String entityKey = certificateToAdd.getEntityKey();
+			final EntityIdentifier entityKey = certificateToAdd.getEntityKey();
 			CertificatePoolEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
 			if (poolEntity == null) {
 				LOG.trace("Public key {} is not in the pool", entityKey);
@@ -292,9 +292,8 @@ public class CertificatePool implements Serializable {
 		return entriesByPublicKeyHash.get(getPublicKeyHash(pubKey));
 	}
 
-	private String getPublicKeyHash(PublicKey pk) {
-		EntityIdentifier id = new EntityIdentifier(pk);
-		return id.asXmlId();
+	private EntityIdentifier getPublicKeyHash(PublicKey pk) {
+		return new EntityIdentifier(pk);
 	}
 
 	private String canonicalize(final X500Principal x500Principal) {

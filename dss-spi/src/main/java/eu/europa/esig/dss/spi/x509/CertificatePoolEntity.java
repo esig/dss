@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 
@@ -50,7 +51,7 @@ class CertificatePoolEntity implements Serializable {
 	/**
 	 * Unique Id for all certificates (SHA-256 of the common public key) 
 	 */
-	private final String id;
+	private final EntityIdentifier identifier;
 	
 	/**
 	 * Subject Key Identifier (SHA-1 of the common public key) 
@@ -68,7 +69,7 @@ class CertificatePoolEntity implements Serializable {
 	private final Set<CertificateSourceType> sources = new HashSet<>();
 
 	CertificatePoolEntity(CertificateToken initialCert, CertificateSourceType source) {
-		id = initialCert.getEntityKey();
+		identifier = initialCert.getEntityKey();
 		ski = DSSASN1Utils.computeSkiFromCert(initialCert);
 		equivalentCertificates.add(initialCert);
 		sources.add(source);
@@ -113,7 +114,7 @@ class CertificatePoolEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
 		return result;
 	}
 
@@ -129,11 +130,11 @@ class CertificatePoolEntity implements Serializable {
 			return false;
 		}
 		CertificatePoolEntity other = (CertificatePoolEntity) obj;
-		if (id == null) {
-			if (other.id != null) {
+		if (identifier == null) {
+			if (other.identifier != null) {
 				return false;
 			}
-		} else if (!id.equals(other.id)) {
+		} else if (!identifier.equals(other.identifier)) {
 			return false;
 		}
 		return true;

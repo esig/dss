@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -33,11 +31,8 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
@@ -45,7 +40,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
@@ -161,19 +155,7 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureIdentifier buildSignatureIdentifier() {
-		final CertificateToken certificateToken = getSigningCertificateToken();
-		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDigestOfByteRange());
-	}
-
-	private String getDigestOfByteRange() {
-		ByteRange signatureByteRange = pdfSignatureRevision.getByteRange();
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			baos.write(signatureByteRange.toString().getBytes());
-			return DSSUtils.getMD5Digest(baos.toByteArray());
-		} catch (IOException e) {
-			throw new DSSException(String.format("Cannot read byteRange : %s", signatureByteRange));
-		}
+		return new PAdESSignatureIdentifier(this);
 	}
 
 	/**

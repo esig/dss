@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -35,8 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
@@ -100,27 +97,8 @@ public class OCSPRef extends RevocationRef {
 	}
 	
 	@Override
-	public String getDSSIdAsString() {
-		if (digest != null) {
-			return super.getDSSIdAsString();
-		}
-		byte[] bytes;
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
-			if (producedAt != null) {
-				dos.writeLong(producedAt.getTime());
-			}
-			if (responderId.getKey() != null) {
-				dos.write(responderId.getKey());
-			}
-			if (responderId.getName() != null) {
-				dos.writeChars(responderId.getName());
-			}
-			dos.flush();
-			bytes = baos.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException("Cannot build DSS ID for the OCSP Ref.", e);
-		}
-		return "R-" + DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)).toUpperCase();
+	protected Identifier createIdentifier() {
+		return new OCSPRefIdentifier(this);
 	}
 	
 	@Override

@@ -27,12 +27,7 @@ public class TrustedListIdentifier extends AbstractTLIdentifier {
 	private static final long serialVersionUID = -527724241662081489L;
 
 	public TrustedListIdentifier(TLInfo tlInfo) {
-		super(tlInfo);
-	}
-	
-	@Override
-	public String asXmlId() {
-		return "TL-" + super.asXmlId();
+		super("TL-", tlInfo);
 	}
 
 }

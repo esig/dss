@@ -75,7 +75,7 @@ public abstract class SignatureScope {
 	}
 	
 	public String getDSSIdAsString() {
-		return "D-" + getDSSId().asXmlId();
+		return getDSSId().asXmlId();
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class RevocationRef implements Serializable {
@@ -35,7 +36,7 @@ public abstract class RevocationRef implements Serializable {
 	
 	protected Set<RevocationRefOrigin> origins;
 	
-	private String dssId;
+	private Identifier identifier;
 
 	public Digest getDigest() {
 		return digest;
@@ -50,14 +51,27 @@ public abstract class RevocationRef implements Serializable {
 	}
 	
 	/**
+	 * Returns the revocation ref DSS Identifier
+	 * 
+	 * @return {@link Identifier}
+	 */
+	public Identifier getDSSId() {
+		if (identifier == null) {
+			identifier = createIdentifier();
+		}
+		return identifier;
+	}
+	
+	protected Identifier createIdentifier() {
+		return new RevocationRefIdentifier(this);
+	}
+	
+	/**
 	 * Returns revocation reference {@link String} id
 	 * @return {@link String} id
 	 */
 	public String getDSSIdAsString() {
-		if (dssId == null) {
-			dssId = "R-" + digest.getHexValue().toUpperCase();
-		}
-		return dssId;
+		return getDSSId().asXmlId();
 	}
 	
 	@Override

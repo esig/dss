@@ -43,7 +43,9 @@ import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.identifier.CertificateTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
 /**
  * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken
@@ -106,13 +108,13 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Returns the digest of the current public key. Several certificate can have
+	 * Returns the identifier of the current public key. Several certificate can have
 	 * the same public key (cross-certificates)
 	 * 
-	 * @return
+	 * @return {@link EntityIdentifier}
 	 */
-	public String getEntityKey() {
-		return entityKey.asXmlId();
+	public EntityIdentifier getEntityKey() {
+		return entityKey;
 	}
 
 	/**
@@ -381,8 +383,8 @@ public class CertificateToken extends Token {
 	}
 
 	@Override
-	public String getDSSIdAsString() {
-		return "C-" + super.getDSSIdAsString();
+	protected TokenIdentifier buildTokenIdentifier() {
+		return new CertificateTokenIdentifier(this);
 	}
 
 }

@@ -29,15 +29,19 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
-public class SignatureIdentifier extends Identifier {
+public abstract class SignatureIdentifier extends Identifier {
 	
 	private static final long serialVersionUID = -6700888325973167656L;
 
-	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, String... customIdentifiers) {
+	protected SignatureIdentifier(byte[] bytes) {
+		super("S-", bytes);
+	}
+
+	protected static byte[] buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, String... customIdentifiers) {
 		return buildSignatureIdentifier(signingTime, tokenIdentifier, null, customIdentifiers);
 	}
 
-	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, 
+	protected static byte[] buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, 
 			Integer customInteger, String... stringIdentifiers) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
 			if (signingTime != null) {
@@ -57,14 +61,10 @@ public class SignatureIdentifier extends Identifier {
 				}
 			}
 			dos.flush();
-			return new SignatureIdentifier(baos.toByteArray());
+			return baos.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	SignatureIdentifier(byte[] bytes) {
-		super(bytes);
 	}
 
 }

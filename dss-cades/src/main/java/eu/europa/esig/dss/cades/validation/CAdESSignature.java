@@ -97,7 +97,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
@@ -1195,50 +1194,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	
 	@Override
 	protected SignatureIdentifier buildSignatureIdentifier() {
-		final CertificateToken certificateToken = getSigningCertificateToken();
-		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-		
-		// introduce additional variables in order to avoid signatures with duplicate ids
-		Integer uniqueInteger = getUniqueIntegerIfNeeded();
-		if (uniqueInteger == 0) uniqueInteger = null;
-		String masterSignatureId = getMasterSignatureId();
-		String fileName = getSignatureFilename();
-
-		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, uniqueInteger, masterSignatureId, fileName);
-	}
-	
-	/**
-	 * Returns Id of the {@code masterSignature} if exists, otherwise returns NULL
-	 * @return {@link String} masterSignature id
-	 */
-	private String getMasterSignatureId() {
-		AdvancedSignature masterSignature = getMasterSignature();
-		if (masterSignature != null) {
-			return masterSignature.getId();
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns the related position of {@code this.signerInformation} in the cmsSignedData
-	 * among signers with the same SID
-	 * @return
-	 */
-	private int getUniqueIntegerIfNeeded() {
-		Collection<SignerInformation> signerInformations;
-		if (getMasterSignature() == null) {
-			signerInformations = cmsSignedData.getSignerInfos().getSigners(getSignerId());
-		} else {
-			signerInformations = this.signerInformation.getCounterSignatures().getSigners(getSignerId());
-		}
-		int counter = 0;
-		for (SignerInformation currentSignerInformation : signerInformations) {
-			if (this.signerInformation == currentSignerInformation) {
-				break;
-			}
-			counter++;
-		}
-		return counter;
+		return new CAdESSignatureIdentifier(this);
 	}
 	
 	@Override

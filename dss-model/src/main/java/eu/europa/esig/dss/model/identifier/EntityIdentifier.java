@@ -30,7 +30,7 @@ public final class EntityIdentifier extends Identifier {
 	private static final long serialVersionUID = -3608001942910223023L;
 
 	public EntityIdentifier(final PublicKey publicKey) {
-		super(publicKey.getEncoded());
+		super("PK-", publicKey.getEncoded());
 	}
 
 }

@@ -28,6 +28,7 @@ import java.util.Set;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.utils.Utils;
@@ -320,8 +321,8 @@ public abstract class RevocationToken extends Token {
 	public abstract boolean isValid();
 
 	@Override
-	public String getDSSIdAsString() {
-		return "R-" + super.getDSSIdAsString();
+	protected TokenIdentifier buildTokenIdentifier() {
+		return new RevocationTokenIdentifier(this);
 	}
 
 	@Override

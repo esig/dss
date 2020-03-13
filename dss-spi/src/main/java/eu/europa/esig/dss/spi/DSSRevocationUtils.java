@@ -320,21 +320,6 @@ public final class DSSRevocationUtils {
 	}
 	
 	/**
-	 * Creates the identifier for a certain entry within jdbc.
-	 *
-	 * @param certificateToken
-	 *            {@link CertificateToken}
-	 * @param issuerCertificateToken
-	 *            {@link CertificateToken} of the issuer of the certificateToken
-	 * @return the identifier for jdbc
-	 */
-	public static String getJdbcKey(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
-		final StringBuilder buf = new StringBuilder(certificateToken.getEntityKey());
-		buf.append(":").append(issuerCertificateToken.getEntityKey());
-		return buf.toString();
-	}
-	
-	/**
 	 * Initialize a list revocation token keys {@link String} for {@link CRLToken} from the given {@link CertificateToken}
 	 * @param certificateToken {@link CertificateToken}
 	 * @return list of {@link String} revocation keys
