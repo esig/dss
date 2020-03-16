@@ -46,6 +46,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -113,7 +114,7 @@ public class CertificatePool implements Serializable {
 		}
 		
 		synchronized (tokensBySubject) {
-			String canonicalizedSubject = certificateToAdd.getCanonicalizedSubject();
+			String canonicalizedSubject = certificateToAdd.getSubject().getCanonical();
 			Set<CertificateToken> tokensSet = tokensBySubject.get(canonicalizedSubject);
 			if (tokensSet == null) {
 				tokensSet = new HashSet<>();
@@ -209,6 +210,21 @@ public class CertificatePool implements Serializable {
 		}
 		return null;
 	}
+	
+	/**
+	 * This method returns the Set of certificates with the same subjectDN.
+	 *
+	 * @param subject
+	 *                     the subject to match
+	 * @return If no match is found then an empty list is returned.
+	 */
+	public Set<CertificateToken> get(X500PrincipalHelper subject) {
+		final Set<CertificateToken> tokensSet = tokensBySubject.get(subject.getCanonical());
+		if (tokensSet != null) {
+			return tokensSet;
+		}
+		return Collections.emptySet();
+	}
 
 	/**
 	 * This method returns the Set of certificates with the same subjectDN.
@@ -218,11 +234,7 @@ public class CertificatePool implements Serializable {
 	 * @return If no match is found then an empty list is returned.
 	 */
 	public Set<CertificateToken> get(final X500Principal x500Principal) {
-		final Set<CertificateToken> tokensSet = tokensBySubject.get(canonicalize(x500Principal));
-		if (tokensSet != null) {
-			return tokensSet;
-		}
-		return Collections.emptySet();
+		return get(new X500PrincipalHelper(x500Principal));
 	}
 
 	/**
@@ -294,10 +306,6 @@ public class CertificatePool implements Serializable {
 
 	private EntityIdentifier getPublicKeyHash(PublicKey pk) {
 		return new EntityIdentifier(pk);
-	}
-
-	private String canonicalize(final X500Principal x500Principal) {
-		return x500Principal.getName(X500Principal.CANONICAL);
 	}
 
 	/**

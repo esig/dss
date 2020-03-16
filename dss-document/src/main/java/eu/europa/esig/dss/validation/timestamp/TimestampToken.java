@@ -257,7 +257,7 @@ public class TimestampToken extends Token {
 			// timestamp as a CMSSignedData
 			if (isValidTimestamp(signerInformationVerifier) || isValidCMSSignedData(signerInformationVerifier)) {
 				signatureValidity = SignatureValidity.VALID;
-				this.tsaX500Principal = candidate.getSubjectX500Principal();
+				this.tsaX500Principal = candidate.getSubject().getPrincipal();
 				SignerInformation signerInformation = timeStamp.toCMSSignedData().getSignerInfos().get(timeStamp.getSID());
 
 				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.getOid().equals(signerInformation.getEncryptionAlgOID())) {

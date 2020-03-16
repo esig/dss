@@ -45,11 +45,11 @@ public class JksCertificateInformation {
 			for (DSSPrivateKeyEntry key : keys) {
 
 				CertificateToken certificate = key.getCertificate();
-				System.out.println(dateFormat.format(certificate.getNotAfter()) + ": " + certificate.getSubjectX500Principal());
+				System.out.println(dateFormat.format(certificate.getNotAfter()) + ": " + certificate.getSubject().getCanonical());
 				CertificateToken[] certificateChain = key.getCertificateChain();
 				for (CertificateToken x509Certificate : certificateChain) {
 
-					System.out.println("/t" + dateFormat.format(x509Certificate.getNotAfter()) + ": " + x509Certificate.getSubjectX500Principal());
+					System.out.println("/t" + dateFormat.format(x509Certificate.getNotAfter()) + ": " + x509Certificate.getSubject().getCanonical());
 
 				}
 			}

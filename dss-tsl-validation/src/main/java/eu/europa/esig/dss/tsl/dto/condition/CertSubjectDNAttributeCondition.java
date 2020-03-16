@@ -25,11 +25,10 @@ import static java.util.Collections.unmodifiableList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.utils.Utils;
@@ -71,10 +70,11 @@ public class CertSubjectDNAttributeCondition implements Condition {
 
 	@Override
 	public boolean check(CertificateToken certificateToken) {
-		X500Principal subjectX500Principal = certificateToken.getSubjectX500Principal();
 		if (Utils.isCollectionNotEmpty(subjectAttributeOids)) {
+			X500PrincipalHelper subject = certificateToken.getSubject();
 			for (String oid : subjectAttributeOids) {
-				String attribute = DSSASN1Utils.extractAttributeFromX500Principal(new ASN1ObjectIdentifier(oid), subjectX500Principal);
+				String attribute = DSSASN1Utils.extractAttributeFromX500Principal(new ASN1ObjectIdentifier(oid),
+						subject);
 				if (Utils.isStringEmpty(attribute)) {
 					return false;
 				}

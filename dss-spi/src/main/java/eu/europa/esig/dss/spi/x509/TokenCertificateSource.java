@@ -111,17 +111,13 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 						addCertificateRefToMap(certificateToken, certificateRef);
 					}
 					
-				} else if (issuerInfo != null && 
-						(issuerInfo.getSerialNumber() == null || certificateToken.getSerialNumber().equals(issuerInfo.getSerialNumber())) && 
-						DSSUtils.x500PrincipalAreEquals(certificateToken.getSubjectX500Principal(), issuerInfo.getIssuerName())) {
+				} else if (issuerInfo != null && issuerInfo.isRelatedTo(certificateToken)) {
 					addCertificateRefToMap(certificateToken, certificateRef);
-					
 				} else if (ski != null) {
 					byte[] certSki = DSSASN1Utils.computeSkiFromCert(certificateToken);
 					if (Arrays.equals(certSki, ski)) {
 						addCertificateRefToMap(certificateToken, certificateRef);
 					}
-					
 				}
 			}
 		}

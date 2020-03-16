@@ -82,7 +82,7 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 			crlValidity.setNextUpdate(x509CRL.getNextUpdate());
 
 			final X500Principal x509CRLIssuerX500Principal = x509CRL.getIssuerX500Principal();
-			final X500Principal issuerTokenSubjectX500Principal = issuerToken.getSubjectX500Principal();
+			final X500Principal issuerTokenSubjectX500Principal = issuerToken.getSubject().getPrincipal();
 			if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
 				crlValidity.setIssuerX509PrincipalMatches(true);
 			}

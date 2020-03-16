@@ -114,6 +114,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
 import eu.europa.esig.dss.utils.Utils;
@@ -933,68 +934,6 @@ public final class DSSASN1Utils {
 		}
 		return treeMap;
 	}
-
-	public static String getUtf8String(final X500Principal x500Principal) {
-
-		final byte[] encoded = x500Principal.getEncoded();
-		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
-		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
-		final StringBuilder stringBuilder = new StringBuilder();
-		/**
-		 * RFC 4514 LDAP: Distinguished Names
-		 * 2.1. Converting the RDNSequence
-		 *
-		 * If the RDNSequence is an empty sequence, the result is the empty or
-		 * zero-length string.
-		 *
-		 * Otherwise, the output consists of the string encodings of each
-		 * RelativeDistinguishedName in the RDNSequence (according to Section
-		 * 2.2), starting with the last element of the sequence and moving
-		 * backwards toward the first.
-		 * ...
-		 */
-		for (int ii = asn1Encodables.length - 1; ii >= 0; ii--) {
-
-			final ASN1Encodable asn1Encodable = asn1Encodables[ii];
-
-			final DLSet dlSet = (DLSet) asn1Encodable;
-			for (int jj = 0; jj < dlSet.size(); jj++) {
-
-				final DLSequence dlSequence = (DLSequence) dlSet.getObjectAt(jj);
-				if (dlSequence.size() != 2) {
-
-					throw new DSSException("The DLSequence must contains exactly 2 elements.");
-				}
-				final ASN1Encodable attributeType = dlSequence.getObjectAt(0);
-				final ASN1Encodable attributeValue = dlSequence.getObjectAt(1);
-				String string = getString(attributeValue);
-
-				/**
-				 * RFC 4514 LDAP: Distinguished Names
-				 * ...
-				 * Other characters may be escaped.
-				 *
-				 * Each octet of the character to be escaped is replaced by a backslash
-				 * and two hex digits, which form a single octet in the code of the
-				 * character. Alternatively, if and only if the character to be escaped
-				 * is one of
-				 *
-				 * ' ', '"', '#', '+', ',', ';', '<', '=', '>', or '\'
-				 * (U+0020, U+0022, U+0023, U+002B, U+002C, U+003B,
-				 * U+003C, U+003D, U+003E, U+005C, respectively)
-				 *
-				 * it can be prefixed by a backslash ('\' U+005C).
-				 */
-				string = Rdn.escapeValue(string);
-				if (stringBuilder.length() != 0) {
-					stringBuilder.append(',');
-				}
-				stringBuilder.append(attributeType).append('=').append(string);
-			}
-		}
-		return stringBuilder.toString();
-	}
-
 	public static String getString(ASN1Encodable attributeValue) {
 		String string;
 		if (attributeValue instanceof ASN1String) {
@@ -1009,8 +948,8 @@ public final class DSSASN1Utils {
 		return string;
 	}
 
-	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500Principal x500PrincipalName) {
-		final X500Name x500Name = X500Name.getInstance(x500PrincipalName.getEncoded());
+	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500PrincipalHelper principal) {
+		final X500Name x500Name = X500Name.getInstance(principal.getEncoded());
 		RDN[] rdns = x500Name.getRDNs(identifier);
 		for (RDN rdn : rdns) {
 			if (rdn.isMultiValued()) {
@@ -1031,7 +970,7 @@ public final class DSSASN1Utils {
 	}
 
 	public static String getSubjectCommonName(CertificateToken cert) {
-		return extractAttributeFromX500Principal(BCStyle.CN, cert.getSubjectX500Principal());
+		return extractAttributeFromX500Principal(BCStyle.CN, cert.getSubject());
 	}
 
 	public static String getHumanReadableName(CertificateToken cert) {
@@ -1040,7 +979,7 @@ public final class DSSASN1Utils {
 
 	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {
 		for (ASN1ObjectIdentifier oid : oids) {
-			String value = extractAttributeFromX500Principal(oid, cert.getSubjectX500Principal());
+			String value = extractAttributeFromX500Principal(oid, cert.getSubject());
 			if (value != null) {
 				return value;
 			}

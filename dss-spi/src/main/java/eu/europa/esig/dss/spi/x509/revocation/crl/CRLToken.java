@@ -102,7 +102,7 @@ public class CRLToken extends RevocationToken {
 		CertificateToken crlSigner = crlValidity.getIssuerToken();
 		X500Principal crlSignerSubject = null;
 		if (crlSigner != null) {
-			crlSignerSubject = crlSigner.getSubjectX500Principal();
+			crlSignerSubject = crlSigner.getSubject().getPrincipal();
 		}
 
 		if (!DSSUtils.x500PrincipalAreEquals(issuerToken, crlSignerSubject)) {
@@ -143,7 +143,7 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public X500Principal getIssuerX500Principal() {
 		if (crlValidity.getIssuerToken() != null) { // if the signature is invalid, the issuer is null
-			return crlValidity.getIssuerToken().getSubjectX500Principal();
+			return crlValidity.getIssuerToken().getSubject().getPrincipal();
 		} else {
 			return null;
 		}

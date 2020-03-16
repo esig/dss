@@ -176,7 +176,7 @@ public class DKCertificateTest {
 		assertFalse(PREVIOUS_SIG_CERT.getDSSId().equals(EXPECTED_SIG_CERT.getDSSId()));
 		assertFalse(PREVIOUS_SIG_CERT.getDSSId().equals(AIA_CERT.getDSSId()));
 		assertFalse(EXPECTED_SIG_CERT.getDSSId().equals(AIA_CERT.getDSSId()));
-		assertTrue(PREVIOUS_SIG_CERT.getSubjectX500Principal().equals(EXPECTED_SIG_CERT.getSubjectX500Principal()));
+		assertTrue(PREVIOUS_SIG_CERT.getSubject().equals(EXPECTED_SIG_CERT.getSubject()));
 	}
 
 }

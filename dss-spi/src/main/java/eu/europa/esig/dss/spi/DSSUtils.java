@@ -51,7 +51,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -76,6 +75,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -688,13 +688,11 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-			Map<String, String> keywords = new HashMap<>();
-			keywords.put("ORGANIZATIONIDENTIFIER", "2.5.4.97");
-			return new X500Principal(x500PrincipalString, keywords);
+            return new X500Principal(x500PrincipalString, X520Attributes.UPPERCASE_DESCRIPTION_OID);
 		} catch (Exception e) {
-			LOG.warn(e.getMessage());
+			LOG.warn("Unable to create an instance of X500Principal : {}", e.getMessage());
 			return null;
-		}
+		} 
 	}
 
 	/**
@@ -718,19 +716,6 @@ public final class DSSUtils {
 		final Map<String, String> secondStringStringHashMap = DSSASN1Utils.get(secondX500Principal);
 		return firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
 	}
-
-	/**
-	 * This method normalizes the X500Principal object
-	 * 
-	 * @param x500Principal
-	 *            to be normalized
-	 * @return {@code X500Principal} normalized
-	 */
-	public static X500Principal getNormalizedX500Principal(final X500Principal x500Principal) {
-		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
-		return new X500Principal(utf8Name);
-	}
-
 	/**
 	 * This method returns an UTC date base on the year, the month and the day. 
 	 * The year must be encoded as 1978... and not 78

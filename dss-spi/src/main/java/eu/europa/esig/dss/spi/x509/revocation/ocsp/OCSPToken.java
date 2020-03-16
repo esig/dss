@@ -297,7 +297,7 @@ public class OCSPToken extends RevocationToken {
 	@Override
 	public X500Principal getIssuerX500Principal() {
 		if (issuerCertificateToken != null) {
-			return issuerCertificateToken.getSubjectX500Principal();
+			return issuerCertificateToken.getSubject().getPrincipal();
 		}
 		return null;
 	}

@@ -61,8 +61,6 @@ public class CertificateToken extends Token {
 	 */
 	private final X509Certificate x509Certificate;
 	
-	private final String canonicalizedSubject;
-
 	/**
 	 * Digest of the public key (cross certificates have same public key)
 	 */
@@ -73,6 +71,11 @@ public class CertificateToken extends Token {
 	 * {@link #isSelfSigned()} function.
 	 */
 	private Boolean selfSigned;
+	
+	/**
+	 * Cached list of KeyUsageBit
+	 */
+	private List<KeyUsageBit> keyUsageBits;
 
 	/**
 	 * This method returns an instance of {@link eu.europa.esig.dss.model.x509.CertificateToken}.
@@ -96,7 +99,6 @@ public class CertificateToken extends Token {
 
 		this.x509Certificate = x509Certificate;
 		this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
-		this.canonicalizedSubject = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(x509Certificate.getSigAlgOID(), x509Certificate.getSigAlgParams());
@@ -134,10 +136,6 @@ public class CertificateToken extends Token {
 		return x509Certificate.getPublicKey();
 	}
 	
-	public String getCanonicalizedSubject() {
-		return canonicalizedSubject;
-	}
-
 	/**
 	 * Returns the expiration date of the certificate.
 	 *
@@ -254,7 +252,7 @@ public class CertificateToken extends Token {
 		try {
 			return x509Certificate.getEncoded();
 		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to encode the certificate", e);
 		}
 	}
 
@@ -269,15 +267,21 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Returns the subject (subject distinguished name) value from the certificate as an X500Principal. If the subject
-	 * value is empty, then the getName() method of the returned X500Principal object returns an empty string ("").
-	 *
-	 * @return the Subject X500Principal
+	 * Returns the subject as wrapped X500Principal with helpful methods
+	 * @return an instance of X500PrincipalHelper with the SubjectX500Principal
 	 */
-	public X500Principal getSubjectX500Principal() {
-		return x509Certificate.getSubjectX500Principal();
+	public X500PrincipalHelper getSubject() {
+		return new X500PrincipalHelper(x509Certificate.getSubjectX500Principal());
 	}
 
+	/**
+	 * Returns the issuer as wrapped X500Principal with helpful methods
+	 * @return an instance of X500PrincipalHelper with the IssuerX500Principal
+	 */
+	public X500PrincipalHelper getIssuer() {
+		return new X500PrincipalHelper(x509Certificate.getIssuerX500Principal());
+	}
+	
 	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign
 	 * this token.
@@ -318,8 +322,7 @@ public class CertificateToken extends Token {
 	 * @return true if contains
 	 */
 	public boolean checkKeyUsage(final KeyUsageBit keyUsageBit) {
-		final List<KeyUsageBit> currentKUBs = getKeyUsageBits();
-		return currentKUBs.contains(keyUsageBit);
+		return getKeyUsageBits().contains(keyUsageBit);
 	}
 
 	@Override
@@ -332,8 +335,8 @@ public class CertificateToken extends Token {
 		out.append(indentStr).append("Identity Id         : ").append(getEntityKey()).append('\n');
 		out.append(indentStr).append("Validity period     : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter())
 				.append('\n');
-		out.append(indentStr).append("Subject name        : ").append(getSubjectX500Principal().getName(X500Principal.CANONICAL)).append('\n');
-		out.append(indentStr).append("Issuer subject name : ").append(getIssuerX500Principal().getName(X500Principal.CANONICAL)).append('\n');
+		out.append(indentStr).append("Subject name        : ").append(getSubject().getCanonical()).append('\n');
+		out.append(indentStr).append("Issuer subject name : ").append(getIssuer().getCanonical()).append('\n');
 		out.append(indentStr).append("Serial Number       : ").append(getSerialNumber()).append('\n');
 		out.append(indentStr).append("Signature algorithm : ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 
@@ -352,12 +355,14 @@ public class CertificateToken extends Token {
 	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
 	public List<KeyUsageBit> getKeyUsageBits() {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
-		final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
-		if (keyUsageArray != null) {
-			for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
-				if (keyUsageArray[keyUsageBit.getIndex()]) {
-					keyUsageBits.add(keyUsageBit);
+		if (keyUsageBits == null) {
+			keyUsageBits = new ArrayList<>();
+			final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
+			if (keyUsageArray != null) {
+				for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
+					if (keyUsageArray[keyUsageBit.getIndex()]) {
+						keyUsageBits.add(keyUsageBit);
+					}
 				}
 			}
 		}

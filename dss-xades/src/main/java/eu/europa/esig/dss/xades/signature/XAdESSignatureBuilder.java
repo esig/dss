@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -498,7 +497,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *            the certificate to add
 	 */
 	private void addSubjectAndCertificate(final Element x509DataDom, final CertificateToken token) {
-		DomUtils.addTextElement(documentDom, x509DataDom, getXmldsigNamespace(), XMLDSigElement.X509_SUBJECT_NAME, token.getSubjectX500Principal().getName(X500Principal.RFC2253));
+		DomUtils.addTextElement(documentDom, x509DataDom, getXmldsigNamespace(), XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
 		addCertificate(x509DataDom, token);
 	}
 

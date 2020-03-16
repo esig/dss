@@ -56,7 +56,7 @@ public class CertificatePoolCasesTest {
 		
 		assertEquals(2, certPool.getNumberOfCertificates());
 		assertEquals(2, certPool.getNumberOfEntities());
-		assertEquals(2, certPool.get(c1.getSubjectX500Principal()).size());
+		assertEquals(2, certPool.get(c1.getSubject()).size());
 
 		assertEquals(1, certPool.getBySki(DSSASN1Utils.getSki(c1)).size());
 		assertEquals(1, certPool.getBySki(DSSASN1Utils.getSki(c2)).size());
@@ -88,8 +88,8 @@ public class CertificatePoolCasesTest {
 
 		assertEquals(2, certPool.getNumberOfCertificates());
 		assertEquals(1, certPool.getNumberOfEntities());
-		assertEquals(1, certPool.get(c1.getSubjectX500Principal()).size());
-		assertEquals(1, certPool.get(c2.getSubjectX500Principal()).size());
+		assertEquals(1, certPool.get(c1.getSubject()).size());
+		assertEquals(1, certPool.get(c2.getSubject()).size());
 
 		assertEquals(2, certPool.getBySki(DSSASN1Utils.computeSkiFromCert(c1)).size());
 		assertEquals(2, certPool.getBySki(DSSASN1Utils.computeSkiFromCert(c2)).size());
@@ -115,7 +115,7 @@ public class CertificatePoolCasesTest {
 
 		assertEquals(2, certPool.getNumberOfCertificates());
 		assertEquals(1, certPool.getNumberOfEntities());
-		assertEquals(2, certPool.get(c1.getSubjectX500Principal()).size());
+		assertEquals(2, certPool.get(c1.getSubject()).size());
 		assertEquals(2, certPool.getBySki(DSSASN1Utils.computeSkiFromCert(c1)).size());
 	}
 

@@ -20,7 +20,6 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
@@ -82,11 +81,9 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 			if (1 == derTaggedObject.getTagNo()) {
 				final ASN1Primitive derObject = derTaggedObject.getObject();
 				final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
-				final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(new X500Principal(derEncoded));
-				
 				CertificateRef certificateRef = new CertificateRef();
 				IssuerSerialInfo issuerSerialInfo = new IssuerSerialInfo();
-				issuerSerialInfo.setIssuerName(x500Principal);
+				issuerSerialInfo.setIssuerName(new X500Principal(derEncoded));
 				certificateRef.setIssuerInfo(issuerSerialInfo);
 				certificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 				signingCertificateRef = certificateRef;

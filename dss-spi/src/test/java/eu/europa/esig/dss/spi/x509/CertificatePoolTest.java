@@ -122,7 +122,7 @@ public class CertificatePoolTest {
 		if (!correctNumberCerts) {
 			LOG.warn("Nb certs is not correct : {}", sharedPool.getNumberOfCertificates());
 		}
-		final boolean foundCert = Utils.isCollectionNotEmpty(sharedPool.get(EXPECTED_TOKEN.getSubjectX500Principal()));
+		final boolean foundCert = Utils.isCollectionNotEmpty(sharedPool.get(EXPECTED_TOKEN.getSubject()));
 		assertTrue(correctNumberEntities && correctNumberCerts && foundCert);
 	}
 

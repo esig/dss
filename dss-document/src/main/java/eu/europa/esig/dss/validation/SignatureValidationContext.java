@@ -288,10 +288,10 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			for (CertificateToken candidate : candidates) {
 				if (token.isSignedBy(candidate)) {
-					if (!token.getIssuerX500Principal().equals(candidate.getSubjectX500Principal())) {
+					if (!token.getIssuerX500Principal().equals(candidate.getSubject().getPrincipal())) {
 						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-						LOG.info("CERT ISSUER    : {}", token.getIssuerX500Principal());
-						LOG.info("ISSUER SUBJECT : {}", candidate.getSubjectX500Principal());
+						LOG.info("CERT ISSUER    : {}", token.getIssuer().getCanonical());
+						LOG.info("ISSUER SUBJECT : {}", candidate.getSubject().getCanonical());
 					}
 					return candidate;
 				}
@@ -321,7 +321,7 @@ public class SignatureValidationContext implements ValidationContext {
 				continue;
 			}
 
-			Set<CertificateToken> tokensSet = validationCertificatePool.get(candidate.getSubjectX500Principal());
+			Set<CertificateToken> tokensSet = validationCertificatePool.get(candidate.getSubject());
 			for (CertificateToken pooledToken : tokensSet) {
 				if (pooledToken.getPublicKey().equals(commonPublicKey) && isTrusted(pooledToken)) {
 					bestMatch = pooledToken;

@@ -58,7 +58,7 @@ import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DSSASN1UtilsTest {
-
+	
 	private static CertificateToken certificateWithAIA;
 
 	private static CertificateToken certificateOCSP;
@@ -191,12 +191,6 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getUtf8String() {
-		assertNotNull(DSSASN1Utils.getUtf8String(certificateWithAIA.getSubjectX500Principal()));
-		assertNotNull(DSSASN1Utils.getUtf8String(certificateWithAIA.getIssuerX500Principal()));
-	}
-
-	@Test
 	public void getSubjectCommonName() {
 		assertEquals("tts.luxtrust.lu", DSSASN1Utils.getSubjectCommonName(certificateWithAIA));
 	}
@@ -295,7 +289,7 @@ public class DSSASN1UtilsTest {
 			assertArrayEquals(originalBinaries, berBinaries);
 
 			byte[] derEncoded = DSSASN1Utils.getDEREncoded(tst);
-			assertNotNull(derEncoded);
+			assertNotNull(derEncoded); 
 			String derEncodedBase64 = Utils.toBase64(derEncoded);
 			
 			assertNotEquals(derEncodedBase64, defaultEncodedBase64);
@@ -310,5 +304,5 @@ public class DSSASN1UtilsTest {
 			assertNotNull(rebuiltTST);
 		}
 	}
-
+	
 }

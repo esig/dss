@@ -97,7 +97,7 @@ public class CertificatePoolMultiThreadTest {
 			for (CertificateToken certificateToken : certificates) {
 				assertTrue(sharedPool.isTrusted(certificateToken), "Certificate should be trusted");
 				assertFalse(sharedPool.getSources(certificateToken).isEmpty(), "Sources for certificate shouldn't be empty");
-				assertFalse(sharedPool.get(certificateToken.getSubjectX500Principal()).isEmpty(), "Certificate by subject shoudln't be empty");
+				assertFalse(sharedPool.get(certificateToken.getSubject()).isEmpty(), "Certificate by subject shoudln't be empty");
 			}
 
 			return sharedPool.getNumberOfCertificates();

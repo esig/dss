@@ -106,6 +106,7 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.TokenComparator;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
@@ -1208,10 +1209,10 @@ public class DiagnosticDataBuilder {
 		return xmlCommitmentTypeIndication;
 	}
 
-	private XmlDistinguishedName getXmlDistinguishedName(final String x500PrincipalFormat, final X500Principal X500PrincipalName) {
+	private XmlDistinguishedName getXmlDistinguishedName(final String x500PrincipalFormat, final String value) {
 		final XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
 		xmlDistinguishedName.setFormat(x500PrincipalFormat);
-		xmlDistinguishedName.setValue(X500PrincipalName.getName(x500PrincipalFormat));
+		xmlDistinguishedName.setValue(value);
 		return xmlDistinguishedName;
 	}
 	
@@ -1358,7 +1359,7 @@ public class DiagnosticDataBuilder {
 	
 	private CertificateToken getUsedCertificateByIssuerInfo(IssuerSerialInfo issuerInfo) {
 		for (CertificateToken certificateToken : usedCertificates) {
-			if (DSSUtils.x500PrincipalAreEquals(issuerInfo.getIssuerName(), certificateToken.getSubjectX500Principal())) {
+			if (issuerInfo.isRelatedTo(certificateToken)) {
 				return certificateToken;
 			}
 		}
@@ -2037,25 +2038,26 @@ public class DiagnosticDataBuilder {
 
 		xmlCert.setId(certToken.getDSSIdAsString());
 
-		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, certToken.getSubjectX500Principal()));
-		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, certToken.getSubjectX500Principal()));
+		X500PrincipalHelper subject = certToken.getSubject();
+		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, subject.getCanonical()));
+		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, subject.getRFC2253()));
 
-		xmlCert.getIssuerDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, certToken.getIssuerX500Principal()));
-		xmlCert.getIssuerDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, certToken.getIssuerX500Principal()));
+		X500PrincipalHelper issuer = certToken.getIssuer();
+		xmlCert.getIssuerDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, issuer.getCanonical()));
+		xmlCert.getIssuerDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, issuer.getRFC2253()));
 
 		xmlCert.setSerialNumber(certToken.getSerialNumber());
 
-		X500Principal x500Principal = certToken.getSubjectX500Principal();
-		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, x500Principal));
-		xmlCert.setLocality(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.L, x500Principal));
-		xmlCert.setState(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ST, x500Principal));
-		xmlCert.setCountryName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal));
-		xmlCert.setOrganizationName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, x500Principal));
-		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, x500Principal));
-		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
-		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
-		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
-		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, x500Principal));
+		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, subject));
+		xmlCert.setLocality(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.L, subject));
+		xmlCert.setState(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ST, subject));
+		xmlCert.setCountryName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, subject));
+		xmlCert.setOrganizationName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, subject));
+		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, subject));
+		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, subject));
+		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, subject));
+		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, subject));
+		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, subject));
 
 		xmlCert.setAuthorityInformationAccessUrls(getCleanedUrls(DSSASN1Utils.getCAAccessLocations(certToken)));
 		xmlCert.setOCSPAccessUrls(getCleanedUrls(DSSASN1Utils.getOCSPAccessLocations(certToken)));

@@ -24,6 +24,9 @@ import java.math.BigInteger;
 
 import javax.security.auth.x500.X500Principal;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+
 public class IssuerSerialInfo {
 
 	private X500Principal issuerName;
@@ -43,6 +46,11 @@ public class IssuerSerialInfo {
 
 	public void setSerialNumber(BigInteger serialNumber) {
 		this.serialNumber = serialNumber;
+	}
+
+	public boolean isRelatedTo(CertificateToken certificateToken) {
+		return ((serialNumber == null || certificateToken.getSerialNumber().equals(serialNumber))
+				&& DSSUtils.x500PrincipalAreEquals(certificateToken.getSubject().getPrincipal(), issuerName));
 	}
 
 	@Override

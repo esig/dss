@@ -484,9 +484,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(certIssuerName, issuerName);
 					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					if (!issuerNameMatches) {
-						final String c14nCandidateIssuerName = certIssuerName.getName(X500Principal.CANONICAL);
-						LOG.info("candidateIssuerName : {}", c14nCandidateIssuerName);
-						final String c14nIssuerName = issuerName == null ? "" : issuerName.getName(X500Principal.CANONICAL);
+						LOG.info("candidateIssuerName : {}", certIssuerName.getName(X500Principal.CANONICAL));
+						final String c14nIssuerName = issuerName == null ? ""
+								: issuerName.getName(X500Principal.CANONICAL);
 						LOG.info("issuerName : {}", c14nIssuerName);
 					}
 				}

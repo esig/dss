@@ -633,7 +633,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
-		assertEquals(certificate.getSubjectX500Principal().getName(X500Principal.RFC2253), certificateDN);
+		assertEquals(certificate.getSubject().getRFC2253(), certificateDN);
 		assertEquals(certificate.getSerialNumber().toString(), certificateSerialNumber);
 
 		SignatureAlgorithm signatureAlgorithm = certificate.getSignatureAlgorithm();
@@ -652,7 +652,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
-		assertEquals(certificate.getIssuerX500Principal().getName(X500Principal.RFC2253), issuerDN);
+		assertEquals(certificate.getIssuer().getRFC2253(), issuerDN);
 	}
 
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
