@@ -191,21 +191,22 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDocDssRevision dssRevision) {
+	private void addReferencesFromRevocationData(List<TimestampedReference> references,
+			final PdfDocDssRevision dssRevision) {
 		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssRevision.getDssDictionary());
 		for (CRLBinary crlIdentifier : padesCRLSource.getCRLBinaryList()) {
-			if (padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
-					padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
-				addReference(references, new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
+			if (padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.DSS_DICTIONARY)
+					|| padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
+				addReference(references, crlIdentifier, TimestampedObjectType.REVOCATION);
 			}
 		}
 		crlSource.add(padesCRLSource);
-		
+
 		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssRevision.getDssDictionary());
 		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
-			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
-					padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
-				addReference(references, new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
+			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.DSS_DICTIONARY)
+					|| padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
+				addReference(references, ocspIdentifier, TimestampedObjectType.REVOCATION);
 			}
 		}
 		ocspSource.add(padesOCSPSource);

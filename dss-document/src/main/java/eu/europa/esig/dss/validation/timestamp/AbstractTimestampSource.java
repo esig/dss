@@ -736,7 +736,19 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected void addReference(List<TimestampedReference> referenceList, TimestampedReference referenceToAdd) {
 		addReferences(referenceList, Arrays.asList(referenceToAdd));
 	}
-	
+
+	/**
+	 * Adds a reference for the given identifier and category
+	 * 
+	 * @param referenceList - list of {@link TimestampedReference}s to be extended
+	 * @param identifier    - {@link Identifier} to be added
+	 * @param category      - {@link TimestampedObjectType} to be added
+	 */
+	protected void addReference(List<TimestampedReference> referenceList, Identifier identifier,
+			TimestampedObjectType category) {
+		addReferences(referenceList, Arrays.asList(new TimestampedReference(identifier.asXmlId(), category)));
+	}
+
 	/**
 	 * Adds {@code referencesToAdd} to {@code referenceList} without duplicates
 	 * @param referenceList - list of {@link TimestampedReference}s to be extended
@@ -781,27 +793,27 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected void addEncapsulatedValuesFromTimestamp(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
 		for (final CertificateToken certificate : timestampedTimestamp.getCertificates()) {
-			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, certificate.getDSSId(), TimestampedObjectType.CERTIFICATE);
 		}
 		for (final CertificateRef certificateRef : timestampedTimestamp.getCertificateRefs()) {
 			addReference(references, getTimestampedCertificateRefByDigest(certificateRef.getCertDigest(), timestampedTimestamp.getCertificateSource()));
 		}
 		TimestampCRLSource timestampCRLSource = timestampedTimestamp.getCRLSource();
 		for (CRLBinary crlBinary : timestampCRLSource.getCRLBinaryList()) {
-			addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+			addReference(references, crlBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (CRLRef crlRef : timestampCRLSource.getAllCRLReferences()) {
+		for (CRLRef crlRef : timestampCRLSource.getAllRevocationReferences()) {
 			addReference(references,getTimestampedCRLRefByDigest(crlRef.getDigest()));
 		}
 		TimestampOCSPSource timestampOCSPSource = timestampedTimestamp.getOCSPSource();
 		for (OCSPResponseBinary ocspBinary : timestampOCSPSource.getOCSPResponsesList()) {
-			addReference(references, new TimestampedReference(ocspBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+			addReference(references, ocspBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (OCSPRef ocspRef : timestampOCSPSource.getAllOCSPReferences()) {
+		for (OCSPRef ocspRef : timestampOCSPSource.getAllRevocationReferences()) {
 			addReference(references,getTimestampedOCSPRefByDigest(ocspRef.getDigest()));
 		}
 	}
-	
+
 	/**
 	 * Returns {@link ArchiveTimestampType} for the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get archive timestamp type for

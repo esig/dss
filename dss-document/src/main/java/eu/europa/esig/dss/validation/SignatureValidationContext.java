@@ -531,8 +531,7 @@ public class SignatureValidationContext implements ValidationContext {
 			// extract the certificate chain and add missing tokens for verification
 			List<Token> certChain = getCertChain(token);
 			if (token instanceof CertificateToken) {
-				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token, certChain);
-				addRevocationTokensForVerification(revocationTokens);
+				getRevocationData((CertificateToken) token, certChain);
 			}
 			token = getNotYetVerifiedToken();
 			
@@ -570,11 +569,13 @@ public class SignatureValidationContext implements ValidationContext {
 			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken);
 			if (ocspToken != null) {
 				revocations.add(ocspToken);
+				addTokenForVerification(ocspToken);
 			}
 
 			RevocationToken crlToken = offlineVerifier.checkCRL(certToken);
 			if (crlToken != null) {
 				revocations.add(crlToken);
+				addTokenForVerification(crlToken);
 			}
 		}
 		
@@ -599,6 +600,7 @@ public class SignatureValidationContext implements ValidationContext {
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 					LOG.debug("Obtained a new revocation data : {}, for certificate : {}", onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
+					addTokenForVerification(onlineRevocationToken);
 				}
 				
 			} else {

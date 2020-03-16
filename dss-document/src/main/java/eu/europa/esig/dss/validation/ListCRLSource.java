@@ -21,12 +21,9 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.crl.CRLBinary;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -34,7 +31,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class allows to handle a list CRL source.
@@ -87,52 +83,11 @@ public class ListCRLSource implements CRLSource {
 		return true;
 	}
 
-	public Set<RevocationOrigin> getRevocationOrigins(CRLBinary crlBinary) {
-		Set<RevocationOrigin> result = new HashSet<>();
-		for (OfflineCRLSource offlineCRLSource : sources) {
-			Set<RevocationOrigin> revocationOrigins = offlineCRLSource.getRevocationOrigins(crlBinary);
-			if (Utils.isCollectionNotEmpty(revocationOrigins)) {
-				result.addAll(revocationOrigins);
-			}
-		}
-		return result;
-	}
-
-	public Set<CRLToken> getAllCRLTokens() {
-		Set<CRLToken> allTokens = new HashSet<>();
-		for (OfflineCRLSource offlineCRLSource : sources) {
-			if (offlineCRLSource instanceof SignatureCRLSource) {
-				allTokens.addAll(((SignatureCRLSource) offlineCRLSource).getAllCRLTokens());
-			}
-		}
-		return allTokens;
-	}
-
-	public List<CRLRef> findRefsForRevocationToken(CRLToken revocationToken) {
-		List<CRLRef> result = new ArrayList<>();
-		for (OfflineCRLSource offlineCRLSource : sources) {
-			if (offlineCRLSource instanceof SignatureCRLSource) {
-				result.addAll(((SignatureCRLSource) offlineCRLSource).findRefsForRevocationToken(revocationToken));
-			}
-		}
-		return result;
-	}
-
-	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinary revocationIdentifier) {
-		List<CRLRef> result = new ArrayList<>();
-		for (OfflineCRLSource offlineCRLSource : sources) {
-			if (offlineCRLSource instanceof SignatureCRLSource) {
-				result.addAll(((SignatureCRLSource) offlineCRLSource).getReferencesForCRLIdentifier(revocationIdentifier));
-			}
-		}
-		return result;
-	}
-
 	public List<CRLRef> getOrphanCrlRefs() {
 		List<CRLRef> result = new ArrayList<>();
 		for (OfflineCRLSource offlineCRLSource : sources) {
 			if (offlineCRLSource instanceof SignatureCRLSource) {
-				List<CRLRef> allCrlRefs = ((SignatureCRLSource) offlineCRLSource).getAllCRLReferences();
+				List<CRLRef> allCrlRefs = ((SignatureCRLSource) offlineCRLSource).getAllRevocationReferences();
 				for (CRLRef crlRef : allCrlRefs) {
 					if (getIdentifier(crlRef.getDigest()) == null) {
 						addRef(result, crlRef);

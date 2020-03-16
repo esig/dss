@@ -81,42 +81,6 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	}
 
 	/**
-	 * Returns SignedData {@link RevocationOrigin}
-	 * 
-	 * @return {@link RevocationOrigin}
-	 */
-	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
-		return RevocationOrigin.CMS_SIGNED_DATA;
-	}
-
-	/**
-	 * Returns revocation-values {@link RevocationOrigin}
-	 * 
-	 * @return {@link RevocationOrigin}
-	 */
-	protected RevocationOrigin getRevocationValuesOrigin() {
-		return RevocationOrigin.REVOCATION_VALUES;
-	}
-
-	/**
-	 * Returns complete-revocation-refs {@link RevocationRefOrigin}
-	 * 
-	 * @return {@link RevocationRefOrigin}
-	 */
-	protected RevocationRefOrigin getCompleteRevocationRefsOrigin() {
-		return RevocationRefOrigin.COMPLETE_REVOCATION_REFS;
-	}
-
-	/**
-	 * Returns attribute-revocation-refs {@link RevocationRefOrigin}
-	 * 
-	 * @return {@link RevocationRefOrigin}
-	 */
-	protected RevocationRefOrigin getAttributeRevocationRefsOrigin() {
-		return RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS;
-	}
-
-	/**
 	 * Returns a list of {@code CRLBinaryIdentifier} found in the SignedData
 	 * container
 	 * 
@@ -147,7 +111,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 			 * OPTIONAL, ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL, otherRevVals
 			 * [2] OtherRevVals OPTIONAL}
 			 */
-			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, getRevocationValuesOrigin());
+			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, RevocationOrigin.REVOCATION_VALUES);
 
 			/*
 			 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41 6.2.2
@@ -165,13 +129,13 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 			 * OtherRevRefs OPTIONAL } AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef
 			 * (the same as for CompleteRevocationRefs)
 			 */
-			collectRevocationRefs(id_aa_ets_revocationRefs, getCompleteRevocationRefsOrigin());
+			collectRevocationRefs(id_aa_ets_revocationRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 
 			/*
 			 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 			 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45}
 			 */
-			collectRevocationRefs(attributeRevocationRefsOid, getAttributeRevocationRefsOrigin());
+			collectRevocationRefs(attributeRevocationRefsOid, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 
 		}
 
@@ -181,7 +145,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
-			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getCMSSignedDataRevocationOrigin()));
+			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, RevocationOrigin.CMS_SIGNED_DATA));
 		}
 	}
 

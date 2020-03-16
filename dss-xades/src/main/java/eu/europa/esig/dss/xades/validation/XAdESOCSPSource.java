@@ -95,7 +95,9 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			final NodeList ocspValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentOCSPValuesChildren());
 			for (int ii = 0; ii < ocspValueNodes.getLength(); ii++) {
 				final Element ocspValueEl = (Element) ocspValueNodes.item(ii);
-				convertAndAppend(ocspValueEl.getTextContent(), origin);
+				if (ocspValueEl != null) {
+					convertAndAppend(ocspValueEl.getTextContent(), origin);
+				}
 			}
 		}
 	}
@@ -111,9 +113,11 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			final NodeList ocspRefNodes = DomUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentOCSPRefsChildren());
 			for (int ii = 0; ii < ocspRefNodes.getLength(); ii++) {
 				final Element ocspRefElement = (Element) ocspRefNodes.item(ii);
-				OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationRefOrigin);
-				if (ocspRef != null) {
-					addReference(ocspRef, revocationRefOrigin);
+				if (ocspRefElement != null) {
+					OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationRefOrigin);
+					if (ocspRef != null) {
+						addReference(ocspRef, revocationRefOrigin);
+					}
 				}
 			}
 		}
@@ -143,6 +147,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		
 		// process only if ResponderId is present
 		if (responderId.getName() == null && responderId.getKey() == null) {
+			LOG.warn("Missing OCSPIdentifier / ResponderID (mandatory)");
 			return null;
 		}
 		
@@ -154,11 +159,13 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		
 		// producedAtDate must be present
 		if (producedAtDate == null) {
+			LOG.warn("Missing OCSPIdentifier / ProducedAt (mandatory)");
 			return null;
 		}
 		
 		final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
 		if (digest == null) {
+			LOG.warn("Missing DigestAlgAndValue (mandatory)");
 			return null;
 		}
 		

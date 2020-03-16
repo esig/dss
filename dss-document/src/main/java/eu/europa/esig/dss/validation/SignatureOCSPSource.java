@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -35,7 +34,6 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -43,7 +41,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
-public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken> {
+public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken, OCSPRef> {
 	
 	private Map<OCSPResponseBinary, OCSPToken> ocspTokenMap = new HashMap<>();
 
@@ -99,10 +97,12 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return adbeRevocationValuesOCSPs;
 	}
 
+	@Override
 	public List<OCSPRef> getCompleteRevocationRefs() {
 		return getOCSPRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 	}
 
+	@Override
 	public List<OCSPRef> getAttributeRevocationRefs() {
 		return getOCSPRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
@@ -121,7 +121,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * Retrieves all found OCSP Tokens
 	 * @return list of {@link OCSPToken}s
 	 */
-	public List<OCSPToken> getAllOCSPTokens() {
+	@Override
+	public List<OCSPToken> getAllRevocationTokens() {
 		List<OCSPToken> ocspTokens = new ArrayList<>();
 		ocspTokens.addAll(getCMSSignedDataRevocationTokens());
 		ocspTokens.addAll(getRevocationValuesTokens());
@@ -133,11 +134,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return ocspTokens;
 	}
 
-	/**
-	 * Retrieves all found OCSP Refs
-	 * @return list of {@link OCSPRef}s
-	 */
-	public List<OCSPRef> getAllOCSPReferences() {
+	@Override
+	public List<OCSPRef> getAllRevocationReferences() {
 		return ocspRefs;
 	}
 	
@@ -193,7 +191,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 */
 	public List<OCSPRef> getReferencesForOCSPIdentifier(OCSPResponseBinary ocspResponse) {
 		List<OCSPRef> relatedRefs = new ArrayList<>();
-		for (OCSPRef ocspRef : getAllOCSPReferences()) {
+		for (OCSPRef ocspRef : getAllRevocationReferences()) {
 			Digest refDigest = ocspRef.getDigest();
 			byte[] digestValue = ocspResponse.getDigestValue(refDigest.getAlgorithm());
 			if (Arrays.equals(refDigest.getValue(), digestValue)) {
@@ -209,7 +207,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * @return {@link OCSPRef}
 	 */
 	public OCSPRef getOCSPRefByDigest(Digest digest) {
-		for (OCSPRef ocspRef : getAllOCSPReferences()) {
+		for (OCSPRef ocspRef : getAllRevocationReferences()) {
 			if (digest.equals(ocspRef.getDigest())) {
 				return ocspRef;
 			}
@@ -217,14 +215,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return null;
 	}
 	
-	/**
-	 * Returns a list of orphan CRL Refs
-	 * @return list of {@link CRLRef}s
-	 */
-	public List<OCSPRef> getOrphanOCSPRefs() {
+	@Override
+	public List<OCSPRef> getOrphanRevocationReferences() {
 		if (orphanRevocationRefsOCSPs == null) {
 			orphanRevocationRefsOCSPs = new ArrayList<>();
-			for (OCSPRef ocspRef : getAllOCSPReferences()) {
+			for (OCSPRef ocspRef : getAllRevocationReferences()) {
 				if (getIdentifier(ocspRef) == null) {
 					orphanRevocationRefsOCSPs.add(ocspRef);
 				}
@@ -233,27 +228,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return orphanRevocationRefsOCSPs;
 	}
 
-	/**
-	 * Retrieves a list of found OCSP Tokens for the given {@code revocationRefs}
-	 * @param revocationRefs list of {@link OCSPRef} to get tokens for
-	 * @return list of {@link OCSPToken}s
-	 */
-	public List<OCSPToken> findTokensFromRefs(List<OCSPRef> revocationRefs) {
-		if (Utils.isMapEmpty(revocationRefsMap)) {
-			collectRevocationRefsMap();
-		}
-		List<OCSPToken> tokensFromRefs = new ArrayList<>();
-		for (Entry<OCSPToken, Set<OCSPRef>> revocationMapEntry : revocationRefsMap.entrySet()) {
-			for (OCSPRef tokenRevocationRef : revocationMapEntry.getValue()) {
-				if (revocationRefs.contains(tokenRevocationRef)) {
-					tokensFromRefs.add(revocationMapEntry.getKey());
-					break;
-				}
-			}
-		}
-		return tokensFromRefs;
-	}
-	
 	/**
 	 * Retrieves a set of found OCSP Refs for the given {@code revocationToken}
 	 * @param revocationToken {@link OCSPToken} to get references for
@@ -273,8 +247,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	
 	private void collectRevocationRefsMap() {
 		revocationRefsMap = new HashMap<>();
-		for (OCSPToken revocationToken : getAllOCSPTokens()) {
-			for (OCSPRef ocspRef : getAllOCSPReferences()) {
+		for (OCSPToken revocationToken : getAllRevocationTokens()) {
+			for (OCSPRef ocspRef : getAllRevocationReferences()) {
 				Digest ocspRefDigest = ocspRef.getDigest();
 				if (ocspRefDigest != null) {
 					if (Arrays.equals(ocspRefDigest.getValue(), revocationToken.getDigest(ocspRefDigest.getAlgorithm()))) {

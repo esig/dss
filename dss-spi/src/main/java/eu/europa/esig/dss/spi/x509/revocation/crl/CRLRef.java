@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -76,8 +75,8 @@ public final class CRLRef extends RevocationRef {
 			byte[] digestValue = crlHash.getHashValue();
 			this.digest = new Digest(digestAlgorithm, digestValue);
 			this.origins = new HashSet<>(Arrays.asList(origin));
-		} catch (ParseException ex) {
-			throw new DSSException(ex);
+		} catch (Exception e) {
+			throw new DSSException("Unable to build CRLRef from CrlValidatedID", e);
 		}
 	}
 

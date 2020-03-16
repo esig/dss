@@ -22,9 +22,17 @@ package eu.europa.esig.dss.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
-public interface SignatureRevocationSource<T extends RevocationToken> {
+public interface SignatureRevocationSource<T extends RevocationToken, R extends RevocationRef> {
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s
+	 * 
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<T> getAllRevocationTokens();
 	
 	/**
 	 * Retrieves the list of all {@link RevocationToken}s present in the CMS
@@ -94,5 +102,36 @@ public interface SignatureRevocationSource<T extends RevocationToken> {
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<T> getADBERevocationValuesTokens();
+	
+	/**
+	 * Retrieves the list of all {@link RevocationRef}
+	 * 
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<R> getAllRevocationReferences();
+
+	/**
+	 * Retrieves the list of all orphan {@link RevocationRef}. (not linked to a
+	 * complete revocation token)
+	 * 
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<R> getOrphanRevocationReferences();
+ 
+	/**
+	 * Retrieves the list of all {@link RevocationRef}s present in the signature
+	 * 'complete-revocation-references' attribute (used in CAdES and XAdES)
+	 * 
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<R> getCompleteRevocationRefs();
+
+	/**
+	 * Retrieves the list of all {@link RevocationRef}s present in the signature
+	 * 'attribute-revocation-references' attribute (used in CAdES and XAdES)
+	 * 
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<R> getAttributeRevocationRefs();
 
 }

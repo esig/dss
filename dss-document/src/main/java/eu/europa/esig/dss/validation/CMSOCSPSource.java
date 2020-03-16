@@ -66,7 +66,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 
 	protected final transient CMSSignedData cmsSignedData;
 	protected final transient AttributeTable unsignedAttributes;
-	
+
 	/**
 	 * Cached list of {@code OCSPResponseBinary}s found in SignedData attribute
 	 */
@@ -84,42 +84,6 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		this.cmsSignedData = cms;
 		this.unsignedAttributes = unsignedAttributes;
 		appendContainedOCSPResponses();
-	}
-	
-	/**
-	 * Returns SignedData {@link RevocationOrigin}
-	 * 
-	 * @return {@link RevocationOrigin}
-	 */
-	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
-		return RevocationOrigin.CMS_SIGNED_DATA;
-	}
-
-	/**
-	 * Returns revocation-values {@link RevocationOrigin}
-	 * 
-	 * @return {@link RevocationOrigin}
-	 */
-	protected RevocationOrigin getRevocationValuesOrigin() {
-		return RevocationOrigin.REVOCATION_VALUES;
-	}
-
-	/**
-	 * Returns complete-revocation-refs {@link RevocationRefOrigin}
-	 * 
-	 * @return {@link RevocationRefOrigin}
-	 */
-	protected RevocationRefOrigin getCompleteRevocationRefsOrigin() {
-		return RevocationRefOrigin.COMPLETE_REVOCATION_REFS;
-	}
-
-	/**
-	 * Returns attribute-revocation-refs {@link RevocationRefOrigin}
-	 * 
-	 * @return {@link RevocationRefOrigin}
-	 */
-	protected RevocationRefOrigin getAttributeRevocationRefsOrigin() {
-		return RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS;
 	}
 	
 	/**
@@ -153,7 +117,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
             ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
             otherRevVals [2] OtherRevVals OPTIONAL}
 			 */
-			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, getRevocationValuesOrigin());
+			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, RevocationOrigin.REVOCATION_VALUES);
 			
 			/*
 			 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
@@ -175,12 +139,14 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			 * } 
 			 * AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef (the same as for CompleteRevocationRefs)
 			 */
-			collectRevocationRefs(unsignedAttributes, id_aa_ets_revocationRefs, getCompleteRevocationRefsOrigin());
+			collectRevocationRefs(unsignedAttributes, id_aa_ets_revocationRefs,
+					RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 			/*
 			 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 			 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
 			 */
-			collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid, getAttributeRevocationRefsOrigin());
+			collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid,
+					RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 
 		}
 	}
@@ -203,7 +169,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
 				}
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getCMSSignedDataRevocationOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp,
+						RevocationOrigin.CMS_SIGNED_DATA);
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
@@ -221,7 +188,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			if (object instanceof ASN1Sequence) {
 				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getCMSSignedDataRevocationOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp,
+						RevocationOrigin.CMS_SIGNED_DATA);
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);

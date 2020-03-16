@@ -30,6 +30,8 @@ import eu.europa.esig.dss.model.DSSException;
 
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 
+	private static final long serialVersionUID = -332201368387706970L;
+
 	/**
 	 * This constructor loads the OCSP responses from a array of <code>String</code>s representing resources.
 	 *

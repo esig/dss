@@ -261,7 +261,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			List<DEROctetString> certsHashList = DSSASN1Utils.getDEROctetStrings(certsHashIndex);
 			for (CertificateToken certificate : signatureCertificateSource.getSignedDataCertificates()) {
 				if (isDigestValuePresent(certificate.getDigest(digestAlgorithm), certsHashList)) {
-					addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+					addReference(references, certificate.getDSSId(), TimestampedObjectType.CERTIFICATE);
 				} else {
 					LOG.warn("The certificate with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
@@ -282,7 +282,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		if (signatureCRLSource instanceof CMSCRLSource) {
 			for (CRLBinary crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
 				if (isDigestValuePresent(crlBinary.getDigestValue(digestAlgorithm), crlsHashList)) {
-					addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+					addReference(references, crlBinary, TimestampedObjectType.REVOCATION);
 				} else {
 					LOG.warn("The CRL Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
@@ -310,7 +310,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				// false value specifies an implicit encoding method
 				DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
 				if (isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList)) {
-					addReference(references, new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
+					addReference(references, ocspResponse, TimestampedObjectType.REVOCATION);
 				} else {
 					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
@@ -329,12 +329,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		}
 		if (signatureCRLSource instanceof CMSCRLSource) {
 			for (CRLBinary crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
-				addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+				addReference(references, crlBinary, TimestampedObjectType.REVOCATION);
 			}
 		}
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
 			for (OCSPResponseBinary ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
-				addReference(references, new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
+				addReference(references, ocspResponse, TimestampedObjectType.REVOCATION);
 			}
 		}
 		return references;
@@ -479,35 +479,32 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 	
 	@Override
-	protected void addEncapsulatedValuesFromTimestamp(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+	protected void addEncapsulatedValuesFromTimestamp(List<TimestampedReference> references,
+			TimestampToken timestampedTimestamp) {
 		super.addEncapsulatedValuesFromTimestamp(references, timestampedTimestamp);
-		
+
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
 		for (CRLBinary crlBinary : timeStampCRLSource.getCRLBinaryList()) {
-			TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
-			addReference(references, crlReference);
+			addReference(references, crlBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
+		for (CRLRef crlRef : timeStampCRLSource.getAllRevocationReferences()) {
 			CRLBinary crlBinaryIdentifier = timeStampCRLSource.getIdentifier(crlRef);
 			if (crlBinaryIdentifier != null) {
-				TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
-				addReference(references, crlReference);
+				addReference(references, crlBinaryIdentifier, TimestampedObjectType.REVOCATION);
 			}
 		}
-		
+
 		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
 		for (OCSPResponseBinary ocspResponse : ocspSource.getOCSPResponsesList()) {
-			TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
-			addReference(references, ocspReference);
+			addReference(references, ocspResponse, TimestampedObjectType.REVOCATION);
 		}
-		for (OCSPRef ocspRef : timeStampOCSPSource.getAllOCSPReferences()) {
+		for (OCSPRef ocspRef : timeStampOCSPSource.getAllRevocationReferences()) {
 			OCSPResponseBinary ocspResponseIdentifier = ocspSource.getIdentifier(ocspRef);
 			if (ocspResponseIdentifier != null) {
-				TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
-				addReference(references, ocspReference);
+				addReference(references, ocspResponseIdentifier, TimestampedObjectType.REVOCATION);
 			}
 		}
-		
+
 	}
 
 }
