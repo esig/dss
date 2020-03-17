@@ -38,7 +38,7 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 	private CertificateRef signingCertificateRef;
 	
 	public OCSPCertificateSource(final BasicOCSPResp basicOCSPResp) {
-		Objects.requireNonNull(basicOCSPResp, "basicOCSPResponse must be provided!");
+		Objects.requireNonNull(basicOCSPResp, "BasicOCSPResp must be provided!");
 		this.basicOCSPResp = basicOCSPResp;
 		
 		getBasicOCSPRespCertificates();

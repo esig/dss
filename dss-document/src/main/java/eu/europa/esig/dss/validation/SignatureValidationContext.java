@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -51,6 +52,7 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -420,8 +422,14 @@ public class SignatureValidationContext implements ValidationContext {
 			if (addTokenForVerification(revocationToken)) {
 				
 				// only certificate sources for OCSP tokens must be processed
-				for (CertificateToken certificateToken : revocationToken.getCertificates()) {
-					addCertificateTokenForVerification(certificateToken);
+				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
+				if (revocationCertificateSource != null) {
+					CertificateSourceType certificateSourceType = revocationCertificateSource.getCertificateSourceType();
+					for (CertificateToken certificateToken : revocationCertificateSource.getCertificates()) {
+						// TODO find an alternative
+						validationCertificatePool.getInstance(certificateToken, certificateSourceType);
+						addCertificateTokenForVerification(certificateToken);
+					}
 				}
 
 				final boolean added = processedRevocations.add(revocationToken);
@@ -560,22 +568,27 @@ public class SignatureValidationContext implements ValidationContext {
 			return Collections.emptyList();
 		}
 
+		CertificateToken issuerToken = validationCertificatePool.getIssuer(certToken);
+		if (issuerToken == null) {
+			LOG.warn("Issuer not found for certificate {}", certToken.getDSSIdAsString());
+			return Collections.emptyList();
+		}
+
 		List<RevocationToken> revocations = new ArrayList<>();
 
 		// ALL Embedded revocation data
 		if (signatureCRLSource != null || signatureOCSPSource != null) {
-			OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource,
-					validationCertificatePool);
-			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken);
+			OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource);
+			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken, issuerToken);
 			if (ocspToken != null) {
 				revocations.add(ocspToken);
-				addTokenForVerification(ocspToken);
+				addRevocationTokensForVerification(Arrays.asList(ocspToken));
 			}
 
-			RevocationToken crlToken = offlineVerifier.checkCRL(certToken);
+			RevocationToken crlToken = offlineVerifier.checkCRL(certToken, issuerToken);
 			if (crlToken != null) {
 				revocations.add(crlToken);
-				addTokenForVerification(crlToken);
+				addRevocationTokensForVerification(Arrays.asList(crlToken));
 			}
 		}
 		
@@ -592,20 +605,19 @@ public class SignatureValidationContext implements ValidationContext {
 					onlineVerifier = instantiateWithTrustServices(trustAnchor);
 				} else {
 					LOG.trace("Initializing a revocation verifier for not trusted chain...");
-					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource);
 				}
 
-				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
+				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken, issuerToken);
 				// CRL can already exist in the signature
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 					LOG.debug("Obtained a new revocation data : {}, for certificate : {}", onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
-					addTokenForVerification(onlineRevocationToken);
+					addRevocationTokensForVerification(Arrays.asList(onlineRevocationToken));
 				}
 				
 			} else {
 				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certToken.getDSSIdAsString());
-				
 			}
 		}
 		
@@ -647,7 +659,7 @@ public class SignatureValidationContext implements ValidationContext {
 			currentCRLSource = crlSource;
 		}
 
-		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource, validationCertificatePool);
+		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource);
 	}
 
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {

@@ -27,10 +27,8 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
@@ -44,12 +42,9 @@ public class OCSPCertificateVerifierTest {
 		assertTrue(toCheckToken.isSignedBy(caToken));
 
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/peru_ocsp.bin");
-		CertificatePool validationCertPool = new CertificatePool();
-		validationCertPool.getInstance(toCheckToken, CertificateSourceType.OTHER);
-		validationCertPool.getInstance(caToken, CertificateSourceType.OTHER);
 
-		OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource, validationCertPool);
-		RevocationToken revocationToken = ocspVerifier.check(toCheckToken);
+		OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource);
+		RevocationToken revocationToken = ocspVerifier.check(toCheckToken, caToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getPublicKeyOfTheSigner());
 	}

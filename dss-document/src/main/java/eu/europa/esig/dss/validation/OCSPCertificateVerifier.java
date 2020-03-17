@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -40,30 +39,21 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
 	private final RevocationSource<OCSPToken> ocspSource;
 
-	private final CertificatePool validationCertPool;
 
 	/**
 	 * Create a CertificateVerifier that will use the OCSP Source for checking revocation data. The default constructor
 	 * for OCSPCertificateVerifier.
 	 *
 	 * @param ocspSource
-	 * @param validationCertPool
 	 */
-	public OCSPCertificateVerifier(final RevocationSource<OCSPToken> ocspSource, final CertificatePool validationCertPool) {
+	public OCSPCertificateVerifier(final RevocationSource<OCSPToken> ocspSource) {
 		this.ocspSource = ocspSource;
-		this.validationCertPool = validationCertPool;
 	}
 
 	@Override
-	public RevocationToken check(final CertificateToken toCheckToken) {
+	public RevocationToken check(final CertificateToken toCheckToken, final CertificateToken issuerToken) {
 		if (ocspSource == null) {
 			LOG.debug("OCSPSource null");
-			return null;
-		}
-
-		CertificateToken issuerToken = validationCertPool.getIssuer(toCheckToken);
-		if (issuerToken == null) {
-			LOG.debug("Issuer is null");
 			return null;
 		}
 

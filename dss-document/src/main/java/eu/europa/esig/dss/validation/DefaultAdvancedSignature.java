@@ -739,7 +739,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
-		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCompleteCRLSource(), getCompleteOCSPSource(), certPool);
+		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCompleteCRLSource(), getCompleteOCSPSource());
 
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
@@ -761,7 +761,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 					// (cross certification)
 					break;
 				}
-				RevocationToken revocationData = certificateStatusVerifier.check(certificateToken);
+				CertificateToken issuerToken = certPool.getIssuer(certificateToken);
+				if (issuerToken == null) {
+					LOG.warn("Issuer not found for certificate {}", certificateToken.getDSSIdAsString());
+					return false;
+				}
+				RevocationToken revocationData = certificateStatusVerifier.check(certificateToken, issuerToken);
 				if (revocationData == null) {
 					return false;
 				}

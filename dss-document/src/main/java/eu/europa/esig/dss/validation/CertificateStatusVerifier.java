@@ -27,18 +27,18 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 /**
  * Implements a check that can be executed for a certificate.
  * 
- * 
- *
  */
-
 public interface CertificateStatusVerifier {
 
-   /***
-    * Check the validity (revocation status) of the certificate. The operation returns a {@link RevocationToken}.
-    * 
-    * @param certificate The certificate to be verified
-    * @return The RevocationToken or null the check cannot be performed.
-    */
-   RevocationToken check(CertificateToken certificate);
+   	/***
+	 * Check the validity (revocation status) of the certificate. The operation
+	 * returns a {@link RevocationToken}.
+	 * 
+	 * @param certificate The certificate to be verified
+	 * @param issuer      The issuer
+	 * 
+	 * @return The RevocationToken or null the check cannot be performed.
+	 */
+	RevocationToken check(CertificateToken certificate, CertificateToken issuer);
 
 }

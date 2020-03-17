@@ -57,7 +57,7 @@ public class DSS1788Test {
 		
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		 reports.print();
+//		 reports.print();
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());

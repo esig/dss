@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -39,31 +38,21 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 	private final RevocationSource<CRLToken> crlSource;
 
-	private final CertificatePool validationCertPool;
-
 	/**
 	 * Main constructor.
 	 *
 	 * @param crlSource
 	 *                           the CRL repository used by this CRL trust linker.
-	 * @param validationCertPool
 	 */
-	public CRLCertificateVerifier(final RevocationSource<CRLToken> crlSource, final CertificatePool validationCertPool) {
+	public CRLCertificateVerifier(final RevocationSource<CRLToken> crlSource) {
 		this.crlSource = crlSource;
-		this.validationCertPool = validationCertPool;
 	}
 
 	@Override
-	public RevocationToken check(final CertificateToken certificateToken) {
+	public RevocationToken check(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		try {
 			if (crlSource == null) {
 				LOG.debug("CRLSource is null");
-				return null;
-			}
-
-			CertificateToken issuerToken = validationCertPool.getIssuer(certificateToken);
-			if (issuerToken == null) {
-				LOG.debug("Issuer is null");
 				return null;
 			}
 
