@@ -53,13 +53,13 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
             </Policy>
+           	<SignerInformationStore>
+           		<SignerInfo Processed="true">
+			        <IssuerName>CN=AC SERASA RFB v2,OU=Secretaria da Receita Federal do Brasil - RFB,O=ICP-Brasil,C=BR</IssuerName>
+			        <SerialNumber>6258375866132076198</SerialNumber>
+           		</SignerInfo>
+           	</SignerInformationStore>
             <PDFRevision>
-            	<SignerInformationStore>
-            		<SignerInfo Processed="true">
-				        <Issuer>CN=AC SERASA RFB v2,OU=Secretaria da Receita Federal do Brasil - RFB,O=ICP-Brasil,C=BR</Issuer>
-				        <SerialNumber>6258375866132076198</SerialNumber>
-            		</SignerInfo>
-            	</SignerInformationStore>
 	            <PDFSignatureDictionary>
 	                <Filter>PBAD_PAdES</Filter>
 	                <SubFilter>PBAD.PAdES</SubFilter>
@@ -119,13 +119,13 @@
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndications/>
             
+           	<SignerInformationStore>
+           		<SignerInfo Processed="true">
+		            <IssuerName>CN=docusignhq-SEA-CAS-01-CA,DC=docusignhq,DC=com</IssuerName>
+		            <SerialNumber>450965617510987499327098</SerialNumber>
+           		</SignerInfo>
+           	</SignerInformationStore>
             <PDFRevision>
-            	<SignerInformationStore>
-            		<SignerInfo Processed="true">
-			            <Issuer>CN=docusignhq-SEA-CAS-01-CA,DC=docusignhq,DC=com</Issuer>
-			            <SerialNumber>450965617510987499327098</SerialNumber>
-            		</SignerInfo>
-            	</SignerInformationStore>
 	            <PDFSignatureDictionary>
 	                <Filter>Adobe.PPKMS</Filter>
 	                <SubFilter>adbe.pkcs7.detached</SubFilter>

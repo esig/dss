@@ -40,7 +40,10 @@ public class CertificateRefWrapper {
 	 * @return {@link String}
 	 */
 	public String getIssuerName() {
-		return certificateRef.getIssuerName();
+		if (certificateRef.getSerialInfo() != null) {
+			return certificateRef.getSerialInfo().getIssuerName();
+		}
+		return null;
 	}
 	
 	/**
@@ -50,7 +53,10 @@ public class CertificateRefWrapper {
 	 * @return a byte array
 	 */
 	public byte[] getSki() {
-		return certificateRef.getSki();
+		if (certificateRef.getSerialInfo() != null) {
+			return certificateRef.getSerialInfo().getSki();
+		}
+		return null;
 	}
 	
 	/**

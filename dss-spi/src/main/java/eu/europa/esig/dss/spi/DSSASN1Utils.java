@@ -34,6 +34,7 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -104,6 +105,7 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -116,7 +118,7 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
-import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -707,7 +709,6 @@ public final class DSSASN1Utils {
 		return computeSkiFromCertPublicKey(certificateToken.getPublicKey());
 	}
 
-
 	/**
 	 * Computes SHA-1 hash of the given {@code publicKey}'s
 	 * @param publicKey {@link PublicKey} to compute digest for
@@ -721,6 +722,18 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+	
+	/**
+	 * Checks if the provided ski matches to a ski computed from a certificateToken's public key
+	 * 
+	 * @param ski a byte array representing ski value (SHA-1 of the public key)
+	 * @param certificateToken {@link CertificateToken} to check
+	 * @return
+	 */
+	public static boolean isSkiEqual(final byte[] ski, final CertificateToken certificateToken) {
+		byte[] certSki = computeSkiFromCert(certificateToken);
+        return Arrays.equals(certSki, ski);
 	}
 
 	/**
@@ -880,19 +893,47 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns a new IssuerSerial based on x500Principal of issuer and serial number
-	 *
-	 * @param issuerX500Principal
-	 *            the {@link X500Principal} of certificate token's issuer
-	 * @param serialNumber
-	 *            serial number of certificate token
-	 * @return a IssuerSerial
+	 * This method transforms token's signerId into a {@code IssuerSerialInfo} object
+	 * 
+	 * @param signerId {@link SignerId} to be transformed
+	 * @return {@link SerialInfo}
 	 */
-	public static IssuerSerial getIssuerSerial(final X500Principal issuerX500Principal, BigInteger serialNumber) {
-		final X500Name issuerX500Name = X500Name.getInstance(issuerX500Principal.getEncoded());
-		final GeneralName generalName = new GeneralName(issuerX500Name);
-		final GeneralNames generalNames = new GeneralNames(generalName);
-		return new IssuerSerial(generalNames, serialNumber);
+	public static SerialInfo toIssuerSerialInfo(SignerId signerId) {
+		X500Principal issuerX500Principal = toX500Principal(signerId.getIssuer());
+		return toIssuerSerialInfo(issuerX500Principal, signerId.getSerialNumber(), signerId.getSubjectKeyIdentifier());
+	}
+	
+	/**
+	 * Transforms x500Name to X500Principal
+	 * 
+	 * @param x500Name {@link X500Name}
+	 * @return {@link X500Principal}
+	 */
+	public static X500Principal toX500Principal(X500Name x500Name) {
+		if (x500Name == null) {
+			return null;
+		}
+		try {
+			return new X500Principal(x500Name.getEncoded());
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot extract X500Principal! Reason : %s", e.getMessage()), e);
+		}
+	}
+	
+	/**
+	 * This method transforms token's issuer and serial number information into a {@code IssuerSerialInfo} object
+	 * 
+	 * @param issuerX500Principal {@link X500Principal} of the issuer
+	 * @param serialNumber {@link BigInteger} of the token
+	 * @param ski a byte array representing a SubjectKeyIdentifier (SHA-1 digest of the public key)
+	 * @return {@link SerialInfo}
+	 */
+	public static SerialInfo toIssuerSerialInfo(final X500Principal issuerX500Principal, final BigInteger serialNumber, final byte[] ski) {
+		SerialInfo issuerSerialInfo = new SerialInfo();
+		issuerSerialInfo.setIssuerName(issuerX500Principal);
+		issuerSerialInfo.setSerialNumber(serialNumber);
+		issuerSerialInfo.setSki(ski);
+		return issuerSerialInfo;
 	}
 
 	/**
@@ -908,6 +949,28 @@ public final class DSSASN1Utils {
 		final GeneralNames generalNames = new GeneralNames(generalName);
 		final BigInteger serialNumber = certToken.getCertificate().getSerialNumber();
 		return new IssuerSerial(generalNames, serialNumber);
+	}
+
+	/**
+	 * This method compares two {@code X500Principal}s. {@code X500Principal.CANONICAL} and
+	 * {@code X500Principal.RFC2253} forms are compared.
+	 *
+	 * @param firstX500Principal
+	 *            the first X500Principal object to be compared
+	 * @param secondX500Principal
+	 *            the second X500Principal object to be compared
+	 * @return true if the two parameters contain the same key/values
+	 */
+	public static boolean x500PrincipalAreEquals(final X500Principal firstX500Principal, final X500Principal secondX500Principal) {
+		if ((firstX500Principal == null) || (secondX500Principal == null)) {
+			return false;
+		}
+		if (firstX500Principal.equals(secondX500Principal)) {
+			return true;
+		}
+		final Map<String, String> firstStringStringHashMap = DSSASN1Utils.get(firstX500Principal);
+		final Map<String, String> secondStringStringHashMap = DSSASN1Utils.get(secondX500Principal);
+		return firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
 	}
 
 	public static Map<String, String> get(final X500Principal x500Principal) {
@@ -934,6 +997,80 @@ public final class DSSASN1Utils {
 		}
 		return treeMap;
 	}
+
+	/**
+	 * This method normalizes the X500Principal object
+	 * 
+	 * @param x500Principal
+	 *            to be normalized
+	 * @return {@code X500Principal} normalized
+	 */
+	public static X500Principal getNormalizedX500Principal(final X500Principal x500Principal) {
+		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
+		return new X500Principal(utf8Name);
+	}
+
+	public static String getUtf8String(final X500Principal x500Principal) {
+
+		final byte[] encoded = x500Principal.getEncoded();
+		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
+		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
+		final StringBuilder stringBuilder = new StringBuilder();
+		/**
+		 * RFC 4514 LDAP: Distinguished Names
+		 * 2.1. Converting the RDNSequence
+		 *
+		 * If the RDNSequence is an empty sequence, the result is the empty or
+		 * zero-length string.
+		 *
+		 * Otherwise, the output consists of the string encodings of each
+		 * RelativeDistinguishedName in the RDNSequence (according to Section
+		 * 2.2), starting with the last element of the sequence and moving
+		 * backwards toward the first.
+		 * ...
+		 */
+		for (int ii = asn1Encodables.length - 1; ii >= 0; ii--) {
+
+			final ASN1Encodable asn1Encodable = asn1Encodables[ii];
+
+			final DLSet dlSet = (DLSet) asn1Encodable;
+			for (int jj = 0; jj < dlSet.size(); jj++) {
+
+				final DLSequence dlSequence = (DLSequence) dlSet.getObjectAt(jj);
+				if (dlSequence.size() != 2) {
+
+					throw new DSSException("The DLSequence must contains exactly 2 elements.");
+				}
+				final ASN1Encodable attributeType = dlSequence.getObjectAt(0);
+				final ASN1Encodable attributeValue = dlSequence.getObjectAt(1);
+				String string = getString(attributeValue);
+
+				/**
+				 * RFC 4514 LDAP: Distinguished Names
+				 * ...
+				 * Other characters may be escaped.
+				 *
+				 * Each octet of the character to be escaped is replaced by a backslash
+				 * and two hex digits, which form a single octet in the code of the
+				 * character. Alternatively, if and only if the character to be escaped
+				 * is one of
+				 *
+				 * ' ', '"', '#', '+', ',', ';', '<', '=', '>', or '\'
+				 * (U+0020, U+0022, U+0023, U+002B, U+002C, U+003B,
+				 * U+003C, U+003D, U+003E, U+005C, respectively)
+				 *
+				 * it can be prefixed by a backslash ('\' U+005C).
+				 */
+				string = Rdn.escapeValue(string);
+				if (stringBuilder.length() != 0) {
+					stringBuilder.append(',');
+				}
+				stringBuilder.append(attributeType).append('=').append(string);
+			}
+		}
+		return stringBuilder.toString();
+	}
+
 	public static String getString(ASN1Encodable attributeValue) {
 		String string;
 		if (attributeValue instanceof ASN1String) {
@@ -1051,14 +1188,14 @@ public final class DSSASN1Utils {
 	 * Transforms an object of class {@code IssuerSerial} into instance of {@code IssuerSerialInfo}
 	 * 
 	 * @param issuerAndSerial {@link IssuerSerial} to transform
-	 * @return {@link IssuerSerialInfo}
+	 * @return {@link SerialInfo}
 	 */
-	public static IssuerSerialInfo toIssuerInfo(IssuerSerial issuerAndSerial) {
+	public static SerialInfo toIssuerInfo(IssuerSerial issuerAndSerial) {
 		if (issuerAndSerial == null) {
 			return null;
 		}
 		try {
-			IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
+			SerialInfo issuerInfo = new SerialInfo();
 			GeneralNames gnames = issuerAndSerial.getIssuer();
 			if (gnames != null) {
 				GeneralName[] names = gnames.getNames();

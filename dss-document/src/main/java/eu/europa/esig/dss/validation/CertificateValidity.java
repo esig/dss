@@ -25,6 +25,7 @@ import java.security.PublicKey;
 import java.util.Objects;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 
 /**
  * This class stores the information about the validity of the signing certificate.
@@ -38,7 +39,7 @@ public class CertificateValidity implements Serializable {
 	 */
 	private PublicKey publicKey;
 	private CertificateToken certificateToken;
-	private SignerInfo signerInfo;
+	private SerialInfo signerInfo;
 	/* CMS Signer id */
 	private boolean signerIdMatch;
 	private boolean digestPresent;
@@ -76,9 +77,9 @@ public class CertificateValidity implements Serializable {
 	 * signing certificate which is based only on the {@code SignerInfo}. To be used in case of a non AdES signature.
 	 *
 	 * @param signerInfo
-	 *            the {@code SignerInfo} associated to the signing certificate.
+	 *            the {@code SerialInfo} associated to the signing certificate
 	 */
-	public CertificateValidity(final SignerInfo signerInfo) {
+	public CertificateValidity(final SerialInfo signerInfo) {
 		Objects.requireNonNull(signerInfo, "SignerInfo cannot be null!");
 		this.signerInfo = signerInfo;
 	}
@@ -95,14 +96,19 @@ public class CertificateValidity implements Serializable {
 	}
 	
 	/**
-	 * Returns the associated {@link SignerInfo}
+	 * Returns the associated {@link SerialInfo}
 	 * NOTE: can return null
 	 * 
-	 * @return {@link SignerInfo}
+	 * @return {@link SerialInfo}
 	 */
-	public SignerInfo getSignerInfo() {
-		return certificateToken == null ? signerInfo : 
-			new SignerInfo(certificateToken.getIssuerX500Principal().toString(), certificateToken.getSerialNumber());
+	public SerialInfo getSignerInfo() {
+		if (certificateToken == null) {
+			return signerInfo;
+		}
+		SerialInfo issuerSerialInfo = new SerialInfo();
+		issuerSerialInfo.setIssuerName(certificateToken.getIssuerX500Principal());
+		issuerSerialInfo.setSerialNumber(certificateToken.getSerialNumber());
+		return issuerSerialInfo;
 	}
 
 	public CertificateToken getCertificateToken() {

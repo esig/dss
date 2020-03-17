@@ -141,7 +141,8 @@
 					<xs:element name="CommitmentTypeIndications" type="CommitmentTypeIndications" minOccurs="0" />
 					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
-					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" />
+					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" /> <!-- CAdES -->
+					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES -->
 					
 					<xs:element name="SignerDocumentRepresentations" minOccurs="0">
 						<xs:complexType>
@@ -210,7 +211,6 @@
 	<xs:complexType name="PDFRevision">
 		<xs:sequence>
 			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" />
 			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
@@ -507,10 +507,11 @@
 	
 	<xs:complexType name="SignerInfo">
 		<xs:sequence>
-			<xs:element name="Issuer" type="xs:string" />
-			<xs:element name="SerialNumber" type="xs:integer" />
+			<xs:element name="IssuerName" type="xs:string" minOccurs="0" />
+			<xs:element name="SerialNumber" type="xs:integer" minOccurs="0" />
+			<xs:element name="Ski" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Processed" type="xs:boolean" use="required" /> <!-- The framework handles only one (first) SignerInfo !!! -->
+		<xs:attribute name="Processed" type="xs:boolean" use="optional" /> <!-- The framework handles only one (first) SignerInfo !!! -->
 	</xs:complexType>
 	
 	<xs:complexType name="CommitmentTypeIndications">
@@ -635,8 +636,7 @@
 			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
 			<xs:choice>
 				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue"/>
-				<xs:element name="IssuerName" type="xs:string" /> <!-- in case of OCSP response -->
-				<xs:element name="Ski" type="xs:base64Binary" /> <!-- in case of OCSP response -->
+				<xs:element name="SerialInfo" type="SignerInfo" /> <!-- OCSP -->
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -691,7 +691,8 @@
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" />
+					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" />
+					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES Doc Timestamps -->
 					
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
@@ -843,10 +844,7 @@
 			<xs:element name="Origin" type="RevocationRefOriginType" maxOccurs="unbounded" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
-			<xs:choice minOccurs="0"> <!-- OCSP -->
-				<xs:element name="ResponderIdName" type="xs:string" /> <!-- OCSP -->
-				<xs:element name="ResponderIdKey" type="xs:base64Binary" /> <!-- OCSP -->
-			</xs:choice>
+			<xs:element name="ResponderId" type="SignerInfo" minOccurs="0" /> <!-- OCSP -->
 		</xs:sequence>
 	</xs:complexType>
 	

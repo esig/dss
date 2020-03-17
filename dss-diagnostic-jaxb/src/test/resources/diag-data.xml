@@ -41,14 +41,14 @@
                 <CountryName>Bratislava</CountryName>
             </SignatureProductionPlace>
             <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Processed="true">
+                    <IssuerName>C=SK,L=Bratislava,SERIALNUMBER=NTRSK-36061701,O=Narodny bezpecnostny urad,OU=SEP,CN=SNCA3</IssuerName>
+                    <SerialNumber>7510568329472141951325</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
             <PDFRevision>
                 <SignatureFieldName>Signature2</SignatureFieldName>
-                <SignerInformationStore>
-                    <SignerInfo Processed="true">
-                        <Issuer>C=SK,L=Bratislava,SERIALNUMBER=NTRSK-36061701,O=Narodny bezpecnostny urad,OU=SEP,CN=SNCA3</Issuer>
-                        <SerialNumber>7510568329472141951325</SerialNumber>
-                    </SignerInfo>
-                </SignerInformationStore>
                 <PDFSignatureDictionary>
                     <SignerName>Pečať NBÚ</SignerName>
                     <Type>Sig</Type>
@@ -1039,7 +1039,9 @@
                     <Origin>BASIC_OCSP_RESP</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerName>CN=NSA OCSP,OU=OCSP Responder P2,O=NBU,2.5.4.5=#130e4e5452534b2d3336303631373031,L=Bratislava,C=SK</IssuerName>
+                        <SerialInfo>
+                        	<IssuerName>CN=NSA OCSP,OU=OCSP Responder P2,O=NBU,2.5.4.5=#130e4e5452534b2d3336303631373031,L=Bratislava,C=SK</IssuerName>
+                        </SerialInfo>
                     </CertificateRef>
                 </RelatedCertificate>
             </FoundCertificates>
@@ -1076,7 +1078,9 @@
                     <Origin>BASIC_OCSP_RESP</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerName>CN=NSA OCSP,OU=OCSP Responder P1,O=NBU,2.5.4.5=#130e4e5452534b2d3336303631373031,L=Bratislava,C=SK</IssuerName>
+                        <SerialInfo>
+                        	<IssuerName>CN=NSA OCSP,OU=OCSP Responder P1,O=NBU,2.5.4.5=#130e4e5452534b2d3336303631373031,L=Bratislava,C=SK</IssuerName>
+                        </SerialInfo>
                     </CertificateRef>
                 </RelatedCertificate>
             </FoundCertificates>

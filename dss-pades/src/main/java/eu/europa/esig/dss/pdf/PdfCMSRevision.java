@@ -20,22 +20,16 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.SignerInfo;
 
 public abstract class PdfCMSRevision implements PdfRevision {
 
@@ -101,25 +95,8 @@ public abstract class PdfCMSRevision implements PdfRevision {
 		return signatureFieldNames;
 	}
 	
-    
-	@Override
-	public List<SignerInfo> getSignatureInformationStore() {
-		List<SignerInfo> signerInfos = new ArrayList<>();
-		CMSSignedData cmsSignedData = signatureDictionary.getCMSSignedData();
-		SignerInformationStore signerInformationStore = cmsSignedData.getSignerInfos();
-
-		boolean firstValidated = true;
-		Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();
-		while (it.hasNext()) {
-			SignerInformation signerInformation = it.next();
-			SignerId sid = signerInformation.getSID();
-			SignerInfo signerInfo = new SignerInfo(sid.getIssuer().toString(), sid.getSerialNumber());
-			signerInfo.setValidated(firstValidated); // TODO : do better after moving the method to a CAdESSignature class
-			signerInfos.add(signerInfo);
-
-			firstValidated = false;
-		}
-		return signerInfos;
+	public CMSSignedData getCMSSignedData() {
+		return signatureDictionary.getCMSSignedData();
 	}
 
 }

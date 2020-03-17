@@ -200,7 +200,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("The document with name [%s] is either not accessible or not PDF compatible. Reason : [%s]", 
-					document.getName(), e.getMessage(), e)); 
+					document.getName(), e.getMessage()), e); 
 		} catch (DSSException e) {
 			throw e;
 		} catch (Exception e) {

@@ -38,7 +38,6 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +124,8 @@ import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
+import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -135,7 +135,6 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -779,6 +778,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
+		xmlSignature.setSignerInformationStore(getXmlSignerInformationStore(signature.getSignerInformationStoreInfos()));
 		xmlSignature.setPDFRevision(getXmlPDFRevision(signature.getPdfRevision()));
 		xmlSignature.setSignatureDigestReference(getXmlSignatureDigestReference(signature));
 		
@@ -807,28 +807,43 @@ public class DiagnosticDataBuilder {
 		if (pdfRevision != null) {
 			XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
 			xmlPDFRevision.getSignatureFieldName().addAll(pdfRevision.getFieldNames());
-			// TODO : refactor when will divide DDB to submodules (XAdES, CAdES, PAdES ...)
-			xmlPDFRevision.setSignerInformationStore(getXmlSignerInformationStore(pdfRevision));
 			xmlPDFRevision.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(pdfRevision.getPdfSigDictInfo()));
 			return xmlPDFRevision;
 		}
 		return null;
 	}
 	
-	private List<XmlSignerInfo> getXmlSignerInformationStore(PdfRevision pdfRevision) {
-		Collection<SignerInfo> signerInformationStore = pdfRevision.getSignatureInformationStore();
-		if (Utils.isCollectionNotEmpty(signerInformationStore)) {
+	private List<XmlSignerInfo> getXmlSignerInformationStore(List<SerialInfo> serialInfos) {
+		if (Utils.isCollectionNotEmpty(serialInfos)) {
 			List<XmlSignerInfo> signerInfos = new ArrayList<>();
-			for (SignerInfo signerInfo : signerInformationStore) {
-				XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
-				xmlSignerInfo.setIssuer(signerInfo.getIssuer());
-				xmlSignerInfo.setSerialNumber(signerInfo.getSerialNumber());
-				xmlSignerInfo.setProcessed(signerInfo.isValidated());
-				signerInfos.add(xmlSignerInfo);
+			for (SerialInfo serialInfo : serialInfos) {
+				signerInfos.add(getXmlSignerInfo(serialInfo));
 			}
 			return signerInfos;
 		}
 		return null;
+	}
+	
+	private XmlSignerInfo getXmlSignerInfo(SerialInfo serialInfo) {
+		XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
+		if (serialInfo.getIssuerName() != null) {
+			xmlSignerInfo.setIssuerName(serialInfo.getIssuerName().toString());
+		}
+		xmlSignerInfo.setSerialNumber(serialInfo.getSerialNumber());
+		xmlSignerInfo.setSki(serialInfo.getSki());
+		if (serialInfo.isValidated()) {
+			xmlSignerInfo.setProcessed(serialInfo.isValidated());
+		}
+		return xmlSignerInfo;
+	}
+	
+	private XmlSignerInfo getXmlSignerInfo(ResponderId responderId) {
+		XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
+		if (responderId.getX500Principal() != null) {
+			xmlSignerInfo.setIssuerName(responderId.getX500Principal().toString());
+		}
+		xmlSignerInfo.setSki(responderId.getSki());
+		return xmlSignerInfo;
 	}
 
 	private XmlPDFSignatureDictionary getXmlPDFSignatureDictionary(PdfSignatureDictionary pdfSigDict) {
@@ -1103,12 +1118,12 @@ public class DiagnosticDataBuilder {
 		return founds;
 	}
 	
-	private XmlSigningCertificate getXmlCertificateBySignerInfo(final SignerInfo signerInfo) {
+	private XmlSigningCertificate getXmlCertificateBySignerInfo(final SerialInfo serialInfo) {
 		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-		final CertificateToken certificateBySignerInfo = getCertificateBySignerInfo(signerInfo);
+		final CertificateToken certificateBySignerInfo = getCertificateBySerialInfo(serialInfo);
 		if (certificateBySignerInfo != null) {
 			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateBySignerInfo.getDSSIdAsString()));
-		} else if (signerInfo != null) {
+		} else if (serialInfo != null) {
 			// TODO: add info to xsd
 		} else {
 			return null;
@@ -1116,15 +1131,14 @@ public class DiagnosticDataBuilder {
 		return xmlSignCertType;
 	}
 
-	private CertificateToken getCertificateBySignerInfo(final SignerInfo signerInfo) {
-		if (signerInfo == null) {
+	private CertificateToken getCertificateBySerialInfo(final SerialInfo serialInfo) {
+		if (serialInfo == null) {
 			return null;
 		}
 
 		List<CertificateToken> founds = new ArrayList<>();
 		for (CertificateToken cert : usedCertificates) {
-			if (signerInfo.getIssuer().equals(cert.getIssuerX500Principal().toString()) &&
-					signerInfo.getSerialNumber().equals(cert.getSerialNumber())) {
+			if (serialInfo.isRelatedToCertificate(cert)) {
 				founds.add(cert);
 				if (isTrusted(cert)) {
 					return cert;
@@ -1295,22 +1309,18 @@ public class DiagnosticDataBuilder {
 	
 	private XmlCertificateRef getXmlCertificateRef(CertificateRef ref) {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
-		IssuerSerialInfo serialInfo = ref.getIssuerInfo();
-		if (serialInfo != null && serialInfo.getIssuerName() != null) {
-			if (serialInfo.getSerialNumber() != null) {
-				IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(serialInfo.getIssuerName(), serialInfo.getSerialNumber());
-				certificateRef.setIssuerSerial(DSSASN1Utils.getDEREncoded(issuerSerial));
-			} else {
-				certificateRef.setIssuerName(serialInfo.getIssuerName().getName());
-			}
+		SerialInfo issuerInfo = ref.getIssuerInfo();
+		if (issuerInfo != null) {
+			certificateRef.setIssuerSerial(issuerInfo.getIssuerSerialEncoded());
 		}
 		Digest refDigest = ref.getCertDigest();
+		ResponderId responderId = ref.getResponderId();
 		if (refDigest != null) {
 			certificateRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
-		}
-		byte[] ski = ref.getSki();
-		if (ski != null) {
-			certificateRef.setSki(ski);
+		} else if (issuerInfo != null)  {
+			certificateRef.setSerialInfo(getXmlSignerInfo(issuerInfo));
+		} else if (responderId != null) {
+			certificateRef.setSerialInfo(getXmlSignerInfo(responderId));
 		}
 		certificateRef.setOrigin(ref.getOrigin());
 		return certificateRef;
@@ -1331,10 +1341,10 @@ public class DiagnosticDataBuilder {
 		CertificateToken certificateToken = null;
 		if (certificateRef.getCertDigest() != null) {
 			certificateToken = getUsedCertificateByDigest(certificateRef.getCertDigest());
-		} else if (certificateRef.getSki() != null) {
-			certificateToken = getUsedCertificateBySkiDigest(certificateRef.getSki());
 		} else if (certificateRef.getIssuerInfo() != null) {
 			certificateToken = getUsedCertificateByIssuerInfo(certificateRef.getIssuerInfo());
+		} else if (certificateRef.getResponderId() != null) {
+			certificateToken = getUsedCertificateByResponderId(certificateRef.getResponderId());
 		}
 		return certificateToken;
 	}
@@ -1348,19 +1358,19 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private CertificateToken getUsedCertificateBySkiDigest(byte[] ski) {
+	private CertificateToken getUsedCertificateByIssuerInfo(SerialInfo issuerInfo) {
 		for (CertificateToken certificateToken : usedCertificates) {
-			if (Arrays.equals(DSSASN1Utils.computeSkiFromCert(certificateToken), ski)) {
-				return certificateToken;
+			if (issuerInfo.isRelatedToCertificate(certificateToken)) {
+                return certificateToken;
 			}
 		}
 		return null;
 	}
 	
-	private CertificateToken getUsedCertificateByIssuerInfo(IssuerSerialInfo issuerInfo) {
+	private CertificateToken getUsedCertificateByResponderId(ResponderId responderId) {
 		for (CertificateToken certificateToken : usedCertificates) {
-			if (issuerInfo.isRelatedTo(certificateToken)) {
-				return certificateToken;
+			if (responderId.isRelatedToCertificate(certificateToken)) {
+                return certificateToken;
 			}
 		}
 		return null;
@@ -1454,12 +1464,12 @@ public class DiagnosticDataBuilder {
 	private List<RevocationRef> getOrphanRevocationRefs(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource) {
 		List<RevocationRef> orphanRevocationRefs = new ArrayList<>();
 		for (CRLRef crlRef : crlSource.getOrphanCrlRefs()) {
-			if (commonCRLSource.getIdentifier(crlRef.getDigest()) == null) {
+			if (commonCRLSource.getCRLByDigest(crlRef.getDigest()) == null) {
 				orphanRevocationRefs.add(crlRef);
 			}
 		}
 		for (OCSPRef ocspRef : ocspSource.getOrphanOCSPRefs()) {
-			if (commonOCSPSource.getIdentifier(ocspRef.getDigest()) == null) {
+			if (commonOCSPSource.getOCSPResponseByDigest(ocspRef.getDigest()) == null) {
 				orphanRevocationRefs.add(ocspRef);
 			}
 		}
@@ -1546,14 +1556,7 @@ public class DiagnosticDataBuilder {
 		xmlRevocationRef.setProducedAt(ocspRef.getProducedAt());
 		ResponderId responderId = ocspRef.getResponderId();
 		if (responderId != null) {
-			String name = responderId.getName();
-			if (Utils.isStringNotEmpty(name)) {
-				xmlRevocationRef.setResponderIdName(name);
-			}
-			byte[] key = responderId.getKey();
-			if (Utils.isArrayNotEmpty(key)) {
-				xmlRevocationRef.setResponderIdKey(key);
-			}
+			xmlRevocationRef.setResponderId(getXmlSignerInfo(responderId));
 		}
 		return xmlRevocationRef;
 	}
@@ -1764,6 +1767,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
+		xmlTimestampToken.setSignerInformationStore(getXmlSignerInformationStore(timestampToken.getSignerInformationStoreInfos()));
 		xmlTimestampToken.setPDFRevision(getXmlPDFRevision(timestampToken.getPdfRevision())); // used only for PAdES RFC 3161 timestamps
 		
 		xmlTimestampToken.setFoundCertificates(getXmlFoundCertificates(timestampToken.getCertificateSource()));

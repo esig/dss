@@ -67,10 +67,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
@@ -452,7 +453,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			// must contain only one reference
 			final CertificateRef signingCert = potentialSigningCertificates.get(0);
 			Digest certDigest = signingCert.getCertDigest();
-			IssuerSerialInfo issuerInfo = signingCert.getIssuerInfo();
+			SerialInfo issuerInfo = signingCert.getIssuerInfo();
 
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
@@ -481,7 +482,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					certificateValidity.setSerialNumberEqual(certSerialNumber.equals(serialNumber));
 
-					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(certIssuerName, issuerName);
+					final boolean issuerNameMatches = DSSASN1Utils.x500PrincipalAreEquals(certIssuerName, issuerName);
 					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					if (!issuerNameMatches) {
 						LOG.info("candidateIssuerName : {}", certIssuerName.getName(X500Principal.CANONICAL));

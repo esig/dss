@@ -40,6 +40,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -134,21 +135,22 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	/**
-	 * Returns the identifier related for the provided {@code ocspRef}
-	 * @param ocspRef {@link OCSPRef} to find identifier for
+	 * Returns a found ocsp response by the provided {@code ocspRef}
+	 * @param ocspRef {@link OCSPRef} to find ocsp response binary for
 	 * @return {@link OCSPResponseBinary} for the reference
 	 */
-	public OCSPResponseBinary getIdentifier(OCSPRef ocspRef) {
+	public OCSPResponseBinary getOCSPResponseByRef(OCSPRef ocspRef) {
 		if (ocspRef.getDigest() != null) {
-			return getIdentifier(ocspRef.getDigest());
+			return getOCSPResponseByDigest(ocspRef.getDigest());
 		} else {
 			for (OCSPResponseBinary ocspResponse : ocspResponseOriginsMap.keySet()) {
 				if (ocspRef.getProducedAt().equals(ocspResponse.getBasicOCSPResp().getProducedAt())) {
 					ResponderID responderID = ocspResponse.getBasicOCSPResp().getResponderId().toASN1Primitive();
-					if (ocspRef.getResponderId().getKey() != null &&
-							Arrays.equals(ocspRef.getResponderId().getKey(), responderID.getKeyHash()) ||
-						ocspRef.getResponderId().getName() != null && responderID.getName() != null &&
-						ocspRef.getResponderId().getName().equals(responderID.getName().toString())) {
+					boolean skiEqual = ocspRef.getResponderId().getSki() != null &&
+							Arrays.equals(ocspRef.getResponderId().getSki(), responderID.getKeyHash());
+					boolean principalNameEqual = DSSASN1Utils.x500PrincipalAreEquals(
+							ocspRef.getResponderId().getX500Principal(), DSSASN1Utils.toX500Principal(responderID.getName()) );
+					if (skiEqual || principalNameEqual) {
 						return ocspResponse;
 					}
 				}
@@ -158,11 +160,11 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	/**
-	 * Returns the identifier related for the provided {@code digest} of reference
-	 * @param digest {@link Digest} of the reference
+	 * Returns a found ocps response by for the provided {@code digest}
+	 * @param digest {@link Digest} of the ocsp response binaries to find
 	 * @return {@link OCSPResponseBinary} for the reference
 	 */
-	public OCSPResponseBinary getIdentifier(Digest digest) {
+	public OCSPResponseBinary getOCSPResponseByDigest(Digest digest) {
 		if (digest == null) {
 			return null;
 		}

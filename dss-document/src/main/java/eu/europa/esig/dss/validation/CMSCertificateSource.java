@@ -59,6 +59,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
@@ -67,24 +68,17 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
 	
 	private final transient CMSSignedData cmsSignedData;
-	private final transient AttributeTable signedAttributes;
-	private final transient AttributeTable unsignedAttributes;
+	private final transient SignerInformation signerInformation;
 
 	/**
 	 * Cached values 
 	 */
 	private List<CertificateToken> cmsSignedDataCertificates;
+	private List<CertificateToken> certificateValues;
 	private List<CertificateRef> signingCertificateValues;
-
-	/**
-	 * The default constructor to instantiate a CMSCertificateSource.
-	 * 
-	 * @param cmsSignedData {@link CMSSignedData}
-	 * @param certPool {@link CertificatePool}
-	 */
-	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final CertificatePool certPool) {
-		this(cmsSignedData, DSSASN1Utils.getFirstSignerInformation(cmsSignedData), certPool);
-	}
+	
+	private List<SerialInfo> issuerSerialInfos;
+	private SerialInfo usedIssuerSerialInfo;
 	
 	/**
 	 * The constructor to instantiate a CMSCertificateSource.
@@ -99,8 +93,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
 		Objects.requireNonNull(signerInformation, "signerInformation is null, it must be provided!");
 		this.cmsSignedData = cmsSignedData;
-		this.signedAttributes = signerInformation.getSignedAttributes();
-		this.unsignedAttributes = signerInformation.getUnsignedAttributes();
+		this.signerInformation = signerInformation;
 
 		// Init CertPool
 		getSignedDataCertificates();
@@ -128,7 +121,10 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateToken> getCertificateValues() {
-		return getCertificateFromUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certValues);
+		if (certificateValues == null) {
+			certificateValues = getCertificateFromUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certValues);
+		}
+		return certificateValues;
 	}
 
 	@Override
@@ -153,6 +149,8 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	public List<CertificateRef> getSigningCertificateValues() {
 		if (signingCertificateValues == null) {
 			signingCertificateValues = new ArrayList<>();
+			
+			AttributeTable signedAttributes = signerInformation.getSignedAttributes();
 			if (signedAttributes != null && signedAttributes.size() > 0) {
 				final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
 				if (signingCertificateAttributeV1 != null) {
@@ -258,6 +256,8 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private List<CertificateToken> getCertificateFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid) {
 		final List<CertificateToken> certs = new ArrayList<>();
+		
+		AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {
@@ -280,6 +280,8 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin location) {
 		List<CertificateRef> result = new ArrayList<>();
+		
+		AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {
@@ -303,6 +305,39 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			}
 		}
 		return result;
+	}
+	
+	/** 
+	 * Returns a list of Issuer Serial Infos extracted from a SignerInformationStore
+	 * 
+	 * @return a list of {@link SerialInfo}s
+	 */
+	public List<SerialInfo> getIssuerSerialInfos() {
+		if (issuerSerialInfos == null) {
+			issuerSerialInfos = new ArrayList<SerialInfo>();
+			SerialInfo usedIssuerSerialInfo = getUsedIssuerSerialInfo();
+			Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+			for (SignerInformation signerInformation : signers) {
+				SerialInfo issuerSerialInfo = DSSASN1Utils.toIssuerSerialInfo(signerInformation.getSID());
+				if (issuerSerialInfo.equals(usedIssuerSerialInfo)) {
+					issuerSerialInfo.setValidated(true);
+				}
+				issuerSerialInfos.add(issuerSerialInfo);
+			}
+		}
+		return issuerSerialInfos;
+	}
+	
+	/**
+	 * Returns the used occurrence of SignerInformation from a SignerInformationStore to be used
+	 * 
+	 * @return {@link SerialInfo} to be used
+	 */
+	public SerialInfo getUsedIssuerSerialInfo() {
+		if (usedIssuerSerialInfo == null) {
+			usedIssuerSerialInfo = DSSASN1Utils.toIssuerSerialInfo(signerInformation.getSID());
+		}
+		return usedIssuerSerialInfo;
 	}
 
 }

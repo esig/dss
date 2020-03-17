@@ -51,6 +51,7 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -336,13 +337,14 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private CertificateToken getOCSPIssuer(OCSPToken token) {
 		CertificateRef signingCertificateRef = token.getCertificateSource().getSigningCertificateRef();
-		if (signingCertificateRef != null) {
-			if (signingCertificateRef.getSki() != null) {
-				List<CertificateToken> issuerCandidates = validationCertificatePool.getBySki(signingCertificateRef.getSki());
+		if (signingCertificateRef != null && signingCertificateRef.getIssuerInfo() != null) {
+			SerialInfo issuerInfo = signingCertificateRef.getIssuerInfo();
+			if (issuerInfo.getSki() != null) {
+				List<CertificateToken> issuerCandidates = validationCertificatePool.getBySki(issuerInfo.getSki());
 				return getTokenIssuerFromCandidates(token, issuerCandidates);
 			}
-			if (signingCertificateRef.getIssuerInfo() != null && signingCertificateRef.getIssuerInfo().getIssuerName() != null) {
-				Set<CertificateToken> issuerCandidates = validationCertificatePool.get(signingCertificateRef.getIssuerInfo().getIssuerName());
+			if (issuerInfo != null && issuerInfo.getIssuerName() != null) {
+				Set<CertificateToken> issuerCandidates = validationCertificatePool.get(issuerInfo.getIssuerName());
 				return getTokenIssuerFromCandidates(token, issuerCandidates);
 			}
 		}
@@ -364,7 +366,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private CertificateToken getTSACertificate(TimestampToken timestamp) {
-		List<CertificateToken> candidates = validationCertificatePool.getBySignerId(timestamp.getSignerId());
+		List<CertificateToken> candidates = validationCertificatePool.getBySerialInfo(timestamp.getUsedIssuerSerialInfo());
 		for (CertificateToken candidate : candidates) {
 			if (timestamp.isSignedBy(candidate)) {
 				return candidate;

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.timestamp;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 
@@ -30,7 +31,7 @@ import eu.europa.esig.dss.validation.CMSCertificateSource;
 public class TimestampCertificateSource extends CMSCertificateSource {
 
 	public TimestampCertificateSource(final TimeStampToken timestampToken, final CertificatePool certPool) {
-		super(timestampToken.toCMSSignedData(), certPool);
+		super(timestampToken.toCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(timestampToken.toCMSSignedData()), certPool);
 	}
 
 	@Override

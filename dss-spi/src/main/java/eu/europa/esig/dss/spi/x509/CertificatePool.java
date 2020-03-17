@@ -35,10 +35,6 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.util.CollectionStore;
-import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +43,6 @@ import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -271,31 +266,42 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method returns the List of certificates with the same SignerId.
+	 * This method returns the List of certificates with the same serialInfo.
 	 *
-	 * @param signerId
-	 *                 expected signerId.
+	 * @param serialInfo
+	 *                 expected {@link SerialInfo}
 	 * @return If no match is found then an empty list is returned.
 	 */
-	@SuppressWarnings("unchecked")
-	public List<CertificateToken> getBySignerId(SignerId signerId) {
+	public List<CertificateToken> getBySerialInfo(SerialInfo serialInfo) {
 		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
 		for (CertificatePoolEntity entity : values) {
 			List<CertificateToken> equivalentCertificates = entity.getEquivalentCertificates();
-			List<X509CertificateHolder> collection = new ArrayList<>();
-			for (CertificateToken token : equivalentCertificates) {
-				collection.add(DSSASN1Utils.getX509CertificateHolder(token));
-			}
-			Store<X509CertificateHolder> store = new CollectionStore<>(collection);
 			// matches by SN + IssuerName
-			Collection<X509CertificateHolder> matches = store.getMatches(signerId);
-			if (!matches.isEmpty()) {
-				return equivalentCertificates;
+			List<CertificateToken> result = filterCertificatesBySerialInfo(serialInfo, equivalentCertificates);
+			if (Utils.isCollectionNotEmpty(result)) {
+				return result;
 			}
 		}
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a list of certificates matching the given serialInfo
+	 * 
+	 * @param serialInfo {@link SerialInfo} to match by
+	 * @param candidiates a collection of {@link CertificateToken}s to get matching entries from
+	 * @return a list of matching {@link CertificateToken}s
+	 */
+	private List<CertificateToken> filterCertificatesBySerialInfo(final SerialInfo serialInfo, final Collection<CertificateToken> candidiates) {
+		List<CertificateToken> result = new ArrayList<>();
+		for (CertificateToken certificate : candidiates) {
+			if (serialInfo.isRelatedToCertificate(certificate)) {
+				result.add(certificate);
+			}
+		}
+		return result;
+	}
+	
 	private CertificatePoolEntity getPoolEntry(CertificateToken cert) {
 		return entriesByPublicKeyHash.get(cert.getEntityKey());
 	}

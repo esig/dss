@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
@@ -74,10 +76,11 @@ public class PAdESSignature extends CAdESSignature {
 	 */
 	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool,
 			final List<PdfRevision> documentRevisions) {
-		super(pdfSignatureRevision.getPdfSigDictInfo().getCMSSignedData(), certPool,
-				new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
+		super(pdfSignatureRevision.getCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMSSignedData()),
+				certPool);
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
+		this.detachedContents = Arrays.asList(new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
 	}
 
 	@Override
@@ -91,7 +94,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision.getDssDictionary(), super.getCmsSignedData(), certPool);
+			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getSignerInformation(), certPool);
 		}
 		return offlineCertificateSource;
 	}

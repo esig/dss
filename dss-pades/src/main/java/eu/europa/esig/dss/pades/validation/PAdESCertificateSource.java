@@ -26,11 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.cades.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -48,16 +49,17 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	/**
 	 * The default constructor for PAdESCertificateSource.
 	 *
-	 * @param dssDictionary
-	 *                      the DSS dictionary
-	 * @param cmsSignedData
+	 * @param pdfSignatureRevision
+	 *                      the {@link PdfSignatureRevision}
+	 * @param signerInformation
 	 * @param certPool
 	 *                      The pool of certificates to be used. Can be null.
 	 */
-	public PAdESCertificateSource(final PdfDssDict dssDictionary, final CMSSignedData cmsSignedData, final CertificatePool certPool) {
-		super(cmsSignedData, certPool);
+	public PAdESCertificateSource(final PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation, 
+			final CertificatePool certPool) {
+		super(pdfSignatureRevision.getCMSSignedData(), signerInformation, certPool);
 
-		this.dssDictionary = dssDictionary;
+		this.dssDictionary = pdfSignatureRevision.getDssDictionary();
 
 		// init CertPool
 		extractFromDSSDict();

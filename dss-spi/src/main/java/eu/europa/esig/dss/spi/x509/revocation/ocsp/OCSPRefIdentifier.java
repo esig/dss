@@ -7,6 +7,7 @@ import java.io.IOException;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRefIdentifier;
 
 public final class OCSPRefIdentifier extends RevocationRefIdentifier {
@@ -29,11 +30,11 @@ public final class OCSPRefIdentifier extends RevocationRefIdentifier {
 			}
 			ResponderId responderId = ocspRef.getResponderId();
 			if (responderId != null) {
-				if (responderId.getKey() != null) {
-					dos.write(responderId.getKey());
+				if (responderId.getSki() != null) {
+					dos.write(responderId.getSki());
 				}
-				if (responderId.getName() != null) {
-					dos.writeChars(responderId.getName());
+				if (responderId.getX500Principal() != null) {
+					dos.writeChars(responderId.getX500Principal().toString());
 				}
 			}
 			dos.flush();

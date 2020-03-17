@@ -31,16 +31,6 @@ import eu.europa.esig.dss.validation.CMSCertificateSource;
  */
 @SuppressWarnings("serial")
 public class CAdESCertificateSource extends CMSCertificateSource {
-	
-	/**
-	 * The constructor allows to instantiate a CAdESCertificateSource
-	 * 
-	 * @param cmsSignedData {@link CMSSignedData} of the signature
-	 * @param certPool {@link CertificatePool} is being used
-	 */
-	protected CAdESCertificateSource(final CMSSignedData cmsSignedData, final CertificatePool certPool) {
-		super(cmsSignedData, certPool);
-	}
 
 	/**
 	 * The constructor with additional signer id parameter. All certificates are

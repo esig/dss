@@ -38,6 +38,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -105,7 +106,7 @@ public class CRLToken extends RevocationToken {
 			crlSignerSubject = crlSigner.getSubject().getPrincipal();
 		}
 
-		if (!DSSUtils.x500PrincipalAreEquals(issuerToken, crlSignerSubject)) {
+		if (!DSSASN1Utils.x500PrincipalAreEquals(issuerToken, crlSignerSubject)) {
 			if (!crlValidity.isSignatureIntact()) {
 				throw new DSSException(crlValidity.getSignatureInvalidityReason());
 			}

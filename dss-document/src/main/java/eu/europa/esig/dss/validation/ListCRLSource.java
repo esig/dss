@@ -134,7 +134,7 @@ public class ListCRLSource implements CRLSource {
 			if (offlineCRLSource instanceof SignatureCRLSource) {
 				List<CRLRef> allCrlRefs = ((SignatureCRLSource) offlineCRLSource).getAllCRLReferences();
 				for (CRLRef crlRef : allCrlRefs) {
-					if (getIdentifier(crlRef.getDigest()) == null) {
+					if (getCRLByDigest(crlRef.getDigest()) == null) {
 						addRef(result, crlRef);
 					}
 				}
@@ -175,10 +175,10 @@ public class ListCRLSource implements CRLSource {
 		return null;
 	}
 
-	public CRLBinary getIdentifier(Digest refDigest) {
+	public CRLBinary getCRLByDigest(Digest refDigest) {
 		for (OfflineCRLSource offlineCRLSource : sources) {
 			if (offlineCRLSource instanceof SignatureCRLSource) {
-				CRLBinary binary = ((SignatureCRLSource) offlineCRLSource).getIdentifier(refDigest);
+				CRLBinary binary = ((SignatureCRLSource) offlineCRLSource).getCRLByDigest(refDigest);
 				if (binary != null) {
 					return binary;
 				}

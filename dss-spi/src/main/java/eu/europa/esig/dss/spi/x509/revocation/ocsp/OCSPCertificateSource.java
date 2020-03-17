@@ -21,7 +21,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
+import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 
 /**
@@ -75,16 +75,18 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 	 */
 	public CertificateRef getSigningCertificateRef() {
 		if (signingCertificateRef == null) {
-			final RespID responderId = basicOCSPResp.getResponderId();
-			final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
+			final RespID respId = basicOCSPResp.getResponderId();
+			final ResponderID responderIdAsASN1Object = respId.toASN1Primitive();
 			final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 			if (1 == derTaggedObject.getTagNo()) {
 				final ASN1Primitive derObject = derTaggedObject.getObject();
 				final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
+				
 				CertificateRef certificateRef = new CertificateRef();
-				IssuerSerialInfo issuerSerialInfo = new IssuerSerialInfo();
-				issuerSerialInfo.setIssuerName(new X500Principal(derEncoded));
-				certificateRef.setIssuerInfo(issuerSerialInfo);
+				ResponderId responderId = new ResponderId();
+				responderId.setX500Principal(new X500Principal(derEncoded));
+				certificateRef.setResponderId(responderId);
+				
 				certificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 				signingCertificateRef = certificateRef;
 				
@@ -93,10 +95,12 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 				final byte[] skiHash = hashOctetString.getOctets();
 
 				CertificateRef certificateRef = new CertificateRef();
+				ResponderId responderId = new ResponderId();
 				// see RFC 6960 (B.1.  OCSP in ASN.1 - 1998 Syntax) :
 				// KeyHash ::= OCTET STRING -- SHA-1 hash of responder's public key
 				// (excluding the tag and length fields)
-				certificateRef.setSki(skiHash);
+				responderId.setSki(skiHash);
+				certificateRef.setResponderId(responderId);
 				certificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 				signingCertificateRef = certificateRef;
 				

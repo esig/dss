@@ -41,12 +41,5 @@ public interface PdfRevision {
 	 * @return list of {@link String} field names
 	 */
 	List<String> getFieldNames();
-	
-    /**
-     * Returns Signature Information Store content
-     * 
-     * @return list of {@link SignerInfo}s
-     */
-    List<SignerInfo> getSignatureInformationStore();
 
 }

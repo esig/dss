@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -103,21 +101,19 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		for (CertificateToken certificateToken : getCertificates()) {
 			for (CertificateRef certificateRef : getAllCertificateRefs()) {
 				Digest certDigest = certificateRef.getCertDigest();
-				IssuerSerialInfo issuerInfo = certificateRef.getIssuerInfo();
-				byte[] ski = certificateRef.getSki();
+				SerialInfo issuerInfo = certificateRef.getIssuerInfo();
+				ResponderId responderId = certificateRef.getResponderId();
 				if (certDigest != null) {
 					byte[] currentDigest = certificateToken.getDigest(certDigest.getAlgorithm());
 					if (Arrays.equals(currentDigest, certDigest.getValue())) {
 						addCertificateRefToMap(certificateToken, certificateRef);
 					}
+				} else if (issuerInfo != null && issuerInfo.isRelatedToCertificate(certificateToken)) {
+                    addCertificateRefToMap(certificateToken, certificateRef);
 					
-				} else if (issuerInfo != null && issuerInfo.isRelatedTo(certificateToken)) {
-					addCertificateRefToMap(certificateToken, certificateRef);
-				} else if (ski != null) {
-					byte[] certSki = DSSASN1Utils.computeSkiFromCert(certificateToken);
-					if (Arrays.equals(certSki, ski)) {
-						addCertificateRefToMap(certificateToken, certificateRef);
-					}
+				} else if (responderId != null && responderId.isRelatedToCertificate(certificateToken)) {
+                    addCertificateRefToMap(certificateToken, certificateRef);
+                    
 				}
 			}
 		}

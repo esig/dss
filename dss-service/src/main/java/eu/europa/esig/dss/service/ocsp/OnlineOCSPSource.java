@@ -232,7 +232,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			}
 			throw new OCSPException("Nonce extension value in OCSP response is not an OCTET STRING");
 		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to extract the nonce from the OCSPResponse! Reason : [%s]", e.getMessage(), e));
+			throw new DSSException(String.format("Unable to extract the nonce from the OCSPResponse! Reason : [%s]", e.getMessage()), e);
 		}
 	}
 

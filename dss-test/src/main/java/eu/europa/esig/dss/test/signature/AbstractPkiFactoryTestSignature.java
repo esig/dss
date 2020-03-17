@@ -505,6 +505,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
+		checkSignatureInformationStore(diagnosticData);
 		checkPdfRevision(diagnosticData);
 		checkStructureValidation(diagnosticData);
 		checkOrphanTokens(diagnosticData);
@@ -893,6 +894,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
 			}
 		}
+	}
+
+	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
+		// not implemented by default
 	}
 	
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
