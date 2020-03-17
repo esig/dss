@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.alerts;
 
-import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
+import eu.europa.esig.dss.alert.handler.AlertHandler;
 
 class CallbackAlertHandler<T> implements AlertHandler<T> {
 	
 	private boolean called = false;
 
 	@Override
-	public void alert(T currentInfo) {
+	public void process(T currentInfo) {
 		called = true;
 	}
 

@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.tsl.alerts.detections;
 
+import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
-public class TLParsingErrorDetection implements Detection<TLInfo> {
+public class TLParsingErrorDetection implements AlertDetector<TLInfo> {
 	
 	@Override
 	public boolean detect(TLInfo info) {

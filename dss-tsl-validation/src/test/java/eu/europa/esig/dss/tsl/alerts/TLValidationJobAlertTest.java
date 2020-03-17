@@ -33,6 +33,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import eu.europa.esig.dss.alert.handler.AlertHandler;
+import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -50,8 +52,6 @@ import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLExpirationDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLParsingErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
-import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
-import eu.europa.esig.dss.tsl.alerts.handlers.CompositeAlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogLOTLLocationChangeAlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogOJUrlChangeAlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLExpirationAlertHandler;
@@ -64,7 +64,7 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class AlertTest {
+public class TLValidationJobAlertTest {
 
 	@TempDir
 	File cacheDirectory;
@@ -90,7 +90,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_BROKEN_SIG, url));
 
-		List<Alert<?>> alerts = new ArrayList<>();
+		List<TLAlert> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -98,7 +98,7 @@ public class AlertTest {
 
 		TLAlert alert = new TLAlert(signingDetection, handler);
 		alerts.add(alert);
-		job.setAlerts(alerts);
+		job.setTLAlerts(alerts);
 
 		job.onlineRefresh();
 
@@ -114,7 +114,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 
-		List<Alert<?>> alerts = new ArrayList<>();
+		List<TLAlert> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -122,7 +122,7 @@ public class AlertTest {
 
 		TLAlert alert = new TLAlert(signingDetection, handler);
 		alerts.add(alert);
-		job.setAlerts(alerts);
+		job.setTLAlerts(alerts);
 
 		job.onlineRefresh();
 
@@ -137,7 +137,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_PARSABLE, url));
 
-		List<Alert<?>> alerts = new ArrayList<>();
+		List<TLAlert> alerts = new ArrayList<>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -145,7 +145,7 @@ public class AlertTest {
 
 		TLAlert alert = new TLAlert(signingDetection, handler);
 		alerts.add(alert);
-		job.setAlerts(alerts);
+		job.setTLAlerts(alerts);
 
 		job.onlineRefresh();
 
@@ -160,7 +160,7 @@ public class AlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(EXPIRED_LOTL, url));
 
-		List<Alert<?>> alerts = new ArrayList<>();
+		List<TLAlert> alerts = new ArrayList<>();
 		TLExpirationDetection expirationDetection = new TLExpirationDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -168,7 +168,7 @@ public class AlertTest {
 
 		TLAlert alert = new TLAlert(expirationDetection, handler);
 		alerts.add(alert);
-		job.setAlerts(alerts);
+		job.setTLAlerts(alerts);
 
 		job.onlineRefresh();
 
@@ -196,7 +196,7 @@ public class AlertTest {
 
 		job.setListOfTrustedListSources(lotlSource);
 
-		List<Alert<?>> alerts = new ArrayList<>();
+		List<LOTLAlert> alerts = new ArrayList<>();
 		OJUrlChangeDetection ojUrlDetection = new OJUrlChangeDetection(lotlSource);
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -204,7 +204,7 @@ public class AlertTest {
 
 		LOTLAlert alert = new LOTLAlert(ojUrlDetection, handler);
 		alerts.add(alert);
-		job.setAlerts(alerts);
+		job.setLOTLAlerts(alerts);
 
 		job.onlineRefresh();
 
@@ -228,7 +228,7 @@ public class AlertTest {
 		lotlSource.setCertificateSource(trustedCertificateSource);
 		job.setListOfTrustedListSources(lotlSource);
 
-		List<Alert<?>> alerts = new ArrayList<>();
+		List<LOTLAlert> alerts = new ArrayList<>();
 		LOTLLocationChangeDetection lotlLocationDetection = new LOTLLocationChangeDetection(lotlSource);
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -236,7 +236,7 @@ public class AlertTest {
 
 		LOTLAlert alert = new LOTLAlert(lotlLocationDetection, handler);
 		alerts.add(alert);
-		job.setAlerts(alerts);
+		job.setLOTLAlerts(alerts);
 
 		job.onlineRefresh();
 

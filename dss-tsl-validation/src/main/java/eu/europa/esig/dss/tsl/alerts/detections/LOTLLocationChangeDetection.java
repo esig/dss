@@ -22,12 +22,13 @@ package eu.europa.esig.dss.tsl.alerts.detections;
 
 import java.util.List;
 
+import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 
-public class LOTLLocationChangeDetection implements Detection<LOTLInfo> {
+public class LOTLLocationChangeDetection implements AlertDetector<LOTLInfo> {
 
 	private final LOTLSource lotlSource;
 
