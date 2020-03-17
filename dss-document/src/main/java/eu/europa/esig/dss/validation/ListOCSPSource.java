@@ -131,7 +131,7 @@ public class ListOCSPSource implements OCSPSource {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
 				List<OCSPRef> allOCSPRefs = ((SignatureOCSPSource) offlineOCSPSource).getOrphanOCSPRefs();
 				for (OCSPRef ocspRef : allOCSPRefs) {
-					if (getIdentifier(ocspRef.getDigest()) == null) {
+					if (getOCSPResponseByDigest(ocspRef.getDigest()) == null) {
 						addRef(result, ocspRef);
 					}
 				}
@@ -173,10 +173,10 @@ public class ListOCSPSource implements OCSPSource {
 		return bestOcspToken;
 	}
 
-	public OCSPResponseBinary getIdentifier(Digest refDigest) {
+	public OCSPResponseBinary getOCSPResponseByDigest(Digest refDigest) {
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
-				OCSPResponseBinary identifier = ((SignatureOCSPSource) offlineOCSPSource).getIdentifier(refDigest);
+				OCSPResponseBinary identifier = ((SignatureOCSPSource) offlineOCSPSource).getOCSPResponseByDigest(refDigest);
 				if (identifier != null) {
 					return identifier;
 				}
@@ -185,10 +185,10 @@ public class ListOCSPSource implements OCSPSource {
 		return null;
 	}
 
-	public OCSPResponseBinary getIdentifier(OCSPRef ocspRef) {
+	public OCSPResponseBinary getOCSPResponseByRef(OCSPRef ocspRef) {
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
-				OCSPResponseBinary identifier = ((SignatureOCSPSource) offlineOCSPSource).getIdentifier(ocspRef);
+				OCSPResponseBinary identifier = ((SignatureOCSPSource) offlineOCSPSource).getOCSPResponseByRef(ocspRef);
 				if (identifier != null) {
 					return identifier;
 				}

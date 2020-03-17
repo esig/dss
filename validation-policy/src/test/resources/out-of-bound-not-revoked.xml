@@ -41,14 +41,14 @@
                 <CountryName>ČÚZK, Praha</CountryName>
             </SignatureProductionPlace>
             <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Processed="true">
+                    <IssuerName>C=CZ,O=Česká pošta\, s.p. [IČ 47114983],CN=PostSignum Qualified CA 2</IssuerName>
+                    <SerialNumber>3391929</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
             <PDFRevision>
                 <SignatureFieldName>Signature1</SignatureFieldName>
-                <SignerInformationStore>
-                    <SignerInfo Processed="true">
-                        <Issuer>C=CZ,O=Česká pošta\, s.p. [IČ 47114983],CN=PostSignum Qualified CA 2</Issuer>
-                        <SerialNumber>3391929</SerialNumber>
-                    </SignerInfo>
-                </SignerInformationStore>
                 <PDFSignatureDictionary>
                     <SignerName>R - eský úad zemmický a katastrální</SignerName>
                     <Filter>Adobe.PPKMS</Filter>

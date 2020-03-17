@@ -698,40 +698,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method compares two {@code X500Principal}s. {@code X500Principal.CANONICAL} and
-	 * {@code X500Principal.RFC2253} forms are compared.
-	 *
-	 * @param firstX500Principal
-	 *            the first X500Principal object to be compared
-	 * @param secondX500Principal
-	 *            the second X500Principal object to be compared
-	 * @return true if the two parameters contain the same key/values
-	 */
-	public static boolean x500PrincipalAreEquals(final X500Principal firstX500Principal, final X500Principal secondX500Principal) {
-		if ((firstX500Principal == null) || (secondX500Principal == null)) {
-			return false;
-		}
-		if (firstX500Principal.equals(secondX500Principal)) {
-			return true;
-		}
-		final Map<String, String> firstStringStringHashMap = DSSASN1Utils.get(firstX500Principal);
-		final Map<String, String> secondStringStringHashMap = DSSASN1Utils.get(secondX500Principal);
-		return firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
-	}
-
-	/**
-	 * This method normalizes the X500Principal object
-	 * 
-	 * @param x500Principal
-	 *            to be normalized
-	 * @return {@code X500Principal} normalized
-	 */
-	public static X500Principal getNormalizedX500Principal(final X500Principal x500Principal) {
-		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
-		return new X500Principal(utf8Name);
-	}
-
-	/**
 	 * This method returns an UTC date base on the year, the month and the day. 
 	 * The year must be encoded as 1978... and not 78
 	 *

@@ -41,8 +41,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -301,17 +299,6 @@ public class DSSUtilsTest {
 		assertTrue(token.isSelfSigned());
 		assertTrue(token.isSignedBy(token));
 		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, token.getSignatureAlgorithm());
-	}
-
-	@Test
-	public void x500PrincipalAreEquals() {
-		String issuerName1 = "CN=ESTEID-SK 2015,organizationIdentifier=NTREE-10747013,O=AS Sertifitseerimiskeskus,C=EE";
-		String issuerName2 = "CN=ESTEID-SK 2015,2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=EE";
-		X500Principal x500Principal1 = DSSUtils.getX500PrincipalOrNull(issuerName1);
-		assertNotNull(x500Principal1);
-		X500Principal x500Principal2 = DSSUtils.getX500PrincipalOrNull(issuerName2);
-		assertNotNull(x500Principal2);
-		assertTrue(DSSUtils.x500PrincipalAreEquals(x500Principal1, x500Principal2));
 	}
 	
 	@Test

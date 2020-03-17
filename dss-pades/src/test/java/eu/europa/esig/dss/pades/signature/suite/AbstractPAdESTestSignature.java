@@ -136,6 +136,29 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 	
 	@Override
+	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			checkSignatureInformationStore(signature.getSignatureInformationStore());
+		}
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			checkSignatureInformationStore(timestamp.getSignatureInformationStore());
+		}
+	}
+	
+	private void checkSignatureInformationStore(List<XmlSignerInfo> signatureInformationStore) {
+		assertNotNull(signatureInformationStore);
+		int verifiedNumber = 0;
+		for (XmlSignerInfo signerInfo : signatureInformationStore) {
+			if (signerInfo.isProcessed()) {
+				++verifiedNumber;
+			}
+		}
+		assertEquals(1, verifiedNumber);
+		
+		assertEquals(1, signatureInformationStore.size());
+	}
+	
+	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertNotNull(signature.getPDFRevision());
@@ -146,18 +169,6 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(signature.getFilter());
 			assertNotNull(signature.getSubFilter());
 			assertNotNull(signature.getSignatureByteRange());
-			
-			List<XmlSignerInfo> signatureInformationStore = signature.getSignatureInformationStore();
-			assertNotNull(signatureInformationStore);
-			int verifiedNumber = 0;
-			for (XmlSignerInfo signerInfo : signatureInformationStore) {
-				if (signerInfo.isProcessed()) {
-					++verifiedNumber;
-				}
-			}
-			assertEquals(1, verifiedNumber);
-			
-			assertEquals(1, signatureInformationStore.size());
 		}
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
@@ -170,18 +181,6 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 				assertNotNull(timestamp.getFilter());
 				assertNotNull(timestamp.getSubFilter());
 				assertNotNull(timestamp.getSignatureByteRange());
-				
-				List<XmlSignerInfo> signatureInformationStore = timestamp.getSignatureInformationStore();
-				assertNotNull(signatureInformationStore);
-				int verifiedNumber = 0;
-				for (XmlSignerInfo signerInfo : signatureInformationStore) {
-					if (signerInfo.isProcessed()) {
-						++verifiedNumber;
-					}
-				}
-				assertEquals(1, verifiedNumber);
-				
-				assertEquals(1, signatureInformationStore.size());
 			}
 		}
 	}

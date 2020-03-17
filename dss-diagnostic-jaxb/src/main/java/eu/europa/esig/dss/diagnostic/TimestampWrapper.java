@@ -375,11 +375,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * @return list of {@link XmlSignerInfo}s
 	 */
 	public List<XmlSignerInfo> getSignatureInformationStore() {
-		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getSignerInformationStore();
-		}
-		return Collections.emptyList();
+		return timestamp.getSignerInformationStore();
 	}
 
 	public String getSignerName() {

@@ -546,11 +546,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return list of {@link XmlSignerInfo}s
 	 */
 	public List<XmlSignerInfo> getSignatureInformationStore() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getSignerInformationStore();
-		}
-		return Collections.emptyList();
+		return signature.getSignerInformationStore();
 	}
 
 	public String getSignerName() {

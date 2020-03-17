@@ -607,9 +607,9 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	private TimestampedReference getTimestampedCRLRefByDigest(Digest refDigest) {
-		CRLBinary identifier = crlSource.getIdentifier(refDigest);
-		if (identifier != null) {
-			return new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION);
+		CRLBinary crlBinary = crlSource.getCRLByDigest(refDigest);
+		if (crlBinary != null) {
+			return new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
 		} else {
 			// in case if no original CRL value is present
 			CRLRef crlRef = crlSource.getCRLRefByDigest(refDigest);
@@ -621,9 +621,9 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	private TimestampedReference getTimestampedOCSPRefByDigest(Digest refDigest) {
-		OCSPResponseBinary identifier = ocspSource.getIdentifier(refDigest);
-		if (identifier != null) {
-			return new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION);
+		OCSPResponseBinary ocspResponseBinary = ocspSource.getOCSPResponseByDigest(refDigest);
+		if (ocspResponseBinary != null) {
+			return new TimestampedReference(ocspResponseBinary.asXmlId(), TimestampedObjectType.REVOCATION);
 		} else {
 			// in case if no original OCSP value is present
 			OCSPRef ocspRef = ocspSource.getOCSPRefByDigest(refDigest);

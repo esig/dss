@@ -22,9 +22,7 @@ package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 
 import org.bouncycastle.asn1.esf.CrlIdentifier;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
@@ -53,8 +51,7 @@ public final class CRLRef extends RevocationRef {
 	 * The default constructor for CRLRef.
 	 */
 	public CRLRef(Digest digest, RevocationRefOrigin origin) {
-		this.digest = digest;
-		this.origins = new HashSet<>(Arrays.asList(origin));
+		super(digest, origin);
 	}
 
 	/**
@@ -63,22 +60,24 @@ public final class CRLRef extends RevocationRef {
 	 * @param cmsRef
 	 */
 	public CRLRef(CrlValidatedID cmsRef, RevocationRefOrigin origin) {
+		this(extractDigest(cmsRef), origin);
 		try {
 			final CrlIdentifier crlIdentifier = cmsRef.getCrlIdentifier();
 			if (crlIdentifier != null) {
-				crlIssuer = crlIdentifier.getCrlIssuer();
-				crlIssuedTime = crlIdentifier.getCrlIssuedTime().getDate();
-				crlNumber = crlIdentifier.getCrlNumber();
+				this.crlIssuer = crlIdentifier.getCrlIssuer();
+				this.crlIssuedTime = crlIdentifier.getCrlIssuedTime().getDate();
+				this.crlNumber = crlIdentifier.getCrlNumber();
 			}
-			final OtherHash crlHash = cmsRef.getCrlHash();
-
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
-			byte[] digestValue = crlHash.getHashValue();
-			this.digest = new Digest(digestAlgorithm, digestValue);
-			this.origins = new HashSet<>(Arrays.asList(origin));
 		} catch (ParseException ex) {
 			throw new DSSException(ex);
 		}
+	}
+	
+	private static Digest extractDigest(CrlValidatedID cmsRef) {
+		final OtherHash crlHash = cmsRef.getCrlHash();
+		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
+		byte[] digestValue = crlHash.getHashValue();
+		return new Digest(digestAlgorithm, digestValue);
 	}
 
 	public X500Name getCrlIssuer() {

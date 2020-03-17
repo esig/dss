@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -68,7 +69,6 @@ import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
 import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
 import org.bouncycastle.asn1.x509.RoleSyntax;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataParser;
@@ -104,7 +104,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
@@ -122,7 +122,6 @@ import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignerInfo;
 import eu.europa.esig.dss.validation.SignerRole;
 
 /**
@@ -150,43 +149,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private CertificateValidity signingCertificateValidity;
 
 	/**
-	 * @param data
-	 *             byte array representing CMSSignedData
-	 * @throws org.bouncycastle.cms.CMSException
-	 */
-	public CAdESSignature(final byte[] data) throws CMSException {
-		this(data, new CertificatePool());
-	}
-
-	/**
-	 * @param data
-	 *            byte array representing CMSSignedData
-	 * @param certPool
-	 *            can be null
-	 * @throws org.bouncycastle.cms.CMSException
-	 */
-	public CAdESSignature(final byte[] data, final CertificatePool certPool) throws CMSException {
-		this(new CMSSignedData(data), certPool);
-	}
-
-	/**
-	 * The default constructor for CAdESSignature.
-	 *
-	 * @param cms
-	 *            CMSSignedData
-	 * @param certPool
-	 *            can be null
-	 */
-	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool) {
-		this(cms, DSSASN1Utils.getFirstSignerInformation(cms), certPool);
-	}
-
-	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool, DSSDocument detachedContent) {
-		this(cms, certPool);
-		setDetachedContents(Arrays.asList(detachedContent));
-	}
-
-	/**
 	 * @param cmsSignedData
 	 *            CMSSignedData
 	 * @param signerInformation
@@ -208,6 +170,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
 		super(certPool);
+		Objects.requireNonNull(cmsSignedData, "CMSSignedData cannot be null!");
+		Objects.requireNonNull(signerInformation, "SignerInformation must be provided!");
 		this.cmsSignedData = cmsSignedData;
 		this.signerInformation = signerInformation;
 	}
@@ -282,21 +246,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
 
-		SignatureCertificateSource certSource = getCertificateSource();
-		final SignerId signerId = getSignerId();
+		CAdESCertificateSource certSource = (CAdESCertificateSource) getCertificateSource();
+		// retrieves the first found entry from SignerInformationStore
+		SerialInfo signerInfo = certSource.getUsedIssuerSerialInfo();
 		
 		// firstly check the KeyInfo attribute
-		findSigningCertificateInCollection(signerId, certSource.getSignedDataCertificates());
+		findSigningCertificateInCollection(signerInfo, certSource.getSignedDataCertificates());
 		
 		// check the certificate pool
 		if (signingCertificateValidity == null) {
-			checkCertPoolAgainstSignerId(candidatesForSigningCertificate, signerId);
+			checkCertPoolAgainstSignerId(candidatesForSigningCertificate, signerInfo);
 		}
 		
 		// if no certificates found, create an empty certificateValidity
 		if (signingCertificateValidity == null) {
-			LOG.warn("Signing certificate not found: {} {}", signerId.getIssuer(), signerId.getSerialNumber());
-			SignerInfo signerInfo = new SignerInfo(signerId.getIssuer().toString(), signerId.getSerialNumber());
+			LOG.warn("Signing certificate not found: {}", signerInfo);
 			signingCertificateValidity = new CertificateValidity(signerInfo);
 			candidatesForSigningCertificate.add(signingCertificateValidity);
 		}
@@ -309,20 +273,19 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return candidatesForSigningCertificate;
 	}
 	
-	private void findSigningCertificateInCollection(final SignerId signerId, final Collection<CertificateToken> certificates) {
+	private void findSigningCertificateInCollection(final SerialInfo serialInfo, final Collection<CertificateToken> certificates) {
 		for (final CertificateToken certificateToken : certificates) {
-			if (doesEmbeddedSignedIdMatch(candidatesForSigningCertificate, certificateToken, signerId)) {
+			if (doesEmbeddedSignedIdMatch(candidatesForSigningCertificate, certificateToken, serialInfo)) {
 				return;
 			}
 		}
 	}
 	
-	private boolean doesEmbeddedSignedIdMatch(final CandidatesForSigningCertificate candidates, final CertificateToken certificateToken, SignerId signerId) {
+	private boolean doesEmbeddedSignedIdMatch(final CandidatesForSigningCertificate candidates, final CertificateToken certificateToken, SerialInfo serialInfo) {
 		final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 		candidates.add(certificateValidity);
 
-		final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
-		final boolean match = signerId.match(x509CertificateHolder);
+		final boolean match = DSSASN1Utils.matchCertificateSerialInfo(serialInfo, certificateToken);
 		certificateValidity.setSignerIdMatch(match);
 		if (match) {
 			this.signingCertificateValidity = certificateValidity;
@@ -330,11 +293,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return match;
 	}
 	
-	private boolean checkCertPoolAgainstSignerId(final CandidatesForSigningCertificate candidates, final SignerId signerId) {
-		List<CertificateToken> certificateTokens = certPool.getBySignerId(signerId);
+	private boolean checkCertPoolAgainstSignerId(final CandidatesForSigningCertificate candidates, final SerialInfo serialInfo) {
+		List<CertificateToken> certificateTokens = certPool.getBySerialInfo(serialInfo);
 		if (Utils.isCollectionNotEmpty(certificateTokens)) {
 			for (CertificateToken certificateToken : certificateTokens) {
-				if (doesEmbeddedSignedIdMatch(candidates, certificateToken, signerId)) {
+				if (doesEmbeddedSignedIdMatch(candidates, certificateToken, serialInfo)) {
 					// break the loop if a good candidate found
 					return true;
 				}
@@ -361,11 +324,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					}
 				}
 
-				IssuerSerialInfo issuerInfo = certificateRef.getIssuerInfo();
+				SerialInfo issuerInfo = certificateRef.getIssuerInfo();
 				if (issuerInfo != null && foundSigningCertificate != null) {
 					signingCertificateValidity.setSerialNumberEqual(foundSigningCertificate.getSerialNumber().equals(issuerInfo.getSerialNumber()));
 					signingCertificateValidity
-							.setDistinguishedNameEqual(DSSUtils.x500PrincipalAreEquals(foundSigningCertificate.getIssuerX500Principal(), issuerInfo.getIssuerName()));
+							.setDistinguishedNameEqual(DSSASN1Utils.x500PrincipalAreEquals(foundSigningCertificate.getIssuerX500Principal(), issuerInfo.getIssuerName()));
 				}
 
 				// RFC 2634 / 5035 : The first certificate identified in the sequence of
@@ -1210,11 +1173,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signedAttributes.get(oid);
 	}
+	
+	@Override
+	public List<SerialInfo> getSignerInformationStoreInfos() {
+		CAdESCertificateSource certificateSource = (CAdESCertificateSource) getCertificateSource();
+		return certificateSource.getIssuerSerialInfos();
+	}
 
 	@Override
 	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
-		final AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		final AttributeTable signedAttributes = CMSUtils.getSignedAttributes(signerInformation);
+		final AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		boolean dataForProfilePresent = true;
 		switch (signatureLevel) {
 		case CAdES_BASELINE_LTA:

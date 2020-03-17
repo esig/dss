@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -58,9 +60,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -298,23 +300,24 @@ public final class DSSRevocationUtils {
 	}
 	
 	/**
-	 * Transforms {@link RespID} to {@link ResponderId}
+	 * Transforms {@link RespID} to {@link SerialInfo}
 	 * @param respID {@link RespID} to get values from
-	 * @return {@link ResponderId}
+	 * @return {@link SerialInfo}
 	 */
-	public static ResponderId getDSSResponderId(RespID respID) {
-		ResponderId dssResponderId = new ResponderId();
+	public static SerialInfo getDSSResponderId(RespID respID) {
+		SerialInfo dssResponderId = new SerialInfo();
 		final ResponderID responderIdAsASN1Object = respID.toASN1Primitive();
 		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
 		if (2 == derTaggedObject.getTagNo()) {
 			final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 			final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-			dssResponderId.setKey(keyHashOctetStringBytes);
+			dssResponderId.setSki(keyHashOctetStringBytes);
 			return dssResponderId;
 		} else {
 			final ASN1Primitive derObject = derTaggedObject.getObject();
 			final X500Name name = X500Name.getInstance(derObject);
-			dssResponderId.setName(name.toString());
+			X500Principal x500Principal = DSSASN1Utils.toX500Principal(name);
+			dssResponderId.setIssuerName(x500Principal);
 			return dssResponderId;
 		}
 	}

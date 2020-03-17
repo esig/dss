@@ -43,7 +43,10 @@ public class RevocationRefWrappper {
 	 * @return {@link String}
 	 */
 	public String getResponderIdName() {
-		return revocationRef.getResponderIdName();
+		if (revocationRef.getResponderId() != null) {
+			return revocationRef.getResponderId().getIssuerName();
+		}
+		return null;
 	}
 	
 	/**
@@ -52,7 +55,10 @@ public class RevocationRefWrappper {
 	 * @return a byte array
 	 */
 	public byte[] getResponderIdKey() {
-		return revocationRef.getResponderIdKey();
+		if (revocationRef.getResponderId() != null) {
+			return revocationRef.getResponderId().getSki();
+		}
+		return null;
 	}
 	
 	/**
@@ -68,7 +74,7 @@ public class RevocationRefWrappper {
 	public String toString() {
 		if (revocationRef != null) {
 			return "RevocationRefWrapper Origins='" + revocationRef.getOrigins().toArray() + "',  ProductionTime='" + revocationRef.getProducedAt() + 
-					"', responderIdName='" + revocationRef.getResponderIdName() + "'";
+					"', responderIdName='" + revocationRef.getResponderId().getIssuerName() + "'";
 		} else {
 			return "RevocationRefWrapper revocationRef=" + revocationRef;
 		}

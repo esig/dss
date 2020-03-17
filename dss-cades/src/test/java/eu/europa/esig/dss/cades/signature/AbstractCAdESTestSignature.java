@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -36,6 +38,10 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -77,6 +83,29 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
+	}
+	
+	@Override
+	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			checkSignatureInformationStore(signature.getSignatureInformationStore());
+		}
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			checkSignatureInformationStore(timestamp.getSignatureInformationStore());
+		}
+	}
+	
+	private void checkSignatureInformationStore(List<XmlSignerInfo> signatureInformationStore) {
+		assertNotNull(signatureInformationStore);
+		int verifiedNumber = 0;
+		for (XmlSignerInfo signerInfo : signatureInformationStore) {
+			if (signerInfo.isProcessed()) {
+				++verifiedNumber;
+			}
+		}
+		assertEquals(1, verifiedNumber);
+		
+		assertEquals(1, signatureInformationStore.size());
 	}
 
 	@Override

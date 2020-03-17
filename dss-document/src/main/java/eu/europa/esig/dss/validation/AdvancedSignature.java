@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
@@ -496,10 +497,27 @@ public interface AdvancedSignature extends Serializable {
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 
+	/**
+	 * Returns a digest value incorporated in an attribute "message-digest" in CMS Signed Data
+	 * 
+	 * @return a byte array representing a signed content digest value
+	 */
 	byte[] getMessageDigestValue();
+	
+	/**
+	 * Returns a list of SerialInfos extracted from a SignerInformationStore of CMS Signed Data
+	 * 
+	 * @return a list of {@link SerialInfo}s
+	 */
+	List<SerialInfo> getSignerInformationStoreInfos();
 
 	// ------------------------ PDF Specifics for TS 119 102-2
 	
+	/**
+	 * Retrieves a PdfRevision (PAdES) related to the current signature
+	 * 
+	 * @return {@link PdfRevision}
+	 */
 	PdfRevision getPdfRevision();
 
 }

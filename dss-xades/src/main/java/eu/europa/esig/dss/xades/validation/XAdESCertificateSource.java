@@ -41,7 +41,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -272,8 +272,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		return result;
 	}
 
-	private IssuerSerialInfo getIssuerV1(Element certElement) {
-		IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
+	private SerialInfo getIssuerV1(Element certElement) {
+		SerialInfo issuerInfo = new SerialInfo();
 
 		final Element issuerNameEl = DomUtils.getElement(certElement, xadesPaths.getCurrentIssuerSerialIssuerNamePath());
 		if (issuerNameEl != null) {
@@ -289,7 +289,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		return issuerInfo;
 	}
 	
-	private IssuerSerialInfo getIssuerV2(Element certElement) {
+	private SerialInfo getIssuerV2(Element certElement) {
 		final Element issuerSerialV2Element = DomUtils.getElement(certElement, xadesPaths.getCurrentIssuerSerialV2Path());
 		if (issuerSerialV2Element == null) {
 			// Tag issuerSerialV2 is optional

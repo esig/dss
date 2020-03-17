@@ -232,7 +232,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		if (orphanRevocationRefsCRLs == null) {
 			orphanRevocationRefsCRLs = new ArrayList<>();
 			for (CRLRef crlRef : getAllCRLReferences()) {
-				if (getIdentifier(crlRef) == null) {
+				if (getCRLByRef(crlRef) == null) {
 					orphanRevocationRefsCRLs.add(crlRef);
 				}
 			}

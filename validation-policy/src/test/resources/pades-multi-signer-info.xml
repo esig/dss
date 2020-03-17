@@ -38,18 +38,18 @@
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Processed="true">
+                    <IssuerName>CN=good-ca,O=Nowina Solutions,OU=PKI-TEST,C=LU</IssuerName>
+                    <SerialNumber>10</SerialNumber>
+                </SignerInfo>
+                <SignerInfo Processed="false">
+                    <IssuerName>CN=good-ca,O=Nowina Solutions,OU=PKI-TEST,C=LU</IssuerName>
+                    <SerialNumber>12</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
             <PDFRevision>
                 <SignatureFieldName>Signature1</SignatureFieldName>
-                <SignerInformationStore>
-                    <SignerInfo Processed="true">
-                        <Issuer>CN=good-ca,O=Nowina Solutions,OU=PKI-TEST,C=LU</Issuer>
-                        <SerialNumber>10</SerialNumber>
-                    </SignerInfo>
-                    <SignerInfo Processed="false">
-                        <Issuer>CN=good-ca,O=Nowina Solutions,OU=PKI-TEST,C=LU</Issuer>
-                        <SerialNumber>12</SerialNumber>
-                    </SignerInfo>
-                </SignerInformationStore>
                 <PDFSignatureDictionary>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -495,14 +495,14 @@
                 <ChainItem Certificate="C-88570AD47C9689BFB1505799EA362F65FBE2BEE501EF3A865E243104D76DC36E"/>
                 <ChainItem Certificate="C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023"/>
             </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Processed="true">
+                    <IssuerName>CN=root-ca,O=Nowina Solutions,OU=PKI-TEST,C=LU</IssuerName>
+                    <SerialNumber>500</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
             <PDFRevision>
                 <SignatureFieldName>Signature2</SignatureFieldName>
-                <SignerInformationStore>
-                    <SignerInfo Processed="true">
-                        <Issuer>CN=root-ca,O=Nowina Solutions,OU=PKI-TEST,C=LU</Issuer>
-                        <SerialNumber>500</SerialNumber>
-                    </SignerInfo>
-                </SignerInformationStore>
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>

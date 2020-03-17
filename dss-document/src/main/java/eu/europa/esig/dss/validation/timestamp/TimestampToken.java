@@ -35,7 +35,6 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.SignerInformationVerifier;
@@ -64,6 +63,7 @@ import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.PdfRevision;
@@ -677,9 +677,23 @@ public class TimestampToken extends Token {
 			return getClass().getName();
 		}
 	}
+	
+	/**
+	 * Returns a list of found SerialInfos in the SignerInformationStore
+	 * 
+	 * @return a list of {@link SerialInfo}s
+	 */
+	public List<SerialInfo> getSignerInformationStoreInfos() {
+		return getCertificateSource().getIssuerSerialInfos();
+	}
 
-	public SignerId getSignerId() {
-		return timeStamp.getSID();
+	/**
+	 * Returns used SerialInfo of the signing certificate
+	 * 
+	 * @return {@link SerialInfo}
+	 */
+	public SerialInfo getUsedIssuerSerialInfo() {
+		return getCertificateSource().getUsedIssuerSerialInfo();
 	}
 
 	/**

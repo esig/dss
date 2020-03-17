@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.SignerInfo;
 
 /**
  * This class represents an LT-level PDF revision containing a DSS dictionary
@@ -37,12 +36,6 @@ public class PdfDocDssRevision implements PdfRevision {
 
 	@Override
 	public List<String> getFieldNames() {
-		// not applicable for DSS revision
-		return null;
-	}
-
-	@Override
-	public List<SignerInfo> getSignatureInformationStore() {
 		// not applicable for DSS revision
 		return null;
 	}

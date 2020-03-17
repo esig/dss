@@ -35,10 +35,6 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.util.CollectionStore;
-import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -259,26 +255,20 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method returns the List of certificates with the same SignerId.
+	 * This method returns the List of certificates with the same serialInfo.
 	 *
-	 * @param signerId
-	 *                 expected signerId.
+	 * @param serialInfo
+	 *                 expected {@link SerialInfo}
 	 * @return If no match is found then an empty list is returned.
 	 */
-	@SuppressWarnings("unchecked")
-	public List<CertificateToken> getBySignerId(SignerId signerId) {
+	public List<CertificateToken> getBySerialInfo(SerialInfo serialInfo) {
 		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
 		for (CertificatePoolEntity entity : values) {
 			List<CertificateToken> equivalentCertificates = entity.getEquivalentCertificates();
-			List<X509CertificateHolder> collection = new ArrayList<>();
-			for (CertificateToken token : equivalentCertificates) {
-				collection.add(DSSASN1Utils.getX509CertificateHolder(token));
-			}
-			Store<X509CertificateHolder> store = new CollectionStore<>(collection);
 			// matches by SN + IssuerName
-			Collection<X509CertificateHolder> matches = store.getMatches(signerId);
-			if (!matches.isEmpty()) {
-				return equivalentCertificates;
+			List<CertificateToken> result = DSSASN1Utils.filterCertificatesBySerialInfo(serialInfo, equivalentCertificates);
+			if (Utils.isCollectionNotEmpty(result)) {
+				return result;
 			}
 		}
 		return Collections.emptyList();

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -82,7 +84,12 @@ public class CAdESWithDEREncodedTimestampTest extends PKIFactoryAccess {
 	public void testFile3() throws DSSException, CMSException, IOException {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/Signature-C-DE_CRY-4.p7m");
 
-		CAdESSignature signature = new CAdESSignature(Utils.toByteArray(dssDocument.openStream()));
+		CMSDocumentValidator cmsDocumentValidator = new CMSDocumentValidator(dssDocument);
+		List<AdvancedSignature> signatures = cmsDocumentValidator.getSignatures();
+		assertEquals(1, signatures.size());
+		assertTrue(signatures.get(0) instanceof CAdESSignature);
+		
+		CAdESSignature signature = (CAdESSignature) signatures.get(0);
 		CMSSignedData cmsSignedData = signature.getCmsSignedData();
 		assertNotNull(cmsSignedData);
 	}

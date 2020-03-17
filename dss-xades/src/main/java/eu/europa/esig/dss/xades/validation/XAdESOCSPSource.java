@@ -33,9 +33,10 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -127,22 +128,22 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		if (currentOCSPRefResponderIDByName != null && currentOCSPRefResponderIDByKey != null) {
 			final Element responderIdByName = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByName);
 			if (responderIdByName != null) {
-				responderId.setName(responderIdByName.getTextContent());
+				responderId.setX500Principal(DSSUtils.getX500PrincipalOrNull(responderIdByName.getTextContent()));
 			}
 
 			final Element responderIdByKey = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
 			if (responderIdByKey != null) {
-				responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
+				responderId.setSki(Utils.fromBase64(responderIdByKey.getTextContent()));
 			}
 		} else {
 			final Element responderIdElement = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
 			if (responderIdElement != null) {
-				responderId.setName(responderIdElement.getTextContent());
+				responderId.setX500Principal(DSSUtils.getX500PrincipalOrNull(responderIdElement.getTextContent()));
 			}
 		}
 		
 		// process only if ResponderId is present
-		if (responderId.getName() == null && responderId.getKey() == null) {
+		if (responderId.getX500Principal() == null && responderId.getSki() == null) {
 			return null;
 		}
 		

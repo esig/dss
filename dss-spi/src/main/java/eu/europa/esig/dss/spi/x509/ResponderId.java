@@ -20,42 +20,37 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.math.BigInteger;
+import java.util.Arrays;
 
 import javax.security.auth.x500.X500Principal;
 
-public class IssuerSerialInfo {
+public class ResponderId {
+	
+	private X500Principal subjectX500Principal;
+	private byte[] ski;
 
-	private X500Principal issuerName;
-	private BigInteger serialNumber;
-
-	public X500Principal getIssuerName() {
-		return issuerName;
+	public X500Principal getX500Principal() {
+		return subjectX500Principal;
 	}
-
-	public void setIssuerName(X500Principal name) {
-		this.issuerName = name;
+	
+	public void setX500Principal(X500Principal subjectX500Principal) {
+		this.subjectX500Principal = subjectX500Principal;
 	}
-
-	public BigInteger getSerialNumber() {
-		return serialNumber;
+	
+	public byte[] getSki() {
+		return ski;
 	}
-
-	public void setSerialNumber(BigInteger serialNumber) {
-		this.serialNumber = serialNumber;
+	
+	public void setSki(byte[] ski) {
+		this.ski = ski;
 	}
-
-	@Override
-	public String toString() {
-		return "IssuerSerialInfo [issuerName=" + issuerName + ", serialNumber=" + serialNumber + "]";
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((issuerName == null) ? 0 : issuerName.hashCode());
-		result = (prime * result) + ((serialNumber == null) ? 0 : serialNumber.hashCode());
+		result = prime * result + Arrays.hashCode(ski);
+		result = prime * result + ((subjectX500Principal == null) ? 0 : subjectX500Principal.hashCode());
 		return result;
 	}
 
@@ -67,19 +62,21 @@ public class IssuerSerialInfo {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof IssuerSerialInfo)) {
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		IssuerSerialInfo other = (IssuerSerialInfo) obj;
-		if ((issuerName == null && other.getIssuerName() != null) || 
-				(issuerName != null && !issuerName.equals(other.getIssuerName()))) {
+		ResponderId other = (ResponderId) obj;
+		if (!Arrays.equals(ski, other.ski)) {
 			return false;
 		}
-		if ((serialNumber == null && other.getSerialNumber() != null) || 
-				(serialNumber != null && !serialNumber.equals(other.getSerialNumber()))) {
+		if (subjectX500Principal == null) {
+			if (other.subjectX500Principal != null) {
+				return false;
+			}
+		} else if (!subjectX500Principal.equals(other.subjectX500Principal)) {
 			return false;
 		}
 		return true;
 	}
-
+	
 }

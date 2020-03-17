@@ -225,7 +225,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		if (orphanRevocationRefsOCSPs == null) {
 			orphanRevocationRefsOCSPs = new ArrayList<>();
 			for (OCSPRef ocspRef : getAllOCSPReferences()) {
-				if (getIdentifier(ocspRef) == null) {
+				if (getOCSPResponseByRef(ocspRef) == null) {
 					orphanRevocationRefsOCSPs.add(ocspRef);
 				}
 			}
@@ -283,11 +283,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 					
 				} else if (!ocspRef.getProducedAt().equals(revocationToken.getProductionDate())) {
 					// continue
-				} else if (ocspRef.getResponderId().getName() != null &&
-						ocspRef.getResponderId().getName().equals(revocationToken.getIssuerX500Principal().getName())) {
+				} else if (ocspRef.getResponderId().getX500Principal() != null &&
+						DSSASN1Utils.x500PrincipalAreEquals(ocspRef.getResponderId().getX500Principal(), revocationToken.getIssuerX500Principal())) {
 					addReferenceToMap(revocationToken, ocspRef);
 					
-				} else if (ocspRef.getResponderId().getKey() != null && Arrays.equals(ocspRef.getResponderId().getKey(), 
+				} else if (ocspRef.getResponderId().getSki() != null && Arrays.equals(ocspRef.getResponderId().getSki(), 
 						DSSASN1Utils.computeSkiFromCertPublicKey(revocationToken.getPublicKeyOfTheSigner()))) {
 					addReferenceToMap(revocationToken, ocspRef);
 					

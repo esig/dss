@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
+import java.util.List;
+
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class SignerInformationStoreCheck extends ChainItem<XmlFC> {
@@ -42,9 +45,9 @@ public class SignerInformationStoreCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null && pdfRevision.getSignerInformationStore() != null) {
-			return pdfRevision.getSignerInformationStore().size() == 1;
+		List<XmlSignerInfo> signatureInformationStore = signature.getSignatureInformationStore();
+		if (Utils.isCollectionNotEmpty(signatureInformationStore)) {
+			return signatureInformationStore.size() == 1;
 		}
 		return false;
 	}

@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
@@ -75,6 +76,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
 
@@ -129,7 +131,12 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 	protected void onDocumentSigned(byte[] byteArray) {
 		try {
 
-			CAdESSignature signature = new CAdESSignature(byteArray);
+			CMSDocumentValidator cmsDocumentValidator = new CMSDocumentValidator(new InMemoryDocument(byteArray));
+			List<AdvancedSignature> signatures = cmsDocumentValidator.getSignatures();
+			assertEquals(1, signatures.size());
+			assertTrue(signatures.get(0) instanceof CAdESSignature);
+			
+			CAdESSignature signature = (CAdESSignature) signatures.get(0);
 			assertNotNull(signature.getCmsSignedData());
 			assertTrue(Utils.isArrayNotEmpty(signature.getMessageDigestValue()));
 

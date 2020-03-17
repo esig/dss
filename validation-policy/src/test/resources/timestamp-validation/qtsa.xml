@@ -356,14 +356,14 @@
                 <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
                 <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
             </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Processed="true">
+                    <IssuerName>C=LT,O=Skaitmeninio sertifikavimo centras,OU=Certification Authority,CN=SSC Qualified Class 3 CA</IssuerName>
+                    <SerialNumber>104155880393078814540679</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
             <PDFRevision>
                 <SignatureFieldName>Signature1</SignatureFieldName>
-                <SignerInformationStore>
-                    <SignerInfo Processed="true">
-                        <Issuer>C=LT,O=Skaitmeninio sertifikavimo centras,OU=Certification Authority,CN=SSC Qualified Class 3 CA</Issuer>
-                        <SerialNumber>104155880393078814540679</SerialNumber>
-                    </SignerInfo>
-                </SignerInformationStore>
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
