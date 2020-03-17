@@ -424,10 +424,8 @@ public class SignatureValidationContext implements ValidationContext {
 				// only certificate sources for OCSP tokens must be processed
 				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
 				if (revocationCertificateSource != null) {
-					CertificateSourceType certificateSourceType = revocationCertificateSource.getCertificateSourceType();
+					validationCertificatePool.importCerts(revocationCertificateSource);
 					for (CertificateToken certificateToken : revocationCertificateSource.getCertificates()) {
-						// TODO find an alternative
-						validationCertificatePool.getInstance(certificateToken, certificateSourceType);
 						addCertificateTokenForVerification(certificateToken);
 					}
 				}
