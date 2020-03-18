@@ -29,7 +29,7 @@ import javax.xml.validation.Schema;
 
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportType> {

@@ -169,7 +169,6 @@
 		<module>dss-cookbook</module>
 		
 		<module>dss-jacoco-coverage</module>
-    <module>dss-alert</module>
   </modules>
 
 	<build>

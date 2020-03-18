@@ -2,7 +2,6 @@ module jpms_dss_tsl_validation {
 
 	exports eu.europa.esig.dss.tsl.alerts;
 	exports eu.europa.esig.dss.tsl.alerts.detections;
-	exports eu.europa.esig.dss.tsl.alerts.handlers;
 	exports eu.europa.esig.dss.tsl.alerts.handlers.log;
 	exports eu.europa.esig.dss.tsl.cache;
 	exports eu.europa.esig.dss.tsl.cache.access;
