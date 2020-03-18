@@ -185,7 +185,7 @@ You can easily download them with the following Maven repository :
 ==== Shared modules
 
 dss-enumerations:: Contains a list of all used enumerations in the DSS project.
-dss-alerts:: Allows configuration of triggers and handers of custom events.
+dss-alerts:: Allows configuration of triggers and handers for arbitrary defined events.
 dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
 
 ==== JAXB model modules
@@ -1688,6 +1688,37 @@ In opposition, the adjunct certificates cannot be shared. These certificates con
 
 In case of multi-threading usage, we strongly recommend caching of external resources. All external resources can be cached (AIA, CRL, OCSP) to improve performances and to avoid requesting too much time the same resources. FileCacheDataLoader and JdbcCacheCRLSource can help you in this way. 
 
+[[xmlSecurities]]
+== XML Securities
+
+Since DSS 5.7, the framework allows custom configuration of XML-related modules for enabling/disabling of XML securities (e.g. in order to use Xalan or Xerces).
+
+WARNING: We strongly do not recommend disabling of security features and usage of deprecated dependencies. Be aware: the feature is designed only for experienced users, and all changes made in the module are at your own risk.
+
+The configuration is available for the following classes:
+
+ * `javax.xml.transform.TransformerFactory` with a `TransformerFactoryBuilder` - loads XML templates and builds DOM objects;
+ * `javax.xml.validation.SchemaFactory` with a `SchemaFactoryBuilder` - loads XML Schema;
+ * `javax.xml.validation.Validator` with a `ValidatorConfigurator` - configures a validator to validate an XML document against an XML Schema. 
+ 
+All the classes can be configured with the following methods (example for `TransformerFactory`):
+
+[source,java,indent=0]
+.XMLSecurities configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=demo]
+----
+
+The `javax.xml.parsers.DocumentBuilderFactory` in `DomUtils`, which allows you to parse and create XML `Document` object, also can be configured with the methods:
+ 
+[source,java,indent=0]
+.DocumentBuilderFactory configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=dbf]
+----
+
+The classes `XmlDefinerUtils` and `DomUtils` are singletons, therefore all changes performed on the instances will applied on all calls of the related methods.
+
 == JAXB modules
 
 Since the version 5.5, DSS provides the following JAXB modules with a harmonized structure : 
@@ -1764,16 +1795,19 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Stylesheet
 Since DSS 5.7 the framework includes an extended possibility to execute custom processes in case of arbitrary defined events.
 
 The `Alert` is a basic interface used to trigger a process on a passed object.
-DSS provides an `AbtractAlert` implementation of the interface with a clearly defined structure. The class must be defined with two attributes:
+DSS provides an `AbstractAlert` implementation of the interface with a clearly defined structure. The class must be instantiated with two attributes:
+
  * `Detector` - used to detect an event/state of the object and trigger a process;
  * `AlertHandler` - defines a process to be executed on an object.
 
 In its basic module framework provides a few alerts allowing to handle Exceptions:
- * `ExceptionAlert` - accepts a custom AlertHandler to perform actions on an exception if present;
- * `DSSLogAlert` - allows to define a log level and print of a stacktrace if an exception occurs.
+
+ * `ExceptionAlert` - accepts a custom `AlertHandler` to perform actions on an exception if present;
+ * `DSSLogAlert` - allows to define a log level and print a stacktrace if an exception occurs.
 
 The usage of alerts is available in the following classes:
- * XML-configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`;
+
+ * <<xmlSecurities>> configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`;
  * <<certificateVerifier>> - to handle the raising exception in a custom way (introduced `DSSExceptionAlert` to re-throw exceptions);
  * <<tlValidationJob>> - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert`).
 
