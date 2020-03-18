@@ -38,7 +38,7 @@ import javax.xml.validation.Schema;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
 
 public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> {
 

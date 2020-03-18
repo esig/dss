@@ -36,7 +36,7 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.diagnostic.jaxb.ObjectFactory;
-import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
 
 public final class DiagnosticDataXmlDefiner {
 

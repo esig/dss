@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
-public class ObjectIdentifierQualifierTest {
+public class ObjectIdentifierQualifierParserTest {
 
 	@Test
 	public void testEnum() {

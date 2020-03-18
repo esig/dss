@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.parsers;
+package eu.europa.esig.dss.jaxb;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,12 +7,25 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.alert.ExceptionAlert;
+import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler;
+import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler.LogLevel;
+import eu.europa.esig.dss.jaxb.exception.XmlSecurityException;
+
 public abstract class AbstractFactoryBuilder<F extends Object> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractFactoryBuilder.class);
 	
 	private Map<String, Boolean> features = new HashMap<>();
 	private Map<String, Object> attributes = new HashMap<>();
+	
+	private Alert<Exception> securityExceptionAlert;
+
+	AbstractFactoryBuilder() {
+		LogExceptionAlertHandler alertHandler = new LogExceptionAlertHandler(LogLevel.WARN, LOG.isDebugEnabled());
+		this.securityExceptionAlert = new ExceptionAlert(alertHandler);
+	}
 	
 	/**
 	 * Enables a custom feature
@@ -36,6 +49,15 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 		return this;
 	}
 	
+	/**
+	 * This method allows to configure a custom alert on security exception in the builder
+	 * 
+	 * @param securityExceptionAlert {@link Alert<Exception>} to define
+	 */
+	public void setSecurityExceptionAlert(Alert<Exception> securityExceptionAlert) {
+		this.securityExceptionAlert = securityExceptionAlert;
+	}
+	
 	private void setFeature(String feature, boolean value) {
 		Objects.requireNonNull(feature, "The feature constraint cannot be null!");
 		if (features.containsKey(feature) && features.get(feature) != value) {
@@ -56,10 +78,11 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	public AbstractFactoryBuilder<F> setAttribute(String attribute, Object value) {
 		Objects.requireNonNull(attribute, "The attribute constraint cannot be null!");
 		if (attributes.containsKey(attribute) && attributes.get(attribute).equals(value)) {
-			LOG.warn("SECURITY : attribute with the name [{}] changed from [{}] to [{}]", attribute, features.get(attribute), value);
+			LOG.warn("SECURITY : attribute with the name [{}] changed from [{}] to [{}]", attribute, attributes.get(attribute), value);
 		} else if (LOG.isDebugEnabled()) {
 			LOG.debug("The attribute {} = {} has been added to the configuration", attribute, value);
 		}
+		attributes.put(attribute, value);
 		return this;
 	}
 	
@@ -86,13 +109,9 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 			try {
 				setSecurityFeature(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				// TODO : allow a behaviour customization with alerts
-				String message = String.format("SECURITY : unable to set feature '%s' = '%s' (more details in LOG debug)", entry.getKey(), entry.getValue());
-				if (LOG.isDebugEnabled()) {
-					LOG.debug(message, e);
-				} else {
-					LOG.warn(message);
-				}
+				String message = String.format("SECURITY : unable to set feature '%s' = '%s'. Cause : %s", 
+						entry.getKey(), entry.getValue(), e.getMessage());
+				securityExceptionAlert.alert(new XmlSecurityException(message, e));
 			}
 		}
 	}
@@ -115,13 +134,9 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 			try {
 				setSecurityAttribute(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				// TODO : allow a behaviour customization with alerts
-				String message = String.format("SECURITY : unable to set attribute '%s' = '%s' (more details in LOG debug)", entry.getKey(), entry.getValue());
-				if (LOG.isDebugEnabled()) {
-					LOG.debug(message, e);
-				} else {
-					LOG.warn(message);
-				}
+				String message = String.format("SECURITY : unable to set attribute '%s' = '%s'. Cause : %s", 
+						entry.getKey(), entry.getValue(), e.getMessage());
+				securityExceptionAlert.alert(new XmlSecurityException(message, e));
 			}
 		}
 	}

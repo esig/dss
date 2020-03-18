@@ -34,7 +34,7 @@ import javax.xml.validation.Schema;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
 
 public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> {
 
