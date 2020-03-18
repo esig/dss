@@ -300,7 +300,7 @@ public class TimestampTokenTest {
 
 		TimestampCRLSource crlSource = timestampToken.getCRLSource();
 		assertNotNull(crlSource);
-		assertEquals(1, crlSource.getCRLBinaryList().size());
+		assertEquals(1, crlSource.getAllRevocationBinaries().size());
 		assertEquals(1, crlSource.getAllRevocationReferences().size());
 	}
 
@@ -316,12 +316,12 @@ public class TimestampTokenTest {
 
 		TimestampCRLSource crlSource = timestampToken.getCRLSource();
 		assertNotNull(crlSource);
-		assertEquals(1, crlSource.getCRLBinaryList().size());
+		assertEquals(1, crlSource.getAllRevocationBinaries().size());
 		assertEquals(0, crlSource.getAllRevocationReferences().size());
 
 		TimestampOCSPSource ocspSource = timestampToken.getOCSPSource();
 		assertNotNull(ocspSource);
-		assertEquals(0, ocspSource.getOCSPResponsesList().size());
+		assertEquals(0, ocspSource.getAllRevocationBinaries().size());
 		assertEquals(0, ocspSource.getAllRevocationReferences().size());
 	}
 
@@ -341,12 +341,12 @@ public class TimestampTokenTest {
 
 		TimestampCRLSource crlSource = timestampToken.getCRLSource();
 		assertNotNull(crlSource);
-		assertEquals(0, crlSource.getCRLBinaryList().size());
+		assertEquals(0, crlSource.getAllRevocationBinaries().size());
 		assertEquals(0, crlSource.getAllRevocationReferences().size());
 
 		TimestampOCSPSource ocspSource = timestampToken.getOCSPSource();
 		assertNotNull(ocspSource);
-		assertEquals(0, ocspSource.getOCSPResponsesList().size());
+		assertEquals(0, ocspSource.getAllRevocationBinaries().size());
 		assertEquals(0, ocspSource.getAllRevocationReferences().size());
 	}
 

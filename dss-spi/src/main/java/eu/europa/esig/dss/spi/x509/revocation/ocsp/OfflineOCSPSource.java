@@ -35,6 +35,8 @@ import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationContainer;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
@@ -119,6 +121,22 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 */
 	protected void addOCSPReference(OCSPRef ocspRef, RevocationRefOrigin origin) {
 		container.addRevocationReference(ocspRef, origin);
+	}
+
+	public Set<MultipleDigestIdentifier> getAllRevocationBinaries() {
+		return container.getAllRevocationBinaries();
+	}
+
+	public Set<MultipleDigestIdentifier> getAllReferencedRevocationBinaries() {
+		return container.getAllReferencedRevocationBinaries();
+	}
+
+	public Set<RevocationToken<OCSP>> getAllRevocationTokens() {
+		return container.getAllRevocationTokens();
+	}
+
+	public Set<RevocationRef<OCSP>> getAllRevocationReferences() {
+		return container.getAllRevocationReferences();
 	}
 
 }

@@ -29,25 +29,24 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
-public class CompositeRevocationSource<T extends RevocationToken>
-		implements RevocationSource<T>, MultipleRevocationSource<T> {
+public class CompositeRevocationSource<R extends Revocation> implements RevocationSource<R>, MultipleRevocationSource<R> {
 
 	private static final long serialVersionUID = 8870377682436878544L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CompositeRevocationSource.class);
 
-	private final List<RevocationSource<T>> revocationSources;
+	private final List<RevocationSource<R>> revocationSources;
 
-	public CompositeRevocationSource(List<RevocationSource<T>> revocationSources) {
+	public CompositeRevocationSource(List<RevocationSource<R>> revocationSources) {
 		Objects.requireNonNull(revocationSources, "RevocationSources is null");
 		this.revocationSources = revocationSources;
 	}
 
 	@Override
-	public T getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
-		for (RevocationSource<T> revocationSource : revocationSources) {
+	public RevocationToken<R> getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
+		for (RevocationSource<R> revocationSource : revocationSources) {
 			try {
-				T revocationToken = revocationSource.getRevocationToken(certificateToken, issuerCertificateToken);
+				RevocationToken<R> revocationToken = revocationSource.getRevocationToken(certificateToken, issuerCertificateToken);
 				if (revocationToken != null) {
 					return revocationToken;
 				}
@@ -60,12 +59,12 @@ public class CompositeRevocationSource<T extends RevocationToken>
 	}
 
 	@Override
-	public List<T> getRevocationTokens(final CertificateToken certificateToken,
+	public List<RevocationToken<R>> getRevocationTokens(final CertificateToken certificateToken,
 			final CertificateToken issuerCertificateToken) {
-		List<T> result = new ArrayList<T>();
-		for (RevocationSource<T> revocationSource : revocationSources) {
+		List<RevocationToken<R>> result = new ArrayList<>();
+		for (RevocationSource<R> revocationSource : revocationSources) {
 			try {
-				T revocationToken = revocationSource.getRevocationToken(certificateToken, issuerCertificateToken);
+				RevocationToken<R> revocationToken = revocationSource.getRevocationToken(certificateToken, issuerCertificateToken);
 				if (revocationToken != null) {
 					result.add(revocationToken);
 				}

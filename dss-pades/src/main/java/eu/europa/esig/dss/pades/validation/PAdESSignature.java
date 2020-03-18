@@ -38,15 +38,15 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifier;
-import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 
 /**
@@ -97,7 +97,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public SignatureCRLSource getCRLSource() {
+	public OfflineCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
 			signatureCRLSource = new PAdESCRLSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
@@ -105,7 +105,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public SignatureOCSPSource getOCSPSource() {
+	public OfflineOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
 			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
 		}

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.spi.x509.revocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -104,6 +105,10 @@ public class RevocationContainer<R extends Revocation> {
 			referenceOrigins.put(reference, origins);
 		}
 		origins.add(origin);
+	}
+
+	public Set<MultipleDigestIdentifier> getAllRevocationBinaries() {
+		return binaryOrigins.keySet();
 	}
 
 	/**
@@ -296,6 +301,23 @@ public class RevocationContainer<R extends Revocation> {
 			List<RevocationRefOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
 				result.add(entry.getKey());
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Retrieves the Set of tokens which have a reference
+	 * 
+	 * @return a Set of Token Identifiers which are referenced
+	 */
+	public Set<MultipleDigestIdentifier> getAllReferencedRevocationBinaries() {
+		Set<MultipleDigestIdentifier> result = new HashSet<>();
+		for (RevocationRef<R> reference : referenceOrigins.keySet()) {
+			for (RevocationToken<R> token : tokenOrigins.keySet()) {
+				if (tokenRefMatcher.match(token, reference)) {
+					result.add(token.getDSSId());
+				}
 			}
 		}
 		return result;

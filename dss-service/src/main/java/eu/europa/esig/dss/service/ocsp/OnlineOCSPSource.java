@@ -161,7 +161,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
 						OCSPToken ocspToken = new OCSPToken(ocspResp, certificateToken, issuerCertificateToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
-						ocspToken.setOrigins(Collections.singleton(RevocationOrigin.EXTERNAL));
+						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 						return ocspToken;
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);

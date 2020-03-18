@@ -94,6 +94,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
@@ -131,10 +132,12 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
@@ -929,10 +932,10 @@ public class DiagnosticDataBuilder {
 		final XmlRevocation xmlRevocation = new XmlRevocation();
 		xmlRevocation.setId(revocationToken.getDSSIdAsString());
 		
-		if (isInternalOrigin(revocationToken)) {
+		if (revocationToken.isInternal()) {
 			xmlRevocation.setOrigin(RevocationOrigin.INPUT_DOCUMENT);
 		} else {
-			xmlRevocation.setOrigin(revocationToken.getFirstOrigin());
+			xmlRevocation.setOrigin(revocationToken.getExternalOrigin());
 		}
 		xmlRevocation.setType(revocationToken.getRevocationType());
 
@@ -968,15 +971,6 @@ public class DiagnosticDataBuilder {
 		}
 
 		return xmlRevocation;
-	}
-	
-	private boolean isInternalOrigin(RevocationToken revocationToken) {
-		for (RevocationOrigin origin : revocationToken.getOrigins()) {
-			if (origin.isInternalOrigin()) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	private List<XmlChainItem> getXmlForCertificateChain(final PublicKey publicKey) {
@@ -1417,7 +1411,7 @@ public class DiagnosticDataBuilder {
 		return foundTimestamps;
 	}
 	
-	private XmlFoundRevocations getXmlFoundRevocations(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource) {
+	private XmlFoundRevocations getXmlFoundRevocations(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource) {
 		XmlFoundRevocations foundRevocations = new XmlFoundRevocations();
 		// revocation refs processed inside
 		foundRevocations.getRelatedRevocations().addAll(getXmlRelatedRevocations(crlSource, ocspSource));
@@ -1436,7 +1430,7 @@ public class DiagnosticDataBuilder {
 		return foundRevocations;
 	}
 	
-	private List<EncapsulatedRevocationTokenIdentifier> getOrphanRevocations(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource) {
+	private List<EncapsulatedRevocationTokenIdentifier> getOrphanRevocations(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource) {
 		List<EncapsulatedRevocationTokenIdentifier> orphanIdentifiers = new ArrayList<>();
 		
 		List<EncapsulatedRevocationTokenIdentifier> revocationIdentifiers = new ArrayList<>();
@@ -1451,7 +1445,7 @@ public class DiagnosticDataBuilder {
 		return orphanIdentifiers;
 	}
 	
-	private List<RevocationRef> getOrphanRevocationRefs(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource) {
+	private List<RevocationRef> getOrphanRevocationRefs(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource) {
 		List<RevocationRef> orphanRevocationRefs = new ArrayList<>();
 		for (CRLRef crlRef : crlSource.getOrphanRevocationReferences()) {
 			if (commonCRLSource.getIdentifier(crlRef.getDigest()) == null) {
@@ -1466,7 +1460,7 @@ public class DiagnosticDataBuilder {
 		return orphanRevocationRefs;
 	}
 
-	private List<XmlRelatedRevocation> getXmlRelatedRevocations(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource) {
+	private List<XmlRelatedRevocation> getXmlRelatedRevocations(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource) {
 		List<RevocationToken> revocationTokens = new ArrayList<>();
 		revocationTokens.addAll(crlSource.getAllRevocationTokens());
 		revocationTokens.addAll(ocspSource.getAllRevocationTokens());
@@ -1474,7 +1468,7 @@ public class DiagnosticDataBuilder {
 		return getXmlRevocationsByType(crlSource, ocspSource, revocationTokens);
 	}
 
-	private List<XmlRelatedRevocation> getXmlRevocationsByType(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource, 
+	private List<XmlRelatedRevocation> getXmlRevocationsByType(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource,
 			List<RevocationToken> revocationTokens) {
 		
 		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<>();
@@ -1504,7 +1498,7 @@ public class DiagnosticDataBuilder {
 		return xmlRelatedRevocations;
 	}
 	
-	private List<RevocationRef> findRefsForRevocationToken(SignatureCRLSource listCRLSource, SignatureOCSPSource listOCSPSource, RevocationToken revocationToken) {
+	private List<RevocationRef> findRefsForRevocationToken(OfflineCRLSource listCRLSource, OfflineOCSPSource listOCSPSource, RevocationToken revocationToken) {
 		List<RevocationRef> revocationRefs = new ArrayList<>();
 		if (RevocationType.CRL.equals(revocationToken.getRevocationType())) {
 			revocationRefs.addAll(listCRLSource.findRefsForRevocationToken((CRLToken) revocationToken));
@@ -1528,18 +1522,18 @@ public class DiagnosticDataBuilder {
 		return xmlRevocationRefs;
 	}
 	
-	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
+	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef, List<RevocationRefOrigin> origins) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.getOrigins().addAll(crlRef.getOrigins());
+		xmlRevocationRef.getOrigins().addAll(origins);
 		if (crlRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigest()));
 		}
 		return xmlRevocationRef;
 	}
 	
-	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef) {
+	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef, List<RevocationRefOrigin> origins) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.getOrigins().addAll(ocspRef.getOrigins());
+		xmlRevocationRef.getOrigins().addAll(origins);
 		if (ocspRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigest()));
 		}
@@ -1550,7 +1544,7 @@ public class DiagnosticDataBuilder {
 			if (Utils.isStringNotEmpty(name)) {
 				xmlRevocationRef.setResponderIdName(name);
 			}
-			byte[] key = responderId.getKey();
+			byte[] key = responderId.getKeyHash();
 			if (Utils.isArrayNotEmpty(key)) {
 				xmlRevocationRef.setResponderIdKey(key);
 			}
@@ -1558,7 +1552,7 @@ public class DiagnosticDataBuilder {
 		return xmlRevocationRef;
 	}
 	
-	private List<XmlOrphanRevocation> getXmlOrphanRevocations(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource, 
+	private List<XmlOrphanRevocation> getXmlOrphanRevocations(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource,
 			Collection<EncapsulatedRevocationTokenIdentifier> orphanRevocations) {
 		List<XmlOrphanRevocation> xmlOrphanRevocations = new ArrayList<>();
 		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : orphanRevocations) {
@@ -1567,7 +1561,7 @@ public class DiagnosticDataBuilder {
 		return xmlOrphanRevocations;
 	}
 	
-	private XmlOrphanRevocation getXmlOrphanRevocation(SignatureCRLSource crlSource, SignatureOCSPSource ocspSource, 
+	private XmlOrphanRevocation getXmlOrphanRevocation(OfflineCRLSource crlSource, OfflineOCSPSource ocspSource,
 			EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 		XmlOrphanRevocationToken orphanRevocationToken = createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
@@ -1594,7 +1588,7 @@ public class DiagnosticDataBuilder {
 		return xmlOrphanRevocation;
 	}
 	
-	private List<RevocationRef> findRefsForRevocationIdentifier(SignatureCRLSource listCRLSource, SignatureOCSPSource listOCSPSource,
+	private List<RevocationRef> findRefsForRevocationIdentifier(OfflineCRLSource listCRLSource, OfflineOCSPSource listOCSPSource,
 			EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
 		List<RevocationRef> revocationRefs = new ArrayList<>();
 		if (revocationIdentifier instanceof CRLBinary) {

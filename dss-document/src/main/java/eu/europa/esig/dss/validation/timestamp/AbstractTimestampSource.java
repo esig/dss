@@ -32,7 +32,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -40,12 +39,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
@@ -53,9 +54,7 @@ import eu.europa.esig.dss.validation.ISignatureAttribute;
 import eu.europa.esig.dss.validation.ListCRLSource;
 import eu.europa.esig.dss.validation.ListCertificateSource;
 import eu.europa.esig.dss.validation.ListOCSPSource;
-import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
@@ -71,8 +70,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * Sources obtained from a signature object
 	 */
 	protected final SignatureCertificateSource signatureCertificateSource;
-	protected final SignatureCRLSource signatureCRLSource;
-	protected final SignatureOCSPSource signatureOCSPSource;
+	protected final OfflineCRLSource signatureCRLSource;
+	protected final OfflineOCSPSource signatureOCSPSource;
 	
 	protected final String signatureId;
 	protected final transient List<SignatureScope> signatureScopes;
@@ -596,57 +595,34 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected List<TimestampedReference> getTimestampedRevocationRefs(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		for (Digest refDigest : getRevocationRefCRLDigests(unsignedAttribute)) {
-			timestampedReferences.add(getTimestampedCRLRefByDigest(refDigest));
+		for (CRLRef crlRef : getCRLRefs(unsignedAttribute)) {
+			timestampedReferences.add(getTimestampedCRLRef(crlRef));
 		}
 		
-		for (Digest refDigest : getRevocationRefOCSPDigests(unsignedAttribute)) {
-			timestampedReferences.add(getTimestampedOCSPRefByDigest(refDigest));
+		for (OCSPRef ocspRef : getOCSPRefs(unsignedAttribute)) {
+			timestampedReferences.add(getTimestampedOCSPRefByDigest(ocspRef));
 		}
 		return timestampedReferences;
 	}
 	
-	private TimestampedReference getTimestampedCRLRefByDigest(Digest refDigest) {
-		CRLBinary identifier = crlSource.getIdentifier(refDigest);
-		if (identifier != null) {
-			return new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION);
-		} else {
-			// in case if no original CRL value is present
-			CRLRef crlRef = crlSource.getCRLRefByDigest(refDigest);
-			if (crlRef != null) {
-				return new TimestampedReference(crlRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION);
-			}
-		}
-		throw new DSSException(String.format("The merged crlSource does not contain the reference with digest [%s]!", refDigest));
-	}
-	
-	private TimestampedReference getTimestampedOCSPRefByDigest(Digest refDigest) {
-		OCSPResponseBinary identifier = ocspSource.getIdentifier(refDigest);
-		if (identifier != null) {
-			return new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION);
-		} else {
-			// in case if no original OCSP value is present
-			OCSPRef ocspRef = ocspSource.getOCSPRefByDigest(refDigest);
-			if (ocspRef != null) {
-				return new TimestampedReference(ocspRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION);
-			}
-		}
-		throw new DSSException(String.format("The merged ocspSource does not contain the reference with digest [%s]!", refDigest));
-	}
+	/**
+	 * Returns a list of CRL revocation refs from the given
+	 * {@code unsignedAttribute}
+	 * 
+	 * @param unsignedAttribute {@link SignatureAttribute} to get CRLRef
+	 * 
+	 * @return list of {@link CRLRef}s
+	 */
+	protected abstract List<CRLRef> getCRLRefs(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Returns a list of CRL revocation ref {@link Digest}s from the given {@code unsignedAttribute}
-	 * @param unsignedAttribute {@link SignatureAttribute} to get CRLRef Digests from
-	 * @return list of {@link Digest}s
+	 * Returns a list of OCSP revocation refs from the given
+	 * {@code unsignedAttribute}
+	 * 
+	 * @param unsignedAttribute {@link SignatureAttribute} to get OCSPRefs from
+	 * @return list of {@link OCSPRef}s
 	 */
-	protected abstract List<Digest> getRevocationRefCRLDigests(SignatureAttribute unsignedAttribute);
-	
-	/**
-	 * Returns a list of OCSP revocation ref {@link Digest}s from the given {@code unsignedAttribute}
-	 * @param unsignedAttribute {@link SignatureAttribute} to get OCSPRef Digests from
-	 * @return list of {@link Digest}s
-	 */
-	protected abstract List<Digest> getRevocationRefOCSPDigests(SignatureAttribute unsignedAttribute);
+	protected abstract List<OCSPRef> getOCSPRefs(SignatureAttribute unsignedAttribute);
 	
 	protected List<TimestampedReference> getTimestampedCertificateValues(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
@@ -799,18 +775,18 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			addReference(references, getTimestampedCertificateRefByDigest(certificateRef.getCertDigest(), timestampedTimestamp.getCertificateSource()));
 		}
 		TimestampCRLSource timestampCRLSource = timestampedTimestamp.getCRLSource();
-		for (CRLBinary crlBinary : timestampCRLSource.getCRLBinaryList()) {
-			addReference(references, crlBinary, TimestampedObjectType.REVOCATION);
+		for (MultipleDigestIdentifier revocationBinary : timestampCRLSource.getAllRevocationBinaries()) {
+			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (CRLRef crlRef : timestampCRLSource.getAllRevocationReferences()) {
-			addReference(references,getTimestampedCRLRefByDigest(crlRef.getDigest()));
+		for (MultipleDigestIdentifier revocationBinary : timestampCRLSource.getAllReferencedRevocationBinaries()) {
+			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
 		TimestampOCSPSource timestampOCSPSource = timestampedTimestamp.getOCSPSource();
-		for (OCSPResponseBinary ocspBinary : timestampOCSPSource.getOCSPResponsesList()) {
-			addReference(references, ocspBinary, TimestampedObjectType.REVOCATION);
+		for (MultipleDigestIdentifier revocationBinary : timestampOCSPSource.getAllRevocationBinaries()) {
+			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (OCSPRef ocspRef : timestampOCSPSource.getAllRevocationReferences()) {
-			addReference(references,getTimestampedOCSPRefByDigest(ocspRef.getDigest()));
+		for (MultipleDigestIdentifier revocationBinary : timestampOCSPSource.getAllReferencedRevocationBinaries()) {
+			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
 	}
 

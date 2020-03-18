@@ -32,6 +32,8 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
@@ -167,16 +169,17 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a CRL source which contains ALL CRLs embedded in the signature.
 	 *
-	 * @return {@code SignatureCRLSource}
+	 * @return {@code OfflineCRLSource}
 	 */
-	SignatureCRLSource getCRLSource();
+	OfflineCRLSource getCRLSource();
 
 	/**
-	 * Gets an OCSP source which contains ALL OCSP responses embedded in the signature.
+	 * Gets an OCSP source which contains ALL OCSP responses embedded in the
+	 * signature.
 	 *
-	 * @return {@code SignatureOCSPSource}
+	 * @return {@code OfflineOCSPSource}
 	 */
-	SignatureOCSPSource getOCSPSource();
+	OfflineOCSPSource getOCSPSource();
 	
 	/**
 	 * Gets a ListCRLSource representing a merged source from {@code signatureCRLSourse} and 

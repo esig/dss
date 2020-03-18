@@ -99,9 +99,6 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	public OCSPToken(final OCSPResp ocspResp, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) throws OCSPException {
 		this((BasicOCSPResp) ocspResp.getResponseObject(), certificateToken, issuerCertificateToken);
 		this.responseStatus = OCSPRespStatus.fromInt(ocspResp.getStatus());
-		if (OCSPRespStatus.SUCCESSFUL.equals(this.responseStatus)) {
-			this.available = true;
-		}
 	}
 
 	/**
@@ -234,7 +231,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		if (isSignedBy(issuerCertificateToken)) {
 			return;
 		}
-		for (CertificateToken signingCertCandidate : getCertificates()) {
+		for (CertificateToken signingCertCandidate : getCertificateSource().getCertificates()) {
 			if (isSignedBy(signingCertCandidate)) {
 				return;
 			}

@@ -46,6 +46,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -309,31 +311,31 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected List<Digest> getRevocationRefCRLDigests(XAdESAttribute unsignedAttribute) {
-		List<Digest> crlRefDigests = new ArrayList<>();
-		NodeList crlRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCRLRefsChildren());
-		for (int ii = 0; ii < crlRefs.getLength(); ii++) {
-			Element crlRef = (Element) crlRefs.item(ii);
-			final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRef, xadesPaths.getCurrentDigestAlgAndValue()));
-			if (digest != null) {
-				crlRefDigests.add(digest);
+	protected List<CRLRef> getCRLRefs(XAdESAttribute unsignedAttribute) {
+		List<CRLRef> crlRefs = new ArrayList<>();
+		NodeList nodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCRLRefsChildren());
+		for (int ii = 0; ii < nodeList.getLength(); ii++) {
+			Element element = (Element) nodeList.item(ii);
+			CRLRef crlRef = XAdESRevocationRefExtractionUtils.createCRLRef(xadesPaths, element);
+			if (crlRef != null) {
+				crlRefs.add(crlRef);
 			}
 		}
-		return crlRefDigests;
+		return crlRefs;
 	}
 
 	@Override
-	protected List<Digest> getRevocationRefOCSPDigests(XAdESAttribute unsignedAttribute) {
-		List<Digest> ocspRefDigests = new ArrayList<>();
-		NodeList ocspRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentOCSPRefsChildren());
-		for (int ii = 0; ii < ocspRefs.getLength(); ii++) {
-			Element ocspRef = (Element) ocspRefs.item(ii);
-			final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRef, xadesPaths.getCurrentDigestAlgAndValue()));
-			if (digest != null) {
-				ocspRefDigests.add(digest);
+	protected List<OCSPRef> getOCSPRefs(XAdESAttribute unsignedAttribute) {
+		List<OCSPRef> ocspRefs = new ArrayList<>();
+		NodeList nodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentOCSPRefsChildren());
+		for (int ii = 0; ii < nodeList.getLength(); ii++) {
+			Element element = (Element) nodeList.item(ii);
+			OCSPRef ocspRef = XAdESRevocationRefExtractionUtils.createOCSPRef(xadesPaths, element);
+			if (ocspRef != null) {
+				ocspRefs.add(ocspRef);
 			}
 		}
-		return ocspRefDigests;
+		return ocspRefs;
 	}
 
 	@Override

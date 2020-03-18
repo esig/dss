@@ -46,7 +46,9 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
@@ -107,13 +109,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	// Cached {@code SignatureCertificateSource}
 	protected SignatureCertificateSource offlineCertificateSource;
 
-	// Cached {@code SignatureCRLSource}
-	protected SignatureCRLSource signatureCRLSource;
+	// Cached {@code OfflineCRLSource}
+	protected OfflineCRLSource signatureCRLSource;
 
-	// Cached {@code SignatureOCSPSource}
-	protected SignatureOCSPSource signatureOCSPSource;
+	// Cached {@code OfflineOCSPSource}
+	protected OfflineOCSPSource signatureOCSPSource;
 
-	// Cached {@code SignatureTimestampSource}
+	// Cached {@code TimestampSource}
 	protected TimestampSource signatureTimestampSource;
 
 	private AdvancedSignature masterSignature;

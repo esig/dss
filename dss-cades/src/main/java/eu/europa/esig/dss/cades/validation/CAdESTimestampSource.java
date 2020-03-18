@@ -46,7 +46,6 @@ import org.bouncycastle.asn1.esf.CrlOcspRef;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
 import org.bouncycastle.asn1.esf.OcspListID;
 import org.bouncycastle.asn1.esf.OcspResponsesID;
-import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
@@ -363,43 +362,35 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
-	protected List<Digest> getRevocationRefCRLDigests(CAdESAttribute unsignedAttribute) {
-		List<Digest> digests = new ArrayList<>();
+	protected List<CRLRef> getCRLRefs(CAdESAttribute unsignedAttribute) {
+		List<CRLRef> refs = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
 		for (int ii = 0; ii < seq.size(); ii++) {
 			final CrlOcspRef otherRefId = CrlOcspRef.getInstance(seq.getObjectAt(ii));
 			final CrlListID otherCrlIds = otherRefId.getCrlids();
 			if (otherCrlIds != null) {
 				for (final CrlValidatedID id : otherCrlIds.getCrls()) {
-					OtherHash crlHash = id.getCrlHash();
-					if (crlHash != null) {
-						DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
-						digests.add(new Digest(digestAlgo, crlHash.getHashValue()));
-					}
+					refs.add(new CRLRef(id));
 				}
 			}
 		}
-		return digests;
+		return refs;
 	}
 
 	@Override
-	protected List<Digest> getRevocationRefOCSPDigests(CAdESAttribute unsignedAttribute) {
-		List<Digest> digests = new ArrayList<>();
+	protected List<OCSPRef> getOCSPRefs(CAdESAttribute unsignedAttribute) {
+		List<OCSPRef> refs = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
 		for (int i = 0; i < seq.size(); i++) {
 			final CrlOcspRef otherCertId = CrlOcspRef.getInstance(seq.getObjectAt(i));
 			final OcspListID ocspListID = otherCertId.getOcspids();
 			if (ocspListID != null) {
 				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
-					final OtherHash ocspHash = ocspResponsesID.getOcspRepHash();
-					if (ocspHash != null) {
-						DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(ocspHash.getHashAlgorithm().getAlgorithm().getId());
-						digests.add(new Digest(digestAlgo, ocspHash.getHashValue()));
-					}
+					refs.add(new OCSPRef(ocspResponsesID));
 				}
 			}
 		}
-		return digests;
+		return refs;
 	}
 
 	@Override

@@ -146,9 +146,8 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			CRLBinary crlBinary = new CRLBinary(dataAndUrl.getData());
 			final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
-			crlToken.setOrigins(Collections.singleton(RevocationOrigin.EXTERNAL));
+			crlToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 			crlToken.setSourceURL(dataAndUrl.getUrlString());
-			crlToken.setAvailable(true);
 			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.getUrlString()));
 			return crlToken;
 		} catch (IOException e) {

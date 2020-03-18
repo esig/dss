@@ -25,9 +25,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocat
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -50,23 +48,19 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 
 /**
  * CRLSource that retrieves information from a {@link CMSSignedData} container.
  *
  */
 @SuppressWarnings("serial")
-public abstract class CMSCRLSource extends SignatureCRLSource {
+public abstract class CMSCRLSource extends OfflineCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCRLSource.class);
 
 	protected final transient CMSSignedData cmsSignedData;
 	protected final transient AttributeTable unsignedAttributes;
-
-	/**
-	 * Cached list of {@code CRLBinary}s found in SignedData attribute
-	 */
-	private List<CRLBinary> signedDataCRLIdentifiers = new ArrayList<>();
 
 	/**
 	 * The default constructor for CMSCRLSource.
@@ -78,16 +72,6 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		this.cmsSignedData = cmsSignedData;
 		this.unsignedAttributes = unsignedAttributes;
 		extract();
-	}
-
-	/**
-	 * Returns a list of {@code CRLBinaryIdentifier} found in the SignedData
-	 * container
-	 * 
-	 * @return list of {@link CRLBinary}
-	 */
-	public List<CRLBinary> getSignedDataCRLIdentifiers() {
-		return signedDataCRLIdentifiers;
 	}
 
 	private void extract() {
@@ -145,7 +129,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
-			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, RevocationOrigin.CMS_SIGNED_DATA));
+			addX509CRLHolder(x509CRLHolder, RevocationOrigin.CMS_SIGNED_DATA);
 		}
 	}
 
@@ -165,11 +149,10 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	 * @param crlHolder {@link X509CRLHolder} to compute values from
 	 * @param origin    {@link RevocationOrigin} indicating the list where to save
 	 *                  the object
-	 * @return {@link CRLBinary}
 	 */
-	protected CRLBinary addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
+	protected void addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
-			return addCRLBinary(crlHolder.getEncoded(), origin);
+			addCRLBinary(new CRLBinary(crlHolder.getEncoded()), origin);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -185,8 +168,8 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 					final CrlListID crlIds = crlOcspRef.getCrlids();
 					if (crlIds != null) {
 						for (final CrlValidatedID id : crlIds.getCrls()) {
-							final CRLRef crlRef = new CRLRef(id, origin);
-							addReference(crlRef, origin);
+							final CRLRef crlRef = new CRLRef(id);
+							addCRLReference(crlRef, origin);
 						}
 					}
 				}

@@ -26,7 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.cert.ocsp.OCSPException;
@@ -141,7 +140,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 			final OCSPResp ocspResp = new OCSPResp(data);
 			OCSPToken ocspToken = new OCSPToken(ocspResp, certificateToken, issuerCert);
 			ocspToken.setSourceURL(url);
-			ocspToken.setOrigins(Collections.singleton(RevocationOrigin.CACHED));
+			ocspToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return ocspToken;
 		} catch (SQLException | IOException | OCSPException e) {
 			throw new RevocationException("An error occurred during an attempt to obtain a revocation token");
