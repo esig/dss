@@ -185,6 +185,7 @@ You can easily download them with the following Maven repository :
 ==== Shared modules
 
 dss-enumerations:: Contains a list of all used enumerations in the DSS project.
+dss-alerts:: Allows configuration of triggers and handers of custom events.
 dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
 
 ==== JAXB model modules
@@ -1380,6 +1381,7 @@ It allows the following configuration :
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-online]
 ----
 
+[[certificateVerifier]]
 == CertificateVerifier configuration
 
 The CertificateVerifier and its implementation CommonCertificateVerifier determines how DSS accesses the external resources and how it should react in some occasions. This configuration is used in both extension and validation mode.
@@ -1506,7 +1508,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 === Alerting from TL Loading
 
-Since the version 5.6 of DSS, that's possible to launch alerts in some situations (eg : invalid TL signature, LOTL location change,...). Alert works with two concepts : detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
+DSS allows running of custom alerts in some situations (eg : invalid TL signature, LOTL location change,...). Alert works with two concepts : detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
 
 [source,java,indent=0]
 .Examples of Alerting
@@ -1756,6 +1758,24 @@ Otherwise, in case if you need to customize the transformer, you can create a re
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=custom]
 ----
+
+== Alerts
+
+Since DSS 5.7 the framework includes an extended possibility to execute custom processes in case of arbitrary defined events.
+
+The `Alert` is a basic interface used to trigger a process on a passed object.
+DSS provides an `AbtractAlert` implementation of the interface with a clearly defined structure. The class must be defined with two attributes:
+ * `Detector` - used to detect an event/state of the object and trigger a process;
+ * `AlertHandler` - defines a process to be executed on an object.
+
+In its basic module framework provides a few alerts allowing to handle Exceptions:
+ * `ExceptionAlert` - accepts a custom AlertHandler to perform actions on an exception if present;
+ * `DSSLogAlert` - allows to define a log level and print of a stacktrace if an exception occurs.
+
+The usage of alerts is available in the following classes:
+ * XML-configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`;
+ * <<certificateVerifier>> - to handle the raising exception in a custom way (introduced `DSSExceptionAlert` to re-throw exceptions);
+ * <<tlValidationJob>> - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert`).
 
 == I18N (Internationalization)
 
