@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
-public abstract class RevocationToken extends Token {
+public abstract class RevocationToken<R extends Revocation> extends Token {
 
 	/**
 	 * Related {@link CertificateToken} to this revocation object

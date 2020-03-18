@@ -43,6 +43,7 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -739,11 +740,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
-		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCompleteCRLSource(), getCompleteOCSPSource());
+		OCSPAndCRLRevocationSource revocationSource = new OCSPAndCRLRevocationSource(getCompleteCRLSource(), getCompleteOCSPSource());
 
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!areAllCertsHaveRevocationData(certificateStatusVerifier, entryCertChain.getValue())) {
+			if (!areAllCertsHaveRevocationData(revocationSource, entryCertChain.getValue())) {
 				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
 				return false;
 			}
@@ -751,7 +752,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean areAllCertsHaveRevocationData(CertificateStatusVerifier certificateStatusVerifier, List<CertificateToken> certificates) {
+	private boolean areAllCertsHaveRevocationData(RevocationSource<RevocationToken> revocationSource, List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
 		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
 		for (List<CertificateToken> chain : orderedCerts.values()) {
@@ -766,7 +767,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 					LOG.warn("Issuer not found for certificate {}", certificateToken.getDSSIdAsString());
 					return false;
 				}
-				RevocationToken revocationData = certificateStatusVerifier.check(certificateToken, issuerToken);
+				RevocationToken revocationData = revocationSource.getRevocationToken(certificateToken, issuerToken);
 				if (revocationData == null) {
 					return false;
 				}

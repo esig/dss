@@ -29,8 +29,8 @@ public final class OCSPRefIdentifier extends RevocationRefIdentifier {
 			}
 			ResponderId responderId = ocspRef.getResponderId();
 			if (responderId != null) {
-				if (responderId.getKey() != null) {
-					dos.write(responderId.getKey());
+				if (responderId.getKeyHash() != null) {
+					dos.write(responderId.getKeyHash());
 				}
 				if (responderId.getName() != null) {
 					dos.writeChars(responderId.getName());

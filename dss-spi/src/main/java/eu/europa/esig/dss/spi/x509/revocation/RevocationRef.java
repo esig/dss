@@ -21,33 +21,21 @@
 package eu.europa.esig.dss.spi.x509.revocation;
 
 import java.io.Serializable;
-import java.util.Set;
 
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class RevocationRef implements Serializable {
+public abstract class RevocationRef<R extends Revocation> implements Serializable {
 
 	private static final long serialVersionUID = 7313118727647264457L;
 
 	protected Digest digest = null;
 	
-	protected Set<RevocationRefOrigin> origins;
-	
 	private Identifier identifier;
 
 	public Digest getDigest() {
 		return digest;
-	}
-	
-	public Set<RevocationRefOrigin> getOrigins() {
-		return origins;
-	}
-	
-	public void addOrigin(RevocationRefOrigin revocationRefOrigin) {
-		origins.add(revocationRefOrigin);
 	}
 	
 	/**

@@ -69,9 +69,4 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	@Override
-	public void appendContainedOCSPResponses() {
-		// do nothing
-	}
-
 }

@@ -64,7 +64,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
  */
 @SuppressWarnings("serial")
-public class OCSPToken extends RevocationToken {
+public class OCSPToken extends RevocationToken<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPToken.class);
 

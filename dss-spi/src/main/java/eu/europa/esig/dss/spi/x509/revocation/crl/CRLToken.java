@@ -45,7 +45,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 /**
  * This class represents a CRL and provides the information about its validity.
  */
-public class CRLToken extends RevocationToken {
+public class CRLToken extends RevocationToken<CRL> {
 
 	private static final long serialVersionUID = 1934492191629483078L;
 

@@ -20,17 +20,9 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
@@ -38,10 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationContainer;
 
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
@@ -53,28 +46,29 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
 	/**
-	 * This {@code Map} contains all collected OCSP responses with a set of their origins
+	 * Container with all revocation data
 	 */
-	private final Map<OCSPResponseBinary, Set<RevocationOrigin>> ocspResponseOriginsMap = new HashMap<>();
+	protected final RevocationContainer<OCSP> container = new RevocationContainer<OCSP>(new OCSPTokenRefMatcher());
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		
-		if (isEmpty()) {
+		final Set<MultipleDigestIdentifier> collectedBinaries = container.getCollectedBinaries();
+
+		if (collectedBinaries.isEmpty()) {
 			LOG.trace("Collection of embedded OCSP responses is empty");
 			return null;
 		}
 		
 		if (LOG.isTraceEnabled()) {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", dssIdAsString, ocspResponseOriginsMap.size());
+			LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", dssIdAsString, collectedBinaries.size());
 		}
 
-		OCSPResponseBinary bestOCSPResponse = findBestOcspResponse(certificateToken, issuerCertificateToken);
+		OCSPResponseBinary bestOCSPResponse = findBestOcspResponse(certificateToken, issuerCertificateToken, collectedBinaries);
 		if (bestOCSPResponse != null) {
 			OCSPToken ocspToken = new OCSPToken(bestOCSPResponse.getBasicOCSPResp(), certificateToken, issuerCertificateToken);
-			ocspToken.setOrigins(getRevocationOrigins(bestOCSPResponse));
-			storeOCSPToken(bestOCSPResponse, ocspToken);
+			storeOCSPToken(ocspToken, bestOCSPResponse);
 			return ocspToken;
 		} else if (LOG.isDebugEnabled()) {
 			LOG.debug("Best OCSP Response for the certificate {} is not found", certificateToken.getDSSIdAsString());
@@ -82,10 +76,12 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		return null;
 	}
 	
-	private OCSPResponseBinary findBestOcspResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	private OCSPResponseBinary findBestOcspResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
+			Set<MultipleDigestIdentifier> collectedBinaries) {
 		OCSPResponseBinary bestOCSPResponse = null;
 		Date bestUpdate = null;
-		for (final OCSPResponseBinary response : ocspResponseOriginsMap.keySet()) {
+		for (final MultipleDigestIdentifier binary : collectedBinaries) {
+			OCSPResponseBinary response = (OCSPResponseBinary) binary;
 			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
 				DigestAlgorithm usedDigestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);
 				final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, usedDigestAlgorithm);
@@ -100,102 +96,29 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		}
 		return bestOCSPResponse;
 	}
+	
+	private void storeOCSPToken(OCSPToken ocspToken, OCSPResponseBinary binary) {
+		container.addRevocation(ocspToken, binary);
+	}
 
-	/**
-	 * Retrieves the map of {@code BasicOCSPResp}/{@code RevocationOrigin} contained in the source and appends result entries to {@code ocspResponses}.
-	 */
-	public abstract void appendContainedOCSPResponses();
-
-	/**
-	 * Returns a collection containing all OCSP responses
-	 * @return unmodifiable collection of {@code OCSPResponse}s
-	 */
-	public Collection<OCSPResponseBinary> getOCSPResponsesList() {
-		Collection<OCSPResponseBinary> ocspResponsesList = new ArrayList<>();
-		if (!isEmpty()) {
-			ocspResponsesList = ocspResponseOriginsMap.keySet();
-		}
-		return Collections.unmodifiableCollection(ocspResponsesList);
-	}
-	
-	/**
-	 * Checks if the OCSP Source is empty or not (ocspResponseOriginsMap)
-	 * @return TRUE if the source is empty, FALSE otherwise
-	 */
-	public boolean isEmpty() {
-		if (Utils.isMapEmpty(ocspResponseOriginsMap)) {
-			appendContainedOCSPResponses();
-		}
-		return Utils.isMapEmpty(ocspResponseOriginsMap);
-	}
-	
-	protected void storeOCSPToken(OCSPResponseBinary ocspResponse, OCSPToken ocspToken) {
-		// do nothing
-	}
-	
-	/**
-	 * Returns the identifier related for the provided {@code ocspRef}
-	 * @param ocspRef {@link OCSPRef} to find identifier for
-	 * @return {@link OCSPResponseBinary} for the reference
-	 */
-	public OCSPResponseBinary getIdentifier(OCSPRef ocspRef) {
-		if (ocspRef.getDigest() != null) {
-			return getIdentifier(ocspRef.getDigest());
-		} else {
-			for (OCSPResponseBinary ocspResponse : ocspResponseOriginsMap.keySet()) {
-				if (ocspRef.getProducedAt().equals(ocspResponse.getBasicOCSPResp().getProducedAt())) {
-					ResponderID responderID = ocspResponse.getBasicOCSPResp().getResponderId().toASN1Primitive();
-					if (ocspRef.getResponderId().getKey() != null &&
-							Arrays.equals(ocspRef.getResponderId().getKey(), responderID.getKeyHash()) ||
-						ocspRef.getResponderId().getName() != null && responderID.getName() != null &&
-						ocspRef.getResponderId().getName().equals(responderID.getName().toString())) {
-						return ocspResponse;
-					}
-				}
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns the identifier related for the provided {@code digest} of reference
-	 * @param digest {@link Digest} of the reference
-	 * @return {@link OCSPResponseBinary} for the reference
-	 */
-	public OCSPResponseBinary getIdentifier(Digest digest) {
-		if (digest == null) {
-			return null;
-		}
-		for (OCSPResponseBinary ocspResponse : ocspResponseOriginsMap.keySet()) {
-			byte[] digestValue = ocspResponse.getDigestValue(digest.getAlgorithm());
-			if (Arrays.equals(digest.getValue(), digestValue)) {
-				return ocspResponse;
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * Adds the provided {@code ocspResponse} to the list
+	 * 
 	 * @param ocspResponse {@link OCSPResponseBinary} to add
-	 * @param origin {@link RevocationOrigin} of the {@code ocspResponse}
+	 * @param origin       {@link RevocationOrigin} of the {@code ocspResponse}
 	 */
 	protected void addOCSPResponse(OCSPResponseBinary ocspResponse, RevocationOrigin origin) {
-		Set<RevocationOrigin> origins = ocspResponseOriginsMap.get(ocspResponse);
-		if (origins == null) {
-			origins = new HashSet<>();
-			ocspResponseOriginsMap.put(ocspResponse, origins);
-		}
-		origins.add(origin);
+		container.addBinary(ocspResponse, origin);
 	}
-	
+
 	/**
-	 * Returns a set of {@code RevocationOrigin}s for the given {@code ocspResponse}
-	 * @param ocspResponse {@link OCSPResponseBinary} to get origins for
-	 * @return set of {@link RevocationOrigin}s
+	 * Adds the provided {@code ocspResponse} to the list
+	 * 
+	 * @param ocspRef {@link OCSPRef} to add
+	 * @param origin  {@link RevocationRefOrigin} of the {@code ocspRef}
 	 */
-	public Set<RevocationOrigin> getRevocationOrigins(OCSPResponseBinary ocspResponse) {
-		return ocspResponseOriginsMap.get(ocspResponse);
+	protected void addOCSPReference(OCSPRef ocspRef, RevocationRefOrigin origin) {
+		container.addRevocationReference(ocspRef, origin);
 	}
 
 }

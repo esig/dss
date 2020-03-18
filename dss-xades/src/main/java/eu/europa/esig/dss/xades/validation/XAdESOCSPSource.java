@@ -35,9 +35,9 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
@@ -46,7 +46,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
  *
  */
 @SuppressWarnings("serial")
-public class XAdESOCSPSource extends SignatureOCSPSource {
+public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESOCSPSource.class);
 
@@ -72,7 +72,6 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		appendContainedOCSPResponses();
 	}
 
-	@Override
 	public void appendContainedOCSPResponses() {
 		// values
 		collectValues(xadesPaths.getRevocationValuesPath(), RevocationOrigin.REVOCATION_VALUES);
@@ -114,16 +113,16 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			for (int ii = 0; ii < ocspRefNodes.getLength(); ii++) {
 				final Element ocspRefElement = (Element) ocspRefNodes.item(ii);
 				if (ocspRefElement != null) {
-					OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationRefOrigin);
+					OCSPRef ocspRef = createOCSPRef(ocspRefElement);
 					if (ocspRef != null) {
-						addReference(ocspRef, revocationRefOrigin);
+						addOCSPReference(ocspRef, revocationRefOrigin);
 					}
 				}
 			}
 		}
 	}
 	
-	private OCSPRef createOCSPRef(final Element ocspRefElement, RevocationRefOrigin revocationRefOrigin) {
+	private OCSPRef createOCSPRef(final Element ocspRefElement) {
 		ResponderId responderId = new ResponderId();
 		
 		String currentOCSPRefResponderIDByName = xadesPaths.getCurrentOCSPRefResponderIDByName();
@@ -136,7 +135,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 			final Element responderIdByKey = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
 			if (responderIdByKey != null) {
-				responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
+				responderId.setKeyHash(Utils.fromBase64(responderIdByKey.getTextContent()));
 			}
 		} else {
 			final Element responderIdElement = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
@@ -146,7 +145,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		}
 		
 		// process only if ResponderId is present
-		if (responderId.getName() == null && responderId.getKey() == null) {
+		if (responderId.getName() == null && responderId.getKeyHash() == null) {
 			LOG.warn("Missing OCSPIdentifier / ResponderID (mandatory)");
 			return null;
 		}
@@ -169,7 +168,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			return null;
 		}
 		
-		return new OCSPRef(digest, producedAtDate, responderId, revocationRefOrigin);
+		return new OCSPRef(digest, producedAtDate, responderId);
 	}
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {

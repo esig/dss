@@ -41,15 +41,15 @@ import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureOCSPSource;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
  *
  */
 @SuppressWarnings("serial")
-public class PAdESOCSPSource extends SignatureOCSPSource {
+public class PAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESOCSPSource.class);
 	
@@ -72,7 +72,6 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 		appendContainedOCSPResponses();
 	}
 	
-	@Override
 	public void appendContainedOCSPResponses() {
 		extractDSSOCSPs();
 		extractVRIOCSPs();

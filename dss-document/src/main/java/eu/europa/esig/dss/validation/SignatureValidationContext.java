@@ -576,7 +576,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// ALL Embedded revocation data
 		if (signatureCRLSource != null || signatureOCSPSource != null) {
-			OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource);
+			OCSPAndCRLRevocationSource offlineVerifier = new OCSPAndCRLRevocationSource(signatureCRLSource, signatureOCSPSource);
 			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken, issuerToken);
 			if (ocspToken != null) {
 				revocations.add(ocspToken);
@@ -597,16 +597,16 @@ public class SignatureValidationContext implements ValidationContext {
 				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
-				OCSPAndCRLCertificateVerifier onlineVerifier = null;
+				OCSPAndCRLRevocationSource onlineVerifier = null;
 				if (Utils.isCollectionNotEmpty(trustedCertSources) && (trustAnchor != null)) {
 					LOG.trace("Initializing a revocation verifier for a trusted chain...");
 					onlineVerifier = instantiateWithTrustServices(trustAnchor);
 				} else {
 					LOG.trace("Initializing a revocation verifier for not trusted chain...");
-					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource);
+					onlineVerifier = new OCSPAndCRLRevocationSource(crlSource, ocspSource);
 				}
 
-				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken, issuerToken);
+				final RevocationToken onlineRevocationToken = onlineVerifier.getRevocationToken(certToken, issuerToken);
 				// CRL can already exist in the signature
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 					LOG.debug("Obtained a new revocation data : {}, for certificate : {}", onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
@@ -640,7 +640,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CertificateToken trustAnchor) {
+	private OCSPAndCRLRevocationSource instantiateWithTrustServices(CertificateToken trustAnchor) {
 		RevocationSource currentOCSPSource = null;
 		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
@@ -657,7 +657,7 @@ public class SignatureValidationContext implements ValidationContext {
 			currentCRLSource = crlSource;
 		}
 
-		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource);
+		return new OCSPAndCRLRevocationSource(currentCRLSource, currentOCSPSource);
 	}
 
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {

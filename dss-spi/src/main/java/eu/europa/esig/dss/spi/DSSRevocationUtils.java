@@ -309,7 +309,7 @@ public final class DSSRevocationUtils {
 		if (2 == derTaggedObject.getTagNo()) {
 			final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 			final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-			dssResponderId.setKey(keyHashOctetStringBytes);
+			dssResponderId.setKeyHash(keyHashOctetStringBytes);
 			return dssResponderId;
 		} else {
 			final ASN1Primitive derObject = derTaggedObject.getObject();

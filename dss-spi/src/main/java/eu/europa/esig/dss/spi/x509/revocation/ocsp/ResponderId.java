@@ -27,7 +27,7 @@ public class ResponderId {
 	
 	private String name;
 	
-	private byte[] key;
+	private byte[] keyHash;
 	
 	public String getName() {
 		return name;
@@ -36,13 +36,13 @@ public class ResponderId {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public byte[] getKey() {
-		return key;
+
+	public byte[] getKeyHash() {
+		return keyHash;
 	}
-	
-	public void setKey(byte[] key) {
-		this.key = key;
+
+	public void setKeyHash(byte[] keyHash) {
+		this.keyHash = keyHash;
 	}
 	
 }

@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 
 import org.bouncycastle.asn1.esf.CrlIdentifier;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
@@ -31,7 +29,6 @@ import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
@@ -40,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
  * Reference to a X509CRL
  *
  */
-public final class CRLRef extends RevocationRef {
+public final class CRLRef extends RevocationRef<CRL> {
 
 	private static final long serialVersionUID = -6785644604097791548L;
 	
@@ -51,9 +48,8 @@ public final class CRLRef extends RevocationRef {
 	/**
 	 * The default constructor for CRLRef.
 	 */
-	public CRLRef(Digest digest, RevocationRefOrigin origin) {
+	public CRLRef(Digest digest) {
 		this.digest = digest;
-		this.origins = new HashSet<>(Arrays.asList(origin));
 	}
 
 	/**
@@ -61,7 +57,7 @@ public final class CRLRef extends RevocationRef {
 	 *
 	 * @param cmsRef
 	 */
-	public CRLRef(CrlValidatedID cmsRef, RevocationRefOrigin origin) {
+	public CRLRef(CrlValidatedID cmsRef) {
 		try {
 			final CrlIdentifier crlIdentifier = cmsRef.getCrlIdentifier();
 			if (crlIdentifier != null) {
@@ -74,7 +70,6 @@ public final class CRLRef extends RevocationRef {
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
 			byte[] digestValue = crlHash.getHashValue();
 			this.digest = new Digest(digestAlgorithm, digestValue);
-			this.origins = new HashSet<>(Arrays.asList(origin));
 		} catch (Exception e) {
 			throw new DSSException("Unable to build CRLRef from CrlValidatedID", e);
 		}
