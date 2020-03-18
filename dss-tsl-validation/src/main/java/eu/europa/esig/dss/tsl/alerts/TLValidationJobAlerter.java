@@ -39,8 +39,8 @@ public class TLValidationJobAlerter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJobAlerter.class);
 
-	private final List<LOTLAlert> lotlAlerts;
-	private final List<TLAlert> tlAlerts;
+	private final List<Alert<LOTLInfo>> lotlAlerts;
+	private final List<Alert<TLInfo>> tlAlerts;
 
 	/**
 	 * The constructor to instantiate a TLValidationJobAlerter
@@ -48,7 +48,7 @@ public class TLValidationJobAlerter {
 	 * @param lotlAlerts a list of {@link LOTLAlert}s to be applied on LOTL changes
 	 * @param tlAlerts a list of {@link TLAlert}s to be applied on TL changes
 	 */
-	public TLValidationJobAlerter(final List<LOTLAlert> lotlAlerts, final List<TLAlert> tlAlerts) {
+	public TLValidationJobAlerter(final List<Alert<LOTLInfo>> lotlAlerts, final List<Alert<TLInfo>> tlAlerts) {
 		this.lotlAlerts = lotlAlerts;
 		this.tlAlerts = tlAlerts;
 	}
@@ -62,14 +62,14 @@ public class TLValidationJobAlerter {
 		for (LOTLInfo lotlInfo : jobSummary.getLOTLInfos()) {
 			// run LOTL alerts
 			if (Utils.isCollectionNotEmpty(lotlAlerts)) {
-				for (LOTLAlert lotlAlert : lotlAlerts) {
+				for (Alert<LOTLInfo> lotlAlert : lotlAlerts) {
 					execute(lotlAlert, lotlInfo);
 				}
 			}
 			// run TL alerts
 			if (Utils.isCollectionNotEmpty(tlAlerts)) {
 				for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
-					for (TLAlert tlAlert : tlAlerts) {
+					for (Alert<TLInfo> tlAlert : tlAlerts) {
 						execute(tlAlert, tlInfo);
 					}
 				}
@@ -78,7 +78,7 @@ public class TLValidationJobAlerter {
 		// other TLs
 		if (Utils.isCollectionNotEmpty(tlAlerts)) {
 			for (TLInfo tlInfo : jobSummary.getOtherTLInfos()) {
-				for (TLAlert tlAlert : tlAlerts) {
+				for (Alert<TLInfo> tlAlert : tlAlerts) {
 					execute(tlAlert, tlInfo);
 				}
 			}

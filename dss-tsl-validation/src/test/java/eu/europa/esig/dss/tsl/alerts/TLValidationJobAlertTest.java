@@ -33,6 +33,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -90,7 +91,7 @@ public class TLValidationJobAlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_BROKEN_SIG, url));
 
-		List<TLAlert> alerts = new ArrayList<>();
+		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -102,7 +103,7 @@ public class TLValidationJobAlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(callback.isCalled());
+		assertTrue(callback.called);
 	}
 
 	@Test
@@ -114,7 +115,7 @@ public class TLValidationJobAlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 
-		List<TLAlert> alerts = new ArrayList<>();
+		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -126,7 +127,7 @@ public class TLValidationJobAlertTest {
 
 		job.onlineRefresh();
 
-		assertFalse(callback.isCalled());
+		assertFalse(callback.called);
 	}
 
 	@Test
@@ -137,7 +138,7 @@ public class TLValidationJobAlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_PARSABLE, url));
 
-		List<TLAlert> alerts = new ArrayList<>();
+		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -149,7 +150,7 @@ public class TLValidationJobAlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(callback.isCalled());
+		assertTrue(callback.called);
 	}
 
 	@Test
@@ -160,7 +161,7 @@ public class TLValidationJobAlertTest {
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(EXPIRED_LOTL, url));
 
-		List<TLAlert> alerts = new ArrayList<>();
+		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLExpirationDetection expirationDetection = new TLExpirationDetection();
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -172,7 +173,7 @@ public class TLValidationJobAlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(callback.isCalled());
+		assertTrue(callback.called);
 	}
 
 	@Test
@@ -196,7 +197,7 @@ public class TLValidationJobAlertTest {
 
 		job.setListOfTrustedListSources(lotlSource);
 
-		List<LOTLAlert> alerts = new ArrayList<>();
+		List<Alert<LOTLInfo>> alerts = new ArrayList<>();
 		OJUrlChangeDetection ojUrlDetection = new OJUrlChangeDetection(lotlSource);
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -208,7 +209,7 @@ public class TLValidationJobAlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(callback.isCalled());
+		assertTrue(callback.called);
 	}
 
 	@Test
@@ -228,7 +229,7 @@ public class TLValidationJobAlertTest {
 		lotlSource.setCertificateSource(trustedCertificateSource);
 		job.setListOfTrustedListSources(lotlSource);
 
-		List<LOTLAlert> alerts = new ArrayList<>();
+		List<Alert<LOTLInfo>> alerts = new ArrayList<>();
 		LOTLLocationChangeDetection lotlLocationDetection = new LOTLLocationChangeDetection(lotlSource);
 
 		CallbackAlertHandler callback = new CallbackAlertHandler();
@@ -240,7 +241,7 @@ public class TLValidationJobAlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(callback.isCalled());
+		assertTrue(callback.called);
 
 	}
 
@@ -262,6 +263,17 @@ public class TLValidationJobAlertTest {
 		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
 		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		return onlineFileLoader;
+	}
+	
+	class CallbackAlertHandler<T> implements AlertHandler<T> {
+		
+		private boolean called = false;
+
+		@Override
+		public void process(T currentInfo) {
+			called = true;
+		}
+		
 	}
 
 }

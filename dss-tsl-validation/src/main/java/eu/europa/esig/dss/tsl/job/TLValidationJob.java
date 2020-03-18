@@ -35,12 +35,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.tsl.alerts.LOTLAlert;
-import eu.europa.esig.dss.tsl.alerts.TLAlert;
 import eu.europa.esig.dss.tsl.alerts.TLValidationJobAlerter;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
@@ -122,12 +123,12 @@ public class TLValidationJob {
 	/**
      * List of LOTL info alerts
      */
-    private List<LOTLAlert> lotlAlerts;
+    private List<Alert<LOTLInfo>> lotlAlerts;
 	
 	/**
      * List of TL info alerts
      */
-    private List<TLAlert> tlAlerts;
+    private List<Alert<TLInfo>> tlAlerts;
 
 	public void setTrustedListSources(TLSource... trustedListSources) {
 		this.trustedListSources = trustedListSources;
@@ -205,18 +206,18 @@ public class TLValidationJob {
 	/**
 	 * Sets the LOTL alerts to be processed
 	 * 
-	 * @param lotlAlerts a list of {@link LOTLAlert}s
+	 * @param lotlAlerts a list of {@link Alert<LOTLInfo>}s
 	 */
-	public void setLOTLAlerts(List<LOTLAlert> lotlAlerts) {
+	public void setLOTLAlerts(List<Alert<LOTLInfo>> lotlAlerts) {
 	    this.lotlAlerts = lotlAlerts;
 	}
 	
 	/**
 	 * Sets the TL alerts to be processed
 	 * 
-	 * @param tlAlerts a list of {@link TLAlert}s
+	 * @param tlAlerts a list of {@link Alert<TLInfo>}s
 	 */
-	public void setTLAlerts(List<TLAlert> tlAlerts) {
+	public void setTLAlerts(List<Alert<TLInfo>> tlAlerts) {
 	    this.tlAlerts = tlAlerts;
 	}
 
