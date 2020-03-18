@@ -26,7 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
+import eu.europa.esig.dss.alert.DSSLogAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -118,7 +120,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
-		certificateVerifier.setExceptionOnMissingRevocationData(false);
+		certificateVerifier.setAlertOnMissingRevocationData(new DSSLogAlert(Level.WARN, false));
 
 		CAdESService service = new CAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsa());

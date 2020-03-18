@@ -87,34 +87,31 @@ public interface ValidationContext {
 	 * This method allows to verify if all processed certificates have a revocation
 	 * data
 	 * 
-	 * @return true if at least one revocation data is present for each certificate
-	 * 
+	 * @throws DSSException in case if not all required revocation data is present
 	 */
-	boolean isAllRequiredRevocationDataPresent();
+	void checkAllRequiredRevocationDataPresent() throws DSSException;
 
 	/**
 	 * This method allows to verify if all POE (timestamp tokens) are covered by a
 	 * revocation data
 	 * 
-	 * @return true if all POE have at least one revocation data issued after the
-	 *         POE creation
-	 * 
+	 * @throws DSSException if not all timestamps are covered by revocation data
 	 */
-	boolean isAllPOECoveredByRevocationData();
+	void checkAllPOECoveredByRevocationData() throws DSSException;
 
 	/**
 	 * This method allows to verify if all processed timestamps are valid and intact
 	 * 
-	 * @return true if all processed timestamps are valid
+	 * @throws DSSException if not all timestamps are valid
 	 */
-	boolean isAllTimestampValid();
+	void checkAllTimestampsValid() throws DSSException;
 
 	/**
 	 * This method allows to verify if all processed certificates are not revoked
 	 * 
-	 * @return true if all processed certificates are still valid
+	 * @throws DSSException if not all certificates are valid
 	 */
-	boolean isAllCertificateValid();
+	void checkAllCertificatesValid() throws DSSException;
 
 	/**
 	 * This method allows to verify if there is at least one revocation data present
@@ -122,9 +119,9 @@ public interface ValidationContext {
 	 * @param signingCertificate
 	 *            {@code CertificateToken} signing certificate of the signature to be checked
 	 * 
-	 * @return true if there is at least one revocation data issued after the earliest timestamp time
+	 * @throws DSSException if there is no revocation data issued after the best signature time
 	 */
-	boolean isAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
+	void checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -30,6 +30,7 @@ import java.util.Date;
 
 import org.junit.jupiter.api.RepeatedTest;
 
+import eu.europa.esig.dss.alert.DSSExceptionAlert;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -59,7 +60,7 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
-		certificateVerifier.setExceptionOnNoRevocationAfterBestSignatureTime(true);
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new DSSExceptionAlert());
 		XAdESService service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsaByTime(oneDayBefore));
 		
@@ -77,7 +78,8 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, signatureParameters));
-		assertEquals("No revocation data found with thisUpdate time after the bestSignatureTime", exception.getMessage());
+		assertTrue(exception.getMessage().contains("No fresh revocation data found. "
+				+ "Cause : No revocation data found after the best signature time"));
 		
 	}
 	

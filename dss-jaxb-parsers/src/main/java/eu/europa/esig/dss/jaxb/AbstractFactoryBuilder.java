@@ -6,11 +6,10 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.Alert;
-import eu.europa.esig.dss.alert.ExceptionAlert;
-import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler;
-import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler.LogLevel;
+import eu.europa.esig.dss.alert.DSSLogAlert;
 import eu.europa.esig.dss.jaxb.exception.XmlSecurityException;
 
 public abstract class AbstractFactoryBuilder<F extends Object> {
@@ -20,11 +19,15 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	private Map<String, Boolean> features = new HashMap<>();
 	private Map<String, Object> attributes = new HashMap<>();
 	
-	private Alert<Exception> securityExceptionAlert;
+	private Alert<Exception> securityExceptionAlert = new DSSLogAlert(Level.WARN, LOG.isDebugEnabled());
 
-	AbstractFactoryBuilder() {
-		LogExceptionAlertHandler alertHandler = new LogExceptionAlertHandler(LogLevel.WARN, LOG.isDebugEnabled());
-		this.securityExceptionAlert = new ExceptionAlert(alertHandler);
+	/**
+	 * This method allows to configure a custom alert on security exception in the builder
+	 * 
+	 * @param securityExceptionAlert {@link Alert} to define
+	 */
+	public void setSecurityExceptionAlert(Alert<Exception> securityExceptionAlert) {
+		this.securityExceptionAlert = securityExceptionAlert;
 	}
 	
 	/**
@@ -47,15 +50,6 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	public AbstractFactoryBuilder<F> disableFeature(String feature) {
 		setFeature(feature, false);
 		return this;
-	}
-	
-	/**
-	 * This method allows to configure a custom alert on security exception in the builder
-	 * 
-	 * @param securityExceptionAlert {@link Alert<Exception>} to define
-	 */
-	public void setSecurityExceptionAlert(Alert<Exception> securityExceptionAlert) {
-		this.securityExceptionAlert = securityExceptionAlert;
 	}
 	
 	private void setFeature(String feature, boolean value) {

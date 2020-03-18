@@ -72,8 +72,8 @@ public class EuropeanLOTLSnippets {
 		LOTLSource europeanLOTL = europeanLOTL();
 		job.setListOfTrustedListSources(europeanLOTL);
 
-		job.setAlerts(Arrays.asList(tlSigningAlert(), tlExpirationDetection(), ojUrlAlert(europeanLOTL),
-				lotlLocationAlert(europeanLOTL)));
+		job.setLOTLAlerts(Arrays.asList(ojUrlAlert(europeanLOTL), lotlLocationAlert(europeanLOTL)));
+		job.setTLAlerts(Arrays.asList(tlSigningAlert(), tlExpirationDetection()));
 
 		return job;
 	}

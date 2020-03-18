@@ -26,7 +26,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
+import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.alert.DSSExceptionAlert;
+import eu.europa.esig.dss.alert.DSSLogAlert;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
@@ -92,20 +96,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This variable contains the {@code ListOCSPSource} extracted from the signatures to validate.
 	 */
 	private ListOCSPSource signatureOCSPSource;
-
-	/**
-	 * This variable set the behavior to follow in case of missing revocation data
-	 * (augmentation process). True : throw an exception / False : add a warning
-	 * message. Default : true
-	 */
-	private boolean exceptionOnMissingRevocationData = true;
-
-	/**
-	 * This variable set the behavior to follow in case of missing revocation data
-	 * for a POE. True : throw an exception / False : add a warning message. Default
-	 * : false
-	 */
-	private boolean exceptionOnUncoveredPOE = false;
 	
 	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
@@ -133,25 +123,39 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private boolean includeRawTimestampTokens = false;
 
 	/**
-	 * This variable set the behavior to follow in case of revoked certificate
-	 * (augmentation process). True : throw an exception / False : add a warning
-	 * message. Default : true
+	 * This variable set the behavior to follow in case of invalid timestamp
+	 * (augmentation process).
+	 * Default : DSSExceptionAlert - throw the exception
 	 */
-	private boolean exceptionOnRevokedCertificate = true;
+	private Alert<Exception> alertOnInvalidTimestamp = new DSSExceptionAlert();
 
 	/**
-	 * This variable set the behavior to follow in case of invalid timestamp
-	 * (augmentation process). True : throw an exception / False : add a warning
-	 * message. Default : true
+	 * This variable set the behavior to follow in case of missing revocation data
+	 * (augmentation process).
+	 * Default : DSSExceptionAlert - throw the exception
 	 */
-	private boolean exceptionOnInvalidTimestamp = true;
+	private Alert<Exception> alertOnMissingRevocationData = new DSSExceptionAlert();
+
+	/**
+	 * This variable set the behavior to follow in case of revoked certificate
+	 * (augmentation process). 
+	 * Default : DSSExceptionAlert - throw the exception
+	 */
+	private Alert<Exception> alertOnRevokedCertificate = new DSSExceptionAlert();
 
 	/**
 	 * This variable set the behavior to follow in case of no revocation data issued
 	 * after the bestSignatureTime (augmentation process). 
-	 * True : throw an exception / False : add a warning message. Default : false
+	 * Default : DSSLogAlert - log a warning message
 	 */
-	private boolean exceptionOnNoRevocationAfterBestSignatureTime = false;
+	private Alert<Exception> alertOnNoRevocationAfterBestSignatureTime = new DSSLogAlert(Level.WARN, LOG.isDebugEnabled());
+
+	/**
+	 * This variable set the behavior to follow in case of missing revocation data
+	 * for a POE.
+	 * Default : DSSLogAlert - log a warning message
+	 */
+	private Alert<Exception> alertOnUncoveredPOE = new DSSLogAlert(Level.WARN, LOG.isDebugEnabled());
 
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
@@ -301,53 +305,53 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData) {
-		this.exceptionOnMissingRevocationData = throwExceptionOnMissingRevocationData;
+	public Alert<Exception> getAlertOnInvalidTimestamp() {
+		return alertOnInvalidTimestamp;
 	}
 
 	@Override
-	public boolean isExceptionOnMissingRevocationData() {
-		return exceptionOnMissingRevocationData;
+	public void setAlertOnInvalidTimestamp(Alert<Exception> alertOnInvalidTimestamp) {
+		this.alertOnInvalidTimestamp = alertOnInvalidTimestamp;
 	}
 
 	@Override
-	public boolean isExceptionOnUncoveredPOE() {
-		return exceptionOnUncoveredPOE;
+	public void setAlertOnMissingRevocationData(Alert<Exception> alertOnMissingRevocationData) {
+		this.alertOnMissingRevocationData = alertOnMissingRevocationData;
 	}
 
 	@Override
-	public void setExceptionOnUncoveredPOE(boolean exceptionOnUncoveredPOE) {
-		this.exceptionOnUncoveredPOE = exceptionOnUncoveredPOE;
+	public Alert<Exception> getAlertOnMissingRevocationData() {
+		return alertOnMissingRevocationData;
 	}
 
 	@Override
-	public boolean isExceptionOnRevokedCertificate() {
-		return exceptionOnRevokedCertificate;
+	public Alert<Exception> getAlertOnUncoveredPOE() {
+		return alertOnUncoveredPOE;
 	}
 
 	@Override
-	public void setExceptionOnRevokedCertificate(boolean exceptionOnRevokedCertificate) {
-		this.exceptionOnRevokedCertificate = exceptionOnRevokedCertificate;
+	public void setAlertOnUncoveredPOE(Alert<Exception> alertOnUncoveredPOE) {
+		this.alertOnUncoveredPOE = alertOnUncoveredPOE;
 	}
 
 	@Override
-	public void setExceptionOnInvalidTimestamp(boolean throwExceptionOnInvalidTimestamp) {
-		this.exceptionOnInvalidTimestamp = throwExceptionOnInvalidTimestamp;
+	public Alert<Exception> getAlertOnRevokedCertificate() {
+		return alertOnRevokedCertificate;
 	}
 
 	@Override
-	public boolean isExceptionOnInvalidTimestamp() {
-		return exceptionOnInvalidTimestamp;
+	public void setAlertOnRevokedCertificate(Alert<Exception> alertOnRevokedCertificate) {
+		this.alertOnRevokedCertificate = alertOnRevokedCertificate;
 	}
 
 	@Override
-	public void setExceptionOnNoRevocationAfterBestSignatureTime(boolean exceptionOnNoRevocationAfterBestSignatureTime) {
-		this.exceptionOnNoRevocationAfterBestSignatureTime = exceptionOnNoRevocationAfterBestSignatureTime;
+	public Alert<Exception> getAlertOnNoRevocationAfterBestSignatureTime() {
+		return alertOnNoRevocationAfterBestSignatureTime;
 	}
 
 	@Override
-	public boolean isExceptionOnNoRevocationAfterBestSignatureTime() {
-		return exceptionOnNoRevocationAfterBestSignatureTime;
+	public void setAlertOnNoRevocationAfterBestSignatureTime(Alert<Exception> alertOnNoRevocationAfterBestSignatureTime) {
+		this.alertOnNoRevocationAfterBestSignatureTime = alertOnNoRevocationAfterBestSignatureTime;
 	}
 
 	@Override

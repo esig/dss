@@ -206,7 +206,7 @@ public class TLValidationJob {
 	/**
 	 * Sets the LOTL alerts to be processed
 	 * 
-	 * @param lotlAlerts a list of {@link Alert<LOTLInfo>}s
+	 * @param lotlAlerts a list of {@link Alert}s
 	 */
 	public void setLOTLAlerts(List<Alert<LOTLInfo>> lotlAlerts) {
 	    this.lotlAlerts = lotlAlerts;
@@ -215,7 +215,7 @@ public class TLValidationJob {
 	/**
 	 * Sets the TL alerts to be processed
 	 * 
-	 * @param tlAlerts a list of {@link Alert<TLInfo>}s
+	 * @param tlAlerts a list of {@link Alert}s
 	 */
 	public void setTLAlerts(List<Alert<TLInfo>> tlAlerts) {
 	    this.tlAlerts = tlAlerts;

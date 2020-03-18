@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import org.slf4j.event.Level;
+
+import eu.europa.esig.dss.alert.DSSExceptionAlert;
+import eu.europa.esig.dss.alert.DSSLogAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -77,29 +81,29 @@ public class CertificateVerifierSnippet {
 		// extension)
 
 		// DSS throws an exception by default in case of missing revocation data
-		// Default : true
-		cv.setExceptionOnMissingRevocationData(true);
+		// Default : DSSExceptionAlert
+		cv.setAlertOnMissingRevocationData(new DSSExceptionAlert());
 
 		// DSS throws an exception if a TSU certificate chain is not covered with a
 		// revocation data (timestamp generation time > CRL/OCSP production time).
-		// Default : false
-		cv.setExceptionOnUncoveredPOE(true);
+		// Default : DSSLogAlert
+		cv.setAlertOnUncoveredPOE(new DSSLogAlert(Level.WARN, false));
 
 		// DSS interrupts by default the extension process if a revoked certificate is
 		// present
-		// Default : true
-		cv.setExceptionOnRevokedCertificate(true);
+		// Default : DSSExceptionAlert
+		cv.setAlertOnRevokedCertificate(new DSSExceptionAlert());
 
 		// DSS stops the extension process if an invalid timestamp is met
-		// Default : true
-		cv.setExceptionOnInvalidTimestamp(true);
+		// Default : DSSExceptionAlert
+		cv.setAlertOnInvalidTimestamp(new DSSExceptionAlert());
 		
 		// DSS v5.5+ : throw an exception in case if there is no valid revocation data 
 		// with thisUpdate time after the best signature time
 		// Example: if a signature was extended to T level then the obtained revocation 
 		// must have thisUpdate time after production time of the signature timestamp.
-		// Default : false
-		cv.setExceptionOnNoRevocationAfterBestSignatureTime(true);
+		// Default : DSSLogAlert
+		cv.setAlertOnNoRevocationAfterBestSignatureTime(new DSSLogAlert(Level.ERROR, true));
 		
 		// DSS v5.4+ : defines if binary of certificates used during validation must be included
 		// to produced validation reports. If false only digests will be included.

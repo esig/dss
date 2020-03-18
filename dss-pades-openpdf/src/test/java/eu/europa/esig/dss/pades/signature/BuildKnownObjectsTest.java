@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
+import eu.europa.esig.dss.alert.DSSLogAlert;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -80,8 +82,8 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		assertEquals(5, dssDictionary.getCRLs().size());
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
-		certificateVerifier.setExceptionOnMissingRevocationData(false);
-		certificateVerifier.setExceptionOnUncoveredPOE(false);
+		certificateVerifier.setAlertOnMissingRevocationData(new DSSLogAlert(Level.WARN, false));
+		certificateVerifier.setAlertOnUncoveredPOE(new DSSLogAlert(Level.WARN, false));
 
 		CertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(

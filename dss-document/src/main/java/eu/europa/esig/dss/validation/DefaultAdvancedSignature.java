@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateReorderer;
+import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -287,67 +288,63 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		prepareTimestamps(validationContext);
 		validationContext.validate();
 
-		checkTimestamp(certificateVerifier, validationContext);
+		checkTimestamps(certificateVerifier, validationContext);
 		checkAllRevocationDataPresent(certificateVerifier, validationContext);
-		checkAllTimestampCoveredByRevocationData(certificateVerifier, validationContext);
-		checkAllCertificateNotRevoked(certificateVerifier, validationContext);
+		checkAllTimestampsCoveredByRevocationData(certificateVerifier, validationContext);
+		checkAllCertificatesNotRevoked(certificateVerifier, validationContext);
 		checkRevocationThisUpdateIsAfterBestSignatureTime(certificateVerifier, validationContext);
 
 		return validationContext;
 	}
 
-	private void checkTimestamp(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllTimestampValid()) {
-			String message = "Broken timestamp detected";
-			if (certificateVerifier.isExceptionOnInvalidTimestamp()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
+	private void checkTimestamps(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		try {
+			validationContext.checkAllTimestampsValid();
+		} catch (DSSException e) {
+			Alert<Exception> alert = certificateVerifier.getAlertOnInvalidTimestamp();
+			String message = String.format("Broken timestamp detected. Cause : %s", e.getMessage());
+			alert.alert(new DSSException(message, e));
 		}
 	}
 
 	private void checkAllRevocationDataPresent(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllRequiredRevocationDataPresent()) {
-			String message = "Revocation data is missing";
-			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
+		try {
+			validationContext.checkAllRequiredRevocationDataPresent();
+		} catch (DSSException e) {
+			Alert<Exception> alert = certificateVerifier.getAlertOnMissingRevocationData();
+			String message = String.format("Revocation data is missing. Cause : %s", e.getMessage());
+			alert.alert(new DSSException(message, e));
 		}
 	}
 
-	private void checkAllTimestampCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllPOECoveredByRevocationData()) {
-			String message = "A POE is not covered by a usable revocation data";
-			if (certificateVerifier.isExceptionOnUncoveredPOE()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
+	private void checkAllTimestampsCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		try {
+			validationContext.checkAllPOECoveredByRevocationData();
+		} catch (DSSException e) {
+			Alert<Exception> alert = certificateVerifier.getAlertOnUncoveredPOE();
+			String message = String.format("A POE is not covered by a usable revocation data. Cause : %s", e.getMessage());
+			alert.alert(new DSSException(message, e));
 		}
 	}
 
-	private void checkAllCertificateNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllCertificateValid()) {
-			String message = "Revoked certificate detected";
-			if (certificateVerifier.isExceptionOnRevokedCertificate()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
+	private void checkAllCertificatesNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		try {
+			validationContext.checkAllCertificatesValid();
+		} catch (DSSException e) {
+			Alert<Exception> alert = certificateVerifier.getAlertOnRevokedCertificate();
+			String message = String.format("Revoked certificate detected. Cause : %s", e.getMessage());
+			alert.alert(new DSSException(message, e));
 		}
 	}
 
 	private void checkRevocationThisUpdateIsAfterBestSignatureTime(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAtLeastOneRevocationDataPresentAfterBestSignatureTime(getSigningCertificateToken())) {
-			String message = "No revocation data found with thisUpdate time after the bestSignatureTime";
-			if (certificateVerifier.isExceptionOnNoRevocationAfterBestSignatureTime()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
+		try {
+			CertificateToken signingCertificateToken = getSigningCertificateToken();
+			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
+		} catch (DSSException e) {
+			Alert<Exception> alert = certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime();
+			String message = String.format("No fresh revocation data found. Cause : %s", e.getMessage());
+			alert.alert(new DSSException(message, e));
 		}
 	}
 

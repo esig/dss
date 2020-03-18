@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -158,26 +159,6 @@ public interface CertificateVerifier {
 	 *                            the OCSP sources from the signature
 	 */
 	void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource);
-
-	/**
-	 * This method allows to change the behavior on missing revocation data (LT/LTA
-	 * augmentation). (default : true)
-	 * 
-	 * @param throwExceptionOnMissingRevocationData
-	 *                                              true if an exception is raised
-	 *                                              on missing revocation data,
-	 *                                              false will only display a
-	 *                                              warning message
-	 */
-	void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData);
-
-	/**
-	 * This method returns true if an exception needs to be thrown on missing
-	 * revocation data.
-	 * 
-	 * @return true if an exception is thrown, false if a warning message is added
-	 */
-	boolean isExceptionOnMissingRevocationData();
 	
 	/**
 	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
@@ -250,80 +231,99 @@ public interface CertificateVerifier {
 
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
-	 * augmentation). (default : true)
+	 * augmentation). 
+	 * Default : DSSExceptionAlert - throw an exception.
 	 * 
-	 * @param throwExceptionOnInvalidTimestamp
-	 *                                         true if an exception is raised on
-	 *                                         invalid timestamp, false will only
-	 *                                         display a warning message
+	 * @param alertOnInvalidTimestamp
+	 *                                         defines a behaviour in case of
+	 *                                         invalid timestamp
 	 */
-	void setExceptionOnInvalidTimestamp(boolean throwExceptionOnInvalidTimestamp);
+	void setAlertOnInvalidTimestamp(Alert<Exception> alertOnInvalidTimestamp);
 
 	/**
 	 * This method returns true if an exception needs to be thrown on invalid
 	 * timestamp.
 	 * 
-	 * @return true if an exception is thrown, false if a warning message is added
+	 * @return {@link Alert} to be processed in case of an invalid timestamp
 	 */
-	boolean isExceptionOnInvalidTimestamp();
+	Alert<Exception> getAlertOnInvalidTimestamp();
+
+	/**
+	 * This method allows to change the behavior on missing revocation data (LT/LTA
+	 * augmentation).
+	 * Default : DSSExceptionAlert - throw an exception.
+	 * 
+	 * @param alertOnMissingRevocationData
+	 *                                              defines a behaviour in case of
+	 *                                              missing revocation data
+	 */
+	void setAlertOnMissingRevocationData(Alert<Exception> alertOnMissingRevocationData);
+
+	/**
+	 * This method returns true if an exception needs to be thrown on missing
+	 * revocation data.
+	 * 
+	 * @return {@link Alert} to be processed in case of missing revocation data
+	 */
+	Alert<Exception> getAlertOnMissingRevocationData();
 
 	/**
 	 * This method allows to change the behavior on revoked certificates (LT/LTA
-	 * augmentation). (default : true)
+	 * augmentation).
+	 * Default : DSSExceptionAlert - throw an exception.
 	 * 
-	 * @param throwExceptionOnRevokedCertificate
-	 *                                           true if an exception is raised on
-	 *                                           revoked certificate, false will
-	 *                                           only display a warning message
+	 * @param alertOnRevokedCertificate
+	 *                                         defines a behaviour in case of
+	 *                                         revoked certificate
 	 */
-	void setExceptionOnRevokedCertificate(boolean throwExceptionOnRevokedCertificate);
+	void setAlertOnRevokedCertificate(Alert<Exception> alertOnRevokedCertificate);
 
 	/**
 	 * This method returns true if an exception needs to be thrown on revoked
 	 * certificate.
 	 * 
-	 * @return true if an exception is thrown, false if a warning message is added
+	 * @return {@link Alert} to be processed in case of revoked certificate
 	 */
-	boolean isExceptionOnRevokedCertificate();
+	Alert<Exception> getAlertOnRevokedCertificate();
 
 	/**
 	 * This method allows to change the behavior on revocation data issued after
-	 * a control time. (default : false)
+	 * a control time.
+	 * Default : DSSLogAlert - log a warning.
 	 * 
-	 * @param exceptionOnNoRevocationAfterBestSignatureTime
-	 *                                           true if an exception is raised on
-	 *                                           no revocation data issued after the bestSignatureTime,
-	 *                                           false will only display a warning message
+	 * @param alertOnNoRevocationAfterBestSignatureTime
+	 *                                         defines a behaviour in case of
+	 *                                         no revocation data issued after 
+	 *                                         the bestSignatureTime
 	 */
-	void setExceptionOnNoRevocationAfterBestSignatureTime(boolean exceptionOnNoRevocationAfterBestSignatureTime);
+	void setAlertOnNoRevocationAfterBestSignatureTime(Alert<Exception> alertOnNoRevocationAfterBestSignatureTime);
 	
 	/**
 	 * This method returns true if an exception needs to be thrown in case if
 	 * no revocation data obtained with an issuance time after the bestSignatureTime
 	 * 
-	 * @return true if an exception is thrown, false if a warning message is added
+	 * @return {@link Alert} to be processed in case of no revocation data 
+	 * 										   after best signature time
 	 */
-	boolean isExceptionOnNoRevocationAfterBestSignatureTime();
-
+	Alert<Exception> getAlertOnNoRevocationAfterBestSignatureTime();
 	
 	/**
 	 * This method allows to change the behavior on uncovered POE (timestamp).
-	 * (default : false)
+	 * Default : DSSLogAlert - log a warning.
 	 * 
-	 * @param throwExceptionOnUncoveredPOE
-	 *                                     true if an exception is raised on
-	 *                                     uncovered timestamp, false will only
-	 *                                     display a warning message
+	 * @param alertOnUncoveredPOE
+	 *                                     defines a behaviour in case of
+	 *                                     uncovered POE
 	 */
-	void setExceptionOnUncoveredPOE(boolean throwExceptionOnUncoveredPOE);
+	void setAlertOnUncoveredPOE(Alert<Exception> alertOnUncoveredPOE);
 	
 	/**
 	 * This method returns true if an exception needs to be thrown on uncovered
 	 * POE(timestamp).
 	 * 
-	 * @return true if an exception is thrown, false if a warning message is added
+	 * @return {@link Alert} to be processed in case of uncovered POE
 	 */
-	boolean isExceptionOnUncoveredPOE();
+	Alert<Exception> getAlertOnUncoveredPOE();
 
 	/**
 	 * This method allows to enable revocation checking for untrusted certificate

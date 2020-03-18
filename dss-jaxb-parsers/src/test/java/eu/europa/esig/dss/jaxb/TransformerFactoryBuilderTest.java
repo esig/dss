@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.ExceptionAlert;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler;
-import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler.LogLevel;
 
 public class TransformerFactoryBuilderTest {
 	
@@ -26,7 +26,7 @@ public class TransformerFactoryBuilderTest {
 		secureTransformerBuilder.enableFeature("CUSTOM_FEATURE");
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(LogLevel.INFO, false);
+		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(Level.INFO, false);
 		CompositeAlertHandler<Exception> alertHandler = new CompositeAlertHandler<Exception>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		ExceptionAlert exceptionAlert = new ExceptionAlert(alertHandler);
@@ -43,7 +43,7 @@ public class TransformerFactoryBuilderTest {
 		secureTransformerBuilder.setAttribute("CUSTOM_ATTRIBUTE", "CUSTOM_VALUE");
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(LogLevel.ERROR, true);
+		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(Level.ERROR, true);
 		CompositeAlertHandler<Exception> alertHandler = new CompositeAlertHandler<Exception>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		ExceptionAlert exceptionAlert = new ExceptionAlert(alertHandler);

@@ -673,21 +673,18 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public boolean isAllRequiredRevocationDataPresent() {
+	public void checkAllRequiredRevocationDataPresent() {
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
-			if (!checkRevocationPresentForCertificateChain(orderedCertChain)) {
-				return false;
-			}
+			checkRevocationPresentForCertificateChain(orderedCertChain);
 		}
-		return true;
 	}
 	
-	private boolean checkRevocationPresentForCertificateChain(List<CertificateToken> certificates) {
-		return checkRevocationForCertificateChainAgainstBestSignatureTime(certificates, null);
+	private void checkRevocationPresentForCertificateChain(List<CertificateToken> certificates) {
+		checkRevocationForCertificateChainAgainstBestSignatureTime(certificates, null);
 	}
 	
-	private boolean checkRevocationForCertificateChainAgainstBestSignatureTime(List<CertificateToken> certificates, Date bestSignatureTime) {
+	private void checkRevocationForCertificateChainAgainstBestSignatureTime(List<CertificateToken> certificates, Date bestSignatureTime) {
 		for (CertificateToken certificateToken : certificates) {
 			if (isSelfSignedOrTrusted(certificateToken)) {
 				// break on the first trusted entry
@@ -717,26 +714,26 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			
 			if (!found) {
+				String message;
 				if (bestSignatureTime == null) {
 					// simple revocation presence check
-					LOG.debug("No revocation data found for certificate : {}", certificateToken.getDSSIdAsString());
+					message = String.format("No revocation data found for certificate : %s", certificateToken.getDSSIdAsString());
 				} else if (earliestNextUpdate != null) {
-					LOG.warn("No revocation data found after the best signature time [{}] for the certificate : {}. \n"
-							+ "The nextUpdate available after : [{}]",
+					message = String.format("No revocation data found after the best signature time [%s] "
+							+ "for the certificate : %s. \n The nextUpdate available after : [%s]",
 							bestSignatureTime, certificateToken.getDSSIdAsString(), earliestNextUpdate);
 				} else {
-					LOG.warn("No revocation data found after the best signature time [{}] for the certificate : {}", 
+					message = String.format("No revocation data found after the best signature time [%s] for the certificate : %s", 
 							bestSignatureTime, certificateToken.getDSSIdAsString());
 				}
-				return false;
+				throw new DSSException(message);
 			}
 		}
 		// a valid revocation is present for all certificates in the chain
-		return true;
 	}
 
 	@Override
-	public boolean isAllPOECoveredByRevocationData() {
+	public void checkAllPOECoveredByRevocationData() {
 		for (Entry<CertificateToken, Date> entry : lastTimestampCertChainDates.entrySet()) {
 			Date lastUsage = entry.getValue();
 			CertificateToken token = entry.getKey();
@@ -758,39 +755,35 @@ public class SignatureValidationContext implements ValidationContext {
 					}
 				}
 				if (!foundValidRevocationDataAfterLastUsage) {
-					LOG.debug("POE {} not covered by a valid revocation data (nextUpdate : {})", token.getDSSIdAsString(), nextUpdate);
-					return false;
+					throw new DSSException(String.format("POE '%s' not covered by a valid revocation data (nextUpdate : %s)", 
+							token.getDSSIdAsString(), nextUpdate));
 				}
 			}
 		}
-		return true;
 	}
 
 	@Override
-	public boolean isAllTimestampValid() {
+	public void checkAllTimestampsValid() {
 		for (TimestampToken timestampToken : processedTimestamps) {
 			if (!timestampToken.isSignatureValid() || !timestampToken.isMessageImprintDataFound() || !timestampToken.isMessageImprintDataIntact()) {
 				LOG.warn("Invalid timestamp detected : {}", timestampToken.getDSSIdAsString());
-				return false;
+				throw new DSSException(String.format("Invalid timestamp detected : %s", timestampToken.getDSSIdAsString()));
 			}
 		}
-		return true;
 	}
 
 	@Override
-	public boolean isAllCertificateValid() {
+	public void checkAllCertificatesValid() {
 		for (CertificateToken certificateToken : processedCertificates) {
 			if (!isRevocationDataNotRequired(certificateToken)) {
 				for (RevocationToken revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())
 							&& !Utils.isTrue(revocationToken.getStatus())) {
-						LOG.debug("Certificate {} is revoked", certificateToken.getDSSIdAsString());
-						return false;
+						throw new DSSException(String.format("Certificate {} is revoked", certificateToken.getDSSIdAsString()));
 					}
 				}
 			}
 		}
-		return true;
 	}
 
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
@@ -895,17 +888,14 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public boolean isAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate) {
+	public void checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate) {
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
 			CertificateToken firstChainCertificate = entry.getKey();
 			Date bestSignatureTime = firstChainCertificate.equals(signingCertificate) ? 
 					getEarliestTimestampTime() : lastTimestampCertChainDates.get(firstChainCertificate);
-			if (!checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime)) {
-				return false;
-			}
+			checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime);
 		}
-		return true;
 	}
 	
 	private Date getEarliestTimestampTime() {

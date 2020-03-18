@@ -2,11 +2,12 @@ package eu.europa.esig.dss.alert.handler.log;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 
 /**
- * 
+ * Allows to configure a logger on a raised exception
  * @author aleksandr.beliakov
  *
  */
@@ -14,16 +15,16 @@ public class LogExceptionAlertHandler implements AlertHandler<Exception> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogExceptionAlertHandler.class);
 	
-	private final LogLevel level;
+	private final Level level;
 	private final boolean stackTraceEnabled;
 	
 	/**
 	 * The default constructor to instantiate a LogExceptionAlertHandler
 	 * 
-	 * @param level {@code LogExceptionARlertHandler.LogLevel} defines an expected log level
+	 * @param level {@code Level} defines an expected log level
 	 * @param enableStackTrace defines if the stackTrace must be added to the log message
 	 */
-	public LogExceptionAlertHandler(LogLevel level, boolean enableStackTrace) {
+	public LogExceptionAlertHandler(Level level, boolean enableStackTrace) {
 		this.level = level;
 		this.stackTraceEnabled = enableStackTrace;
 	}
@@ -53,13 +54,6 @@ public class LogExceptionAlertHandler implements AlertHandler<Exception> {
 			default:
 				throw new IllegalArgumentException(String.format("The LogLevel [%s] is not allowed configuration!", level));
 		}
-	}
-	
-	/*
-	 * Provides an exhaustive list of available log levels
-	 */
-	public enum LogLevel {
-		TRACE, DEBUG, INFO, WARN, ERROR;
 	}
 
 }

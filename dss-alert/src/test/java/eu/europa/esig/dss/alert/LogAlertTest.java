@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler;
-import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler.LogLevel;
 
 public class LogAlertTest {
 	
@@ -20,7 +20,7 @@ public class LogAlertTest {
 		Exception exception = new Exception(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(LogLevel.WARN, false);
+		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(Level.WARN, false);
 		
 		CompositeAlertHandler<Exception> alertHandler = new CompositeAlertHandler<Exception>(Arrays.asList(callback, logExceptionAlertHandler));
 		
@@ -35,7 +35,7 @@ public class LogAlertTest {
 		Exception exception = new Exception(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(LogLevel.ERROR, true);
+		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(Level.ERROR, true);
 		
 		CompositeAlertHandler<Exception> alertHandler = new CompositeAlertHandler<Exception>(Arrays.asList(callback, logExceptionAlertHandler));
 		
@@ -43,6 +43,15 @@ public class LogAlertTest {
 		exceptionAlert.alert(exception);
 		
 		assertTrue(callback.called);
+	}
+	
+	@Test
+	public void dssLogAlertTest() {
+		Exception exception = new Exception(EXCEPTION_MESSAGE);
+		
+		// manual testing
+		DSSLogAlert dssLogAlert = new DSSLogAlert(Level.INFO, false);
+		dssLogAlert.alert(exception);
 	}
 	
 	class CallbackExceptionAlertHandler implements AlertHandler<Exception> {

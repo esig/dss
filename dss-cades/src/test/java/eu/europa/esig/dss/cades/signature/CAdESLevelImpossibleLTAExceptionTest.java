@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -62,7 +63,8 @@ public class CAdESLevelImpossibleLTAExceptionTest extends AbstractCAdESTestSigna
 		Exception exception = assertThrows(DSSException.class, () -> {
 			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
 		});
-		assertEquals("Revocation data is missing", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Revocation data is missing. "
+				+ "Cause : No revocation data found for certificate : "));
 	}
 
 	@Override

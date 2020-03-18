@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
@@ -50,7 +51,6 @@ import eu.europa.esig.dss.tsl.alerts.TLAlert;
 import eu.europa.esig.dss.tsl.alerts.detections.LOTLLocationChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
-import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
@@ -195,7 +195,7 @@ public class TLValidationJobSnippets {
 		AlertHandler<LOTLInfo> mailSender = new AlertHandler<LOTLInfo>() {
 
 			@Override
-			public void alert(LOTLInfo currentInfo) {
+			public void process(LOTLInfo currentInfo) {
 				String newOJUrl = currentInfo.getParsingCacheInfo().getSigningCertificateAnnouncementUrl();
 				// code to send an email
 				SampleUtils.sendEmail(newOJUrl);
@@ -211,7 +211,7 @@ public class TLValidationJobSnippets {
 		AlertHandler<LOTLInfo> databaseUpgrader = new AlertHandler<LOTLInfo>() {
 
 			@Override
-			public void alert(LOTLInfo currentInfo) {
+			public void process(LOTLInfo currentInfo) {
 				String newLOTLUrl = null;
 
 				String currentLOTLUrl = currentInfo.getUrl();
@@ -231,8 +231,9 @@ public class TLValidationJobSnippets {
 		LOTLAlert lotlLocationChangeAlert = new LOTLAlert(new LOTLLocationChangeDetection(europeanLOTLSource()), databaseUpgrader);
 		
 		// add all alerts on the job
-		job.setAlerts(Arrays.asList(tlBrokenSignatureAlert, officialJournalDesynchronizationAlert, lotlLocationChangeAlert));
-
+		job.setLOTLAlerts(Arrays.asList(officialJournalDesynchronizationAlert, lotlLocationChangeAlert));
+		job.setTLAlerts(Arrays.asList(tlBrokenSignatureAlert));
+		
 		// end::alerting[]
 	}
 	
