@@ -442,7 +442,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *            {@link CertificateToken} contains all the certificate tokens to be included to the signature
 	 * @return list of {@link CRLToken}s to be included to the signature
 	 */
-	private List<CRLToken> getCRLsForInclusion(final Set<RevocationToken> processedRevocations, 
+	private List<CRLToken> getCRLsForInclusion(
+			final Set<RevocationToken<Revocation>> processedRevocations, 
 			final Set<CertificateToken> certificatesToBeIncluded) {
 		
 		final List<CRLToken> crlTokens = new ArrayList<>();
@@ -469,7 +470,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *            {@link CertificateToken} contains all the certificate tokens to be included to the signature
 	 * @return list of {@link OCSPToken}s to be included to the signature
 	 */
-	private List<OCSPToken> getOCSPsForInclusion(final Set<RevocationToken> processedRevocations, 
+	private List<OCSPToken> getOCSPsForInclusion(
+			final Set<RevocationToken<Revocation>> processedRevocations, 
 			final Set<CertificateToken> certificatesToBeIncluded) {
 		
 		final List<OCSPToken> ocspTokens = new ArrayList<>();

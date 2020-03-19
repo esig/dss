@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 /**
  * Abstract class to retrieve token from a JDBC datasource
  * 
- * @param <T> {@code CRLToken} or {@code OCSPToken}
+ * @param <R> {@code CRL} or {@code OCSP}
  */
 public abstract class JdbcRevocationSource<R extends Revocation> extends RepositoryRevocationSource<R> {
 

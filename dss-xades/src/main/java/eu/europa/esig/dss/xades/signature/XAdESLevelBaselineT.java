@@ -47,7 +47,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.TimestampParameters;
-import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -287,7 +287,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @return set of {@link CRLToken}s with no duplicates
 	 */
 	protected Set<CRLToken> filterCRLsPresentIntoSignature(Collection<CRLToken> crlTokens) {
-		Collection<MultipleDigestIdentifier> signatureCRLBinaryList = xadesSignature.getCRLSource().getAllRevocationBinaries();
+		Collection<EncapsulatedRevocationTokenIdentifier> signatureCRLBinaryList = xadesSignature.getCRLSource().getAllRevocationBinaries();
 		return filterNewRevocations(crlTokens, signatureCRLBinaryList);
 	}
 
@@ -297,16 +297,16 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @return set of {@link OCSPToken}s with no duplicates
 	 */
 	protected Set<OCSPToken> filterOCSPsPresentIntoSignature(Collection<OCSPToken> ocspTokens) {
-		Collection<MultipleDigestIdentifier> signatureOCSPResponseList = xadesSignature.getOCSPSource().getAllRevocationBinaries();
+		Collection<EncapsulatedRevocationTokenIdentifier> signatureOCSPResponseList = xadesSignature.getOCSPSource().getAllRevocationBinaries();
 		return filterNewRevocations(ocspTokens, signatureOCSPResponseList);
 	}
 	
 	private <R extends RevocationToken> Set<R> filterNewRevocations(Collection<R> revocationTokens,
-			Collection<? extends MultipleDigestIdentifier> revocationBinaryList) {
+			Collection<EncapsulatedRevocationTokenIdentifier> revocationBinaryList) {
 		Set<R> revocationTokensToBeAdded = new HashSet<>();
 		for (R revocationToken : revocationTokens) {
 			boolean found = false;
-			for (MultipleDigestIdentifier revocationBinary : revocationBinaryList) {
+			for (EncapsulatedRevocationTokenIdentifier revocationBinary : revocationBinaryList) {
 				if (Arrays.equals(revocationToken.getEncoded(), revocationBinary.getBinaries())) {
 					found = true;
 					break;

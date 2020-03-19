@@ -42,8 +42,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -83,13 +84,13 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 			assertNotNull(certificateRef.getIssuerInfo());
 		}
 
-		List<OCSPRef> ocspRefs = advancedSignature.getOCSPSource().getCompleteRevocationRefs();
-		List<CRLRef> crlRefs = advancedSignature.getCRLSource().getCompleteRevocationRefs();
+		List<RevocationRef<OCSP>> ocspRefs = advancedSignature.getOCSPSource().getCompleteRevocationRefs();
+		List<RevocationRef<CRL>> crlRefs = advancedSignature.getCRLSource().getCompleteRevocationRefs();
 
 		assertTrue(Utils.isCollectionNotEmpty(ocspRefs) || Utils.isCollectionNotEmpty(crlRefs));
 
 		if (!ocspRefs.isEmpty()) {
-			for (OCSPRef ocspRef : ocspRefs) {
+			for (RevocationRef<OCSP> ocspRef : ocspRefs) {
 				assertNotNull(ocspRef.getDigest());
 				assertNotNull(ocspRef.getDigest().getAlgorithm());
 				assertNotNull(ocspRef.getDigest().getValue());
@@ -97,7 +98,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		}
 
 		if (!crlRefs.isEmpty()) {
-			for (CRLRef crlRef : crlRefs) {
+			for (RevocationRef<CRL> crlRef : crlRefs) {
 				assertNotNull(crlRef.getDigest());
 				assertNotNull(crlRef.getDigest().getAlgorithm());
 				assertNotNull(crlRef.getDigest().getValue());

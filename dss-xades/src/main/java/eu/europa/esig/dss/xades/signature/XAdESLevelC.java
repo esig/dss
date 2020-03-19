@@ -36,6 +36,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -79,7 +80,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * @param processedRevocationTokens
 	 * @throws DSSException
 	 */
-	private void incorporateCRLRefs(Element completeRevocationRefsDom, final Set<RevocationToken> processedRevocationTokens) throws DSSException {
+	private void incorporateCRLRefs(Element completeRevocationRefsDom, final Set<RevocationToken<Revocation>> processedRevocationTokens) throws DSSException {
 
 		if (processedRevocationTokens.isEmpty()) {
 
@@ -155,7 +156,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * @param processedRevocationTokens
 	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
-	private void incorporateOCSPRefs(final Element completeRevocationRefsDom, final Set<RevocationToken> processedRevocationTokens) throws DSSException {
+	private void incorporateOCSPRefs(final Element completeRevocationRefsDom, final Set<RevocationToken<Revocation>> processedRevocationTokens)
+			throws DSSException {
 
 		if (processedRevocationTokens.isEmpty()) {
 

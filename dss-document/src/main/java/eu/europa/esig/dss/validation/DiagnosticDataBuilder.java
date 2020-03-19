@@ -65,7 +65,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
@@ -129,6 +128,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.IssuerSerialInfo;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
@@ -136,8 +136,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
@@ -160,7 +158,7 @@ public class DiagnosticDataBuilder {
 	private List<AdvancedSignature> signatures;
 	private Set<CertificateToken> usedCertificates;
 	private Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
-	private Set<RevocationToken> usedRevocations;
+	private Set<RevocationToken<Revocation>> usedRevocations;
 	private Set<TimestampToken> usedTimestamps;
 	private List<CertificateSource> trustedCertSources = new ArrayList<>();
 	private Date validationDate;
@@ -254,7 +252,7 @@ public class DiagnosticDataBuilder {
 	 *                        the used revocation data
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
+	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken<Revocation>> usedRevocations) {
 		this.usedRevocations = usedRevocations;
 		return this;
 	}
@@ -360,8 +358,8 @@ public class DiagnosticDataBuilder {
 	/**
 	 * Sets a merged CRL Source
 	 * 
-	 * @param completeCRLSource 
-	 * 						 {@link ListCRLSource} computed from existing sources
+	 * @param completeCRLSource {@link ListRevocationSource} computed from existing
+	 *                          sources
 	 * @return the builder
 	 */
 	public DiagnosticDataBuilder completeCRLSource(ListRevocationSource<CRL> completeCRLSource) {
@@ -372,8 +370,8 @@ public class DiagnosticDataBuilder {
 	/**
 	 * Sets a merged OCSP Source
 	 * 
-	 * @param completeOCSPSource 
-	 * 						 {@link ListOCSPSource} computed from existing sources
+	 * @param completeOCSPSource {@link ListRevocationSource} computed from existing
+	 *                           sources
 	 * @return the builder
 	 */
 	public DiagnosticDataBuilder completeOCSPSource(ListRevocationSource<OCSP> completeOCSPSource) {
@@ -413,15 +411,6 @@ public class DiagnosticDataBuilder {
 			List<XmlTimestamp> builtTimestamps = buildXmlTimestamps(usedTimestamps);
 			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
 			linkSignaturesAndTimestamps(signatures);
-		}
-		
-		if (!commonCRLSource.isEmpty() || !commonOCSPSource.isEmpty()) {
-			// in case if revocation sources contain revocation data not linked to signatures and/or timestamps
-			findOrphanRevocationData(commonCRLSource, commonOCSPSource); 
-		}
-
-		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
-			diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
 		}
 		
 		// timestamped objects must be linked after building of orphan tokens
@@ -493,13 +482,13 @@ public class DiagnosticDataBuilder {
 		}
 	}
 
-	private Collection<XmlRevocation> buildXmlRevocations(Set<RevocationToken> revocations) {
+	private Collection<XmlRevocation> buildXmlRevocations(Set<RevocationToken<Revocation>> revocations) {
 		List<XmlRevocation> builtRevocations = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(revocations)) {
-			List<RevocationToken> tokens = new ArrayList<>(revocations);
+			List<RevocationToken<Revocation>> tokens = new ArrayList<>(revocations);
 			Collections.sort(tokens, new TokenComparator());
 			List<String> uniqueIds = new ArrayList<>(); // CRL can contain multiple entries
-			for (RevocationToken revocationToken : tokens) {
+			for (RevocationToken<Revocation> revocationToken : tokens) {
 				String id = revocationToken.getDSSIdAsString();
 				if (uniqueIds.contains(id)) {
 					continue;
@@ -520,8 +509,8 @@ public class DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
 				XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
-				Set<RevocationToken> revocationsForCert = getRevocationsForCert(certificateToken);
-				for (RevocationToken revocationToken : revocationsForCert) {
+				Set<RevocationToken<Revocation>> revocationsForCert = getRevocationsForCert(certificateToken);
+				for (RevocationToken<Revocation> revocationToken : revocationsForCert) {
 					XmlRevocation xmlRevocation = xmlRevocationsMap.get(revocationToken.getDSSIdAsString());
 					XmlCertificateRevocation xmlCertificateRevocation = new XmlCertificateRevocation();
 					xmlCertificateRevocation.setRevocation(xmlRevocation);
@@ -916,18 +905,7 @@ public class DiagnosticDataBuilder {
 		return xmlTimestampsList;
 	}
 	
-	private XmlOrphanTokens buildXmlOrphanTokens() {
-		XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
-		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap)) {
-			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
-		}
-		if (Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
-			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
-		}
-		return xmlOrphanTokens;
-	}
-	
-	private XmlRevocation buildDetachedXmlRevocation(RevocationToken revocationToken) {
+	private XmlRevocation buildDetachedXmlRevocation(RevocationToken<Revocation> revocationToken) {
 
 		final XmlRevocation xmlRevocation = new XmlRevocation();
 		xmlRevocation.setId(revocationToken.getDSSIdAsString());
@@ -1413,114 +1391,81 @@ public class DiagnosticDataBuilder {
 	
 	private XmlFoundRevocations getXmlFoundRevocations(OfflineRevocationSource<CRL> crlSource, OfflineRevocationSource<OCSP> ocspSource) {
 		XmlFoundRevocations foundRevocations = new XmlFoundRevocations();
-		// revocation refs processed inside
 		foundRevocations.getRelatedRevocations().addAll(getXmlRelatedRevocations(crlSource, ocspSource));
-
-		List<EncapsulatedRevocationTokenIdentifier> orphanRevocations = getOrphanRevocations(crlSource, ocspSource);
-		
-		if (Utils.isCollectionNotEmpty(orphanRevocations)) {
-			foundRevocations.getOrphanRevocations().addAll(getXmlOrphanRevocations(crlSource, ocspSource, orphanRevocations));
-		}
-		
-		List<RevocationRef> orphanRevocationRefs = getOrphanRevocationRefs(crlSource, ocspSource);
-		for (RevocationRef leftRevocationRef : orphanRevocationRefs) {
-			XmlOrphanRevocation revocationFromRef = createOrphanRevocationFromRef(leftRevocationRef);
-			foundRevocations.getOrphanRevocations().add(revocationFromRef);
-		}
+		foundRevocations.getOrphanRevocations().addAll(getXmlOrphanRevocations(crlSource, ocspSource));
+		foundRevocations.getOrphanRevocations().addAll(getXmlOrphanRevocationRefs(crlSource, ocspSource));
 		return foundRevocations;
 	}
 	
-	private List<EncapsulatedRevocationTokenIdentifier> getOrphanRevocations(OfflineRevocationSource<CRL> crlSource, OfflineOCSPSource ocspSource) {
-		List<EncapsulatedRevocationTokenIdentifier> orphanIdentifiers = new ArrayList<>();
-		
-		List<EncapsulatedRevocationTokenIdentifier> revocationIdentifiers = new ArrayList<>();
-		revocationIdentifiers.addAll(crlSource.getAllRevocationBinaries());
-		revocationIdentifiers.addAll(ocspSource.getAllRevocationBinaries());
-		
-		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : revocationIdentifiers) {
-			if (!xmlRevocationsMap.containsKey(revocationIdentifier.asXmlId())) {
-				orphanIdentifiers.add(revocationIdentifier);
-			}
-		}
-		return orphanIdentifiers;
-	}
-	
-	private List<RevocationRef> getOrphanRevocationRefs(OfflineRevocationSource<CRL> crlSource, OfflineOCSPSource ocspSource) {
-		List<RevocationRef> orphanRevocationRefs = new ArrayList<>();
-		for (CRLRef crlRef : crlSource.getOrphanRevocationReferences()) {
-			if (commonCRLSource.getIdentifier(crlRef.getDigest()) == null) {
-				orphanRevocationRefs.add(crlRef);
-			}
-		}
-		for (OCSPRef ocspRef : ocspSource.getOrphanRevocationReferences()) {
-			if (commonOCSPSource.getIdentifier(ocspRef.getDigest()) == null) {
-				orphanRevocationRefs.add(ocspRef);
-			}
-		}
-		return orphanRevocationRefs;
-	}
-
 	private List<XmlRelatedRevocation> getXmlRelatedRevocations(OfflineRevocationSource<CRL> crlSource, OfflineRevocationSource<OCSP> ocspSource) {
-		List<RevocationToken> revocationTokens = new ArrayList<>();
-		revocationTokens.addAll(crlSource.getAllRevocationTokens());
-		revocationTokens.addAll(ocspSource.getAllRevocationTokens());
-		
-		return getXmlRevocationsByType(crlSource, ocspSource, revocationTokens);
-	}
-
-	private List<XmlRelatedRevocation> getXmlRevocationsByType(OfflineRevocationSource<CRL> crlSource,
-			OfflineRevocationSource<OCSP> ocspSource,
-			List<RevocationToken> revocationTokens) {
-		
 		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<>();
-		Set<String> revocationKeys = new HashSet<>();
-		for (RevocationToken revocationToken : revocationTokens) {
-			String id = revocationToken.getDSSIdAsString();
-			if (!revocationKeys.contains(id)) {
-				XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
-				if (xmlRevocation != null) {
-					XmlRelatedRevocation xmlRelatedRevocation = new XmlRelatedRevocation();
-					xmlRelatedRevocation.setRevocation(xmlRevocation);
-					xmlRelatedRevocation.setType(revocationToken.getRevocationType());
-					xmlRelatedRevocation.getOrigins().addAll(revocationToken.getOrigins());
-					List<RevocationRef> revocationRefs = findRefsForRevocationToken(crlSource, ocspSource, revocationToken);
-					if (Utils.isCollectionNotEmpty(revocationRefs)) {
-						xmlRelatedRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(revocationRefs));
-						for (RevocationRef ref : revocationRefs) {
-							referenceMap.put(ref.getDSSIdAsString(), revocationToken.getDSSIdAsString());
-						}
-					}
-
-					xmlRelatedRevocations.add(xmlRelatedRevocation);
-					revocationKeys.add(id);
-				}
-			}
-		}
+		addRelatedRevocations(xmlRelatedRevocations, crlSource);
+		addRelatedRevocations(xmlRelatedRevocations, ocspSource);
 		return xmlRelatedRevocations;
 	}
-	
-	private List<RevocationRef> findRefsForRevocationToken(OfflineRevocationSource<CRL> listCRLSource,
-			OfflineRevocationSource<OCSP> listOCSPSource,
-			RevocationToken revocationToken) {
-		List<RevocationRef> revocationRefs = new ArrayList<>();
-		if (RevocationType.CRL.equals(revocationToken.getRevocationType())) {
-			revocationRefs.addAll(listCRLSource.findRefsForRevocationToken(revocationToken));
-		} else {
-			revocationRefs.addAll(listOCSPSource.findRefsForRevocationToken(revocationToken));
+
+	private <R extends Revocation> void addRelatedRevocations(List<XmlRelatedRevocation> result, OfflineRevocationSource<R> source) {
+		for (Entry<RevocationToken<R>, List<RevocationOrigin>> entry : source.getAllRevocationTokensWithOrigins().entrySet()) {
+			RevocationToken<R> token = entry.getKey();
+			String id = token.getDSSIdAsString();
+			XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
+			if (xmlRevocation != null) {
+				XmlRelatedRevocation xmlRelatedRevocation = new XmlRelatedRevocation();
+				xmlRelatedRevocation.setRevocation(xmlRevocation);
+				xmlRelatedRevocation.setType(token.getRevocationType());
+				xmlRelatedRevocation.getOrigins().addAll(entry.getValue());
+				xmlRelatedRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(source.findRefsAndOriginsForRevocationToken(token)));
+				result.add(xmlRelatedRevocation);
+			}
 		}
-		return revocationRefs;
 	}
 
-	private List<XmlRevocationRef> getXmlRevocationRefs(List<RevocationRef> revocationRefs) {
-		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
-		for (RevocationRef ref : revocationRefs) {
-			XmlRevocationRef revocationRef;
-			if (ref instanceof CRLRef) {
-				revocationRef = getXmlCRLRevocationRef((CRLRef) ref);
-			} else {
-				revocationRef = getXmlOCSPRevocationRef((OCSPRef) ref);
+	private List<XmlOrphanRevocation> getXmlOrphanRevocations(OfflineRevocationSource<CRL> crlSource, OfflineRevocationSource<OCSP> ocspSource) {
+		List<XmlOrphanRevocation> xmlOrphanRevocations = new ArrayList<>();
+		addOrphanRevocations(xmlOrphanRevocations, crlSource);
+		addOrphanRevocations(xmlOrphanRevocations, ocspSource);
+		return xmlOrphanRevocations;
+	}
+
+	private <R extends Revocation> void addOrphanRevocations(List<XmlOrphanRevocation> xmlOrphanRevocations, OfflineRevocationSource<R> source) {
+		Map<EncapsulatedRevocationTokenIdentifier, List<RevocationOrigin>> allBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
+		for (Entry<EncapsulatedRevocationTokenIdentifier, List<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
+			EncapsulatedRevocationTokenIdentifier token = entry.getKey();
+			if (!xmlRevocationsMap.containsKey(token.asXmlId())) {
+				XmlOrphanRevocation xmlOrphanRevocation = getXmlOrphanRevocation(token, entry.getValue());
+				xmlOrphanRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(source.findRefsAndOriginsForBinary(token)));
+				xmlOrphanRevocations.add(xmlOrphanRevocation);
 			}
-			xmlRevocationRefs.add(revocationRef);
+		}
+	}
+
+	private List<XmlOrphanRevocation> getXmlOrphanRevocationRefs(OfflineRevocationSource<CRL> crlSource, OfflineRevocationSource<OCSP> ocspSource) {
+		List<XmlOrphanRevocation> xmlOrphanRevocationRefs = new ArrayList<>();
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, commonCRLSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, commonOCSPSource);
+		return xmlOrphanRevocationRefs;
+	}
+
+	private <R extends Revocation> void addOrphanRevocationRefs(List<XmlOrphanRevocation> xmlOrphanRevocationRefs, OfflineRevocationSource<R> source, ListRevocationSource<R> allSources) {
+		Map<RevocationRef<R>, List<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source.getOrphanRevocationReferencesWithOrigins();
+		for (Entry<RevocationRef<R>, List<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins.entrySet()) {
+			RevocationRef<R> ref = entry.getKey();
+			if (allSources.isOrphan(ref)) {
+				xmlOrphanRevocationRefs.add(createOrphanRevocationFromRef(ref, entry.getValue()));
+			}
+		}
+	}
+
+	private <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(Map<RevocationRef<R>, List<RevocationRefOrigin>> refsAndOrigins) {
+		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
+		for (Entry<RevocationRef<R>, List<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
+			RevocationRef<R> ref = entry.getKey();
+			List<RevocationRefOrigin> origins = entry.getValue();
+			if (ref instanceof CRLRef) {
+				xmlRevocationRefs.add(getXmlCRLRevocationRef((CRLRef) ref, origins));
+			} else {
+				xmlRevocationRefs.add(getXmlOCSPRevocationRef((OCSPRef) ref, origins));
+			}
 		}
 		return xmlRevocationRefs;
 	}
@@ -1555,64 +1500,16 @@ public class DiagnosticDataBuilder {
 		return xmlRevocationRef;
 	}
 	
-	private List<XmlOrphanRevocation> getXmlOrphanRevocations(OfflineRevocationSource<CRL> crlSource,
-			OfflineRevocationSource<OCSP> ocspSource,
-			Collection<EncapsulatedRevocationTokenIdentifier> orphanRevocations) {
-		List<XmlOrphanRevocation> xmlOrphanRevocations = new ArrayList<>();
-		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : orphanRevocations) {
-			xmlOrphanRevocations.add(getXmlOrphanRevocation(crlSource, ocspSource, revocationIdentifier));
-		}
-		return xmlOrphanRevocations;
-	}
-	
-	private XmlOrphanRevocation getXmlOrphanRevocation(OfflineRevocationSource<CRL> crlSource,
-			OfflineRevocationSource<OCSP> ocspSource,
-			EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
+	private <R extends Revocation> XmlOrphanRevocation getXmlOrphanRevocation(EncapsulatedRevocationTokenIdentifier token, List<RevocationOrigin> origins) {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
-		XmlOrphanRevocationToken orphanRevocationToken = createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
-		xmlOrphanRevocation.setToken(orphanRevocationToken);
-		if (revocationIdentifier instanceof CRLBinary) {
-			orphanRevocationToken.setType(RevocationType.CRL);
+		if (token instanceof CRLBinary) {
 			xmlOrphanRevocation.setType(RevocationType.CRL);
-			for (RevocationOrigin origin : crlSource.getRevocationOrigins((CRLBinary) revocationIdentifier)) {
-				xmlOrphanRevocation.getOrigins().add(origin);
-			}
 		} else {
-			orphanRevocationToken.setType(RevocationType.OCSP);
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
-			for (RevocationOrigin origin : ocspSource.getRevocationOrigins((OCSPResponseBinary) revocationIdentifier)) {
-				xmlOrphanRevocation.getOrigins().add(origin);
-			}
 		}
-		List<RevocationRef> refsForRevocationToken = findRefsForRevocationIdentifier(crlSource, ocspSource, revocationIdentifier);
-		for (RevocationRef revocationRef : refsForRevocationToken) {
-			xmlOrphanRevocation.getRevocationRefs().add(revocationRefToXml(revocationRef));
-			referenceMap.put(revocationRef.getDSSIdAsString(), revocationIdentifier.asXmlId());
-		}
-		
+		xmlOrphanRevocation.getOrigins().addAll(origins);
+		xmlOrphanRevocation.setToken(createOrphanTokenFromRevocationIdentifier(token));
 		return xmlOrphanRevocation;
-	}
-	
-	private List<RevocationRef> findRefsForRevocationIdentifier(OfflineRevocationSource<CRL> listCRLSource,
-			OfflineRevocationSource<OCSP> listOCSPSource,
-			EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
-		List<RevocationRef> revocationRefs = new ArrayList<>();
-		if (revocationIdentifier instanceof CRLBinary) {
-			revocationRefs.addAll(listCRLSource.getReferencesForCRLIdentifier((CRLBinary) revocationIdentifier));
-		} else {
-			revocationRefs.addAll(listOCSPSource.getReferencesForOCSPIdentifier((OCSPResponseBinary) revocationIdentifier));
-		}
-		return revocationRefs;
-	}
-	
-	private XmlRevocationRef revocationRefToXml(RevocationRef ref) {
-		XmlRevocationRef xmlRevocationRef;
-		if (ref instanceof CRLRef) {
-			xmlRevocationRef = getXmlCRLRevocationRef((CRLRef) ref);
-		} else {
-			xmlRevocationRef = getXmlOCSPRevocationRef((OCSPRef) ref);
-		}
-		return xmlRevocationRef;
 	}
 	
 	private XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
@@ -1634,7 +1531,7 @@ public class DiagnosticDataBuilder {
 		return orphanToken;
 	}
 	
-	private XmlOrphanRevocation createOrphanRevocationFromRef(RevocationRef ref) {
+	private <R extends Revocation> XmlOrphanRevocation createOrphanRevocationFromRef(RevocationRef<R> ref, List<RevocationRefOrigin> origins) {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 		
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
@@ -1646,39 +1543,15 @@ public class DiagnosticDataBuilder {
 		if (ref instanceof CRLRef) {
 			orphanToken.setType(RevocationType.CRL);
 			xmlOrphanRevocation.setType(RevocationType.CRL);
+			xmlOrphanRevocation.getRevocationRefs().add(getXmlCRLRevocationRef((CRLRef) ref, origins));
 		} else {
 			orphanToken.setType(RevocationType.OCSP);
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
+			xmlOrphanRevocation.getRevocationRefs().add(getXmlOCSPRevocationRef((OCSPRef) ref, origins));
 		}
-		xmlOrphanRevocation.getRevocationRefs().add(revocationRefToXml(ref));
 		return xmlOrphanRevocation;
 	}
 	
-	private void findOrphanRevocationData(ListRevocationSource<CRL> crlSource, ListRevocationSource<OCSP> ocspSource) {
-		for (CRLBinary crlBinary : crlSource.getCRLBinaryList()) {
-			// if the token is not created yet
-			if (!xmlRevocationsMap.containsKey(crlBinary.asXmlId()) && !xmlOrphanRevocationTokensMap.containsKey(crlBinary.asXmlId())) {
-				// will be an orphan token, because it is not in the list of used revocations
-				createOrphanTokenFromRevocationIdentifier(crlBinary);
-			}
-		}
-		for (CRLRef crlRef : crlSource.getOrphanCrlRefs()) {
-			if (!xmlOrphanRevocationTokensMap.containsKey(crlRef.getDSSIdAsString())) {
-				createOrphanRevocationFromRef(crlRef);
-			}
-		}
-		for (OCSPResponseBinary ocspBinary : ocspSource.getOCSPResponsesList()) {
-			if (!xmlRevocationsMap.containsKey(ocspBinary.asXmlId()) && !xmlOrphanRevocationTokensMap.containsKey(ocspBinary.asXmlId())) {
-				createOrphanTokenFromRevocationIdentifier(ocspBinary);
-			}
-		}
-		for (OCSPRef ocspRef : ocspSource.getOrphanRevocationReferences()) {
-			if (!xmlOrphanRevocationTokensMap.containsKey(ocspRef.getDSSIdAsString())) {
-				createOrphanRevocationFromRef(ocspRef);
-			}
-		}
-	}
-
 	/**
 	 * This method deals with the signature policy. The retrieved information is
 	 * transformed to the JAXB object.
@@ -2109,10 +1982,10 @@ public class DiagnosticDataBuilder {
 		return certificateSources;
 	}
 
-	private Set<RevocationToken> getRevocationsForCert(CertificateToken certToken) {
-		Set<RevocationToken> revocations = new HashSet<>();
+	private Set<RevocationToken<Revocation>> getRevocationsForCert(CertificateToken certToken) {
+		Set<RevocationToken<Revocation>> revocations = new HashSet<>();
 		if (Utils.isCollectionNotEmpty(usedRevocations)) {
-			for (RevocationToken revocationToken : usedRevocations) {
+			for (RevocationToken<Revocation> revocationToken : usedRevocations) {
 				if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
 					revocations.add(revocationToken);
 				}

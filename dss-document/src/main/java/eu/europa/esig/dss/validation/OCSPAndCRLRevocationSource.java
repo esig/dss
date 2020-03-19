@@ -28,10 +28,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.MultipleRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -39,15 +40,15 @@ import eu.europa.esig.dss.utils.Utils;
  * then a CRL server if no OCSP response could be retrieved.
  *
  */
-public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationToken>, MultipleRevocationSource<RevocationToken> {
+public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation>, MultipleRevocationSource<Revocation> {
 
 	private static final long serialVersionUID = 3205352844337899410L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPAndCRLRevocationSource.class);
 
-	private final RevocationSource<OCSPToken> ocspSource;
+	private final RevocationSource<OCSP> ocspSource;
 
-	private final RevocationSource<CRLToken> crlSource;
+	private final RevocationSource<CRL> crlSource;
 
 	/**
 	 * Build a OCSPAndCRLCertificateVerifier that will use the provided CRLSource
@@ -58,7 +59,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 	 * @param ocspSource
 	 *                           the used OCSP Source (online or offline)
 	 */
-	public OCSPAndCRLRevocationSource(final RevocationSource<CRLToken> crlSource, final RevocationSource<OCSPToken> ocspSource) {
+	public OCSPAndCRLRevocationSource(final RevocationSource<CRL> crlSource, final RevocationSource<OCSP> ocspSource) {
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 	}
@@ -70,7 +71,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 	 * 
 	 */
 	@Override
-	public RevocationToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {
+	public RevocationToken<Revocation> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Check revocation for certificate : {}", certificateToken.getDSSIdAsString());
 		}
@@ -89,11 +90,11 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 	}
 
 	@Override
-	public List<RevocationToken> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerToken) {
+	public List<RevocationToken<Revocation>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerToken) {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Check revocation for certificate : {}", certificateToken.getDSSIdAsString());
 		}
-		List<RevocationToken> results = new ArrayList<>();
+		List<RevocationToken<Revocation>> results = new ArrayList<>();
 		RevocationToken result = checkOCSP(certificateToken, issuerToken);
 		if (result != null) {
 			results.add(result);
@@ -108,7 +109,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 		return results;
 	}
 
-	public RevocationToken checkOCSP(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	public RevocationToken<OCSP> checkOCSP(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (ocspSource == null) {
 			LOG.debug("OCSPSource null");
 			return null;
@@ -117,7 +118,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("OCSP request for: {} using: {}", certificateToken.getDSSIdAsString(), ocspSource.getClass().getSimpleName());
 		}
-		final RevocationToken revocationToken = ocspSource.getRevocationToken(certificateToken, issuerToken);
+		final RevocationToken<OCSP> revocationToken = ocspSource.getRevocationToken(certificateToken, issuerToken);
 		if (revocationToken != null && revocationToken.getStatus() != null) {
 			revocationToken.setRelatedCertificate(certificateToken);
 			if (LOG.isDebugEnabled()) {
@@ -132,7 +133,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 		return null;
 	}
 
-	public RevocationToken checkCRL(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	public RevocationToken<CRL> checkCRL(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (crlSource == null) {
 			LOG.debug("CRLSource is null");
 			return null;
@@ -140,7 +141,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<RevocationTo
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("CRL request for: {} using: {}", certificateToken.getDSSIdAsString(), crlSource.getClass().getSimpleName());
 		}
-		final RevocationToken revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
+		final RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
 		if (revocationToken != null && revocationToken.getStatus() != null) {
 			revocationToken.setRelatedCertificate(certificateToken);
 			if (LOG.isDebugEnabled()) {

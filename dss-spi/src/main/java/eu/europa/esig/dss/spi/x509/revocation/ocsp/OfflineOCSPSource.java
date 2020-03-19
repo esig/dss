@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -50,7 +50,7 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> im
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		
-		final Set<MultipleDigestIdentifier> collectedBinaries = getCollectedBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getCollectedBinaries();
 
 		if (collectedBinaries.isEmpty()) {
 			LOG.trace("Collection of embedded OCSP responses is empty");
@@ -74,10 +74,10 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> im
 	}
 	
 	private OCSPResponseBinary findBestOcspResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
-			Set<MultipleDigestIdentifier> collectedBinaries) {
+			Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries) {
 		OCSPResponseBinary bestOCSPResponse = null;
 		Date bestUpdate = null;
-		for (final MultipleDigestIdentifier binary : collectedBinaries) {
+		for (final EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
 			OCSPResponseBinary response = (OCSPResponseBinary) binary;
 			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
 				DigestAlgorithm usedDigestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);

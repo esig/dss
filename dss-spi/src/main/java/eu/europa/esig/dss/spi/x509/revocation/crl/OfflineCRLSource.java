@@ -62,11 +62,15 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> impl
 	@Override
 	public final RevocationToken<CRL> getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		Objects.requireNonNull(certificateToken, "The certificate to be verified cannot be null");
-		Objects.requireNonNull(issuerToken, "The issuerToken to be verified cannot be null");
 
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {
 			return validCRLToken;
+		}
+
+		// Not found in cached results
+		if (issuerToken == null) {
+			return null;
 		}
 
 		final CRLValidity bestCRLValidity = getBestCrlValidityEntry(certificateToken, issuerToken);

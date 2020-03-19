@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
@@ -90,22 +90,31 @@ public class ListRevocationSource<R extends Revocation> implements RevocationSou
 		return null;
 	}
 
-	public List<MultipleDigestIdentifier> getAllRevocationBinaries() {
-		List<MultipleDigestIdentifier> result = new ArrayList<>();
+	public List<EncapsulatedRevocationTokenIdentifier> getAllRevocationBinaries() {
+		List<EncapsulatedRevocationTokenIdentifier> result = new ArrayList<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
 			result.addAll(revocationSource.getAllRevocationBinaries());
 		}
 		return result;
 	}
 
-	public MultipleDigestIdentifier findBinaryForReference(RevocationRef<R> reference) {
+	public EncapsulatedRevocationTokenIdentifier findBinaryForReference(RevocationRef<R> reference) {
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			MultipleDigestIdentifier tokenIdentifier = revocationSource.findBinaryForReference(reference);
+			EncapsulatedRevocationTokenIdentifier tokenIdentifier = revocationSource.findBinaryForReference(reference);
 			if (tokenIdentifier != null) {
 				return tokenIdentifier;
 			}
 		}
 		return null;
+	}
+
+	public boolean isOrphan(RevocationRef<R> ref) {
+		for (OfflineRevocationSource<R> revocationSource : sources) {
+			if (!revocationSource.isOrphan(ref)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
