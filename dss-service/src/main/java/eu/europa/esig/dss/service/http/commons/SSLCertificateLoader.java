@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLSession;
 
@@ -22,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
@@ -62,15 +66,15 @@ public class SSLCertificateLoader implements Serializable {
      * The method to extract SSL-certificates from the given web page
      * 
      * @param urlString {@link String} representing a URL of a webpage with a secure connection (HTTPS)
-     * @return a {@link Certificate} chain of the secure webpage
+     * @return a {@link CertificateToken} chain of the secure webpage
      * @throws DSSException in case if an exception occurs
      */
-    public Certificate[] getCertificates(final String urlString) throws DSSException {
+    public List<CertificateToken> getCertificates(final String urlString) throws DSSException {
     	if (Protocol.isHttpUrl(urlString)) {
-			return httpGetCertificates(urlString);
+			Certificate[] httpGetCertificates = httpGetCertificates(urlString);
+			return toCertificateTokens(httpGetCertificates);
     	}
-		LOG.warn("DSS framework only supports HTTPS certificate extraction");
-		return new Certificate[] {};
+		throw new DSSException("DSS framework only supports HTTP(S) certificate extraction");
     }
     
     private Certificate[] httpGetCertificates(final String url) throws DSSException {
@@ -95,6 +99,19 @@ public class SSLCertificateLoader implements Serializable {
 			getCommonsDataLoader().closeQuietly(httpRequest, httpResponse, client);
 		
 		}
+    }
+    
+    private List<CertificateToken> toCertificateTokens(Certificate[] certificates) {
+    	List<CertificateToken> certificateTokens = new ArrayList<>();
+    	for (Certificate certificate : certificates) {
+    		try {
+				certificateTokens.add(DSSUtils.loadCertificate(certificate.getEncoded()));
+			} catch (CertificateEncodingException e) {
+				LOG.warn("Cannot read and/or create an instance of a CertificateToken for a certificate : '{}'. "
+						+ "The entry is skipped. Reason : {}", certificate, e.getMessage());
+			}
+    	}
+    	return certificateTokens;
     }
     
     private Certificate[] readCertificates(HttpContext context) {

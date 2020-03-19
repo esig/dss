@@ -55,6 +55,7 @@ import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -235,13 +236,13 @@ public class CommonsDataLoader implements DataLoader {
 			TrustStrategy trustStrategy = getTrustStrategy();
 			if (trustStrategy != null) {
 				LOG.debug("Set the TrustStrategy");
-				sslContextBuilder.loadTrustMaterial(null, getTrustStrategy());
+				sslContextBuilder.loadTrustMaterial(null, trustStrategy);
 			}
 
 			final KeyStore sslTrustStore = getSSLTrustStore();
 			if (sslTrustStore != null) {
 				LOG.debug("Set the SSL trust store as trust materials");
-				sslContextBuilder.loadTrustMaterial(sslTrustStore, getTrustStrategy());
+				sslContextBuilder.loadTrustMaterial(sslTrustStore, trustStrategy);
 			}
 
 			final KeyStore sslKeystore = getSSLKeyStore();
@@ -251,7 +252,7 @@ public class CommonsDataLoader implements DataLoader {
 				sslContextBuilder.loadKeyMaterial(sslKeystore, password);
 				if (loadKeyStoreAsTrustMaterial) {
 					LOG.debug("Set the SSL keystore as trust materials");
-					sslContextBuilder.loadTrustMaterial(sslKeystore, getTrustStrategy());
+					sslContextBuilder.loadTrustMaterial(sslKeystore, trustStrategy);
 				}
 			}
 
@@ -302,6 +303,7 @@ public class CommonsDataLoader implements DataLoader {
 		custom.setSocketTimeout(timeoutSocket);
 		custom.setConnectTimeout(timeoutConnection);
 		custom.setRedirectsEnabled(redirectsEnabled);
+		custom.setCookieSpec(CookieSpecs.STANDARD); // to allow interoperability with RFC 6265 cookies
 
 		final RequestConfig requestConfig = custom.build();
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
