@@ -59,6 +59,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.RegistryBuilder;
@@ -275,6 +276,15 @@ public class CommonsDataLoader implements DataLoader {
 		} else {
 			return null;
 		}
+	}
+	
+	protected synchronized HttpGet getHttpRequest(String url) throws URISyntaxException {
+		final URI uri = new URI(url.trim());
+		HttpGet httpRequest = new HttpGet(uri);
+		if (contentType != null) {
+			httpRequest.setHeader(CONTENT_TYPE, contentType);
+		}
+		return httpRequest;
 	}
 
 	protected synchronized HttpClientBuilder getHttpClientBuilder() {
@@ -539,14 +549,9 @@ public class CommonsDataLoader implements DataLoader {
 		HttpGet httpRequest = null;
 		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
+		
 		try {
-
-			final URI uri = new URI(url.trim());
-			httpRequest = new HttpGet(uri);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
+			httpRequest = getHttpRequest(url);
 			client = getHttpClient(url);
 			httpResponse = getHttpResponse(client, httpRequest);
 
@@ -554,18 +559,24 @@ public class CommonsDataLoader implements DataLoader {
 
 		} catch (URISyntaxException | IOException e) {
 			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
+		
 		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-					Utils.closeQuietly(httpResponse);
-				}
-			} finally {
-				Utils.closeQuietly(client);
+			closeQuietly(httpRequest, httpResponse, client);
+		
+		}
+	}
+	
+	protected void closeQuietly(HttpRequestBase httpRequest, CloseableHttpResponse httpResponse, CloseableHttpClient client) {
+		try {
+			if (httpRequest != null) {
+				httpRequest.releaseConnection();
 			}
+			if (httpResponse != null) {
+				EntityUtils.consumeQuietly(httpResponse.getEntity());
+				Utils.closeQuietly(httpResponse);
+			}
+		} finally {
+			Utils.closeQuietly(client);
 		}
 	}
 
@@ -602,25 +613,25 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
 			throw new DSSExternalResourceException(String.format("Unable to process POST call for url [%s]. Reason : [%s]", url, e.getMessage()) , e);
+		
 		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-					Utils.closeQuietly(httpResponse);
-				}
-			} finally {
-				Utils.closeQuietly(client);
-			}
+			closeQuietly(httpRequest, httpResponse, client);
+		
 		}
 	}
 
 	protected CloseableHttpResponse getHttpResponse(final CloseableHttpClient client, final HttpUriRequest httpRequest) throws IOException {
+		final HttpHost targetHost = getHttpHost(httpRequest);
+		final HttpContext localContext = getHttpContext(targetHost);
+		return client.execute(targetHost, httpRequest, localContext);
+	}
+	
+	protected HttpHost getHttpHost(final HttpUriRequest httpRequest) {
 		final URI uri = httpRequest.getURI();
-		final HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
-
+		return new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
+	}
+	
+	protected HttpContext getHttpContext(final HttpHost targetHost) {
 		// Create AuthCache instance
 		AuthCache authCache = new BasicAuthCache();
 		// Generate BASIC scheme object and add it to the local
@@ -631,8 +642,7 @@ public class CommonsDataLoader implements DataLoader {
 		// Add AuthCache to the execution context
 		HttpClientContext localContext = HttpClientContext.create();
 		localContext.setAuthCache(authCache);
-
-		return client.execute(targetHost, httpRequest, localContext);
+		return localContext;
 	}
 
 	protected byte[] readHttpResponse(final CloseableHttpResponse httpResponse) throws IOException {
