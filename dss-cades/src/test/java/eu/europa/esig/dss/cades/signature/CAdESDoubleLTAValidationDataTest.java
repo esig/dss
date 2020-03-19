@@ -82,12 +82,12 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		AdvancedSignature advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(1, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
 		TimestampToken timestampToken = advancedSignature.getSignatureTimestamps().get(0);
-		assertEquals(0, timestampToken.getCRLSource().getCRLBinaryList().size());
-		assertEquals(0, timestampToken.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(0, timestampToken.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(0, timestampToken.getOCSPSource().getAllRevocationBinaries().size());
 		
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -115,12 +115,12 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(1, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
 		TimestampToken archiveTimestamp = advancedSignature.getArchiveTimestamps().get(0);
-		assertEquals(0, archiveTimestamp.getCRLSource().getCRLBinaryList().size());
-		assertEquals(0, archiveTimestamp.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(0, archiveTimestamp.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(0, archiveTimestamp.getOCSPSource().getAllRevocationBinaries().size());
 		
 		extendParams.setCertificateChain(getCertificateChain());
 		
@@ -148,15 +148,15 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(1, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
-		assertEquals(2, advancedSignature.getCompleteCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getCompleteOCSPSource().getOCSPResponsesList().size());
+		assertEquals(2, advancedSignature.getCompleteCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getCompleteOCSPSource().getAllRevocationBinaries().size());
 		
 		archiveTimestamp = advancedSignature.getArchiveTimestamps().get(0);
-		assertEquals(1, archiveTimestamp.getCRLSource().getCRLBinaryList().size());
-		assertEquals(0, archiveTimestamp.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(1, archiveTimestamp.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(0, archiveTimestamp.getOCSPSource().getAllRevocationBinaries().size());
 		
 		diagnosticData = reports.getDiagnosticData();
 		

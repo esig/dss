@@ -152,7 +152,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	 */
 	protected void addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
-			addCRLBinary(new CRLBinary(crlHolder.getEncoded()), origin);
+			addBinary(new CRLBinary(crlHolder.getEncoded()), origin);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -169,7 +169,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 					if (crlIds != null) {
 						for (final CrlValidatedID id : crlIds.getCrls()) {
 							final CRLRef crlRef = new CRLRef(id);
-							addCRLReference(crlRef, origin);
+							addRevocationReference(crlRef, origin);
 						}
 					}
 				}

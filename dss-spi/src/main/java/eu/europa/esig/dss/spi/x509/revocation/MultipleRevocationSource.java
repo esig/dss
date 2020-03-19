@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  * 
  * Several implementations are available based on CRL and OCSP.
  */
-public interface MultipleRevocationSource<T extends RevocationToken> extends Serializable {
+public interface MultipleRevocationSource<R extends Revocation> extends Serializable {
 
 	/**
 	 * This method retrieves a list of {@code RevocationToken} for the
@@ -43,6 +43,6 @@ public interface MultipleRevocationSource<T extends RevocationToken> extends Ser
 	 *                               issuer of the certificateToken
 	 * @return a list of {@code RevocationToken}
 	 */
-	List<T> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
+	List<RevocationToken<R>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
 
 }

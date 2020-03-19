@@ -43,6 +43,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class JdbcCacheOcspSourceTest {
@@ -67,7 +68,7 @@ public class JdbcCacheOcspSourceTest {
 	
 	@Test
 	public void test() throws Exception {
-		RevocationToken revocationToken = null;
+		OCSPToken revocationToken = null;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
@@ -84,7 +85,7 @@ public class JdbcCacheOcspSourceTest {
 		requestTime = new Date();
 
 		// check real {@code findRevocation()} method behavior
-		RevocationToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		OCSPToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getAbbreviation(), savedRevocationToken.getAbbreviation());
@@ -111,7 +112,7 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(RevocationOrigin.CACHED, storedRevocationToken.getExternalOrigin());
 
 		// check a dummy token with the old maxUpdateDelay
-		RevocationToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		OCSPToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(refreshedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, refreshedRevocationToken.getExternalOrigin());
 		
@@ -134,7 +135,7 @@ public class JdbcCacheOcspSourceTest {
 	private class MockJdbcCacheOCSPSource extends JdbcCacheOCSPSource {
 		
 		@Override
-		protected OCSPToken findRevocation(String key, CertificateToken certificateToken,
+		protected RevocationToken<OCSP> findRevocation(String key, CertificateToken certificateToken,
 				CertificateToken issuerCertificateToken) {
 			if (storedRevocationToken == null) {
 				return super.findRevocation(key, certificateToken, issuerCertificateToken);

@@ -35,6 +35,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 
 public class OfflineOCSPSourceTest {
@@ -96,7 +97,7 @@ public class OfflineOCSPSourceTest {
 
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/sk_ocsp.bin");
 
-		OCSPToken ocspToken = ocspSource.getRevocationToken(user, caToken);
+		RevocationToken<OCSP> ocspToken = ocspSource.getRevocationToken(user, caToken);
 
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getRevocationDate());

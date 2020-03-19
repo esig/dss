@@ -27,8 +27,8 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 
 /**
  * Provides information on the sources to be used in the validation process in
@@ -42,14 +42,14 @@ public interface CertificateVerifier {
 	 * @return the used OCSP source for external access (web, filesystem,
 	 *         cached,...)
 	 */
-	RevocationSource<OCSPToken> getOcspSource();
+	RevocationSource<OCSP> getOcspSource();
 
 	/**
 	 * Returns the CRL source associated with this verifier.
 	 *
 	 * @return the used CRL source for external access (web, filesystem, cached,...)
 	 */
-	RevocationSource<CRLToken> getCrlSource();
+	RevocationSource<CRL> getCrlSource();
 
 	/**
 	 * Defines the source of CRL used by this class
@@ -58,7 +58,7 @@ public interface CertificateVerifier {
 	 *                  the CRL source to set for external access (web, filesystem,
 	 *                  cached,...)
 	 */
-	void setCrlSource(final RevocationSource<CRLToken> crlSource);
+	void setCrlSource(final RevocationSource<CRL> crlSource);
 
 	/**
 	 * Defines the source of OCSP used by this class
@@ -67,7 +67,7 @@ public interface CertificateVerifier {
 	 *                   the OCSP source to set for external access (web,
 	 *                   filesystem, cached,...)
 	 */
-	void setOcspSource(final RevocationSource<OCSPToken> ocspSource);
+	void setOcspSource(final RevocationSource<OCSP> ocspSource);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
@@ -132,7 +132,7 @@ public interface CertificateVerifier {
 	 * 
 	 * @return the CRL sources from the signature
 	 */
-	ListCRLSource getSignatureCRLSource();
+	ListRevocationSource<CRL> getSignatureCRLSource();
 
 	/**
 	 * This method allows to set the CRL source (information extracted from
@@ -141,14 +141,14 @@ public interface CertificateVerifier {
 	 * @param signatureCRLSource
 	 *                           the CRL sources from the signature
 	 */
-	void setSignatureCRLSource(final ListCRLSource signatureCRLSource);
+	void setSignatureCRLSource(final ListRevocationSource<CRL> signatureCRLSource);
 
 	/**
 	 * This method returns the OCSP source (information extracted from signatures).
 	 * 
 	 * @return the OCSP sources from the signature
 	 */
-	ListOCSPSource getSignatureOCSPSource();
+	ListRevocationSource<OCSP> getSignatureOCSPSource();
 
 	/**
 	 * This method allows to set the OCSP source (information extracted from
@@ -157,7 +157,7 @@ public interface CertificateVerifier {
 	 * @param signatureOCSPSource
 	 *                            the OCSP sources from the signature
 	 */
-	void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource);
+	void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource);
 
 	/**
 	 * This method allows to change the behavior on missing revocation data (LT/LTA

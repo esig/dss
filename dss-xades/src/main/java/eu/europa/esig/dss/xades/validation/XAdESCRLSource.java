@@ -80,7 +80,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 			for (int ii = 0; ii < crlValueNodes.getLength(); ii++) {
 				final Element crlValueEl = (Element) crlValueNodes.item(ii);
 				if (crlValueEl != null) {
-					addCRLBinary(new CRLBinary(Utils.fromBase64(crlValueEl.getTextContent())), revocationOrigin);
+					addBinary(new CRLBinary(Utils.fromBase64(crlValueEl.getTextContent())), revocationOrigin);
 				}
 			}
 		}
@@ -99,7 +99,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 				final Element crlRefNode = (Element) crlRefNodes.item(ii);
 				CRLRef crlRef = XAdESRevocationRefExtractionUtils.createCRLRef(xadesPaths, crlRefNode);
 				if (crlRef !=null) {
-					addCRLReference(crlRef, revocationRefOrigin);
+					addRevocationReference(crlRef, revocationRefOrigin);
 				}
 			}
 		}

@@ -43,6 +43,7 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -232,15 +233,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public ListCRLSource getCompleteCRLSource() {
-		ListCRLSource crlSource = new ListCRLSource(getCRLSource());
+	public ListRevocationSource getCompleteCRLSource() {
+		ListRevocationSource crlSource = new ListRevocationSource(getCRLSource());
 		crlSource.addAll(getTimestampSource().getTimestampCRLSources());
 		return crlSource;
 	}
 
 	@Override
-	public ListOCSPSource getCompleteOCSPSource() {
-		ListOCSPSource ocspSource = new ListOCSPSource(getOCSPSource());
+	public ListRevocationSource getCompleteOCSPSource() {
+		ListRevocationSource ocspSource = new ListRevocationSource(getOCSPSource());
 		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
 		return ocspSource;
 	}
@@ -754,7 +755,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean areAllCertsHaveRevocationData(RevocationSource<RevocationToken> revocationSource, List<CertificateToken> certificates) {
+	private boolean areAllCertsHaveRevocationData(RevocationSource<Revocation> revocationSource, List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
 		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
 		for (List<CertificateToken> chain : orderedCerts.values()) {

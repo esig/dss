@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 
 /**
  * Check the status of the certificate using an OCSPSource
@@ -37,7 +37,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPCertificateVerifier.class);
 
-	private final RevocationSource<OCSPToken> ocspSource;
+	private final RevocationSource<OCSP> ocspSource;
 
 
 	/**
@@ -46,19 +46,19 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	 *
 	 * @param ocspSource
 	 */
-	public OCSPCertificateVerifier(final RevocationSource<OCSPToken> ocspSource) {
+	public OCSPCertificateVerifier(final RevocationSource<OCSP> ocspSource) {
 		this.ocspSource = ocspSource;
 	}
 
 	@Override
-	public RevocationToken check(final CertificateToken toCheckToken, final CertificateToken issuerToken) {
+	public RevocationToken<OCSP> check(final CertificateToken toCheckToken, final CertificateToken issuerToken) {
 		if (ocspSource == null) {
 			LOG.debug("OCSPSource null");
 			return null;
 		}
 
 		try {
-			final OCSPToken ocspToken = ocspSource.getRevocationToken(toCheckToken, issuerToken);
+			final RevocationToken<OCSP> ocspToken = ocspSource.getRevocationToken(toCheckToken, issuerToken);
 			if (ocspToken == null) {
 				LOG.debug("{} : No matching OCSP response found for {}", ocspSource.getClass().getSimpleName(), toCheckToken.getDSSIdAsString());
 			} else {

@@ -11,10 +11,13 @@ import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 
-public class RevocationContainer<R extends Revocation> {
+public abstract class OfflineRevocationSource<R extends Revocation> implements RevocationSource<R> {
+
+	private static final long serialVersionUID = 8270762277613989997L;
 
 	private final Map<MultipleDigestIdentifier, List<RevocationOrigin>> binaryOrigins = new HashMap<>();
 
@@ -24,7 +27,7 @@ public class RevocationContainer<R extends Revocation> {
 
 	private final RevocationTokenRefMatcher<R> tokenRefMatcher;
 
-	public RevocationContainer(RevocationTokenRefMatcher<R> tokenRefMatcher) {
+	protected OfflineRevocationSource(RevocationTokenRefMatcher<R> tokenRefMatcher) {
 		Objects.requireNonNull(tokenRefMatcher);
 		this.tokenRefMatcher = tokenRefMatcher;
 	}
@@ -251,6 +254,16 @@ public class RevocationContainer<R extends Revocation> {
 		return result;
 	}
 
+	public MultipleDigestIdentifier findBinaryForReference(RevocationRef<R> ref) {
+		Digest currentDigest = ref.getDigest();
+		for (MultipleDigestIdentifier identifier : binaryOrigins.keySet()) {
+			if (identifier.isMatch(currentDigest)) {
+				return identifier;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * This method verifies if a given {@code RevocationRef} is an orphan (not
 	 * linked to a complete {@code RevocationToken)
@@ -321,6 +334,15 @@ public class RevocationContainer<R extends Revocation> {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * This method checks if the revocation source is empty
+	 * 
+	 * @return true if the source is empty
+	 */
+	public boolean isEmpty() {
+		return Utils.isMapEmpty(binaryOrigins) && Utils.isMapEmpty(tokenOrigins) && Utils.isMapEmpty(referenceOrigins);
 	}
 
 }

@@ -41,6 +41,7 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -54,7 +55,7 @@ import eu.europa.esig.dss.utils.Utils;
  * apache-ldap-api is provided.
  *
  */
-public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRLToken>, OnlineRevocationSource<CRLToken> {
+public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRL>, OnlineRevocationSource<CRL> {
 	
 	private static final long serialVersionUID = 6912729291417315212L;
 

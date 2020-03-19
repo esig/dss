@@ -110,7 +110,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 				if (ocspRefElement != null) {
 					OCSPRef ocspRef = XAdESRevocationRefExtractionUtils.createOCSPRef(xadesPaths, ocspRefElement);
 					if (ocspRef != null) {
-						addOCSPReference(ocspRef, revocationRefOrigin);
+						addRevocationReference(ocspRef, revocationRefOrigin);
 					}
 				}
 			}
@@ -119,7 +119,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
 		try {
-			addOCSPResponse(OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue)), origin);
+			addBinary(OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue)), origin);
 		} catch (Exception e) {
 			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}

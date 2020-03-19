@@ -31,6 +31,7 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 
 public class OfflineCRLSourceTest {
@@ -49,7 +50,7 @@ public class OfflineCRLSourceTest {
 		OfflineCRLSource crlSource = new MockCRLSource();
 		assertNull(crlSource.getRevocationToken(certToValidate, certToValidate));
 		
-		crlSource.addCRLBinary(new CRLBinary(Utils.fromBase64(crlB64)), RevocationOrigin.EXTERNAL);
+		crlSource.addBinary(new CRLBinary(Utils.fromBase64(crlB64)), RevocationOrigin.EXTERNAL);
 		
 		assertNull(crlSource.getRevocationToken(certToValidate, null));
 		assertNull(crlSource.getRevocationToken(certToValidate, certToValidate));
@@ -62,7 +63,7 @@ public class OfflineCRLSourceTest {
 		assertNotNull(crlSource.getRevocationToken(certToValidate, caCert));
 		assertNotNull(crlSource.getRevocationToken(certToValidate, caCert));
 
-		CRLToken crlToken = crlSource.getRevocationToken(certToValidate, null);
+		RevocationToken<CRL> crlToken = crlSource.getRevocationToken(certToValidate, null);
 		assertNotNull(crlToken);
 		assertEquals(caCert.getPublicKey(), crlToken.getPublicKeyOfTheSigner());
 

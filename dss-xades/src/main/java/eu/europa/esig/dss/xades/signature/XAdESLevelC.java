@@ -197,7 +197,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 						DomUtils.addTextElement(documentDom, responderIDDom, getXadesNamespace(), 
 								getCurrentXAdESElements().getElementByName(), responderId.getName());
 					} else {
-						final String base64EncodedKeyHashOctetStringBytes = Utils.toBase64(responderId.getKey());
+						final String base64EncodedKeyHashOctetStringBytes = Utils.toBase64(responderId.getKeyHash());
 						DomUtils.addTextElement(documentDom, responderIDDom, getXadesNamespace(), 
 								getCurrentXAdESElements().getElementByKey(), base64EncodedKeyHashOctetStringBytes);
 					}

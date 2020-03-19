@@ -30,7 +30,6 @@ import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
@@ -78,7 +77,7 @@ public class OCSPSourceSnippet {
 		Long threeMinutes = (long) (60 * 3);
 		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes); // default nextUpdateDelay (if not defined in the revocation data)
 		cacheOCSPSource.initTable();
-		RevocationToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, certificateToken);
+		OCSPToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, certificateToken);
 		// end::demo-cached[]
 
 	}

@@ -39,6 +39,7 @@ import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
@@ -92,9 +93,9 @@ public class OnlineOCSPSourceTest {
 		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
 
-		RevocationSource<OCSPToken> currentOCSPSource = new AlternateUrlsSourceAdapter<>(ocspSource,
+		RevocationSource<OCSP> currentOCSPSource = new AlternateUrlsSourceAdapter<OCSP>(ocspSource,
 				alternativeOCSPUrls);
-		OCSPToken ocspToken = currentOCSPSource.getRevocationToken(certificateToken, rootToken);
+		OCSPToken ocspToken = (OCSPToken) currentOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 	}
 	

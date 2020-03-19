@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  * This interface allows to retrieve revocation data for a given certificate.
  * Several implementations are available based on CRL and OCSP.
  */
-public interface RevocationSource<T extends RevocationToken> extends Serializable {
+public interface RevocationSource<R extends Revocation> extends Serializable {
 
 	/**
 	 * This method retrieves a {@code RevocationToken} for the certificateToken
@@ -41,6 +41,6 @@ public interface RevocationSource<T extends RevocationToken> extends Serializabl
 	 *                               issuer of the certificateToken
 	 * @return an instance of {@code RevocationToken}
 	 */
-	T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
+	RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
 
 }

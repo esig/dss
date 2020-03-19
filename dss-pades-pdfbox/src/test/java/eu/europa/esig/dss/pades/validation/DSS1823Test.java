@@ -60,10 +60,10 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.CompositeRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
@@ -236,17 +236,17 @@ public class DSS1823Test extends PKIFactoryAccess {
 		
 		PdfDssDict dssDictionary = documentReader.getDSSDictionary();
 
-		List<RevocationSource<CRLToken>> crlTokens = new ArrayList<>();
+		List<RevocationSource<CRL>> crlTokens = new ArrayList<>();
 		crlTokens.add(calculateCRLs(dssDictionary));
 		crlTokens.add(onlineCRLSource);
 
-		List<RevocationSource<OCSPToken>> ocspTokens = new ArrayList<>();
+		List<RevocationSource<OCSP>> ocspTokens = new ArrayList<>();
 		ocspTokens.add(calculateOCSPs(dssDictionary));
 		ocspTokens.add(onlineOCSPSource);
 
-		CompositeRevocationSource<CRLToken> compositeCTLSources = new CompositeRevocationSource<>(
+		CompositeRevocationSource<CRL> compositeCTLSources = new CompositeRevocationSource<>(
 				crlTokens);
-		CompositeRevocationSource<OCSPToken> compositeOCSPSources = new CompositeRevocationSource<>(
+		CompositeRevocationSource<OCSP> compositeOCSPSources = new CompositeRevocationSource<>(
 				ocspTokens);
 
 		certificateVerifier.setCrlSource(compositeCTLSources);

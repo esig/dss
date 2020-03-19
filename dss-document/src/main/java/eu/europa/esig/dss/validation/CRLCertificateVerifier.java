@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 
 /**
  * Verifier based on CRL
@@ -36,7 +36,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLCertificateVerifier.class);
 
-	private final RevocationSource<CRLToken> crlSource;
+	private final RevocationSource<CRL> crlSource;
 
 	/**
 	 * Main constructor.
@@ -44,19 +44,19 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 	 * @param crlSource
 	 *                           the CRL repository used by this CRL trust linker.
 	 */
-	public CRLCertificateVerifier(final RevocationSource<CRLToken> crlSource) {
+	public CRLCertificateVerifier(final RevocationSource<CRL> crlSource) {
 		this.crlSource = crlSource;
 	}
 
 	@Override
-	public RevocationToken check(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	public RevocationToken<CRL> check(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		try {
 			if (crlSource == null) {
 				LOG.debug("CRLSource is null");
 				return null;
 			}
 
-			final CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerToken);
+			final RevocationToken<CRL> crlToken = crlSource.getRevocationToken(certificateToken, issuerToken);
 			if (crlToken == null) {
 				LOG.debug("{} : No CRL found for: {}", crlSource.getClass().getSimpleName(), certificateToken.getDSSIdAsString());
 				return null;

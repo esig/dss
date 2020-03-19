@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 
 /**
@@ -29,6 +30,9 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
  * server, ...). This interface provides an abstraction for a source of OCSPResp
  *
  */
-public interface OCSPSource extends RevocationSource<OCSPToken> {
+public interface OCSPSource extends RevocationSource<OCSP> {
+
+	@Override
+	OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
 
 }

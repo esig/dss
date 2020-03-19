@@ -29,7 +29,6 @@ import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
@@ -101,7 +100,7 @@ public class CRLSourceSnippet {
 		cacheCRLSource.initTable();
 		
 		// Extract CRL for a certificate
-		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, issuerCertificateToken);
+		CRLToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo-cached[]
 
 	}

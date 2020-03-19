@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +32,10 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationContainer;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
@@ -46,14 +43,13 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
  * the contained list. The child need to retrieve the list of wrapped CRLs.
  */
 @SuppressWarnings("serial")
-public abstract class OfflineCRLSource implements CRLSource {
+public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> implements RevocationSource<CRL> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
-	/**
-	 * Container with all revocation data
-	 */
-	protected final RevocationContainer<CRL> container = new RevocationContainer<CRL>(new CRLTokenRefMatcher());
+	protected OfflineCRLSource() {
+		super(new CRLTokenRefMatcher());
+	}
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
@@ -64,7 +60,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<>();
 
 	@Override
-	public final CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	public final RevocationToken<CRL> getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		Objects.requireNonNull(certificateToken, "The certificate to be verified cannot be null");
 		Objects.requireNonNull(issuerToken, "The issuerToken to be verified cannot be null");
 
@@ -81,7 +77,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
 		validCRLTokenList.put(certificateToken, crlToken);
 		// store tokens with different origins
-		container.addRevocation(crlToken, bestCRLValidity.getCrlBinaryIdentifier());
+		addRevocation(crlToken, bestCRLValidity.getCrlBinaryIdentifier());
 		return crlToken;
 	}
 
@@ -101,7 +97,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (MultipleDigestIdentifier binary : container.getCollectedBinaries()) {
+		for (MultipleDigestIdentifier binary : getCollectedBinaries()) {
 			CRLBinary crlEntry = (CRLBinary) binary;
 			final CRLValidity crlValidity = getCrlValidity(crlEntry, issuerToken);
 			if (!crlValidity.isValid()) {
@@ -151,26 +147,6 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 
 	/**
-	 * Adds the provided {@code crlBinary} to the list
-	 * 
-	 * @param crlBinary {@link CRLBinary} to add
-	 * @param origin    {@link RevocationOrigin} of the {@code crlBinary}
-	 */
-	protected void addCRLBinary(CRLBinary crlBinary, RevocationOrigin origin) {
-		container.addBinary(crlBinary, origin);
-	}
-
-	/**
-	 * Adds the provided {@code crlRef} to the list
-	 * 
-	 * @param crlRef {@link CRLRef} to add
-	 * @param origin {@link RevocationRefOrigin} of the {@code crlRef}
-	 */
-	protected void addCRLReference(CRLRef crlRef, RevocationRefOrigin origin) {
-		container.addRevocationReference(crlRef, origin);
-	}
-
-	/**
 	 * Computes an issuer-dependent key for {@code crlValidityMap}
 	 * @param crlBinary {@link CRLBinary} of the CRL Entry
 	 * @param issuerToken {@link CertificateToken} of issuer
@@ -178,22 +154,6 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 */
 	private String getCrlValidityKey(final CRLBinary crlBinary, final CertificateToken issuerToken) {
 		return crlBinary.asXmlId() + issuerToken.getDSSIdAsString();
-	}
-
-	public Set<MultipleDigestIdentifier> getAllRevocationBinaries() {
-		return container.getAllRevocationBinaries();
-	}
-
-	public Set<MultipleDigestIdentifier> getAllReferencedRevocationBinaries() {
-		return container.getAllReferencedRevocationBinaries();
-	}
-
-	public Set<RevocationToken<CRL>> getAllRevocationTokens() {
-		return container.getAllRevocationTokens();
-	}
-
-	public Set<RevocationRef<CRL>> getAllRevocationReferences() {
-		return container.getAllRevocationReferences();
 	}
 
 }

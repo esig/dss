@@ -36,10 +36,10 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
@@ -71,12 +71,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This field contains the reference to the {@code OCSPSource}.
 	 */
-	private RevocationSource<OCSPToken> ocspSource;
+	private RevocationSource<OCSP> ocspSource;
 
 	/**
 	 * This field contains the reference to the {@code CRLSource}.
 	 */
-	private RevocationSource<CRLToken> crlSource;
+	private RevocationSource<CRL> crlSource;
 
 	/**
 	 * The data loader used to access AIA certificate source.
@@ -84,14 +84,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private DataLoader dataLoader;
 
 	/**
-	 * This variable contains the {@code ListCRLSource} extracted from the signatures to validate.
+	 * This variable contains the {@code ListRevocationSource} extracted from the
+	 * signatures to validate.
 	 */
-	private ListCRLSource signatureCRLSource;
+	private ListRevocationSource<CRL> signatureCRLSource;
 
 	/**
-	 * This variable contains the {@code ListOCSPSource} extracted from the signatures to validate.
+	 * This variable contains the {@code ListRevocationSource} extracted from the
+	 * signatures to validate.
 	 */
-	private ListOCSPSource signatureOCSPSource;
+	private ListRevocationSource<OCSP> signatureOCSPSource;
 
 	/**
 	 * This variable set the behavior to follow in case of missing revocation data
@@ -213,22 +215,22 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public RevocationSource<OCSPToken> getOcspSource() {
+	public RevocationSource<OCSP> getOcspSource() {
 		return ocspSource;
 	}
 
 	@Override
-	public RevocationSource<CRLToken> getCrlSource() {
+	public RevocationSource<CRL> getCrlSource() {
 		return crlSource;
 	}
 
 	@Override
-	public void setCrlSource(final RevocationSource<CRLToken> crlSource) {
+	public void setCrlSource(final RevocationSource<CRL> crlSource) {
 		this.crlSource = crlSource;
 	}
 
 	@Override
-	public void setOcspSource(final RevocationSource<OCSPToken> ocspSource) {
+	public void setOcspSource(final RevocationSource<OCSP> ocspSource) {
 		this.ocspSource = ocspSource;
 	}
 
@@ -281,22 +283,22 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public ListCRLSource getSignatureCRLSource() {
+	public ListRevocationSource<CRL> getSignatureCRLSource() {
 		return signatureCRLSource;
 	}
 
 	@Override
-	public void setSignatureCRLSource(final ListCRLSource signatureCRLSource) {
+	public void setSignatureCRLSource(final ListRevocationSource<CRL> signatureCRLSource) {
 		this.signatureCRLSource = signatureCRLSource;
 	}
 
 	@Override
-	public ListOCSPSource getSignatureOCSPSource() {
+	public ListRevocationSource<OCSP> getSignatureOCSPSource() {
 		return signatureOCSPSource;
 	}
 
 	@Override
-	public void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource) {
+	public void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource) {
 		this.signatureOCSPSource = signatureOCSPSource;
 	}
 

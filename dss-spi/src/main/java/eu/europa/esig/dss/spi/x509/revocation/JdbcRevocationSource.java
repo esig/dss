@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  * 
  * @param <T> {@code CRLToken} or {@code OCSPToken}
  */
-public abstract class JdbcRevocationSource<T extends RevocationToken> extends RepositoryRevocationSource<T> {
+public abstract class JdbcRevocationSource<R extends Revocation> extends RepositoryRevocationSource<R> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcRevocationSource.class); 
 
@@ -83,7 +83,8 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 * @param issuerCertificateToken {@link CertificateToken} if issuer of the certificateToken
 	 * @return {@link RevocationToken}
 	 */
-	protected abstract T buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws RevocationException;
+	protected abstract RevocationToken<R> buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken,
+			CertificateToken issuerCertificateToken) throws RevocationException;
 
 	/**
 	 * @param dataSource
@@ -94,7 +95,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	}
 	
 	@Override
-	protected T findRevocation(final String key, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
+	protected RevocationToken<R> findRevocation(final String key, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
@@ -117,7 +118,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	}
 
 	@Override
-	protected void removeRevocation(T token) {
+	protected void removeRevocation(RevocationToken<R> token) {
 		Connection c = null;
 		PreparedStatement s = null;
 		try {

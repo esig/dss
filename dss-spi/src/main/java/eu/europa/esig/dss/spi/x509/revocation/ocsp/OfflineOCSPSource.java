@@ -29,33 +29,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationContainer;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
  *
  */
 @SuppressWarnings("serial")
-public abstract class OfflineOCSPSource implements OCSPSource {
+public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> implements OCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
-	/**
-	 * Container with all revocation data
-	 */
-	protected final RevocationContainer<OCSP> container = new RevocationContainer<OCSP>(new OCSPTokenRefMatcher());
+	protected OfflineOCSPSource() {
+		super(new OCSPTokenRefMatcher());
+	}
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		
-		final Set<MultipleDigestIdentifier> collectedBinaries = container.getCollectedBinaries();
+		final Set<MultipleDigestIdentifier> collectedBinaries = getCollectedBinaries();
 
 		if (collectedBinaries.isEmpty()) {
 			LOG.trace("Collection of embedded OCSP responses is empty");
@@ -70,7 +65,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		OCSPResponseBinary bestOCSPResponse = findBestOcspResponse(certificateToken, issuerCertificateToken, collectedBinaries);
 		if (bestOCSPResponse != null) {
 			OCSPToken ocspToken = new OCSPToken(bestOCSPResponse.getBasicOCSPResp(), certificateToken, issuerCertificateToken);
-			storeOCSPToken(ocspToken, bestOCSPResponse);
+			addRevocation(ocspToken, bestOCSPResponse);
 			return ocspToken;
 		} else if (LOG.isDebugEnabled()) {
 			LOG.debug("Best OCSP Response for the certificate {} is not found", certificateToken.getDSSIdAsString());
@@ -99,44 +94,4 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		return bestOCSPResponse;
 	}
 	
-	private void storeOCSPToken(OCSPToken ocspToken, OCSPResponseBinary binary) {
-		container.addRevocation(ocspToken, binary);
-	}
-
-	/**
-	 * Adds the provided {@code ocspResponse} to the list
-	 * 
-	 * @param ocspResponse {@link OCSPResponseBinary} to add
-	 * @param origin       {@link RevocationOrigin} of the {@code ocspResponse}
-	 */
-	protected void addOCSPResponse(OCSPResponseBinary ocspResponse, RevocationOrigin origin) {
-		container.addBinary(ocspResponse, origin);
-	}
-
-	/**
-	 * Adds the provided {@code ocspResponse} to the list
-	 * 
-	 * @param ocspRef {@link OCSPRef} to add
-	 * @param origin  {@link RevocationRefOrigin} of the {@code ocspRef}
-	 */
-	protected void addOCSPReference(OCSPRef ocspRef, RevocationRefOrigin origin) {
-		container.addRevocationReference(ocspRef, origin);
-	}
-
-	public Set<MultipleDigestIdentifier> getAllRevocationBinaries() {
-		return container.getAllRevocationBinaries();
-	}
-
-	public Set<MultipleDigestIdentifier> getAllReferencedRevocationBinaries() {
-		return container.getAllReferencedRevocationBinaries();
-	}
-
-	public Set<RevocationToken<OCSP>> getAllRevocationTokens() {
-		return container.getAllRevocationTokens();
-	}
-
-	public Set<RevocationRef<OCSP>> getAllRevocationReferences() {
-		return container.getAllRevocationReferences();
-	}
-
 }

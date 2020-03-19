@@ -38,18 +38,16 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * OCSPSource that retrieve information from a JDBC data-source.
  *
- * @version 1.0
- * @author akoepe
- * @author aleksandr.beliakov
- * @author pierrick.vanderbroucke
  */
-public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> implements OCSPSource {
+public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements OCSPSource {
 	
 	private static final long serialVersionUID = 10480458323923489L;
 
@@ -155,7 +153,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 	 *            OCSP token
 	 */
 	@Override
-	protected void insertRevocation(final OCSPToken token) {
+	protected void insertRevocation(RevocationToken<OCSP> token) {
 		Connection c = null;
 		PreparedStatement s = null;
 		try {
@@ -189,7 +187,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 	 *            new OCSP token
 	 */
 	@Override
-	protected void updateRevocation(final OCSPToken token) {
+	protected void updateRevocation(final RevocationToken<OCSP> token) {
 		Connection c = null;
 		PreparedStatement s = null;
 		try {
@@ -213,6 +211,16 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 		} finally {
 			closeQuietly(c, s, null);
 		}
+	}
+
+	@Override
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		return (OCSPToken) super.getRevocationToken(certificateToken, issuerCertificateToken);
+	}
+
+	@Override
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, boolean forceRefresh) {
+		return (OCSPToken) super.getRevocationToken(certificateToken, issuerCertificateToken, forceRefresh);
 	}
 	
 }

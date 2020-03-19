@@ -107,7 +107,7 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 					final OCSPResp ocspResp = new OCSPResp(ocspResponse);
 					try {
 						BasicOCSPResp basicOCSPResponse = (BasicOCSPResp) ocspResp.getResponseObject();
-						addOCSPResponse(OCSPResponseBinary.build(basicOCSPResponse), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+						addBinary(OCSPResponseBinary.build(basicOCSPResponse), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 					} catch (OCSPException e) {
 						LOG.warn("Error while extracting OCSPResponse from Revocation Info Archivals (ADBE) : {}", e.getMessage());
 					}					
@@ -144,7 +144,7 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 	
 	private void extractDSSOCSPs() {
 		for (BasicOCSPResp basicOCSPResp : getDssOcspMap().values()) {
-			addOCSPResponse(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.DSS_DICTIONARY);
+			addBinary(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.DSS_DICTIONARY);
 		}
 	}
 	
@@ -171,7 +171,7 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 				if (!ocspMap.containsKey(ocspEntry.getKey())) {
 					ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
 				}
-				addOCSPResponse(OCSPResponseBinary.build(ocspEntry.getValue()), RevocationOrigin.VRI_DICTIONARY);
+				addBinary(OCSPResponseBinary.build(ocspEntry.getValue()), RevocationOrigin.VRI_DICTIONARY);
 			}
 		}
 	}

@@ -158,8 +158,7 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 
 				OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
 				ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
-				addOCSPResponse(ocspResponseIdentifier, RevocationOrigin.CMS_SIGNED_DATA);
-
+				addBinary(ocspResponseIdentifier, RevocationOrigin.CMS_SIGNED_DATA);
 			} else {
 				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
@@ -175,7 +174,7 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
 				ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-				addOCSPResponse(ocspResponseIdentifier, RevocationOrigin.CMS_SIGNED_DATA);
+				addBinary(ocspResponseIdentifier, RevocationOrigin.CMS_SIGNED_DATA);
 			} else {
 				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
@@ -193,7 +192,7 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 				for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
 					final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
 					OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
-					addOCSPResponse(ocspResponseIdentifier, origin);
+					addBinary(ocspResponseIdentifier, origin);
 				}
 			}
 			/*
@@ -224,7 +223,7 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 			if (ocspListID != null) {
 				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
 					final OCSPRef ocspRef = new OCSPRef(ocspResponsesID);
-					addOCSPReference(ocspRef, origin);
+					addRevocationReference(ocspRef, origin);
 				}
 			}
 		}

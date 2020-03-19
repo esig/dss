@@ -25,9 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.validation.ListCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.validation.ListCertificateSource;
-import eu.europa.esig.dss.validation.ListOCSPSource;
+import eu.europa.esig.dss.validation.ListRevocationSource;
 
 /**
  * The interface for handling validation data extracted from timestamps
@@ -73,18 +74,19 @@ public interface TimestampSource extends Serializable {
 	ListCertificateSource getTimestampCertificateSources();
 	
 	/**
-	 * Returns a merged {@code ListCRLSource} of all embedded timestamp CRL sources
-	 * 
-	 * @return {@link ListCRLSource}
-	 */
-	ListCRLSource getTimestampCRLSources();
-	
-	/**
-	 * Returns a merged {@code ListOCSPSource} of all embedded timestamp OCSP
+	 * Returns a merged {@code ListRevocationSource} of all embedded timestamp CRL
 	 * sources
 	 * 
-	 * @return {@link ListOCSPSource}
+	 * @return {@link ListRevocationSource}
 	 */
-	ListOCSPSource getTimestampOCSPSources();
+	ListRevocationSource<CRL> getTimestampCRLSources();
+	
+	/**
+	 * Returns a merged {@code ListRevocationSource} of all embedded timestamp OCSP
+	 * sources
+	 * 
+	 * @return {@link ListRevocationSource}
+	 */
+	ListRevocationSource<OCSP> getTimestampOCSPSources();
 
 }
