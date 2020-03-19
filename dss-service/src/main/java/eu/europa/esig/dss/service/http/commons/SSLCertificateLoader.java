@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.service.http.commons;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.security.cert.Certificate;
 
@@ -30,13 +31,32 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
  * Use the method getCertificates(url) to extract the data
  *
  */
-public class SSLCertificateDataLoader extends CommonsDataLoader {
+public class SSLCertificateLoader implements Serializable {
 
 	private static final long serialVersionUID = -2560386894555266018L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(SSLCertificateDataLoader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SSLCertificateLoader.class);
 
     public static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
+    
+    /* A proxied CommonsDataLoader to be used */
+    private CommonsDataLoader commonsDataLoader;
+
+	/**
+	 * Allows to set a pre-configured CommonsDataLoader
+	 * 
+	 * @param commonsDataLoader {@link CommonsDataLoader} to use
+	 */
+	public void setCommonsDataLoader(CommonsDataLoader commonsDataLoader) {
+		this.commonsDataLoader = commonsDataLoader;
+	}
+
+	private CommonsDataLoader getCommonsDataLoader() {
+		if (commonsDataLoader == null) {
+			commonsDataLoader = new CommonsDataLoader();
+		}
+		return commonsDataLoader;
+	}
     
     /**
      * The method to extract SSL-certificates from the given web page
@@ -59,11 +79,11 @@ public class SSLCertificateDataLoader extends CommonsDataLoader {
 		CloseableHttpClient client = null;
 		
 		try {
-			httpRequest = getHttpRequest(url);
+			httpRequest = getCommonsDataLoader().getHttpRequest(url);
 			client = getHttpClient(url);
 
-			final HttpHost targetHost = getHttpHost(httpRequest);
-			final HttpContext localContext = getHttpContext(targetHost);
+			final HttpHost targetHost = getCommonsDataLoader().getHttpHost(httpRequest);
+			final HttpContext localContext = getCommonsDataLoader().getHttpContext(targetHost);
 			httpResponse = client.execute(targetHost, httpRequest, localContext);
 
 			return readCertificates(localContext);
@@ -72,7 +92,7 @@ public class SSLCertificateDataLoader extends CommonsDataLoader {
 			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 		
 		} finally {
-			closeQuietly(httpRequest, httpResponse, client);
+			getCommonsDataLoader().closeQuietly(httpRequest, httpResponse, client);
 		
 		}
     }
@@ -85,11 +105,10 @@ public class SSLCertificateDataLoader extends CommonsDataLoader {
     	return new Certificate[] {};
     }
     
-    @Override
-    protected synchronized HttpClientBuilder getHttpClientBuilder() {
-		HttpClientBuilder httpClientBuilder = super.getHttpClientBuilder();
+    private synchronized CloseableHttpClient getHttpClient(final String url) {
+		HttpClientBuilder httpClientBuilder = getCommonsDataLoader().getHttpClientBuilder(url);
 		httpClientBuilder.addInterceptorLast(getHttpResponseInterceptor());
-		return httpClientBuilder;
+		return httpClientBuilder.build();
 	}
 	
 	private HttpResponseInterceptor getHttpResponseInterceptor() {

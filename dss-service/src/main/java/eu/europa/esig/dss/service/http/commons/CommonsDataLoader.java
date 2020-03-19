@@ -231,6 +231,12 @@ public class CommonsDataLoader implements DataLoader {
 
 			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
 			sslContextBuilder.setProtocol(sslProtocol);
+			
+			TrustStrategy trustStrategy = getTrustStrategy();
+			if (trustStrategy != null) {
+				LOG.debug("Set the TrustStrategy");
+				sslContextBuilder.loadTrustMaterial(null, getTrustStrategy());
+			}
 
 			final KeyStore sslTrustStore = getSSLTrustStore();
 			if (sslTrustStore != null) {
@@ -287,12 +293,8 @@ public class CommonsDataLoader implements DataLoader {
 		return httpRequest;
 	}
 
-	protected synchronized HttpClientBuilder getHttpClientBuilder() {
-		return HttpClients.custom();
-	}
-
-	protected synchronized CloseableHttpClient getHttpClient(final String url) {
-		HttpClientBuilder httpClientBuilder = getHttpClientBuilder();
+	protected synchronized HttpClientBuilder getHttpClientBuilder(final String url) {
+		HttpClientBuilder httpClientBuilder =  HttpClients.custom();
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
@@ -307,8 +309,12 @@ public class CommonsDataLoader implements DataLoader {
 
 		httpClientBuilder.setRetryHandler(retryHandler);
 		httpClientBuilder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
+		
+		return httpClientBuilder;
+	}
 
-		return httpClientBuilder.build();
+	protected synchronized CloseableHttpClient getHttpClient(final String url) {
+		return getHttpClientBuilder(url).build();
 	}
 
 	/**
