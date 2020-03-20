@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -93,14 +94,18 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("OCSP request for: {} using: {}", certificateToken.getDSSIdAsString(), ocspSource.getClass().getSimpleName());
 		}
-		final RevocationToken<OCSP> revocationToken = ocspSource.getRevocationToken(certificateToken, issuerToken);
-		if (revocationToken != null && revocationToken.getStatus() != null) {
-			revocationToken.setRelatedCertificate(certificateToken);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("OCSP response for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
-				LOG.debug("OCSP Response {} status is : {}", revocationToken.getDSSIdAsString(), revocationToken.getStatus());
+		try {
+			final RevocationToken<OCSP> revocationToken = ocspSource.getRevocationToken(certificateToken, issuerToken);
+			if (revocationToken != null && revocationToken.getStatus() != null) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("OCSP response for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
+					LOG.debug("OCSP Response {} status is : {}", revocationToken.getDSSIdAsString(), revocationToken.getStatus());
+				}
+				return revocationToken;
 			}
-			return revocationToken;
+		} catch (DSSException e) {
+			LOG.error("OCSP DSS Exception: " + e.getMessage(), e);
+			return null;
 		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("The retrieved OCSP revocation response for token {} is null!", certificateToken.getDSSIdAsString());
@@ -116,19 +121,22 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("CRL request for: {} using: {}", certificateToken.getDSSIdAsString(), crlSource.getClass().getSimpleName());
 		}
-		final RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
-		if (revocationToken != null && revocationToken.getStatus() != null) {
-			revocationToken.setRelatedCertificate(certificateToken);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("CRL for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
+		try {
+			final RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
+			if (revocationToken != null && revocationToken.getStatus() != null) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("CRL for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
+				}
+				return revocationToken;
 			}
-			return revocationToken;
+		} catch (DSSException e) {
+			LOG.error("CRL DSS Exception: " + e.getMessage(), e);
+			return null;
 		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("The retrieved CRL revocation response for token {} is null!", certificateToken.getDSSIdAsString());
 		}
 		return null;
 	}
-
 
 }

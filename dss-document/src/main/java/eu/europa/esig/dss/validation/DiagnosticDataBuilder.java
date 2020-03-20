@@ -1421,7 +1421,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private <R extends Revocation> void addRelatedRevocations(List<XmlRelatedRevocation> result, OfflineRevocationSource<R> source) {
-		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : source.getAllRevocationTokensWithOrigins().entrySet()) {
+		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : source.getUniqueRevocationTokensWithOrigins().entrySet()) {
 			RevocationToken<R> token = entry.getKey();
 			String id = token.getDSSIdAsString();
 			XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
@@ -1445,7 +1445,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private <R extends Revocation> void addOrphanRevocations(List<XmlOrphanRevocation> xmlOrphanRevocations, OfflineRevocationSource<R> source) {
-		Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> allBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
+		Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> allBinariesWithOrigins = source.getUniqueRevocationBinariesWithOrigins();
 		for (Entry<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
 			EncapsulatedRevocationTokenIdentifier token = entry.getKey();
 			String tokenId = token.asXmlId();
@@ -1465,7 +1465,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private <R extends Revocation> void addOrphanRevocationRefs(List<XmlOrphanRevocation> xmlOrphanRevocationRefs, OfflineRevocationSource<R> source, ListRevocationSource<R> allSources) {
-		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source.getOrphanRevocationReferencesWithOrigins();
+		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source.getUniqueOrphanRevocationReferencesWithOrigins();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			if (allSources.isOrphan(ref)) {

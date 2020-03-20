@@ -69,6 +69,7 @@ public class CRLToken extends RevocationToken<CRL> {
 	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity) {
 		Objects.requireNonNull(crlValidity, "CRL Validity cannot be null");
 		this.crlValidity = crlValidity;
+		this.relatedCertificate = certificateToken;
 		initInfo();
 		setRevocationStatus(certificateToken);
 		if (LOG.isDebugEnabled()) {

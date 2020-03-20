@@ -70,16 +70,13 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
-import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.validation.CMSCRLSource;
@@ -283,13 +280,14 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		ASN1Sequence crlsHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
 		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
 		if (signatureCRLSource instanceof CMSCRLSource) {
-			for (RevocationToken<CRL> crlBinary : ((CMSCRLSource) signatureCRLSource).getCMSSignedDataRevocationTokens()) {
-				if (isDigestValuePresent(crlBinary.getDigest(digestAlgorithm), crlsHashList)) {
-					addReference(references, crlBinary.getDSSId(), TimestampedObjectType.REVOCATION);
+			CMSCRLSource cmsCRLSource = (CMSCRLSource) signatureCRLSource;
+			for (EncapsulatedRevocationTokenIdentifier token : cmsCRLSource.getCMSSignedDataRevocationBinaries()) {
+				if (isDigestValuePresent(token.getDigestValue(digestAlgorithm), crlsHashList)) {
+					addReference(references, token, TimestampedObjectType.REVOCATION);
 				} else {
 					LOG.warn("The CRL Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							crlBinary.getDSSIdAsString(), timestampId);
+							token.asXmlId(), timestampId);
 				}
 			}
 		}
@@ -306,8 +304,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		List<TimestampedReference> references = new ArrayList<>();
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
 			CMSOCSPSource cmsocspSource = (CMSOCSPSource) signatureOCSPSource;
-			for (RevocationToken<OCSP> ocspResponse : cmsocspSource.getCMSSignedDataRevocationTokens()) {
-				OCSPResponseBinary binary = (OCSPResponseBinary) cmsocspSource.findBinaryForToken(ocspResponse);
+			for (EncapsulatedRevocationTokenIdentifier token : cmsocspSource.getCMSSignedDataRevocationBinaries()) {
+				OCSPResponseBinary binary = (OCSPResponseBinary) token;
 				// Compute DERTaggedObject with the same algorithm how it was created
 				// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
 				OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(binary.getAsn1ObjectIdentifier(),
@@ -315,11 +313,11 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				// false value specifies an implicit encoding method
 				DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
 				if (isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList)) {
-					addReference(references, ocspResponse.getDSSId(), TimestampedObjectType.REVOCATION);
+					addReference(references, binary, TimestampedObjectType.REVOCATION);
 				} else {
 					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							ocspResponse.getDSSIdAsString(), timestampId);
+							binary.asXmlId(), timestampId);
 				}
 			}
 		}
@@ -333,13 +331,13 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			addReferences(references, createReferencesForCertificates(signatureCertificateSource.getSignedDataCertificates()));
 		}
 		if (signatureCRLSource instanceof CMSCRLSource) {
-			for (RevocationToken<CRL> token : ((CMSCRLSource) signatureCRLSource).getCMSSignedDataRevocationTokens()) {
-				addReference(references, token.getDSSId(), TimestampedObjectType.REVOCATION);
+			for (EncapsulatedRevocationTokenIdentifier token : ((CMSCRLSource) signatureCRLSource).getCMSSignedDataRevocationBinaries()) {
+				addReference(references, token, TimestampedObjectType.REVOCATION);
 			}
 		}
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
-			for (RevocationToken<OCSP> token : ((CMSOCSPSource) signatureOCSPSource).getCMSSignedDataRevocationTokens()) {
-				addReference(references, token.getDSSId(), TimestampedObjectType.REVOCATION);
+			for (EncapsulatedRevocationTokenIdentifier token : ((CMSOCSPSource) signatureOCSPSource).getCMSSignedDataRevocationBinaries()) {
+				addReference(references, token, TimestampedObjectType.REVOCATION);
 			}
 		}
 		return references;
@@ -481,18 +479,18 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		super.addEncapsulatedValuesFromTimestamp(references, timestampedTimestamp);
 
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
-		for (MultipleDigestIdentifier binary : timeStampCRLSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier binary : timeStampCRLSource.getAllRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
-		for (MultipleDigestIdentifier binary : timeStampCRLSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier binary : timeStampCRLSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
 
 		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
-		for (MultipleDigestIdentifier binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
-		for (MultipleDigestIdentifier binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
 

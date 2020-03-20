@@ -22,8 +22,6 @@ public class XAdESDoubleSignedDifferentOCSPTest extends PKIFactoryAccess {
 	
 	@Test
 	public void test() {
-		// Strange case with 2 signatures from the same certificate and 2 OCSP responses
-		// for the same intermediate CA. Second OCSP Response is not processed
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/validation/doubleSignedTest.xml"));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
@@ -40,8 +38,8 @@ public class XAdESDoubleSignedDifferentOCSPTest extends PKIFactoryAccess {
 		assertEquals(2, signatures.size());
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		
-		assertEquals(1, signatureWrapper.foundRevocations().getRelatedRevocationData().size());
-		assertEquals(1, signatureWrapper.foundRevocations().getOrphanRevocationData().size());
+		assertEquals(2, signatureWrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationData().size());
 		assertEquals(0, signatureWrapper.foundRevocations().getRelatedRevocationRefs().size());
 		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationRefs().size());
 		

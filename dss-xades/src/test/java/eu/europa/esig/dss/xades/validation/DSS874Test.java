@@ -89,18 +89,18 @@ public class DSS874Test {
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		
-		assertEquals(3, signatureWrapper.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
-		assertEquals(2, signatureWrapper.foundRevocations().getOrphanRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(5, signatureWrapper.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByType(RevocationType.OCSP).size());
 		
 		assertEquals(5, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
-		assertEquals(1, signatureWrapper.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
-		assertEquals(2, signatureWrapper.foundRevocations().getOrphanRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(3, signatureWrapper.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		
 		assertEquals(5, signatureWrapper.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 		assertEquals(0, signatureWrapper.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 		
-		assertEquals(3, signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(2, signatureWrapper.foundRevocations().getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(5, signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
 		
 		List<String> revocationIds = new ArrayList<>();
 		for (RelatedRevocationWrapper revocation : signatureWrapper.foundRevocations().getRelatedRevocationData()) {
