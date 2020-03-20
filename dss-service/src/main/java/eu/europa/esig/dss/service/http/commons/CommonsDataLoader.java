@@ -55,10 +55,12 @@ import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.RegistryBuilder;
@@ -230,11 +232,17 @@ public class CommonsDataLoader implements DataLoader {
 
 			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
 			sslContextBuilder.setProtocol(sslProtocol);
+			
+			TrustStrategy trustStrategy = getTrustStrategy();
+			if (trustStrategy != null) {
+				LOG.debug("Set the TrustStrategy");
+				sslContextBuilder.loadTrustMaterial(null, trustStrategy);
+			}
 
 			final KeyStore sslTrustStore = getSSLTrustStore();
 			if (sslTrustStore != null) {
 				LOG.debug("Set the SSL trust store as trust materials");
-				sslContextBuilder.loadTrustMaterial(sslTrustStore, getTrustStrategy());
+				sslContextBuilder.loadTrustMaterial(sslTrustStore, trustStrategy);
 			}
 
 			final KeyStore sslKeystore = getSSLKeyStore();
@@ -244,7 +252,7 @@ public class CommonsDataLoader implements DataLoader {
 				sslContextBuilder.loadKeyMaterial(sslKeystore, password);
 				if (loadKeyStoreAsTrustMaterial) {
 					LOG.debug("Set the SSL keystore as trust materials");
-					sslContextBuilder.loadTrustMaterial(sslKeystore, getTrustStrategy());
+					sslContextBuilder.loadTrustMaterial(sslKeystore, trustStrategy);
 				}
 			}
 
@@ -276,13 +284,18 @@ public class CommonsDataLoader implements DataLoader {
 			return null;
 		}
 	}
-
-	protected synchronized HttpClientBuilder getHttpClientBuilder() {
-		return HttpClients.custom();
+	
+	protected synchronized HttpGet getHttpRequest(String url) throws URISyntaxException {
+		final URI uri = new URI(url.trim());
+		HttpGet httpRequest = new HttpGet(uri);
+		if (contentType != null) {
+			httpRequest.setHeader(CONTENT_TYPE, contentType);
+		}
+		return httpRequest;
 	}
 
-	protected synchronized CloseableHttpClient getHttpClient(final String url) {
-		HttpClientBuilder httpClientBuilder = getHttpClientBuilder();
+	protected synchronized HttpClientBuilder getHttpClientBuilder(final String url) {
+		HttpClientBuilder httpClientBuilder =  HttpClients.custom();
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
@@ -290,6 +303,7 @@ public class CommonsDataLoader implements DataLoader {
 		custom.setSocketTimeout(timeoutSocket);
 		custom.setConnectTimeout(timeoutConnection);
 		custom.setRedirectsEnabled(redirectsEnabled);
+		custom.setCookieSpec(CookieSpecs.STANDARD); // to allow interoperability with RFC 6265 cookies
 
 		final RequestConfig requestConfig = custom.build();
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
@@ -297,8 +311,12 @@ public class CommonsDataLoader implements DataLoader {
 
 		httpClientBuilder.setRetryHandler(retryHandler);
 		httpClientBuilder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
+		
+		return httpClientBuilder;
+	}
 
-		return httpClientBuilder.build();
+	protected synchronized CloseableHttpClient getHttpClient(final String url) {
+		return getHttpClientBuilder(url).build();
 	}
 
 	/**
@@ -539,14 +557,9 @@ public class CommonsDataLoader implements DataLoader {
 		HttpGet httpRequest = null;
 		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
+		
 		try {
-
-			final URI uri = new URI(url.trim());
-			httpRequest = new HttpGet(uri);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
+			httpRequest = getHttpRequest(url);
 			client = getHttpClient(url);
 			httpResponse = getHttpResponse(client, httpRequest);
 
@@ -554,18 +567,24 @@ public class CommonsDataLoader implements DataLoader {
 
 		} catch (URISyntaxException | IOException e) {
 			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
+		
 		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-					Utils.closeQuietly(httpResponse);
-				}
-			} finally {
-				Utils.closeQuietly(client);
+			closeQuietly(httpRequest, httpResponse, client);
+		
+		}
+	}
+	
+	protected void closeQuietly(HttpRequestBase httpRequest, CloseableHttpResponse httpResponse, CloseableHttpClient client) {
+		try {
+			if (httpRequest != null) {
+				httpRequest.releaseConnection();
 			}
+			if (httpResponse != null) {
+				EntityUtils.consumeQuietly(httpResponse.getEntity());
+				Utils.closeQuietly(httpResponse);
+			}
+		} finally {
+			Utils.closeQuietly(client);
 		}
 	}
 
@@ -602,25 +621,25 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
 			throw new DSSExternalResourceException(String.format("Unable to process POST call for url [%s]. Reason : [%s]", url, e.getMessage()) , e);
+		
 		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-					Utils.closeQuietly(httpResponse);
-				}
-			} finally {
-				Utils.closeQuietly(client);
-			}
+			closeQuietly(httpRequest, httpResponse, client);
+		
 		}
 	}
 
 	protected CloseableHttpResponse getHttpResponse(final CloseableHttpClient client, final HttpUriRequest httpRequest) throws IOException {
+		final HttpHost targetHost = getHttpHost(httpRequest);
+		final HttpContext localContext = getHttpContext(targetHost);
+		return client.execute(targetHost, httpRequest, localContext);
+	}
+	
+	protected HttpHost getHttpHost(final HttpUriRequest httpRequest) {
 		final URI uri = httpRequest.getURI();
-		final HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
-
+		return new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
+	}
+	
+	protected HttpContext getHttpContext(final HttpHost targetHost) {
 		// Create AuthCache instance
 		AuthCache authCache = new BasicAuthCache();
 		// Generate BASIC scheme object and add it to the local
@@ -631,8 +650,7 @@ public class CommonsDataLoader implements DataLoader {
 		// Add AuthCache to the execution context
 		HttpClientContext localContext = HttpClientContext.create();
 		localContext.setAuthCache(authCache);
-
-		return client.execute(targetHost, httpRequest, localContext);
+		return localContext;
 	}
 
 	protected byte[] readHttpResponse(final CloseableHttpResponse httpResponse) throws IOException {
