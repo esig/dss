@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.visible;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -46,9 +45,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -71,44 +68,6 @@ public class ImageUtils {
 	}
 	
 	private ImageUtils() {
-	}
-
-	/**
-	 * This method returns the image size with the original parameters (the generation uses DPI)
-	 * 
-	 * @param imageParameters
-	 *            the image parameters
-	 * @return a Dimension object
-	 * @throws IOException
-	 */
-	public static Dimension getOptimalSize(SignatureImageParameters imageParameters) throws IOException {
-
-		Dimension dimension = getImageDimension(imageParameters);
-		double width = dimension.getWidth();
-		double height = dimension.getHeight();
-
-		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
-		if ((textParamaters != null) && !textParamaters.getText().isEmpty()) {
-			Dimension textDimension = getTextDimension(imageParameters);
-			switch (textParamaters.getSignerTextPosition()) {
-			case LEFT:
-			case RIGHT:
-				width += textDimension.width;
-				height = Math.max(height, textDimension.height);
-				break;
-			case TOP:
-			case BOTTOM:
-				width = Math.max(width, textDimension.width);
-				height += textDimension.height;
-				break;
-			default:
-				break;
-			}
-
-		}
-
-		float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
-		return new Dimension(Math.round((int)width / ration), Math.round((int)height / ration));
 	}
 	
 	/**
@@ -249,7 +208,7 @@ public class ImageUtils {
 	public static Dimension getImageDimension(SignatureImageParameters imageParameters) {
 		float width = imageParameters.getWidth();
 		float height = imageParameters.getHeight();
-		float scaleFactor = imageParameters.getScaleFactor();
+		float scaleFactor = getScaleFactor(imageParameters.getZoom());
 		if (width == 0 && height == 0) {
 			try {
 				DSSDocument docImage = imageParameters.getImage();
@@ -267,6 +226,16 @@ public class ImageUtils {
 		Dimension dimension = new Dimension();
 		dimension.setSize((int)width * scaleFactor, (int)height * scaleFactor);
 		return dimension;
+	}
+
+	/**
+	 * Returns a coefficient applying to a signature field width/height calculation
+	 * 
+	 * @param zoom - zoom value to compute scale factor from
+	 * @return {@code float} scale factor
+	 */
+	public static float getScaleFactor(int zoom) {
+		return zoom / 100f;
 	}
 	
 	/**
@@ -317,18 +286,6 @@ public class ImageUtils {
 			}
 		}
 		return rgbImage;
-	}
-
-	/**
-	 * Computes {@link Dimension} of the text box to create
-	 * @param imageParameters {@link SignatureImageParameters} to use
-	 * @return {@link Dimension} of the text box
-	 */
-	private static Dimension getTextDimension(SignatureImageParameters imageParameters) {
-		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
-		DSSFont dssFont = textParameters.getFont();
-		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
-		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
 	}
 
 	public static BufferedImage rotate(BufferedImage image, double angle) {

@@ -42,7 +42,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		Image image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
 
-		float zoom = parameters.getScaleFactor();
+		float zoom = ImageUtils.getScaleFactor(parameters.getZoom());
 		int width = parameters.getWidth();
 		int height = parameters.getHeight();
 		

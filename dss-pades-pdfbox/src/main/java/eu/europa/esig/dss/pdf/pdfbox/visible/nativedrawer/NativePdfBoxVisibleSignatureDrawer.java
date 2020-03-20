@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -60,7 +58,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.FontUtils;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
@@ -98,7 +96,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			PDPage originalPage = document.getPage(parameters.getPage() - 1);
-			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage);
+			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = 
+					new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage, pdFont);
 			SignatureFieldDimensionAndPosition dimensionAndPosition = dimensionAndPositionBuilder.build();
 			// create a new page
 			PDPage page = new PDPage(originalPage.getMediaBox());
@@ -214,7 +213,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		if (image != null) {
 			try (InputStream is = image.openStream()) {
 	            cs.saveGraphicsState();
-	            float scaleFactor = parameters.getScaleFactor();
+	            float scaleFactor = ImageUtils.getScaleFactor(parameters.getZoom());
 	            if (parameters.getImage() != null && parameters.getTextParameters() != null && scaleFactor != 1) {
 	            	cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
 	            }
@@ -274,6 +273,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
     		setTextBackground(cs, textParameters, dimensionAndPosition);
     		DSSFont dssFont = textParameters.getFont();
             float fontSize = dssFont.getSize();
+            fontSize = fontSize * ImageUtils.getScaleFactor(parameters.getZoom());
             cs.beginText();
             cs.setFont(pdFont, fontSize);
             cs.setNonStrokingColor(textParameters.getTextColor());
@@ -281,9 +281,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             
             String[] strings = textParameters.getText().split("\\r?\\n");
             
-			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), parameters.getDpi());
-            FontMetrics fontMetrics = FontUtils.getFontMetrics(properFont);
-            cs.setLeading(textSizeWithDpi(fontMetrics.getHeight(), dimensionAndPosition.getyDpi()));
+            float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), parameters.getDpi());
+            float fontHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize, parameters.getDpi());
+            cs.setLeading(textSizeWithDpi(fontHeight, dimensionAndPosition.getyDpi()));
             
             cs.newLineAtOffset(dimensionAndPosition.getTextX(),
             		// align vertical position
@@ -291,7 +291,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
             float previousOffset = 0;
             for (String str : strings) {
-                float stringWidth = textSizeWithDpi(fontMetrics.stringWidth(str), dimensionAndPosition.getxDpi());
+                float stringWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, fontSize, str, parameters.getDpi());
                 float offsetX = 0;
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:

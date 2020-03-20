@@ -239,14 +239,6 @@ public class SignatureImageParameters {
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
 	}
-	
-	/**
-	 * Returns a coefficient applying to a signature field width/height calculation
-	 * @return {@code float} scale factor
-	 */
-	public float getScaleFactor() {
-		return zoom / 100f;
-	}
 
 	/**
 	 * Returns a page number where the signature field must be placed

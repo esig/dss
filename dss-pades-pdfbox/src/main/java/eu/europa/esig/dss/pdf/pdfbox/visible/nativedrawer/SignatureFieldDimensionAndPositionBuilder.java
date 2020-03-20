@@ -21,24 +21,23 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.FontUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public class SignatureFieldDimensionAndPositionBuilder {
 
@@ -48,14 +47,16 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	private final SignatureImageParameters imageParameters;
 	private final PDPage page;
 	private final PDRectangle pageMediaBox;
+	private final PDFont pdFont;
 	
     private static final String SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
     private static final String SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 	
-    public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page) {
+    public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page, PDFont pdFont) {
 		this.imageParameters = imageParameters;
 		this.page = page;
 		this.pageMediaBox = page.getMediaBox();
+		this.pdFont = pdFont;
 	}
 	
 	public SignatureFieldDimensionAndPosition build() throws IOException {
@@ -81,7 +82,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		}
 	}
 	
-	private void assignImageBoxDimension() {
+	private void assignImageBoxDimension() throws IOException {
 		
 		Dimension imageAndDimension = ImageUtils.getImageDimension(imageParameters);
 		double imageWidth = imageAndDimension.getWidth();
@@ -97,7 +98,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// if text is present
-		if (textParameters != null) {
+		if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
 			
 			// adds an empty space
 			imageWidth = toDpiTextPoint(imageWidth, dimensionAndPosition.getxDpi());
@@ -105,10 +106,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			width = imageWidth;
 			height = imageHeight;
 			
-			DSSFont dssFont = textParameters.getFont();
 			// native implementation uses dpi-independent font
-			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
-			Dimension textBox = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
+			Dimension textBox = computeTextDimension(textParameters);
 			float textWidth = (float) textBox.getWidth() * CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi());
 			float textHeight = (float) textBox.getHeight() * CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi());
 			if (imageParameters.getImage() != null) {
@@ -185,6 +184,28 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		dimensionAndPosition.setBoxHeight((float)height);
 	}
 	
+	private Dimension computeTextDimension(SignatureImageTextParameters textParameters) throws IOException {
+		float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), imageParameters.getDpi());
+		properSize = properSize * ImageUtils.getScaleFactor(imageParameters.getZoom()); // scale text block
+		String[] lines = textParameters.getText().split("\\r?\\n");
+		float width = 0;
+		for (String line : lines) {
+			float lineWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, properSize, 
+					line, imageParameters.getDpi());
+			if (lineWidth > width) {
+				width = lineWidth;
+			}
+		}
+		float doubleMargin = textParameters.getPadding()*2;
+		width += doubleMargin;
+		float strHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize, imageParameters.getDpi());
+		float height = (strHeight * lines.length) + doubleMargin;
+		
+		Dimension dimension = new Dimension();
+		dimension.setSize(width, height);
+		return dimension;
+	}
+
 	private void textImageVerticalAlignment(double height, double imageHeight, float textHeight) {
 		switch (imageParameters.getTextParameters().getSignerTextVerticalAlignment()) {
 			case TOP:

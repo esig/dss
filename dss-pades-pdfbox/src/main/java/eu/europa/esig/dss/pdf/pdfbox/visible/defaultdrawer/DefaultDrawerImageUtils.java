@@ -44,8 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -80,7 +80,7 @@ public class DefaultDrawerImageUtils {
 			}
 			
 			if (scaledImage != null) {
-				float zoomFactor = imageParameters.getScaleFactor();
+				float zoomFactor = ImageUtils.getScaleFactor(imageParameters.getZoom());
 				if (zoomFactor != 1) {
 					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
 				}
@@ -199,7 +199,7 @@ public class DefaultDrawerImageUtils {
 			imageWidth = boxWidth;
 		}
 		if (imageParameters.getHeight() != 0) {
-			imageHeight = (int)(verticalAlignment ? boxHeight - textImage.getHeight() : boxHeight);
+			imageHeight = verticalAlignment ? boxHeight - textImage.getHeight() : boxHeight;
 		} else {
 			imageHeight = boxHeight;
 		}

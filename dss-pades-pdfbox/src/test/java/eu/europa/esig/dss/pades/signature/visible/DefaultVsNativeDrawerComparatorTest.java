@@ -626,7 +626,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument document = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		// document.save("target/" + docName + ".pdf");
+		 document.save("target/" + docName + ".pdf");
 		return document;
 	}
 	
@@ -642,12 +642,11 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 				for (int j = 0; j < page1.getAnnotations().size(); j++) {
 					PDRectangle rect1 = page1.getAnnotations().get(j).getRectangle();
 					PDRectangle rect2 = page2.getAnnotations().get(j).getRectangle();
-					// assert max 0.5 pixels difference, due to the fact that the default implementation 
-					// does not support precise datatypes (double/float)
-					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), 0.5);
-					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), 0.5);
-					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), 0.5);
-					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), 0.5);
+					// assert max 2% difference, due to different text size computation
+					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), rect1.getLowerLeftX() / 50);
+					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), rect1.getLowerLeftY() / 50);
+					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), rect1.getUpperRightX() / 50);
+					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), rect1.getUpperRightY() / 50);
 				}
 			}
 		}
