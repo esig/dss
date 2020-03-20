@@ -31,10 +31,10 @@ import java.util.Date;
 import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.alert.DSSExceptionAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -77,7 +77,7 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, signatureParameters));
+		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, signatureParameters));
 		assertTrue(exception.getMessage().contains("No fresh revocation data found. "
 				+ "Cause : No revocation data found after the best signature time"));
 		

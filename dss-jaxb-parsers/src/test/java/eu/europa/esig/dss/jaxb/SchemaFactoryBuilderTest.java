@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.alert.ExceptionAlert;
-import eu.europa.esig.dss.alert.handler.AlertHandler;
+import eu.europa.esig.dss.alert.DSSExceptionAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.jaxb.exception.XmlSecurityException;
 
 public class SchemaFactoryBuilderTest {
@@ -25,24 +25,14 @@ public class SchemaFactoryBuilderTest {
 		
 		schemaBuilder.enableFeature("CUSTOM_FEATURE");
 		
-		ThrowRuntimeExceptionAlertHandler alertHandler = new ThrowRuntimeExceptionAlertHandler();
-		ExceptionAlert exceptionAlert = new ExceptionAlert(alertHandler);
+		DSSExceptionAlert exceptionAlert = new DSSExceptionAlert();
 		schemaBuilder.setSecurityExceptionAlert(exceptionAlert);
 		
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> schemaBuilder.build());
+		Exception exception = assertThrows(AlertException.class, () -> schemaBuilder.build());
 		assertNotNull(exception);
 		assertNotNull(exception.getCause());
 		assertEquals(XmlSecurityException.class, exception.getCause().getClass());
 		assertTrue(exception.getMessage().contains("SECURITY : unable to set feature 'CUSTOM_FEATURE' = 'true'."));
-	}
-	
-	class ThrowRuntimeExceptionAlertHandler implements AlertHandler<Exception> {
-
-		@Override
-		public void process(Exception e) {
-			throw new RuntimeException(e);
-		}
-		
 	}
 
 }

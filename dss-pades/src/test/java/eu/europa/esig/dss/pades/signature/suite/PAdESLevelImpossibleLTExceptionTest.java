@@ -21,15 +21,16 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
@@ -58,9 +59,11 @@ public class PAdESLevelImpossibleLTExceptionTest extends AbstractPAdESTestSignat
 	@Override
 	@Test
 	public void signAndVerify() throws IOException {
-		assertThrows(DSSException.class, () -> {
+		Exception exception = assertThrows(AlertException.class, () -> {
 			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
 		});
+		assertTrue(exception.getMessage().contains("Revocation data is missing. "
+				+ "Cause : No revocation data found for certificate : "));
 	}
 
 	@Override

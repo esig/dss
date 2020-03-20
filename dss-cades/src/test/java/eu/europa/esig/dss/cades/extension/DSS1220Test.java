@@ -22,15 +22,16 @@ package eu.europa.esig.dss.cades.extension;
 
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -49,7 +50,7 @@ public class DSS1220Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
 		DSSDocument toExtendDocument = new FileDocument("src/test/resources/validation/dss-1220/CAdES-BpT_modified_ts_hash.p7m");
-		assertThrows(DSSException.class, () -> service.extendDocument(toExtendDocument, parameters));
+		assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
 	}
 
 	@Test
@@ -61,7 +62,7 @@ public class DSS1220Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
 		DSSDocument toExtendDocument = new FileDocument("src/test/resources/validation/dss-1220/CAdES-BpLTA_modified_ats_hash_element.p7m");
-		assertThrows(DSSException.class, () -> service.extendDocument(toExtendDocument, parameters));
+		assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
 	}
 
 	@Test
@@ -73,7 +74,7 @@ public class DSS1220Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
 		DSSDocument toExtendDocument = new FileDocument("src/test/resources/validation/dss-1220/CAdES-BpLTA_removed_ocsp.p7m");
-		assertThrows(DSSException.class, () -> service.extendDocument(toExtendDocument, parameters));
+		assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
 	}
 
 	@Test
@@ -93,7 +94,7 @@ public class DSS1220Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
 		DSSDocument toExtendDocument = new FileDocument("src/test/resources/validation/dss-1220/CAdES-BpB_revoked_signingCertificate.p7m");
-		assertThrows(DSSException.class, () -> service.extendDocument(toExtendDocument, parameters));
+		assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.alert;
 
-import eu.europa.esig.dss.alert.detector.AlertDetector;
+import eu.europa.esig.dss.alert.detector.ExceptionDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 
 /**
@@ -12,22 +12,10 @@ public class ExceptionAlert extends AbstractAlert<Exception> {
 	/**
 	 * The default constructor
 	 * 
-	 * @param handler 
+	 * @param handler {@link AlertHandler}
 	 */
 	public ExceptionAlert(AlertHandler<Exception> handler) {
 		super(new ExceptionDetector(), handler);
-	}
-	
-	/**
-	 * The default Detector for ExceptionAlert
-	 */
-	static class ExceptionDetector implements AlertDetector<Exception> {
-
-		@Override
-		public boolean detect(Exception e) {
-			return e != null;
-		}
-		
 	}
 
 }
