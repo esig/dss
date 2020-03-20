@@ -35,10 +35,7 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.CertificateStatus;
-import org.bouncycastle.cert.ocsp.OCSPException;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.RevokedStatus;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.cert.ocsp.UnknownStatus;
@@ -74,14 +71,15 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	private final BasicOCSPResp basicOCSPResp;
 	
 	/**
+	 * The used SingleResp (can be null)
+	 */
+	private final SingleResp latestSingleResp;
+
+	/**
 	 * Issuer of the OCSP token
 	 */
 	private CertificateToken issuerCertificateToken;
 
-	/**
-	 * Status of the OCSP response
-	 */
-	private OCSPRespStatus responseStatus;
 	
 	/**
 	 * The source of embedded into the OCSP token certificates
@@ -89,69 +87,33 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	private OCSPCertificateSource certificateSource;
 
 	/**
-	 * The default constructor to instantiate an OCSPToken
-	 * 
-	 * @param ocspResp {@link OCSPResp} containing the response and its status info
-	 * @param certificateToken {@link CertificateToken} to which the revocation data is provided for
-	 * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
-	 * @throws OCSPException if an exception occurs
-	 */
-	public OCSPToken(final OCSPResp ocspResp, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) throws OCSPException {
-		this((BasicOCSPResp) ocspResp.getResponseObject(), certificateToken, issuerCertificateToken);
-		this.responseStatus = OCSPRespStatus.fromInt(ocspResp.getStatus());
-	}
-
-	/**
 	 * The default constructor to instantiate an OCSPToken with BasicOCSPResp only
 	 * 
-	 * @param basicOCSPResp {@link BasicOCSPResp} containing the response binaries
-	 * @param certificateToken {@link CertificateToken} to which the revocation data is provided for
-	 * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
+	 * @param basicOCSPResp    {@link BasicOCSPResp} containing the response
+	 *                         binaries
+	 * @param latestSingleResp {@link SingleResp} to be used with the current
+	 *                         certificate
+	 * @param certificate      {@link CertificateToken} to which the revocation data
+	 *                         is provided for
+	 * @param issuer           {@link CertificateToken} issued the
+	 *                         {@code certificateToken}
 	 */
-	public OCSPToken(final BasicOCSPResp basicOCSPResp, final CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	public OCSPToken(final BasicOCSPResp basicOCSPResp, final SingleResp latestSingleResp, final CertificateToken certificate, CertificateToken issuer) {
 		Objects.requireNonNull(basicOCSPResp, "The OCSP Response must be defined!");
-		Objects.requireNonNull(certificateToken, "The related certificate token cannot be null!");
+		Objects.requireNonNull(certificate, "The related certificate token cannot be null!");
 		this.basicOCSPResp = basicOCSPResp;
-		this.relatedCertificate = certificateToken;
+		this.relatedCertificate = certificate;
+		this.latestSingleResp = latestSingleResp;
 
-		SingleResp bestSingleResp = getBestSingleResp(issuerCertificateToken);
-		if (bestSingleResp != null) {
-			this.thisUpdate = bestSingleResp.getThisUpdate();
-			this.nextUpdate = bestSingleResp.getNextUpdate();
-			extractStatusInfo(bestSingleResp);
-			extractArchiveCutOff(bestSingleResp);
-			extractCertHashExtension(bestSingleResp);
+		if (latestSingleResp != null) {
+			this.thisUpdate = latestSingleResp.getThisUpdate();
+			this.nextUpdate = latestSingleResp.getNextUpdate();
+			extractStatusInfo(latestSingleResp);
+			extractArchiveCutOff(latestSingleResp);
+			extractCertHashExtension(latestSingleResp);
 		}
 		
-		checkCertificateValidity(issuerCertificateToken);
-	}
-
-	private SingleResp getBestSingleResp(CertificateToken issuerCertificateToken) {
-		Date bestUpdate = null;
-		SingleResp bestSingleResp = null;
-		SingleResp[] responses = getResponses(basicOCSPResp);
-		for (final SingleResp singleResp : responses) {
-			DigestAlgorithm digestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);
-			CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(relatedCertificate, issuerCertificateToken, digestAlgorithm);
-			if (DSSRevocationUtils.matches(certId, singleResp)) {
-				final Date thisUpdate = singleResp.getThisUpdate();
-				if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
-					bestSingleResp = singleResp;
-					bestUpdate = thisUpdate;
-				}
-			}
-		}
-		return bestSingleResp;
-	}
-
-	private SingleResp[] getResponses(final BasicOCSPResp basicOCSPResp) {
-		SingleResp[] responses = new SingleResp[] {};
-		try {
-			responses = basicOCSPResp.getResponses();
-		} catch (Exception e) {
-			LOG.error("Unable to parse the responses object from OCSP", e);
-		}
-		return responses;
+		checkSignatureValidity(issuer);
 	}
 
 	private void extractStatusInfo(SingleResp bestSingleResp) {
@@ -227,7 +189,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		}
 	}
 
-	private void checkCertificateValidity(CertificateToken issuerCertificateToken) {
+	private void checkSignatureValidity(CertificateToken issuerCertificateToken) {
 		if (isSignedBy(issuerCertificateToken)) {
 			return;
 		}
@@ -266,16 +228,12 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		return revocationTokenKey;
 	}
 
-	public OCSPRespStatus getResponseStatus() {
-		return responseStatus;
-	}
-
-	public void setResponseStatus(OCSPRespStatus responseStatus) {
-		this.responseStatus = responseStatus;
-	}
-
 	public BasicOCSPResp getBasicOCSPResp() {
 		return basicOCSPResp;
+	}
+
+	public SingleResp getLatestSingleResp() {
+		return latestSingleResp;
 	}
 
 	@Override

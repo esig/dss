@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,6 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 
 public class OfflineCRLSourceTest {
@@ -48,31 +45,23 @@ public class OfflineCRLSourceTest {
 		CertificateToken certToValidate = DSSUtils.loadCertificateFromBase64EncodedString(certToValidateB64);
 
 		OfflineCRLSource crlSource = new MockCRLSource();
-		assertNull(crlSource.getRevocationToken(certToValidate, certToValidate));
-		
 		crlSource.addBinary(new CRLBinary(Utils.fromBase64(crlB64)), RevocationOrigin.EXTERNAL);
 		
-		assertNull(crlSource.getRevocationToken(certToValidate, null));
-		assertNull(crlSource.getRevocationToken(certToValidate, certToValidate));
+		assertEquals(0, crlSource.getRevocationTokens(certToValidate, certToValidate).size());
 		
 		CertificateToken certWrongKeySize = DSSUtils.loadCertificateFromBase64EncodedString(certWrongKeySizeB64);
-		assertNull(crlSource.getRevocationToken(certToValidate, certWrongKeySize));
+		assertEquals(0, crlSource.getRevocationTokens(certToValidate, certWrongKeySize).size());
 
 		CertificateToken caCert = DSSUtils.loadCertificateFromBase64EncodedString(caCertB64);
-
-		assertNotNull(crlSource.getRevocationToken(certToValidate, caCert));
-		assertNotNull(crlSource.getRevocationToken(certToValidate, caCert));
-
-		RevocationToken<CRL> crlToken = crlSource.getRevocationToken(certToValidate, null);
-		assertNotNull(crlToken);
-		assertEquals(caCert.getPublicKey(), crlToken.getPublicKeyOfTheSigner());
+		assertEquals(1, crlSource.getRevocationTokens(certToValidate, caCert).size());
+		assertEquals(1, crlSource.getRevocationTokens(certToValidate, caCert).size());
 
 	}
 
 	@Test
 	public void npe() {
 		OfflineCRLSource mocrls = new MockCRLSource();
-		assertThrows(NullPointerException.class, () -> mocrls.getRevocationToken(null, null));
+		assertThrows(NullPointerException.class, () -> mocrls.getRevocationTokens(null, null));
 	}
 
 	@SuppressWarnings("serial")

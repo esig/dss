@@ -38,6 +38,7 @@ import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,12 +161,14 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					verifyNonce(ocspResp, nonce);
 					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-						OCSPToken ocspToken = new OCSPToken(ocspResp, certificateToken, issuerCertificateToken);
+						BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResp.getResponseObject();
+						SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerCertificateToken);
+						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCertificateToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
 						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 						return ocspToken;
 					} else {
-						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
+						LOG.warn("Ignored OCSP Response from URL '{}' : status -> {}", ocspAccessLocation, status);
 					}
 				} else {
 					LOG.warn("OCSP Data Loader for certificate {} responded with an empty byte array!", certificateToken.getDSSIdAsString());

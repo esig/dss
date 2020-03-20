@@ -28,8 +28,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,7 +138,9 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 			final String url = rs.getString(SQL_FIND_QUERY_LOC);
 			
 			final OCSPResp ocspResp = new OCSPResp(data);
-			OCSPToken ocspToken = new OCSPToken(ocspResp, certificateToken, issuerCert);
+			BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResp.getResponseObject();
+			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerCert);
+			OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCert);
 			ocspToken.setSourceURL(url);
 			ocspToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return ocspToken;

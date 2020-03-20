@@ -44,7 +44,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
@@ -745,11 +744,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
-		OCSPAndCRLRevocationSource revocationSource = new OCSPAndCRLRevocationSource(getCompleteCRLSource(), getCompleteOCSPSource());
-
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!areAllCertsHaveRevocationData(revocationSource, entryCertChain.getValue())) {
+			if (!areAllCertsHaveRevocationData(entryCertChain.getValue())) {
 				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
 				return false;
 			}
@@ -757,7 +754,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean areAllCertsHaveRevocationData(RevocationSource<Revocation> revocationSource, List<CertificateToken> certificates) {
+	private boolean areAllCertsHaveRevocationData(List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
 		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
 		for (List<CertificateToken> chain : orderedCerts.values()) {
@@ -772,8 +769,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 					LOG.warn("Issuer not found for certificate {}", certificateToken.getDSSIdAsString());
 					return false;
 				}
-				RevocationToken revocationData = revocationSource.getRevocationToken(certificateToken, issuerToken);
-				if (revocationData == null) {
+
+				List<RevocationToken<Revocation>> revocationTokens = getCompleteOCSPSource().getRevocationTokens(certificateToken, issuerToken);
+				if (Utils.isCollectionEmpty(revocationTokens)) {
+					revocationTokens = getCompleteCRLSource().getRevocationTokens(certificateToken, issuerToken);
+				}
+
+				if (Utils.isCollectionEmpty(revocationTokens)) {
 					return false;
 				}
 			}

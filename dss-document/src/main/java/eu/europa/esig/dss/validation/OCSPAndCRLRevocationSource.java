@@ -20,27 +20,22 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.MultipleRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Fetchs revocation data for a certificate by querying an OCSP server first and
  * then a CRL server if no OCSP response could be retrieved.
  *
  */
-public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation>, MultipleRevocationSource<Revocation> {
+public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> {
 
 	private static final long serialVersionUID = 3205352844337899410L;
 
@@ -87,26 +82,6 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation>,
 			LOG.debug("There is no response for {} neither from OCSP nor from CRL!", certificateToken.getDSSIdAsString());
 		}
 		return null;
-	}
-
-	@Override
-	public List<RevocationToken<Revocation>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerToken) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Check revocation for certificate : {}", certificateToken.getDSSIdAsString());
-		}
-		List<RevocationToken<Revocation>> results = new ArrayList<>();
-		RevocationToken result = checkOCSP(certificateToken, issuerToken);
-		if (result != null) {
-			results.add(result);
-		}
-		result = checkCRL(certificateToken, issuerToken);
-		if (result != null) {
-			results.add(result);
-		}
-		if (Utils.isCollectionEmpty(results) && LOG.isDebugEnabled()) {
-			LOG.debug("There is no response for {} neither from OCSP nor from CRL!", certificateToken.getDSSIdAsString());
-		}
-		return results;
 	}
 
 	public RevocationToken<OCSP> checkOCSP(final CertificateToken certificateToken, final CertificateToken issuerToken) {

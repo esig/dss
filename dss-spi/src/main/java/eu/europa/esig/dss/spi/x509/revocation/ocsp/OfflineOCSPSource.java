@@ -20,26 +20,27 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import org.bouncycastle.cert.ocsp.CertificateID;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
  *
  */
 @SuppressWarnings("serial")
-public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> implements OCSPSource {
+public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
@@ -48,50 +49,23 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> im
 	}
 
 	@Override
-	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
-		
+	public List<RevocationToken<OCSP>> getRevocationTokens(CertificateToken certificate, CertificateToken issuer) {
+		List<RevocationToken<OCSP>> result = new ArrayList<>();
 		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getCollectedBinaries();
+		LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", certificate.getDSSIdAsString(), collectedBinaries.size());
+		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
+			OCSPResponseBinary ocspBinary = (OCSPResponseBinary) binary;
+			BasicOCSPResp basicOCSPResp = ocspBinary.getBasicOCSPResp();
+			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicOCSPResp, certificate, issuer);
 
-		if (collectedBinaries.isEmpty()) {
-			LOG.trace("Collection of embedded OCSP responses is empty");
-			return null;
-		}
-		
-		if (LOG.isTraceEnabled()) {
-			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", dssIdAsString, collectedBinaries.size());
-		}
-
-		OCSPResponseBinary bestOCSPResponse = findBestOcspResponse(certificateToken, issuerCertificateToken, collectedBinaries);
-		if (bestOCSPResponse != null) {
-			OCSPToken ocspToken = new OCSPToken(bestOCSPResponse.getBasicOCSPResp(), certificateToken, issuerCertificateToken);
-			addRevocation(ocspToken, bestOCSPResponse);
-			return ocspToken;
-		} else if (LOG.isDebugEnabled()) {
-			LOG.debug("Best OCSP Response for the certificate {} is not found", certificateToken.getDSSIdAsString());
-		}
-		return null;
-	}
-	
-	private OCSPResponseBinary findBestOcspResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
-			Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries) {
-		OCSPResponseBinary bestOCSPResponse = null;
-		Date bestUpdate = null;
-		for (final EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
-			OCSPResponseBinary response = (OCSPResponseBinary) binary;
-			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
-				DigestAlgorithm usedDigestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);
-				final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, usedDigestAlgorithm);
-				if (DSSRevocationUtils.matches(certId, singleResp)) {
-					final Date thisUpdate = singleResp.getThisUpdate();
-					if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
-						bestOCSPResponse = response;
-						bestUpdate = thisUpdate;
-					}
-				}
+			if (latestSingleResponse != null) {
+				OCSPToken ocspToken = new OCSPToken(basicOCSPResp, latestSingleResponse, certificate, issuer);
+				addRevocation(ocspToken, ocspBinary);
+				result.add(ocspToken);
 			}
 		}
-		return bestOCSPResponse;
+		LOG.trace("--> OfflineOCSPSource found result(s) : {}", result.size());
+		return result;
 	}
-	
+
 }

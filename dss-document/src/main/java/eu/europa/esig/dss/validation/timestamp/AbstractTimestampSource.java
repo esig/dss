@@ -38,8 +38,8 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
-import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -596,7 +596,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected List<TimestampedReference> getTimestampedRevocationRefs(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (CRLRef crlRef : getCRLRefs(unsignedAttribute)) {
-			MultipleDigestIdentifier token = crlSource.findBinaryForReference(crlRef);
+			EncapsulatedRevocationTokenIdentifier token = crlSource.findBinaryForReference(crlRef);
 			if (token != null) {
 				timestampedReferences.add(new TimestampedReference(token.asXmlId(), TimestampedObjectType.REVOCATION));
 			} else {
@@ -605,7 +605,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		}
 
 		for (OCSPRef ocspRef : getOCSPRefs(unsignedAttribute)) {
-			MultipleDigestIdentifier token = ocspSource.findBinaryForReference(ocspRef);
+			EncapsulatedRevocationTokenIdentifier token = ocspSource.findBinaryForReference(ocspRef);
 			if (token != null) {
 				timestampedReferences.add(new TimestampedReference(token.asXmlId(), TimestampedObjectType.REVOCATION));
 			} else {
@@ -785,17 +785,17 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			addReference(references, getTimestampedCertificateRefByDigest(certificateRef.getCertDigest(), timestampedTimestamp.getCertificateSource()));
 		}
 		TimestampCRLSource timestampCRLSource = timestampedTimestamp.getCRLSource();
-		for (MultipleDigestIdentifier revocationBinary : timestampCRLSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampCRLSource.getAllRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (MultipleDigestIdentifier revocationBinary : timestampCRLSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampCRLSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
 		TimestampOCSPSource timestampOCSPSource = timestampedTimestamp.getOCSPSource();
-		for (MultipleDigestIdentifier revocationBinary : timestampOCSPSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampOCSPSource.getAllRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (MultipleDigestIdentifier revocationBinary : timestampOCSPSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
 	}

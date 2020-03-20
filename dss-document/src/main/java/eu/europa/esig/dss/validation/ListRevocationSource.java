@@ -25,10 +25,10 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.MultipleRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
  *
  */
 @SuppressWarnings("serial")
-public class ListRevocationSource<R extends Revocation> implements RevocationSource<R> {
+public class ListRevocationSource<R extends Revocation> implements MultipleRevocationSource<R> {
 
 	private List<OfflineRevocationSource<R>> sources = new ArrayList<>();
 
@@ -80,14 +80,12 @@ public class ListRevocationSource<R extends Revocation> implements RevocationSou
 	}
 
 	@Override
-	public RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	public List<RevocationToken<R>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		List<RevocationToken<R>> result = new ArrayList<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			RevocationToken<R> revocationToken = revocationSource.getRevocationToken(certificateToken, issuerCertificateToken);
-			if (revocationToken != null) {
-				return revocationToken;
-			}
+			result.addAll(revocationSource.getRevocationTokens(certificateToken, issuerCertificateToken));
 		}
-		return null;
+		return result;
 	}
 
 	public List<EncapsulatedRevocationTokenIdentifier> getAllRevocationBinaries() {

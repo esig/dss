@@ -65,6 +65,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
@@ -411,6 +412,10 @@ public class DiagnosticDataBuilder {
 			List<XmlTimestamp> builtTimestamps = buildXmlTimestamps(usedTimestamps);
 			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
 			linkSignaturesAndTimestamps(signatures);
+		}
+		
+		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
+			diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
 		}
 		
 		// timestamped objects must be linked after building of orphan tokens
@@ -903,6 +908,17 @@ public class DiagnosticDataBuilder {
 			}
 		}
 		return xmlTimestampsList;
+	}
+	
+	private XmlOrphanTokens buildXmlOrphanTokens() {
+		XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
+		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap)) {
+			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
+		}
+		if (Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
+			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
+		}
+		return xmlOrphanTokens;
 	}
 	
 	private XmlRevocation buildDetachedXmlRevocation(RevocationToken<Revocation> revocationToken) {
@@ -1414,7 +1430,8 @@ public class DiagnosticDataBuilder {
 				xmlRelatedRevocation.setRevocation(xmlRevocation);
 				xmlRelatedRevocation.setType(token.getRevocationType());
 				xmlRelatedRevocation.getOrigins().addAll(entry.getValue());
-				xmlRelatedRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(source.findRefsAndOriginsForRevocationToken(token)));
+				xmlRelatedRevocation.getRevocationRefs()
+						.addAll(getXmlRevocationRefs(xmlRevocation.getId(), source.findRefsAndOriginsForRevocationToken(token)));
 				result.add(xmlRelatedRevocation);
 			}
 		}
@@ -1431,9 +1448,10 @@ public class DiagnosticDataBuilder {
 		Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> allBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
 		for (Entry<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
 			EncapsulatedRevocationTokenIdentifier token = entry.getKey();
-			if (!xmlRevocationsMap.containsKey(token.asXmlId())) {
+			String tokenId = token.asXmlId();
+			if (!xmlRevocationsMap.containsKey(tokenId)) {
 				XmlOrphanRevocation xmlOrphanRevocation = getXmlOrphanRevocation(token, entry.getValue());
-				xmlOrphanRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(source.findRefsAndOriginsForBinary(token)));
+				xmlOrphanRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(tokenId, source.findRefsAndOriginsForBinary(token)));
 				xmlOrphanRevocations.add(xmlOrphanRevocation);
 			}
 		}
@@ -1456,16 +1474,19 @@ public class DiagnosticDataBuilder {
 		}
 	}
 
-	private <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
+	private <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(String tokenId, Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			Set<RevocationRefOrigin> origins = entry.getValue();
+			XmlRevocationRef xmlRef = null;
 			if (ref instanceof CRLRef) {
-				xmlRevocationRefs.add(getXmlCRLRevocationRef((CRLRef) ref, origins));
+				xmlRef = getXmlCRLRevocationRef((CRLRef) ref, origins);
 			} else {
-				xmlRevocationRefs.add(getXmlOCSPRevocationRef((OCSPRef) ref, origins));
+				xmlRef = getXmlOCSPRevocationRef((OCSPRef) ref, origins);
 			}
+			referenceMap.put(ref.getDSSIdAsString(), tokenId);
+			xmlRevocationRefs.add(xmlRef);
 		}
 		return xmlRevocationRefs;
 	}

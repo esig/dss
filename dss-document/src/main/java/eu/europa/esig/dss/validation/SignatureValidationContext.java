@@ -570,18 +570,19 @@ public class SignatureValidationContext implements ValidationContext {
 		List<RevocationToken> revocations = new ArrayList<>();
 
 		// ALL Embedded revocation data
-		if (signatureCRLSource != null || signatureOCSPSource != null) {
-			OCSPAndCRLRevocationSource offlineVerifier = new OCSPAndCRLRevocationSource(signatureCRLSource, signatureOCSPSource);
-			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken, issuerToken);
-			if (ocspToken != null) {
-				revocations.add(ocspToken);
-				addRevocationTokenForVerification(ocspToken);
+		if (signatureCRLSource != null) {
+			List<RevocationToken<CRL>> revocationTokens = signatureCRLSource.getRevocationTokens(certToken, issuerToken);
+			for (RevocationToken revocationToken : revocationTokens) {
+				revocations.add(revocationToken);
+				addRevocationTokenForVerification(revocationToken);
 			}
+		}
 
-			RevocationToken crlToken = offlineVerifier.checkCRL(certToken, issuerToken);
-			if (crlToken != null) {
-				revocations.add(crlToken);
-				addRevocationTokenForVerification(crlToken);
+		if (signatureOCSPSource != null) {
+			List<RevocationToken<OCSP>> revocationTokens = signatureOCSPSource.getRevocationTokens(certToken, issuerToken);
+			for (RevocationToken revocationToken : revocationTokens) {
+				revocations.add(revocationToken);
+				addRevocationTokenForVerification(revocationToken);
 			}
 		}
 		

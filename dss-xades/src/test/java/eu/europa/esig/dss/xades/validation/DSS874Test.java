@@ -48,6 +48,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -74,6 +75,7 @@ public class DSS874Test {
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		Reports reports = validator.validateDocument();
 
+		UnmarshallingTester.unmarshallXmlReports(reports);
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(1, signatures.size());

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -353,6 +354,52 @@ public final class DSSRevocationUtils {
 	
 	public static String getOcspRevocationKey(final CertificateToken certificateToken, final String ocspUrl) {
 		return DSSUtils.getSHA1Digest(certificateToken.getEntityKey() + ":" + ocspUrl);
+	}
+
+	public static SingleResp getLatestSingleResponse(BasicOCSPResp basicResponse, CertificateToken certificate, CertificateToken issuer) {
+		List<SingleResp> singleResponses = getSingleResponses(basicResponse, certificate, issuer);
+		if (Utils.isCollectionEmpty(singleResponses)) {
+			return null;
+		} else if (singleResponses.size() == 1) {
+			return singleResponses.get(0);
+		} else {
+			return getLatestSingleRespInList(singleResponses);
+		}
+	}
+
+	private static SingleResp getLatestSingleRespInList(List<SingleResp> singleResponses) {
+		Date latest = null;
+		SingleResp latestResp = null;
+		for (SingleResp singleResp : singleResponses) {
+			final Date thisUpdate = singleResp.getThisUpdate();
+			if ((latest == null) || thisUpdate.after(latest)) {
+				latestResp = singleResp;
+				latest = thisUpdate;
+			}
+		}
+		return latestResp;
+	}
+
+	public static List<SingleResp> getSingleResponses(BasicOCSPResp basicResponse, CertificateToken certificate, CertificateToken issuer) {
+		List<SingleResp> result = new ArrayList<>();
+		SingleResp[] responses = getSingleResps(basicResponse);
+		for (final SingleResp singleResp : responses) {
+			DigestAlgorithm usedDigestAlgorithm = getUsedDigestAlgorithm(singleResp);
+			final CertificateID certId = getOCSPCertificateID(certificate, issuer, usedDigestAlgorithm);
+			if (DSSRevocationUtils.matches(certId, singleResp)) {
+				result.add(singleResp);
+			}
+		}
+		return result;
+	}
+
+	private static SingleResp[] getSingleResps(BasicOCSPResp basicResponse) {
+		try {
+			return basicResponse.getResponses();
+		} catch (Exception e) {
+			LOG.warn("Unable to extract SingleResp(s)", e.getMessage());
+			return new SingleResp[] {};
+		}
 	}
 
 }
