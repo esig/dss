@@ -52,15 +52,6 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
-	 * This method returns the collected binaries
-	 * 
-	 * @return a Set of all collected binaries
-	 */
-	public Set<EncapsulatedRevocationTokenIdentifier> getCollectedBinaries() {
-		return binaryOrigins.keySet();
-	}
-
-	/**
 	 * This method adds a revocation token with its origin
 	 * 
 	 * @param token  the revocation token to be added
@@ -131,19 +122,6 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 		return binaryOrigins;
 	}
 
-	public Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> getUniqueRevocationBinariesWithOrigins() {
-		Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> result = new HashMap<>();
-		List<String> knownIds = new ArrayList<>();
-		for (Entry<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> entry : binaryOrigins.entrySet()) {
-			String currentId = entry.getKey().asXmlId();
-			if (!knownIds.contains(currentId)) {
-				result.put(entry.getKey(), entry.getValue());
-				knownIds.add(currentId);
-			}
-		}
-		return result;
-	}
-
 	/**
 	 * Retrieves a Set of all found {@code RevocationToken}
 	 * 
@@ -162,6 +140,12 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 		return tokenOrigins;
 	}
 
+	/**
+	 * Returns a Map of unique {@code RevocationToken} based on binary (a same
+	 * binary can cover several certificates) with their origins
+	 * 
+	 * @return a map of tokens with the different origins
+	 */
 	public Map<RevocationToken<R>, Set<RevocationOrigin>> getUniqueRevocationTokensWithOrigins() {
 		Map<RevocationToken<R>, Set<RevocationOrigin>> result = new HashMap<>();
 		List<TokenIdentifier> knownIds = new ArrayList<>();
@@ -367,7 +351,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * @param token the {@code RevocationToken} to find
 	 * @return the related {@code EncapsulatedRevocationTokenIdentifier}
 	 */
-	public EncapsulatedRevocationTokenIdentifier findBinaryForToken(RevocationToken<R> token) {
+	private EncapsulatedRevocationTokenIdentifier findBinaryForToken(RevocationToken<R> token) {
 		for (EncapsulatedRevocationTokenIdentifier binary : binaryOrigins.keySet()) {
 			if (binary.isMatch(new Digest(DigestAlgorithm.SHA256, token.getDigest(DigestAlgorithm.SHA256)))) {
 				return binary;
@@ -404,19 +388,6 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 			RevocationRef<R> ref = entry.getKey();
 			if (isOrphan(ref)) {
 				result.put(ref, entry.getValue());
-			}
-		}
-		return result;
-	}
-
-	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> getUniqueOrphanRevocationReferencesWithOrigins() {
-		Map<RevocationRef<R>, Set<RevocationRefOrigin>> result = new HashMap<>();
-		List<String> knownIds = new ArrayList<>();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
-			RevocationRef<R> ref = entry.getKey();
-			if (isOrphan(ref) && !knownIds.contains(ref.getDSSIdAsString())) {
-				result.put(ref, entry.getValue());
-				knownIds.add(ref.getDSSIdAsString());
 			}
 		}
 		return result;

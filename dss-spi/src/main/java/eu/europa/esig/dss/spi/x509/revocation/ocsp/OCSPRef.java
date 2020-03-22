@@ -24,13 +24,12 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.bouncycastle.asn1.esf.OcspResponsesID;
-import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.utils.Utils;
@@ -58,13 +57,7 @@ public class OCSPRef extends RevocationRef<OCSP> {
 	 * The default constructor for OCSPRef.
 	 */
 	public OCSPRef(final OcspResponsesID ocspResponsesID) {
-		final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
-		if (otherHash != null) {
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
-			byte[] digestValue = otherHash.getHashValue();
-			this.digest = new Digest(digestAlgorithm, digestValue);
-		}
-		
+		this.digest = DSSRevocationUtils.getDigest(ocspResponsesID.getOcspRepHash());
 		this.producedAt = DSSASN1Utils.getDate(ocspResponsesID.getOcspIdentifier().getProducedAt());
 		
 		this.responderId = new ResponderId();

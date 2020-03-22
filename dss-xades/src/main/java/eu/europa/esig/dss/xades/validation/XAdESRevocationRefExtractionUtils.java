@@ -46,7 +46,7 @@ public final class XAdESRevocationRefExtractionUtils {
 
 		// process only if ResponderId is present
 		if (responderId.getName() == null && responderId.getKeyHash() == null) {
-			LOG.warn("Missing OCSPIdentifier / ResponderID (mandatory)");
+			LOG.warn("Skipped OCSPRef (missing OCSPIdentifier / ResponderID)");
 			return null;
 		}
 
@@ -58,13 +58,13 @@ public final class XAdESRevocationRefExtractionUtils {
 
 		// producedAtDate must be present
 		if (producedAtDate == null) {
-			LOG.warn("Missing OCSPIdentifier / ProducedAt (mandatory)");
+			LOG.warn("Skipped OCSPRef (missing OCSPIdentifier / ProducedAt)");
 			return null;
 		}
 
 		final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
 		if (digest == null) {
-			LOG.warn("Missing DigestAlgAndValue (mandatory)");
+			LOG.warn("Skipped OCSPRef (missing DigestAlgAndValue)");
 			return null;
 		}
 
@@ -73,10 +73,12 @@ public final class XAdESRevocationRefExtractionUtils {
 
 	public static CRLRef createCRLRef(XAdESPaths xadesPaths, Element crlRefNode) {
 		final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRefNode, xadesPaths.getCurrentDigestAlgAndValue()));
-		if (digest != null) {
-			return new CRLRef(digest);
+		if (digest == null) {
+			LOG.warn("Skipped CRLRef (missing DigestAlgAndValue)");
+			return null;
 		}
-		return null;
+		// TODO CRLIdentifier
+		return new CRLRef(digest);
 	}
 
 }

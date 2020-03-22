@@ -46,8 +46,7 @@ import org.xml.sax.SAXException;
  * Generic JAXB Facade which contains basic marshalling/unmarshalling
  * operations.
  * 
- * @param T
- *          A JAXB Object
+ * @param <T> A JAXB Object
  */
 public abstract class AbstractJaxbFacade<T> {
 

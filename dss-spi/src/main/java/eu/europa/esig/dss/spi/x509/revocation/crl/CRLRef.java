@@ -25,12 +25,11 @@ import java.util.Date;
 
 import org.bouncycastle.asn1.esf.CrlIdentifier;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
-import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 
 /**
@@ -65,11 +64,8 @@ public final class CRLRef extends RevocationRef<CRL> {
 				crlIssuedTime = crlIdentifier.getCrlIssuedTime().getDate();
 				crlNumber = crlIdentifier.getCrlNumber();
 			}
-			final OtherHash crlHash = cmsRef.getCrlHash();
 
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
-			byte[] digestValue = crlHash.getHashValue();
-			this.digest = new Digest(digestAlgorithm, digestValue);
+			this.digest = DSSRevocationUtils.getDigest(cmsRef.getCrlHash());
 		} catch (Exception e) {
 			throw new DSSException("Unable to build CRLRef from CrlValidatedID", e);
 		}

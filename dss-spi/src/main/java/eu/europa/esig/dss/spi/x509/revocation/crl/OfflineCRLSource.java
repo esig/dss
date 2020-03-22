@@ -56,7 +56,7 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 		Objects.requireNonNull(issuerToken, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<CRL>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getCollectedBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getAllRevocationBinaries();
 		LOG.trace("--> OfflineCRLSource queried for {} contains: {} element(s).", certificateToken.getDSSIdAsString(), collectedBinaries.size());
 
 		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {

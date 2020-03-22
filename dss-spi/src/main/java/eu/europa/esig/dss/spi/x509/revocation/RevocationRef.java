@@ -66,25 +66,35 @@ public abstract class RevocationRef<R extends Revocation> implements Serializabl
 	public String toString() {
 		return Utils.toBase64(digest.getValue());
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((digest == null) ? 0 : digest.hashCode());
+		return result;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof RevocationRef)) {
+		if (obj == null) {
 			return false;
 		}
-		RevocationRef o = (RevocationRef) obj;
-		return digest.equals(o.getDigest());
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((digest == null) ? 0 : digest.hashCode());
-		return result;
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		RevocationRef other = (RevocationRef) obj;
+		if (digest == null) {
+			if (other.digest != null) {
+				return false;
+			}
+		} else if (!digest.equals(other.digest)) {
+			return false;
+		}
+		return true;
 	}
 
 }

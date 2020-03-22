@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -50,8 +51,11 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 
 	@Override
 	public List<RevocationToken<OCSP>> getRevocationTokens(CertificateToken certificate, CertificateToken issuer) {
+		Objects.requireNonNull(certificate, "The certificate to be verified cannot be null");
+		Objects.requireNonNull(issuer, "The issuer of the certificate to be verified cannot be null");
+
 		List<RevocationToken<OCSP>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getCollectedBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getAllRevocationBinaries();
 		LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", certificate.getDSSIdAsString(), collectedBinaries.size());
 		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
 			OCSPResponseBinary ocspBinary = (OCSPResponseBinary) binary;
