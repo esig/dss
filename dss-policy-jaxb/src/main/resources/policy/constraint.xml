@@ -87,6 +87,7 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
+			<UnicitySigningCertificate Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -215,6 +216,13 @@
 			</CACertificate>
 			<Cryptographic />
 		</BasicSignatureConstraints>
+		<SignedAttributes>
+			<SigningCertificatePresent Level="WARN" />
+			<UnicitySigningCertificate Level="WARN" />
+			<CertDigestPresent Level="WARN" />
+			<CertDigestMatch Level="WARN" />
+			<IssuerSerialMatch Level="WARN" />
+		</SignedAttributes>
 	</Timestamp>
 	<Revocation>
         <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />

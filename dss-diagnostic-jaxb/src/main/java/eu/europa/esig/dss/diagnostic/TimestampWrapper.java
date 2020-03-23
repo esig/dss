@@ -52,9 +52,6 @@ public class TimestampWrapper extends AbstractTokenProxy {
 
 	private final XmlTimestamp timestamp;
 	
-	private FoundCertificatesProxy foundCertificatesProxy;
-	private FoundRevocationsProxy foundRevocationsProxy;
-
 	public TimestampWrapper(XmlTimestamp timestamp) {
 		Objects.requireNonNull(timestamp, "XmlTimestamp cannot be null!");
 		this.timestamp = timestamp;
@@ -85,11 +82,9 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return {@link FoundCertificatesProxy}
 	 */
+	@Override
 	public FoundCertificatesProxy foundCertificates() {
-		if (foundCertificatesProxy == null) {
-			foundCertificatesProxy = new FoundCertificatesProxy(timestamp.getFoundCertificates());
-		}
-		return foundCertificatesProxy;
+		return new FoundCertificatesProxy(timestamp.getFoundCertificates());
 	}
 
 	/**
@@ -97,11 +92,9 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return {@link FoundRevocationsProxy}
 	 */
+	@Override
 	public FoundRevocationsProxy foundRevocations() {
-		if (foundRevocationsProxy == null) {
-			foundRevocationsProxy = new FoundRevocationsProxy(timestamp.getFoundRevocations());
-		}
-		return foundRevocationsProxy;
+		return new FoundRevocationsProxy(timestamp.getFoundRevocations());
 	}
 
 	public TimestampType getType() {

@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValuePresentCh
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.IssuerSerialMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
+import eu.europa.esig.dss.validation.process.bbb.isc.checks.UnicitySigningCertificateAttributeCheck;
 
 /**
  * 5.2.3 Identification of the signing certificate
@@ -79,7 +80,8 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 */
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
 
-		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+		boolean isSignature = Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context);
+		if (isSignature || Context.TIMESTAMP.equals(context)) {
 			/*
 			 * 1) If the signature format used contains a way to directly identify the reference to the signers'
 			 * certificate in the attribute, the building block shall check that the digest of the certificate
@@ -89,12 +91,16 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 			 */
 
 			// PKCS7 signatures have not these information
-			SignatureWrapper signature = (SignatureWrapper) token;
-			if (signature.getSignatureFormat() != null && SignatureForm.PKCS7.equals(signature.getSignatureFormat().getSignatureForm())) {
-				return;
+			if (isSignature) {
+				SignatureWrapper signature = (SignatureWrapper) token;
+				if (signature.getSignatureFormat() != null && SignatureForm.PKCS7.equals(signature.getSignatureFormat().getSignatureForm())) {
+					return;
+				}
 			}
 
 			item = item.setNextItem(signingCertificateAttributePresent());
+
+			item = item.setNextItem(unicitySigningCertificateAttribute());
 
 			/*
 			 * 2) The building block shall take the first reference and shall check that the digest of the certificate
@@ -148,6 +154,11 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 	private ChainItem<XmlISC> signingCertificateAttributePresent() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
 		return new SigningCertificateAttributePresentCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlISC> unicitySigningCertificateAttribute() {
+		LevelConstraint constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
+		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> digestValuePresent() {

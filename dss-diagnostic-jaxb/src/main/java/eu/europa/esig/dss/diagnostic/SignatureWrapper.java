@@ -52,9 +52,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	private final XmlSignature signature;
 	
-	private FoundCertificatesProxy foundCertificatesProxy;
-	private FoundRevocationsProxy foundRevocationsProxy;
-
 	public SignatureWrapper(XmlSignature signature) {
 		Objects.requireNonNull(signature, "XmlSignature cannot be null!");
 		this.signature = signature;
@@ -64,7 +61,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public String getId() {
 		return signature.getId();
 	}
-	
+
 	public String getDAIdentifier() {
 		return signature.getDAIdentifier();
 	}
@@ -104,11 +101,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return {@link FoundCertificatesProxy}
 	 */
+	@Override
 	public FoundCertificatesProxy foundCertificates() {
-		if (foundCertificatesProxy == null) {
-			foundCertificatesProxy = new FoundCertificatesProxy(signature.getFoundCertificates());
-		}
-		return foundCertificatesProxy;
+		return new FoundCertificatesProxy(signature.getFoundCertificates());
 	}
 
 	/**
@@ -116,11 +111,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return {@link FoundRevocationsProxy}
 	 */
+	@Override
 	public FoundRevocationsProxy foundRevocations() {
-		if (foundRevocationsProxy == null) {
-			foundRevocationsProxy = new FoundRevocationsProxy(signature.getFoundRevocations());
-		}
-		return foundRevocationsProxy;
+		return new FoundRevocationsProxy(signature.getFoundRevocations());
 	}
 
 	public String getSignatureFilename() {

@@ -61,4 +61,18 @@ public interface TokenProxy {
 
 	List<XmlDigestMatcher> getDigestMatchers();
 
+	/**
+	 * Returns FoundCertificatesProxy to access embedded certificates
+	 * 
+	 * @return {@link FoundCertificatesProxy}
+	 */
+	FoundCertificatesProxy foundCertificates();
+
+	/**
+	 * Returns FoundRevocationsProxy to access embedded revocation data
+	 * 
+	 * @return {@link FoundRevocationsProxy}
+	 */
+	FoundRevocationsProxy foundRevocations();
+
 }

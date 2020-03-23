@@ -42,6 +42,16 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	protected abstract XmlSigningCertificate getCurrentSigningCertificate();
 
 	@Override
+	public FoundCertificatesProxy foundCertificates() {
+		return new FoundCertificatesProxy(null);
+	}
+
+	@Override
+	public FoundRevocationsProxy foundRevocations() {
+		return new FoundRevocationsProxy(null);
+	}
+
+	@Override
 	public List<XmlDigestMatcher> getDigestMatchers() {
 		return Collections.emptyList();
 	}

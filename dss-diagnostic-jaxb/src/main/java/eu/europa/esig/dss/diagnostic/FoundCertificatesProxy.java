@@ -107,7 +107,6 @@ public class FoundCertificatesProxy {
 			for (CertificateRefWrapper certificateRef : relatedCertificate.getReferences()) {
 				if (refOrigin.equals(certificateRef.getOrigin())) {
 					certificateWrappers.add(relatedCertificate);
-					break;
 				}
 			}
 		}
@@ -128,7 +127,6 @@ public class FoundCertificatesProxy {
 			for (CertificateRefWrapper certificateRef : orphanCertificate.getReferences()) {
 				if (refOrigin.equals(certificateRef.getOrigin())) {
 					orphanCertificatesWrappers.add(orphanCertificate);
-					break;
 				}
 			}
 		}
