@@ -45,6 +45,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 
@@ -71,7 +72,7 @@ public class JdbcCacheCrlSourceTest {
 	
 	@Test
 	public void testExpired() throws SQLException {
-		RevocationToken revocationToken = null;
+		CRLToken revocationToken = null;
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
@@ -83,18 +84,18 @@ public class JdbcCacheCrlSourceTest {
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
-		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getFirstOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 
-		RevocationToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		CRLToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
-		assertEquals(RevocationOrigin.EXTERNAL, savedRevocationToken.getFirstOrigin()); // expired crl
+		assertEquals(RevocationOrigin.EXTERNAL, savedRevocationToken.getExternalOrigin()); // expired crl
 	}
 
 	@Test
 	public void test() throws Exception {
-		RevocationToken revocationToken = null;
+		CRLToken revocationToken = null;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
@@ -106,33 +107,33 @@ public class JdbcCacheCrlSourceTest {
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
-		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getFirstOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 		
-		RevocationToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		CRLToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
-		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getFirstOrigin());
+		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getExternalOrigin());
 
-		RevocationToken forceRefresh = crlSource.getRevocationToken(certificateToken, caToken, true);
+		CRLToken forceRefresh = crlSource.getRevocationToken(certificateToken, caToken, true);
 		assertNotNull(forceRefresh);
-		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getFirstOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getExternalOrigin());
 
 		savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
-		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getFirstOrigin());
+		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getExternalOrigin());
 
 		crlSource.setMaxNextUpdateDelay(1L);
 		Thread.sleep(1000);
 		
 		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
-		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getFirstOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getExternalOrigin());
 
 		crlSource.setMaxNextUpdateDelay(null);
 		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
-		assertEquals(RevocationOrigin.CACHED, forceRefresh.getFirstOrigin());
+		assertEquals(RevocationOrigin.CACHED, forceRefresh.getExternalOrigin());
 
 	}
 	
@@ -142,9 +143,9 @@ public class JdbcCacheCrlSourceTest {
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
 
 		crlSource.setProxySource(new OnlineCRLSource());
-		CRLToken revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
-		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getFirstOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 		crlSource.removeRevocation(revocationToken);
 		
 		try {
@@ -159,8 +160,8 @@ public class JdbcCacheCrlSourceTest {
 				crlToken.setRevocationTokenKey(revocationToken.getRevocationTokenKey());
 				crlSource.insertRevocation(crlToken);
 				
-				RevocationToken cachedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
-				assertEquals(RevocationOrigin.CACHED, cachedRevocationToken.getFirstOrigin());
+				CRLToken cachedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+				assertEquals(RevocationOrigin.CACHED, cachedRevocationToken.getExternalOrigin());
 				assertEquals(signatureAlgorithm, cachedRevocationToken.getSignatureAlgorithm());
 				crlSource.removeRevocation(crlToken);
 			}
@@ -173,7 +174,7 @@ public class JdbcCacheCrlSourceTest {
 				crlToken.setRevocationTokenKey(revocationToken.getRevocationTokenKey());
 				crlSource.updateRevocation(crlToken);
 
-				RevocationToken cachedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+				CRLToken cachedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 				assertEquals(signatureAlgorithm, cachedRevocationToken.getSignatureAlgorithm());
 			}
 		} catch (Exception e) {
@@ -195,7 +196,7 @@ public class JdbcCacheCrlSourceTest {
 	private class MockJdbcCacheCRLSource extends JdbcCacheCRLSource {
 		
 		@Override
-		protected void removeRevocation(CRLToken crlToken) {
+		protected void removeRevocation(RevocationToken<CRL> crlToken) {
 			super.removeRevocation(crlToken);
 		}
 		

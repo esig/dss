@@ -38,6 +38,7 @@ import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,7 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -62,7 +64,7 @@ import eu.europa.esig.dss.utils.Utils;
  * to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken>, OnlineRevocationSource<OCSPToken> {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSP>, OnlineRevocationSource<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
@@ -159,12 +161,14 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					verifyNonce(ocspResp, nonce);
 					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-						OCSPToken ocspToken = new OCSPToken(ocspResp, certificateToken, issuerCertificateToken);
+						BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResp.getResponseObject();
+						SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerCertificateToken);
+						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCertificateToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
-						ocspToken.setOrigins(Collections.singleton(RevocationOrigin.EXTERNAL));
+						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 						return ocspToken;
 					} else {
-						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
+						LOG.warn("Ignored OCSP Response from URL '{}' : status -> {}", ocspAccessLocation, status);
 					}
 				} else {
 					LOG.warn("OCSP Data Loader for certificate {} responded with an empty byte array!", certificateToken.getDSSIdAsString());

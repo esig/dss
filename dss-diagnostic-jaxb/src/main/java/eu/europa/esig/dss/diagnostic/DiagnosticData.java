@@ -671,16 +671,16 @@ public class DiagnosticData {
 	public List<OrphanCertificateWrapper> getAllOrphanCertificateObjects() {
 		List<OrphanCertificateWrapper> orphanCertificateValues = new ArrayList<>();
 		for (SignatureWrapper signatureWrapper : getSignatures()) {
-			for (OrphanCertificateWrapper cerrtificate : extractOrphanCertificateObjects(signatureWrapper.foundCertificates())) {
-				if (!orphanCertificateValues.contains(cerrtificate)) {
-					orphanCertificateValues.add(cerrtificate);
+			for (OrphanCertificateWrapper certificate : extractOrphanCertificateObjects(signatureWrapper.foundCertificates())) {
+				if (!orphanCertificateValues.contains(certificate)) {
+					orphanCertificateValues.add(certificate);
 				}
 			}
 		}
 		for (TimestampWrapper timestampWrapper : getTimestampList()) {
-			for (OrphanCertificateWrapper cerrtificate : extractOrphanCertificateObjects(timestampWrapper.foundCertificates())) {
-				if (!orphanCertificateValues.contains(cerrtificate)) {
-					orphanCertificateValues.add(cerrtificate);
+			for (OrphanCertificateWrapper certificate : extractOrphanCertificateObjects(timestampWrapper.foundCertificates())) {
+				if (!orphanCertificateValues.contains(certificate)) {
+					orphanCertificateValues.add(certificate);
 				}
 			}
 		}

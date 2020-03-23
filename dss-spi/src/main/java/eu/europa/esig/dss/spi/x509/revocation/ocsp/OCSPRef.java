@@ -23,16 +23,12 @@ package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 import java.util.Date;
 
 import org.bouncycastle.asn1.esf.OcspResponsesID;
-import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
@@ -41,20 +37,18 @@ import eu.europa.esig.dss.utils.Utils;
 /**
  * Reference an OCSPResponse
  */
-public class OCSPRef extends RevocationRef {
+public class OCSPRef extends RevocationRef<OCSP> {
 	
 	private static final long serialVersionUID = -4757221403735075782L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(OCSPRef.class);
-	
 	private Date producedAt = null;
 	private ResponderId responderId = null;
 
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId, RevocationRefOrigin origin) {
-		super(digest, origin);
+	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId) {
+		this.digest = digest;
 		this.producedAt = producedAt;
 		this.responderId = responderId;
 	}
@@ -62,8 +56,8 @@ public class OCSPRef extends RevocationRef {
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationRefOrigin origin) {
-		super(extractDigest(ocspResponsesID), origin);
+	public OCSPRef(final OcspResponsesID ocspResponsesID) {
+		this.digest = DSSRevocationUtils.getDigest(ocspResponsesID.getOcspRepHash());
 		this.producedAt = DSSASN1Utils.getDate(ocspResponsesID.getOcspIdentifier().getProducedAt());
 		this.responderId = new ResponderId();
 		X500Name name = ocspResponsesID.getOcspIdentifier().getOcspResponderID().getName();
@@ -73,18 +67,6 @@ public class OCSPRef extends RevocationRef {
 		byte[] key = ocspResponsesID.getOcspIdentifier().getOcspResponderID().getKeyHash();
 		if (Utils.isArrayNotEmpty(key)) {
 			this.responderId.setSki(key);
-		}
-	}
-	
-	private static Digest extractDigest(final OcspResponsesID ocspResponsesID) {
-		final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
-		if (otherHash != null) {
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
-			byte[] digestValue = otherHash.getHashValue();
-			return new Digest(digestAlgorithm, digestValue);
-		} else {
-			LOG.warn("Digest is not present for an OCSPRef!");
-			return null;
 		}
 	}
 	
@@ -111,7 +93,16 @@ public class OCSPRef extends RevocationRef {
 					+ "with Responder key 64base: [" + Utils.toBase64(responderId.getSki()) + "]";
 		}
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((producedAt == null) ? 0 : producedAt.hashCode());
+		result = prime * result + ((responderId == null) ? 0 : responderId.hashCode());
+		return result;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -141,13 +132,6 @@ public class OCSPRef extends RevocationRef {
 		return true;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((producedAt == null) ? 0 : producedAt.hashCode());
-		result = prime * result + ((responderId == null) ? 0 : responderId.hashCode());
-		return result;
-	}
+
 	
 }

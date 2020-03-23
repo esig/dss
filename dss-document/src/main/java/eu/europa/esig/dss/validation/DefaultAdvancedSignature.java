@@ -45,9 +45,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
@@ -108,13 +111,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	// Cached {@code SignatureCertificateSource}
 	protected SignatureCertificateSource offlineCertificateSource;
 
-	// Cached {@code SignatureCRLSource}
-	protected SignatureCRLSource signatureCRLSource;
+	// Cached {@code OfflineCRLSource}
+	protected OfflineCRLSource signatureCRLSource;
 
-	// Cached {@code SignatureOCSPSource}
-	protected SignatureOCSPSource signatureOCSPSource;
+	// Cached {@code OfflineOCSPSource}
+	protected OfflineOCSPSource signatureOCSPSource;
 
-	// Cached {@code SignatureTimestampSource}
+	// Cached {@code TimestampSource}
 	protected TimestampSource signatureTimestampSource;
 
 	private AdvancedSignature masterSignature;
@@ -231,15 +234,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public ListCRLSource getCompleteCRLSource() {
-		ListCRLSource crlSource = new ListCRLSource(getCRLSource());
+	public ListRevocationSource getCompleteCRLSource() {
+		ListRevocationSource crlSource = new ListRevocationSource(getCRLSource());
 		crlSource.addAll(getTimestampSource().getTimestampCRLSources());
 		return crlSource;
 	}
 
 	@Override
-	public ListOCSPSource getCompleteOCSPSource() {
-		ListOCSPSource ocspSource = new ListOCSPSource(getOCSPSource());
+	public ListRevocationSource getCompleteOCSPSource() {
+		ListRevocationSource ocspSource = new ListRevocationSource(getOCSPSource());
 		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
 		return ocspSource;
 	}
@@ -436,7 +439,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *            {@link CertificateToken} contains all the certificate tokens to be included to the signature
 	 * @return list of {@link CRLToken}s to be included to the signature
 	 */
-	private List<CRLToken> getCRLsForInclusion(final Set<RevocationToken> processedRevocations, 
+	private List<CRLToken> getCRLsForInclusion(
+			final Set<RevocationToken<Revocation>> processedRevocations, 
 			final Set<CertificateToken> certificatesToBeIncluded) {
 		
 		final List<CRLToken> crlTokens = new ArrayList<>();
@@ -463,7 +467,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *            {@link CertificateToken} contains all the certificate tokens to be included to the signature
 	 * @return list of {@link OCSPToken}s to be included to the signature
 	 */
-	private List<OCSPToken> getOCSPsForInclusion(final Set<RevocationToken> processedRevocations, 
+	private List<OCSPToken> getOCSPsForInclusion(
+			final Set<RevocationToken<Revocation>> processedRevocations, 
 			final Set<CertificateToken> certificatesToBeIncluded) {
 		
 		final List<OCSPToken> ocspTokens = new ArrayList<>();
@@ -737,11 +742,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
-		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCompleteCRLSource(), getCompleteOCSPSource(), certPool);
-
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!areAllCertsHaveRevocationData(certificateStatusVerifier, entryCertChain.getValue())) {
+			if (!areAllCertsHaveRevocationData(entryCertChain.getValue())) {
 				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
 				return false;
 			}
@@ -749,7 +752,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean areAllCertsHaveRevocationData(CertificateStatusVerifier certificateStatusVerifier, List<CertificateToken> certificates) {
+	private boolean areAllCertsHaveRevocationData(List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
 		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
 		for (List<CertificateToken> chain : orderedCerts.values()) {
@@ -759,8 +762,18 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 					// (cross certification)
 					break;
 				}
-				RevocationToken revocationData = certificateStatusVerifier.check(certificateToken);
-				if (revocationData == null) {
+				CertificateToken issuerToken = certPool.getIssuer(certificateToken);
+				if (issuerToken == null) {
+					LOG.warn("Issuer not found for certificate {}", certificateToken.getDSSIdAsString());
+					return false;
+				}
+
+				List<RevocationToken<Revocation>> revocationTokens = getCompleteOCSPSource().getRevocationTokens(certificateToken, issuerToken);
+				if (Utils.isCollectionEmpty(revocationTokens)) {
+					revocationTokens = getCompleteCRLSource().getRevocationTokens(certificateToken, issuerToken);
+				}
+
+				if (Utils.isCollectionEmpty(revocationTokens)) {
 					return false;
 				}
 			}

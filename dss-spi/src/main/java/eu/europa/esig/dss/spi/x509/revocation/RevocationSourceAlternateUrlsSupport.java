@@ -24,7 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
-public interface RevocationSourceAlternateUrlsSupport<T extends RevocationToken> extends RevocationSource<T> {
+public interface RevocationSourceAlternateUrlsSupport<R extends Revocation> extends RevocationSource<R> {
 
 	/**
 	 * Gets an {@code RevocationToken} for the given certificate / issuer's
@@ -42,6 +42,6 @@ public interface RevocationSourceAlternateUrlsSupport<T extends RevocationToken>
 	 * @return {@code RevocationToken} containing information about the validity of
 	 *         the cert
 	 */
-	T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls);
+	RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls);
 			
 }

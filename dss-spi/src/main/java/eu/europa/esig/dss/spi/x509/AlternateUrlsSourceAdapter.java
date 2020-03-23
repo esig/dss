@@ -23,6 +23,7 @@ package eu.europa.esig.dss.spi.x509;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
@@ -31,28 +32,27 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
  * is mainly used to collect revocations from discovered urls in the trusted
  * lists (supplyPoint).
  * 
- * @param <T>
- *        a sub-class of {@code RevocationToken}
+ * @param <R> a sub-class of {@code Revocation}
  */
-public class AlternateUrlsSourceAdapter<T extends RevocationToken> implements RevocationSourceAlternateUrlsSupport<T> {
+public class AlternateUrlsSourceAdapter<R extends Revocation> implements RevocationSourceAlternateUrlsSupport<R> {
 
 	private static final long serialVersionUID = 3375119421036319160L;
 
-	private final RevocationSourceAlternateUrlsSupport<T> wrappedSource;
+	private final RevocationSourceAlternateUrlsSupport<R> wrappedSource;
 	private final List<String> alternateUrls;
 
-	public AlternateUrlsSourceAdapter(RevocationSourceAlternateUrlsSupport<T> source, List<String> alternateUrls) {
+	public AlternateUrlsSourceAdapter(RevocationSourceAlternateUrlsSupport<R> source, List<String> alternateUrls) {
 		this.wrappedSource = source;
 		this.alternateUrls = alternateUrls;
 	}
 
 	@Override
-	public T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	public RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		return wrappedSource.getRevocationToken(certificateToken, issuerCertificateToken, alternateUrls);
 	}
 
 	@Override
-	public T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls) {
+	public RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls) {
 		return wrappedSource.getRevocationToken(certificateToken, issuerCertificateToken, alternativeUrls);
 	}
 

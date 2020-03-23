@@ -33,6 +33,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
@@ -168,32 +171,35 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a CRL source which contains ALL CRLs embedded in the signature.
 	 *
-	 * @return {@code SignatureCRLSource}
+	 * @return {@code OfflineRevocationSource}
 	 */
-	SignatureCRLSource getCRLSource();
+	OfflineRevocationSource<CRL> getCRLSource();
 
 	/**
-	 * Gets an OCSP source which contains ALL OCSP responses embedded in the signature.
+	 * Gets an OCSP source which contains ALL OCSP responses embedded in the
+	 * signature.
 	 *
-	 * @return {@code SignatureOCSPSource}
+	 * @return {@code OfflineRevocationSource}
 	 */
-	SignatureOCSPSource getOCSPSource();
+	OfflineRevocationSource<OCSP> getOCSPSource();
 	
 	/**
-	 * Gets a ListCRLSource representing a merged source from {@code signatureCRLSourse} and 
-	 * all included to the signature timestamp objects
+	 * Gets a ListRevocationSource representing a merged source from
+	 * {@code signatureCRLSourse} and all included to the signature timestamp
+	 * objects
 	 * 
-	 * @return {@link ListCRLSource}
+	 * @return {@link ListRevocationSource}
 	 */
-	ListCRLSource getCompleteCRLSource();
+	ListRevocationSource<CRL> getCompleteCRLSource();
 	
 	/**
-	 * Gets a ListOCSPSource representing a merged source from {@code signatureOCSPSourse} and 
-	 * all included to the signature timestamp objects
+	 * Gets a ListRevocationSource representing a merged source from
+	 * {@code signatureOCSPSourse} and all included to the signature timestamp
+	 * objects
 	 * 
-	 * @return {@link ListOCSPSource}
+	 * @return {@link ListRevocationSource}
 	 */
-	ListOCSPSource getCompleteOCSPSource();
+	ListRevocationSource<OCSP> getCompleteOCSPSource();
 	
 	/**
 	 * Gets a Signature Timestamp source which contains ALL timestamps embedded in the signature.

@@ -75,8 +75,8 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		AdvancedSignature advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(1, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
 		Reports reports = validator.validateDocument();
 		
@@ -105,8 +105,8 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(1, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
 		diagnosticData = reports.getDiagnosticData();
 		List<RelatedRevocationWrapper> revocationLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).foundRevocations().getRelatedRevocationData();
@@ -137,8 +137,8 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(2, advancedSignature.getCRLSource().getCRLBinaryList().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		assertEquals(2, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));

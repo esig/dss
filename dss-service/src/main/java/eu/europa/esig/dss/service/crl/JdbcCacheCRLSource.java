@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -41,13 +40,15 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
  */
-public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implements CRLSource {
+public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRLSource {
 
 	private static final long serialVersionUID = 3007740140330998336L;
 	
@@ -160,7 +161,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	}
 
 	@Override
-	protected CRLToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
+	protected RevocationToken<CRL> buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
 			CRLBinary crlBinaryIdentifier = new CRLBinary(rs.getBytes(SQL_FIND_QUERY_DATA));
 			final CRLValidity cached = new CRLValidity(crlBinaryIdentifier);
@@ -176,7 +177,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 			cached.setSignatureIntact(rs.getBoolean(SQL_FIND_QUERY_SIGNATURE_INTACT));
 			cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
 			CRLToken crlToken = new CRLToken(certificateToken, cached);
-			crlToken.setOrigins(Collections.singleton(RevocationOrigin.CACHED));
+			crlToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return crlToken;
 		} catch (SQLException e) {
 			throw new RevocationException("An error occurred during an attempt to get a revocation token");
@@ -190,10 +191,11 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	 *            {@link CRLToken}
 	 */
 	@Override
-	protected void insertRevocation(final CRLToken token) {
+	protected void insertRevocation(final RevocationToken<CRL> token) {
 		Connection c = null;
 		PreparedStatement s = null;
-		CRLValidity crlValidity = token.getCrlValidity();
+		CRLToken crlToken = (CRLToken) token;
+		CRLValidity crlValidity = crlToken.getCrlValidity();
 		try {
 			c = dataSource.getConnection();
 			s = c.prepareStatement(SQL_FIND_INSERT);
@@ -246,10 +248,11 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	 *            {@link CRLToken}
 	 */
 	@Override
-	protected void updateRevocation(CRLToken token) {
+	protected void updateRevocation(RevocationToken<CRL> token) {
 		Connection c = null;
 		PreparedStatement s = null;
-		CRLValidity crlValidity = token.getCrlValidity();
+		CRLToken crlToken = (CRLToken) token;
+		CRLValidity crlValidity = crlToken.getCrlValidity();
 		try {
 			c = dataSource.getConnection();
 			s = c.prepareStatement(SQL_FIND_UPDATE);
@@ -292,6 +295,16 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 		} finally {
 			closeQuietly(c, s, null);
 		}
+	}
+
+	@Override
+	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		return (CRLToken) super.getRevocationToken(certificateToken, issuerCertificateToken);
+	}
+
+	@Override
+	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, boolean forceRefresh) {
+		return (CRLToken) super.getRevocationToken(certificateToken, issuerCertificateToken, forceRefresh);
 	}
 	
 }

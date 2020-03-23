@@ -164,12 +164,12 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		assertNotNull(signatures);
 		
 		SignatureWrapper signature = signatures.get(0);
-		assertEquals(1, signature.foundRevocations().getRelatedRevocationData().size());
-		assertEquals(1, signature.foundRevocations().getOrphanRevocationData().size());
+		assertEquals(2, signature.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, signature.foundRevocations().getOrphanRevocationData().size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.CRL).size());
 		assertEquals(0, signature.foundRevocations().getOrphanRevocationsByType(RevocationType.CRL).size());
-		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
-		assertEquals(1, signature.foundRevocations().getOrphanRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(2, signature.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(0, signature.foundRevocations().getOrphanRevocationsByType(RevocationType.OCSP).size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size() +
 				signature.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size() +

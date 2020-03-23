@@ -41,15 +41,15 @@ import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureOCSPSource;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
  *
  */
 @SuppressWarnings("serial")
-public class PAdESOCSPSource extends SignatureOCSPSource {
+public class PAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESOCSPSource.class);
 	
@@ -72,7 +72,6 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 		appendContainedOCSPResponses();
 	}
 	
-	@Override
 	public void appendContainedOCSPResponses() {
 		extractDSSOCSPs();
 		extractVRIOCSPs();
@@ -108,7 +107,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = new OCSPResp(ocspResponse);
 					try {
 						BasicOCSPResp basicOCSPResponse = (BasicOCSPResp) ocspResp.getResponseObject();
-						addOCSPResponse(OCSPResponseBinary.build(basicOCSPResponse), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+						addBinary(OCSPResponseBinary.build(basicOCSPResponse), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 					} catch (OCSPException e) {
 						LOG.warn("Error while extracting OCSPResponse from Revocation Info Archivals (ADBE) : {}", e.getMessage());
 					}					
@@ -145,7 +144,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	
 	private void extractDSSOCSPs() {
 		for (BasicOCSPResp basicOCSPResp : getDssOcspMap().values()) {
-			addOCSPResponse(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.DSS_DICTIONARY);
+			addBinary(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.DSS_DICTIONARY);
 		}
 	}
 	
@@ -172,7 +171,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 				if (!ocspMap.containsKey(ocspEntry.getKey())) {
 					ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
 				}
-				addOCSPResponse(OCSPResponseBinary.build(ocspEntry.getValue()), RevocationOrigin.VRI_DICTIONARY);
+				addBinary(OCSPResponseBinary.build(ocspEntry.getValue()), RevocationOrigin.VRI_DICTIONARY);
 			}
 		}
 	}

@@ -46,7 +46,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 /**
  * This class represents a CRL and provides the information about its validity.
  */
-public class CRLToken extends RevocationToken {
+public class CRLToken extends RevocationToken<CRL> {
 
 	private static final long serialVersionUID = 1934492191629483078L;
 
@@ -70,6 +70,7 @@ public class CRLToken extends RevocationToken {
 	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity) {
 		Objects.requireNonNull(crlValidity, "CRL Validity cannot be null");
 		this.crlValidity = crlValidity;
+		this.relatedCertificate = certificateToken;
 		initInfo();
 		setRevocationStatus(certificateToken);
 		if (LOG.isDebugEnabled()) {

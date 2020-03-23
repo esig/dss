@@ -18,27 +18,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.spi.x509.revocation;
+
+import java.io.Serializable;
+import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-
 
 /**
- * Implements a check that can be executed for a certificate.
+ * This interface allows to retrieve all revocation data for a given
+ * certificate.
  * 
- * 
- *
+ * Several implementations are available based on CRL and OCSP.
  */
+public interface MultipleRevocationSource<R extends Revocation> extends Serializable {
 
-public interface CertificateStatusVerifier {
-
-   /***
-    * Check the validity (revocation status) of the certificate. The operation returns a {@link RevocationToken}.
-    * 
-    * @param certificate The certificate to be verified
-    * @return The RevocationToken or null the check cannot be performed.
-    */
-   RevocationToken check(CertificateToken certificate);
+	/**
+	 * This method retrieves a list of {@code RevocationToken} for the
+	 * certificateToken
+	 * 
+	 * @param certificateToken       The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerCertificateToken The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @return a list of {@code RevocationToken}
+	 */
+	List<RevocationToken<R>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
 
 }

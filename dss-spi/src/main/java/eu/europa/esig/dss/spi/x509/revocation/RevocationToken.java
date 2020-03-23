@@ -20,10 +20,8 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -31,10 +29,9 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
-public abstract class RevocationToken extends Token {
+public abstract class RevocationToken<R extends Revocation> extends Token {
 
 	/**
 	 * Related {@link CertificateToken} to this revocation object
@@ -42,19 +39,14 @@ public abstract class RevocationToken extends Token {
 	protected CertificateToken relatedCertificate;
 
 	/**
-	 * Origins of the revocation data (signature or external)
-	 */
-	private Set<RevocationOrigin> origins;
-
-	/**
 	 * The URL which was used to obtain the revocation data (online).
 	 */
 	protected String sourceURL;
 
 	/**
-	 * This boolean shows if the online resource is available
+	 * The external origin (ONLINE or CACHED)
 	 */
-	protected boolean available;
+	protected RevocationOrigin externalOrigin;
 
 	/**
 	 * Contains the revocation status of the token. True if is not revoked, false if is revoked or null if unknown.
@@ -149,43 +141,6 @@ public abstract class RevocationToken extends Token {
 	 */
 	public void setSourceURL(final String sourceURL) {
 		this.sourceURL = sourceURL;
-	}
-
-	/**
-	 * Returns the revocation origin (the signature itself or else)
-	 * 
-	 * @return the origin of this revocation data
-	 */
-	public Set<RevocationOrigin> getOrigins() {
-		return origins;
-	}
-	
-	/**
-	 * Returns first found origin from the set of {@code RevocationOrigin}s
-	 * @return {@link RevocationOrigin}
-	 */
-	public RevocationOrigin getFirstOrigin() {
-		if (Utils.isCollectionNotEmpty(origins)) {
-			return origins.iterator().next();
-		}
-		return null;
-	}
-
-	public void setOrigins(Set<RevocationOrigin> origins) {
-		this.origins = origins;
-	}
-
-	/**
-	 * Returns the online resource availability status
-	 * 
-	 * @return true if the online resource was available
-	 */
-	public boolean isAvailable() {
-		return available;
-	}
-
-	public void setAvailable(boolean available) {
-		this.available = available;
 	}
 
 	/**
@@ -299,17 +254,26 @@ public abstract class RevocationToken extends Token {
 	 */
 	public abstract RevocationCertificateSource getCertificateSource();
 	
-	/**
-	 * Returns a list of embedded {@code CertificateToken}s
-	 * 
-	 * @return a list of {@link CertificateToken}s
-	 */
-	public List<CertificateToken> getCertificates() {
-		RevocationCertificateSource certificateSource = getCertificateSource();
-		if (certificateSource != null) {
-			return certificateSource.getCertificates();
+	public void setExternalOrigin(RevocationOrigin origin) {
+		Objects.requireNonNull(origin, "The origin is null");
+		if (origin.isInternalOrigin()) {
+			throw new IllegalArgumentException("Only external are allowed");
 		}
-		return Collections.emptyList();
+		this.externalOrigin = origin;
+	}
+
+	public RevocationOrigin getExternalOrigin() {
+		return externalOrigin;
+	}
+
+	/**
+	 * This method returns true if the token was not collected from an external
+	 * resource (online or jdbc)
+	 * 
+	 * @return true if the token comes from a signature/timestamp
+	 */
+	public boolean isInternal() {
+		return externalOrigin == null;
 	}
 
 	/**

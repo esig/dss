@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
@@ -35,6 +36,7 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -59,6 +61,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -356,6 +359,61 @@ public final class DSSRevocationUtils {
 	
 	public static String getOcspRevocationKey(final CertificateToken certificateToken, final String ocspUrl) {
 		return DSSUtils.getSHA1Digest(certificateToken.getEntityKey() + ":" + ocspUrl);
+	}
+
+	public static SingleResp getLatestSingleResponse(BasicOCSPResp basicResponse, CertificateToken certificate, CertificateToken issuer) {
+		List<SingleResp> singleResponses = getSingleResponses(basicResponse, certificate, issuer);
+		if (Utils.isCollectionEmpty(singleResponses)) {
+			return null;
+		} else if (singleResponses.size() == 1) {
+			return singleResponses.get(0);
+		} else {
+			return getLatestSingleRespInList(singleResponses);
+		}
+	}
+
+	private static SingleResp getLatestSingleRespInList(List<SingleResp> singleResponses) {
+		Date latest = null;
+		SingleResp latestResp = null;
+		for (SingleResp singleResp : singleResponses) {
+			final Date thisUpdate = singleResp.getThisUpdate();
+			if ((latest == null) || thisUpdate.after(latest)) {
+				latestResp = singleResp;
+				latest = thisUpdate;
+			}
+		}
+		return latestResp;
+	}
+
+	public static List<SingleResp> getSingleResponses(BasicOCSPResp basicResponse, CertificateToken certificate, CertificateToken issuer) {
+		List<SingleResp> result = new ArrayList<>();
+		SingleResp[] responses = getSingleResps(basicResponse);
+		for (final SingleResp singleResp : responses) {
+			DigestAlgorithm usedDigestAlgorithm = getUsedDigestAlgorithm(singleResp);
+			final CertificateID certId = getOCSPCertificateID(certificate, issuer, usedDigestAlgorithm);
+			if (DSSRevocationUtils.matches(certId, singleResp)) {
+				result.add(singleResp);
+			}
+		}
+		return result;
+	}
+
+	private static SingleResp[] getSingleResps(BasicOCSPResp basicResponse) {
+		try {
+			return basicResponse.getResponses();
+		} catch (Exception e) {
+			LOG.warn("Unable to extract SingleResp(s)", e.getMessage());
+			return new SingleResp[] {};
+		}
+	}
+
+	public static Digest getDigest(OtherHash otherHash) {
+		if (otherHash != null) {
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
+			byte[] digestValue = otherHash.getHashValue();
+			return new Digest(digestAlgorithm, digestValue);
+		}
+		return null;
 	}
 
 }

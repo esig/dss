@@ -21,39 +21,21 @@
 package eu.europa.esig.dss.spi.x509.revocation;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class RevocationRef implements Serializable {
+public abstract class RevocationRef<R extends Revocation> implements Serializable {
 
 	private static final long serialVersionUID = 7313118727647264457L;
 
-	private final Digest digest; // can be null
-	private final Set<RevocationRefOrigin> origins;
+	protected Digest digest = null;
 	
 	private Identifier identifier;
-	
-	protected RevocationRef(final Digest digest, RevocationRefOrigin origin) {
-		this.digest = digest;
-		this.origins = new HashSet<>(Arrays.asList(origin));
-	}
 
 	public Digest getDigest() {
 		return digest;
-	}
-	
-	public Set<RevocationRefOrigin> getOrigins() {
-		return origins;
-	}
-	
-	public void addOrigin(RevocationRefOrigin revocationRefOrigin) {
-		origins.add(revocationRefOrigin);
 	}
 	
 	/**
@@ -84,7 +66,15 @@ public abstract class RevocationRef implements Serializable {
 	public String toString() {
 		return Utils.toBase64(digest.getValue());
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((digest == null) ? 0 : digest.hashCode());
+		return result;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -97,22 +87,14 @@ public abstract class RevocationRef implements Serializable {
 			return false;
 		}
 		RevocationRef other = (RevocationRef) obj;
-		if (getDSSId() == null) {
-			if (other.getDSSId() != null) {
+		if (digest == null) {
+			if (other.digest != null) {
 				return false;
 			}
-		} else if (!getDSSId().equals(other.getDSSId())) {
+		} else if (!digest.equals(other.digest)) {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getDSSId() == null) ? 0 : getDSSId().hashCode());
-		return result;
 	}
 
 }

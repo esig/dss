@@ -21,13 +21,13 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -49,13 +49,13 @@ public interface ValidationContext {
 	Date getCurrentTime();
 
 	/**
-	 * Adds a list of new revocation tokens to the list of tokens to verify. If the revocation token has already been
-	 * added then it is ignored.
+	 * Adds a new revocation token to the list of tokens to verify. If the
+	 * revocation token has already been added then it is ignored.
 	 *
-	 * @param revocationTokens
-	 *            a list of {@code RevocationToken} revocation tokens to verify
+	 * @param revocationToken an instance of {@code RevocationToken} revocation
+	 *                        tokens to verify
 	 */
-	void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens);
+	void addRevocationTokenForVerification(final RevocationToken<Revocation> revocationToken);
 
 	/**
 	 * Adds a new certificate token to the list of tokens to verify. If the certificate token has already been added
@@ -146,7 +146,7 @@ public interface ValidationContext {
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
-	Set<RevocationToken> getProcessedRevocations();
+	Set<RevocationToken<Revocation>> getProcessedRevocations();
 
 	/**
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 /**
  * Sub-interface for online sources of {@link RevocationToken}s
  */
-public interface OnlineRevocationSource<T extends RevocationToken> extends RevocationSource<T> {
+public interface OnlineRevocationSource<R extends Revocation> extends RevocationSource<R> {
 	
 	/**
 	 * Set the DataLoader to use for querying a revocation server.

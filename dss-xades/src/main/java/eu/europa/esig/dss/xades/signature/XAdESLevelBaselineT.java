@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -55,7 +54,6 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -289,7 +287,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @return set of {@link CRLToken}s with no duplicates
 	 */
 	protected Set<CRLToken> filterCRLsPresentIntoSignature(Collection<CRLToken> crlTokens) {
-		Collection<CRLBinary> signatureCRLBinaryList = xadesSignature.getCRLSource().getCRLBinaryList();
+		Collection<EncapsulatedRevocationTokenIdentifier> signatureCRLBinaryList = xadesSignature.getCRLSource().getAllRevocationBinaries();
 		return filterNewRevocations(crlTokens, signatureCRLBinaryList);
 	}
 
@@ -299,12 +297,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @return set of {@link OCSPToken}s with no duplicates
 	 */
 	protected Set<OCSPToken> filterOCSPsPresentIntoSignature(Collection<OCSPToken> ocspTokens) {
-		Collection<OCSPResponseBinary> signatureOCSPResponseList = xadesSignature.getOCSPSource().getOCSPResponsesList();
+		Collection<EncapsulatedRevocationTokenIdentifier> signatureOCSPResponseList = xadesSignature.getOCSPSource().getAllRevocationBinaries();
 		return filterNewRevocations(ocspTokens, signatureOCSPResponseList);
 	}
 	
 	private <R extends RevocationToken> Set<R> filterNewRevocations(Collection<R> revocationTokens,
-			Collection<? extends EncapsulatedRevocationTokenIdentifier> revocationBinaryList) {
+			Collection<EncapsulatedRevocationTokenIdentifier> revocationBinaryList) {
 		Set<R> revocationTokensToBeAdded = new HashSet<>();
 		for (R revocationToken : revocationTokens) {
 			boolean found = false;

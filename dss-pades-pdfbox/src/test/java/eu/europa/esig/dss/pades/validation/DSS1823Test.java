@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -58,12 +58,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.CompositeRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
@@ -230,28 +226,8 @@ public class DSS1823Test extends PKIFactoryAccess {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
-
-		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
-		
-		PdfDssDict dssDictionary = documentReader.getDSSDictionary();
-
-		List<RevocationSource<CRLToken>> crlTokens = new ArrayList<>();
-		crlTokens.add(calculateCRLs(dssDictionary));
-		crlTokens.add(onlineCRLSource);
-
-		List<RevocationSource<OCSPToken>> ocspTokens = new ArrayList<>();
-		ocspTokens.add(calculateOCSPs(dssDictionary));
-		ocspTokens.add(onlineOCSPSource);
-
-		CompositeRevocationSource<CRLToken> compositeCTLSources = new CompositeRevocationSource<>(
-				crlTokens);
-		CompositeRevocationSource<OCSPToken> compositeOCSPSources = new CompositeRevocationSource<>(
-				ocspTokens);
-
-		certificateVerifier.setCrlSource(compositeCTLSources);
-		certificateVerifier.setOcspSource(compositeOCSPSources);
-		
+		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		return certificateVerifier;
 	}
 

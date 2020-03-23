@@ -39,14 +39,14 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureCRLSource;
 
 /**
  * CRLSource that will retrieve the CRL from a PAdES Signature
  */
 @SuppressWarnings("serial")
-public class PAdESCRLSource extends SignatureCRLSource {
+public class PAdESCRLSource extends OfflineCRLSource {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESCRLSource.class);
 
@@ -103,7 +103,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 		if (revValues != null) {
 			for (final CertificateList revValue : revValues.getCrlVals()) {
 				try {
-					addCRLBinary(new CRLBinary(revValue.getEncoded()), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+					addBinary(new CRLBinary(revValue.getEncoded()), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 				} catch (IOException e) {
 					LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
 				}
@@ -134,7 +134,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 
 	private void extractDSSCRLs() {
 		for (CRLBinary crl : getDssCrlMap().values()) {
-			addCRLBinary(crl, RevocationOrigin.DSS_DICTIONARY);
+			addBinary(crl, RevocationOrigin.DSS_DICTIONARY);
 		}
 	}
 	
@@ -161,7 +161,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 				if (!crlMap.containsKey(crlEntry.getKey())) {
 					crlMap.put(crlEntry.getKey(), crlEntry.getValue());
 				}
-				addCRLBinary(crlEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);
+				addBinary(crlEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);
 			}
 		}
 	}

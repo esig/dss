@@ -48,6 +48,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -74,6 +75,7 @@ public class DSS874Test {
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		Reports reports = validator.validateDocument();
 
+		UnmarshallingTester.unmarshallXmlReports(reports);
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(1, signatures.size());
@@ -87,18 +89,18 @@ public class DSS874Test {
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		
-		assertEquals(3, signatureWrapper.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
-		assertEquals(2, signatureWrapper.foundRevocations().getOrphanRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(5, signatureWrapper.foundRevocations().getRelatedRevocationsByType(RevocationType.OCSP).size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByType(RevocationType.OCSP).size());
 		
 		assertEquals(5, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
-		assertEquals(1, signatureWrapper.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
-		assertEquals(2, signatureWrapper.foundRevocations().getOrphanRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(3, signatureWrapper.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		
 		assertEquals(5, signatureWrapper.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 		assertEquals(0, signatureWrapper.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 		
-		assertEquals(3, signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(2, signatureWrapper.foundRevocations().getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(5, signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
 		
 		List<String> revocationIds = new ArrayList<>();
 		for (RelatedRevocationWrapper revocation : signatureWrapper.foundRevocations().getRelatedRevocationData()) {

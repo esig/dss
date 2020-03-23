@@ -28,11 +28,10 @@ import java.util.Objects;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
-import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
@@ -41,7 +40,6 @@ import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
@@ -191,22 +189,23 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDocDssRevision dssRevision) {
+	private void addReferencesFromRevocationData(List<TimestampedReference> references,
+			final PdfDocDssRevision dssRevision) {
 		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssRevision.getDssDictionary());
-		for (CRLBinary crlIdentifier : padesCRLSource.getCRLBinaryList()) {
-			if (padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
-					padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
-				addReference(references, new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
-			}
+		for (EncapsulatedRevocationTokenIdentifier token : padesCRLSource.getDSSDictionaryBinaries()) {
+			addReference(references, token, TimestampedObjectType.REVOCATION);
+		}
+		for (EncapsulatedRevocationTokenIdentifier token : padesCRLSource.getVRIDictionaryBinaries()) {
+			addReference(references, token, TimestampedObjectType.REVOCATION);
 		}
 		crlSource.add(padesCRLSource);
-		
+
 		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssRevision.getDssDictionary());
-		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
-			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
-					padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
-				addReference(references, new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
-			}
+		for (EncapsulatedRevocationTokenIdentifier token : padesOCSPSource.getDSSDictionaryBinaries()) {
+			addReference(references, token, TimestampedObjectType.REVOCATION);
+		}
+		for (EncapsulatedRevocationTokenIdentifier token : padesOCSPSource.getVRIDictionaryBinaries()) {
+			addReference(references, token, TimestampedObjectType.REVOCATION);
 		}
 		ocspSource.add(padesOCSPSource);
 	}

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.model.identifier;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -55,6 +56,10 @@ public abstract class MultipleDigestIdentifier extends Identifier {
 			digestMap.put(digestAlgorithm, digestValue);
 		}
 		return digestValue;
+	}
+
+	public boolean isMatch(Digest expectedDigest) {
+		return Arrays.equals(expectedDigest.getValue(), getDigestValue(expectedDigest.getAlgorithm()));
 	}
 
 }

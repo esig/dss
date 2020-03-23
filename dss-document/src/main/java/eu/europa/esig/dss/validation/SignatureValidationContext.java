@@ -52,12 +52,13 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.revocation.Revocation;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -74,7 +75,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureValidationContext.class);
 
 	private final Set<CertificateToken> processedCertificates = new HashSet<>();
-	private final Set<RevocationToken> processedRevocations = new HashSet<>();
+	private final Set<RevocationToken<Revocation>> processedRevocations = new HashSet<>();
 	private final Set<TimestampToken> processedTimestamps = new HashSet<>();
 
 	/**
@@ -98,16 +99,16 @@ public class SignatureValidationContext implements ValidationContext {
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
 
 	// External OCSP source.
-	private RevocationSource<OCSPToken> ocspSource;
+	private RevocationSource<OCSP> ocspSource;
 
 	// External CRL source.
-	private RevocationSource<CRLToken> crlSource;
+	private RevocationSource<CRL> crlSource;
 
 	// CRLs from the signature.
-	private CRLSource signatureCRLSource;
+	private ListRevocationSource<CRL> signatureCRLSource;
 
 	// OCSP from the signature.
-	private OCSPSource signatureOCSPSource;
+	private ListRevocationSource<OCSP> signatureOCSPSource;
 
 	private List<CertificateSource> trustedCertSources;
 	
@@ -416,26 +417,26 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens) {
-		for (RevocationToken revocationToken : revocationTokens) {
+	public void addRevocationTokenForVerification(RevocationToken<Revocation> revocationToken) {
+		if (addTokenForVerification(revocationToken)) {
 			
-			if (addTokenForVerification(revocationToken)) {
-				
-				// only certificate sources for OCSP tokens must be processed
-				for (CertificateToken certificateToken : revocationToken.getCertificates()) {
+			// only certificate sources for OCSP tokens must be processed
+			RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
+			if (revocationCertificateSource != null) {
+				validationCertificatePool.importCerts(revocationCertificateSource);
+				for (CertificateToken certificateToken : revocationCertificateSource.getCertificates()) {
 					addCertificateTokenForVerification(certificateToken);
-				}
-
-				final boolean added = processedRevocations.add(revocationToken);
-				if (LOG.isTraceEnabled()) {
-					if (added) {
-						LOG.trace("RevocationToken added to processedRevocations: {} ", revocationToken);
-					} else {
-						LOG.trace("RevocationToken already present processedRevocations: {} ", revocationToken);
-					}
 				}
 			}
 
+			final boolean added = processedRevocations.add(revocationToken);
+			if (LOG.isTraceEnabled()) {
+				if (added) {
+					LOG.trace("RevocationToken added to processedRevocations: {} ", revocationToken);
+				} else {
+					LOG.trace("RevocationToken already present processedRevocations: {} ", revocationToken);
+				}
+			}
 		}
 	}
 
@@ -533,8 +534,7 @@ public class SignatureValidationContext implements ValidationContext {
 			// extract the certificate chain and add missing tokens for verification
 			List<Token> certChain = getCertChain(token);
 			if (token instanceof CertificateToken) {
-				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token, certChain);
-				addRevocationTokensForVerification(revocationTokens);
+				getRevocationData((CertificateToken) token, certChain);
 			}
 			token = getNotYetVerifiedToken();
 			
@@ -563,20 +563,28 @@ public class SignatureValidationContext implements ValidationContext {
 			return Collections.emptyList();
 		}
 
+		CertificateToken issuerToken = validationCertificatePool.getIssuer(certToken);
+		if (issuerToken == null) {
+			LOG.warn("Issuer not found for certificate {}", certToken.getDSSIdAsString());
+			return Collections.emptyList();
+		}
+
 		List<RevocationToken> revocations = new ArrayList<>();
 
 		// ALL Embedded revocation data
-		if (signatureCRLSource != null || signatureOCSPSource != null) {
-			OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource,
-					validationCertificatePool);
-			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken);
-			if (ocspToken != null) {
-				revocations.add(ocspToken);
+		if (signatureCRLSource != null) {
+			List<RevocationToken<CRL>> revocationTokens = signatureCRLSource.getRevocationTokens(certToken, issuerToken);
+			for (RevocationToken revocationToken : revocationTokens) {
+				revocations.add(revocationToken);
+				addRevocationTokenForVerification(revocationToken);
 			}
+		}
 
-			RevocationToken crlToken = offlineVerifier.checkCRL(certToken);
-			if (crlToken != null) {
-				revocations.add(crlToken);
+		if (signatureOCSPSource != null) {
+			List<RevocationToken<OCSP>> revocationTokens = signatureOCSPSource.getRevocationTokens(certToken, issuerToken);
+			for (RevocationToken revocationToken : revocationTokens) {
+				revocations.add(revocationToken);
+				addRevocationTokenForVerification(revocationToken);
 			}
 		}
 		
@@ -587,25 +595,25 @@ public class SignatureValidationContext implements ValidationContext {
 				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
-				OCSPAndCRLCertificateVerifier onlineVerifier = null;
+				OCSPAndCRLRevocationSource onlineVerifier = null;
 				if (Utils.isCollectionNotEmpty(trustedCertSources) && (trustAnchor != null)) {
 					LOG.trace("Initializing a revocation verifier for a trusted chain...");
 					onlineVerifier = instantiateWithTrustServices(trustAnchor);
 				} else {
 					LOG.trace("Initializing a revocation verifier for not trusted chain...");
-					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+					onlineVerifier = new OCSPAndCRLRevocationSource(crlSource, ocspSource);
 				}
 
-				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
+				final RevocationToken<Revocation> onlineRevocationToken = onlineVerifier.getRevocationToken(certToken, issuerToken);
 				// CRL can already exist in the signature
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 					LOG.debug("Obtained a new revocation data : {}, for certificate : {}", onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
+					addRevocationTokenForVerification(onlineRevocationToken);
 				}
 				
 			} else {
 				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certToken.getDSSIdAsString());
-				
 			}
 		}
 		
@@ -630,11 +638,11 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CertificateToken trustAnchor) {
+	private OCSPAndCRLRevocationSource instantiateWithTrustServices(CertificateToken trustAnchor) {
 		RevocationSource currentOCSPSource = null;
 		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSP>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
 		} else {
 			currentOCSPSource = ocspSource;
 		}
@@ -642,12 +650,12 @@ public class SignatureValidationContext implements ValidationContext {
 		RevocationSource currentCRLSource = null;
 		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentCRLSource = new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+			currentCRLSource = new AlternateUrlsSourceAdapter<CRL>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
 		} else {
 			currentCRLSource = crlSource;
 		}
 
-		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource, validationCertificatePool);
+		return new OCSPAndCRLRevocationSource(currentCRLSource, currentOCSPSource);
 	}
 
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
@@ -696,7 +704,7 @@ public class SignatureValidationContext implements ValidationContext {
 			
 			boolean found = false;
 			Date earliestNextUpdate = null; // used for informational purpose only
-			for (RevocationToken revocationToken : processedRevocations) {
+			for (RevocationToken<Revocation> revocationToken : processedRevocations) {
 				
 				if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
 					if (bestSignatureTime == null || revocationToken.getThisUpdate().after(bestSignatureTime)) {
@@ -740,7 +748,7 @@ public class SignatureValidationContext implements ValidationContext {
 			if (!isRevocationDataNotRequired(token)) {
 				boolean foundValidRevocationDataAfterLastUsage = false;
 				Date nextUpdate = null;
-				for (RevocationToken revocationToken : processedRevocations) {
+				for (RevocationToken<Revocation> revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(token.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
 						Date productionDate = revocationToken.getProductionDate();
 						if (productionDate.after(lastUsage)) {
@@ -776,7 +784,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public void checkAllCertificatesValid() {
 		for (CertificateToken certificateToken : processedCertificates) {
 			if (!isRevocationDataNotRequired(certificateToken)) {
-				for (RevocationToken revocationToken : processedRevocations) {
+				for (RevocationToken<Revocation> revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())
 							&& !Utils.isTrue(revocationToken.getStatus())) {
 						throw new DSSException(String.format("Certificate {} is revoked", certificateToken.getDSSIdAsString()));
@@ -805,7 +813,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		if (refreshNeededAfterTime != null) {
 			boolean freshRevocationDataFound = false;
-			for (RevocationToken revocationToken : revocations) {
+			for (RevocationToken<Revocation> revocationToken : revocations) {
 				if (refreshNeededAfterTime.before(revocationToken.getProductionDate()) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason() &&
 						isConsistent(revocationToken))) {
 					freshRevocationDataFound = true;
@@ -833,7 +841,7 @@ public class SignatureValidationContext implements ValidationContext {
 		return lowestPOE;
 	}
 	
-	private boolean isConsistent(RevocationToken revocation) {
+	private boolean isConsistent(RevocationToken<Revocation> revocation) {
 		List<CertificateToken> certificateTokenChain = toCertificateTokenChain(getCertChain(revocation));
 		if (Utils.isCollectionEmpty(certificateTokenChain)) {
 			LOG.debug("The revocation {} is not consistent! Issuer CertificateToken is not found.", revocation.getDSSIdAsString());
@@ -849,7 +857,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 	
-	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken revocation) {
+	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken<Revocation> revocation) {
 		if (isConsistentOnTime(revocation, currentTime)) {
 			return true;
 		}
@@ -881,7 +889,7 @@ public class SignatureValidationContext implements ValidationContext {
 		return false;
 	}
 	
-	private boolean isConsistentOnTime(RevocationToken revocationToken, Date date) {
+	private boolean isConsistentOnTime(RevocationToken<Revocation> revocationToken, Date date) {
 		Date productionDate = revocationToken.getProductionDate();
 		Date nextUpdate = revocationToken.getNextUpdate();
 		return date.compareTo(productionDate) >= 0 && date.compareTo(nextUpdate) <= 0;
@@ -927,7 +935,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public Set<RevocationToken> getProcessedRevocations() {
+	public Set<RevocationToken<Revocation>> getProcessedRevocations() {
 		return Collections.unmodifiableSet(processedRevocations);
 	}
 

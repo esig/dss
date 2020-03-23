@@ -52,6 +52,8 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -374,8 +376,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		List<AdvancedSignature> allSignatures = getAllSignatures();
         List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
 
-        ListCRLSource listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
-        ListOCSPSource listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
+		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
+		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
         
 		prepareCertificateVerifier(listCRLSource, listOCSPSource);
 		
@@ -390,7 +392,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 	
 	protected DiagnosticDataBuilder getDiagnosticDataBuilderConfiguration(final ValidationContext validationContext, List<AdvancedSignature> signatures,
-			final ListCRLSource listCRLSource, final ListOCSPSource listOCSPSource) {
+			final ListRevocationSource<CRL> listCRLSource, final ListRevocationSource<OCSP> listOCSPSource) {
 		return new DiagnosticDataBuilder().document(document).usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
@@ -405,10 +407,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Sets revocation sources for a following certificate valdiation
 	 * 
-	 * @param listCRLSource {@link ListCRLSource}
-	 * @param listOCSPSource {@link ListOCSPSource}
+	 * @param listCRLSource  {@link ListRevocationSource}
+	 * @param listOCSPSource {@link ListRevocationSource}
 	 */
-	protected void prepareCertificateVerifier(ListCRLSource listCRLSource, ListOCSPSource listOCSPSource) {
+	protected void prepareCertificateVerifier(ListRevocationSource<CRL> listCRLSource, ListRevocationSource<OCSP> listOCSPSource) {
 		certificateVerifier.setSignatureCRLSource(listCRLSource);
 		certificateVerifier.setSignatureOCSPSource(listOCSPSource);
 	}
@@ -422,8 +424,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                           detached to a validating file
 	 * @return merged CRL Source
 	 */
-	protected ListCRLSource mergeCRLSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
-		ListCRLSource allCrlSource = new ListCRLSource();
+	protected ListRevocationSource<CRL> mergeCRLSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
+		ListRevocationSource<CRL> allCrlSource = new ListRevocationSource<CRL>();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				allCrlSource.add(signature.getCRLSource());
@@ -447,8 +449,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                           detached to a validating file
 	 * @return merged OCSP Source
 	 */
-	protected ListOCSPSource mergeOCSPSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
-		ListOCSPSource allOcspSource = new ListOCSPSource();
+	protected ListRevocationSource<OCSP> mergeOCSPSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
+		ListRevocationSource<OCSP> allOcspSource = new ListRevocationSource<OCSP>();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				allOcspSource.add(signature.getOCSPSource());

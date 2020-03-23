@@ -21,25 +21,22 @@
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.bouncycastle.asn1.esf.CrlIdentifier;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
-import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 
 /**
  * Reference to a X509CRL
  *
  */
-public final class CRLRef extends RevocationRef {
+public final class CRLRef extends RevocationRef<CRL> {
 
 	private static final long serialVersionUID = -6785644604097791548L;
 	
@@ -50,8 +47,8 @@ public final class CRLRef extends RevocationRef {
 	/**
 	 * The default constructor for CRLRef.
 	 */
-	public CRLRef(Digest digest, RevocationRefOrigin origin) {
-		super(digest, origin);
+	public CRLRef(Digest digest) {
+		this.digest = digest;
 	}
 
 	/**
@@ -59,8 +56,7 @@ public final class CRLRef extends RevocationRef {
 	 *
 	 * @param cmsRef
 	 */
-	public CRLRef(CrlValidatedID cmsRef, RevocationRefOrigin origin) {
-		this(extractDigest(cmsRef), origin);
+	public CRLRef(CrlValidatedID cmsRef) {
 		try {
 			final CrlIdentifier crlIdentifier = cmsRef.getCrlIdentifier();
 			if (crlIdentifier != null) {
@@ -68,18 +64,12 @@ public final class CRLRef extends RevocationRef {
 				this.crlIssuedTime = crlIdentifier.getCrlIssuedTime().getDate();
 				this.crlNumber = crlIdentifier.getCrlNumber();
 			}
-		} catch (ParseException ex) {
-			throw new DSSException(ex);
+			this.digest = DSSRevocationUtils.getDigest(cmsRef.getCrlHash());
+		} catch (Exception e) {
+			throw new DSSException("Unable to build CRLRef from CrlValidatedID", e);
 		}
 	}
 	
-	private static Digest extractDigest(CrlValidatedID cmsRef) {
-		final OtherHash crlHash = cmsRef.getCrlHash();
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
-		byte[] digestValue = crlHash.getHashValue();
-		return new Digest(digestAlgorithm, digestValue);
-	}
-
 	public X500Name getCrlIssuer() {
 		return crlIssuer;
 	}

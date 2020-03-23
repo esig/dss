@@ -30,6 +30,8 @@ import eu.europa.esig.dss.model.DSSException;
 
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 
+	private static final long serialVersionUID = -332201368387706970L;
+
 	/**
 	 * This constructor loads the OCSP responses from a array of <code>String</code>s representing resources.
 	 *
@@ -61,15 +63,10 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 		try (InputStream is = inputStream) {
 			final OCSPResp ocspResp = new OCSPResp(is);
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-			addOCSPResponse(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.EXTERNAL);
+			addBinary(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.EXTERNAL);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
-	}
-
-	@Override
-	public void appendContainedOCSPResponses() {
-		// do nothing
 	}
 
 }
