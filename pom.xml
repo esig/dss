@@ -68,9 +68,9 @@
 		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
 		<jakarta.ws-api.version>2.3.2</jakarta.ws-api.version>
 
-		<junit.platform.version>1.6.0</junit.platform.version>
-		<junit.jupiter.version>5.6.0</junit.jupiter.version>
-		<junit.vintage.version>5.6.0</junit.vintage.version>
+		<junit.platform.version>1.6.1</junit.platform.version>
+		<junit.jupiter.version>5.6.1</junit.jupiter.version>
+		<junit.vintage.version>5.6.1</junit.vintage.version>
 		
 		<mockito.version>3.2.4</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
