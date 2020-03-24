@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -45,7 +45,7 @@ public class CAdESWithSpecialCharInFilenameTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		assertNotNull(reports.getEtsiValidationReportJaxb());
+		UnmarshallingTester.unmarshallSimpleReport(reports);
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class CAdESWithSpecialCharInFilenameTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		assertNull(reports.getEtsiValidationReportJaxb());
+		UnmarshallingTester.unmarshallSimpleReport(reports);
 	}
 
 }

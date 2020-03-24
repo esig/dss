@@ -905,7 +905,7 @@ public class DiagnosticDataBuilder {
 	 */
 	private String removeSpecialCharsForXml(String text) {
 		if (Utils.isStringNotEmpty(text)) {
-			return text.replaceAll("&", "");
+			return text.replace("&", "");
 		}
 		return Utils.EMPTY_STRING;
 	}

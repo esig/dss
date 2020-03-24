@@ -124,7 +124,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 
 		if (level != null) {
 			finalName.append('-');
-			finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+			finalName.append(Utils.lowerCase(level.name().replace("_", "-")));
 		}
 
 		finalName.append('.');
