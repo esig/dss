@@ -18,8 +18,8 @@ public class NativePdfBoxDrawerUtils {
 	 * @return string width
 	 * @throws IOException if an exception occurs
 	 */
-	public static float getTextWidth(PDFont pdFont, float fontSize, String str, int dpi) throws IOException {
-		return pdFont.getStringWidth(str) / 1000 * fontSize / CommonDrawerUtils.getTextScaleFactor(dpi);
+	public static float getTextWidth(PDFont pdFont, float fontSize, String str) throws IOException {
+		return pdFont.getStringWidth(str) / 1000 * fontSize;
 	}
 	
 	/**
@@ -31,8 +31,8 @@ public class NativePdfBoxDrawerUtils {
 	 * @return string height
 	 * @throws IOException if an exception occurs
 	 */
-	public static float getTextHeight(PDFont pdFont, float fontSize, int dpi) throws IOException {
-		return pdFont.getBoundingBox().getHeight() / 1000 * fontSize / CommonDrawerUtils.getTextScaleFactor(dpi);
+	public static float getTextHeight(PDFont pdFont, float fontSize) throws IOException {
+		return pdFont.getBoundingBox().getHeight() / 1000 * fontSize;
 	}
 
 }

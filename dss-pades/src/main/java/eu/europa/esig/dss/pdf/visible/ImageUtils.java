@@ -74,12 +74,11 @@ public class ImageUtils {
 	 * Reads image's metadata in a secure way. If metadata is not accessible from {@code image}, 
 	 * returns values from {@code imageParameters}
 	 * 
-	 * @param image {@link DSSDocument} image to read metadata from
 	 * @param imageParameters {@link SignatureImageParameters}
 	 * @return {@link ImageAndResolution} metadata
 	 * @throws IOException in case of image reading error
 	 */
-	public static ImageAndResolution secureReadMetadata(DSSDocument image, SignatureImageParameters imageParameters) throws IOException {
+	public static ImageAndResolution secureReadMetadata(SignatureImageParameters imageParameters) throws IOException {
 		ImageAndResolution imageAndResolution;
 		try {
 			imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());

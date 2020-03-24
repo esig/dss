@@ -213,18 +213,14 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		if (image != null) {
 			try (InputStream is = image.openStream()) {
 	            cs.saveGraphicsState();
-	            float scaleFactor = ImageUtils.getScaleFactor(parameters.getZoom());
-	            if (parameters.getImage() != null && parameters.getTextParameters() != null && scaleFactor != 1) {
-	            	cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
-	            }
 	    		byte[] bytes = IOUtils.toByteArray(is);
 	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
-	    		
+
 	    		// divide to scale factor, because PdfBox due to the matrix transformation also changes position parameters of the image
-	    		float xAxis = dimensionAndPosition.getImageX() / scaleFactor;
+	    		float xAxis = dimensionAndPosition.getImageX();
 	    		if (parameters.getTextParameters() != null)
 	    			xAxis *= dimensionAndPosition.getxDpiRatio();
-	    		float yAxis = dimensionAndPosition.getImageY() / scaleFactor;
+	    		float yAxis = dimensionAndPosition.getImageY();
 	    		if (parameters.getTextParameters() != null)
 	    			yAxis *= dimensionAndPosition.getyDpiRatio();
 	    		
@@ -273,7 +269,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
     		setTextBackground(cs, textParameters, dimensionAndPosition);
     		DSSFont dssFont = textParameters.getFont();
             float fontSize = dssFont.getSize();
-            fontSize = fontSize * ImageUtils.getScaleFactor(parameters.getZoom());
+            fontSize *= ImageUtils.getScaleFactor(parameters.getZoom());
             cs.beginText();
             cs.setFont(pdFont, fontSize);
             cs.setNonStrokingColor(textParameters.getTextColor());
@@ -282,7 +278,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             String[] strings = textParameters.getText().split("\\r?\\n");
             
             float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), parameters.getDpi());
-            float fontHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize, parameters.getDpi());
+            float fontHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize);
             cs.setLeading(textSizeWithDpi(fontHeight, dimensionAndPosition.getyDpi()));
             
             cs.newLineAtOffset(dimensionAndPosition.getTextX(),
@@ -291,12 +287,12 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
             float previousOffset = 0;
             for (String str : strings) {
-                float stringWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, fontSize, str, parameters.getDpi());
+                float stringWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, fontSize, str);
                 float offsetX = 0;
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:
-						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth - 
-								textSizeWithDpi(textParameters.getPadding()*2, dimensionAndPosition.getxDpi())) - previousOffset;
+						offsetX = dimensionAndPosition.getTextWidth() - stringWidth - 
+								textSizeWithDpi(textParameters.getPadding()*2, dimensionAndPosition.getxDpi()) - previousOffset;
 						break;
 					case CENTER:
 						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2 - 
@@ -329,7 +325,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 	
 	private float textSizeWithDpi(float size, int dpi) {
-		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getTextScaleFactor(dpi), dpi);
+		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getTextScaleFactor(dpi), dpi) 
+				* CommonDrawerUtils.getTextScaleFactor(parameters.getDpi());
 	}
 	
 	/**
@@ -373,7 +370,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		PDRectangle pageRect = page.getMediaBox();
 		PDRectangle pdRectangle = new PDRectangle();
 		pdRectangle.setLowerLeftX(dimensionAndPosition.getBoxX());
-		pdRectangle.setLowerLeftY(pageRect.getHeight() - dimensionAndPosition.getBoxY() - dimensionAndPosition.getBoxHeight()); // because PDF starts to count from bottom
+		// because PDF starts to count from bottom
+		pdRectangle.setLowerLeftY(pageRect.getHeight() - dimensionAndPosition.getBoxY() - dimensionAndPosition.getBoxHeight());
 		pdRectangle.setUpperRightX(dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth());
 		pdRectangle.setUpperRightY(pageRect.getHeight() - dimensionAndPosition.getBoxY());
 		return pdRectangle;

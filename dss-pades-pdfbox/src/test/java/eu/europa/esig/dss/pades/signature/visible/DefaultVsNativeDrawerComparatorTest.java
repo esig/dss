@@ -245,6 +245,27 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
+	public void imageAndTextFixedSizeWithDpiTest() throws IOException {
+		initVisibleCombinationTest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+		imageParameters.setHeight(100);
+		imageParameters.setWidth(300);
+		imageParameters.setDpi(144);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
+		textParameters.setPadding(20);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+	
+	@Test
 	public void imageAndTextWithDpiTest() throws IOException {
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -257,6 +278,24 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+	
+	@Test
+	public void imageAndTextWithSignerAndRelativePositioningTest() throws IOException {
+		initVisibleCombinationTest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
+		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
@@ -377,6 +416,24 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 
 		// right alignment
 		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+	
+	@Test
+	public void multilinesWithDpiTest() throws IOException {
+		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		Color transparent = new Color(0, 0, 0, 0.25f);
+		imageParameters.getTextParameters().setBackgroundColor(transparent);
+		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
+		imageParameters.getTextParameters().setPadding(50);
+		imageParameters.setBackgroundColor(transparent);
+		imageParameters.setxAxis(150);
+		imageParameters.setyAxis(30);
+		
+		// with dpi
+		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
+		imageParameters.setDpi(144);
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareVisually();
 	}
@@ -524,7 +581,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void testExplicitFieldSizeTest() throws IOException {
+	public void textExplicitFieldSizeTest() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setxAxis(50);
@@ -556,7 +613,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		
 		imageParameters.setWidth(250);
 		imageParameters.setHeight(100);
-		imageParameters.setZoom(200);
+		imageParameters.setZoom(50);
 
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -643,10 +700,11 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 					PDRectangle rect1 = page1.getAnnotations().get(j).getRectangle();
 					PDRectangle rect2 = page2.getAnnotations().get(j).getRectangle();
 					// assert max 2% difference, due to different text size computation
-					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), rect1.getLowerLeftX() / 50);
-					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), rect1.getLowerLeftY() / 50);
-					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), rect1.getUpperRightX() / 50);
-					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), rect1.getUpperRightY() / 50);
+					// NOTE: must be non-negative
+					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), Math.abs(rect1.getLowerLeftX()) / 50);
+					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), Math.abs(rect1.getLowerLeftY()) / 50);
+					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), Math.abs(rect1.getUpperRightX()) / 50);
+					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), Math.abs(rect1.getUpperRightY()) / 50);
 				}
 			}
 		}

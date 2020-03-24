@@ -44,7 +44,8 @@ public final class ImageMerger {
 	private ImageMerger() {
 	}
 
-	public static BufferedImage mergeOnTop(final BufferedImage bottom, final BufferedImage top, final Color bgColor) {
+	public static BufferedImage mergeOnTop(final BufferedImage bottom, final BufferedImage top, final Color bgColor,
+			final SignatureImageTextParameters.SignerTextHorizontalAlignment imageHorizontalAlignment) {
 		if (bottom == null) {
 			return top;
 		} else if (top == null) {
@@ -61,8 +62,22 @@ public final class ImageMerger {
 		CommonDrawerUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
-		g.drawImage(top, (newImageWidth - top.getWidth()) / 2, 0, top.getWidth(), top.getHeight(), null);
-		g.drawImage(bottom, (newImageWidth - bottom.getWidth()) / 2, top.getHeight(), bottom.getWidth(), bottom.getHeight(), null);
+		switch (imageHorizontalAlignment) {
+			case LEFT:
+				g.drawImage(bottom, 0, top.getHeight(), bottom.getWidth(), bottom.getHeight(), null);
+				g.drawImage(top, 0, 0, top.getWidth(), top.getHeight(), null);
+				break;
+			case CENTER:
+				g.drawImage(bottom, (newImageWidth - bottom.getWidth()) / 2, top.getHeight(), bottom.getWidth(), bottom.getHeight(), null);
+				g.drawImage(top, (newImageWidth - top.getWidth()) / 2, 0, top.getWidth(), top.getHeight(), null);
+				break;
+			case RIGHT:
+				g.drawImage(bottom, newImageWidth - bottom.getWidth(), top.getHeight(), bottom.getWidth(), bottom.getHeight(), null);
+				g.drawImage(top, newImageWidth - top.getWidth(), 0, top.getWidth(), top.getHeight(), null);
+				break;
+			default:
+				throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageHorizontalAlignment);
+		}
 
 		return combined;
 	}
@@ -95,13 +110,8 @@ public final class ImageMerger {
 				g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
 				break;
 			case BOTTOM:
-				if (left.getHeight() > right.getHeight()) {
-					g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
-					g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
-				} else {
-					g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
-					g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-				}
+				g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
+				g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
 				break;
 			default:
 				throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageVerticalAlignment);
