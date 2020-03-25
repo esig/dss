@@ -67,7 +67,7 @@ public final class SignatureImageAndPositionProcessor {
 			}
 			ImageIO.write(visualImageSignature, imageType, visualImageSignatureOutputStream);
 
-			return new SignatureImageAndPosition(x, y, visualImageSignatureOutputStream.toByteArray());
+			return new SignatureImageAndPosition(x, y, visualImageSignatureOutputStream.toByteArray(), rotate);
 		}
     }
 

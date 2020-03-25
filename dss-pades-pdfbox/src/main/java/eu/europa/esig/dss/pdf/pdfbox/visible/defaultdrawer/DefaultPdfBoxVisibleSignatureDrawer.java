@@ -50,7 +50,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		
 		float width = parameters.getWidth();
 		float height = parameters.getHeight();
-		if (ImageRotationUtils.isSwapOfDimensionsRequired(parameters.getRotation())) {
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(signatureImageAndPosition.getGlobalRotation())) {
 			width = parameters.getHeight();
 			height = parameters.getWidth();
 		}
