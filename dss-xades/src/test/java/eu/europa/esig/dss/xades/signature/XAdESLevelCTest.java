@@ -81,7 +81,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		assertTrue(Utils.isCollectionNotEmpty(certificateRefs));
 		for (CertificateRef certificateRef : certificateRefs) {
 			assertNotNull(certificateRef.getCertDigest());
-			assertNotNull(certificateRef.getIssuerInfo());
+			assertNotNull(certificateRef.getCertificateIdentifier());
 		}
 
 		List<RevocationRef<OCSP>> ocspRefs = advancedSignature.getOCSPSource().getCompleteRevocationRefs();

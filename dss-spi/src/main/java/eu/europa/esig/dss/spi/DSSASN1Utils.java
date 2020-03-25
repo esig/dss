@@ -119,9 +119,9 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -896,14 +896,15 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method transforms token's signerId into a {@code IssuerSerialInfo} object
+	 * This method transforms token's signerId into a {@code CertificateIdentifier}
+	 * object
 	 * 
 	 * @param signerId {@link SignerId} to be transformed
-	 * @return {@link SerialInfo}
+	 * @return {@link CertificateIdentifier}
 	 */
-	public static SerialInfo toIssuerSerialInfo(SignerId signerId) {
+	public static CertificateIdentifier toIssuerSerialInfo(SignerId signerId) {
 		X500Principal issuerX500Principal = toX500Principal(signerId.getIssuer());
-		return toIssuerSerialInfo(issuerX500Principal, signerId.getSerialNumber(), signerId.getSubjectKeyIdentifier());
+		return toCertificateIdentifier(issuerX500Principal, signerId.getSerialNumber(), signerId.getSubjectKeyIdentifier());
 	}
 	
 	/**
@@ -924,19 +925,21 @@ public final class DSSASN1Utils {
 	}
 	
 	/**
-	 * This method transforms token's issuer and serial number information into a {@code IssuerSerialInfo} object
+	 * This method transforms token's issuer and serial number information into a
+	 * {@code CertificateIdentifier} object
 	 * 
 	 * @param issuerX500Principal {@link X500Principal} of the issuer
-	 * @param serialNumber {@link BigInteger} of the token
-	 * @param ski a byte array representing a SubjectKeyIdentifier (SHA-1 digest of the public key)
-	 * @return {@link SerialInfo}
+	 * @param serialNumber        {@link BigInteger} of the token
+	 * @param ski                 a byte array representing a SubjectKeyIdentifier
+	 *                            (SHA-1 digest of the public key)
+	 * @return {@link CertificateIdentifier}
 	 */
-	public static SerialInfo toIssuerSerialInfo(final X500Principal issuerX500Principal, final BigInteger serialNumber, final byte[] ski) {
-		SerialInfo issuerSerialInfo = new SerialInfo();
-		issuerSerialInfo.setIssuerName(issuerX500Principal);
-		issuerSerialInfo.setSerialNumber(serialNumber);
-		issuerSerialInfo.setSki(ski);
-		return issuerSerialInfo;
+	public static CertificateIdentifier toCertificateIdentifier(final X500Principal issuerX500Principal, final BigInteger serialNumber, final byte[] ski) {
+		CertificateIdentifier certificateIdentifier = new CertificateIdentifier();
+		certificateIdentifier.setIssuerName(issuerX500Principal);
+		certificateIdentifier.setSerialNumber(serialNumber);
+		certificateIdentifier.setSki(ski);
+		return certificateIdentifier;
 	}
 
 	/**
@@ -1188,22 +1191,23 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Transforms an object of class {@code IssuerSerial} into instance of {@code IssuerSerialInfo}
+	 * Transforms an object of class {@code IssuerSerial} into instance of
+	 * {@code CertificateIdentifier}
 	 * 
 	 * @param issuerAndSerial {@link IssuerSerial} to transform
-	 * @return {@link SerialInfo}
+	 * @return {@link CertificateIdentifier}
 	 */
-	public static SerialInfo toIssuerInfo(IssuerSerial issuerAndSerial) {
+	public static CertificateIdentifier toCertificateIdentifier(IssuerSerial issuerAndSerial) {
 		if (issuerAndSerial == null) {
 			return null;
 		}
 		try {
-			SerialInfo issuerInfo = new SerialInfo();
+			CertificateIdentifier certificateIdentifier = new CertificateIdentifier();
 			GeneralNames gnames = issuerAndSerial.getIssuer();
 			if (gnames != null) {
 				GeneralName[] names = gnames.getNames();
 				if (names.length == 1) {
-					issuerInfo.setIssuerName(new X500Principal(names[0].getName().toASN1Primitive().getEncoded(ASN1Encoding.DER)));
+					certificateIdentifier.setIssuerName(new X500Principal(names[0].getName().toASN1Primitive().getEncoded(ASN1Encoding.DER)));
 				} else {
 					LOG.warn("More than one GeneralName");
 				}
@@ -1211,10 +1215,10 @@ public final class DSSASN1Utils {
 
 			ASN1Integer serialNumber = issuerAndSerial.getSerial();
 			if (serialNumber != null) {
-				issuerInfo.setSerialNumber(serialNumber.getValue());
+				certificateIdentifier.setSerialNumber(serialNumber.getValue());
 			}
 
-			return issuerInfo;
+			return certificateIdentifier;
 		} catch (Exception e) {
 			LOG.error("Unable to read the IssuerSerial object", e);
 			return null;
@@ -1445,7 +1449,7 @@ public final class DSSASN1Utils {
 		CertificateRef certRef = new CertificateRef();
 		DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId());
 		certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
-		certRef.setIssuerInfo(toIssuerInfo(otherCertId.getIssuerSerial()));
+		certRef.setCertificateIdentifier(toCertificateIdentifier(otherCertId.getIssuerSerial()));
 		return certRef;
 	}
 

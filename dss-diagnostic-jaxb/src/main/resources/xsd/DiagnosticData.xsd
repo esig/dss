@@ -511,7 +511,7 @@
 			<xs:element name="SerialNumber" type="xs:integer" minOccurs="0" />
 			<xs:element name="Ski" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Processed" type="xs:boolean" use="optional" /> <!-- The framework handles only one (first) SignerInfo !!! -->
+		<xs:attribute name="Current" type="xs:boolean" use="optional" /> <!-- The framework handles only one (first) SignerInfo !!! -->
 	</xs:complexType>
 	
 	<xs:complexType name="CommitmentTypeIndications">

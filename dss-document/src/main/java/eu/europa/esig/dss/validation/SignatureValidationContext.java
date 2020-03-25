@@ -371,7 +371,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private CertificateToken getTSACertificate(TimestampToken timestamp) {
-		List<CertificateToken> candidates = validationCertificatePool.getBySerialInfo(timestamp.getUsedIssuerSerialInfo());
+		List<CertificateToken> candidates = validationCertificatePool.getByCertificateIdentifier(timestamp.getCurrentCertificateIdentifier());
 		for (CertificateToken candidate : candidates) {
 			if (timestamp.isSignedBy(candidate)) {
 				return candidate;

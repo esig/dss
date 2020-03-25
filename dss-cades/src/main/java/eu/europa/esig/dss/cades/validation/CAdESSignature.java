@@ -102,9 +102,9 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -248,20 +248,20 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		CAdESCertificateSource certSource = (CAdESCertificateSource) getCertificateSource();
 		// retrieves the first found entry from SignerInformationStore
-		SerialInfo signerInfo = certSource.getUsedIssuerSerialInfo();
-		
+		CertificateIdentifier certificateIdentifier = certSource.getCurrentCertificateIdentifier();
+
 		// firstly check the KeyInfo attribute
-		findSigningCertificateInCollection(signerInfo, certSource.getSignedDataCertificates());
-		
+		findSigningCertificateInCollection(certificateIdentifier, certSource.getSignedDataCertificates());
+
 		// check the certificate pool
 		if (signingCertificateValidity == null) {
-			checkCertPoolAgainstSignerId(candidatesForSigningCertificate, signerInfo);
+			checkCertPoolAgainstSignerId(candidatesForSigningCertificate, certificateIdentifier);
 		}
 		
 		// if no certificates found, create an empty certificateValidity
 		if (signingCertificateValidity == null) {
-			LOG.warn("Signing certificate not found: {}", signerInfo);
-			signingCertificateValidity = new CertificateValidity(signerInfo);
+			LOG.warn("Signing certificate not found: {}", certificateIdentifier);
+			signingCertificateValidity = new CertificateValidity(certificateIdentifier);
 			candidatesForSigningCertificate.add(signingCertificateValidity);
 		}
 		
@@ -273,19 +273,19 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return candidatesForSigningCertificate;
 	}
 	
-	private void findSigningCertificateInCollection(final SerialInfo serialInfo, final Collection<CertificateToken> certificates) {
+	private void findSigningCertificateInCollection(final CertificateIdentifier certificateIdentifier, final Collection<CertificateToken> certificates) {
 		for (final CertificateToken certificateToken : certificates) {
-			if (doesEmbeddedSignedIdMatch(candidatesForSigningCertificate, certificateToken, serialInfo)) {
+			if (doesEmbeddedSignedIdMatch(candidatesForSigningCertificate, certificateToken, certificateIdentifier)) {
 				return;
 			}
 		}
 	}
 	
-	private boolean doesEmbeddedSignedIdMatch(final CandidatesForSigningCertificate candidates, final CertificateToken certificateToken, SerialInfo serialInfo) {
+	private boolean doesEmbeddedSignedIdMatch(final CandidatesForSigningCertificate candidates, final CertificateToken certificateToken, CertificateIdentifier certificateIdentifier) {
 		final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 		candidates.add(certificateValidity);
 
-		final boolean match = serialInfo.isRelatedToCertificate(certificateToken);
+		final boolean match = certificateIdentifier.isRelatedToCertificate(certificateToken);
 		certificateValidity.setSignerIdMatch(match);
 		if (match) {
 			this.signingCertificateValidity = certificateValidity;
@@ -293,8 +293,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return match;
 	}
 	
-	private boolean checkCertPoolAgainstSignerId(final CandidatesForSigningCertificate candidates, final SerialInfo serialInfo) {
-		List<CertificateToken> certificateTokens = certPool.getBySerialInfo(serialInfo);
+	private boolean checkCertPoolAgainstSignerId(final CandidatesForSigningCertificate candidates, final CertificateIdentifier serialInfo) {
+		List<CertificateToken> certificateTokens = certPool.getByCertificateIdentifier(serialInfo);
 		if (Utils.isCollectionNotEmpty(certificateTokens)) {
 			for (CertificateToken certificateToken : certificateTokens) {
 				if (doesEmbeddedSignedIdMatch(candidates, certificateToken, serialInfo)) {
@@ -324,7 +324,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					}
 				}
 
-				SerialInfo issuerInfo = certificateRef.getIssuerInfo();
+				CertificateIdentifier issuerInfo = certificateRef.getCertificateIdentifier();
 				if (issuerInfo != null && foundSigningCertificate != null) {
 					signingCertificateValidity.setSerialNumberEqual(foundSigningCertificate.getSerialNumber().equals(issuerInfo.getSerialNumber()));
 					signingCertificateValidity
@@ -1175,9 +1175,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	@Override
-	public List<SerialInfo> getSignerInformationStoreInfos() {
-		CAdESCertificateSource certificateSource = (CAdESCertificateSource) getCertificateSource();
-		return certificateSource.getIssuerSerialInfos();
+	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 
 	@Override

@@ -42,7 +42,7 @@
             </SignatureProductionPlace>
             <CommitmentTypeIndications/>
             <SignerInformationStore>
-                <SignerInfo Processed="true">
+                <SignerInfo Current="true">
                     <IssuerName>C=SK,L=Bratislava,SERIALNUMBER=NTRSK-36061701,O=Narodny bezpecnostny urad,OU=SEP,CN=SNCA3</IssuerName>
                     <SerialNumber>7510568329472141951325</SerialNumber>
                 </SignerInfo>

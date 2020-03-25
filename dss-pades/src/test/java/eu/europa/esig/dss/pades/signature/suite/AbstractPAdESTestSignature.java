@@ -149,7 +149,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertNotNull(signatureInformationStore);
 		int verifiedNumber = 0;
 		for (XmlSignerInfo signerInfo : signatureInformationStore) {
-			if (signerInfo.isProcessed()) {
+			if (signerInfo.isCurrent()) {
 				++verifiedNumber;
 			}
 		}

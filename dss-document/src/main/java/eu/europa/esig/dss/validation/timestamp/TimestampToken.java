@@ -62,9 +62,9 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.PdfRevision;
@@ -680,21 +680,21 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Returns a list of found SerialInfos in the SignerInformationStore
+	 * Returns a list of found CertificateIdentifier in the SignerInformationStore
 	 * 
-	 * @return a list of {@link SerialInfo}s
+	 * @return a list of {@link CertificateIdentifier}s
 	 */
-	public List<SerialInfo> getSignerInformationStoreInfos() {
-		return getCertificateSource().getIssuerSerialInfos();
+	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 
 	/**
-	 * Returns used SerialInfo of the signing certificate
+	 * Returns used CertificateIdentifier of the signing certificate
 	 * 
-	 * @return {@link SerialInfo}
+	 * @return {@link CertificateIdentifier}
 	 */
-	public SerialInfo getUsedIssuerSerialInfo() {
-		return getCertificateSource().getUsedIssuerSerialInfo();
+	public CertificateIdentifier getCurrentCertificateIdentifier() {
+		return getCertificateSource().getCurrentCertificateIdentifier();
 	}
 
 	/**

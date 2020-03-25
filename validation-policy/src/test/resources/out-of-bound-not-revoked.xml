@@ -42,7 +42,7 @@
             </SignatureProductionPlace>
             <CommitmentTypeIndications/>
             <SignerInformationStore>
-                <SignerInfo Processed="true">
+                <SignerInfo Current="true">
                     <IssuerName>C=CZ,O=Česká pošta\, s.p. [IČ 47114983],CN=PostSignum Qualified CA 2</IssuerName>
                     <SerialNumber>3391929</SerialNumber>
                 </SignerInfo>

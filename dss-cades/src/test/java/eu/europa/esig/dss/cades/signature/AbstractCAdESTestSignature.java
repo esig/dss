@@ -99,7 +99,7 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 		assertNotNull(signatureInformationStore);
 		int verifiedNumber = 0;
 		for (XmlSignerInfo signerInfo : signatureInformationStore) {
-			if (signerInfo.isProcessed()) {
+			if (signerInfo.isCurrent()) {
 				++verifiedNumber;
 			}
 		}

@@ -26,9 +26,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certifi
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -55,9 +53,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
@@ -66,33 +64,50 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
 	
 	private final transient CMSSignedData cmsSignedData;
-	private final transient SignerInformation signerInformation;
-
-	private List<SerialInfo> issuerSerialInfos;
-	private SerialInfo usedIssuerSerialInfo;
+	private final transient SignerInformation currentSignerInformation;
 	
 	/**
-	 * The constructor to instantiate a CMSCertificateSource.
-	 * Allows to define a used signerInformation.
+	 * The constructor to instantiate a CMSCertificateSource. Allows to define a
+	 * used signerInformation.
 	 * 
-	 * @param cmsSignedData {@link CMSSignedData}
-	 * @param signerInformation {@link SignerInformation} extracted from cmsSignedData
-	 * @param certPool {@link CertificatePool}
+	 * @param cmsSignedData            {@link CMSSignedData}
+	 * @param currentSignerInformation the current {@link SignerInformation}
+	 *                                 extracted from cmsSignedData
+	 * @param certPool                 {@link CertificatePool}
 	 */
-	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
+	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation currentSignerInformation, final CertificatePool certPool) {
 		super(certPool);
 		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
-		Objects.requireNonNull(signerInformation, "signerInformation is null, it must be provided!");
+		Objects.requireNonNull(currentSignerInformation, "currentSignerInformation is null, it must be provided!");
 		this.cmsSignedData = cmsSignedData;
-		this.signerInformation = signerInformation;
+		this.currentSignerInformation = currentSignerInformation;
 
-		// Init CertPool
+		extractCertificateIdentifiers();
 		extractSignedCertificates();
-		extractCertificateValues();
-
 		extractSigningCertificateReferences();
+
+		extractCertificateValues();
 		extractCertificateRefsFromUnsignedAttribute(id_aa_ets_certificateRefs, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		extractCertificateRefsFromUnsignedAttribute(attributeCertificateRefsOid, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
+	}
+
+	private void extractCertificateIdentifiers() {
+		CertificateIdentifier currentCertificateIdentifier = DSSASN1Utils.toIssuerSerialInfo(currentSignerInformation.getSID());
+		boolean found = false;
+		Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+		for (SignerInformation signerInformation : signers) {
+			CertificateIdentifier certificateIdentifier = DSSASN1Utils.toIssuerSerialInfo(signerInformation.getSID());
+			if (certificateIdentifier.isEquivalent(currentCertificateIdentifier)) {
+				certificateIdentifier.setCurrent(true);
+				found = true;
+			}
+			addCertificateIdentifier(certificateIdentifier, CertificateOrigin.SIGNED_DATA);
+		}
+		if (!found) {
+			LOG.warn("SID not found in SignerInfos");
+			currentCertificateIdentifier.setCurrent(true);
+			addCertificateIdentifier(currentCertificateIdentifier, CertificateOrigin.SIGNED_DATA);
+		}
 	}
 
 	private void extractSignedCertificates() {
@@ -107,7 +122,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	public void extractSigningCertificateReferences() {
-		AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+		AttributeTable signedAttributes = currentSignerInformation.getSignedAttributes();
 		if (signedAttributes != null && signedAttributes.size() > 0) {
 			final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
 			if (signingCertificateAttributeV1 != null) {
@@ -148,7 +163,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", Utils.toHex(certHash), DigestAlgorithm.SHA1);
 				}
 			}
-			certRef.setIssuerInfo(DSSASN1Utils.toIssuerInfo(essCertID.getIssuerSerial()));
+			certRef.setCertificateIdentifier(DSSASN1Utils.toCertificateIdentifier(essCertID.getIssuerSerial()));
 			certRef.setOrigin(origin);
 			addCertificateRef(certRef, origin);
 		}
@@ -180,7 +195,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm);
 			}
-			certRef.setIssuerInfo(DSSASN1Utils.toIssuerInfo(essCertIDv2.getIssuerSerial()));
+			certRef.setCertificateIdentifier(DSSASN1Utils.toCertificateIdentifier(essCertIDv2.getIssuerSerial()));
 			certRef.setOrigin(origin);
 
 			addCertificateRef(certRef, origin);
@@ -188,7 +203,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractCertificateValues() {
-		AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+		AttributeTable unsignedAttributes = currentSignerInformation.getUnsignedAttributes();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(id_aa_ets_certValues);
 			if (attribute != null) {
@@ -206,7 +221,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin origin) {
-		AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+		AttributeTable unsignedAttributes = currentSignerInformation.getUnsignedAttributes();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
 			if (attribute != null) {
@@ -225,37 +240,4 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		}
 	}
 	
-	/** 
-	 * Returns a list of Issuer Serial Infos extracted from a SignerInformationStore
-	 * 
-	 * @return a list of {@link SerialInfo}s
-	 */
-	public List<SerialInfo> getIssuerSerialInfos() {
-		if (issuerSerialInfos == null) {
-			issuerSerialInfos = new ArrayList<SerialInfo>();
-			SerialInfo usedIssuerSerialInfo = getUsedIssuerSerialInfo();
-			Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-			for (SignerInformation signerInformation : signers) {
-				SerialInfo issuerSerialInfo = DSSASN1Utils.toIssuerSerialInfo(signerInformation.getSID());
-				if (issuerSerialInfo.equals(usedIssuerSerialInfo)) {
-					issuerSerialInfo.setValidated(true);
-				}
-				issuerSerialInfos.add(issuerSerialInfo);
-			}
-		}
-		return issuerSerialInfos;
-	}
-	
-	/**
-	 * Returns the used occurrence of SignerInformation from a SignerInformationStore to be used
-	 * 
-	 * @return {@link SerialInfo} to be used
-	 */
-	public SerialInfo getUsedIssuerSerialInfo() {
-		if (usedIssuerSerialInfo == null) {
-			usedIssuerSerialInfo = DSSASN1Utils.toIssuerSerialInfo(signerInformation.getSID());
-		}
-		return usedIssuerSerialInfo;
-	}
-
 }

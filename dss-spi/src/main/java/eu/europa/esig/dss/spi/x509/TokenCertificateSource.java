@@ -19,6 +19,8 @@ import eu.europa.esig.dss.utils.Utils;
  */
 @SuppressWarnings("serial")
 public abstract class TokenCertificateSource extends CommonCertificateSource {
+
+	private final Map<CertificateIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new HashMap<>();
 	
 	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new HashMap<>();
 
@@ -34,6 +36,18 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		super(certPool);
 	}
 	
+	/**
+	 * Adds a {@code CertificateIdentifier} with its origin
+	 * 
+	 * @param certificateIdentifier the certificate identifier to be added
+	 * @param origin                the origin of the certificate identifier
+	 */
+	protected void addCertificateIdentifier(CertificateIdentifier certificateIdentifier, CertificateOrigin origin) {
+		Objects.requireNonNull(certificateIdentifier, "The certificate identifier cannot be null");
+		Objects.requireNonNull(origin, "The origin cannot be null");
+		certificateIdentifierOrigins.computeIfAbsent(certificateIdentifier, k -> new ArrayList<>()).add(origin);
+	}
+
 	/**
 	 * Adds a {@code CertificateToken} with its {@code CertificateOrigin}
 	 * 
@@ -94,6 +108,37 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return result;
 	}
 	
+	/**
+	 * Returns a Set of all {@link CertificateIdentifier}
+	 * 
+	 * For CAdES/PAdES/Timestamp
+	 * 
+	 * @return a set of {@link CertificateIdentifier}
+	 */
+	public Set<CertificateIdentifier> getAllCertificateIdentifiers() {
+		return certificateIdentifierOrigins.keySet();
+	}
+
+	/**
+	 * Returns the current {@link CertificateIdentifier}
+	 * 
+	 * For CAdES/PAdES/Timestamp
+	 * 
+	 * @return the current {@link CertificateIdentifier} or null
+	 */
+	public CertificateIdentifier getCurrentCertificateIdentifier() {
+		CertificateIdentifier current = null;
+		for (CertificateIdentifier certificateIdentifier : certificateIdentifierOrigins.keySet()) {
+			if (certificateIdentifier.isCurrent()) {
+				if (current != null) {
+					throw new IllegalStateException("More than one current CertificateIdentifier");
+				}
+				current = certificateIdentifier;
+			}
+		}
+		return current;
+	}
+
 	/**
 	 * Returns a Set of all certificate references
 	 * 
