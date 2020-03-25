@@ -57,7 +57,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
     public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page, PDFont pdFont) {
 		this.imageParameters = imageParameters;
 		this.page = page;
-		this.pageMediaBox = page.getMediaBox();
+		this.pageMediaBox = new PDRectangle(page.getMediaBox().getWidth(), page.getMediaBox().getHeight());
 		this.pdFont = pdFont;
 	}
 	
@@ -178,6 +178,16 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			width = toDpiPagePoint(width, dimensionAndPosition.getxDpi());
 			height = toDpiPagePoint(height, dimensionAndPosition.getyDpi());
 		}
+
+		int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
+			double temp = width;
+			width = height;
+			height = temp;
+			pageMediaBox.setUpperRightX(page.getMediaBox().getHeight());
+			pageMediaBox.setUpperRightY(page.getMediaBox().getWidth());
+		}
+		dimensionAndPosition.setGlobalRotation(rotation);
 		
 		dimensionAndPosition.setImageWidth((float)imageWidth);
 		dimensionAndPosition.setImageHeight((float)imageHeight);
@@ -248,6 +258,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	
 	private void alignHorizontally() {
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = imageParameters.getVisualSignatureAlignmentHorizontal();
+		float boxWidth = dimensionAndPosition.getBoxWidth();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+			boxWidth = dimensionAndPosition.getBoxHeight();
+		}
 		float boxX;
 		switch (alignmentHorizontal) {
 			case LEFT:
@@ -255,10 +269,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				boxX = imageParameters.getxAxis();
 				break;
 			case CENTER:
-				boxX = (pageMediaBox.getWidth() - dimensionAndPosition.getBoxWidth()) / 2;
+				boxX = (pageMediaBox.getWidth() - boxWidth) / 2;
 				break;
 			case RIGHT:
-				boxX = pageMediaBox.getWidth() - dimensionAndPosition.getBoxWidth() - imageParameters.getxAxis();
+				boxX = pageMediaBox.getWidth() - boxWidth - imageParameters.getxAxis();
 				break;
 			default:
 				throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal);
@@ -268,6 +282,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	
 	private void alignVertically() {
 		VisualSignatureAlignmentVertical alignmentVertical = imageParameters.getVisualSignatureAlignmentVertical();
+		float boxHeight = dimensionAndPosition.getBoxHeight();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+			boxHeight = dimensionAndPosition.getBoxWidth();
+		}
 		float boxY;
 		switch (alignmentVertical) {
 		case TOP:
@@ -275,10 +293,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			boxY = imageParameters.getyAxis();
 			break;
 		case MIDDLE:
-			boxY = (pageMediaBox.getHeight() - dimensionAndPosition.getBoxHeight()) / 2;
+			boxY = (pageMediaBox.getHeight() - boxHeight) / 2;
 			break;
 		case BOTTOM:
-			boxY = pageMediaBox.getHeight() - dimensionAndPosition.getBoxHeight() - imageParameters.getyAxis();
+			boxY = pageMediaBox.getHeight() - boxHeight - imageParameters.getyAxis();
 			break;
 		default:
 			throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical);
@@ -287,12 +305,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void rotateSignatureField() {
-		int rotate = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
-		switch (rotate) {
+		switch (dimensionAndPosition.getGlobalRotation()) {
 			case ImageRotationUtils.ANGLE_90:
-				swapDimension();
 				float boxX = dimensionAndPosition.getBoxX();
-				dimensionAndPosition.setBoxX(pageMediaBox.getWidth() - dimensionAndPosition.getBoxY() -
+				dimensionAndPosition.setBoxX(pageMediaBox.getHeight() - dimensionAndPosition.getBoxY() -
 						dimensionAndPosition.getBoxWidth());
 				dimensionAndPosition.setBoxY(boxX);
 				break;
@@ -303,10 +319,9 @@ public class SignatureFieldDimensionAndPositionBuilder {
 						dimensionAndPosition.getBoxHeight());
 				break;
 			case ImageRotationUtils.ANGLE_270:
-				swapDimension();
 				boxX = dimensionAndPosition.getBoxX();
 				dimensionAndPosition.setBoxX(dimensionAndPosition.getBoxY());
-				dimensionAndPosition.setBoxY(pageMediaBox.getHeight() - boxX -
+				dimensionAndPosition.setBoxY(pageMediaBox.getWidth() - boxX -
 						dimensionAndPosition.getBoxHeight());
 				break;
 			case ImageRotationUtils.ANGLE_360:
@@ -315,12 +330,6 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			default:
 	            throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
 		}
-	}
-	
-	private void swapDimension() {
-		float temp = dimensionAndPosition.getBoxWidth();
-		dimensionAndPosition.setBoxWidth(dimensionAndPosition.getBoxHeight());
-		dimensionAndPosition.setBoxHeight(temp);
 	}
     
 	// decrease size

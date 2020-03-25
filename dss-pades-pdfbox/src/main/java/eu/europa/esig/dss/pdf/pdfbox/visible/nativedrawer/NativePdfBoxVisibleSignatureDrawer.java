@@ -131,7 +131,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             
             try (PDPageContentStream cs = new PDPageContentStream(doc, appearanceStream))
             {
-            	rotateSignature(cs, originalPage, rectangle);
+            	rotateSignature(cs, rectangle, dimensionAndPosition);
             	setFieldBackground(cs, parameters.getBackgroundColor());
             	setText(cs, dimensionAndPosition, parameters);
             	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
@@ -148,8 +148,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
         }
 	}
 	
-	private void rotateSignature(PDPageContentStream cs, PDPage page, PDRectangle rectangle) throws IOException {
-    	switch (ImageRotationUtils.getRotation(parameters.getRotation(), page)) {
+	private void rotateSignature(PDPageContentStream cs, PDRectangle rectangle, SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
+    	switch (dimensionAndPosition.getGlobalRotation()) {
 			case ImageRotationUtils.ANGLE_90:
 				// pdfbox rotates in the opposite way
 		    	cs.transform(Matrix.getRotateInstance(Math.toRadians(ImageRotationUtils.ANGLE_270), 0, 0));

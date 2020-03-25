@@ -44,6 +44,8 @@ public class SignatureFieldDimensionAndPosition {
 	
 	private int imageDpi;
 	
+	private int globalRotation;
+
 	private static final int DEFAULT_DPI = 72;
 	private static final int DEFAULT_TEXT_DPI = 300;
 	
@@ -149,6 +151,14 @@ public class SignatureFieldDimensionAndPosition {
 
 	public void setImageDpi(int imageDpi) {
 		this.imageDpi = imageDpi;
+	}
+	
+	public int getGlobalRotation() {
+		return globalRotation;
+	}
+
+	public void setGlobalRotation(int globalRotation) {
+		this.globalRotation = globalRotation;
 	}
 	
 	public int getxDpi() {
