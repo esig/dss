@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -34,17 +29,14 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 /**
@@ -59,17 +51,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	private final Element signatureElement;
 	private final XAdESPaths xadesPaths;
 	
-	/**
-	 * Cached values
-	 */
-	private List<CertificateToken> keyInfoCertificates;
-	private List<CertificateToken> certificateValues;
-	private List<CertificateToken> attrAuthoritiesCertValues;
-	private List<CertificateToken> timeStampValidationDataCertValues;
-	private List<CertificateRef> signingCertificateValues;
-	private List<CertificateRef> completeCertificateRefs;
-	private List<CertificateRef> attributeCertificateRefs;
-
 	/**
 	 * The default constructor for XAdESCertificateSource. All certificates are
 	 * extracted during instantiation.
@@ -91,10 +72,16 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		this.xadesPaths = xadesPaths;
 
 		// init
-		getKeyInfoCertificates();
-		getCertificateValues();
-		getAttrAuthoritiesCertValues();
-		getTimeStampValidationDataCertValues();
+		extractCertificates(XMLDSigPaths.KEY_INFO_X509_CERTIFICATE_PATH, CertificateOrigin.KEY_INFO);
+		extractCertificates(xadesPaths.getEncapsulatedCertificateValuesPath(), CertificateOrigin.CERTIFICATE_VALUES);
+		extractCertificates(xadesPaths.getEncapsulatedAttrAuthoritiesCertValuesPath(), CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+		extractCertificates(xadesPaths.getEncapsulatedTimeStampValidationDataCertValuesPath(), CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+
+		extractCertificateRefs(xadesPaths.getSigningCertificatePath(), xadesPaths.getSigningCertificateV2Path(), CertificateRefOrigin.SIGNING_CERTIFICATE);
+		extractCertificateRefs(xadesPaths.getCompleteCertificateRefsCertPath(), xadesPaths.getCompleteCertificateRefsV2CertPath(),
+				CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
+		extractCertificateRefs(xadesPaths.getAttributeCertificateRefsCertPath(), xadesPaths.getAttributeCertificateRefsV2CertPath(),
+				CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
 
 		if (LOG.isInfoEnabled()) {
 			LOG.info("+XAdESCertificateSource");
@@ -102,203 +89,70 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	/**
-	 * Returns the list of certificates included in "ds:KeyInfo/ds:X509Data/ds:X509Certificate" node
-	 *
-	 * @return list of X509Certificate(s)
-	 */
-	@Override
-	public List<CertificateToken> getKeyInfoCertificates() {
-		if (keyInfoCertificates == null) {
-			keyInfoCertificates = getCertificates(XMLDSigPaths.KEY_INFO_X509_CERTIFICATE_PATH);
-		}
-		return keyInfoCertificates;
-	}
-
-	@Override
-	public List<CertificateToken> getCertificateValues() {
-		if (certificateValues == null) {
-			certificateValues = getCertificates(xadesPaths.getEncapsulatedCertificateValuesPath());
-		}
-		return certificateValues;
-	}
-
-	@Override
-	public List<CertificateToken> getAttrAuthoritiesCertValues() {
-		if (attrAuthoritiesCertValues == null) {
-			attrAuthoritiesCertValues = getCertificates(xadesPaths.getEncapsulatedAttrAuthoritiesCertValuesPath());
-		}
-		return attrAuthoritiesCertValues;
-	}
-
-	@Override
-	public List<CertificateToken> getTimeStampValidationDataCertValues() {
-		if (timeStampValidationDataCertValues == null) {
-			timeStampValidationDataCertValues = getCertificates(xadesPaths.getEncapsulatedTimeStampValidationDataCertValuesPath());
-		}
-		return timeStampValidationDataCertValues;
-	}
-
-	@Override
-	public List<CertificateToken> getSignedDataCertificates() {
-		// not applicable for XAdES
-		return Collections.emptyList();
-	}
-
-	/**
 	 * This method extracts certificates from the given xpath query
 	 * 
-	 * @param xPathQuery
-	 *                   XPath query
-	 * @return a list of {@code CertificateToken}
+	 * @param xPathQuery XPath query
+	 * @param origin     the certificate origin
 	 */
-	private List<CertificateToken> getCertificates(final String xPathQuery) {
+	private void extractCertificates(final String xPathQuery, CertificateOrigin origin) {
 		if (xPathQuery == null) {
-			return Collections.emptyList();
+			return;
 		}
-		final List<CertificateToken> list = new ArrayList<>();
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certificateElement = (Element) nodeList.item(ii);
 			try {
 				final byte[] derEncoded = Utils.fromBase64(certificateElement.getTextContent());
 				final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
-				final CertificateToken certToken = addCertificate(cert);
-				if (!list.contains(certToken)) {
-					list.add(certToken);
-				}
+				addCertificate(cert, origin);
 			} catch (Exception e) {
 				LOG.warn("Unable to parse certificate '{}' : {}", certificateElement.getTextContent(), e.getMessage());
 			}
 		}
-		return list;
 	}
 
-	@Override
-	public List<CertificateRef> getSigningCertificateValues() {
-		if (signingCertificateValues == null) {
-			signingCertificateValues = new ArrayList<>();
-			NodeList certNodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getSigningCertificatePath());
-			if (certNodeList != null) {
-				signingCertificateValues.addAll(extractXAdESCertsV1(certNodeList, CertificateRefOrigin.SIGNING_CERTIFICATE));
-			}
-			String signingCertificateV2Path = xadesPaths.getSigningCertificateV2Path();
-			if (signingCertificateV2Path != null) {
-				certNodeList = DomUtils.getNodeList(signatureElement, signingCertificateV2Path);
-				if (certNodeList != null) {
-					signingCertificateValues.addAll(extractXAdESCertsV2(certNodeList, CertificateRefOrigin.SIGNING_CERTIFICATE));
-				}
-			}
-			if (Utils.isCollectionEmpty(signingCertificateValues)) {
-				LOG.warn("No signing certificate tag found");
+	/**
+	 * This method extracts certificate references from the given xpath queries
+	 * 
+	 * @param xpathV1 XPath query for certificate reference V1
+	 * @param xpathV2 XPath query for certificate reference V2
+	 * @param origin  the certificate reference origin
+	 */
+	private void extractCertificateRefs(String xpathV1, String xpathV2, CertificateRefOrigin origin) {
+		if (xpathV1 != null) {
+			NodeList certRefNodeList = DomUtils.getNodeList(signatureElement, xpathV1);
+			if (certRefNodeList != null) {
+				extractXAdESCertsV1(certRefNodeList, origin);
 			}
 		}
-		return signingCertificateValues;
-	}
-
-	@Override
-	public List<CertificateRef> getCompleteCertificateRefs() {
-		if (completeCertificateRefs == null) {
-			completeCertificateRefs = new ArrayList<>();
-			NodeList certNodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getCompleteCertificateRefsCertPath());
-			if (certNodeList != null) {
-				completeCertificateRefs.addAll(extractXAdESCertsV1(certNodeList, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
-			}
-			String completeCertificateRefsV2CertPath = xadesPaths.getCompleteCertificateRefsV2CertPath();
-			if (completeCertificateRefsV2CertPath != null) {
-				certNodeList = DomUtils.getNodeList(signatureElement, completeCertificateRefsV2CertPath);
-				if (certNodeList != null) {
-					completeCertificateRefs.addAll(extractXAdESCertsV2(certNodeList, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
-				}
+		if (xpathV2 != null) {
+			NodeList certRefNodeList = DomUtils.getNodeList(signatureElement, xpathV2);
+			if (certRefNodeList != null) {
+				extractXAdESCertsV2(certRefNodeList, origin);
 			}
 		}
-		return completeCertificateRefs;
 	}
 
-	@Override
-	public List<CertificateRef> getAttributeCertificateRefs() {
-		if (attributeCertificateRefs == null) {
-			attributeCertificateRefs = new ArrayList<>();
-			String attributeCertificateRefsCertPath = xadesPaths.getAttributeCertificateRefsCertPath();
-			if (attributeCertificateRefsCertPath != null) {
-				NodeList certNodeList = DomUtils.getNodeList(signatureElement, attributeCertificateRefsCertPath);
-				if (certNodeList != null) {
-					attributeCertificateRefs.addAll(extractXAdESCertsV1(certNodeList, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
-				}
-			}
-			String attributeCertificateRefsV2CertPath = xadesPaths.getAttributeCertificateRefsV2CertPath();
-			if (attributeCertificateRefsV2CertPath != null) {
-				NodeList certNodeList = DomUtils.getNodeList(signatureElement, attributeCertificateRefsV2CertPath);
-				if (certNodeList != null) {
-					attributeCertificateRefs.addAll(extractXAdESCertsV2(certNodeList, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
-				}
-			}
-		}
-		return attributeCertificateRefs;
-	}
-
-	private List<CertificateRef> extractXAdESCertsV1(NodeList certNodeList, CertificateRefOrigin location) {
-		List<CertificateRef> result = new ArrayList<>();
+	private void extractXAdESCertsV1(NodeList certNodeList, CertificateRefOrigin origin) {
 		for (int i = 0; i < certNodeList.getLength(); i++) {
-			final Element cert = (Element) certNodeList.item(i);
-			if (cert != null) {
-				Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(cert, xadesPaths.getCurrentCertDigest()));
-				if (certDigest != null) {
-					CertificateRef certRef = new CertificateRef();
-					certRef.setCertDigest(certDigest);
-					certRef.setIssuerInfo(getIssuerV1(cert));
-					certRef.setOrigin(location);
-					result.add(certRef);
-				}
+			final Element certRefElement = (Element) certNodeList.item(i);
+			final CertificateRef certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
+			if (certificateRef != null) {
+				certificateRef.setOrigin(origin);
+				addCertificateRef(certificateRef, origin);
 			}
 		}
-		return result;
 	}
 
-	private List<CertificateRef> extractXAdESCertsV2(NodeList certNodeList, CertificateRefOrigin location) {
-		List<CertificateRef> result = new ArrayList<>();
+	private void extractXAdESCertsV2(NodeList certNodeList, CertificateRefOrigin origin) {
 		for (int i = 0; i < certNodeList.getLength(); i++) {
-			final Element cert = (Element) certNodeList.item(i);
-			if (cert != null) {
-				Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(cert, xadesPaths.getCurrentCertDigest()));
-				if (certDigest != null) {
-					CertificateRef certRef = new CertificateRef();
-					certRef.setCertDigest(certDigest);
-					certRef.setIssuerInfo(getIssuerV2(cert));
-					certRef.setOrigin(location);
-					result.add(certRef);
-				}
+			final Element certRefElement = (Element) certNodeList.item(i);
+			final CertificateRef certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
+			if (certificateRef != null) {
+				certificateRef.setOrigin(origin);
+				addCertificateRef(certificateRef, origin);
 			}
 		}
-		return result;
-	}
-
-	private SerialInfo getIssuerV1(Element certElement) {
-		SerialInfo issuerInfo = new SerialInfo();
-
-		final Element issuerNameEl = DomUtils.getElement(certElement, xadesPaths.getCurrentIssuerSerialIssuerNamePath());
-		if (issuerNameEl != null) {
-			issuerInfo.setIssuerName(DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent()));
-		}
-
-		final Element serialNumberEl = DomUtils.getElement(certElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
-		if (serialNumberEl != null) {
-			final String serialNumberText = serialNumberEl.getTextContent();
-			issuerInfo.setSerialNumber(new BigInteger(serialNumberText.trim()));
-		}
-
-		return issuerInfo;
-	}
-	
-	private SerialInfo getIssuerV2(Element certElement) {
-		final Element issuerSerialV2Element = DomUtils.getElement(certElement, xadesPaths.getCurrentIssuerSerialV2Path());
-		if (issuerSerialV2Element == null) {
-			// Tag issuerSerialV2 is optional
-			return null;
-		}
-
-		final String textContent = issuerSerialV2Element.getTextContent();
-		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
-		return DSSASN1Utils.toIssuerInfo(issuerSerial);
 	}
 
 }

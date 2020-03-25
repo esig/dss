@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.dom.DOMSource;
 
@@ -67,11 +65,10 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -452,54 +449,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
 			// must contain only one reference
 			final CertificateRef signingCert = potentialSigningCertificates.get(0);
-			Digest certDigest = signingCert.getCertDigest();
-			SerialInfo issuerInfo = signingCert.getIssuerInfo();
-
+			
+			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
+			
+			CertificateValidity bestCertificateValidity = null;
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
-				certificateValidity.setAttributePresent(signingCert != null);
-				certificateValidity.setDigestPresent(certDigest != null);
-	
-				final CertificateToken certificateToken = certificateValidity.getCertificateToken();
-				if (certificateToken == null) {
-					continue;
-				}
-	
-				if (certDigest != null) {
-					DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
-					byte[] expectedDigest = certDigest.getValue();
-					byte[] currentDigest = certificateToken.getDigest(digestAlgorithm);
-					boolean digestEqual = Arrays.equals(expectedDigest, currentDigest);
-					certificateValidity.setDigestEqual(digestEqual);
-				}
-
-				if (issuerInfo != null) {
-					BigInteger serialNumber = issuerInfo.getSerialNumber();
-					X500Principal issuerName = issuerInfo.getIssuerName();
-
-					BigInteger certSerialNumber = certificateToken.getSerialNumber();
-					X500Principal certIssuerName = certificateToken.getIssuerX500Principal();
-
-					certificateValidity.setSerialNumberEqual(certSerialNumber.equals(serialNumber));
-
-					final boolean issuerNameMatches = DSSASN1Utils.x500PrincipalAreEquals(certIssuerName, issuerName);
-					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
-					if (!issuerNameMatches) {
-						LOG.info("candidateIssuerName : {}", certIssuerName.getName(X500Principal.CANONICAL));
-						final String c14nIssuerName = issuerName == null ? ""
-								: issuerName.getName(X500Principal.CANONICAL);
-						LOG.info("issuerName : {}", c14nIssuerName);
-					}
-				}
-
-				// If the signing certificate is not set yet then it must be
-				// done now. Actually if the signature is tempered then the
-				// method checkSignatureIntegrity cannot set the signing
-				// certificate.
-				if (candidates.getTheCertificateValidity() == null) {
-					candidates.setTheCertificateValidity(certificateValidity);
+				if (matcher.match(certificateValidity.getCertificateToken(), signingCert)) {
+					bestCertificateValidity = certificateValidity;
+					break;
 				}
 			}
+
+			if (bestCertificateValidity == null) {
+				// none of them match
+				bestCertificateValidity = candidates.getCertificateValidityList().iterator().next();
+			}
+
+			bestCertificateValidity.setAttributePresent(signingCert != null);
+			bestCertificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
+
+			CertificateToken bestToken = bestCertificateValidity.getCertificateToken();
+			if (bestToken != null) {
+				bestCertificateValidity.setDigestEqual(matcher.matchByDigest(bestToken, signingCert));
+				bestCertificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(bestToken, signingCert));
+				bestCertificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(bestToken, signingCert));
+			}
+
+			candidates.setTheCertificateValidity(bestCertificateValidity);
 		}
 	}
 

@@ -69,13 +69,13 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -354,15 +354,14 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
-	protected List<Digest> getCertificateRefDigests(CAdESAttribute unsignedAttribute) {
-		List<Digest> digests = new ArrayList<>();
+	protected List<CertificateRef> getCertificateRefs(CAdESAttribute unsignedAttribute) {
+		List<CertificateRef> certRefs = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
 		for (int ii = 0; ii < seq.size(); ii++) {
 			OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
-			DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId());
-			digests.add(new Digest(digestAlgo, otherCertId.getCertHash()));
+			certRefs.add(DSSASN1Utils.getCertificateRef(otherCertId));
 		}
-		return digests;
+		return certRefs;
 	}
 
 	@Override

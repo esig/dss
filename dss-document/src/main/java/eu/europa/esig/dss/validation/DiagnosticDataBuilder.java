@@ -1263,7 +1263,7 @@ public class DiagnosticDataBuilder {
 		Map<String, XmlRelatedCertificate> relatedCertificatesMap = new HashMap<>();
 		
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.BASIC_OCSP_RESP, 
-				certificateSource.getBasicOCSPRespCertificates(), certificateSource);
+				certificateSource.getCertificates(), certificateSource);
 		
 		return new ArrayList<>(relatedCertificatesMap.values());
 	}

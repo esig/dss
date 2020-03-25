@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -607,11 +608,11 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Returns the list of contained certificate references.
+	 * Returns the Set of contained certificate references.
 	 *
-	 * @return {@code List} of {@code CertificateRef}
+	 * @return {@code Set} of {@code CertificateRef}
 	 */
-	public List<CertificateRef> getCertificateRefs() {
+	public Set<CertificateRef> getCertificateRefs() {
 		return certificateSource.getAllCertificateRefs();
 	}
 

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 
@@ -78,22 +77,6 @@ public class ListCertificateSource {
 			allTokens.addAll(certificateSource.getCertificates());
 		}
 		return allTokens;
-	}
-
-	/**
-	 * Returns a {@code CertificateToken} by its given digest
-	 * 
-	 * @param certDigest {@link Digest} to find a certificate token with
-	 * @return {@link CertificateToken}
-	 */
-	public CertificateToken getCertificateTokenByDigest(Digest certDigest) {
-		for (CommonCertificateSource certificateSource : sources) {
-			CertificateToken certificateToken = certificateSource.getCertificateTokenByDigest(certDigest);
-			if (certificateToken != null) {
-				return certificateToken;
-			}
-		}
-		return null;
 	}
 
 }

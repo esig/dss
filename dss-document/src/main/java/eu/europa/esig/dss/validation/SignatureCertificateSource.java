@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -38,41 +38,42 @@ import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
  */
 @SuppressWarnings("serial")
 public abstract class SignatureCertificateSource extends TokenCertificateSource {
-	
-	/**
-	 * Contains a list of all found {@link CertificateRef}s
-	 */
-	private List<CertificateRef> certificateRefs;
 
 	/**
 	 * The default constructor with mandatory certificates pool.
 	 *
-	 * @param certPool
-	 *            the certificate pool
+	 * @param certPool the certificate pool
 	 */
 	protected SignatureCertificateSource(final CertificatePool certPool) {
 		super(certPool);
 	}
+
 	/**
 	 * Retrieves the list of all certificates present in a signed element (i.e. the CMS Signed data (CAdES))
 	 *
 	 * @return list of all certificates present in a signed element
 	 */
-	public abstract List<CertificateToken> getSignedDataCertificates();
+	public List<CertificateToken> getSignedDataCertificates() {
+		return getCertificateTokensByOrigin(CertificateOrigin.SIGNED_DATA);
+	}
 
 	/**
 	 * Retrieves the list of all certificates present in the KeyInfo element (XAdES) (can be unsigned)
 	 *
 	 * @return list of all certificates present in KeyInfo
 	 */
-	public abstract List<CertificateToken> getKeyInfoCertificates();
+	public List<CertificateToken> getKeyInfoCertificates() {
+		return getCertificateTokensByOrigin(CertificateOrigin.KEY_INFO);
+	}
 
 	/**
 	 * Retrieves the list of all certificates from CertificateValues (XAdES/CAdES)
 	 * 
 	 * @return the list of all certificates present in the CertificateValues
 	 */
-	public abstract List<CertificateToken> getCertificateValues();
+	public List<CertificateToken> getCertificateValues() {
+		return getCertificateTokensByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
+	}
 
 	/**
 	 * Retrieves the list of all certificates from the AttrAuthoritiesCertValues
@@ -80,7 +81,9 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * 
 	 * @return the list of all certificates present in the AttrAuthoritiesCertValues
 	 */
-	public abstract List<CertificateToken> getAttrAuthoritiesCertValues();
+	public List<CertificateToken> getAttrAuthoritiesCertValues() {
+		return getCertificateTokensByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+	}
 
 	/**
 	 * Retrieves the list of all certificates from the TimeStampValidationData
@@ -88,7 +91,9 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * 
 	 * @return the list of all certificates present in the TimeStampValidationData
 	 */
-	public abstract List<CertificateToken> getTimeStampValidationDataCertValues();
+	public List<CertificateToken> getTimeStampValidationDataCertValues() {
+		return getCertificateTokensByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+	}
 
 	/**
 	 * Retrieves the list of all certificates from the DSS dictionary (PAdES)
@@ -96,7 +101,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * @return the list of all certificates present in the DSS dictionary
 	 */
 	public List<CertificateToken> getDSSDictionaryCertValues() {
-		return Collections.emptyList();
+		return getCertificateTokensByOrigin(CertificateOrigin.DSS_DICTIONARY);
 	}
 
 	/**
@@ -105,7 +110,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * @return the list of all certificates present in the VRI dictionary
 	 */
 	public List<CertificateToken> getVRIDictionaryCertValues() {
-		return Collections.emptyList();
+		return getCertificateTokensByOrigin(CertificateOrigin.VRI_DICTIONARY);
 	}
 
 	/**
@@ -114,15 +119,8 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * 
 	 * @return the list of references to the signing certificate
 	 */
-	public abstract List<CertificateRef> getSigningCertificateValues();
-	
-	/**
-	 * Retrieves the list of {@link CertificateToken}s for the signing certificate (V1/V2)
-	 * 
-	 * @return list of {@link CertificateToken}s
-	 */
-	public List<CertificateToken> getSigningCertificates() {
-		return findTokensFromRefs(getSigningCertificateValues());
+	public List<CertificateRef> getSigningCertificateValues() {
+		return getCertificateRefsByOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 	}
 
 	/**
@@ -132,7 +130,30 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * 
 	 * @return the list of certificate references
 	 */
-	public abstract List<CertificateRef> getCompleteCertificateRefs();
+	public List<CertificateRef> getCompleteCertificateRefs() {
+		return getCertificateRefsByOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
+	}
+
+	/**
+	 * Retrieves the list of {@link CertificateRef}s included in the attribute
+	 * attribute-certificate-references (CAdES) or the
+	 * AttributeCertificateRefs/AttributeCertificateRefsV2 (XAdES)
+	 * 
+	 * @return the list of certificate references
+	 */
+	public List<CertificateRef> getAttributeCertificateRefs() {
+		return getCertificateRefsByOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
+	}
+
+	/**
+	 * Retrieves the list of {@link CertificateToken}s for the signing certificate
+	 * (V1/V2)
+	 * 
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> getSigningCertificates() {
+		return findTokensFromRefs(getSigningCertificateValues());
+	}
 	
 	/**
 	 * Retrieves the list of {@link CertificateToken}s according references to included in the attribute
@@ -144,15 +165,6 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	public List<CertificateToken> getCompleteCertificates() {
 		return findTokensFromRefs(getCompleteCertificateRefs());
 	}
-
-	/**
-	 * Retrieves the list of {@link CertificateRef}s included in the attribute
-	 * attribute-certificate-references (CAdES) or the
-	 * AttributeCertificateRefs/AttributeCertificateRefsV2 (XAdES)
-	 * 
-	 * @return the list of certificate references
-	 */
-	public abstract List<CertificateRef> getAttributeCertificateRefs();
 	
 	/**
 	 * Retrieves the list of {@link CertificateToken}s according to references included in the attribute
@@ -170,15 +182,4 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 		return CertificateSourceType.SIGNATURE;
 	}
 	
-	@Override
-	public List<CertificateRef> getAllCertificateRefs() {
-		if (certificateRefs == null) {
-			certificateRefs = new ArrayList<>();
-			certificateRefs.addAll(getCompleteCertificateRefs());
-			certificateRefs.addAll(getAttributeCertificateRefs());
-			certificateRefs.addAll(getSigningCertificateValues());
-		}
-		return certificateRefs;
-	}
-
 }

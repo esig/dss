@@ -32,7 +32,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -40,12 +39,12 @@ import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -57,7 +56,6 @@ import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
@@ -297,17 +295,18 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected List<Digest> getCertificateRefDigests(XAdESAttribute unsignedAttribute) {
-		List<Digest> digests = new ArrayList<>();
-		NodeList certRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
-		for (int ii = 0; ii < certRefs.getLength(); ii++) {
-			Element certRefElement = (Element) certRefs.item(ii);
-			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
-			if (certDigest != null) {
-				digests.add(certDigest);
+	protected List<CertificateRef> getCertificateRefs(XAdESAttribute unsignedAttribute) {
+		List<CertificateRef> certRefs = new ArrayList<>();
+		NodeList certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
+		for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
+			Element certRefElement = (Element) certRefsNodeList.item(ii);
+			// TODO V1/V2
+			CertificateRef certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
+			if (certificateRef != null) {
+				certRefs.add(certificateRef);
 			}
 		}
-		return digests;
+		return certRefs;
 	}
 
 	@Override

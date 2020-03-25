@@ -51,7 +51,7 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -337,17 +337,21 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private CertificateToken getOCSPIssuer(OCSPToken token) {
-		CertificateRef signingCertificateRef = token.getCertificateSource().getSigningCertificateRef();
-		if (signingCertificateRef != null && signingCertificateRef.getIssuerInfo() != null) {
-			SerialInfo issuerInfo = signingCertificateRef.getIssuerInfo();
-			if (issuerInfo.getSki() != null) {
-				List<CertificateToken> issuerCandidates = validationCertificatePool.getBySki(issuerInfo.getSki());
-				return getTokenIssuerFromCandidates(token, issuerCandidates);
+		Set<CertificateRef> signingCertificateRefs = token.getCertificateSource().getAllCertificateRefs();
+		if (Utils.collectionSize(signingCertificateRefs) == 1) {
+			CertificateRef signingCertificateRef = signingCertificateRefs.iterator().next();
+			ResponderId responderId = signingCertificateRef.getResponderId();
+			if (responderId != null) {
+				if (responderId.getSki() != null) {
+					List<CertificateToken> issuerCandidates = validationCertificatePool.getBySki(responderId.getSki());
+					return getTokenIssuerFromCandidates(token, issuerCandidates);
+				}
+				if (responderId.getX500Principal() != null) {
+					Set<CertificateToken> issuerCandidates = validationCertificatePool.get(responderId.getX500Principal());
+					return getTokenIssuerFromCandidates(token, issuerCandidates);
+				}
 			}
-			if (issuerInfo != null && issuerInfo.getIssuerName() != null) {
-				Set<CertificateToken> issuerCandidates = validationCertificatePool.get(issuerInfo.getIssuerName());
-				return getTokenIssuerFromCandidates(token, issuerCandidates);
-			}
+
 		}
 		LOG.warn("Signing certificate is not found for an OCSPToken with id '{}'.", token.getDSSIdAsString());
 		return null;

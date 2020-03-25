@@ -74,6 +74,7 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.Attributes;
 import org.bouncycastle.asn1.esf.RevocationValues;
+import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
@@ -114,10 +115,12 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -1436,6 +1439,14 @@ public final class DSSASN1Utils {
 			}
 		}
 		return null;
+	}
+
+	public static CertificateRef getCertificateRef(OtherCertID otherCertId) {
+		CertificateRef certRef = new CertificateRef();
+		DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId());
+		certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
+		certRef.setIssuerInfo(toIssuerInfo(otherCertId.getIssuerSerial()));
+		return certRef;
 	}
 
 }

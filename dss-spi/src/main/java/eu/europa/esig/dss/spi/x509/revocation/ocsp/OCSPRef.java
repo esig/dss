@@ -23,7 +23,6 @@ package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 import java.util.Date;
 
 import org.bouncycastle.asn1.esf.OcspResponsesID;
-import org.bouncycastle.asn1.x500.X500Name;
 
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
@@ -59,15 +58,7 @@ public class OCSPRef extends RevocationRef<OCSP> {
 	public OCSPRef(final OcspResponsesID ocspResponsesID) {
 		this.digest = DSSRevocationUtils.getDigest(ocspResponsesID.getOcspRepHash());
 		this.producedAt = DSSASN1Utils.getDate(ocspResponsesID.getOcspIdentifier().getProducedAt());
-		this.responderId = new ResponderId();
-		X500Name name = ocspResponsesID.getOcspIdentifier().getOcspResponderID().getName();
-		if (name != null) {
-			this.responderId.setX500Principal(DSSASN1Utils.toX500Principal(name));
-		}
-		byte[] key = ocspResponsesID.getOcspIdentifier().getOcspResponderID().getKeyHash();
-		if (Utils.isArrayNotEmpty(key)) {
-			this.responderId.setSki(key);
-		}
+		this.responderId = DSSRevocationUtils.getDSSResponderId(ocspResponsesID.getOcspIdentifier().getOcspResponderID());
 	}
 	
 	public Date getProducedAt() {

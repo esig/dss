@@ -27,15 +27,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -43,7 +38,6 @@ import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponseStatus;
 import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.asn1.ocsp.ResponseBytes;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -63,7 +57,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -303,26 +297,24 @@ public final class DSSRevocationUtils {
 	}
 	
 	/**
-	 * Transforms {@link RespID} to {@link SerialInfo}
+	 * Transforms {@link RespID} to {@link ResponderId}
+	 * 
 	 * @param respID {@link RespID} to get values from
-	 * @return {@link SerialInfo}
+	 * @return {@link ResponderId}
 	 */
-	public static SerialInfo getDSSResponderId(RespID respID) {
-		SerialInfo dssResponderId = new SerialInfo();
-		final ResponderID responderIdAsASN1Object = respID.toASN1Primitive();
-		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
-		if (2 == derTaggedObject.getTagNo()) {
-			final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
-			final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-			dssResponderId.setSki(keyHashOctetStringBytes);
-			return dssResponderId;
-		} else {
-			final ASN1Primitive derObject = derTaggedObject.getObject();
-			final X500Name name = X500Name.getInstance(derObject);
-			X500Principal x500Principal = DSSASN1Utils.toX500Principal(name);
-			dssResponderId.setIssuerName(x500Principal);
-			return dssResponderId;
-		}
+	public static ResponderId getDSSResponderId(RespID respID) {
+		final ResponderID responderID = respID.toASN1Primitive();
+		return getDSSResponderId(responderID);
+	}
+
+	/**
+	 * Transforms {@link ResponderID} to {@link ResponderId}
+	 * 
+	 * @param responderID {@link ResponderID} to get values from
+	 * @return {@link ResponderId}
+	 */
+	public static ResponderId getDSSResponderId(ResponderID responderID) {
+		return new ResponderId(DSSASN1Utils.toX500Principal(responderID.getName()), responderID.getKeyHash());
 	}
 	
 	/**
