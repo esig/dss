@@ -39,7 +39,6 @@
             </CertificateChain>
             <MimeType>text/xml</MimeType>
             <CommitmentTypeIndications/>
-            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352">
@@ -424,12 +423,29 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955"/>
+            <SigningCertificate Certificate="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
             <CertificateChain>
                 <ChainItem Certificate="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955"/>
                 <ChainItem Certificate="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8"/>
             </CertificateChain>
-            <FoundCertificates/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial>MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</IssuerSerial>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>1teY0Rv0BnnZ8olubGTCJ81/QTXWQg1LncD8ld9fvnyHwDqc29O1RkCpnsc0mK7TbKAcusH2Wc9vzNQ4mCyTCg==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
             <TimestampedObjects>
                 <TimestampedObject Category="SIGNED_DATA" Token="D-2EFCB3207A3A2F3601B5305C789EEA4C1F794CF1360BB2F9943DDD1F6DA4DAA5"/>
