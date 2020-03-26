@@ -43,12 +43,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	public void addBinary(EncapsulatedRevocationTokenIdentifier binary, RevocationOrigin origin) {
 		Objects.requireNonNull(binary, "The binary is null");
 		Objects.requireNonNull(origin, "The origin is null");
-		Set<RevocationOrigin> origins = binaryOrigins.get(binary);
-		if (origins == null) {
-			origins = new HashSet<>();
-			binaryOrigins.put(binary, origins);
-		}
-		origins.add(origin);
+		binaryOrigins.computeIfAbsent(binary, k -> new HashSet<>()).add(origin);
 	}
 
 	/**
@@ -60,12 +55,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	public void addRevocation(RevocationToken<R> token, RevocationOrigin origin) {
 		Objects.requireNonNull(token, "The token is null");
 		Objects.requireNonNull(origin, "The origin is null");
-		Set<RevocationOrigin> origins = tokenOrigins.get(token);
-		if (origins == null) {
-			origins = new HashSet<>();
-			tokenOrigins.put(token, origins);
-		}
-		origins.add(origin);
+		tokenOrigins.computeIfAbsent(token, k -> new HashSet<>()).add(origin);
 	}
 
 	/**
@@ -79,7 +69,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 		Objects.requireNonNull(binary, "The origin is null");
 		Set<RevocationOrigin> origins = binaryOrigins.get(binary);
 		if (origins == null) {
-			throw new IllegalStateException(String.format("Unable to find the binary '{}'", binary.asXmlId()));
+			throw new IllegalStateException(String.format("Unable to find the binary '%s'", binary.asXmlId()));
 		}
 		for (RevocationOrigin origin : origins) {
 			addRevocation(token, origin);
@@ -95,12 +85,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	public void addRevocationReference(RevocationRef<R> reference, RevocationRefOrigin origin) {
 		Objects.requireNonNull(reference, "The reference is null");
 		Objects.requireNonNull(origin, "The origin is null");
-		Set<RevocationRefOrigin> origins = referenceOrigins.get(reference);
-		if (origins == null) {
-			origins = new HashSet<>();
-			referenceOrigins.put(reference, origins);
-		}
-		origins.add(origin);
+		referenceOrigins.computeIfAbsent(reference, k -> new HashSet<>()).add(origin);
 	}
 
 	/**

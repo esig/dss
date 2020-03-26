@@ -54,7 +54,7 @@
                 <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
             </Policy>
            	<SignerInformationStore>
-           		<SignerInfo Processed="true">
+           		<SignerInfo Current="true">
 			        <IssuerName>CN=AC SERASA RFB v2,OU=Secretaria da Receita Federal do Brasil - RFB,O=ICP-Brasil,C=BR</IssuerName>
 			        <SerialNumber>6258375866132076198</SerialNumber>
            		</SignerInfo>
@@ -120,7 +120,7 @@
             <CommitmentTypeIndications/>
             
            	<SignerInformationStore>
-           		<SignerInfo Processed="true">
+           		<SignerInfo Current="true">
 		            <IssuerName>CN=docusignhq-SEA-CAS-01-CA,DC=docusignhq,DC=com</IssuerName>
 		            <SerialNumber>450965617510987499327098</SerialNumber>
            		</SignerInfo>

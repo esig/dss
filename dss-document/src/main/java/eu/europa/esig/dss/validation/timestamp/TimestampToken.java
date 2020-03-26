@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -61,10 +62,12 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CMSCertificateSource;
+import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -139,6 +142,9 @@ public class TimestampToken extends Token {
 	 * unambiguously identify a timestamp.
 	 */
 	private int hashCode;
+
+	/* cached */
+	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 	
 	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
 		this(binaries, type, new CertificatePool());
@@ -607,11 +613,11 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Returns the list of contained certificate references.
+	 * Returns the Set of contained certificate references.
 	 *
-	 * @return {@code List} of {@code CertificateRef}
+	 * @return {@code Set} of {@code CertificateRef}
 	 */
-	public List<CertificateRef> getCertificateRefs() {
+	public Set<CertificateRef> getCertificateRefs() {
 		return certificateSource.getAllCertificateRefs();
 	}
 
@@ -679,21 +685,25 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Returns a list of found SerialInfos in the SignerInformationStore
+	 * Returns a list of found CertificateIdentifier in the SignerInformationStore
 	 * 
-	 * @return a list of {@link SerialInfo}s
+	 * @return a list of {@link CertificateIdentifier}s
 	 */
-	public List<SerialInfo> getSignerInformationStoreInfos() {
-		return getCertificateSource().getIssuerSerialInfos();
+	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 
 	/**
-	 * Returns used SerialInfo of the signing certificate
+	 * Returns an object with signing candidates
 	 * 
-	 * @return {@link SerialInfo}
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
-	public SerialInfo getUsedIssuerSerialInfo() {
-		return getCertificateSource().getUsedIssuerSerialInfo();
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
+		if (candidatesForSigningCertificate == null) {
+			candidatesForSigningCertificate = ((CMSCertificateSource) getCertificateSource())
+					.getCandidatesForSigningCertificate(null);
+		}
+		return candidatesForSigningCertificate;
 	}
 
 	/**

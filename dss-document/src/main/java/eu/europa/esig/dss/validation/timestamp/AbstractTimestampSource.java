@@ -37,7 +37,6 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -561,32 +560,20 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected List<TimestampedReference> getTimestampedCertificateRefs(SignatureAttribute unsignedAttribute, SignatureCertificateSource signatureCertificateSource) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		for (Digest certDigest : getCertificateRefDigests(unsignedAttribute)) {
-			timestampedReferences.add(getTimestampedCertificateRefByDigest(certDigest, signatureCertificateSource));
+		for (CertificateRef certRef : getCertificateRefs(unsignedAttribute)) {
+			timestampedReferences.add(new TimestampedReference(certRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		return timestampedReferences;
 	}
 	
-	private TimestampedReference getTimestampedCertificateRefByDigest(Digest certDigest, SignatureCertificateSource signatureCertificateSource) {
-		CertificateToken certificate = certificateSource.getCertificateTokenByDigest(certDigest);
-		if (certificate != null) {
-			return new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE);
-		} else {
-			// in case if no original Certificate value is present
-			CertificateRef certificateRef = signatureCertificateSource.getCertificateRefByDigest(certDigest);
-			if (certificateRef != null) {
-				return new TimestampedReference(certificateRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE);
-			}
-		}
-		throw new DSSException(String.format("The provided signatureCertificateSource does not contain the reference with digest [%s]!", certDigest));
-	}
-	
 	/**
-	 * Returns a list of {@link Digest}s from the given {@code unsignedAttribute}
-	 * @param unsignedAttribute {@link SignatureAttribute} to get certRef Digests from
-	 * @return list of {@link Digest}s
+	 * Returns a list of {@link CertificateRef}s from the given
+	 * {@code unsignedAttribute}
+	 * 
+	 * @param unsignedAttribute {@link SignatureAttribute} to get certRefs from
+	 * @return list of {@link CertificateRef}s
 	 */
-	protected abstract List<Digest> getCertificateRefDigests(SignatureAttribute unsignedAttribute);
+	protected abstract List<CertificateRef> getCertificateRefs(SignatureAttribute unsignedAttribute);
 	
 	/**
 	 * Returns a list of {@link TimestampedReference} revocation refs found in the given {@code unsignedAttribute}
@@ -782,7 +769,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			addReference(references, certificate.getDSSId(), TimestampedObjectType.CERTIFICATE);
 		}
 		for (final CertificateRef certificateRef : timestampedTimestamp.getCertificateRefs()) {
-			addReference(references, getTimestampedCertificateRefByDigest(certificateRef.getCertDigest(), timestampedTimestamp.getCertificateSource()));
+			addReference(references, new TimestampedReference(certificateRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		TimestampCRLSource timestampCRLSource = timestampedTimestamp.getCRLSource();
 		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampCRLSource.getAllRevocationBinaries()) {

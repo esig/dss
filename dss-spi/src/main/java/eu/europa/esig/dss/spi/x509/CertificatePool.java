@@ -266,18 +266,18 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method returns the List of certificates with the same serialInfo.
+	 * This method returns the List of certificates with the same
+	 * CertificateIdentifier.
 	 *
-	 * @param serialInfo
-	 *                 expected {@link SerialInfo}
+	 * @param certificateIdentifier expected {@link CertificateIdentifier}
 	 * @return If no match is found then an empty list is returned.
 	 */
-	public List<CertificateToken> getBySerialInfo(SerialInfo serialInfo) {
+	public List<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
 		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
 		for (CertificatePoolEntity entity : values) {
 			List<CertificateToken> equivalentCertificates = entity.getEquivalentCertificates();
 			// matches by SN + IssuerName
-			List<CertificateToken> result = filterCertificatesBySerialInfo(serialInfo, equivalentCertificates);
+			List<CertificateToken> result = filterCertificatesByCertificateIdentifier(certificateIdentifier, equivalentCertificates);
 			if (Utils.isCollectionNotEmpty(result)) {
 				return result;
 			}
@@ -286,16 +286,17 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * Returns a list of certificates matching the given serialInfo
+	 * Returns a list of certificates matching the given CertificateIdentifier
 	 * 
-	 * @param serialInfo {@link SerialInfo} to match by
-	 * @param candidiates a collection of {@link CertificateToken}s to get matching entries from
+	 * @param certificateIdentifier {@link CertificateIdentifier} to match by
+	 * @param candidiates           a collection of {@link CertificateToken}s to get
+	 *                              matching entries from
 	 * @return a list of matching {@link CertificateToken}s
 	 */
-	private List<CertificateToken> filterCertificatesBySerialInfo(final SerialInfo serialInfo, final Collection<CertificateToken> candidiates) {
+	private List<CertificateToken> filterCertificatesByCertificateIdentifier(final CertificateIdentifier certificateIdentifier, final Collection<CertificateToken> candidiates) {
 		List<CertificateToken> result = new ArrayList<>();
 		for (CertificateToken certificate : candidiates) {
-			if (serialInfo.isRelatedToCertificate(certificate)) {
+			if (certificateIdentifier.isRelatedToCertificate(certificate)) {
 				result.add(certificate);
 			}
 		}

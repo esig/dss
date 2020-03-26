@@ -21,8 +21,9 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -31,7 +32,9 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -48,6 +51,8 @@ public class SignatureTimestampCertificateNotFoundTest {
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
+//		reports.print();
+		UnmarshallingTester.unmarshallXmlReports(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -55,7 +60,15 @@ public class SignatureTimestampCertificateNotFoundTest {
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(1, timestampList.size());
 		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertNull(timestampWrapper.getSigningCertificate());
+		assertNotNull(timestampWrapper.getSigningCertificate());
+		assertTrue(timestampWrapper.isMessageImprintDataFound());
+		assertTrue(timestampWrapper.isMessageImprintDataIntact());
+		assertTrue(timestampWrapper.isIssuerSerialMatch());
+		assertTrue(timestampWrapper.isDigestValuePresent());
+		assertTrue(timestampWrapper.isDigestValueMatch());
+		assertFalse(timestampWrapper.isAttributePresent()); // 2 signing-certificate attributes
+		assertEquals(2, timestampWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertFalse(timestampWrapper.isSignatureValid());
 	}
 
 }

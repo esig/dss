@@ -34,14 +34,14 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class SerialInfo {
+public class CertificateIdentifier {
 
 	private X500Principal issuerName;
 	private BigInteger serialNumber;
 	
 	private byte[] ski; // SHA-1 hash of cert's public key (used in OCSP response)
 	
-    private boolean validated; // the framework validates only the first SignerInfo
+	private boolean current; // the used CertificateIdentifier for a signature/timestamp
 
 	public X500Principal getIssuerName() {
 		return issuerName;
@@ -67,12 +67,12 @@ public class SerialInfo {
 		this.ski = ski;
 	}
 
-	public boolean isValidated() {
-		return validated;
+	public boolean isCurrent() {
+		return current;
 	}
 
-	public void setValidated(boolean validated) {
-		this.validated = validated;
+	public void setCurrent(boolean current) {
+		this.current = current;
 	}
 	
 	/**
@@ -99,16 +99,24 @@ public class SerialInfo {
 	 * @return TRUE if the certificateToken is related to the SerialInfo, FALSE otherwise
 	 */
 	public boolean isRelatedToCertificate(CertificateToken certificateToken) {
+		CertificateIdentifier id = new CertificateIdentifier();
+		id.setIssuerName(certificateToken.getIssuerX500Principal());
+		id.setSerialNumber(certificateToken.getSerialNumber());
+		id.setSki(DSSASN1Utils.getSki(certificateToken));
+		return isEquivalent(id);
+	}
+
+	public boolean isEquivalent(CertificateIdentifier certificateIdentifier) {
 		if (issuerName != null && serialNumber != null) {
-			if (!DSSASN1Utils.x500PrincipalAreEquals(certificateToken.getIssuerX500Principal(), issuerName)) {
+			if (!DSSASN1Utils.x500PrincipalAreEquals(issuerName, certificateIdentifier.getIssuerName())) {
 				return false;
 			}
-			if (serialNumber != null) {
-				return certificateToken.getSerialNumber().equals(serialNumber);
+			if (!serialNumber.equals(certificateIdentifier.getSerialNumber())) {
+				return false;
 			}
 			return true;
 		} else {
-			return DSSASN1Utils.isSkiEqual(ski, certificateToken);
+			return Arrays.equals(ski, certificateIdentifier.getSki());
 		}
 	}
 
@@ -142,7 +150,7 @@ public class SerialInfo {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		SerialInfo other = (SerialInfo) obj;
+		CertificateIdentifier other = (CertificateIdentifier) obj;
 		if (issuerName == null) {
 			if (other.issuerName != null) {
 				return false;

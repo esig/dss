@@ -31,7 +31,7 @@ public class CertificateRef implements Serializable {
 	private static final long serialVersionUID = -325165164194282066L;
 	
 	private Digest certDigest;
-	private SerialInfo issuerInfo; // signature/timestamp source
+	private CertificateIdentifier certificateIdentifier; // signature/timestamp source
 	private ResponderId responderId; // in case of OCSP response
 	
 	private CertificateRefOrigin origin;
@@ -46,12 +46,12 @@ public class CertificateRef implements Serializable {
 		this.certDigest = certDigest;
 	}
 
-	public SerialInfo getIssuerInfo() {
-		return issuerInfo;
+	public CertificateIdentifier getCertificateIdentifier() {
+		return certificateIdentifier;
 	}
 
-	public void setIssuerInfo(SerialInfo issuerInfo) {
-		this.issuerInfo = issuerInfo;
+	public void setCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
+		this.certificateIdentifier = certificateIdentifier;
 	}
 
 	public ResponderId getResponderId() {
@@ -91,7 +91,7 @@ public class CertificateRef implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + ", origin=" + origin + "]";
+		return "CertificateRef [certDigest=" + certDigest + ", certificateIdentifier=" + certificateIdentifier + ", origin=" + origin + "]";
 	}
 	
 	@Override

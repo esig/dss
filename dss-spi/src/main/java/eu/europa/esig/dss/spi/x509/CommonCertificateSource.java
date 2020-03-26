@@ -21,13 +21,11 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
@@ -70,10 +68,6 @@ public class CommonCertificateSource implements CertificateSource {
 		return CertificateSourceType.OTHER;
 	}
 	
-	protected CertificatePool getCertificatePool() {
-		return certPool;
-	}
-
 	/**
 	 * This method adds an external certificate to the encapsulated pool and to the
 	 * source. If the certificate is already present in the pool its source type is
@@ -122,21 +116,6 @@ public class CommonCertificateSource implements CertificateSource {
 		return certificateTokens.size();
 	}
 	
-	/**
-	 * Returns contained {@link CertificateToken} corresponding to the provided {@code digest}
-	 * @param digest {@link Digest} to find the CertificateToken
-	 * @return {@link CertificateToken}
-	 */
-	public CertificateToken getCertificateTokenByDigest(Digest digest) {
-		for (CertificateToken certificate : certificateTokens) {
-			byte[] digestValue = certificate.getDigest(digest.getAlgorithm());
-			if (Arrays.equals(digestValue, digest.getValue())) {
-				return certificate;
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public boolean isTrusted(CertificateToken certificateToken) {
 		return certPool.isTrusted(certificateToken);

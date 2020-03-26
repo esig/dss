@@ -32,6 +32,12 @@ public class ResponderId {
 	private X500Principal subjectX500Principal;
 	private byte[] ski;
 
+	public ResponderId(X500Principal subjectX500Principal, byte[] ski) {
+		super();
+		this.subjectX500Principal = subjectX500Principal;
+		this.ski = ski;
+	}
+
 	public X500Principal getX500Principal() {
 		return subjectX500Principal;
 	}

@@ -357,7 +357,7 @@
                 <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
             </CertificateChain>
             <SignerInformationStore>
-                <SignerInfo Processed="true">
+                <SignerInfo Current="true">
                     <IssuerName>C=LT,O=Skaitmeninio sertifikavimo centras,OU=Certification Authority,CN=SSC Qualified Class 3 CA</IssuerName>
                     <SerialNumber>104155880393078814540679</SerialNumber>
                 </SignerInfo>

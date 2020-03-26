@@ -1,14 +1,15 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -18,17 +19,15 @@ import eu.europa.esig.dss.utils.Utils;
  */
 @SuppressWarnings("serial")
 public abstract class TokenCertificateSource extends CommonCertificateSource {
+
+	private final Map<CertificateIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new HashMap<>();
 	
-	/**
-	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
-	 */
-	private transient Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
+	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new HashMap<>();
+
+	private final Map<CertificateRef, List<CertificateRefOrigin>> certificateRefOrigins = new HashMap<>();
 	
-	/**
-	 * List of orphan {@link CertificateRef}s
-	 */
-	private List<CertificateRef> orphanCertificateRefs;
-	
+	private final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
+
 	protected TokenCertificateSource() {
 		super();
 	}
@@ -38,20 +37,58 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	}
 	
 	/**
-	 * Returns list of {@link CertificateRef}s found for the given {@code certificateToken}
+	 * Adds a {@code CertificateIdentifier} with its origin
+	 * 
+	 * @param certificateIdentifier the certificate identifier to be added
+	 * @param origin                the origin of the certificate identifier
+	 */
+	protected void addCertificateIdentifier(CertificateIdentifier certificateIdentifier, CertificateOrigin origin) {
+		Objects.requireNonNull(certificateIdentifier, "The certificate identifier cannot be null");
+		Objects.requireNonNull(origin, "The origin cannot be null");
+		certificateIdentifierOrigins.computeIfAbsent(certificateIdentifier, k -> new ArrayList<>()).add(origin);
+	}
+
+	/**
+	 * Adds a {@code CertificateToken} with its {@code CertificateOrigin}
+	 * 
+	 * @param certificate the certificate to be added
+	 * @param origin      the origin of the certificate
+	 */
+	protected void addCertificate(CertificateToken certificate, CertificateOrigin origin) {
+		Objects.requireNonNull(certificate, "The certificate cannot be null");
+		Objects.requireNonNull(origin, "The origin cannot be null");
+		certificateOrigins.computeIfAbsent(certificate, k -> new ArrayList<>()).add(origin);
+		// TODO remove ?
+		addCertificate(certificate);
+	}
+
+	/**
+	 * Adds a {@code CertificateRef} with its {@code CertificateRefOrigin}
+	 * 
+	 * @param certificateRef the certificate reference to be added
+	 * @param origin         the origin of the certificate reference
+	 */
+	protected void addCertificateRef(CertificateRef certificateRef, CertificateRefOrigin origin) {
+		Objects.requireNonNull(certificateRef, "The certificateRef cannot be null");
+		Objects.requireNonNull(origin, "The origin cannot be null");
+		certificateRefOrigins.computeIfAbsent(certificateRef, k -> new ArrayList<>()).add(origin);
+	}
+
+	/**
+	 * Returns list of {@link CertificateRef}s found for the given
+	 * {@code certificateToken}
+	 * 
 	 * @param certificateToken {@link CertificateToken} to find references for
 	 * @return list of {@link CertificateRef}s
 	 */
 	public List<CertificateRef> getReferencesForCertificateToken(CertificateToken certificateToken) {
-		if (Utils.isMapEmpty(certificateRefsMap)) {
-			collectCertificateRefsMap();
+		List<CertificateRef> result = new ArrayList<>();
+		for (CertificateRef certificateRef : certificateRefOrigins.keySet()) {
+			if (certificateMatcher.match(certificateToken, certificateRef)) {
+				result.add(certificateRef);
+			}
 		}
-		List<CertificateRef> references = certificateRefsMap.get(certificateToken);
-		if (references != null) {
-			return references;
-		} else {
-			return Collections.emptyList();
-		}
+		return result;
 	}
 
 	/**
@@ -60,72 +97,55 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	 * @return list of {@link CertificateToken}s
 	 */
 	public List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
-		if (Utils.isMapEmpty(certificateRefsMap)) {
-			collectCertificateRefsMap();
-		}
-		List<CertificateToken> tokensFromRefs = new ArrayList<>();
-		for (Entry<CertificateToken, List<CertificateRef>> certMapEntry : certificateRefsMap.entrySet()) {
-			for (CertificateRef reference : certMapEntry.getValue()) {
-				if (certificateRefs.contains(reference)) {
-					tokensFromRefs.add(certMapEntry.getKey());
-					break;
+		List<CertificateToken> result = new ArrayList<>();
+		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
+			for (CertificateRef certificateRef : certificateRefs) {
+				if (certificateMatcher.match(certificateToken, certificateRef)) {
+					result.add(certificateToken);
 				}
 			}
 		}
-		return tokensFromRefs;
+		return result;
 	}
 	
 	/**
-	 * Returns a list of all certificate references
+	 * Returns a Set of all {@link CertificateIdentifier}
 	 * 
-	 * @return a list of {@link CertificateRef}s
+	 * For CAdES/PAdES/Timestamp
+	 * 
+	 * @return a set of {@link CertificateIdentifier}
 	 */
-	public abstract List<CertificateRef> getAllCertificateRefs();
-	
+	public Set<CertificateIdentifier> getAllCertificateIdentifiers() {
+		return certificateIdentifierOrigins.keySet();
+	}
+
 	/**
-	 * Returns a contained {@link CertificateRef} with the given {@code digest}
-	 * @param digest {@link Digest} to find a {@link CertificateRef} with
-	 * @return {@link CertificateRef}
+	 * Returns the current {@link CertificateIdentifier}
+	 * 
+	 * For CAdES/PAdES/Timestamp
+	 * 
+	 * @return the current {@link CertificateIdentifier} or null
 	 */
-	public CertificateRef getCertificateRefByDigest(Digest digest) {
-		for (CertificateRef certificateRef : getAllCertificateRefs()) {
-			if (digest.equals(certificateRef.getCertDigest())) {
-				return certificateRef;
-			}
-		}
-		return null;
-	}
-	
-	private void collectCertificateRefsMap() {
-		certificateRefsMap = new HashMap<>();
-		for (CertificateToken certificateToken : getCertificates()) {
-			for (CertificateRef certificateRef : getAllCertificateRefs()) {
-				Digest certDigest = certificateRef.getCertDigest();
-				SerialInfo issuerInfo = certificateRef.getIssuerInfo();
-				ResponderId responderId = certificateRef.getResponderId();
-				if (certDigest != null) {
-					byte[] currentDigest = certificateToken.getDigest(certDigest.getAlgorithm());
-					if (Arrays.equals(currentDigest, certDigest.getValue())) {
-						addCertificateRefToMap(certificateToken, certificateRef);
-					}
-				} else if (issuerInfo != null && issuerInfo.isRelatedToCertificate(certificateToken)) {
-                    addCertificateRefToMap(certificateToken, certificateRef);
-					
-				} else if (responderId != null && responderId.isRelatedToCertificate(certificateToken)) {
-                    addCertificateRefToMap(certificateToken, certificateRef);
-                    
+	public CertificateIdentifier getCurrentCertificateIdentifier() {
+		CertificateIdentifier current = null;
+		for (CertificateIdentifier certificateIdentifier : certificateIdentifierOrigins.keySet()) {
+			if (certificateIdentifier.isCurrent()) {
+				if (current != null) {
+					throw new IllegalStateException("More than one current CertificateIdentifier");
 				}
+				current = certificateIdentifier;
 			}
 		}
+		return current;
 	}
-	
-	private void addCertificateRefToMap(CertificateToken certificateToken, CertificateRef certificateRef) {
-		List<CertificateRef> currentCertificateRefs = certificateRefsMap.get(certificateToken);
-		if (currentCertificateRefs == null) {
-			currentCertificateRefs = new ArrayList<>();
-			certificateRefsMap.put(certificateToken, currentCertificateRefs);
-		}
-		currentCertificateRefs.add(certificateRef);
+
+	/**
+	 * Returns a Set of all certificate references
+	 * 
+	 * @return a Set of {@link CertificateRef}s
+	 */
+	public Set<CertificateRef> getAllCertificateRefs() {
+		return certificateRefOrigins.keySet();
 	}
 	
 	/**
@@ -133,25 +153,53 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	 * @return list of {@link CertificateRef}s
 	 */
 	public List<CertificateRef> getOrphanCertificateRefs() {
-		if (orphanCertificateRefs == null) {
-			orphanCertificateRefs = new ArrayList<>();
-			if (Utils.isMapEmpty(certificateRefsMap)) {
-				collectCertificateRefsMap();
-			}
-			for (CertificateRef certificateRef : getAllCertificateRefs()) {
-				boolean found = false;
-				for (List<CertificateRef> assignedCertificateRefs : certificateRefsMap.values()) {
-					if (assignedCertificateRefs.contains(certificateRef)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					orphanCertificateRefs.add(certificateRef);
-				}
+		List<CertificateRef> result = new ArrayList<>();
+		for (CertificateRef certificateRef : certificateRefOrigins.keySet()) {
+			if (isOrphan(certificateRef)) {
+				result.add(certificateRef);
 			}
 		}
-		return orphanCertificateRefs;
+		return result;
+	}
+
+	private boolean isOrphan(CertificateRef certificateRef) {
+		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
+			if (certificateMatcher.match(certificateToken, certificateRef)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	protected CertificateToken getCertificateToken(CertificateIdentifier certificateIdentifier) {
+		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
+			if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+				return certificateToken;
+			}
+		}
+		return null;
+	}
+
+	protected List<CertificateToken> getCertificateTokensByOrigin(CertificateOrigin origin) {
+		List<CertificateToken> result = new ArrayList<>();
+		for (Entry<CertificateToken, List<CertificateOrigin>> entry : certificateOrigins.entrySet()) {
+			List<CertificateOrigin> currentOrigins = entry.getValue();
+			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
+				result.add(entry.getKey());
+			}
+		}
+		return result;
+	}
+
+	protected List<CertificateRef> getCertificateRefsByOrigin(CertificateRefOrigin origin) {
+		List<CertificateRef> result = new ArrayList<>();
+		for (Entry<CertificateRef, List<CertificateRefOrigin>> entry : certificateRefOrigins.entrySet()) {
+			List<CertificateRefOrigin> currentOrigins = entry.getValue();
+			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
+				result.add(entry.getKey());
+			}
+		}
+		return result;
 	}
 
 }

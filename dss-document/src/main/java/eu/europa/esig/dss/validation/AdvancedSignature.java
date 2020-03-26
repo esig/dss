@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -32,7 +33,7 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
@@ -511,11 +512,12 @@ public interface AdvancedSignature extends Serializable {
 	byte[] getMessageDigestValue();
 	
 	/**
-	 * Returns a list of SerialInfos extracted from a SignerInformationStore of CMS Signed Data
+	 * Returns a Set of CertificateIdentifier extracted from a
+	 * SignerInformationStore of CMS Signed Data
 	 * 
-	 * @return a list of {@link SerialInfo}s
+	 * @return a Set of {@link CertificateIdentifier}s
 	 */
-	List<SerialInfo> getSignerInformationStoreInfos();
+	Set<CertificateIdentifier> getSignerInformationStoreInfos();
 
 	// ------------------------ PDF Specifics for TS 119 102-2
 	

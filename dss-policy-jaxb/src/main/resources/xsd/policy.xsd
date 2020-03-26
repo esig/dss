@@ -175,6 +175,11 @@
 					<xsd:documentation>Checks the presence of the signingCertificate (V1/V2) attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="UnicitySigningCertificate" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signing certificate digest</xsd:documentation>
@@ -284,6 +289,11 @@
 			<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of common checks on this token signature</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SignedAttributes" type="SignedAttributesConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Group of checks on the signed attributes/properties</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>

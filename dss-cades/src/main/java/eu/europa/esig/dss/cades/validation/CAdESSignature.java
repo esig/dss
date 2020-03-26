@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -102,13 +101,13 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
@@ -141,12 +140,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private final CMSSignedData cmsSignedData;
 
 	private final SignerInformation signerInformation;
-
-	/**
-	 * The reference to the signing certificate. If the signing certificate is
-	 * an input provided by the DA then getSigningCert MUST be called.
-	 */
-	private CertificateValidity signingCertificateValidity;
 
 	/**
 	 * @param cmsSignedData
@@ -238,108 +231,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		if (candidatesForSigningCertificate != null) {
-			return candidatesForSigningCertificate;
-		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Searching the signing certificate...");
-		}
-		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-
-		CAdESCertificateSource certSource = (CAdESCertificateSource) getCertificateSource();
-		// retrieves the first found entry from SignerInformationStore
-		SerialInfo signerInfo = certSource.getUsedIssuerSerialInfo();
-		
-		// firstly check the KeyInfo attribute
-		findSigningCertificateInCollection(signerInfo, certSource.getSignedDataCertificates());
-		
-		// check the certificate pool
-		if (signingCertificateValidity == null) {
-			checkCertPoolAgainstSignerId(candidatesForSigningCertificate, signerInfo);
-		}
-		
-		// if no certificates found, create an empty certificateValidity
-		if (signingCertificateValidity == null) {
-			LOG.warn("Signing certificate not found: {}", signerInfo);
-			signingCertificateValidity = new CertificateValidity(signerInfo);
-			candidatesForSigningCertificate.add(signingCertificateValidity);
-		}
-		
-		if (!verifySignedReferencesToSigningCertificate()) {
-			if (signingCertificateValidity.getCertificateToken() != null) {
-				LOG.warn("There is no valid signed reference to the signing certificate: {}", signingCertificateValidity.getCertificateToken().getAbbreviation());
-			}
+		if (candidatesForSigningCertificate == null) {
+			candidatesForSigningCertificate = ((CMSCertificateSource) getCertificateSource())
+					.getCandidatesForSigningCertificate(providedSigningCertificateToken);
 		}
 		return candidatesForSigningCertificate;
-	}
-	
-	private void findSigningCertificateInCollection(final SerialInfo serialInfo, final Collection<CertificateToken> certificates) {
-		for (final CertificateToken certificateToken : certificates) {
-			if (doesEmbeddedSignedIdMatch(candidatesForSigningCertificate, certificateToken, serialInfo)) {
-				return;
-			}
-		}
-	}
-	
-	private boolean doesEmbeddedSignedIdMatch(final CandidatesForSigningCertificate candidates, final CertificateToken certificateToken, SerialInfo serialInfo) {
-		final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
-		candidates.add(certificateValidity);
-
-		final boolean match = serialInfo.isRelatedToCertificate(certificateToken);
-		certificateValidity.setSignerIdMatch(match);
-		if (match) {
-			this.signingCertificateValidity = certificateValidity;
-		}
-		return match;
-	}
-	
-	private boolean checkCertPoolAgainstSignerId(final CandidatesForSigningCertificate candidates, final SerialInfo serialInfo) {
-		List<CertificateToken> certificateTokens = certPool.getBySerialInfo(serialInfo);
-		if (Utils.isCollectionNotEmpty(certificateTokens)) {
-			for (CertificateToken certificateToken : certificateTokens) {
-				if (doesEmbeddedSignedIdMatch(candidates, certificateToken, serialInfo)) {
-					// break the loop if a good candidate found
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean verifySignedReferencesToSigningCertificate() {
-
-		List<CertificateRef> signingCertificateRefs = getCertificateSource().getSigningCertificateValues();
-		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
-			signingCertificateValidity.setAttributePresent(true);
-
-			final CertificateToken foundSigningCertificate = signingCertificateValidity.getCertificateToken();
-
-			for (CertificateRef certificateRef : signingCertificateRefs) {
-				Digest certDigest = certificateRef.getCertDigest();
-				if (certDigest != null) {
-					signingCertificateValidity.setDigestPresent(true);
-					if (foundSigningCertificate != null) {
-						final byte[] expectedDigest = foundSigningCertificate.getDigest(certDigest.getAlgorithm());
-						signingCertificateValidity.setDigestEqual(Arrays.equals(expectedDigest, certDigest.getValue()));
-					}
-				}
-
-				SerialInfo issuerInfo = certificateRef.getIssuerInfo();
-				if (issuerInfo != null && foundSigningCertificate != null) {
-					signingCertificateValidity.setSerialNumberEqual(foundSigningCertificate.getSerialNumber().equals(issuerInfo.getSerialNumber()));
-					signingCertificateValidity
-							.setDistinguishedNameEqual(DSSASN1Utils.x500PrincipalAreEquals(foundSigningCertificate.getIssuerX500Principal(), issuerInfo.getIssuerName()));
-				}
-
-				// RFC 2634 / 5035 : The first certificate identified in the sequence of
-				// certificate identifiers MUST be the certificate used to verify the signature.
-				if (signingCertificateValidity.isDigestEqual()) {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	@Override
@@ -765,16 +661,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		try {
 
-			final CertificateValidity bestCandidate = getTheBestCandidate();
+			final CertificateValidity bestCandidate = getCandidatesForSigningCertificate().getTheBestCandidate();
 			if (bestCandidate == null) {
-				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature or certificate pool.");
+				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature.");
 				return;
 			}
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
 			SignerInformation signerInformationToCheck = null;
 			if (detachedSignature && !isCounterSignature()) {
 				if (Utils.isCollectionEmpty(detachedContents)) {
-					candidatesForSigningCertificate.setTheCertificateValidity(bestCandidate);
 					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
 					getReferenceValidations(signerInformationToCheck);
 					return;
@@ -785,31 +680,28 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
-			if (signingCertificateValidity != null) {
-				candidatesForSigningCertificate.setTheCertificateValidity(signingCertificateValidity);
 
-				if (signingCertificateValidity.getCertificateToken() != null) {
-					try {
-	
-						final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
-						verifier.setProvider(DSSSecurityProvider.getSecurityProviderName());
-	
-						final CertificateToken certificateToken = signingCertificateValidity.getCertificateToken();
-						final PublicKey publicKey = certificateToken.getPublicKey();
-						final SignerInformationVerifier signerInformationVerifier = verifier.build(publicKey);
-						LOG.debug(" - WITH SIGNING CERTIFICATE: {}", certificateToken.getAbbreviation());
-						boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
-						signatureCryptographicVerification.setSignatureIntact(signatureIntact);
-	
-					} catch (CMSSignerDigestMismatchException e) {
-						LOG.warn("Unable to validate CMS Signature : {}", e.getMessage());
-						signatureCryptographicVerification.setErrorMessage(e.getMessage());
-						signatureCryptographicVerification.setSignatureIntact(false);
-					} catch (Exception e) {
-						LOG.error("Unable to validate CMS Signature : " + e.getMessage(), e);
-						signatureCryptographicVerification.setErrorMessage(e.getMessage());
-						signatureCryptographicVerification.setSignatureIntact(false);
-					}
+			if (bestCandidate.getCertificateToken() != null) {
+				try {
+
+					final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
+					verifier.setProvider(DSSSecurityProvider.getSecurityProviderName());
+
+					final CertificateToken certificateToken = bestCandidate.getCertificateToken();
+					final PublicKey publicKey = certificateToken.getPublicKey();
+					final SignerInformationVerifier signerInformationVerifier = verifier.build(publicKey);
+					LOG.debug(" - WITH SIGNING CERTIFICATE: {}", certificateToken.getAbbreviation());
+					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
+					signatureCryptographicVerification.setSignatureIntact(signatureIntact);
+
+				} catch (CMSSignerDigestMismatchException e) {
+					LOG.warn("Unable to validate CMS Signature : {}", e.getMessage());
+					signatureCryptographicVerification.setErrorMessage(e.getMessage());
+					signatureCryptographicVerification.setSignatureIntact(false);
+				} catch (Exception e) {
+					LOG.error("Unable to validate CMS Signature : " + e.getMessage(), e);
+					signatureCryptographicVerification.setErrorMessage(e.getMessage());
+					signatureCryptographicVerification.setSignatureIntact(false);
 				}
 			}
 
@@ -1000,20 +892,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signerInformationToCheck;
 	}
 	
-	private CertificateValidity getTheBestCandidate() {
-		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
-
-		if (providedSigningCertificateToken != null) {
-			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
-		}
-
-		return candidatesForSigningCertificate.getTheBestCandidate();
-	}
-
 	@Override
 	public void checkSigningCertificate() {
-
-		// TODO-Bob (13/07/2014):
 	}
 
 	public Set<DigestAlgorithm> getMessageDigestAlgorithms() {
@@ -1175,9 +1055,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	@Override
-	public List<SerialInfo> getSignerInformationStoreInfos() {
-		CAdESCertificateSource certificateSource = (CAdESCertificateSource) getCertificateSource();
-		return certificateSource.getIssuerSerialInfos();
+	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 
 	@Override

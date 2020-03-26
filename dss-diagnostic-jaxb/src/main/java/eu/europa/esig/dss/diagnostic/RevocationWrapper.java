@@ -39,8 +39,6 @@ public class RevocationWrapper extends AbstractTokenProxy {
 
 	private final XmlRevocation revocation;
 	
-	private FoundCertificatesProxy foundCertificatesProxy;
-
 	public RevocationWrapper(XmlRevocation revocation) {
 		Objects.requireNonNull(revocation, "XMLRevocation cannot be null!");
 		this.revocation = revocation;
@@ -71,11 +69,9 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return {@link FoundCertificatesProxy}
 	 */
+	@Override
 	public FoundCertificatesProxy foundCertificates() {
-		if (foundCertificatesProxy == null) {
-			foundCertificatesProxy = new FoundCertificatesProxy(revocation.getFoundCertificates());
-		}
-		return foundCertificatesProxy;
+		return new FoundCertificatesProxy(revocation.getFoundCertificates());
 	}
 
 	public Date getProductionDate() {

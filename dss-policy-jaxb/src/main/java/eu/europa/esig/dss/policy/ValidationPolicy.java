@@ -298,6 +298,12 @@ public interface ValidationPolicy {
 	LevelConstraint getSigningCertificateAttributePresentConstraint(Context context);
 
 	/**
+	 * @return {@code LevelConstraint} if UnicitySigningCertificate for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getUnicitySigningCertificateAttributeConstraint(Context context);
+
+	/**
 	 * @return {@code LevelConstraint} if DigestValuePresent for a given context element is present in the constraint
 	 *         file, null otherwise.
 	 */

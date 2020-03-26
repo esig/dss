@@ -122,11 +122,11 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
@@ -810,26 +810,26 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private List<XmlSignerInfo> getXmlSignerInformationStore(List<SerialInfo> serialInfos) {
-		if (Utils.isCollectionNotEmpty(serialInfos)) {
+	private List<XmlSignerInfo> getXmlSignerInformationStore(Set<CertificateIdentifier> certificateIdentifiers) {
+		if (Utils.isCollectionNotEmpty(certificateIdentifiers)) {
 			List<XmlSignerInfo> signerInfos = new ArrayList<>();
-			for (SerialInfo serialInfo : serialInfos) {
-				signerInfos.add(getXmlSignerInfo(serialInfo));
+			for (CertificateIdentifier certificateIdentifier : certificateIdentifiers) {
+				signerInfos.add(getXmlSignerInfo(certificateIdentifier));
 			}
 			return signerInfos;
 		}
 		return null;
 	}
 	
-	private XmlSignerInfo getXmlSignerInfo(SerialInfo serialInfo) {
+	private XmlSignerInfo getXmlSignerInfo(CertificateIdentifier certificateIdentifier) {
 		XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
-		if (serialInfo.getIssuerName() != null) {
-			xmlSignerInfo.setIssuerName(serialInfo.getIssuerName().toString());
+		if (certificateIdentifier.getIssuerName() != null) {
+			xmlSignerInfo.setIssuerName(certificateIdentifier.getIssuerName().toString());
 		}
-		xmlSignerInfo.setSerialNumber(serialInfo.getSerialNumber());
-		xmlSignerInfo.setSki(serialInfo.getSki());
-		if (serialInfo.isValidated()) {
-			xmlSignerInfo.setProcessed(serialInfo.isValidated());
+		xmlSignerInfo.setSerialNumber(certificateIdentifier.getSerialNumber());
+		xmlSignerInfo.setSki(certificateIdentifier.getSki());
+		if (certificateIdentifier.isCurrent()) {
+			xmlSignerInfo.setCurrent(certificateIdentifier.isCurrent());
 		}
 		return xmlSignerInfo;
 	}
@@ -1106,12 +1106,12 @@ public class DiagnosticDataBuilder {
 		return founds;
 	}
 	
-	private XmlSigningCertificate getXmlCertificateBySignerInfo(final SerialInfo serialInfo) {
+	private XmlSigningCertificate getXmlCertificateByCertificateIdentifier(final CertificateIdentifier certificateIdentifier) {
 		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-		final CertificateToken certificateBySignerInfo = getCertificateBySerialInfo(serialInfo);
-		if (certificateBySignerInfo != null) {
-			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateBySignerInfo.getDSSIdAsString()));
-		} else if (serialInfo != null) {
+		final CertificateToken certificateByCertificateIdentifier = getCertificateByCertificateIdentifier(certificateIdentifier);
+		if (certificateByCertificateIdentifier != null) {
+			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateByCertificateIdentifier.getDSSIdAsString()));
+		} else if (certificateIdentifier != null) {
 			// TODO: add info to xsd
 		} else {
 			return null;
@@ -1119,14 +1119,14 @@ public class DiagnosticDataBuilder {
 		return xmlSignCertType;
 	}
 
-	private CertificateToken getCertificateBySerialInfo(final SerialInfo serialInfo) {
-		if (serialInfo == null) {
+	private CertificateToken getCertificateByCertificateIdentifier(final CertificateIdentifier certificateIdentifier) {
+		if (certificateIdentifier == null) {
 			return null;
 		}
 
 		List<CertificateToken> founds = new ArrayList<>();
 		for (CertificateToken cert : usedCertificates) {
-			if (serialInfo.isRelatedToCertificate(cert)) {
+			if (certificateIdentifier.isRelatedToCertificate(cert)) {
 				founds.add(cert);
 				if (isTrusted(cert)) {
 					return cert;
@@ -1151,7 +1151,7 @@ public class DiagnosticDataBuilder {
 				xmlSignCertType = xmlSignCert;
 			}
 		} else if (certificateValidity.getSignerInfo() != null) {
-			XmlSigningCertificate xmlSignCertBySignInfo = getXmlCertificateBySignerInfo(certificateValidity.getSignerInfo());
+			XmlSigningCertificate xmlSignCertBySignInfo = getXmlCertificateByCertificateIdentifier(certificateValidity.getSignerInfo());
 			if (xmlSignCertBySignInfo != null) {
 				xmlSignCertType = xmlSignCertBySignInfo;
 			}
@@ -1263,7 +1263,7 @@ public class DiagnosticDataBuilder {
 		Map<String, XmlRelatedCertificate> relatedCertificatesMap = new HashMap<>();
 		
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.BASIC_OCSP_RESP, 
-				certificateSource.getBasicOCSPRespCertificates(), certificateSource);
+				certificateSource.getCertificates(), certificateSource);
 		
 		return new ArrayList<>(relatedCertificatesMap.values());
 	}
@@ -1297,16 +1297,16 @@ public class DiagnosticDataBuilder {
 	
 	private XmlCertificateRef getXmlCertificateRef(CertificateRef ref) {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
-		SerialInfo issuerInfo = ref.getIssuerInfo();
-		if (issuerInfo != null) {
-			certificateRef.setIssuerSerial(issuerInfo.getIssuerSerialEncoded());
+		CertificateIdentifier certificateIdentifier = ref.getCertificateIdentifier();
+		if (certificateIdentifier != null) {
+			certificateRef.setIssuerSerial(certificateIdentifier.getIssuerSerialEncoded());
 		}
 		Digest refDigest = ref.getCertDigest();
 		ResponderId responderId = ref.getResponderId();
 		if (refDigest != null) {
 			certificateRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
-		} else if (issuerInfo != null)  {
-			certificateRef.setSerialInfo(getXmlSignerInfo(issuerInfo));
+		} else if (certificateIdentifier != null)  {
+			certificateRef.setSerialInfo(getXmlSignerInfo(certificateIdentifier));
 		} else if (responderId != null) {
 			certificateRef.setSerialInfo(getXmlSignerInfo(responderId));
 		}
@@ -1329,8 +1329,8 @@ public class DiagnosticDataBuilder {
 		CertificateToken certificateToken = null;
 		if (certificateRef.getCertDigest() != null) {
 			certificateToken = getUsedCertificateByDigest(certificateRef.getCertDigest());
-		} else if (certificateRef.getIssuerInfo() != null) {
-			certificateToken = getUsedCertificateByIssuerInfo(certificateRef.getIssuerInfo());
+		} else if (certificateRef.getCertificateIdentifier() != null) {
+			certificateToken = getUsedCertificateByIssuerInfo(certificateRef.getCertificateIdentifier());
 		} else if (certificateRef.getResponderId() != null) {
 			certificateToken = getUsedCertificateByResponderId(certificateRef.getResponderId());
 		}
@@ -1346,7 +1346,7 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private CertificateToken getUsedCertificateByIssuerInfo(SerialInfo issuerInfo) {
+	private CertificateToken getUsedCertificateByIssuerInfo(CertificateIdentifier issuerInfo) {
 		for (CertificateToken certificateToken : usedCertificates) {
 			if (issuerInfo.isRelatedToCertificate(certificateToken)) {
                 return certificateToken;
@@ -1667,8 +1667,12 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setFoundCertificates(getXmlFoundCertificates(timestampToken.getCertificateSource()));
 		xmlTimestampToken.setFoundRevocations(getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
 
-		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken));
-		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken));
+		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken.getCandidatesForSigningCertificate();
+		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+		if (theCertificateValidity != null) {
+			xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(theCertificateValidity));
+			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity.getPublicKey()));
+		}
 
 		if (includeRawTimestampTokens) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());

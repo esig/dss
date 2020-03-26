@@ -36,7 +36,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -193,11 +193,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 							getXadesNamespace(), getCurrentXAdESElements().getElementResponderID());
 
 					final RespID respID = basicOcspResp.getResponderId();
-					final SerialInfo responderId = DSSRevocationUtils.getDSSResponderId(respID);
+					final ResponderId responderId = DSSRevocationUtils.getDSSResponderId(respID);
 					
-					if (responderId.getIssuerName() != null) {
+					if (responderId.getX500Principal() != null) {
 						DomUtils.addTextElement(documentDom, responderIDDom, getXadesNamespace(), 
-								getCurrentXAdESElements().getElementByName(), responderId.getIssuerName().toString());
+								getCurrentXAdESElements().getElementByName(), responderId.getX500Principal().toString());
 					} else {
 						final String base64EncodedKeyHashOctetStringBytes = Utils.toBase64(responderId.getSki());
 						DomUtils.addTextElement(documentDom, responderIDDom, getXadesNamespace(), 

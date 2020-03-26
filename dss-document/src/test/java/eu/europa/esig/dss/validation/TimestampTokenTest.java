@@ -93,12 +93,13 @@ public class TimestampTokenTest {
 			List<CertificateToken> certificates = certificateSource.getCertificates();
 			assertEquals(2, certificates.size());
 			List<CertificateToken> sigCertValues = certificateSource.getSigningCertificates();
-			assertEquals(1, sigCertValues.size());
-			CertificateToken sigCertValue = sigCertValues.get(0);
-			List<CertificateRef> refs = certificateSource.getSigningCertificateValues();
+			assertEquals(2, sigCertValues.size());
+			List<CertificateRef> refs = certificateSource.getSigningCertificateRefs();
 			assertEquals(2, refs.size());
 			for (CertificateRef certificateRef : refs) {
-				assertArrayEquals(sigCertValue.getDigest(certificateRef.getCertDigest().getAlgorithm()), certificateRef.getCertDigest().getValue());
+				for (CertificateToken sigCertValue : sigCertValues) {
+					assertArrayEquals(sigCertValue.getDigest(certificateRef.getCertDigest().getAlgorithm()), certificateRef.getCertDigest().getValue());
+				}
 			}
 			for (CertificateToken certificateToken : certificates) {
 				assertTrue(token.isSignedBy(certificateToken));

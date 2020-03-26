@@ -209,7 +209,7 @@
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
             <SignerInformationStore>
-                <SignerInfo Processed="true">
+                <SignerInfo Current="true">
                     <IssuerName>C=BE,CN=Belgium Root CA4</IssuerName>
                     <SerialNumber>4835703278459997027741053</SerialNumber>
                 </SignerInfo>

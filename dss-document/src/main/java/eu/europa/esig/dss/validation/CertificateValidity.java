@@ -25,7 +25,7 @@ import java.security.PublicKey;
 import java.util.Objects;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.SerialInfo;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 
 /**
  * This class stores the information about the validity of the signing certificate.
@@ -39,7 +39,7 @@ public class CertificateValidity implements Serializable {
 	 */
 	private PublicKey publicKey;
 	private CertificateToken certificateToken;
-	private SerialInfo signerInfo;
+	private CertificateIdentifier certificateIdentifier;
 	/* CMS Signer id */
 	private boolean signerIdMatch;
 	private boolean digestPresent;
@@ -73,15 +73,17 @@ public class CertificateValidity implements Serializable {
 	}
 	
 	/**
-	 * This constructor create an object containing all information concerning the validity of a candidate for the
-	 * signing certificate which is based only on the {@code SignerInfo}. To be used in case of a non AdES signature.
+	 * This constructor create an object containing all information concerning the
+	 * validity of a candidate for the signing certificate which is based only on
+	 * the {@code CertificateIdentifier}. To be used in case of a non AdES
+	 * signature.
 	 *
-	 * @param signerInfo
-	 *            the {@code SerialInfo} associated to the signing certificate
+	 * @param certificateIdentifier the {@code CertificateIdentifier} associated to
+	 *                              the signing certificate
 	 */
-	public CertificateValidity(final SerialInfo signerInfo) {
-		Objects.requireNonNull(signerInfo, "SignerInfo cannot be null!");
-		this.signerInfo = signerInfo;
+	public CertificateValidity(final CertificateIdentifier certificateIdentifier) {
+		Objects.requireNonNull(certificateIdentifier, "CertificateIdentifier cannot be null!");
+		this.certificateIdentifier = certificateIdentifier;
 	}
 
 	/**
@@ -96,19 +98,19 @@ public class CertificateValidity implements Serializable {
 	}
 	
 	/**
-	 * Returns the associated {@link SerialInfo}
+	 * Returns the associated {@link CertificateIdentifier}
 	 * NOTE: can return null
 	 * 
-	 * @return {@link SerialInfo}
+	 * @return {@link CertificateIdentifier}
 	 */
-	public SerialInfo getSignerInfo() {
+	public CertificateIdentifier getSignerInfo() {
 		if (certificateToken == null) {
-			return signerInfo;
+			return certificateIdentifier;
 		}
-		SerialInfo issuerSerialInfo = new SerialInfo();
-		issuerSerialInfo.setIssuerName(certificateToken.getIssuerX500Principal());
-		issuerSerialInfo.setSerialNumber(certificateToken.getSerialNumber());
-		return issuerSerialInfo;
+		CertificateIdentifier certificateIdentifierFromCert = new CertificateIdentifier();
+		certificateIdentifierFromCert.setIssuerName(certificateToken.getIssuerX500Principal());
+		certificateIdentifierFromCert.setSerialNumber(certificateToken.getSerialNumber());
+		return certificateIdentifierFromCert;
 	}
 
 	public CertificateToken getCertificateToken() {

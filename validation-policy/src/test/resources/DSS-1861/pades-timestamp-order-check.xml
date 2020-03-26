@@ -42,7 +42,7 @@
             </SignatureProductionPlace>
             <CommitmentTypeIndications/>
             <SignerInformationStore>
-               	<SignerInfo Processed="true">
+               	<SignerInfo Current="true">
                		<IssuerName>CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#2d32333538343439370c0e5641544855,O=Microsec Ltd.,L=Budapest,C=HU</IssuerName>
            			<SerialNumber>22264676765912719507090342209546</SerialNumber>
                	</SignerInfo>
