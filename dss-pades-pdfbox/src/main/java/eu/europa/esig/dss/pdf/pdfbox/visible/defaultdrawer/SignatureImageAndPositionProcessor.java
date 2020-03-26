@@ -41,8 +41,8 @@ public final class SignatureImageAndPositionProcessor {
 	private SignatureImageAndPositionProcessor() {
 	}
 
-    private static final String SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
-    private static final String SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
+    private static final String NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
+    private static final String NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
     public static SignatureImageAndPosition process(final SignatureImageParameters signatureImageParameters, 
     		final PDDocument doc, final ImageAndResolution ires) throws IOException {
@@ -67,7 +67,7 @@ public final class SignatureImageAndPositionProcessor {
 			}
 			ImageIO.write(visualImageSignature, imageType, visualImageSignatureOutputStream);
 
-			return new SignatureImageAndPosition(x, y, visualImageSignatureOutputStream.toByteArray());
+			return new SignatureImageAndPosition(x, y, visualImageSignatureOutputStream.toByteArray(), rotate);
 		}
     }
 
@@ -158,7 +158,7 @@ public final class SignatureImageAndPositionProcessor {
                 x = signatureImageParameters.getyAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
+                throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
         }
 
         return x;
@@ -181,7 +181,7 @@ public final class SignatureImageAndPositionProcessor {
                 x = signatureImageParameters.getxAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
+                throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
         }
 
         return x;
@@ -204,7 +204,7 @@ public final class SignatureImageAndPositionProcessor {
                 x = mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom()) - signatureImageParameters.getyAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
+                throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
         }
 
         return x;
@@ -227,7 +227,7 @@ public final class SignatureImageAndPositionProcessor {
                 x = mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom()) - signatureImageParameters.getxAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
+                throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
         }
 
         return x;
@@ -250,7 +250,7 @@ public final class SignatureImageAndPositionProcessor {
                 y = mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom()) - signatureImageParameters.getxAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
+                throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
         }
 
         return y;
@@ -273,7 +273,7 @@ public final class SignatureImageAndPositionProcessor {
                 y = signatureImageParameters.getyAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
+                throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
         }
 
         return y;
@@ -296,7 +296,7 @@ public final class SignatureImageAndPositionProcessor {
                 y = signatureImageParameters.getxAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
+                throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
         }
 
         return y;
@@ -319,7 +319,7 @@ public final class SignatureImageAndPositionProcessor {
                 y = mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom()) - signatureImageParameters.getyAxis();
                 break;
             default:
-                throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
+                throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
         }
 
         return y;

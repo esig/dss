@@ -21,24 +21,25 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextHorizontalAlignment;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.FontUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public class SignatureFieldDimensionAndPositionBuilder {
 
@@ -48,14 +49,16 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	private final SignatureImageParameters imageParameters;
 	private final PDPage page;
 	private final PDRectangle pageMediaBox;
+	private final PDFont pdFont;
 	
-    private static final String SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
-    private static final String SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
+    private static final String NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
+    private static final String NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 	
-    public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page) {
+    public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page, PDFont pdFont) {
 		this.imageParameters = imageParameters;
 		this.page = page;
-		this.pageMediaBox = page.getMediaBox();
+		this.pageMediaBox = new PDRectangle(page.getMediaBox().getWidth(), page.getMediaBox().getHeight());
+		this.pdFont = pdFont;
 	}
 	
 	public SignatureFieldDimensionAndPosition build() throws IOException {
@@ -78,10 +81,11 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				imageAndResolution = new ImageAndResolution(imageParameters.getImage(), imageParameters.getDpi(), imageParameters.getDpi());
 			}
 			dimensionAndPosition.setImageAndResolution(imageAndResolution);
+			dimensionAndPosition.setImageDpi(imageParameters.getDpi());
 		}
 	}
 	
-	private void assignImageBoxDimension() {
+	private void assignImageBoxDimension() throws IOException {
 		
 		Dimension imageAndDimension = ImageUtils.getImageDimension(imageParameters);
 		double imageWidth = imageAndDimension.getWidth();
@@ -97,7 +101,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// if text is present
-		if (textParameters != null) {
+		if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
 			
 			// adds an empty space
 			imageWidth = toDpiTextPoint(imageWidth, dimensionAndPosition.getxDpi());
@@ -105,10 +109,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			width = imageWidth;
 			height = imageHeight;
 			
-			DSSFont dssFont = textParameters.getFont();
 			// native implementation uses dpi-independent font
-			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
-			Dimension textBox = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
+			Dimension textBox = computeTextDimension(textParameters);
 			float textWidth = (float) textBox.getWidth() * CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi());
 			float textHeight = (float) textBox.getHeight() * CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi());
 			if (imageParameters.getImage() != null) {
@@ -151,8 +153,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 						imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 					}
 					dimensionAndPosition.setTextY(toDpiPagePoint(imageHeight, dimensionAndPosition.getyDpi()));
-					dimensionAndPosition.setTextX(toDpiPagePoint((width - textWidth)/2, dimensionAndPosition.getxDpi()));
-					dimensionAndPosition.setImageX((float)(width - imageWidth)/2);
+					textImageHorizontalAlignment(width, imageWidth, textWidth);
 					break;
 				case BOTTOM:
 					if (imageParameters.getWidth() == 0) {
@@ -164,8 +165,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 						imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 					}
 					dimensionAndPosition.setImageY((float)(height - imageHeight));
-					dimensionAndPosition.setTextX(toDpiPagePoint((float)(width - textWidth)/2, dimensionAndPosition.getxDpi()));
-					dimensionAndPosition.setImageX((float)(width - imageWidth)/2);
+					textImageHorizontalAlignment(width, imageWidth, textWidth);
 					break;
 				default:
 					break;
@@ -173,11 +173,21 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			
 			dimensionAndPosition.setTextWidth(toDpiPagePoint(textWidth, dimensionAndPosition.getxDpi()));
 			dimensionAndPosition.setTextHeight(toDpiPagePoint(textHeight, dimensionAndPosition.getyDpi()));
-			dimensionAndPosition.marginShift(textParameters.getPadding());
+			dimensionAndPosition.paddingShift(textParameters.getPadding());
 			
 			width = toDpiPagePoint(width, dimensionAndPosition.getxDpi());
 			height = toDpiPagePoint(height, dimensionAndPosition.getyDpi());
 		}
+
+		int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
+			double temp = width;
+			width = height;
+			height = temp;
+			pageMediaBox.setUpperRightX(page.getMediaBox().getHeight());
+			pageMediaBox.setUpperRightY(page.getMediaBox().getWidth());
+		}
+		dimensionAndPosition.setGlobalRotation(rotation);
 		
 		dimensionAndPosition.setImageWidth((float)imageWidth);
 		dimensionAndPosition.setImageHeight((float)imageHeight);
@@ -185,8 +195,30 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		dimensionAndPosition.setBoxHeight((float)height);
 	}
 	
+	private Dimension computeTextDimension(SignatureImageTextParameters textParameters) throws IOException {
+		float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), imageParameters.getDpi());
+		properSize *= ImageUtils.getScaleFactor(imageParameters.getZoom()); // scale text block
+		String[] lines = textParameters.getText().split("\\r?\\n");
+		float width = 0;
+		for (String line : lines) {
+			float lineWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, properSize, line);
+			if (lineWidth > width) {
+				width = lineWidth;
+			}
+		}
+		float doubleMargin = textParameters.getPadding()*2;
+		width += doubleMargin;
+		float strHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize);
+		float height = (strHeight * lines.length) + doubleMargin;
+		
+		Dimension dimension = new Dimension();
+		dimension.setSize(width, height);
+		return dimension;
+	}
+
 	private void textImageVerticalAlignment(double height, double imageHeight, float textHeight) {
-		switch (imageParameters.getTextParameters().getSignerTextVerticalAlignment()) {
+		SignerTextVerticalAlignment verticalAlignment = imageParameters.getTextParameters().getSignerTextVerticalAlignment();
+		switch (verticalAlignment) {
 			case TOP:
 				dimensionAndPosition.setTextY(toDpiPagePoint((height - textHeight), dimensionAndPosition.getyDpi()));
 				dimensionAndPosition.setImageY((float)(height - imageHeight));
@@ -196,15 +228,40 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				dimensionAndPosition.setImageY(0);
 				break;
 			case MIDDLE:
-			default:
 				dimensionAndPosition.setTextY(toDpiPagePoint((height - textHeight)/2, dimensionAndPosition.getyDpi()));
 				dimensionAndPosition.setImageY((float)(height - imageHeight)/2);
 				break;
+			default:
+				throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + verticalAlignment);
+		}
+	}
+	
+	private void textImageHorizontalAlignment(double width, double imageWidth, float textWidth) {
+		SignerTextHorizontalAlignment horizontalAlignment = imageParameters.getTextParameters().getSignerTextHorizontalAlignment();
+		switch (horizontalAlignment) {
+			case LEFT:
+				dimensionAndPosition.setTextX(0);
+				dimensionAndPosition.setImageX(0);
+				break;
+			case RIGHT:
+				dimensionAndPosition.setTextX(toDpiPagePoint((width - textWidth), dimensionAndPosition.getxDpi()));
+				dimensionAndPosition.setImageX((float)(width - imageWidth));
+				break;
+			case CENTER:
+				dimensionAndPosition.setTextX(toDpiPagePoint((width - textWidth)/2, dimensionAndPosition.getxDpi()));
+				dimensionAndPosition.setImageX((float)(width - imageWidth)/2);
+				break;
+			default:
+				throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + horizontalAlignment);
 		}
 	}
 	
 	private void alignHorizontally() {
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = imageParameters.getVisualSignatureAlignmentHorizontal();
+		float boxWidth = dimensionAndPosition.getBoxWidth();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+			boxWidth = dimensionAndPosition.getBoxHeight();
+		}
 		float boxX;
 		switch (alignmentHorizontal) {
 			case LEFT:
@@ -212,19 +269,23 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				boxX = imageParameters.getxAxis();
 				break;
 			case CENTER:
-				boxX = (pageMediaBox.getWidth() - dimensionAndPosition.getBoxWidth()) / 2;
+				boxX = (pageMediaBox.getWidth() - boxWidth) / 2;
 				break;
 			case RIGHT:
-				boxX = pageMediaBox.getWidth() - dimensionAndPosition.getBoxWidth() - imageParameters.getxAxis();
+				boxX = pageMediaBox.getWidth() - boxWidth - imageParameters.getxAxis();
 				break;
 			default:
-				throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
+				throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal);
 		}
 		dimensionAndPosition.setBoxX(boxX);
 	}
 	
 	private void alignVertically() {
 		VisualSignatureAlignmentVertical alignmentVertical = imageParameters.getVisualSignatureAlignmentVertical();
+		float boxHeight = dimensionAndPosition.getBoxHeight();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+			boxHeight = dimensionAndPosition.getBoxWidth();
+		}
 		float boxY;
 		switch (alignmentVertical) {
 		case TOP:
@@ -232,24 +293,22 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			boxY = imageParameters.getyAxis();
 			break;
 		case MIDDLE:
-			boxY = (pageMediaBox.getHeight() - dimensionAndPosition.getBoxHeight()) / 2;
+			boxY = (pageMediaBox.getHeight() - boxHeight) / 2;
 			break;
 		case BOTTOM:
-			boxY = pageMediaBox.getHeight() - dimensionAndPosition.getBoxHeight() - imageParameters.getyAxis();
+			boxY = pageMediaBox.getHeight() - boxHeight - imageParameters.getyAxis();
 			break;
 		default:
-			throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
+			throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical);
 		}
 		dimensionAndPosition.setBoxY(boxY);
 	}
 	
 	private void rotateSignatureField() {
-		int rotate = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
-		switch (rotate) {
+		switch (dimensionAndPosition.getGlobalRotation()) {
 			case ImageRotationUtils.ANGLE_90:
-				swapDimension();
 				float boxX = dimensionAndPosition.getBoxX();
-				dimensionAndPosition.setBoxX(pageMediaBox.getWidth() - dimensionAndPosition.getBoxY() -
+				dimensionAndPosition.setBoxX(pageMediaBox.getHeight() - dimensionAndPosition.getBoxY() -
 						dimensionAndPosition.getBoxWidth());
 				dimensionAndPosition.setBoxY(boxX);
 				break;
@@ -260,10 +319,9 @@ public class SignatureFieldDimensionAndPositionBuilder {
 						dimensionAndPosition.getBoxHeight());
 				break;
 			case ImageRotationUtils.ANGLE_270:
-				swapDimension();
 				boxX = dimensionAndPosition.getBoxX();
 				dimensionAndPosition.setBoxX(dimensionAndPosition.getBoxY());
-				dimensionAndPosition.setBoxY(pageMediaBox.getHeight() - boxX -
+				dimensionAndPosition.setBoxY(pageMediaBox.getWidth() - boxX -
 						dimensionAndPosition.getBoxHeight());
 				break;
 			case ImageRotationUtils.ANGLE_360:
@@ -272,12 +330,6 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			default:
 	            throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
 		}
-	}
-	
-	private void swapDimension() {
-		float temp = dimensionAndPosition.getBoxWidth();
-		dimensionAndPosition.setBoxWidth(dimensionAndPosition.getBoxHeight());
-		dimensionAndPosition.setBoxHeight(temp);
 	}
     
 	// decrease size

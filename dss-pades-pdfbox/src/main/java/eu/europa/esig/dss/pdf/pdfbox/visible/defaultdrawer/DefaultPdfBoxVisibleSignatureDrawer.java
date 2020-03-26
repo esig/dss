@@ -50,7 +50,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		
 		float width = parameters.getWidth();
 		float height = parameters.getHeight();
-		if (ImageRotationUtils.isSwapOfDimensionsRequired(parameters.getRotation())) {
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(signatureImageAndPosition.getGlobalRotation())) {
 			width = parameters.getHeight();
 			height = parameters.getWidth();
 		}
@@ -58,22 +58,20 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		if (width != 0) {
 			visibleSig.width(width);
 		} else if (parameters.getTextParameters() != null) {
-			visibleSig.width(CommonDrawerUtils.toDpiAxisPoint((float)visibleSig.getWidth(), CommonDrawerUtils.getDpi(parameters.getDpi())));
+			visibleSig.width(CommonDrawerUtils.toDpiAxisPoint(visibleSig.getWidth(), CommonDrawerUtils.getDpi(parameters.getDpi())));
 		} else {
 			visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
 		}
 		if (height != 0) {
 			visibleSig.height(height);
 		} else if (parameters.getTextParameters() != null) {
-			visibleSig.height(CommonDrawerUtils.toDpiAxisPoint((float)visibleSig.getHeight(), CommonDrawerUtils.getDpi(parameters.getDpi())));
+			visibleSig.height(CommonDrawerUtils.toDpiAxisPoint(visibleSig.getHeight(), CommonDrawerUtils.getDpi(parameters.getDpi())));
 		} else {
 			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
 		}
 
-		// zoom image only when it does not have text parameters, in other case does zoom inside DefaultDrawerImageUtils.create() method
-		if (parameters.getImage() == null || parameters.getTextParameters() == null) {
-			visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
-		}
+		// zoom image
+		visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
 		
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true);

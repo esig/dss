@@ -44,8 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -66,13 +66,22 @@ public class DefaultDrawerImageUtils {
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 		DSSDocument image = imageParameters.getImage();
 		
-		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
+		if (textParamaters != null && Utils.isStringNotEmpty(textParamaters.getText())) {
 			BufferedImage scaledImage = null;
+			ImageAndResolution imageAndResolution = null;
 			if (image != null) {
-				scaledImage = getDpiScaledImage(image, imageParameters);
+				imageAndResolution = ImageUtils.secureReadMetadata(imageParameters);
+				scaledImage = getDpiScaledImage(image, imageParameters, imageAndResolution);
 			}
 			
 			BufferedImage buffImg = ImageTextWriter.createTextImage(imageParameters);
+			if (scaledImage != null && (imageParameters.getWidth() != 0 || imageParameters.getHeight() != 0)) {
+				int textWidth = imageParameters.getWidth() == 0 ? buffImg.getWidth() : (int)(imageAndResolution.toXPoint(buffImg.getWidth()) *
+						CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi()));
+				int textHeight = imageParameters.getHeight() == 0 ? buffImg.getHeight() : (int)(imageAndResolution.toYPoint(buffImg.getHeight()) *
+						CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi()));
+				buffImg = sizeImage(buffImg, textWidth, textHeight);
+			}
 
 			if (scaledImage == null && buffImg != null) {
 				// reserve empty space if only text must be drawed
@@ -80,27 +89,23 @@ public class DefaultDrawerImageUtils {
 			}
 			
 			if (scaledImage != null) {
-				float zoomFactor = imageParameters.getScaleFactor();
-				if (zoomFactor != 1) {
-					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
-				}
 				SignerTextPosition signerNamePosition = textParamaters.getSignerTextPosition();
 				switch (signerNamePosition) {
 					case LEFT:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, false);
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, false);
 						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
 						break;
 					case RIGHT:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, false);
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, false);
 						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
 						break;
 					case TOP:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, true);
-						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, true);
+						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextHorizontalAlignment());
 						break;
 					case BOTTOM:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, true);
-						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, true);
+						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextHorizontalAlignment());
 						break;
 					default:
 						throw new DSSException(String.format("The SignerNamePosition [%s] is not supported!", signerNamePosition.name()));
@@ -149,16 +154,17 @@ public class DefaultDrawerImageUtils {
 	 * Returns a scaled {@link BufferedImage} based on its dpi parameters relatively to page dpi
 	 * @param image {@link DSSDocument} containing image to scale
 	 * @param imageParameters {@link SignatureImageParameters}
+	 * @param imageAndResolution {@link ImageAndResolution}
 	 * @return scaled {@link BufferedImage}
 	 * @throws IOException in case of error
 	 */
-	private static BufferedImage getDpiScaledImage(DSSDocument image, SignatureImageParameters imageParameters) throws IOException {
+	private static BufferedImage getDpiScaledImage(DSSDocument image, SignatureImageParameters imageParameters, 
+			ImageAndResolution imageAndResolution) throws IOException {
 		BufferedImage original = toBufferedImage(image);
 		if (original == null) {
 			return null;
 		}
 		try {
-			ImageAndResolution imageAndResolution = ImageUtils.secureReadMetadata(image, imageParameters);
 			float xScaleFactor = CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getxDpi());
 			xScaleFactor = CommonDrawerUtils.computeProperSize(xScaleFactor, CommonDrawerUtils.getDpi(imageParameters.getDpi()));
 			float yScaleFactor = CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getyDpi());
@@ -180,7 +186,7 @@ public class DefaultDrawerImageUtils {
 	}
 	
 	private static BufferedImage writeImageToSignatureField(BufferedImage image, BufferedImage textImage, 
-			SignatureImageParameters imageParameters, boolean verticalAlignment) {
+			SignatureImageParameters imageParameters, ImageAndResolution imageAndResolution, boolean verticalAlignment) {
 		if (image == null) {
 			return null;
 		} else if (textImage == null) {
@@ -190,18 +196,19 @@ public class DefaultDrawerImageUtils {
 		int imageWidth = imageParameters.getWidth() == 0 ? image.getWidth() : imageParameters.getWidth();
 		int imageHeight = imageParameters.getHeight() == 0 ? image.getHeight() : imageParameters.getHeight();
 		
-		int boxWidth = imageParameters.getWidth() == 0 ? imageWidth : (int)CommonDrawerUtils.computeProperSize(imageWidth, CommonDrawerUtils.getTextDpi());
-		int boxHeight = imageParameters.getHeight() == 0 ? imageHeight : (int)CommonDrawerUtils.computeProperSize(imageHeight, CommonDrawerUtils.getTextDpi());
-		
 		if (imageParameters.getWidth() != 0) {
+			int boxWidth = (int)CommonDrawerUtils.computeProperSize(imageWidth, CommonDrawerUtils.getTextDpi());
+			if (imageAndResolution != null) {
+				boxWidth *= CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getxDpi());
+			}
 			imageWidth = verticalAlignment ? boxWidth : boxWidth - textImage.getWidth();
-		} else {
-			imageWidth = boxWidth;
 		}
 		if (imageParameters.getHeight() != 0) {
-			imageHeight = (int)(verticalAlignment ? boxHeight - textImage.getHeight() : boxHeight);
-		} else {
-			imageHeight = boxHeight;
+			int boxHeight = (int)CommonDrawerUtils.computeProperSize(imageHeight, CommonDrawerUtils.getTextDpi());
+			if (imageAndResolution != null) {
+				boxHeight *= CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getyDpi());
+			}
+			imageHeight = verticalAlignment ? boxHeight - textImage.getHeight() : boxHeight;
 		}
 		
 		if (imageWidth < 1 || imageHeight < 1) {
@@ -227,13 +234,15 @@ public class DefaultDrawerImageUtils {
 	private static BufferedImage zoomImage(BufferedImage original, float xScaleFactor, float yScaleFactor) {
 		int newWidth = (int) (original.getWidth() * xScaleFactor);
 		int newHeight = (int) (original.getHeight() * yScaleFactor);
-		
+		return sizeImage(original, newWidth, newHeight);
+	}
+	
+	private static BufferedImage sizeImage(BufferedImage original, int newWidth, int newHeight) {
 		BufferedImage resized = new BufferedImage(newWidth, newHeight, original.getType());
 		Graphics2D gr = resized.createGraphics();
 		gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		gr.drawImage(original, 0, 0, newWidth, newHeight, 0, 0, original.getWidth(), original.getHeight(), null);
 		gr.dispose();
-		
 		return resized;
 	}
 

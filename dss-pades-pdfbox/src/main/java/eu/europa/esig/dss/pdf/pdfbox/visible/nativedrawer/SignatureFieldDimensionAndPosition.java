@@ -42,6 +42,10 @@ public class SignatureFieldDimensionAndPosition {
 	
 	private ImageAndResolution imageAndResolution;
 	
+	private int imageDpi;
+	
+	private int globalRotation;
+
 	private static final int DEFAULT_DPI = 72;
 	private static final int DEFAULT_TEXT_DPI = 300;
 	
@@ -144,6 +148,18 @@ public class SignatureFieldDimensionAndPosition {
 	public void setImageAndResolution(ImageAndResolution imageAndResolution) {
 		this.imageAndResolution = imageAndResolution;
 	}
+
+	public void setImageDpi(int imageDpi) {
+		this.imageDpi = imageDpi;
+	}
+	
+	public int getGlobalRotation() {
+		return globalRotation;
+	}
+
+	public void setGlobalRotation(int globalRotation) {
+		this.globalRotation = globalRotation;
+	}
 	
 	public int getxDpi() {
 		if (imageAndResolution != null) {
@@ -169,9 +185,12 @@ public class SignatureFieldDimensionAndPosition {
 		return (float) DEFAULT_DPI / getyDpi();
 	}
 	
-	public void marginShift(float margin) {
-		this.textX += CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getTextScaleFactor(getxDpi()), getxDpi());
-		this.textY -= CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getTextScaleFactor(getyDpi()), getyDpi()); // because PDF starts to count from bottom
+	public void paddingShift(float padding) {
+		this.textX += CommonDrawerUtils.toDpiAxisPoint(padding / CommonDrawerUtils.getTextScaleFactor(getxDpi()), getxDpi()) * 
+				CommonDrawerUtils.getTextScaleFactor(imageDpi);
+		// minus, because PDF starts to count from bottom
+		this.textY -= CommonDrawerUtils.toDpiAxisPoint(padding / CommonDrawerUtils.getTextScaleFactor(getyDpi()), getyDpi()) * 
+				CommonDrawerUtils.getTextScaleFactor(imageDpi);
 	}
 	
 }

@@ -22,40 +22,32 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 public class SignatureImageAndPosition {
 
-    private float x;
-    private float y;
-	private byte[] signatureImage;
-
-    public SignatureImageAndPosition() {
-    }
-
-    public SignatureImageAndPosition(float x, float y, byte[] signatureImage) {
+    private final float x;
+    private final float y;
+	private final byte[] signatureImage;
+	private final int globalRotation;
+	
+	public SignatureImageAndPosition(final float x, final float y, final byte[] signatureImage, final int globalRotation) {
         this.x = x;
         this.y = y;
         this.signatureImage = signatureImage;
+        this.globalRotation = globalRotation;
     }
 
     public float getX() {
         return x;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
     public float getY() {
         return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
     }
 
     public byte[] getSignatureImage() {
         return signatureImage;
     }
 
-    public void setSignatureImage(byte[] signatureImage) {
-        this.signatureImage = signatureImage;
-    }
+    public int getGlobalRotation() {
+		return globalRotation;
+	}
+    
 }
