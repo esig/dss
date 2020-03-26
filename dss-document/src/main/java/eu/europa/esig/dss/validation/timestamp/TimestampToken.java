@@ -66,6 +66,8 @@ import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CMSCertificateSource;
+import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -140,6 +142,9 @@ public class TimestampToken extends Token {
 	 * unambiguously identify a timestamp.
 	 */
 	private int hashCode;
+
+	/* cached */
+	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 	
 	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
 		this(binaries, type, new CertificatePool());
@@ -689,12 +694,16 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Returns used CertificateIdentifier of the signing certificate
+	 * Returns an object with signing candidates
 	 * 
-	 * @return {@link CertificateIdentifier}
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
-	public CertificateIdentifier getCurrentCertificateIdentifier() {
-		return getCertificateSource().getCurrentCertificateIdentifier();
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
+		if (candidatesForSigningCertificate == null) {
+			candidatesForSigningCertificate = ((CMSCertificateSource) getCertificateSource())
+					.getCandidatesForSigningCertificate(null);
+		}
+		return candidatesForSigningCertificate;
 	}
 
 	/**

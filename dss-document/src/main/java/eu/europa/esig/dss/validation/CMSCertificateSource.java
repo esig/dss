@@ -261,9 +261,9 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		}
 
 		List<CertificateRef> signingCertRefs = getSigningCertificateRefs();
-		boolean onlyOneSigningCert = Utils.collectionSize(signingCertRefs) == 1;
-		certificateValidity.setAttributePresent(onlyOneSigningCert);
-		if (onlyOneSigningCert) {
+		certificateValidity.setAttributePresent(Utils.collectionSize(signingCertRefs) == 1);
+		if (Utils.isCollectionNotEmpty(signingCertRefs)) {
+			// first one
 			CertificateRef signingCertRef = signingCertRefs.iterator().next();
 			CertificateIdentifier sigCertIdentifier = signingCertRef.getCertificateIdentifier();
 			Digest certDigest = signingCertRef.getCertDigest();

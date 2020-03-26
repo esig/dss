@@ -1667,8 +1667,12 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setFoundCertificates(getXmlFoundCertificates(timestampToken.getCertificateSource()));
 		xmlTimestampToken.setFoundRevocations(getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
 
-		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken));
-		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken));
+		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken.getCandidatesForSigningCertificate();
+		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+		if (theCertificateValidity != null) {
+			xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(theCertificateValidity));
+			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity.getPublicKey()));
+		}
 
 		if (includeRawTimestampTokens) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());

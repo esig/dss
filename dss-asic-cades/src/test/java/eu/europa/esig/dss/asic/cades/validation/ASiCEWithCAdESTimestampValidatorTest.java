@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -47,6 +48,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -102,16 +104,8 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		asiceWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
 		
 		Reports reports = asiceWithCAdESTimestampValidator.validateDocument();
-
 		assertNotNull(reports);
-		assertNotNull(reports.getDiagnosticDataJaxb());
-		assertNotNull(reports.getXmlDiagnosticData());
-		assertNotNull(reports.getDetailedReportJaxb());
-		assertNotNull(reports.getXmlDetailedReport());
-		assertNotNull(reports.getSimpleReportJaxb());
-		assertNotNull(reports.getXmlSimpleReport());
-		assertNotNull(reports.getEtsiValidationReportJaxb());
-		
+		UnmarshallingTester.unmarshallXmlReports(reports);
 		DetailedReport detailedReport = reports.getDetailedReport();
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(1, timestampIds.size());
@@ -124,7 +118,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		assertEquals(Indication.PASSED, timestampBBB.getConclusion().getIndication());
 		
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getErrors()));
-		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getWarnings()));
+		assertFalse(Utils.isCollectionEmpty(timestampBBB.getConclusion().getWarnings()));
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getInfos()));
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
@@ -136,7 +130,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		assertNotNull(simpleReport.getProductionTime(timestampId));
 		assertNotNull(simpleReport.getValidationTime());
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(timestampId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getInfo(timestampId)));
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
