@@ -171,6 +171,15 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return true;
 	}
 
+	protected CertificateToken getCertificateToken(CertificateIdentifier certificateIdentifier) {
+		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
+			if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+				return certificateToken;
+			}
+		}
+		return null;
+	}
+
 	protected List<CertificateToken> getCertificateTokensByOrigin(CertificateOrigin origin) {
 		List<CertificateToken> result = new ArrayList<>();
 		for (Entry<CertificateToken, List<CertificateOrigin>> entry : certificateOrigins.entrySet()) {

@@ -444,7 +444,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public void checkSigningCertificate() {
 
 		final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-		final List<CertificateRef> potentialSigningCertificates = getCertificateSource().getSigningCertificateValues();
+		final List<CertificateRef> potentialSigningCertificates = getCertificateSource().getSigningCertificateRefs();
 		
 		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
 			// must contain only one reference

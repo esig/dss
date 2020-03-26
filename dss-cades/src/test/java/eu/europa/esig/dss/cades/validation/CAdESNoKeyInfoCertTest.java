@@ -67,7 +67,7 @@ public class CAdESNoKeyInfoCertTest {
 		assertTrue(signature.isAttributePresent());
 		assertTrue(signature.isDigestValuePresent());
 		assertFalse(signature.isDigestValueMatch());
-		assertFalse(signature.isIssuerSerialMatch());
+		assertTrue(signature.isIssuerSerialMatch());
 		
 		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
 		assertTrue(Utils.isCollectionEmpty(certificateChain));
@@ -120,6 +120,8 @@ public class CAdESNoKeyInfoCertTest {
 		commonCertificateVerifier.setTrustedCertSource(trustedCertSource);
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
+		validator.defineSigningCertificate(signingCertificateToken);
+
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 		// reports.print();

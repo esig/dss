@@ -119,7 +119,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * 
 	 * @return the list of references to the signing certificate
 	 */
-	public List<CertificateRef> getSigningCertificateValues() {
+	public List<CertificateRef> getSigningCertificateRefs() {
 		return getCertificateRefsByOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 	}
 
@@ -152,7 +152,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * @return list of {@link CertificateToken}s
 	 */
 	public List<CertificateToken> getSigningCertificates() {
-		return findTokensFromRefs(getSigningCertificateValues());
+		return findTokensFromRefs(getSigningCertificateRefs());
 	}
 	
 	/**

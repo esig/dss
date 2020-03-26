@@ -94,7 +94,7 @@ public class TimestampTokenTest {
 			assertEquals(2, certificates.size());
 			List<CertificateToken> sigCertValues = certificateSource.getSigningCertificates();
 			assertEquals(2, sigCertValues.size());
-			List<CertificateRef> refs = certificateSource.getSigningCertificateValues();
+			List<CertificateRef> refs = certificateSource.getSigningCertificateRefs();
 			assertEquals(2, refs.size());
 			for (CertificateRef certificateRef : refs) {
 				for (CertificateToken sigCertValue : sigCertValues) {

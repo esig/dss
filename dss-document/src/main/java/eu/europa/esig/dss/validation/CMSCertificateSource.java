@@ -26,7 +26,9 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certifi
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -51,6 +53,7 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
@@ -239,5 +242,56 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			}
 		}
 	}
-	
+
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+		CandidatesForSigningCertificate candidates = new CandidatesForSigningCertificate();
+
+		CertificateIdentifier currentCertificateIdentifier = getCurrentCertificateIdentifier();
+		CertificateToken certificate = getCertificateToken(currentCertificateIdentifier);
+		if (certificate == null && providedSigningCertificateToken != null) {
+			LOG.info("Use the provided signing certificate");
+			certificate = providedSigningCertificateToken;
+		}
+
+		CertificateValidity certificateValidity = null;
+		if (certificate != null) {
+			certificateValidity = new CertificateValidity(certificate);
+		} else {
+			certificateValidity = new CertificateValidity(currentCertificateIdentifier);
+		}
+
+		List<CertificateRef> signingCertRefs = getSigningCertificateRefs();
+		boolean onlyOneSigningCert = Utils.collectionSize(signingCertRefs) == 1;
+		certificateValidity.setAttributePresent(onlyOneSigningCert);
+		if (onlyOneSigningCert) {
+			CertificateRef signingCertRef = signingCertRefs.iterator().next();
+			CertificateIdentifier sigCertIdentifier = signingCertRef.getCertificateIdentifier();
+			Digest certDigest = signingCertRef.getCertDigest();
+			certificateValidity.setDigestPresent(certDigest != null);
+
+			if (certificate != null) {
+				byte[] certificateDigest = certificate.getDigest(certDigest.getAlgorithm());
+				certificateValidity.setDigestEqual(Arrays.equals(certificateDigest, certDigest.getValue()));
+			}
+
+			if (sigCertIdentifier != null) {
+				if (certificate != null) {
+					certificateValidity.setSerialNumberEqual(certificate.getSerialNumber().equals(sigCertIdentifier.getSerialNumber()));
+					certificateValidity.setDistinguishedNameEqual(
+							DSSASN1Utils.x500PrincipalAreEquals(certificate.getIssuerX500Principal(), sigCertIdentifier.getIssuerName()));
+				} else {
+					certificateValidity.setSerialNumberEqual(currentCertificateIdentifier.getSerialNumber().equals(sigCertIdentifier.getSerialNumber()));
+					certificateValidity.setDistinguishedNameEqual(
+							DSSASN1Utils.x500PrincipalAreEquals(currentCertificateIdentifier.getIssuerName(), sigCertIdentifier.getIssuerName()));
+				}
+				certificateValidity.setSignerIdMatch(currentCertificateIdentifier.isEquivalent(sigCertIdentifier));
+			}
+		}
+
+		candidates.add(certificateValidity);
+		candidates.setTheCertificateValidity(certificateValidity);
+
+		return candidates;
+	}
+
 }
