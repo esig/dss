@@ -35,7 +35,7 @@ public class CAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void bLevelTest() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades-detached.pkcs7");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss-2011/cades-detached.pkcs7");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
@@ -68,7 +68,7 @@ public class CAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void ltaLevelTest() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades-lta-detached.pkcs7");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss-2011/cades-lta-detached.pkcs7");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
@@ -123,7 +123,7 @@ public class CAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void contentTstTest() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades-content-tst.pkcs7");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss-2011/cades-content-tst.pkcs7");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		

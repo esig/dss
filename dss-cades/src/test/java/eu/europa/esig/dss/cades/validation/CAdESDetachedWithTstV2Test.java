@@ -37,7 +37,7 @@ public class CAdESDetachedWithTstV2Test extends PKIFactoryAccess {
 	@Test
 	public void test() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades-tstv2-detached.p7s");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss-2011/cades-tstv2-detached.p7s");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setDetachedContents(Collections.singletonList(detached));
@@ -73,7 +73,7 @@ public class CAdESDetachedWithTstV2Test extends PKIFactoryAccess {
 	@Test
 	public void noDetachedProvidedtest() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades-tstv2-detached.p7s");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss-2011/cades-tstv2-detached.p7s");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
@@ -108,7 +108,7 @@ public class CAdESDetachedWithTstV2Test extends PKIFactoryAccess {
 	@Test
 	public void digestDocumentProvidedtest() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades-tstv2-detached.p7s");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss-2011/cades-tstv2-detached.p7s");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		

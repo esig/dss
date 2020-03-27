@@ -33,7 +33,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void bLevelTest() {
 		
-		DSSDocument document = new FileDocument("src/test/resources/validation/xades-detached.xml");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
@@ -66,7 +66,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void ltaLevelTest() {
 
-		DSSDocument document = new FileDocument("src/test/resources/validation/xades-lta-detached.xml");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-lta-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
@@ -121,7 +121,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void individualContentTstTest() {
 
-		DSSDocument document = new FileDocument("src/test/resources/validation/xades-individual-content-tst-detached.xml");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-individual-content-tst-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
@@ -171,7 +171,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	@Test
 	public void allDataContentTstTest() {
 
-		DSSDocument document = new FileDocument("src/test/resources/validation/xades-alldata-tst-detached.xml");
+		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-alldata-tst-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		// only one detached file is provided
