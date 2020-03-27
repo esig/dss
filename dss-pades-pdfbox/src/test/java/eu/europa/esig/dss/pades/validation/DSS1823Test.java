@@ -26,19 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -49,17 +44,13 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
@@ -242,35 +233,4 @@ public class DSS1823Test extends PKIFactoryAccess {
 		return null;
 	}
 
-	private ExternalResourcesCRLSource calculateCRLs(PdfDssDict dssDictionary) {
-		ExternalResourcesCRLSource externalResources = null;
-		Map<Long, CRLBinary> CRLs = dssDictionary.getCRLs();
-		InputStream[] streams = new InputStream[3];
-		int i = 0;
-		for (Map.Entry<Long, CRLBinary> crl : CRLs.entrySet()) {
-			CRLBinary value = crl.getValue();
-			streams[i] = new ByteArrayInputStream(value.getBinaries());
-			i++;
-		}
-
-		externalResources = new ExternalResourcesCRLSource(streams);
-
-		return externalResources;
-	}
-
-	private ExternalResourcesOCSPSource calculateOCSPs(PdfDssDict dssDictionary) throws IOException {
-		ExternalResourcesOCSPSource externalResources = null;
-		Map<Long, BasicOCSPResp> OCSPs = dssDictionary.getOCSPs();
-		InputStream[] streams = new InputStream[1];
-		int i = 0;
-		for (Map.Entry<Long, BasicOCSPResp> ocsp : OCSPs.entrySet()) {
-			BasicOCSPResp value = ocsp.getValue();
-			streams[i] = new ByteArrayInputStream(DSSRevocationUtils.getEncodedFromBasicResp(value));
-			i++;
-		}
-
-		externalResources = new ExternalResourcesOCSPSource(streams);
-
-		return externalResources;
-	}
 }

@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-
 public class NativePdfBoxDrawerUtils {
 	
 	/**

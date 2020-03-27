@@ -32,13 +32,6 @@
 			</roles>
 		</developer>
 		<developer>
-			<id>abinet</id>
-			<name>Axel Abinet</name>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-		<developer>
 			<id>beliakov</id>
 			<name>Aleksandr Beliakov</name>
 			<roles>
@@ -70,7 +63,6 @@
 
 		<junit.platform.version>1.6.1</junit.platform.version>
 		<junit.jupiter.version>5.6.1</junit.jupiter.version>
-		<junit.vintage.version>5.6.1</junit.vintage.version>
 		
 		<mockito.version>3.2.4</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
@@ -330,7 +322,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0-M2</version>
+				<version>3.0.0-M3</version>
+<!-- 			    <dependencies> -->
+<!-- 			        <dependency> -->
+<!-- 			            <groupId>de.skuzzle.enforcer</groupId> -->
+<!-- 			            <artifactId>restrict-imports-enforcer-rule</artifactId> -->
+<!-- 			            <version>1.1.0</version> -->
+<!-- 			        </dependency> -->
+<!-- 			    </dependencies> -->
 				<executions>
 					<execution>
 						<id>enforce</id>
@@ -352,6 +351,13 @@
 										<exclude>xalan:xalan</exclude>
 									</excludes>
 								</bannedDependencies>
+<!-- 						        <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports"> -->
+<!-- 									<includeTestCode>true</includeTestCode> -->
+<!-- 									<reason>Use JUnit5 for assertions</reason> -->
+<!-- 		                            <bannedImports> -->
+<!-- 		                                <bannedImport>static org.junit.Assert.*</bannedImport> -->
+<!-- 		                            </bannedImports> -->
+<!-- 								</restrictImports> -->
 							</rules>
 						</configuration>
 					</execution>
@@ -933,12 +939,6 @@
 			    <artifactId>junit-jupiter-api</artifactId>
 			    <version>${junit.jupiter.version}</version>
 			</dependency>	
-			<!-- JUnit 4 compatibility -->
-			<dependency>
-			    <groupId>org.junit.vintage</groupId>
-			    <artifactId>junit-vintage-engine</artifactId>
-			    <version>${junit.vintage.version}</version>
-			</dependency>
 			<!-- JUnit Test Suite compatibility -->
 			<dependency>
 			    <groupId>org.junit.platform</groupId>
