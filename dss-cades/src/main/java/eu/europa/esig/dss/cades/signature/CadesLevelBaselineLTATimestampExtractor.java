@@ -476,11 +476,11 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		 */
 		final byte[] dataToTimestamp = DSSUtils.concatenate(encodedContentType, signedDataDigest, encodedFields, encodedAtsHashIndex);
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("eContentType={}", Utils.toHex(encodedContentType));
-			LOG.debug("signedDataDigest={}", Utils.toHex(signedDataDigest));
+			LOG.debug("eContentType={}", encodedContentType != null ? Utils.toHex(encodedContentType) : encodedContentType);
+			LOG.debug("signedDataDigest={}", signedDataDigest != null ? Utils.toHex(signedDataDigest) : signedDataDigest);
 			LOG.debug("encodedFields=see above");
-			LOG.debug("encodedAtsHashIndex={}", Utils.toHex(encodedAtsHashIndex));
-			// LOG.debug("Archive Timestamp Data v3 is: {}", Hex.encodeHexString(dataToTimestamp));
+			LOG.debug("encodedAtsHashIndex={}", encodedAtsHashIndex != null ? Utils.toHex(encodedAtsHashIndex) : encodedAtsHashIndex);
+			LOG.debug("Archive Timestamp Data v3 is: {}", dataToTimestamp != null ? Utils.toHex(dataToTimestamp) : dataToTimestamp);
 		}
 		return dataToTimestamp;
 	}

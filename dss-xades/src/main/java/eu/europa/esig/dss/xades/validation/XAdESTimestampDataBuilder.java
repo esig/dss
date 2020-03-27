@@ -254,8 +254,14 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	
 	@Override
 	public DSSDocument getArchiveTimestampData(final TimestampToken timestampToken) {
-		byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
-		return new InMemoryDocument(archiveTimestampData);
+		// timestamp validation
+		try {
+			byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
+			return new InMemoryDocument(archiveTimestampData);
+		} catch (DSSException e) {
+			LOG.error("Unable to get data for TimestampToken with Id '{}'. Reason : {}", timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			return null;
+		}
 	}
 	
 	/**
@@ -264,6 +270,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * @return timestamp data
 	 */
 	public byte[] getArchiveTimestampData(final String canonicalizationMethod) {
+		// timestamp creation
 		return getArchiveTimestampData(null, canonicalizationMethod);
 	}
 
@@ -354,8 +361,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			return bytes;
 			
-		} catch (IOException e) {
-			throw new DSSException("Error when computing the archive data", e);
+		} catch (Exception e) {
+			throw new DSSException(String.format("An error occurred while building a message imprint data. Reason : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -365,10 +372,10 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			if (referencedBytes != null) {
 				buffer.write(referencedBytes);
 			} else {
-				LOG.warn("No binaries found for URI '{}'", reference.getURI());
+				throw new DSSException(String.format("No binaries found for URI '%s'", reference.getURI()));
 			}
 		} catch (XMLSecurityException e) {
-			LOG.warn("Unable to retrieve content for URI '{}' : {}", reference.getURI(), e.getMessage());
+			throw new DSSException(String.format("Unable to retrieve content for URI '%s' : %s", reference.getURI(), e.getMessage()), e);
 		}
 	}
 

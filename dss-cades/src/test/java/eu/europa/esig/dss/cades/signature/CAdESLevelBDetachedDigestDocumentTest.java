@@ -71,7 +71,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		reports = validateWrong(signedDoc);
 		validateHashOnly(reports, false, false);
 
-		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
+		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams(completeDocument));
 		reports = validate(extendDocument, completeDocument);
 		validateHashOnly(reports, false, false);
 	}
@@ -93,7 +93,8 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		reports = validateWrong(signedDoc);
 		validateHashOnly(reports, false, false);
 
-		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
+		// Possible to extend because CAdES Archive TST v3 requires only digest of the detached document
+		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams(digestDocument));
 		reports = validate(extendDocument, digestDocument);
 		validateHashOnly(reports, true, false);
 	}
@@ -152,10 +153,10 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		return signatureParameters;
 	}
 
-	private CAdESSignatureParameters getExtendParams() {
+	private CAdESSignatureParameters getExtendParams(DSSDocument detachedContext) {
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		signatureParameters.setDetachedContents(Arrays.asList(getDigestDocument()));
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		signatureParameters.setDetachedContents(Arrays.asList(detachedContext));
 		return signatureParameters;
 	}
 

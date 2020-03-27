@@ -158,6 +158,10 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 */
 			archiveTimestampData = getArchiveTimestampDataV2(timestampToken, true);
 			if (!timestampToken.matchData(archiveTimestampData, true)) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Unable to match message imprint for an Archive TimestampToken V2 with Id '{}' "
+							+ "by including unsigned attribute tags and length, try to compute the data without...", timestampToken.getDSSIdAsString());
+				}
 				archiveTimestampData = getArchiveTimestampDataV2(timestampToken, false);
 			}
 			break;
@@ -176,14 +180,22 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 
         final DigestAlgorithm messageImprintDigestAlgorithm = timestampToken.getMessageImprint().getAlgorithm();
         byte[] originalDocumentDigest = getOriginalDocumentDigest(messageImprintDigestAlgorithm);
-        byte[] archiveTimestampDataV3 = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
-        
-        return new InMemoryDocument(archiveTimestampDataV3);
+        if (originalDocumentDigest != null) {
+            byte[] archiveTimestampDataV3 = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
+            return new InMemoryDocument(archiveTimestampDataV3);
+        }
+		LOG.error("The original document is not found for TimestampToken with Id '{}'! "
+				+ "Unable to compute message imprint.", timestampToken.getDSSIdAsString());
+        return null;
 	}
 	
 	private byte[] getOriginalDocumentDigest(DigestAlgorithm algo) {
 		DSSDocument originalDocument = getOriginalDocument();
-		return Utils.fromBase64(originalDocument.getDigest(algo));
+		if (originalDocument != null) {
+			return Utils.fromBase64(originalDocument.getDigest(algo));
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -220,6 +232,11 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			
 			if (CMSUtils.isDetachedSignature(cmsSignedData)) {
 				byte[] originalDocumentBinaries = getOriginalDocumentBinaries();
+				if (originalDocumentBinaries == null) {
+					LOG.warn("The detached content is not provided for a TimestampToken with Id '{}'. "
+							+ "Not possible to compute message imprint!", timestampToken.getDSSIdAsString());
+					return null;
+				}
 				data.write(originalDocumentBinaries);
 			}
 			
@@ -243,7 +260,8 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			throw new DSSException(e);
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
-			LOG.warn("When error in computing or in format the algorithm just continue...", e);
+			LOG.error("An error in computing of message impring for a TimestampToken with Id : {}. Reason : {}", 
+					timestampToken.getDSSIdAsString(), e.getMessage(), e);
 			return null;
 		}
 	}
@@ -267,12 +285,11 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 		 * Detached signatures have either no encapContentInfo in signedData, or it
 		 * exists but has no eContent
 		 */
-		byte[] originalDocumentBinaries = DSSUtils.toByteArray(getOriginalDocument());
-		if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
-			return originalDocumentBinaries;
-		} else {
-			throw new DSSException("Signature is detached and no original data provided.");
+		DSSDocument originalDocument = getOriginalDocument();
+		if (originalDocument != null) {
+			return DSSUtils.toByteArray(getOriginalDocument());
 		}
+		return null;
 	}
 	
 	private byte[] getCertificateDataBytes(final SignedData signedData) throws IOException {
@@ -419,7 +436,12 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private DSSDocument getOriginalDocument() {
-		return CMSUtils.getOriginalDocument(cmsSignedData, detachedDocuments);
+		try {
+			return CMSUtils.getOriginalDocument(cmsSignedData, detachedDocuments);
+		} catch (DSSException e) {
+			LOG.error("Cannot extract original document! Reason : {}", e.getMessage());
+			return null;
+		}
 	}
 
 }
