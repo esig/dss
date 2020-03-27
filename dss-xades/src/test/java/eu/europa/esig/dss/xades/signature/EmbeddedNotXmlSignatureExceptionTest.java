@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ public class EmbeddedNotXmlSignatureExceptionTest extends AbstractXAdESTestSigna
 
 	@Override
 	@Test
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> {
 			super.signAndVerify(); // enveloping signature with embedded content only allow XML
 		});

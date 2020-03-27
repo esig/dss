@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.ParserConfigurationException;
@@ -146,7 +145,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected abstract boolean isBaselineLTA();
 
 	@Test
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
 
 		assertNotNull(signedDocument.getName());
@@ -188,7 +187,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		verifyETSIValidationReport(etsiValidationReportJaxb);
 
-		getOriginalDocument(signedDocument, diagnosticData);
+		try {
+			getOriginalDocument(signedDocument, diagnosticData);
+		} catch (IOException e) {
+			fail("Unable to retrieve the original document", e);
+		}
 
 		UnmarshallingTester.unmarshallXmlReports(reports);
 

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -55,12 +55,13 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentMultipleArchivesLevelLTTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
-	
+public class OpenDocumentMultipleArchivesLevelLTTest
+		extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
+
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign = new ArrayList<>();
-	
+
 	@BeforeEach
 	public void init() throws Exception {
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.odt")));
@@ -76,6 +77,7 @@ public class OpenDocumentMultipleArchivesLevelLTTest extends AbstractPkiFactoryT
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
+
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);

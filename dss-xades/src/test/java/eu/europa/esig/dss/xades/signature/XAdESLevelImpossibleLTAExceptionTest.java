@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,7 @@ public class XAdESLevelImpossibleLTAExceptionTest extends AbstractXAdESTestSigna
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	public void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -59,7 +58,7 @@ public class XAdESLevelImpossibleLTAExceptionTest extends AbstractXAdESTestSigna
 
 	@Override
 	@Test
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> {
 			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
 		});

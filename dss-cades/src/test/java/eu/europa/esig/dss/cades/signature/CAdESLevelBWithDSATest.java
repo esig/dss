@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -40,7 +37,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-@RunWith(Parameterized.class)
 public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
@@ -49,31 +45,23 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	private final DigestAlgorithm messageDigestAlgo;
-	private final DigestAlgorithm digestAlgo;
-
-	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
-	public static Collection<Object[]> data() {
+	private static Stream<Arguments> data() {
 		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224,
 				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
 				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
 
-		List<Object[]> data = new ArrayList<>();
+		List<Arguments> args = new ArrayList<>();
 		for (DigestAlgorithm digest1 : digestAlgos) {
 			for (DigestAlgorithm digest2 : digestAlgos) {
-				data.add(new Object[] { digest1, digest2 });
+				args.add(Arguments.of(digest1, digest2));
 			}
 		}
-		return data;
+		return args.stream();
 	}
 
-	public CAdESLevelBWithDSATest(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo) {
-		this.messageDigestAlgo = messageDigestAlgo;
-		this.digestAlgo = digestAlgo;
-	}
-
-	@Before
-	public void init() throws Exception {
+	@ParameterizedTest(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
+	@MethodSource("data")
+	public void init(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo) {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
@@ -85,13 +73,12 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setReferenceDigestAlgorithm(messageDigestAlgo);
 
 		service = new CAdESService(getOfflineCertificateVerifier());
-	}
-	
-	// Annotation JUnit 4
-	@Test
-	@Override
-	public void signAndVerify() throws IOException {
+
 		super.signAndVerify();
+	}
+
+	@Override
+	public void signAndVerify() {
 	}
 
 	@Override

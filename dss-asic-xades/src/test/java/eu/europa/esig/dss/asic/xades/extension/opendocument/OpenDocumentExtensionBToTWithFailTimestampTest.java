@@ -20,22 +20,20 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.opendocument;
 
-import java.io.File;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.asic.xades.extension.AbstractTestOpenDocumentExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public class OpenDocumentExtensionBToTWithFailTimestampTest extends AbstractTestOpenDocumentExtension {
 	
-	public OpenDocumentExtensionBToTWithFailTimestampTest(File file) {
-		super(file);
-	}
-
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
 		return getFailGoodTsa();
@@ -57,9 +55,16 @@ public class OpenDocumentExtensionBToTWithFailTimestampTest extends AbstractTest
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void init(DSSDocument fileToTest) throws Exception {
+		this.fileToTest = fileToTest;
+
+		assertThrows(DSSException.class, () -> super.test());
+	}
+
+	@Override
 	public void test() throws Exception {
-		super.test();
 	}
 
 }

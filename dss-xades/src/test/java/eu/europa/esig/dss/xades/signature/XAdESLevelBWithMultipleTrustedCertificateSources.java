@@ -20,17 +20,18 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -65,8 +66,8 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	private Indication expectedResult;
 	private boolean trustedStoreExpectedResult;
 	
-	@Before
-	public void init() throws Exception {
+	@BeforeEach
+	public void init() {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		
 		signatureParameters = new XAdESSignatureParameters();

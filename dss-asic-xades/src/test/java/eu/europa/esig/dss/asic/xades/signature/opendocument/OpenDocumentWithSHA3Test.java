@@ -22,12 +22,11 @@ package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -46,15 +45,11 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class OpenDocumentWithSHA3Test extends AbstractOpenDocumentTestSignature {
 
-	public OpenDocumentWithSHA3Test(File fileToTest) {
-		super(fileToTest);
-	}
-
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 
-	@Before
-	public void init() throws Exception {
+	@BeforeEach
+	public void init() {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());

@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +45,7 @@ public class XAdESLevelBEnvelopedNoXmlTest extends AbstractXAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	public void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.txt"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -66,7 +65,7 @@ public class XAdESLevelBEnvelopedNoXmlTest extends AbstractXAdESTestSignature {
 
 	@Override
 	@Test
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> {
 			super.signAndVerify(); // enveloped signature only works on XML files
 		});

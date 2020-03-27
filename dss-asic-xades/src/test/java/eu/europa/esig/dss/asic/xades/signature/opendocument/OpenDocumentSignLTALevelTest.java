@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic.xades.signature.opendocument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.Date;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -41,10 +40,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
-
-	public OpenDocumentSignLTALevelTest(File fileToTest) {
-		super(fileToTest);
-	}
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

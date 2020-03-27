@@ -20,17 +20,11 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.opendocument;
 
-import java.io.File;
-
 import eu.europa.esig.dss.asic.xades.extension.AbstractTestOpenDocumentExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class OpenDocumentExtensionBToTTest extends AbstractTestOpenDocumentExtension {
-
-	public OpenDocumentExtensionBToTTest(File file) {
-		super(file);
-	}
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
@@ -47,4 +41,7 @@ public class OpenDocumentExtensionBToTTest extends AbstractTestOpenDocumentExten
 		return ASiCContainerType.ASiC_E;
 	}
 
+	@Override
+	public void test() throws Exception {
+	}
 }

@@ -25,17 +25,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -52,26 +52,27 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-@RunWith(Parameterized.class)
 public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocumentTestSignature {
-
-	public OpenDocumentLevelBWithExternalDataTest(File fileToTest) {
-		super(fileToTest);
-	}
 
 	private DSSDocument fileToTest;
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() {
+	private static Stream<Arguments> data() {
 		File file = new File("src/test/resources/signable/open-document-external-data.odt");
-		Collection<Object[]> dataToRun = new ArrayList<>();
-		dataToRun.add(new Object[] { file });
-		return dataToRun;
+		List<Arguments> args = new ArrayList<>();
+		args.add(Arguments.of(new FileDocument(file)));
+		return args.stream();
 	}
 
-	@Before
+	@Override
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void init(DSSDocument fileToTest) {
+		super.init(fileToTest);
+	}
+	
+	@BeforeEach
 	public void init() {
 		fileToTest = new FileDocument(new File("src/test/resources/signable/open-document-external-data.odt"));
 
@@ -84,12 +85,6 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-	}
-	
-	@Test
-	@Override
-	public void signAndVerify() throws IOException {
-		super.signAndVerify();
 	}
 
 	@Override
