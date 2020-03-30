@@ -297,16 +297,26 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<CertificateRef> getCertificateRefs(XAdESAttribute unsignedAttribute) {
 		List<CertificateRef> certRefs = new ArrayList<>();
+		boolean certificateRefV1 = isCertificateRefV1(unsignedAttribute);
 		NodeList certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
 		for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
 			Element certRefElement = (Element) certRefsNodeList.item(ii);
-			// TODO V1/V2
-			CertificateRef certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
+			CertificateRef certificateRef = null;
+			if (certificateRefV1) {
+				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
+			} else {
+				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
+			}
 			if (certificateRef != null) {
 				certRefs.add(certificateRef);
 			}
 		}
 		return certRefs;
+	}
+
+	private boolean isCertificateRefV1(XAdESAttribute unsignedAttribute) {
+		String localName = unsignedAttribute.getName();
+		return XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES132Element.COMPLETE_CERTIFICATE_REFS.isSameTagName(localName);
 	}
 
 	@Override
