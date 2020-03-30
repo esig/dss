@@ -72,6 +72,9 @@
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>	   
 		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../dss-jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		
+		<!-- By default, skip slow tests (use slow-tests profile to enable them) -->
+		<exclude.tag.tests>slow</exclude.tag.tests>
 	</properties>
 	
 	<licenses>
@@ -264,6 +267,7 @@
 							<includes>
 								<include>eu/**/*Test.java</include>
 							</includes>
+							<excludedGroups>${exclude.tag.tests}</excludedGroups>
 						</configuration>
 					</execution>
 					<execution>
@@ -388,7 +392,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
+					<version>3.2.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -455,7 +459,7 @@
 				<plugin>
 				    <groupId>org.codehaus.mojo</groupId>
 				    <artifactId>build-helper-maven-plugin</artifactId>
-				    <version>3.0.0</version>
+				    <version>3.1.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -992,13 +996,20 @@
 			</properties>
 		</profile>
 		<profile>
+			<!-- Include tests with @Tag("slow") -->
+			<id>slow-tests</id>
+			<properties>
+				<exclude.tag.tests>nothing-to-exclude</exclude.tag.tests>
+			</properties>
+		</profile>
+		<profile>
 			<id>owasp</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>5.3.0</version>
+						<version>5.3.1</version>
 <!-- 						<configuration> -->
 <!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
 <!-- 						</configuration> -->
@@ -1043,7 +1054,7 @@
 					<plugin>
 						<groupId>com.diffplug.spotless</groupId>
 						<artifactId>spotless-maven-plugin</artifactId>
-						<version>1.27.0</version>
+						<version>1.28.0</version>
 						<configuration>
 							<java>
 								<licenseHeader>
