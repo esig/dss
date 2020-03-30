@@ -61,7 +61,7 @@ public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSi
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSi
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.defineSigningCertificate(getSigningCert());
 		return validator;
 	}

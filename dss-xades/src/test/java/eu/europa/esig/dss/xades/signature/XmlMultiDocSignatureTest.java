@@ -54,7 +54,7 @@ public class XmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocu
 
 	@Override
 	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return new XAdESService(getCompleteCertificateVerifier());
+		return new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

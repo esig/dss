@@ -59,7 +59,7 @@ public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSign
 		PAdESTimestampParameters signatureTimestampParameters = new PAdESTimestampParameters(DigestAlgorithm.SHA1);
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 

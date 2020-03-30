@@ -77,7 +77,7 @@ public class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAd
 
 		signatureParameters.setReferences(dssReferences);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Test

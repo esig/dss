@@ -88,7 +88,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 
 		signitureImage = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png"));
 

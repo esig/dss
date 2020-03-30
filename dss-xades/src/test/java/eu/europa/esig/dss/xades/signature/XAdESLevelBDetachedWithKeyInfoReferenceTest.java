@@ -56,7 +56,7 @@ public class XAdESLevelBDetachedWithKeyInfoReferenceTest extends AbstractXAdESTe
 		// DSS-1548
 		signatureParameters.setSignKeyInfo(true);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class XAdESLevelBDetachedWithKeyInfoReferenceTest extends AbstractXAdESTe
 	@Override
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);

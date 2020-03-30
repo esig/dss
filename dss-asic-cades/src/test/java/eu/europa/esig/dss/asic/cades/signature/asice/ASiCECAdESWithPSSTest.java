@@ -22,7 +22,6 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +56,6 @@ public class ASiCECAdESWithPSSTest extends AbstractASiCECAdESTestSignature {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

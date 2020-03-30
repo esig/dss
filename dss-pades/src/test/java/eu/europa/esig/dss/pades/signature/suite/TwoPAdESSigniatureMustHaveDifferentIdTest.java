@@ -56,14 +56,14 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest extends PKIFactoryAccess 
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
 
-		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(getCompleteCertificateVerifier());
+		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(getOfflineCertificateVerifier());
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument firstSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(firstSignedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -73,7 +73,7 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest extends PKIFactoryAccess 
 		DSSDocument secondSignedDocument = service.signDocument(firstSignedDocument, signatureParameters, signatureValue);
 
 		validator = SignedDocumentValidator.fromDocument(secondSignedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 
 		List<String> signatureIdList = reports.getSimpleReport().getSignatureIdList();

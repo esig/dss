@@ -59,7 +59,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementAfterTest extends AbstractXAd
 		signatureParameters.setXPathLocationString(XPATH);
 		signatureParameters.setXPathElementPlacement(XAdESSignatureParameters.XPathElementPlacement.XPathAfter);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 	}
 

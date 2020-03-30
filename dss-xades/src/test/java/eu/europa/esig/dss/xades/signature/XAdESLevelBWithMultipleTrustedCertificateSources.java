@@ -68,7 +68,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	
 	@BeforeEach
 	public void init() {
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 		
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

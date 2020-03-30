@@ -68,7 +68,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
 		signingDate = new Date();
 		signatureParameters.bLevel().setSigningDate(signingDate);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import java.util.Date;
-
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
@@ -44,7 +42,6 @@ public class ASiCECAdESMalformedFileSignTest extends AbstractASiCECAdESTestSigna
 		documentToSign = new FileDocument("src/test/resources/signable/éáéïú√határozat.pdf");
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

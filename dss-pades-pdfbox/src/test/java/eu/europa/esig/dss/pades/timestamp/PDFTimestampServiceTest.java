@@ -42,7 +42,7 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 	@Test
 	public void timestampAlone() throws IOException {
 
-		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		PAdESTimestampParameters parameters = new PAdESTimestampParameters();

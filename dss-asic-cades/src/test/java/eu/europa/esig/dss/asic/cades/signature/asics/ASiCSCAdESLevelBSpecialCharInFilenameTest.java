@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import java.util.Date;
-
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
@@ -44,13 +42,12 @@ public class ASiCSCAdESLevelBSpecialCharInFilenameTest extends AbstractASiCSCAdE
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£6789~#%&()+=`@{[]}'.txt");
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
 		documentToSign = new FileDocument(new File("src/test/resources/htmlUTF8.html"));

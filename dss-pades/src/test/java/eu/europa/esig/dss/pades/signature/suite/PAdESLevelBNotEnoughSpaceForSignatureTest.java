@@ -48,7 +48,7 @@ public class PAdESLevelBNotEnoughSpaceForSignatureTest extends PKIFactoryAccess 
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.setContentSize(2); // 2 bytes
 
-		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(getCompleteCertificateVerifier());
+		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(getOfflineCertificateVerifier());
 
 		try {
 			ToBeSigned dataToSign = service.getDataToSign(toBeSigned, signatureParameters);

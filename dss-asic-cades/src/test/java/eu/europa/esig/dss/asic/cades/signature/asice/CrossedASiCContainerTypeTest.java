@@ -43,7 +43,7 @@ public class CrossedASiCContainerTypeTest extends AbstractASiCECAdESTestSignatur
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
 		documentToSign = new FileDocument("src/test/resources/validation/onefile-ok.asice");
 

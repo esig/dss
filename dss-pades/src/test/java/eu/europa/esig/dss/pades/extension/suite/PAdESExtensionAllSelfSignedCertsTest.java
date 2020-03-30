@@ -53,7 +53,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new PAdESService(getCompleteCertificateVerifier());
+        service = new PAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getSelfSignedTsa());
 	}
 

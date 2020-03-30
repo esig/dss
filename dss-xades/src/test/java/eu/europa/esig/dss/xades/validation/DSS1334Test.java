@@ -181,7 +181,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 		FileDocument fileDocument = new FileDocument(ORIGINAL_FILE);
 		fileDocument.setName(null);
 
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();

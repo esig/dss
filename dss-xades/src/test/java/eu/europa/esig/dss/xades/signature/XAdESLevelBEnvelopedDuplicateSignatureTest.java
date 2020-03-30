@@ -66,7 +66,7 @@ public class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 
 		ToBeSigned toBeSigned = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());

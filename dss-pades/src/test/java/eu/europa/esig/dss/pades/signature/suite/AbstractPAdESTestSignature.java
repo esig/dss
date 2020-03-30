@@ -75,7 +75,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		InMemoryDocument dssDocument = new InMemoryDocument(byteArray);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 
@@ -97,7 +97,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 		assertNotNull(pdfSignatureRevision.getSigningDate());
 
-		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
 		List<String> originalSignatureFields = service.getAvailableSignatureFields(getDocumentToSign());
 		int originalSignatureFieldsNumber = originalSignatureFields.size();
 

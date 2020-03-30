@@ -74,7 +74,7 @@ public class XAdESLevelBEnvelopedWithXPath2FilterTest extends AbstractXAdESTestS
 
 		signatureParameters.setReferences(dssReferences);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

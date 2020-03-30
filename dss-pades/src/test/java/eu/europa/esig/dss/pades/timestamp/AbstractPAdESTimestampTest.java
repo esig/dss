@@ -56,7 +56,7 @@ public abstract class AbstractPAdESTimestampTest extends PKIFactoryAccess {
 		
 		DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 		
-		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		DSSDocument timestampedDoc = service.timestamp(documentToTimestamp, new PAdESTimestampParameters());
@@ -65,7 +65,7 @@ public abstract class AbstractPAdESTimestampTest extends PKIFactoryAccess {
 		assertNotNull(timestampedDoc.getName());
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestampedDoc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		assertNotNull(reports);

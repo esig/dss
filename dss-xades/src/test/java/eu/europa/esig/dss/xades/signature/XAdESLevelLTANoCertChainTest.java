@@ -44,7 +44,6 @@ public class XAdESLevelLTANoCertChainTest extends AbstractXAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		// no cert chain, it will use AIA
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

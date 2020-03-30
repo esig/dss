@@ -51,7 +51,7 @@ public class EmbeddedXmlSignatureTest extends AbstractXAdESTestSignature {
 
 	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return new XAdESService(getCompleteCertificateVerifier());
+		return new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

@@ -23,8 +23,6 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Date;
-
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
@@ -42,13 +40,12 @@ public class ASiCSCAdESSignASiCXAdESTest extends PKIFactoryAccess {
 		DSSDocument documentToSign = new FileDocument("src/test/resources/signable/asic_xades.zip");
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		
-		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> {
 			service.getDataToSign(documentToSign, signatureParameters);

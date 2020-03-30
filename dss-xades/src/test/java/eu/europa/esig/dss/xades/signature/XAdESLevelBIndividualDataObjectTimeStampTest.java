@@ -93,13 +93,13 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
 		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);

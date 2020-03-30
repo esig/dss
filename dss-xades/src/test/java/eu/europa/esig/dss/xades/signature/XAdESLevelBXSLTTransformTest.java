@@ -81,7 +81,7 @@ public class XAdESLevelBXSLTTransformTest extends AbstractXAdESTestSignature {
 
 		signatureParameters.setReferences(references);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 	
 	@Override

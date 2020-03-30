@@ -73,7 +73,7 @@ public class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSigna
 
 		signatureParameters.setReferences(references);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 	
 	@Override

@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -51,14 +50,12 @@ public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractPkiFactor
 	
 	@BeforeEach
 	public void init() throws Exception {
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes()));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes()));
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);

@@ -63,7 +63,7 @@ public class XAdESLevelTWithSHA1MessageImprintTest extends AbstractXAdESTestSign
 		XAdESTimestampParameters signatureTimestampParameters = new XAdESTimestampParameters(DigestAlgorithm.SHA1);
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 
