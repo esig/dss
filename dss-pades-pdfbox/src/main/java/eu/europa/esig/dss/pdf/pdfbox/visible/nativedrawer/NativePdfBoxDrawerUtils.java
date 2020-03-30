@@ -9,11 +9,10 @@ public class NativePdfBoxDrawerUtils {
 	/**
 	 * Computes width for a single string
 	 * 
-	 * @param pdFont {@link PDFont} of the text
+	 * @param pdFont   {@link PDFont} of the text
 	 * @param fontSize float size of the font
-	 * @param str {@link String} text
-	 * @param dpi integer dpi
-	 * @return string width
+	 * @param str      {@link String} text
+	 * @return the text width
 	 * @throws IOException if an exception occurs
 	 */
 	public static float getTextWidth(PDFont pdFont, float fontSize, String str) throws IOException {
@@ -23,10 +22,9 @@ public class NativePdfBoxDrawerUtils {
 	/**
 	 * Computes height for a single string
 	 * 
-	 * @param pdFont {@link PDFont} of the text
+	 * @param pdFont   {@link PDFont} of the text
 	 * @param fontSize float size of the font
-	 * @param dpi integer dpi
-	 * @return string height
+	 * @return the text height
 	 * @throws IOException if an exception occurs
 	 */
 	public static float getTextHeight(PDFont pdFont, float fontSize) throws IOException {
