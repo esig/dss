@@ -127,30 +127,33 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			finalName.append(Utils.lowerCase(level.name().replace("_", "-")));
 		}
 
-		finalName.append('.');
-		
-		if (containerMimeType != null) {
-			finalName.append(MimeType.getExtension(containerMimeType));
-		} else if (level != null) {
-			SignatureForm signatureForm = level.getSignatureForm();
-			switch (signatureForm) {
-			case XAdES:
-				finalName.append("xml");
-				break;
-			case CAdES:
-				finalName.append("pkcs7");
-				break;
-			case PAdES:
-				finalName.append("pdf");
-				break;
-			default:
-				throw new DSSException("Unable to generate a full document name");
-			}
-		} else {
-			finalName.append("pdf");
+		String extension = getFileExtensionString(level, containerMimeType);
+		if (extension != null) {
+			finalName.append('.');
+			finalName.append(extension);
 		}
 
 		return finalName.toString();
+	}
+	
+	private String getFileExtensionString(SignatureLevel level, MimeType containerMimeType) {
+		if (containerMimeType != null) {
+			return MimeType.getExtension(containerMimeType);
+		} else if (level != null) {
+			SignatureForm signatureForm = level.getSignatureForm();
+			switch (signatureForm) {
+				case XAdES:
+					return "xml";
+				case CAdES:
+					return "pkcs7";
+				case PAdES:
+					return "pdf";
+				default:
+					throw new DSSException("Unable to generate a full document name");
+			}
+		} else {
+			return "pdf";
+		}
 	}
 
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
