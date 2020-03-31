@@ -41,7 +41,7 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));

@@ -24,7 +24,6 @@ import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +54,7 @@ public class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAd
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	public void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/xml700kb.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -78,12 +77,12 @@ public class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAd
 
 		signatureParameters.setReferences(dssReferences);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Test
 	@Override
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		assertTimeout(ofMillis(5000), () -> {
 			final DSSDocument signedDocument = sign();
 			SignedDocumentValidator validator = getValidator(signedDocument);

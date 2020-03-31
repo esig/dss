@@ -20,21 +20,35 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -85,6 +99,79 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void validateETSIMessageDigest(SAMessageDigestType md) {
 		assertNull(md);
+	}
+
+	protected void verifySourcesAndDiagnosticDataWithOrphans(List<AdvancedSignature> signatures, DiagnosticData diagnosticData) {
+		for (AdvancedSignature advancedSignature : signatures) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+
+			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
+			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+
+			// Tokens
+			assertEquals(certificateSource.getKeyInfoCertificates().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+			assertEquals(certificateSource.getCertificateValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()
+					+ foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size()
+					+ foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
+			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size()
+					+ foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
+			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size()
+					+ foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+
+			// Refs
+			assertEquals(certificateSource.getSigningCertificateRefs().size(),
+					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+			assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+			assertEquals(certificateSource.getCompleteCertificateRefs().size(),
+					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size()
+							+ foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+
+			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
+			for (TimestampToken timestampToken : timestamps) {
+				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampToken.getDSSIdAsString());
+
+				certificateSource = timestampToken.getCertificateSource();
+				foundCertificates = timestampWrapper.foundCertificates();
+
+				// Tokens
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+				assertEquals(certificateSource.getSignedDataCertificates().size(),
+						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+
+				// Refs
+				assertEquals(certificateSource.getSigningCertificateRefs().size(),
+						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+			}
+
+			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
+			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
+			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
+				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
+				if (revocationCertificateSource != null) {
+					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocationToken.getDSSIdAsString());
+					foundCertificates = revocationWrapper.foundCertificates();
+
+					assertEquals(revocationCertificateSource.getCertificates().size(), foundCertificates.getRelatedCertificates().size());
+					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
+				}
+			}
+		}
 	}
 
 }

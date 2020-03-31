@@ -66,7 +66,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

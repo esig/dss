@@ -56,7 +56,7 @@ public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
 		signatureParameters.setImageParameters(imageParameters);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

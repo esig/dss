@@ -59,7 +59,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementAfterRootNodeTest extends Abs
 		signatureParameters.setXPathLocationString(XPATH);
 		signatureParameters.setXPathElementPlacement(XAdESSignatureParameters.XPathElementPlacement.XPathAfter);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 	}
 

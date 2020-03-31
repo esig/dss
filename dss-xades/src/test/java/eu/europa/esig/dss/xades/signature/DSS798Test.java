@@ -56,7 +56,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 
 		// Level B
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
@@ -64,7 +64,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// Level T without detached document
-		XAdESService serviceExtend = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService serviceExtend = new XAdESService(getOfflineCertificateVerifier());
 		serviceExtend.setTspSource(getGoodTsa());
 
 		XAdESSignatureParameters parametersExtend = new XAdESSignatureParameters();
@@ -84,7 +84,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 
 		// Level B
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
@@ -92,7 +92,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// Level T with detached document
-		XAdESService serviceExtend = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService serviceExtend = new XAdESService(getOfflineCertificateVerifier());
 		serviceExtend.setTspSource(getGoodTsa());
 
 		XAdESSignatureParameters parametersExtend = new XAdESSignatureParameters();
@@ -101,7 +101,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		DSSDocument extendedDocument = serviceExtend.extendDocument(signedDocument, parametersExtend);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(documentToSign));
 		Reports reports = validator.validateDocument();
 

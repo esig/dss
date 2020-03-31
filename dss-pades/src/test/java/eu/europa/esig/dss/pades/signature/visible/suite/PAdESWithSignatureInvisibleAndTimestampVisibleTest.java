@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import java.awt.Color;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -48,7 +47,6 @@ public class PAdESWithSignatureInvisibleAndTimestampVisibleTest extends Abstract
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);

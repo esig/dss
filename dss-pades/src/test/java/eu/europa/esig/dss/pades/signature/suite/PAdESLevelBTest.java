@@ -50,13 +50,13 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		// test with wrong provided certificate
 		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
 		return validator;

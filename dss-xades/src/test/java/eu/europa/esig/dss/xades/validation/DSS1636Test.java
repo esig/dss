@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,6 +41,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -54,6 +55,7 @@ public class DSS1636Test extends PKIFactoryAccess {
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
+		UnmarshallingTester.unmarshallXmlReports(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
@@ -90,6 +92,7 @@ public class DSS1636Test extends PKIFactoryAccess {
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
+		UnmarshallingTester.unmarshallXmlReports(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -118,6 +121,7 @@ public class DSS1636Test extends PKIFactoryAccess {
 		
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
+		UnmarshallingTester.unmarshallXmlReports(reports);
 	}
 
 	@Override

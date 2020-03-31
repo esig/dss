@@ -60,7 +60,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 		CAdESTimestampParameters signatureTimestampParameters = new CAdESTimestampParameters(DigestAlgorithm.SHA1);
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 

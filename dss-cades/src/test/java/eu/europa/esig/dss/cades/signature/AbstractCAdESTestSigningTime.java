@@ -57,7 +57,7 @@ public abstract class AbstractCAdESTestSigningTime extends AbstractCAdESTestSign
 		signingTime = getSigningTime();
 		signatureParameters.bLevel().setSigningDate(signingTime);
 
-		service = new MockCAdESService(getCompleteCertificateVerifier());
+		service = new MockCAdESService(getOfflineCertificateVerifier());
 	}
 	
 	protected abstract Date getSigningTime();

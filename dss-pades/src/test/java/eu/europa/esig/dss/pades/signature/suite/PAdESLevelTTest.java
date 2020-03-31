@@ -45,7 +45,7 @@ public class PAdESLevelTTest extends AbstractPAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 

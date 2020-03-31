@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import java.io.File;
 import java.util.Date;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -36,13 +35,9 @@ public class OpenDocumentLevelLTSignatureTest extends AbstractOpenDocumentTestSi
 	
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	
-	public OpenDocumentLevelLTSignatureTest(File fileToTest) {
-		super(fileToTest);
-	}
 
-	@Before
-	public void init() throws Exception {
+	@BeforeEach
+	public void init() {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());

@@ -62,7 +62,7 @@ public class XAdESMultipleManifestLevelBTest extends AbstractPkiFactoryTestMulti
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setManifestSignature(true);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

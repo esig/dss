@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -44,7 +43,6 @@ public class XAdESLevelLTCrossCertififcationTSATest extends AbstractXAdESTestSig
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,6 @@ public class CAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		DSSDocument documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

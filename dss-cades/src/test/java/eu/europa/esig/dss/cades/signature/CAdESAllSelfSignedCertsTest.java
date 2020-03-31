@@ -54,7 +54,7 @@ public class CAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new CAdESService(getCompleteCertificateVerifier());
+        service = new CAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getSelfSignedTsa());
 	}
 

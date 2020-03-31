@@ -53,7 +53,7 @@ public class XAdESLevelBEnvelopedWithKeyInfoReferenceTest extends AbstractXAdEST
 		// DSS-1548
 		signatureParameters.setSignKeyInfo(true);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

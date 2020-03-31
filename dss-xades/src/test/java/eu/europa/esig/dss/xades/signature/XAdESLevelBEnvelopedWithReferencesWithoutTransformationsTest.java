@@ -72,7 +72,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 
 		signatureParameters.setReferences(references);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);

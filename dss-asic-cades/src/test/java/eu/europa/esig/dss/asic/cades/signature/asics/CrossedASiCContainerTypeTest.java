@@ -23,8 +23,6 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +44,7 @@ public class CrossedASiCContainerTypeTest extends AbstractASiCECAdESTestSignatur
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
 		documentToSign = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
@@ -59,7 +57,7 @@ public class CrossedASiCContainerTypeTest extends AbstractASiCECAdESTestSignatur
 
 	@Test
 	@Override
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> super.signAndVerify());
 		assertEquals("Original container type 'ASiC_S' vs parameter : 'ASiC_E'", exception.getMessage());
 	}

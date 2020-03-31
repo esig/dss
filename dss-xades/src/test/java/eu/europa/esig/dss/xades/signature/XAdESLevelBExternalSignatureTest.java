@@ -63,7 +63,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setGenerateTBSWithoutCertificate(true);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		try {
 			// Use Dummy XAdES builder to create XAdES object which include signing certificate, and update toBeSigned
 			DummyXAdESSignatureBuilder dummyXAdESSignatureBuilder = new DummyXAdESSignatureBuilder(getSignatureParameters(), getDocumentToSign(),
-					getCompleteCertificateVerifier());
+					getOfflineCertificateVerifier());
 			toBeSigned.setBytes(dummyXAdESSignatureBuilder.build(signingDate, getSigningCert()));
 			externalSignatureResult.setSignedData(toBeSigned.getBytes());
 

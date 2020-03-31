@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -60,13 +59,12 @@ public class ASiCSCAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSigns, signatureParameters);
@@ -79,7 +77,7 @@ public class ASiCSCAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		DSSDocument extendDocument = service.extendDocument(signedDocument, extendParameters);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
 

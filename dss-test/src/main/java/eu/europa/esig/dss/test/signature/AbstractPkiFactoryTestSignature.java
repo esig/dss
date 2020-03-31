@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,6 +57,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -71,6 +71,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CommitmentType;
@@ -97,12 +98,18 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
@@ -146,7 +153,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected abstract boolean isBaselineLTA();
 
 	@Test
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
 
 		assertNotNull(signedDocument.getName());
@@ -175,6 +182,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		verifySourcesAndDiagnosticData(signatures, diagnosticData);
+
 		verifyDiagnosticData(diagnosticData);
 
 		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
@@ -188,13 +197,91 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		verifyETSIValidationReport(etsiValidationReportJaxb);
 
-		getOriginalDocument(signedDocument, diagnosticData);
+		try {
+			getOriginalDocument(signedDocument, diagnosticData);
+		} catch (IOException e) {
+			fail("Unable to retrieve the original document", e);
+		}
 
 		UnmarshallingTester.unmarshallXmlReports(reports);
 
 		generateHtmlPdfReports(reports);
 	}
 	
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> signatures, DiagnosticData diagnosticData) {
+		for (AdvancedSignature advancedSignature : signatures) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+
+			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
+			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+
+			// Tokens
+			assertEquals(certificateSource.getKeyInfoCertificates().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+			assertEquals(certificateSource.getCertificateValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+			assertEquals(certificateSource.getSignedDataCertificates().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+			assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
+			assertEquals(certificateSource.getVRIDictionaryCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
+			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+
+			// Refs
+			assertEquals(certificateSource.getSigningCertificateRefs().size(),
+					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+			assertEquals(certificateSource.getAttributeCertificateRefs().size(),
+					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+			assertEquals(certificateSource.getCompleteCertificateRefs().size(),
+					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+
+			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
+			for (TimestampToken timestampToken : timestamps) {
+				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampToken.getDSSIdAsString());
+
+				certificateSource = timestampToken.getCertificateSource();
+				foundCertificates = timestampWrapper.foundCertificates();
+
+				// Tokens
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+				assertEquals(certificateSource.getSignedDataCertificates()
+						.size(),
+						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+
+				// Refs
+				assertEquals(certificateSource.getSigningCertificateRefs()
+						.size(),
+						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+			}
+
+			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
+			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
+			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
+				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
+				if (revocationCertificateSource != null) {
+					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocationToken.getDSSIdAsString());
+					foundCertificates = revocationWrapper.foundCertificates();
+
+					assertEquals(revocationCertificateSource.getCertificates().size(), foundCertificates.getRelatedCertificates().size());
+					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
+				}
+			}
+		}
+	}
+
 	protected void generateHtmlPdfReports(Reports reports) {
 		if (!isGenerateHtmlPdfReports()) {
 			return;

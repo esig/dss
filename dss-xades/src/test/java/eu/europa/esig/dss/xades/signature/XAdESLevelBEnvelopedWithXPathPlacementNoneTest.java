@@ -58,7 +58,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementNoneTest extends AbstractXAdE
 		// Will add the signature as last child of the tr tag
 		signatureParameters.setXPathLocationString(XPATH);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 	}
 

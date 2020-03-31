@@ -23,8 +23,6 @@ package eu.europa.esig.dss.cades.signature;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +56,7 @@ public class CAdESLevelImpossibleLTAExceptionTest extends AbstractCAdESTestSigna
 
 	@Override
 	@Test
-	public void signAndVerify() throws IOException {
+	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> {
 			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
 		});

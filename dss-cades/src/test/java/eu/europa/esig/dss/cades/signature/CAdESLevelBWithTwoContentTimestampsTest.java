@@ -64,7 +64,7 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp1, contentTimestamp2));
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

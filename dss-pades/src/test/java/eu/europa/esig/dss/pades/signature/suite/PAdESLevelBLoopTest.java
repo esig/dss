@@ -24,13 +24,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -41,49 +41,45 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-@RunWith(Parameterized.class)
+@Tag("slow")
 public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 
-	@Parameters(name = "Signing {index} : {0}")
-	public static Collection<Object[]> data() throws IOException {
-
+	private static Stream<Arguments> data() throws IOException {
 		// We use this file because File.listFiles() doesn't work from another jar
 		String listFiles = "/files_to_sign.txt";
 
-		Collection<Object[]> dataToRun = new ArrayList<>();
+		List<Arguments> args = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(PAdESLevelBLoopTest.class.getResourceAsStream(listFiles)))) {
 			String filepath;
 			while ((filepath = br.readLine()) != null) {
-				dataToRun.add(new Object[] { new InMemoryDocument(PAdESLevelBLoopTest.class.getResourceAsStream(filepath), filepath, MimeType.PDF) });
+				args.add(Arguments.of(new InMemoryDocument(PAdESLevelBLoopTest.class.getResourceAsStream(filepath), filepath, MimeType.PDF)));
 			}
 
 		}
-		return dataToRun;
+		return args.stream();
 	}
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	public PAdESLevelBLoopTest(DSSDocument documentToSign) {
-		this.documentToSign = documentToSign;
-	}
+	@ParameterizedTest(name = "Document {index} : {0}")
+	@MethodSource("data")
+	public void init(DSSDocument document) {
+		this.documentToSign = document;
 
-	@Before
-	public void init() throws Exception {
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
-	}
-	
-	// Annotation JUnit 4
-	@Test
-	@Override
-	public void signAndVerify() throws IOException {
+		service = new PAdESService(getOfflineCertificateVerifier());
+
 		super.signAndVerify();
+	}
+
+	@Override
+	public void signAndVerify() {
 	}
 
 	@Override

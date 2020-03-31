@@ -276,7 +276,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	private DSSDocument sign(DSSDocument document, XAdESSignatureParameters signatureParameters) {
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 		ToBeSigned toSign1 = service.getDataToSign(document, signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(document, signatureParameters, value);
@@ -284,7 +284,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	
 	private DiagnosticData validate(DSSDocument signedDocument, XAdESSignatureParameters signatureParameters) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));

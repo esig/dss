@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pades.timestamp;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +43,7 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 
 	@Test
 	public void timestampAlone() throws IOException {
-		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		PAdESTimestampParameters parameters = new PAdESTimestampParameters();

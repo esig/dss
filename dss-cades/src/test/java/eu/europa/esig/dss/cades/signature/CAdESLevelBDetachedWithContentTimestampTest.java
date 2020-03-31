@@ -44,7 +44,7 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
@@ -63,7 +63,7 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 	@Override
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);

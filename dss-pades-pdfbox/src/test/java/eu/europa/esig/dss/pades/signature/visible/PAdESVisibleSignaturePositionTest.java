@@ -34,6 +34,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -53,6 +54,7 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
+@Tag("slow")
 public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 
 	private static final Color TRANSPARENT = new Color(0, 0, 0, 0.25f);
@@ -86,7 +88,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 
 		signitureImage = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png"));
 

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
@@ -48,32 +48,33 @@ import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignature
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-@RunWith(Parameterized.class)
 public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private DSSDocument fileToTest;
 	
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() {
+	private static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<>();
+		
+
+		List<Arguments> args = new ArrayList<>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+			args.add(Arguments.of(new FileDocument(file)));
 		}
-		return dataToRun;
+		return args.stream();
 	}
 	
-	@Test
-	@Override
-	public void signAndVerify() throws IOException {
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void init(DSSDocument fileToTest) {
+		this.fileToTest = fileToTest;
+
 		super.signAndVerify();
 	}
-	
-	
-	public AbstractOpenDocumentTestSignature(File fileToTest) {
-		this.fileToTest = new FileDocument(fileToTest);
+
+	@Override
+	public void signAndVerify() {
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
 		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
 
-		for(DSSDocument doc : extractOriginal.getSignedDocuments()) {
+		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
 			assertTrue(fileNames.contains(doc.getName()));
 			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	

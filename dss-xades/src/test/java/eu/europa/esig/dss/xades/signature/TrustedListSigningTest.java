@@ -81,7 +81,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setEn319132(false);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 		final List<DSSReference> references = new ArrayList<>();
 

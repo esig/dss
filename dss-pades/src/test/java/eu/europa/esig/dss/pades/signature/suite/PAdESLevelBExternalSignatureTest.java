@@ -67,7 +67,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 		signingDate = new Date();
 		signatureParameters.bLevel().setSigningDate(signingDate);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

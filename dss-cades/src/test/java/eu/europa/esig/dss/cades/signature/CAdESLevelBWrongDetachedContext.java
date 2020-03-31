@@ -64,14 +64,14 @@ public class CAdESLevelBWrongDetachedContext extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 
-		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
+		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(new InMemoryDocument("Bye World".getBytes())));
 		
 		Reports reports = validator.validateDocument();

@@ -75,7 +75,7 @@ public class XAdESLevelBEnvelopedWithReferenceByIdNoTransformTest extends Abstra
 
 		signatureParameters.setReferences(references);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

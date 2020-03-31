@@ -52,7 +52,7 @@ public class XAdESLevelBEnvelopedWithXPathTest extends AbstractXAdESTestSignatur
 		// Will add the signature within the tr tag
 		signatureParameters.setXPathLocationString("//*[local-name() = 'tr']");
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 	}
 

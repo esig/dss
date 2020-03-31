@@ -59,7 +59,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementFirstChildTest extends Abstra
 		signatureParameters.setXPathLocationString(XPATH);
 		signatureParameters.setXPathElementPlacement(XAdESSignatureParameters.XPathElementPlacement.XPathFirstChildOf);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 	}
 

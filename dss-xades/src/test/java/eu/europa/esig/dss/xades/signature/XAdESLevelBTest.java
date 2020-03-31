@@ -45,7 +45,7 @@ public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));

@@ -55,7 +55,7 @@ public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

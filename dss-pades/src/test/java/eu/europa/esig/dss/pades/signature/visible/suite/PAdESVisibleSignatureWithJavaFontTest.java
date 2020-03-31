@@ -62,7 +62,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 		setCustomFactory();
 	}
 
@@ -145,7 +145,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		signedDocument.save("target/" + fileName + ".pdf");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

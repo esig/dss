@@ -54,7 +54,7 @@ public class XAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new XAdESService(getCompleteCertificateVerifier());
+        service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getSelfSignedTsa());
 	}
 

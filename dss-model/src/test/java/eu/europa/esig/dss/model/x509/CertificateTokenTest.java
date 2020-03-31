@@ -22,6 +22,7 @@ package eu.europa.esig.dss.model.x509;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,11 +35,18 @@ import java.io.InputStream;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,6 +158,69 @@ public class CertificateTokenTest {
 			assertNotNull(certificate);
 			assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, certificate.getSignatureAlgorithm());
 		}
+	}
+
+	@RepeatedTest(value = 100)
+	public void testEquals() {
+		String goodUserB64 = "MIID1DCCArygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwMzE4MDkzMTU3WhcNMjEwMTE4MDkzMTU3WjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMtKFy1gwi9R5Ai79lTIVm6Fzjze5+ir1ejBCSNTyHy1eomoTVwD+s+ZsjsdvFseKMLY9e2Cxhck3owRHqKihOhJ7JpxK3dCTCohTUHNHIqDbozLZr/zsQOst8xSEKLyKwhWyJImLcBbm017r0p8omsUojjbCmO9nFp+KE+qoWaW6WsYsXsGzICkLjRjHP1esmd5zcYzBSId9l2wr28XFGW8qBgJKXQxeUgI190MuA6AwCld5BrLXVuLvLLzXQJ27EUfnvMIBsUSu7rAxqHKrlrqeOx+vhdrPATNWX+ifGnFsJMxToQuFfF9deMO62IzrcRSi47B+BARD+kfSiuvcaECAwEAAaOBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFLfj6J8hqF1pc5HuOqX5HORQQUQ5MA0GCSqGSIb3DQEBCwUAA4IBAQAxDzKz7YQdW/izFnRMfUgAS7cREg9F/z7lhmCT95gn7J4TGtwE1vXpPVKjGhrPPBNFfHXQ1MXMMFPwxvO1FyHUZkfVVH6+apPGyGTHoZdIlsXfJwQDxCSBCjw7Zekbc/7ljL7fPA6kbBsXdjGk6PvKSIN9YMcCuTg/fyYPoBWKGgo76V+hiQ/SVsbOzd0SHZJazg8zYFBnAS5QpB4ccGqmhrbCoL6kIMDrWTzRYCIBPpKXN5JwwxY99kDGyUVklSt91i8Q+ioI6A9C+KrwE+gbKPxyy9HmXq4lw8rod0HFG79YOpL3zbNnXFI0Hfs5+7j4EQB4Rms3fhvnKHAsYPk8";
+		String goodCaB64 = "MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwMzE4MDkzMTU1WhcNMjEwMTE4MDkzMTU1WjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCfUvDNM8lvv9P5pILP98HhhM0iiGMdw/MjJOqSKdA3Ss0xXT0UeYlr0blGBFt4yKHxfIAwR8BqLviT1CA0a6+PS8EDEC29txIRCPO+BscKlz4ZFlU9g2dGwA4Dl5ynEq0AP/TYjKl5RY+rGZT/Qx8Ea5OAr9MgQWWKuONFyo7dv4tM7FMTcHUL+hUqdQEpKXXsCOT5WYjtr3oYeu34Cal8m8YN/UmK70fGDwlRHLKgDIvcfZT3dkNOehabuez2Sj6kFkWNseQWeXSjzM1f2OH9idW9UmSQ7RvxDIAgKBYD/D9gGannG2SPZWQo+w5O9UhcE1N8Nc89CLCdJguVNF9hAgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgEGMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQU4tC4xPvJxRJqFXnjSqGn5Rzj5jYwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAFJbVMStk22yRI6dczyzj6zyIh2noFa7STDW3oWg5UdXrjvWpCrw3OSqbF1UEF6X6FtDJfrXhmgyhVwVgHzH1n6+SXG3I/lOeAOKiCNjUA7uhenZuOgoVmWdfs+c9lIx8q7/f8L/kEePoDMLOYqhsSwfDhjELuq+2OOkMOqstuRyKPLQbK7nvf985W7qdjoggm4BHNm+RxkRkrLn1DxYqxnU+2ByZbZEWsqlPTgfRobBLbgPT7PMwVdwuZ6MzdVUsmBj82kGL2duAnzE117cTLmiEluUVXy/RskcHDcbhtOyOBzmQCKmXzafSiHTHtTUPC2XgpRwfwqad4jB+iMSL9A==";
+		String rootCaB64 = "MIIDVzCCAj+gAwIBAgIBATANBgkqhkiG9w0BAQ0FADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwMjE4MDkzMTU0WhcNMjEwMjE4MDkzMTU0WjBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCr35vEZwV4ynpmxadO6nuJTqhdPSDN0JIO3CFMU4CT/QQ2ZquuPxt4ImFW3mxXzsXkozrUV99Mwt8yRuYt6uJf761DkSjdPB/HVWNyLXVTq1hyiLsrfRlsklnZ08HSLcDK9gmuiHYyOlIl6V9dZkgscdH68mBQHzaS5Ve9P7p0QXBu1PaY/Mc65eSYUGTi75W6vBeX59mEGYAkUlr0LFdUf+Nr3kFlZ14Okh7w0y1NY8v8EUPQvMGnyrcAs+LBm5i65LoGdSQaIE9LiyYZvoFiC0CutY/aYWoLIhvjiLhMEmk+odU/6XOpvI7cUMrBVcLsvWrSmD/ju/mtaiPXfVV5AgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUMAns58WjMfSq9Xqlt1OwKEY8ze4wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOCAQEAYTtRueasFMQOuhKeJqI8QTonjxptdXpcOEx5lr7Hmo1+GDTuyKnGQIGWDl2WZoQuan9XITQsJSZWURY4yxsGhIxrM680M+FgZX/PQcgNOJDX00vAytnvZjssp45LDHMKbo9R9T5sjyjkxmMiQgWaQmKgt8biarZpzgTtlIG2U4aH6weuCNX8RW1nZHGMHjoR6lwV93jn8b8oZFqY7q0ISCR4gcIJ/Evqmshoau8vS8tIVD6FqECFWLKku+h9sO4LrYdDKLSZ4VAcZSv3jjGDbOmr4/L1XGF4WOWlrPNk3vVUH8ZbazNELzFPY24mrdZPDR9rNTE+rUZ4Nd1hhCKISg==";
+		String ocspResponderB64 = "MIIDdjCCAl6gAwIBAgIBAjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwMjE4MDkzMTU0WhcNMjEwMjE4MDkzMTU0WjBUMRcwFQYDVQQDDA5vY3NwLXJlc3BvbmRlcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtf7DwPE1lW3Vr0tTXzwN27S/ku3ZjyxAn7hFnNSR4ZuXmYISqxgKzruQVuHla1y/rtKQnh047Hel0sNnZwWY8sgVF9demBTGQdrUldCKL9bUFjZoHCwc31V0MMLHKfJq6G8eCxXGksA3C+2Gs0cmg7W2JNLVDzP+MWoS+iUT29HXn0m72REPz0ebWhCtaTT8PO+BFHqVKLMeFKcCKrqYdj8l1eLFXv/r6TZTrsdFChA3JFOjzhM4y1y4oASwaj1pLY/Kp7BRPJ/Gp+uYHuOzuKobKVInuBmWto+qxrcFsatPask4eRryaOak3D3ve4+7iVvP8+jUC8/hSnfbvblX1QIDAQABo1owWDAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwkwHQYDVR0OBBYEFIwSKE1EIoKLkseZq31hTssa9UFmMA8GCSsGAQUFBzABBQQCBQAwDQYJKoZIhvcNAQELBQADggEBADGT8ZOTuWaNvvIR5EGjwgCMoOlmgeCFQByQT2Gtwf0dkbq8oV1NrJu0Sz9t1I8HNv8CfE1Nnlf0UszcyGSl3zeOYkF+OpgAkaM3vUZX9k4cBuZldtkcTySo6yiS3KlJz6sHxiaRiSljDXvCoH12A9kBvteF0GL8vFuzSR8FHC1Ayz3hwewl0V+SEN7+r1tQLKbLhrzTLvherALDd6SABQR13U0E0rbsoDOuo3dxI/BGa+MY8l+LLl3XT9/g4W5I1nuMCZYAdYsRnq4o2m+0EVT6RRMpQOeDKBTP17mgpQsyuy0MeFxpKs3UYjpftYM04gmOicrh20Zq5b4P30b5b8A=";
+
+		CertificateToken goodUser = getCertificate(goodUserB64);
+		CertificateToken goodUserBis = getCertificate(goodUserB64);
+		CertificateToken goodCa = getCertificate(goodCaB64);
+		CertificateToken rootCa = getCertificate(rootCaB64);
+		CertificateToken ocspResponder = getCertificate(ocspResponderB64);
+
+		assertTrue(goodUser.equals(goodUser));
+		assertTrue(Objects.equals(goodUser, goodUser));
+		assertEquals(goodUser, goodUser);
+
+		assertTrue(goodUser.equals(goodUserBis));
+		assertTrue(Objects.equals(goodUser, goodUserBis));
+		assertEquals(goodUser, goodUserBis);
+
+		assertFalse(goodUser.equals(goodCa));
+		assertFalse(Objects.equals(goodUser, goodCa));
+		assertNotEquals(goodUser, goodCa);
+
+		List<CertificateToken> tokens = new ArrayList<>();
+		tokens.add(goodUser);
+		tokens.add(goodCa);
+		tokens.add(rootCa);
+		tokens.add(ocspResponder);
+		assertEquals(4, tokens.size());
+
+		tokens.remove(goodUserBis);
+		assertEquals(3, tokens.size());
+		assertTrue(tokens.contains(rootCa));
+		assertTrue(tokens.contains(goodCa));
+		assertTrue(tokens.contains(ocspResponder));
+		assertFalse(tokens.contains(goodUser));
+
+		Set<CertificateToken> set = new HashSet<>();
+		set.add(ocspResponder);
+		set.add(goodUser);
+		set.add(goodUser);
+		set.add(goodUserBis);
+		set.add(goodCa);
+		set.add(rootCa);
+		assertEquals(4, set.size());
+
+		Set<CertificateToken> copy = new HashSet<>();
+		copy.addAll(Collections.unmodifiableSet(set));
+
+		set.remove(goodUserBis);
+		assertEquals(3, set.size());
+		assertTrue(set.contains(rootCa));
+		assertTrue(set.contains(goodCa));
+		assertTrue(set.contains(ocspResponder));
+		assertFalse(set.contains(goodUser));
+		assertFalse(set.contains(goodUserBis));
+
+		assertTrue(copy.remove(goodUser));
+		assertFalse(set.contains(goodUserBis));
 	}
 
 	private CertificateToken getCertificate(String base64) {

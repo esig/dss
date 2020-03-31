@@ -56,7 +56,7 @@ public class ASiCECAdESLevelTSpecialFilenameTest extends AbstractASiCECAdESTestS
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 

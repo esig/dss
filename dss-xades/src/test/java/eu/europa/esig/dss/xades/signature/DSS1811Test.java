@@ -194,7 +194,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	private XAdESService getService() {
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		return service;
 	}

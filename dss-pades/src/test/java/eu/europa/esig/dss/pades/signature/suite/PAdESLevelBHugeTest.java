@@ -50,7 +50,7 @@ public class PAdESLevelBHugeTest extends AbstractPAdESTestSignature {
 		signatureParameters.setContactInfo("Jira");
 		signatureParameters.setContentSize(1000000);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override
