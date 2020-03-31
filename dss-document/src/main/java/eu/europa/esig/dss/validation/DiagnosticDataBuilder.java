@@ -126,6 +126,7 @@ import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -1326,39 +1327,11 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private CertificateToken getUsedCertificateByCertificateRef(CertificateRef certificateRef) {
-		CertificateToken certificateToken = null;
-		if (certificateRef.getCertDigest() != null) {
-			certificateToken = getUsedCertificateByDigest(certificateRef.getCertDigest());
-		} else if (certificateRef.getCertificateIdentifier() != null) {
-			certificateToken = getUsedCertificateByIssuerInfo(certificateRef.getCertificateIdentifier());
-		} else if (certificateRef.getResponderId() != null) {
-			certificateToken = getUsedCertificateByResponderId(certificateRef.getResponderId());
-		}
-		return certificateToken;
-	}
-	
-	private CertificateToken getUsedCertificateByDigest(Digest certDigest) {
+		CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
+		// TODO don't use usedCertificates
 		for (CertificateToken certificateToken : usedCertificates) {
-			if (Arrays.equals(certDigest.getValue(), certificateToken.getDigest(certDigest.getAlgorithm()))) {
+			if (matcher.match(certificateToken, certificateRef)) {
 				return certificateToken;
-			}
-		}
-		return null;
-	}
-	
-	private CertificateToken getUsedCertificateByIssuerInfo(CertificateIdentifier issuerInfo) {
-		for (CertificateToken certificateToken : usedCertificates) {
-			if (issuerInfo.isRelatedToCertificate(certificateToken)) {
-                return certificateToken;
-			}
-		}
-		return null;
-	}
-	
-	private CertificateToken getUsedCertificateByResponderId(ResponderId responderId) {
-		for (CertificateToken certificateToken : usedCertificates) {
-			if (responderId.isRelatedToCertificate(certificateToken)) {
-                return certificateToken;
 			}
 		}
 		return null;

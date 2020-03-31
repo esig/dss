@@ -182,9 +182,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifyDiagnosticData(diagnosticData);
-
 		verifySourcesAndDiagnosticData(signatures, diagnosticData);
+
+		verifyDiagnosticData(diagnosticData);
 
 		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
 

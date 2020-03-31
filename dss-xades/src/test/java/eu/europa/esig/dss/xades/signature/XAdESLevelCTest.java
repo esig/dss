@@ -72,6 +72,11 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> signatures, DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticDataWithOrphans(signatures, diagnosticData);
+	}
+
+	@Override
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);
 
@@ -137,7 +142,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
