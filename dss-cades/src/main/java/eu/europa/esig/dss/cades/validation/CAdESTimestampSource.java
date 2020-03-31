@@ -187,6 +187,18 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
+	protected boolean isAttrAuthoritiesCertValues(CAdESAttribute unsignedAttribute) {
+		// not applicable for CAdES
+		return false;
+	}
+
+	@Override
+	protected boolean isAttributeRevocationValues(CAdESAttribute unsignedAttribute) {
+		// not applicable for CAdES
+		return false;
+	}
+
+	@Override
 	protected boolean isArchiveTimestamp(CAdESAttribute unsignedAttribute) {
 		return isArchiveTimestampV2(unsignedAttribute) || isArchiveTimestampV3(unsignedAttribute);
 	}

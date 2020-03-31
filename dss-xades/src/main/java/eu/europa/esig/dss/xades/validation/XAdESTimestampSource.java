@@ -204,6 +204,16 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
+	protected boolean isAttrAuthoritiesCertValues(XAdESAttribute unsignedAttribute) {
+		return XAdES132Element.ATTR_AUTHORITIES_CERT_VALUES.isSameTagName(unsignedAttribute.getName());
+	}
+
+	@Override
+	protected boolean isAttributeRevocationValues(XAdESAttribute unsignedAttribute) {
+		return XAdES132Element.ATTRIBUTE_REVOCATION_VALUES.isSameTagName(unsignedAttribute.getName());
+	}
+
+	@Override
 	protected boolean isArchiveTimestamp(XAdESAttribute unsignedAttribute) {
 		return XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
 	}

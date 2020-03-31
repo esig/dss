@@ -344,6 +344,14 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
 				continue;
 				
+			} else if (isAttrAuthoritiesCertValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
+				continue;
+				
+			} else if (isAttributeRevocationValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
+				continue;
+				
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
 				final List<TimestampedReference> references = new ArrayList<>();
 				addReferencesForPreviousTimestamps(references, timestamps);
@@ -472,6 +480,20 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @return TRUE if the {@code unsignedAttribute} is a Revocation Values, FALSE otherwise
 	 */
 	protected abstract boolean isRevocationValues(SignatureAttribute unsignedAttribute);
+
+	/**
+	 * Determines if the given {@code unsignedAttribute} is an instance of "AttrAuthoritiesCertValues" element
+	 * @param unsignedAttribute {@link ISignatureAttribute} to process
+	 * @return TRUE if the {@code unsignedAttribute} is an AttrAuthoritiesCertValues, FALSE otherwise
+	 */
+	protected abstract boolean isAttrAuthoritiesCertValues(SignatureAttribute unsignedAttribute);
+
+	/**
+	 * Determines if the given {@code unsignedAttribute} is an instance of "AttributeRevocationValues" element
+	 * @param unsignedAttribute {@link ISignatureAttribute} to process
+	 * @return TRUE if the {@code unsignedAttribute} is an AttributeRevocationValues, FALSE otherwise
+	 */
+	protected abstract boolean isAttributeRevocationValues(SignatureAttribute unsignedAttribute);
 	
 	/**
 	 * Determines if the given {@code unsignedAttribute} is an instance of "archive-timestamp" element

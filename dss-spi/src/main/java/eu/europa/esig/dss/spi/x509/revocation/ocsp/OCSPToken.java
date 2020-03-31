@@ -315,16 +315,19 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	@Override
 	public String toString(String indentStr) {
 		final StringWriter out = new StringWriter();
-		out.append(indentStr).append("OCSPToken[");
-		out.append(indentStr).append("Id: ").append(getDSSIdAsString()).append('\n');
-		out.append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
-		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
-		out.append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
-		if (getIssuerX500Principal() != null) {
-			out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
-		}
+		out.append(indentStr).append("OCSPToken[\n");
 		indentStr += "\t";
+		out.append(indentStr).append("Id: ").append(getDSSIdAsString()).append('\n');
+		out.append(indentStr).append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
+		out.append(indentStr).append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
+		out.append(indentStr).append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
+		if (getIssuerX500Principal() != null) {
+			out.append(indentStr).append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
+		}
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
+		if (getRelatedCertificateID() != null) {
+			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateID()).append('\n');
+		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append("]");
 		return out.toString();

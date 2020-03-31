@@ -204,6 +204,9 @@ public class CRLToken extends RevocationToken<CRL> {
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 		out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 		out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');
+		if (getRelatedCertificateID() != null) {
+			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateID()).append('\n');
+		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append(']');
 		return out.toString();
