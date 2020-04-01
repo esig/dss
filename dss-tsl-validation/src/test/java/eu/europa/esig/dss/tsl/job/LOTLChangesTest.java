@@ -147,11 +147,11 @@ public class LOTLChangesTest {
 	}
 
 	private FileCacheDataLoader getOnlineFileLoader(Map<String, DSSDocument> urlMap) {
-		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
-		offlineFileLoader.setCacheExpirationTime(0);
-		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
-		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
-		return offlineFileLoader;
+		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
+		onlineFileLoader.setCacheExpirationTime(0);
+		onlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
+		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
+		return onlineFileLoader;
 	}
 
 	private LOTLSource getLOTLSource() {

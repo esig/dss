@@ -138,11 +138,11 @@ public class TLValidationJobSnippets {
 	}
 
 	public DSSFileLoader onlineLoader() {
-		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
-		offlineFileLoader.setCacheExpirationTime(0);
-		offlineFileLoader.setDataLoader(dataLoader()); // instance of DataLoader which can access to Internet (proxy,...)
-		offlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
-		return offlineFileLoader;
+		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
+		onlineFileLoader.setCacheExpirationTime(0);
+		onlineFileLoader.setDataLoader(dataLoader()); // instance of DataLoader which can access to Internet (proxy,...)
+		onlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
+		return onlineFileLoader;
 	}
 	// end::job-loaders[]
 
