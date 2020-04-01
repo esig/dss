@@ -51,7 +51,7 @@ public class SignXmlXadesBWithMSCAPI {
 		try (MSCAPISignatureToken signingToken = new MSCAPISignatureToken()) {
 
 			List<DSSPrivateKeyEntry> list = signingToken.getKeys();
-			// Chose the right private key entry from store.
+			// Choose the right private key entry from store.
 			// The index will depend of the number of the certificates on your card.
 			System.out.println(list.size());
 			DSSPrivateKeyEntry privateKey = list.get(0);

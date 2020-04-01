@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -76,8 +77,10 @@ public class CreateKeyStoreApp {
 	private static void addCertificate(KeyStoreCertificateSource kscs, String certPath) throws Exception {
 		try (InputStream is = new FileInputStream(certPath)) {
 			CertificateToken cert = DSSUtils.loadCertificate(is);
-			if (!ALLOW_EXPIRED && cert.isValidOn(new Date())) {
-				throw new RuntimeException("Certificate " + DSSASN1Utils.getSubjectCommonName(cert) + " is expired");
+			if (!ALLOW_EXPIRED && !cert.isValidOn(new Date())) {
+				LOG.error("Certificate is out of bounds : {}", cert);
+				throw new DSSException(String.format("Certificate %s cannot be added to the keyStore! "
+						+ "Renew the certificate or change ALLOW_EXPIRED value to true.", DSSASN1Utils.getSubjectCommonName(cert)));
 			}
 			displayCertificateDigests(cert);
 
