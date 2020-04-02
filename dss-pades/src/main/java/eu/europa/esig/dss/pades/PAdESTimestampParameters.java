@@ -63,7 +63,7 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	/**
 	 * This attribute is used to create a visible timestamp in PAdES form
 	 */
-	private SignatureImageParameters timestampImageParameters;
+	private SignatureImageParameters signatureImageParameters;
 	
 	public PAdESTimestampParameters() {
 	}
@@ -96,11 +96,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 
 	@Override
 	public SignatureImageParameters getImageParameters() {
-		return timestampImageParameters;
+		return signatureImageParameters;
 	}
 
-	public void setImageParameters(SignatureImageParameters timestampImageParameters) {
-		this.timestampImageParameters = timestampImageParameters;
+	public void setImageParameters(SignatureImageParameters signatureImageParameters) {
+		this.signatureImageParameters = signatureImageParameters;
 	}
 
 	@Override
