@@ -112,8 +112,8 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertEquals(documentName, originalDoc.getReferencedName());
 		assertNotNull(originalDoc.getId());
 		assertNotNull(originalDoc.getDigestAlgoAndValue());
-		assertEquals(DigestAlgorithm.SHA1, originalDoc.getDigestAlgoAndValue().getDigestMethod());
-		assertEquals(toBeSigned.getDigest(DigestAlgorithm.SHA1), Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
+		assertEquals(DigestAlgorithm.SHA256, originalDoc.getDigestAlgoAndValue().getDigestMethod());
+		assertEquals(toBeSigned.getDigest(DigestAlgorithm.SHA256), Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
 		
 	}
 

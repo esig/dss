@@ -56,7 +56,7 @@ public class DSS1524Test {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
 		assertFalse(signatureWrapper.isSignatureIntact());
-		assertEquals(1, signatureWrapper.getSignatureScopes().size());
+		assertEquals(0, signatureWrapper.getSignatureScopes().size()); // transformations are defined, not possible to get the original data
 	}
 
 	@Test

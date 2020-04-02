@@ -119,9 +119,13 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 					}
 				}
 				
-			} else if (Utils.isCollectionNotEmpty(xadesSignature.getDetachedContents())) {
-				// detached file
+			} else if (xadesReferenceValidation.isIntact() && Utils.isCollectionNotEmpty(xadesSignature.getDetachedContents())) {
+				// detached file (the signature must intact in order to be sure in the correctness of the provided file)
 				result.addAll(getFromDetachedContent(xadesSignature, transformations, uri));
+				
+			} else if (Utils.isCollectionEmpty(transformations)) {
+				// if a matching file was not found around the detached contents and transformations are not defined, use the original reference data
+				result.add(new FullSignatureScope(uri, xadesReferenceValidation.getDigest()));
 				
 			}
 		}
@@ -129,16 +133,15 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		
 	}
 
-	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature,
-			final List<String> transformations, final String uri) {
+	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature, final List<String> transformations, 
+			final String uri) {
 		List<SignatureScope> detachedSignatureScopes = new ArrayList<>();
 		List<DSSDocument> detachedContents = xadesSignature.getDetachedContents();
 		for (DSSDocument detachedDocument : detachedContents) {
 
 			String decodedUrl = uri != null ? DSSUtils.decodeUrl(uri) : uri;
-			// if only one detached file is provided, we assume that it is the target file,
-			// otherwise check by name
-			if (detachedContents.size() == 1 || uri != null && (uri.equals(detachedDocument.getName()) || decodedUrl.equals(detachedDocument.getName()))) {
+			// check the original detached file by its name (or if no name if provided, see {@link DetachedSignatureResolver})
+			if (detachedDocument.getName() == null || uri != null && (uri.equals(detachedDocument.getName()) || decodedUrl.equals(detachedDocument.getName()))) {
 				String fileName = detachedDocument.getName() != null ? detachedDocument.getName() : decodedUrl;
 				if (detachedDocument instanceof DigestDocument) {
 					DigestDocument digestDocument = (DigestDocument) detachedDocument;
