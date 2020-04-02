@@ -114,7 +114,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
 	 *
 	 * @param signatureValue
-	 * @return
+	 * @return {@link DSSDocument}
 	 * @throws DSSException
 	 */
 	@Override

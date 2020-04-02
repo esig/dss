@@ -180,8 +180,11 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 				return new InMemoryDocument(nodeBytes);
 			}
 		}
+		if (nodeToTransform == null) {
+			nodeToTransform = DomUtils.buildDOM(dssDocument);
+		}
 		
-		byte[] transformedReferenceBytes = applyTransformations(dssDocument, transforms, nodeToTransform);
+		byte[] transformedReferenceBytes = applyTransformations(transforms, nodeToTransform);
 		return new InMemoryDocument(transformedReferenceBytes);
 	}
 

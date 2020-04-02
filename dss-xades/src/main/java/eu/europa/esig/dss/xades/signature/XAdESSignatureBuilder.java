@@ -205,19 +205,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *             if an error occurred
 	 */
 	public byte[] build() throws DSSException {
+
+		ensureConfigurationValidity();
 		
 		xadesPaths = getCurrentXAdESPaths();
 
 		documentDom = buildRootDocumentDom();
-
-		final List<DSSReference> references = params.getReferences();
-		if (Utils.isCollectionEmpty(references)) {
-			final List<DSSReference> defaultReferences = createDefaultReferences();
-			// The SignatureParameters object is updated with the default references.
-			params.setReferences(defaultReferences);
-		} else {
-			checkReferencesValidity();
-		}
 
 		incorporateFiles();
 
@@ -252,6 +245,32 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		return canonicalizedSignedInfo;
 	}
 	
+	private void ensureConfigurationValidity() {
+		checkSignaturePackagingValidity();
+
+		final List<DSSReference> references = params.getReferences();
+		if (Utils.isCollectionEmpty(references)) {
+			final List<DSSReference> defaultReferences = createDefaultReferences();
+			// The SignatureParameters object is updated with the default references.
+			params.setReferences(defaultReferences);
+		} else {
+			checkReferencesValidity();
+		}
+	}
+	
+	private void checkSignaturePackagingValidity() {
+		if (!SignaturePackaging.ENVELOPING.equals(params.getSignaturePackaging())) {
+			if (params.isManifestSignature()) {
+				throw new DSSException(String.format("The signature packaging %s is not compatible with manifestSignature(true) configuration!", 
+						params.getSignaturePackaging()));
+			}
+			if (params.isEmbedXML()) {
+				throw new DSSException(String.format("The signature packaging %s is not compatible with embedXML(true) configuration!", 
+						params.getSignaturePackaging()));
+			}
+		}
+	}
+	
 	/**
 	 * Verifies a compatibility of defined signature parameters and reference transformations
 	 */
@@ -268,8 +287,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 							throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
 						} else if (params.isManifestSignature()) {
 							throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
-						} else if (SignaturePackaging.ENVELOPED.equals(params.getSignaturePackaging())) {
-							throw new DSSException(referenceWrongMessage + "Base64 transform is not compatible with Enveloped signature format.");
+						} else if (!SignaturePackaging.ENVELOPING.equals(params.getSignaturePackaging())) {
+							throw new DSSException(referenceWrongMessage + 
+									String.format("Base64 transform is not compatible with %s signature format.", params.getSignaturePackaging()));
 						} else if (transforms.size() > 1) {
 							throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
 						}
@@ -671,7 +691,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		final List<DSSTransform> dssTransforms = dssReference.getTransforms();
-		if (dssTransforms != null) { // Detached signature may not have transformations
+		if (Utils.isCollectionNotEmpty(dssTransforms)) { // Detached signature may not have transformations
 			final Element transformsDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORMS);
 			referenceDom.appendChild(transformsDom);
 			for (final DSSTransform dssTransform : dssTransforms) {
@@ -727,9 +747,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected abstract DSSReference createReference(DSSDocument document, int referenceIndex);
 
 	/**
-	 * This method performs the reference transformation. Note that for the time being (4.3.0-RC) only two types of
-	 * transformation are implemented: canonicalization {@code
-	 * Transforms.TRANSFORM_XPATH} and can be applied only for {@code SignaturePackaging.ENVELOPED}.
+	 * This method performs the reference transformation.
 	 *
 	 * @param reference
 	 *            {@code DSSReference} to be transformed
@@ -1248,14 +1266,18 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		timestampElement.appendChild(encapsulatedTimestampElement);
 	}
 
-	protected byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform) {
+	/**
+	 * Applies transforms on a node and returns the byte array to be used for a reference digest computation
+	 * 
+	 * @param transforms a list of {@link DSSTransform}s to be applied on a node
+	 * @param nodeToTransform {@link Node} to apply transforms on
+	 * @return a byte array, representing a content obtained after transformations
+	 */
+	protected byte[] applyTransformations(final List<DSSTransform> transforms, Node nodeToTransform) {
 		byte[] transformedReferenceBytes = null;
 		Iterator<DSSTransform> iterator = transforms.iterator();
 		while (iterator.hasNext()) {
 			DSSTransform transform = iterator.next();
-			if (nodeToTransform == null) {
-				nodeToTransform = DomUtils.buildDOM(dssDocument);
-			}
 			transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform);
 			if (iterator.hasNext()) {
 				nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);

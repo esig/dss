@@ -110,7 +110,7 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 	private boolean isDocumentNamesDefined() {
 		if (Utils.isCollectionNotEmpty(documents)) {
 			for (final DSSDocument dssDocument : documents) {
-				if (Utils.isStringNotEmpty(dssDocument.getName())) {
+				if (dssDocument.getName() != null) {
 					return true;
 				}
 			}
