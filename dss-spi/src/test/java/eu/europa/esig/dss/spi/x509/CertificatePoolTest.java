@@ -24,10 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,6 +81,11 @@ public class CertificatePoolTest {
 			@Override
 			public boolean isTrusted(CertificateToken certificateToken) {
 				return false;
+			}
+
+			@Override
+			public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
+				return null;
 			}
 		};
 	}

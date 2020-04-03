@@ -33,8 +33,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
@@ -64,11 +62,8 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -385,106 +380,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public void resetTimestampSource() {
 		signatureTimestampSource = null;
-	}
-
-	@Override
-	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		if (candidatesForSigningCertificate != null) {
-			return candidatesForSigningCertificate;
-		}
-		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-		
-		/**
-		 * 5.1.4.1 XAdES processing<br>
-		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo
-		 * element</i> shall be checked against all references present in the
-		 * ds:SigningCertificate property, if present, since one of these references
-		 * shall be a reference to the signing certificate.
-		 */
-		final SignatureCertificateSource certSource = getCertificateSource();
-		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
-			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
-		}
-		
-		// if KeyInfo does not contain certificates,
-		// check other certificates embedded into the signature
-		if (candidatesForSigningCertificate.isEmpty()) {
-			PublicKey publicKey = getSigningCertificatePublicKey();
-			if (publicKey != null) {
-				
-				// try to find out the signing certificate token by provided public key
-				List<CertificateToken> certsFromPool = certPool.get(publicKey);
-				
-				if (Utils.isCollectionNotEmpty(certsFromPool)) {
-					for (CertificateToken certificateToken : certsFromPool) {
-						candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
-					}
-				} else {
-					// process public key only if no certificates found
-					candidatesForSigningCertificate.add(new CertificateValidity(publicKey));
-				}
-				
-			} else {
-				// Add all found certificates
-				for (CertificateToken certificateToken : certSource.getCertificates()) {
-					candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
-				}
-			}
-					
-		}
-
-		if (providedSigningCertificateToken != null) {
-			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
-		}
-		
-		checkSigningCertificate(candidatesForSigningCertificate); // checks the validity against certificate reference
-
-		return candidatesForSigningCertificate;
-	}
-
-	/**
-	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
-	 * substitution attack.
-	 */
-	private void checkSigningCertificate(final CandidatesForSigningCertificate candidates) {
-
-		final List<CertificateRef> potentialSigningCertificates = getCertificateSource().getSigningCertificateRefs();
-		
-		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
-			// must contain only one reference
-			final CertificateRef signingCert = potentialSigningCertificates.get(0);
-			
-			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
-			
-			CertificateValidity bestCertificateValidity = null;
-			// check all certificates against the signingCert ref and find the best one
-			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
-			for (final CertificateValidity certificateValidity : certificateValidityList) {
-				
-				certificateValidity.setAttributePresent(signingCert != null);
-				certificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
-
-				CertificateToken certificateToken = certificateValidity.getCertificateToken();
-				
-				if (certificateToken != null) {
-					certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCert));
-					certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, signingCert));
-					certificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(certificateToken, signingCert));
-				}
-				
-				if (certificateValidity.isValid()) {
-					bestCertificateValidity = certificateValidity;
-				}
-			}
-
-			// none of them match
-			if (bestCertificateValidity == null) {
-				bestCertificateValidity = candidates.getCertificateValidityList().iterator().next();
-			}
-
-			candidates.setTheCertificateValidity(bestCertificateValidity);
-		}
-		
 	}
 
 	@Override
@@ -805,13 +700,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					if (currentSantuarioSignature.checkSignatureValue(publicKey)) {
 						LOG.debug("Public key matching the signature value found.");
 						coreValidity = true;
-						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
+						candidates.setTheCertificateValidity(certificateValidity);
 						if (certificateValidity.isValid()) {
 							LOG.info("Determining signing certificate from certificate candidates list succeeded : {}",
 									certificateValidity.getCertificateToken().getDSSIdAsString());
 							break;
 						} else if (certificateValidity.getCertificateToken() != null) {
-							LOG.warn("The signing certificate '{}' does not match a signing certificate reference!",
+							LOG.warn("The signing certificate candidate '{}' does not match a signing certificate reference!",
 									certificateValidity.getCertificateToken().getDSSIdAsString());
 						}
 					} else {
@@ -1069,19 +964,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		} catch (XMLSecurityException e) {
 			throw new DSSException("Unable to initialize santuario XMLSignature", e);
 		}
-	}
-	
-	private PublicKey getSigningCertificatePublicKey() {
-		final KeyInfo extractedKeyInfo = getSantuarioSignature().getKeyInfo();
-		if (extractedKeyInfo != null) {
-			try {
-				return extractedKeyInfo.getPublicKey();
-			} catch (KeyResolverException e) {
-				LOG.warn("Unable to extract the public key. Reason : ", e.getMessage(), e);
-			}
-		}
-		LOG.warn("Unable to extract the public key. Reason : KeyInfo element is null");
-		return null;
 	}
 
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {

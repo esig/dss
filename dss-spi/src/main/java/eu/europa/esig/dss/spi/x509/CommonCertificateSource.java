@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -94,6 +97,17 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public List<CertificateToken> getCertificates() {
 		return Collections.unmodifiableList(certificateTokens);
+	}
+	
+	@Override
+	public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
+		Set<CertificateToken> certsByPublicKey = new HashSet<CertificateToken>();
+		for (CertificateToken certificateToken : certificateTokens) {
+			if (publicKey.equals(certificateToken.getPublicKey())) {
+				certsByPublicKey.add(certificateToken);
+			}
+		}
+		return certsByPublicKey;
 	}
 
 	/**

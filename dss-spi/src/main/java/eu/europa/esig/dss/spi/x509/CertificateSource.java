@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.io.Serializable;
+import java.security.PublicKey;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -66,5 +68,14 @@ public interface CertificateSource extends Serializable {
 	 * @return true if the certificate is trusted
 	 */
 	boolean isTrusted(CertificateToken certificateToken);
+	
+	/**
+	* This method returns a Set of {@code CertificateToken} with the given
+	* {@code PublicKey}
+	* 
+	* @param publicKey the public key to find
+	* @return a Set of CertificateToken which have the given public key
+	*/
+	Set<CertificateToken> getByPublicKey(PublicKey publicKey);
 
 }

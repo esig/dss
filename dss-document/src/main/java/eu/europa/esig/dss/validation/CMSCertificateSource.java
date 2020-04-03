@@ -243,7 +243,8 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	public CandidatesForSigningCertificate getCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+	@Override
+	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
 		CandidatesForSigningCertificate candidates = new CandidatesForSigningCertificate();
 
 		CertificateIdentifier currentCertificateIdentifier = getCurrentCertificateIdentifier();

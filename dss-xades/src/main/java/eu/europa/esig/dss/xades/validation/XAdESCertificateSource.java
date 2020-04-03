@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import java.security.PublicKey;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +38,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
+import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 /**
@@ -153,6 +160,104 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 				addCertificateRef(certificateRef, origin);
 			}
 		}
+	}
+	
+	@Override
+	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+		CandidatesForSigningCertificate candidatesForSigningCertificate = new CandidatesForSigningCertificate();
+		
+		/**
+		 * 5.1.4.1 XAdES processing<br>
+		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo
+		 * element</i> shall be checked against all references present in the
+		 * ds:SigningCertificate property, if present, since one of these references
+		 * shall be a reference to the signing certificate.
+		 */
+		for (final CertificateToken certificateToken : getKeyInfoCertificates()) {
+			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+		}
+		
+		// if KeyInfo does not contain certificates,
+		// check other certificates embedded into the signature
+		if (candidatesForSigningCertificate.isEmpty()) {
+			PublicKey publicKey = DSSXMLUtils.getKeyInfoSigningCertificatePublicKey(signatureElement);
+			if (publicKey != null) {
+				
+				// try to find out the signing certificate token by provided public key
+				Set<CertificateToken> certsByPublicKey = getByPublicKey(publicKey);
+				
+				if (Utils.isCollectionNotEmpty(certsByPublicKey)) {
+					for (CertificateToken certificateToken : certsByPublicKey) {
+						candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+					}
+				} else {
+					// process public key only if no certificates found
+					candidatesForSigningCertificate.add(new CertificateValidity(publicKey));
+				}
+				
+			} else {
+				// Add all found certificates
+				for (CertificateToken certificateToken : getCertificates()) {
+					candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+				}
+			}
+					
+		}
+
+		if (providedSigningCertificateToken != null) {
+			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
+		}
+		
+		checkCandidatesAgainstSigningCertificateRef(candidatesForSigningCertificate);
+
+		return candidatesForSigningCertificate;
+	}
+
+	/**
+	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
+	 * substitution attack.
+	 */
+	private void checkCandidatesAgainstSigningCertificateRef(final CandidatesForSigningCertificate candidates) {
+
+		final List<CertificateRef> potentialSigningCertificates = getSigningCertificateRefs();
+		
+		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
+			// must contain only one reference
+			final CertificateRef signingCert = potentialSigningCertificates.get(0);
+			
+			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
+			
+			CertificateValidity bestCertificateValidity = null;
+			// check all certificates against the signingCert ref and find the best one
+			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
+			for (final CertificateValidity certificateValidity : certificateValidityList) {
+				
+				certificateValidity.setAttributePresent(signingCert != null);
+				certificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
+
+				CertificateToken certificateToken = certificateValidity.getCertificateToken();
+				
+				if (certificateToken != null) {
+					certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCert));
+					certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, signingCert));
+					certificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(certificateToken, signingCert));
+				}
+				
+				if (certificateValidity.isValid()) {
+					bestCertificateValidity = certificateValidity;
+				}
+			}
+
+			// none of them match
+			if (bestCertificateValidity == null && !candidates.isEmpty()) {
+				bestCertificateValidity = candidates.getCertificateValidityList().iterator().next();
+			}
+
+			if (bestCertificateValidity != null) {
+				candidates.setTheCertificateValidity(bestCertificateValidity);
+			}
+		}
+		
 	}
 
 }

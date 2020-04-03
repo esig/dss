@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
+import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transforms;
@@ -817,6 +819,27 @@ public final class DSSXMLUtils {
 	 */
 	public static boolean isManifestReferenceType(String referenceType) {
 		return XMLDSigPaths.MANIFEST_TYPE.equals(referenceType);
+	}
+	
+	/**
+	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present
+	 * NOTE: can return null (the value is optional)
+	 * 
+	 * @param signatureElement {@link Element} representing a signature to get KeyInfo signing certificate for
+	 * @return {@link PublicKey} of the signature extracted from KeyInfo element if present
+	 */
+	public static PublicKey getKeyInfoSigningCertificatePublicKey(final Element signatureElement) {
+		Element keyInfoElement = DomUtils.getElement(signatureElement, XMLDSigPaths.KEY_INFO_PATH);
+		if (keyInfoElement != null) {
+			try {
+				KeyInfo keyInfo = new KeyInfo(keyInfoElement, "");
+				return keyInfo.getPublicKey();
+			} catch (XMLSecurityException e) {
+				LOG.warn("Unable to extract signing certificate's public key. Reason : {}", e.getMessage(), e);
+			}
+		}
+		LOG.warn("Unable to extract the public key. Reason : KeyInfo element is null");
+		return null;
 	}
 
 }
