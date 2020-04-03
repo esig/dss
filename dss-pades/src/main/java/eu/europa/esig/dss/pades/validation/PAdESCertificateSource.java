@@ -33,7 +33,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -49,19 +48,14 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	/**
 	 * The default constructor for PAdESCertificateSource.
 	 *
-	 * @param pdfSignatureRevision
-	 *                      the {@link PdfSignatureRevision}
-	 * @param signerInformation
-	 * @param certPool
-	 *                      The pool of certificates to be used. Can be null.
+	 * @param pdfSignatureRevision the used {@link PdfSignatureRevision}
+	 * @param signerInformation    the current {@link SignerInformation}
 	 */
-	public PAdESCertificateSource(final PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation, 
-			final CertificatePool certPool) {
-		super(pdfSignatureRevision.getCMSSignedData(), signerInformation, certPool);
+	public PAdESCertificateSource(final PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation) {
+		super(pdfSignatureRevision.getCMSSignedData(), signerInformation);
 
 		this.dssDictionary = pdfSignatureRevision.getDssDictionary();
 
-		// init CertPool
 		extractFromDSSDict();
 	}
 

@@ -47,7 +47,6 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfRevision;
@@ -100,8 +99,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	public List<PdfRevision> validateSignatures(CertificatePool validationCertPool, DSSDocument document) {
-		return getRevisions(validationCertPool, document);
+	public List<PdfRevision> validateSignatures(DSSDocument document) {
+		return getRevisions(document);
 	}
 
 	/**
@@ -112,7 +111,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	protected abstract void checkDocumentPermissions(DSSDocument toSignDocument);
 
-	private List<PdfRevision> getRevisions(CertificatePool validationCertPool, DSSDocument document) {
+	private List<PdfRevision> getRevisions(DSSDocument document) {
 		List<PdfRevision> result = new ArrayList<>();
 		try (PdfDocumentReader reader = loadPdfDocumentReader(document, passwordProtection)) {
 
@@ -154,14 +153,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					if (isDocTimestamp(signatureDictionary)) {
 						// if there is a DSS dictionary before -> Archive timestamp
 						boolean isArchiveTimestamp = previousRevisionDssDict != null;
-						
-						newRevision = new PdfDocTimestampRevision(signatureDictionary, fieldNames, validationCertPool, 
-								signedContent, signatureCoversWholeDocument, isArchiveTimestamp);
-	
+
+						newRevision = new PdfDocTimestampRevision(signatureDictionary, fieldNames, signedContent, signatureCoversWholeDocument,
+								isArchiveTimestamp);
+
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after
 						newRevision = new PdfSignatureRevision(signatureDictionary, dssDictionary, fieldNames, 
-								validationCertPool, signedContent, signatureCoversWholeDocument);
+								signedContent, signatureCoversWholeDocument);
 	
 					} else {
 						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' and subFilter '{}' is not acceptable configuration!",

@@ -86,6 +86,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 */
 	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
 		this.trustPropertiesByEntity = new HashMap<>(); // reinit the map
+		super.reset();
 		trustPropertiesByCerts.forEach((certificateToken, trustPropertiesList) -> {
 			addCertificate(certificateToken, trustPropertiesList);
 		});
@@ -95,11 +96,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		super.addCertificate(certificateToken);
 		
 		EntityIdentifier entityKey = certificateToken.getEntityKey();
-		List<TrustProperties> list = trustPropertiesByEntity.get(entityKey);
-		if (list == null) {
-			list = new ArrayList<>();
-			trustPropertiesByEntity.put(entityKey, list);
-		}
+		List<TrustProperties> list = trustPropertiesByEntity.computeIfAbsent(entityKey, k -> new ArrayList<>());
 		for (TrustProperties trustProperties : trustPropertiesList) {
 			if (!list.contains(trustProperties)) {
 				list.add(trustProperties);

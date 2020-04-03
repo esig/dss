@@ -21,17 +21,14 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -42,11 +39,11 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
  * All certificates for a given {@code CertificatePoolEntity} have the same
  * public key.
  */
-class CertificatePoolEntity implements Serializable {
+class CertificateSourceEntity implements Serializable {
 	
 	private static final long serialVersionUID = -8670353777128605464L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CertificatePoolEntity.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CertificateSourceEntity.class);
 
 	/**
 	 * Unique Id for all certificates (SHA-256 of the common public key) 
@@ -61,18 +58,12 @@ class CertificatePoolEntity implements Serializable {
 	/**
 	 * Equivalent certificates (which have the same public key)
 	 */
-	private final List<CertificateToken> equivalentCertificates = new ArrayList<>();
+	private final Set<CertificateToken> equivalentCertificates = new HashSet<>();
 
-	/**
-	 * This Set contains the different sources for this certificate.
-	 */
-	private final Set<CertificateSourceType> sources = new HashSet<>();
-
-	CertificatePoolEntity(CertificateToken initialCert, CertificateSourceType source) {
+	CertificateSourceEntity(CertificateToken initialCert) {
 		identifier = initialCert.getEntityKey();
 		ski = DSSASN1Utils.computeSkiFromCert(initialCert);
 		equivalentCertificates.add(initialCert);
-		sources.add(source);
 	}
 
 	void addEquivalentCertificate(CertificateToken token) {
@@ -83,7 +74,7 @@ class CertificatePoolEntity implements Serializable {
 			final byte[] newSKI = DSSASN1Utils.computeSkiFromCert(token);
 			// This should never happen
 			if (!Arrays.equals(newSKI, ski)) {
-				LOG.warn("Token {} is skipped", token);
+				LOG.warn("Token {} is skipped", token.getAbbreviation());
 			} else {
 				equivalentCertificates.add(token);
 			}
@@ -94,20 +85,8 @@ class CertificatePoolEntity implements Serializable {
 		return ski;
 	}
 
-	void addSource(CertificateSourceType source) {
-		sources.add(source);
-	}
-
-	List<CertificateToken> getEquivalentCertificates() {
-		return Collections.unmodifiableList(equivalentCertificates);
-	}
-
-	Set<CertificateSourceType> getSources() {
-		return Collections.unmodifiableSet(sources);
-	}
-
-	boolean isTrusted() {
-		return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
+	Set<CertificateToken> getEquivalentCertificates() {
+		return Collections.unmodifiableSet(equivalentCertificates);
 	}
 
 	@Override
@@ -129,7 +108,7 @@ class CertificatePoolEntity implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CertificatePoolEntity other = (CertificatePoolEntity) obj;
+		CertificateSourceEntity other = (CertificateSourceEntity) obj;
 		if (identifier == null) {
 			if (other.identifier != null) {
 				return false;

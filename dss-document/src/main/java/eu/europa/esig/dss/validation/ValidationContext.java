@@ -76,12 +76,10 @@ public interface ValidationContext {
 	void addTimestampTokenForVerification(final TimestampToken timestampToken);
 
 	/**
-	 * Carries out the validation process in recursive manner for not yet checked tokens.
-	 *
-	 * @throws DSSException
-	 *             if an error occurred
+	 * Carries out the validation process in recursive manner for not yet checked
+	 * tokens.
 	 */
-	void validate() throws DSSException;
+	void validate();
 
 	/**
 	 * This method allows to verify if all processed certificates have a revocation

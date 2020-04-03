@@ -23,18 +23,11 @@ package eu.europa.esig.dss.asic.cades.validation;
 import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificatePoolSharer;
 
-public class CMSDocumentForASiCValidator extends CMSDocumentValidator implements CertificatePoolSharer {
+public class CMSDocumentForASiCValidator extends CMSDocumentValidator {
 
 	public CMSDocumentForASiCValidator(DSSDocument signatureDocument) {
 		super(signatureDocument, new ASiCWithCAdESSignatureScopeFinder());
-	}
-
-	@Override
-	public void setValidationCertPool(CertificatePool validationCertPool) {
-		this.validationCertPool = validationCertPool;
 	}
 
 }

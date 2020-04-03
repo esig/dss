@@ -68,7 +68,6 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			signatureValidators = new ArrayList<>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
-				xadesValidator.setValidationCertPool(validationCertPool);
 				xadesValidator.setCertificateVerifier(certificateVerifier);
 				xadesValidator.setProcessExecutor(processExecutor);
 				xadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());

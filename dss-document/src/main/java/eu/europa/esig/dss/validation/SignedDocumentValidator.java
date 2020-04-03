@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -51,7 +50,7 @@ import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.utils.Utils;
@@ -84,12 +83,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This variable can hold a specific {@code DocumentProcessExecutor}
 	 */
 	protected DocumentProcessExecutor processExecutor = null;
-	
-	/**
-	 * This is the pool of certificates used in the validation process. The pools
-	 * present in the certificate verifier are merged and added to this pool.
-	 */
-	protected CertificatePool validationCertPool = null;
 	
 	/**
 	 * The document to be validated (with the signature(s) or timestamp(s))
@@ -186,8 +179,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void defineSigningCertificate(final CertificateToken token) {
 		Objects.requireNonNull(token, "Token is not defined");
-		Objects.requireNonNull(validationCertPool, "Certificate pool is not instantiated");
-		providedSigningCertificateToken = validationCertPool.getInstance(token, CertificateSourceType.OTHER);
+		providedSigningCertificateToken = token;
 	}
 
 	/**
@@ -202,9 +194,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
-		if (validationCertPool == null) {
-			validationCertPool = certificateVerifier.createValidationPool();
-		}
 	}
 
 	@Override
@@ -350,7 +339,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		LOG.info("Document validation...");
 		assertConfigurationValid();
 
-		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
+		final ValidationContext validationContext = new SignatureValidationContext();
 
 		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder(validationContext).build();
 
@@ -509,20 +498,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
 		}
 		for (final AdvancedSignature signature : allSignatureList) {
-			final List<CertificateToken> candidates = signature.getCertificates();
-			for (final CertificateToken certificateToken : candidates) {
+			ListCertificateSource completeCertificateSource = signature.getCompleteCertificateSource();
+			for (CertificateToken certificateToken : completeCertificateSource.getAllCertificateTokens()) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
-			}
-			// Add certificate from CertPool,... if not embedded in the signature
-			CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
-			if (candidatesForSigningCertificate != null) {
-				CertificateValidity certificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
-				if (certificateValidity != null) {
-					CertificateToken signingCertificateCandidateToken = certificateValidity.getCertificateToken();
-					if (signingCertificateCandidateToken != null) {
-						validationContext.addCertificateTokenForVerification(signingCertificateCandidateToken);
-					}
-				}
 			}
 			signature.prepareTimestamps(validationContext);
 		}

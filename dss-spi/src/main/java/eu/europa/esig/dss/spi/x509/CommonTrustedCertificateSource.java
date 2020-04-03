@@ -68,4 +68,9 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 		return Collections.emptyList();
 	}
 
+	@Override
+	public boolean isTrusted(CertificateToken certificateToken) {
+		return isKnown(certificateToken);
+	}
+
 }

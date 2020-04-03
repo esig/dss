@@ -36,9 +36,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
@@ -99,6 +99,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 */
 	private ListRevocationSource<OCSP> signatureOCSPSource;
 	
+	/**
+	 * This variable contains the {@code ListCertificateSource} extracted from the
+	 * signatures to validate.
+	 */
+	private ListCertificateSource signatureCertificateSource;
+
 	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
 	 * of digests for validation tokens and signed data
@@ -307,6 +313,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public ListCertificateSource getSignatureCertificateSource() {
+		return signatureCertificateSource;
+	}
+
+	@Override
+	public void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource) {
+		this.signatureCertificateSource = signatureCertificateSource;
+	}
+
+	@Override
 	public Alert<Exception> getAlertOnInvalidTimestamp() {
 		return alertOnInvalidTimestamp;
 	}
@@ -364,18 +380,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
 		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
-	}
-
-	@Override
-	public CertificatePool createValidationPool() {
-		final CertificatePool validationPool = new CertificatePool();
-		for (CertificateSource trustedSource : trustedCertSources) {
-			validationPool.importCerts(trustedSource);
-		}
-		if (adjunctCertSource != null) {
-			validationPool.importCerts(adjunctCertSource);
-		}
-		return validationPool;
 	}
 
 	@Override

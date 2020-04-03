@@ -25,8 +25,8 @@ import java.util.List;
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
@@ -147,7 +147,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method returns the OCSP source (information extracted from signatures).
 	 * 
-	 * @return the OCSP sources from the signature
+	 * @return the OCSP sources from the signatures
 	 */
 	ListRevocationSource<OCSP> getSignatureOCSPSource();
 
@@ -159,6 +159,22 @@ public interface CertificateVerifier {
 	 *                            the OCSP sources from the signature
 	 */
 	void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource);
+
+	/**
+	 * This method returns the Certificate Source (information extracted from
+	 * signatures)
+	 * 
+	 * @return the certificate sources from the signatures
+	 */
+	ListCertificateSource getSignatureCertificateSource();
+
+	/**
+	 * This method allows to set the Certificate source (information extracted from
+	 * signatures).
+	 *
+	 * @param signatureCertificateSource the Certificate sources from the signatures
+	 */
+	void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource);
 
 	/**
 	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
@@ -343,11 +359,5 @@ public interface CertificateVerifier {
 	 *         chains
 	 */
 	boolean isCheckRevocationForUntrustedChains();
-
-	/**
-	 * This method creates the validation pool of certificates which is used
-	 * during the validation process.
-	 */
-	CertificatePool createValidationPool();
 
 }

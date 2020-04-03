@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.spi.x509;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -40,19 +43,32 @@ public class CommonCertificateSourceTest {
 		assertNotNull(empty.getCertificates());
 		assertNotNull(empty.getCertificateSourceType());
 		assertEquals(0, empty.getNumberOfCertificates());
+		assertEquals(0, empty.getNumberOfEntities());
+		assertFalse(empty.isKnown(CERT));
+		assertFalse(empty.isTrusted(CERT));
 	}
 
 	@Test
 	public void commonCertificateSource() {
-		CertificatePool certPool = new CertificatePool();
-		CommonCertificateSource ccc = new CommonCertificateSource(certPool);
+		CommonCertificateSource ccc = new CommonCertificateSource();
+		assertFalse(ccc.isKnown(CERT));
+		assertFalse(ccc.isTrusted(CERT));
 
 		CertificateToken adddedCert = ccc.addCertificate(CERT);
 		assertEquals(CERT, adddedCert);
 
 		assertNotNull(ccc.getCertificates());
-		assertNotNull(ccc.getCertificateSourceType());
+		assertEquals(CertificateSourceType.OTHER, ccc.getCertificateSourceType());
 		assertEquals(1, ccc.getNumberOfCertificates());
+		assertEquals(1, ccc.getNumberOfEntities());
+		assertTrue(ccc.isKnown(CERT));
+		assertFalse(ccc.isTrusted(CERT));
+
+		ccc.reset();
+		assertFalse(ccc.isKnown(CERT));
+		assertFalse(ccc.isTrusted(CERT));
+		assertEquals(0, ccc.getNumberOfCertificates());
+		assertEquals(0, ccc.getNumberOfEntities());
 	}
 
 }

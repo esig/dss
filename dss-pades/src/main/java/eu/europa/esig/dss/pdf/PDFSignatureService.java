@@ -26,7 +26,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.PdfRevision;
 
 /**
@@ -65,15 +64,13 @@ public interface PDFSignatureService {
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document
 	 *
-	 * @param validationCertPool
-	 *            the certificate pool
 	 * @param document
 	 *            the document to be validated
 	 * @return list of extracted {@link PdfRevision}s
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	List<PdfRevision> validateSignatures(final CertificatePool validationCertPool, final DSSDocument document);
+	List<PdfRevision> validateSignatures(final DSSDocument document);
 
 	/**
 	 * This method adds the DSS dictionary (Baseline-LT)

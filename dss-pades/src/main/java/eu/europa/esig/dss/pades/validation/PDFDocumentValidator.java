@@ -165,7 +165,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			if (pdfRevision instanceof PdfSignatureRevision) {
 				PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) pdfRevision;
 				try {
-					final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, validationCertPool, documentRevisions);
+					final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, documentRevisions);
 					padesSignature.setSignatureFilename(document.getName());
 					padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 					signatures.add(padesSignature);
@@ -189,7 +189,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 				PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
 				try {
 					TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision, 
-							TimestampType.CONTENT_TIMESTAMP, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
+							TimestampType.CONTENT_TIMESTAMP, TimestampLocation.DOC_TIMESTAMP);
 					timestampToken.setFileName(document.getName());
 					timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getRevisionCoveredBytes()));
 					
@@ -230,7 +230,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		if (documentRevisions == null) {
 			PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
 			pdfSignatureService.setPasswordProtection(passwordProtection);
-			documentRevisions = pdfSignatureService.validateSignatures(validationCertPool, document);
+			documentRevisions = pdfSignatureService.validateSignatures(document);
 		}
 		return documentRevisions;
 	}

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.dom.DOMSource;
@@ -66,7 +67,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
@@ -190,7 +190,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            the signature DOM element
 	 */
 	public XAdESSignature(final Element signatureElement) {
-		this(signatureElement, Arrays.asList(new XAdES132Paths()), new CertificatePool());
+		this(signatureElement, Arrays.asList(new XAdES132Paths()));
 	}
 
 	/**
@@ -201,11 +201,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @param xadesPathsHolders
 	 *                          List of {@code XAdESPaths} to use when handling
 	 *                          signature
-	 * @param certPool
-	 *                          the certificate pool (can be null)
 	 */
-	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders, final CertificatePool certPool) {
-		super(certPool);
+	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders) {
 		Objects.requireNonNull(signatureElement, "Signature Element cannot be null");
 		this.signatureElement = signatureElement;
 		this.xadesPathsHolders = xadesPathsHolders;
@@ -335,7 +332,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new XAdESCertificateSource(signatureElement, xadesPaths, certPool);
+			offlineCertificateSource = new XAdESCertificateSource(signatureElement, xadesPaths);
 		}
 		return offlineCertificateSource;
 	}
@@ -375,7 +372,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public XAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths, certPool);
+			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths);
 		}
 		return (XAdESTimestampSource) signatureTimestampSource;
 	}
@@ -413,10 +410,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (publicKey != null) {
 				
 				// try to find out the signing certificate token by provided public key
-				List<CertificateToken> certsFromPool = certPool.get(publicKey);
+				Set<CertificateToken> certsFromSources = getCompleteCertificateSource().getByPublicKey(publicKey);
 				
-				if (Utils.isCollectionNotEmpty(certsFromPool)) {
-					for (CertificateToken certificateToken : certsFromPool) {
+				if (Utils.isCollectionNotEmpty(certsFromSources)) {
+					for (CertificateToken certificateToken : certsFromSources) {
 						candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
 					}
 				} else {
@@ -1114,7 +1111,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (counterSignaturesList != null && counterSignaturesList.getLength() > 0) {
 					for (int jj = 0; jj < counterSignaturesList.getLength(); jj++) {
 						// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
-						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders, certPool);
+						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders);
 						if (isCounterSignature(xadesCounterSignature)) {
 							xadesCounterSignature.setMasterSignature(this);
 							xadesList.add(xadesCounterSignature);

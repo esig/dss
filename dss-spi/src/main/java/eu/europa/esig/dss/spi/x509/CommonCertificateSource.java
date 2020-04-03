@@ -20,70 +20,101 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 /**
- * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building
- * certification chain)
+ * This class is the common class for all {@code CertificateSource}. It stores
+ * added certificates and allows to retrieve them with several methods
  */
-@SuppressWarnings("serial")
 public class CommonCertificateSource implements CertificateSource {
 
-	/**
-	 * This variable represents the certificate pool with all encapsulated certificates
-	 */
-	private final CertificatePool certPool;
+	private static final long serialVersionUID = -5031898106342793626L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateSource.class);
 
 	/**
-	 * The list of all encapsulated certificate tokens for the current source.
+	 * Map of entries, the key is a hash of the public key.
+	 * 
+	 * All entries share the same key pair
 	 */
-	private final List<CertificateToken> certificateTokens = new ArrayList<>();
+	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/**
-	 * The default constructor to generate a certificates source with an independent certificates pool.
+	 * Map of tokens, the key is the canonicalized SubjectX500Principal
+	 * 
+	 * For a same SubjectX500Principal, different key pairs are possible
+	 */
+	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<>();
+
+	/**
+	 * The default constructor
 	 */
 	public CommonCertificateSource() {
-		certPool = new CertificatePool();
 	}
 
 	/**
-	 * The default constructor with mandatory certificates pool.
+	 * This method adds an external certificate to the source. If the public is
+	 * already known, the certificate is merged in the
+	 * {@code CertificateSourceEntity}
 	 *
-	 * @param certPool
-	 *            the certificate pool to use
-	 */
-	public CommonCertificateSource(final CertificatePool certPool) {
-		Objects.requireNonNull(certPool, "Certificate pool is missing");
-		this.certPool = certPool;
-	}
-
-	@Override
-	public CertificateSourceType getCertificateSourceType() {
-		return CertificateSourceType.OTHER;
-	}
-	
-	/**
-	 * This method adds an external certificate to the encapsulated pool and to the
-	 * source. If the certificate is already present in the pool its source type is
-	 * associated to the token.
-	 *
-	 * @param token
-	 *              the certificate to add
+	 * @param certificateToAdd the certificate to be added
 	 * @return the corresponding certificate token
 	 */
 	@Override
-	public CertificateToken addCertificate(final CertificateToken token) {
-		final CertificateToken certToken = certPool.getInstance(token, getCertificateSourceType());
-		if (!certificateTokens.contains(certToken)) {
-			certificateTokens.add(certToken);
+	public CertificateToken addCertificate(final CertificateToken certificateToAdd) {
+		Objects.requireNonNull(certificateToAdd, "The certificate must be filled");
+
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Certificate to add: {} | {}", certificateToAdd.getIssuerX500Principal(), certificateToAdd.getSerialNumber());
 		}
-		return certToken;
+
+		synchronized (entriesByPublicKeyHash) {
+			final EntityIdentifier entityKey = certificateToAdd.getEntityKey();
+			CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
+			if (poolEntity == null) {
+				LOG.trace("Public key {} is not in the pool", entityKey);
+				poolEntity = new CertificateSourceEntity(certificateToAdd);
+				entriesByPublicKeyHash.put(entityKey, poolEntity);
+			} else {
+				LOG.trace("Public key {} is already in the pool", entityKey);
+				poolEntity.addEquivalentCertificate(certificateToAdd);
+			}
+		}
+
+		synchronized (tokensBySubject) {
+			String key = certificateToAdd.getSubject().getCanonical();
+			tokensBySubject.computeIfAbsent(key, k -> new HashSet<>()).add(certificateToAdd);
+		}
+
+		return certificateToAdd;
+	}
+
+	protected void reset() {
+		entriesByPublicKeyHash = new HashMap<>();
+		tokensBySubject = new HashMap<>();
+	}
+
+	@Override
+	public boolean isKnown(CertificateToken token) {
+		final CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(token.getEntityKey());
+		return poolEntity != null;
 	}
 
 	/**
@@ -93,18 +124,79 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
-		return Collections.unmodifiableList(certificateTokens);
+		List<CertificateToken> allCertificates = new ArrayList<>();
+		for (CertificateSourceEntity entity : entriesByPublicKeyHash.values()) {
+			allCertificates.addAll(entity.getEquivalentCertificates());
+		}
+		return Collections.unmodifiableList(allCertificates);
+	}
+
+	@Override
+	public List<CertificateSourceEntity> getEntities() {
+		return new ArrayList<>(entriesByPublicKeyHash.values());
 	}
 
 	/**
-	 * This method is used internally to remove a certificate from the <code>CertificatePool</code>.
-	 *
-	 * @param certificate
-	 *            the certificate to be removed
-	 * @return true if removed
+	 * This method returns a list of {@code CertificateToken} with the given
+	 * {@code PublicKey}
+	 * 
+	 * @param publicKey the public key to find
+	 * @return a list of CertificateToken which have the given public key
 	 */
-	public boolean removeCertificate(CertificateToken certificate) {
-		return certificateTokens.remove(certificate);
+	@Override
+	public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
+		CertificateSourceEntity entity = entriesByPublicKeyHash.get(new EntityIdentifier(publicKey));
+		if (entity != null) {
+			return entity.getEquivalentCertificates();
+		} else {
+			return Collections.emptySet();
+		}
+	}
+
+	/**
+	 * This method returns a list of {@code CertificateToken} with the given SKI
+	 * (SubjectKeyIdentifier (SHA-1 of the PublicKey))
+	 * 
+	 * @param ski the Subject Key Identifier
+	 * @return a list of CertificateToken which have the given ski
+	 */
+	@Override
+	public Set<CertificateToken> getBySki(byte[] ski) {
+		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+			if (Arrays.equals(entry.getSki(), ski)) {
+				return entry.getEquivalentCertificates();
+			}
+		}
+		return Collections.emptySet();
+	}
+
+	/**
+	 * This method returns the Set of certificates with the same subjectDN.
+	 *
+	 * @param subject the subject to match
+	 * @return If no match is found then an empty list is returned.
+	 */
+	@Override
+	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
+		final Set<CertificateToken> tokensSet = tokensBySubject.get(subject.getCanonical());
+		if (tokensSet != null) {
+			return tokensSet;
+		}
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
+				// run over all entries to compare with the SN too
+				if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+					result.add(certificateToken);
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -113,12 +205,27 @@ public class CommonCertificateSource implements CertificateSource {
 	 * @return number of certificates in this instance
 	 */
 	public int getNumberOfCertificates() {
-		return certificateTokens.size();
+		return getCertificates().size();
 	}
-	
+
+	/**
+	 * This method returns the number of stored entities (unique public key) in this
+	 * source
+	 * 
+	 * @return number of entities in this instance
+	 */
+	public int getNumberOfEntities() {
+		return entriesByPublicKeyHash.size();
+	}
+
+	@Override
+	public CertificateSourceType getCertificateSourceType() {
+		return CertificateSourceType.OTHER;
+	}
+
 	@Override
 	public boolean isTrusted(CertificateToken certificateToken) {
-		return certPool.isTrusted(certificateToken);
+		return false;
 	}
 
 }

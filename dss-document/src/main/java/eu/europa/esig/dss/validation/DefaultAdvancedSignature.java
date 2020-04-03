@@ -44,11 +44,13 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -62,12 +64,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private static final long serialVersionUID = 6452189007886779360L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultAdvancedSignature.class);
-
-	/**
-	 * This is the reference to the global (external) pool of certificates. All encapsulated certificates in the signature are added to this pool. See
-	 * {@link eu.europa.esig.dss.spi.x509.CertificatePool}
-	 */
-	protected final CertificatePool certPool;
 
 	/**
 	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.
@@ -137,14 +133,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Build and defines {@code signatureIdentifier} value
 	 */
 	protected abstract SignatureIdentifier buildSignatureIdentifier();
-
-	/**
-	 * @param certPool
-	 *            can be null
-	 */
-	protected DefaultAdvancedSignature(final CertificatePool certPool) {
-		this.certPool = certPool;
-	}
 
 	@Override
 	public String getSignatureFilename() {
@@ -230,6 +218,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ListCertificateSource getCompleteCertificateSource() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSources());
+		OfflineRevocationSource<OCSP> ocspSource = getOCSPSource();
+		Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
+		for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
+			certificateSource.add(revocationToken.getCertificateSource());
+		}
 		return certificateSource;
 	}
 	
@@ -274,10 +267,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
-		final ValidationContext validationContext = new SignatureValidationContext(certPool);
+		final ValidationContext validationContext = new SignatureValidationContext();
 		
 		certificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
 		certificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
+		certificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
 		
 		validationContext.initialize(certificateVerifier);
 
@@ -440,12 +434,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return list of {@link CRLToken}s to be included to the signature
 	 */
 	private List<CRLToken> getCRLsForInclusion(
-			final Set<RevocationToken<Revocation>> processedRevocations, 
+			final Set<RevocationToken<Revocation>> processedRevocations,
 			final Set<CertificateToken> certificatesToBeIncluded) {
-		
+
 		final List<CRLToken> crlTokens = new ArrayList<>();
 		final List<TokenIdentifier> revocationIds = new ArrayList<>();
-		
+
 		for (final RevocationToken revocationToken : processedRevocations) {
 			if (!revocationIds.contains(revocationToken.getDSSId()) && isAtLeastOneCertificateCovered(revocationToken, certificatesToBeIncluded)) {
 				revocationIds.add(revocationToken.getDSSId());
@@ -827,7 +821,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
 		// Not applicable by default (CAdES/PAdES only)
-		return null;
+		return Collections.emptySet();
 	}
 	
 	@Override

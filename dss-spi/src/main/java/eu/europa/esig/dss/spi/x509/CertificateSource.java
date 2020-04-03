@@ -21,10 +21,13 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.io.Serializable;
+import java.security.PublicKey;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 /**
  * The validation of a certificate requires to access some other certificates from multiple sources (Trusted List, Trust
@@ -34,12 +37,10 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 public interface CertificateSource extends Serializable {
 
 	/**
-	 * This method allows to manually add any certificate to the source. The type of the source is automatically set par
-	 * each specific
-	 * implementation.
+	 * This method allows to manually add any certificate to the source. The type of
+	 * the source is automatically set par each specific implementation.
 	 *
-	 * @param certificate
-	 *            the certificate you have to trust
+	 * @param certificate the certificate you have to trust
 	 * @return the corresponding certificate token
 	 */
 	CertificateToken addCertificate(final CertificateToken certificate);
@@ -66,5 +67,51 @@ public interface CertificateSource extends Serializable {
 	 * @return true if the certificate is trusted
 	 */
 	boolean isTrusted(CertificateToken certificateToken);
+
+	/**
+	 * This method checks if a given certificate is known in the current source
+	 * 
+	 * @param certificateToken the certificate to be tested
+	 * @return true if the certificate is part of the current source
+	 */
+	boolean isKnown(CertificateToken token);
+
+	/**
+	 * This method returns the Set of certificates with the same subjectDN.
+	 *
+	 * @param subject the subject to match
+	 * @return If no match is found then an empty set is returned.
+	 */
+	Set<CertificateToken> getBySubject(X500PrincipalHelper subject);
+
+	/**
+	 * This method returns the Set of certificates with the
+	 * {@code CertificateIdentifier}
+	 *
+	 * @param certificateIdentifier the certificate identifier to match
+	 * @return If no match is found then an empty set is returned.
+	 */
+	Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier);
+
+	/**
+	 * This method returns a Set of {@code CertificateToken} with the given
+	 * {@code PublicKey}
+	 * 
+	 * @param publicKey the public key to find
+	 * @return a Set of CertificateToken which have the given public key
+	 */
+	Set<CertificateToken> getByPublicKey(PublicKey publicKey);
+
+	/**
+	 * This method returns a Set of {@code CertificateToken} with the given SKI
+	 * (SubjectKeyIdentifier (SHA-1 of the PublicKey))
+	 * 
+	 * @param ski the Subject Key Identifier
+	 * @return a Set of CertificateToken which have the given ski
+	 */
+	Set<CertificateToken> getBySki(byte[] ski);
+
+	List<CertificateSourceEntity> getEntities();
+
 
 }

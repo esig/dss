@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implements a CertificateSource using a KeyStore (PKCS12, JKS,...).
@@ -58,106 +57,31 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	private PasswordProtection passwordProtection;
 
 	/**
-	 * Constructor for KeyStoreCertificateSource with <code>CertificatePool</code>.
+	 * Constructor for KeyStoreCertificateSource.
 	 * 
 	 * This constructor allows to create a new empty keystore.
 	 * 
-	 * @param ksType
-	 *            the keystore type
-	 * @param ksPassword
-	 *            the keystore password
-	 * @param certPool
-	 *            the certificate pool
-	 */
-	public KeyStoreCertificateSource(final String ksType, final String ksPassword, final CertificatePool certPool) {
-		this((InputStream) null, ksType, ksPassword, certPool);
-	}
-
-	/**
-	 * Constructor for KeyStoreCertificateSource with <code>CertificatePool</code>.
-	 * 
-	 * @param ksFilePath
-	 *            the keystore filepath
-	 * @param ksType
-	 *            the keystore type
-	 * @param ksPassword
-	 *            the keystore password
-	 * @param certPool
-	 *            the certificate pool
-	 * @throws IOException
-	 *             if the file not exists
-	 */
-	public KeyStoreCertificateSource(final String ksFilePath, final String ksType, final String ksPassword, final CertificatePool certPool) throws IOException {
-		this(new File(ksFilePath), ksType, ksPassword, certPool);
-	}
-
-	/**
-	 * Constructor for KeyStoreCertificateSource with <code>CertificatePool</code>.
-	 * 
-	 * @param ksFile
-	 *            the keystore file
-	 * @param ksType
-	 *            the keystore type
-	 * @param ksPassword
-	 *            the keystore password
-	 * @param certPool
-	 *            the certificate pool
-	 * @throws IOException
-	 *             if the file not exists
-	 */
-	public KeyStoreCertificateSource(final File ksFile, final String ksType, final String ksPassword, final CertificatePool certPool) throws IOException {
-		this(new FileInputStream(ksFile), ksType, ksPassword, certPool);
-	}
-
-	/**
-	 * The default constructor for KeyStoreCertificateSource.
-	 *
-	 * @param ksStream
-	 *            the inputstream with the keystore (can be null to create a new keystore)
-	 * @param ksType
-	 *            the keystore type
-	 * @param ksPassword
-	 *            the keystore password
-	 * @param certPool
-	 *            the certificate pool
-	 */
-	public KeyStoreCertificateSource(final InputStream ksStream, final String ksType, final String ksPassword, final CertificatePool certPool) {
-		super(certPool);
-		initKeystore(ksStream, ksType, ksPassword);
-	}
-
-	/**
-	 * Constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
-	 * 
-	 * This constructor allows to create a new empty keystore.
-	 * 
-	 * @param ksType
-	 *            the keystore type
-	 * @param ksPassword
-	 *            the keystore password
+	 * @param ksType     the keystore type
+	 * @param ksPassword the keystore password
 	 */
 	public KeyStoreCertificateSource(final String ksType, final String ksPassword) {
 		this((InputStream) null, ksType, ksPassword);
 	}
 
 	/**
-	 * Constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
+	 * Constructor for KeyStoreCertificateSource.
 	 * 
-	 * @param ksFilePath
-	 *            the keystore filepath
-	 * @param ksType
-	 *            the keystore type
-	 * @param ksPassword
-	 *            the keystore password
-	 * @throws IOException
-	 *             if the file not exists
+	 * @param ksFilePath the keystore filepath
+	 * @param ksType     the keystore type
+	 * @param ksPassword the keystore password
+	 * @throws IOException if the file not exists
 	 */
 	public KeyStoreCertificateSource(final String ksFilePath, final String ksType, final String ksPassword) throws IOException {
 		this(new File(ksFilePath), ksType, ksPassword);
 	}
 
 	/**
-	 * Constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
+	 * Constructor for KeyStoreCertificateSource with <code>CertificatePool</code>.
 	 * 
 	 * @param ksFile
 	 *            the keystore file
@@ -173,7 +97,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	}
 
 	/**
-	 * The default constructor for KeyStoreCertificateSource without <code>CertificatePool</code>.
+	 * The default constructor for KeyStoreCertificateSource.
 	 *
 	 * @param ksStream
 	 *            the inputstream with the keystore (can be null to create a new keystore)
@@ -183,20 +107,17 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	 *            the keystore password
 	 */
 	public KeyStoreCertificateSource(final InputStream ksStream, final String ksType, final String ksPassword) {
-		super();
 		initKeystore(ksStream, ksType, ksPassword);
 	}
 
 	private void initKeystore(final InputStream ksStream, final String ksType, final String ksPassword) {
-		try {
+		try (InputStream is = ksStream) {
 			keyStore = KeyStore.getInstance(ksType);
 			final char[] password = (ksPassword == null) ? null : ksPassword.toCharArray();
-			keyStore.load(ksStream, password);
+			keyStore.load(is, password);
 			passwordProtection = new PasswordProtection(password);
 		} catch (GeneralSecurityException | IOException e) {
 			throw new DSSException("Unable to initialize the keystore", e);
-		} finally {
-			Utils.closeQuietly(ksStream);
 		}
 	}
 

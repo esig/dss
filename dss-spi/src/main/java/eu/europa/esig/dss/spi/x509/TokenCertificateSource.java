@@ -32,10 +32,6 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		super();
 	}
 
-	protected TokenCertificateSource(final CertificatePool certPool) {
-		super(certPool);
-	}
-	
 	/**
 	 * Adds a {@code CertificateIdentifier} with its origin
 	 * 
