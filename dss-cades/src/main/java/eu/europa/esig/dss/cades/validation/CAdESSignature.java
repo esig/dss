@@ -891,10 +891,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final SignerInformation signerInformationToCheck = cmsSignedDataParser.getSignerInfos().get(signerId);
 		return signerInformationToCheck;
 	}
-	
-	@Override
-	public void checkSigningCertificate() {
-	}
 
 	public Set<DigestAlgorithm> getMessageDigestAlgorithms() {
 		Set<DigestAlgorithm> result = new HashSet<>();

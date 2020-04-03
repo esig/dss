@@ -436,14 +436,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (providedSigningCertificateToken != null) {
 			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
 		}
+		
+		checkSigningCertificate(candidatesForSigningCertificate); // checks the validity against certificate reference
 
 		return candidatesForSigningCertificate;
 	}
 
-	@Override
-	public void checkSigningCertificate() {
+	/**
+	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
+	 * substitution attack.
+	 */
+	private void checkSigningCertificate(final CandidatesForSigningCertificate candidates) {
 
-		final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 		final List<CertificateRef> potentialSigningCertificates = getCertificateSource().getSigningCertificateRefs();
 		
 		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
@@ -453,31 +457,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
 			
 			CertificateValidity bestCertificateValidity = null;
+			// check all certificates against the signingCert ref and find the best one
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
-				if (matcher.match(certificateValidity.getCertificateToken(), signingCert)) {
+				
+				certificateValidity.setAttributePresent(signingCert != null);
+				certificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
+
+				CertificateToken certificateToken = certificateValidity.getCertificateToken();
+				
+				if (certificateToken != null) {
+					certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCert));
+					certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, signingCert));
+					certificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(certificateToken, signingCert));
+				}
+				
+				if (certificateValidity.isValid()) {
 					bestCertificateValidity = certificateValidity;
-					break;
 				}
 			}
 
+			// none of them match
 			if (bestCertificateValidity == null) {
-				// none of them match
 				bestCertificateValidity = candidates.getCertificateValidityList().iterator().next();
-			}
-
-			bestCertificateValidity.setAttributePresent(signingCert != null);
-			bestCertificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
-
-			CertificateToken bestToken = bestCertificateValidity.getCertificateToken();
-			if (bestToken != null) {
-				bestCertificateValidity.setDigestEqual(matcher.matchByDigest(bestToken, signingCert));
-				bestCertificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(bestToken, signingCert));
-				bestCertificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(bestToken, signingCert));
 			}
 
 			candidates.setTheCertificateValidity(bestCertificateValidity);
 		}
+		
 	}
 
 	@Override
@@ -795,11 +802,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				try {
 
 					final PublicKey publicKey = certificateValidity.getPublicKey();
-					coreValidity = currentSantuarioSignature.checkSignatureValue(publicKey);
-					if (coreValidity) {
-						LOG.info("Determining signing certificate from certificate candidates list succeeded");
+					if (currentSantuarioSignature.checkSignatureValue(publicKey)) {
+						LOG.debug("Public key matching the signature value found.");
+						coreValidity = true;
 						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
-						break;
+						if (certificateValidity.isValid()) {
+							LOG.info("Determining signing certificate from certificate candidates list succeeded : {}",
+									certificateValidity.getCertificateToken().getDSSIdAsString());
+							break;
+						} else if (certificateValidity.getCertificateToken() != null) {
+							LOG.warn("The signing certificate '{}' does not match a signing certificate reference!",
+									certificateValidity.getCertificateToken().getDSSIdAsString());
+						}
 					} else {
 						// upon returning false, santuarioSignature (class XMLSignature) will log
 						// "Signature verification failed." with WARN level.

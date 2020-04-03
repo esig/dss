@@ -564,7 +564,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		// This ensures that the variable candidatesForSigningCertificate has been initialized
 		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 		// This ensures that the variable signatureCryptographicVerification has been initialized
-		checkSignatureIntegrity();
 		signatureCryptographicVerification = getSignatureCryptographicVerification();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 		if (theCertificateValidity != null) {
