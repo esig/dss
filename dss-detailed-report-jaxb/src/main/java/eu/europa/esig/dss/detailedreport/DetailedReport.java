@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -409,13 +410,16 @@ public class DetailedReport {
 	}
 
 	private CertificateQualification getCertificateQualification(ValidationTime validationTime) {
-		XmlCertificate certificate = getCertificates().get(0);
-		if (certificate != null) {
-			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
-			if (validationCertificateQualifications != null) {
-				for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
-					if (validationTime == validationCertificateQualification.getValidationTime()) {
-						return validationCertificateQualification.getCertificateQualification();
+		List<XmlCertificate> certificates = getCertificates();
+		if(!certificates.isEmpty()) {
+			XmlCertificate certificate = certificates.get(0);
+			if (certificate != null) {
+				List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
+				if (validationCertificateQualifications != null) {
+					for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
+						if (validationTime == validationCertificateQualification.getValidationTime()) {
+							return validationCertificateQualification.getCertificateQualification();
+						}
 					}
 				}
 			}
@@ -424,23 +428,26 @@ public class DetailedReport {
 	}
 
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
-		XmlCertificate certificate = getCertificates().get(0);
-		if (certificate == null) {
-			throw new UnsupportedOperationException("Only supported in report for certificate");
-		}
-		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
-		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-			XmlXCV xcv = xmlBasicBuildingBlocks.getXCV();
-			if (xcv != null) {
-				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				for (XmlSubXCV xmlSubXCV : subXCV) {
-					if (certificateId.equals(xmlSubXCV.getId())) {
-						return xmlSubXCV.getConclusion();
+		List<XmlCertificate> certificates = getCertificates();
+		if(!certificates.isEmpty()) {
+			XmlCertificate certificate = certificates.get(0);
+			if (certificate == null) {
+				throw new UnsupportedOperationException("Only supported in report for certificate");
+			}
+			List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
+			for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
+				XmlXCV xcv = xmlBasicBuildingBlocks.getXCV();
+				if (xcv != null) {
+					List<XmlSubXCV> subXCV = xcv.getSubXCV();
+					for (XmlSubXCV xmlSubXCV : subXCV) {
+						if (certificateId.equals(xmlSubXCV.getId())) {
+							return xmlSubXCV.getConclusion();
+						}
 					}
+					// if {@link SubX509CertificateValidation} is not executed, i.e. the certificate is in untrusted chain,
+					// return global XmlConclusion
+					return xcv.getConclusion();
 				}
-				// if {@link SubX509CertificateValidation} is not executed, i.e. the certificate is in untrusted chain,
-				// return global XmlConclusion
-				return xcv.getConclusion();
 			}
 		}
 		return null;
