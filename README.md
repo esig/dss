@@ -10,8 +10,8 @@ Please, use the new JIRA for project is on https://ec.europa.eu/cefdigital/track
 
 The latest version of DSS framework has the following minimal requirements:
 
- * Java 8 and higher (tested up to Java 13);
- * Maven 3.3 and higher;
+ * Java 9 and higher (tested up to Java 14) for the build is required. For usage Java 8 is a mimimum requirement;
+ * Maven 3.6 and higher;
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
  * Operating system: no specific requirements (tested on Windows and Linux).
 
@@ -56,6 +56,12 @@ mvn clean install -P *profile_name*
 # Documentation
 
 The [documentation](dss-cookbook/src/main/asciidoc/dss-documentation.adoc) and samples are available in the dss-cookbook module. [SoapUI project](dss-cookbook/src/main/soapui) and [Postman project](dss-cookbook/src/main/postman) are also provided to illustrate SOAP/REST calls.
+
+In order to build the documentation by yourself, the following command must be executed in *dss-cookbook* module:
+
+```
+mvn clean install -P asciidoctor
+```
 
 # JavaDoc
 
