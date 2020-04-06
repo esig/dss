@@ -38,7 +38,8 @@ On a more detailed manner the following concepts and features are addressed in t
  * Validation of the signing certificate;
  * Timestamp creation;
  * Timestamp validation and qualification;
- * REST and SOAP webservices.
+ * REST and SOAP webservices;
+ * Build instrutions.
 
 This is not an exhaustive list of all the possibilities offered by the framework and the proposed examples cover only the most useful features. However, to discover every detail of the operational principles of the framework, the JavaDoc is available within the source code.
 
@@ -345,6 +346,8 @@ dss-demo-webapp:: Demonstration web application which presents a part of the DSS
 dss-demo-bundle:: Packaging module for dss-demo-webapp.
 
 WARNING: The demonstrations use a simulated timestamp service (Mock) so that is not recommended for a production usage.
+
+The requirements and build instructions for DSS demonstrations can be found in the chapter <<DSSDemo>>.
 
 == Signature's profile simplification
 
@@ -1559,6 +1562,7 @@ The refresh can be called with the offline or the online loader and run exactly 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=refresh]
 ----
 
+[[KeyStore]]
 ==== Java Keystore Management
 
 Generally (like in case of European LOTL) DSS downloads Trusted Lists by using the SSL protocol (for resources using HTTPS extension), that requires to have a certificate of a remote source in the Java trust store. The certificates have their own validity period and can expire. If a certificated is expired, it will be replaced on a server by a new one in order to support a secure SSL connection. The easiest way to know if your Java trust store is outdated and new certificates need to be added is to check your logs during a TLValidationJob update :
@@ -2021,3 +2025,158 @@ include::restdocs/get-timestamp-response/http-request.adoc[]
 
 .Response
 include::restdocs/get-timestamp-response/http-response.adoc[]
+
+== Build instructions
+
+The section explains the basic steps required to successfully build the DSS components.
+
+=== DSS Core
+
+This section explains the build and usage requirements for https://github.com/esig/dss[DSS framework].
+
+==== Requirements
+
+The latest version of DSS framework has the following minimal requirements:
+
+ * Java 8 and higher (tested up to Java 13);
+ * Maven 3.3 and higher;
+ * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
+ * Operating system: no specific requirements (tested on Windows and Linux).
+
+WARNING: Before processing the build steps, please, ensure you have succesfully installed Maven and JVM with a required version.
+
+==== Adding as Maven dependency
+
+The simplest way to include DSS to your Maven project is to add a repository into pom.xml file in the root directory of your project as following:
+
+[source,xml]
+----
+<repositories>
+	...
+
+	<repository>
+	  <id>cefdigital</id>
+	  <name>cefdigital</name>
+	  <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/</url>
+	</repository>
+</repositories>
+----
+
+After that specify a list of dependencies required for your project.
+
+Refresh your project, in order to download the dependency and after you will be able to use all modules of DSS framework.
+
+==== Maven build and profiles
+
+In order to use a customized bundle of DSS, you may want to build the DSS Core framework modules.
+
+NOTE: All listed commands must be executed from the project directory via a Command Line Interface (CLI).
+
+A simple build of the DSS Maven project can be done with the following command:
+
+----
+mvn clean install
+----
+
+These installation will run all unit tests present in the modules, which can take more than one hour to do the complete build.
+
+In addition to the general build, the framework provides a list of custom profiles, allowing a customized behavior:
+
+ * quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes). Be aware, that some modules (dss-utils, dss-crl-parser and dss-pades) still have to be built completely.
+ * slow-tests - executes all tests, including time-consuming unit tests.
+ * owasp - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
+ * jdk19-plus - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
+ * spotless - used to add a licence header into project files.
+ 
+In order to run a build with a specific profile, the following command must be executed:
+
+----
+mvn clean install -P *profile_name*
+----
+
+==== Specific modules
+
+Some modules of DSS framework have a specific behavior and need to be handled accordingly.
+
+DSS contains a bundle of JAXB-based modules, generation Java classes in runtime based on XSD-schema. When any change is made in the XSD, the classes of the module are re-generated automatically according to the change. The following modules represent this behavior:
+
+ * specs-xmldsig;
+ * specs-xades;
+ * specs-trusted-list;
+ * specs-validation-report;
+ * specs-asic-manifest;
+ * dss-policy-jaxb;
+ * dss-diagnostic-jaxb;
+ * dss-detailed-report-jaxb;
+ * dss-simple-report-jaxb;
+ * dss-simple-certificate-report-jaxb.
+
+Also, as it was explained in the previous section, some modules are required to be built completely for a building of their dependent modules when using a quick profile, namely:
+
+ * dss-utils;
+ * dss-crl-parser;
+ * dss-pades.
+
+The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the equal behavior between their implementations.
+
+[[DSSDemo]]
+=== DSS Demonstrations
+
+This section explains the build and usage requirements for https://github.com/esig/dss-demonstrations[DSS Demonstration Applications].
+
+==== Requirements
+
+The minimal requirements to build/run DSS Demonstrations:
+
+ * Java 8 and higher;
+ * Maven 3.3 and higher (if build required);
+ * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
+ * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
+ * Operating system: no specific requirements (tested on Windows and Linux).
+
+==== Maven build
+
+The build of the project can be done similarly to DSS Core framework build with the command `mvn clean install`.
+
+Please, ensure, that you build modules what you really need. Ignore, build failures for non-required modules.
+
+===== DSS Standalone Application
+
+In order to build the standalone application, the following modules are required:
+
+ * dss-mock-tsa;
+ * dss-standalone-app;
+ * dss-standalone-package.
+ 
+If the build is successfull, you will be able to find out the following containers in the directory `/dss-standalone-app-package/target/`:
+
+ * dss-standalone-app-package-minimal.zip - contains the application code. Requires JDK ad JavaFX installed on a target machine in order to run the application;
+ * dss-standalone-app-package-complete.zip - contains the application code, as well as JDK and JavaFX library code. Can be run on a machine whithout pre-installed libraries.
+
+In order to launch the application, you will need to extract the archive and run the file `dss-run.bat`.
+
+===== DSS Web Application
+
+To build the DSS Web Application the following modules are required:
+
+ * dss-mock-tsa;
+ * dss-demo-webapp;
+ * dss-demo-bundle.
+ 
+After a successfull build, in the directory `/dss-demo-bundle/target/` you will be able to find out two containers: `dss-demo-bundle.zip` and `dss-demo-bundle-5.7-SNAPSHOT.tar.gz`. Despite the container type, the content of both files is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be availble at the address `http://localhost:8080/`.
+
+If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the chapter <<KeyStore>> for a resolution.
+
+===== Documentation generation
+
+In order to generate HTML and PDF documentation for DSS project, the module `dss-cookbook` of DSS Core must be build with the following command (please, ensure that you are located in the `/dss-cookbook` directory):
+
+----
+mvn clean install -P asciidoctor
+----
+
+To make the documentation available in the Web Application, you will need to process the build instructions. The documentation files will be included to the bundle automatically and available on the address: `http://localhost:8080/doc/dss-documentation.html` and `http://localhost:8080/doc/dss-documentation.pdf` respectively.
+
+===== Javadoc generation
+
+In order to generate HTML Javadoc, you will need to build completely DSS Core as well as DSS Web Application. After this the JavaDoc will be available at the address: `http://localhost:8080/apidocs/index.html`.
