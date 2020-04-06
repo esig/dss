@@ -5,7 +5,7 @@ import javax.xml.XMLConstants;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.alert.DSSExceptionAlert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.jaxb.TransformerFactoryBuilder;
 import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
 
@@ -32,7 +32,7 @@ public class XMLSecuritiesConfigTest {
 		transformerBuilder.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		
 		// sets an alert in case of exception on feature/attribute setting
-		transformerBuilder.setSecurityExceptionAlert(new DSSExceptionAlert());
+		transformerBuilder.setSecurityExceptionAlert(new ExceptionOnStatusAlert());
 		
 		// sets the transformer (will be applied for all calls)
 		xmlDefinerUtils.setTransformerFactoryBuilder(transformerBuilder);

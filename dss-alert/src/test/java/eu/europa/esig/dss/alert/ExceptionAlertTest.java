@@ -1,11 +1,13 @@
 package eu.europa.esig.dss.alert;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.alert.status.Status;
 
 public class ExceptionAlertTest {
 	
@@ -13,13 +15,33 @@ public class ExceptionAlertTest {
 	
 	@Test
 	public void throwExceptionAlertTest() {
-		Exception exception = new Exception(EXCEPTION_MESSAGE);
+		Status status = new Status(EXCEPTION_MESSAGE);
 		
 		AlertException alertException = assertThrows(AlertException.class, () -> {
-			DSSExceptionAlert exceptionAlert = new DSSExceptionAlert();
-			exceptionAlert.alert(exception);
+			ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
+			exceptionAlert.alert(status);
 		});
 		assertTrue(alertException.getMessage().contains(EXCEPTION_MESSAGE));
+	}
+
+	@Test
+	public void throwNothing() {
+		Status status = new Status(null);
+
+		ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
+		exceptionAlert.alert(status);
+
+		assertNotNull(status);
+	}
+
+	@Test
+	public void silenceMode() {
+		Status status = new Status(EXCEPTION_MESSAGE);
+
+		SilentOnStatusAlert silence = new SilentOnStatusAlert();
+		silence.alert(status);
+
+		assertNotNull(status);
 	}
 
 }

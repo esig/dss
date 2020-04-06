@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -85,41 +84,59 @@ public interface ValidationContext {
 	 * This method allows to verify if all processed certificates have a revocation
 	 * data
 	 * 
-	 * @throws DSSException in case if not all required revocation data is present
+	 * Additionally, an alert can be handled
+	 * {@see CertificateVerifier#setAlertOnMissingRevocationData(eu.europa.esig.dss.alert.StatusAlert)}
+	 * 
+	 * @return true if all needed revocation data are present
 	 */
-	void checkAllRequiredRevocationDataPresent() throws DSSException;
+	boolean checkAllRequiredRevocationDataPresent();
 
 	/**
 	 * This method allows to verify if all POE (timestamp tokens) are covered by a
 	 * revocation data
 	 * 
-	 * @throws DSSException if not all timestamps are covered by revocation data
+	 * Additionally, an alert can be handled
+	 * {@see CertificateVerifier#setAlertOnUncoveredPOE(eu.europa.esig.dss.alert.StatusAlert)}
+	 * 
+	 * @return true if all timestamps are covered by a usable revocation data
 	 */
-	void checkAllPOECoveredByRevocationData() throws DSSException;
+	boolean checkAllPOECoveredByRevocationData();
 
 	/**
-	 * This method allows to verify if all processed timestamps are valid and intact
+	 * This method allows to verify if all processed timestamps are valid and
+	 * intact.
 	 * 
-	 * @throws DSSException if not all timestamps are valid
+	 * Additionally, an alert can be handled
+	 * {@see CertificateVerifier#setAlertOnInvalidTimestamp(eu.europa.esig.dss.alert.StatusAlert)}
+	 * 
+	 * @return true if all timestamps are valid
 	 */
-	void checkAllTimestampsValid() throws DSSException;
+	boolean checkAllTimestampsValid();
 
 	/**
 	 * This method allows to verify if all processed certificates are not revoked
 	 * 
-	 * @throws DSSException if not all certificates are valid
+	 * Additionally, an alert can be handled
+	 * {@see CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 * 
+	 * @return true if all certificates are valid
 	 */
-	void checkAllCertificatesValid() throws DSSException;
+	boolean checkAllCertificatesValid();
 
 	/**
 	 * This method allows to verify if there is at least one revocation data present
 	 * after the earliest available timestamp token producing time
-	 * @param signingCertificate
-	 *            {@code CertificateToken} signing certificate of the signature to be checked
 	 * 
-	 * @throws DSSException if there is no revocation data issued after the best signature time
+	 * Additionally, an alert can be handled
+	 * {@see CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
+	 * 
+	 * @param signingCertificate {@code CertificateToken} signing certificate of the
+	 *                           signature to be checked
+	 * @return true if the signing certificate is covered with a updated revocation
+	 *         data (after signature-timestamp production time)
+	 * 
 	 */
-	void checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
+	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the

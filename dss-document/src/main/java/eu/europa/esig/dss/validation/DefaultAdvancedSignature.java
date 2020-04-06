@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateReorderer;
-import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -285,64 +284,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		prepareTimestamps(validationContext);
 		validationContext.validate();
 
-		checkTimestamps(certificateVerifier, validationContext);
-		checkAllRevocationDataPresent(certificateVerifier, validationContext);
-		checkAllTimestampsCoveredByRevocationData(certificateVerifier, validationContext);
-		checkAllCertificatesNotRevoked(certificateVerifier, validationContext);
-		checkRevocationThisUpdateIsAfterBestSignatureTime(certificateVerifier, validationContext);
+		validationContext.checkAllTimestampsValid();
+		validationContext.checkAllRequiredRevocationDataPresent();
+		validationContext.checkAllPOECoveredByRevocationData();
+		validationContext.checkAllCertificatesValid();
+
+		CertificateToken signingCertificateToken = getSigningCertificateToken();
+		validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
 
 		return validationContext;
-	}
-
-	private void checkTimestamps(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllTimestampsValid();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnInvalidTimestamp();
-			String message = String.format("Broken timestamp detected. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkAllRevocationDataPresent(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllRequiredRevocationDataPresent();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnMissingRevocationData();
-			String message = String.format("Revocation data is missing. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkAllTimestampsCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllPOECoveredByRevocationData();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnUncoveredPOE();
-			String message = String.format("A POE is not covered by a usable revocation data. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkAllCertificatesNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllCertificatesValid();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnRevokedCertificate();
-			String message = String.format("Revoked certificate detected. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkRevocationThisUpdateIsAfterBestSignatureTime(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			CertificateToken signingCertificateToken = getSigningCertificateToken();
-			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime();
-			String message = String.format("No fresh revocation data found. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
 	}
 
 	/**
@@ -721,8 +671,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean areAllSelfSignedCertificates(Map<String, List<CertificateToken>> certificateChains) {
-		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
-			List<CertificateToken> chain = entryCertChain.getValue();
+		for (List<CertificateToken> chain : certificateChains.values()) {
 			if (Utils.collectionSize(chain) == 1) {
 				CertificateToken certificateToken = chain.get(0);
 				if (!certificateToken.isSelfSigned()) {
