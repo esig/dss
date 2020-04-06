@@ -241,7 +241,7 @@ mvn clean install -P *profile_name*
 
 Some modules of DSS framework have a specific behavior and need to be handled accordingly.
 
-DSS contains a bundle of JAXB-based modules, generation Java classes in runtime based on XSD-schema. When any change is made in the XSD, the classes of the module are re-generated automatically according to the change. The following modules represent this behavior:
+DSS contains a bundle of JAXB-based modules, generation Java classes in runtime based on XSD-schema. When any change is made in the XSD, the classes of the module are being re-generated according to the change. The following modules represent this behavior:
 
  * specs-xmldsig;
  * specs-xades;
@@ -261,6 +261,18 @@ Also, as it was explained in the previous section, some modules are required to 
  * dss-pades.
 
 The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the equal behavior between their implementations.
+
+==== Documentation generation
+
+In order to generate HTML and PDF documentation for DSS project, the module `dss-cookbook` of DSS Core must be build with the following command (please, ensure that you are located in the `/dss-cookbook` directory):
+
+----
+mvn clean install -P asciidoctor
+----
+
+==== Javadoc generation
+
+In order to generate https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html[HTML Javadoc], you will need to build completely the DSS Core.
 
 [[DSSDemo]]
 === DSS Demonstrations
@@ -306,23 +318,31 @@ To build the DSS Web Application the following modules are required:
  * dss-demo-webapp;
  * dss-demo-bundle.
  
-After a successfull build, in the directory `/dss-demo-bundle/target/` you will be able to find out two containers: `dss-demo-bundle.zip` and `dss-demo-bundle-5.7-SNAPSHOT.tar.gz`. Despite the container type, the content of both files is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be availble at the address `http://localhost:8080/`.
+After a successfull build, in the directory `/dss-demo-bundle/target/` you will be able to find out two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the container type, the content of both files is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be availble at the address `http://localhost:8080/`.
 
 If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the chapter <<KeyStore>> for a resolution.
 
-===== Documentation generation
+The documentation and javadoc will be copied automatically from built DSS Core and available on the following addresses respectively:
 
-In order to generate HTML and PDF documentation for DSS project, the module `dss-cookbook` of DSS Core must be build with the following command (please, ensure that you are located in the `/dss-cookbook` directory):
+ * HTML documentation : `http://localhost:8080/doc/dss-documentation.html`;
+ * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
+ * Javadoc : `http://localhost:8080/apidocs/index.html`.
+
+In order to build a bundle for JDK 14, the following profile can be used from `dss-demo-bundle` module:
 
 ----
-mvn clean install -P asciidoctor
+mvn clean install -P java14
 ----
 
-To make the documentation available in the Web Application, you will need to process the build instructions. The documentation files will be included to the bundle automatically and available on the address: `http://localhost:8080/doc/dss-documentation.html` and `http://localhost:8080/doc/dss-documentation.pdf` respectively.
+This will create a bundle with Tomcat 9.
 
-===== Javadoc generation
+===== Integration tests
 
-In order to generate HTML Javadoc, you will need to build completely DSS Core as well as DSS Web Application. After this the JavaDoc will be available at the address: `http://localhost:8080/apidocs/index.html`.
+The `dss-demo-webapp` module provides a collection of integration tests in order to test the behavior of REST/SOAP web-services. In order to run the tests, a web-server with DSS Web Application shall be launched and the following profile need to be executed from the module:
+
+----
+mvn clean install -P run-integration-test
+----
 
 == General framework structure
 
