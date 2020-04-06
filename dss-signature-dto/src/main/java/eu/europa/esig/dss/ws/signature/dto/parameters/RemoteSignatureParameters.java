@@ -123,6 +123,11 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	private boolean generateTBSWithoutCertificate = false;
 
+	/**
+	 * PAdES: The image information to be included.
+	 */
+	private RemoteSignatureImageParameters imageParameters;
+
 	public RemoteSignatureParameters() {
 	}
 
@@ -422,13 +427,31 @@ public class RemoteSignatureParameters implements Serializable {
 		this.generateTBSWithoutCertificate = generateTBSWithoutCertificate;
 	}
 
+	/**
+	 * Get the image information to be included (PAdES).
+	 *
+	 * @return the image information to be included.
+	 */
+	public RemoteSignatureImageParameters getImageParameters() {
+		return this.imageParameters;
+	}
+
+	/**
+	 * 	Set the image information to be included (PAdES).
+	 *
+	 * @param imageParameters the image information to be included.
+	 */
+	public void setImageParameters(final RemoteSignatureImageParameters imageParameters) {
+		this.imageParameters = imageParameters;
+	}
+
 	@Override
 	public String toString() {
 		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel + ", generateTBSWithoutCertificate="
 				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
 				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", maskGenerationFunction=" 
 				+ maskGenerationFunction + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" 
-				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + "]";
+				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters + "]";
 	}
 
 	@Override
@@ -448,6 +471,7 @@ public class RemoteSignatureParameters implements Serializable {
 		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
 		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
 		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
+		result = prime * result + ((imageParameters == null) ? 0 : imageParameters.hashCode());
 		return result;
 	}
 
@@ -482,6 +506,13 @@ public class RemoteSignatureParameters implements Serializable {
 				return false;
 			}
 		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
+			return false;
+		}
+		if (imageParameters == null) {
+			if (other.imageParameters != null) {
+				return false;
+			}
+		} else if (!imageParameters.equals(other.imageParameters)) {
 			return false;
 		}
 		if (digestAlgorithm != other.digestAlgorithm) {
