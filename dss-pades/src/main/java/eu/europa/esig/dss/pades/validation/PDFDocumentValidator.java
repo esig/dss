@@ -43,6 +43,7 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.utils.Utils;
@@ -111,8 +112,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps, dssDictionaries);
 		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps, dssDictionaries);
+		ListCertificateSource listCertificateSource = mergeCertificateSource(allSignatures, detachedTimestamps, dssDictionaries);
 
-		prepareCertificateVerifier(listCRLSource, listOCSPSource);
+		prepareCertificateVerifier(listCRLSource, listOCSPSource, listCertificateSource);
 		
 		prepareSignatureValidationContext(validationContext, allSignatures);
         prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
@@ -155,6 +157,13 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}
 		}
+	}
+
+	protected ListCertificateSource mergeCertificateSource(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps,
+			List<PdfDssDict> dssDictionaries) {
+		ListCertificateSource allCertificatesSource = mergeCertificateSource(allSignatureList, detachedTimestamps);
+		// TODO dssDictionaries
+		return allCertificatesSource;
 	}
 
 	@Override

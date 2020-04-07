@@ -85,7 +85,7 @@ public interface ValidationContext {
 	 * data
 	 * 
 	 * Additionally, an alert can be handled
-	 * {@see CertificateVerifier#setAlertOnMissingRevocationData(eu.europa.esig.dss.alert.StatusAlert)}
+	 * {@link CertificateVerifier#setAlertOnMissingRevocationData(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
 	 * @return true if all needed revocation data are present
 	 */
@@ -96,7 +96,7 @@ public interface ValidationContext {
 	 * revocation data
 	 * 
 	 * Additionally, an alert can be handled
-	 * {@see CertificateVerifier#setAlertOnUncoveredPOE(eu.europa.esig.dss.alert.StatusAlert)}
+	 * {@link CertificateVerifier#setAlertOnUncoveredPOE(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
 	 * @return true if all timestamps are covered by a usable revocation data
 	 */
@@ -107,7 +107,7 @@ public interface ValidationContext {
 	 * intact.
 	 * 
 	 * Additionally, an alert can be handled
-	 * {@see CertificateVerifier#setAlertOnInvalidTimestamp(eu.europa.esig.dss.alert.StatusAlert)}
+	 * {@link CertificateVerifier#setAlertOnInvalidTimestamp(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
 	 * @return true if all timestamps are valid
 	 */
@@ -117,7 +117,7 @@ public interface ValidationContext {
 	 * This method allows to verify if all processed certificates are not revoked
 	 * 
 	 * Additionally, an alert can be handled
-	 * {@see CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
 	 * @return true if all certificates are valid
 	 */
@@ -128,7 +128,7 @@ public interface ValidationContext {
 	 * after the earliest available timestamp token producing time
 	 * 
 	 * Additionally, an alert can be handled
-	 * {@see CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
+	 * {@link CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
 	 * @param signingCertificate {@code CertificateToken} signing certificate of the
 	 *                           signature to be checked

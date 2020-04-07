@@ -26,13 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -41,15 +39,12 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -217,11 +212,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ListCertificateSource getCompleteCertificateSource() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSources());
-		OfflineRevocationSource<OCSP> ocspSource = getOCSPSource();
-		Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
-		for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
-			certificateSource.add(revocationToken.getCertificateSource());
-		}
 		return certificateSource;
 	}
 	
@@ -267,7 +257,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
 		final ValidationContext validationContext = new SignatureValidationContext();
-		
 		certificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
 		certificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
 		certificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
@@ -646,23 +635,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificateMapWithinSignatureAndTimestamps(true);
+		boolean allSelfSigned = areAllSelfSignedCertificates(certificateChains);
 
 		boolean emptyCRLs = getCompleteCRLSource().isEmpty();
 		boolean emptyOCSPs = getCompleteOCSPSource().isEmpty();
+		boolean notEmptyRevocation = !(emptyCRLs && emptyOCSPs);
 
-		if (Utils.isMapEmpty(certificateChains) && (emptyCRLs || emptyOCSPs)) {
-			return false;
-		}
-
-		if (!areAllCertChainsHaveRevocationData(certificateChains)) {
-			return false;
-		}
-
-		if (areAllSelfSignedCertificates(certificateChains) && (emptyCRLs && emptyOCSPs)) {
-			return false;
-		}
-
-		return true;
+		return allSelfSigned || notEmptyRevocation;
 	}
 	
 	@Override
@@ -682,59 +661,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			}
 		}
 		return true;
-	}
-
-	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
-		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
-			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!areAllCertsHaveRevocationData(entryCertChain.getValue())) {
-				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean areAllCertsHaveRevocationData(List<CertificateToken> certificates) {
-		// we reorder the certificate list, the order is not guaranteed
-		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
-		for (List<CertificateToken> chain : orderedCerts.values()) {
-			for (CertificateToken certificateToken : chain) {
-				if (!isRevocationRequired(certificateToken)) {
-					// Skip this loop to avoid checking upper levels than trusted certificates
-					// (cross certification)
-					break;
-				}
-				CertificateToken issuerToken = certPool.getIssuer(certificateToken);
-				if (issuerToken == null) {
-					LOG.warn("Issuer not found for certificate {}", certificateToken.getDSSIdAsString());
-					return false;
-				}
-
-				List<RevocationToken<Revocation>> revocationTokens = getCompleteOCSPSource().getRevocationTokens(certificateToken, issuerToken);
-				if (Utils.isCollectionEmpty(revocationTokens)) {
-					revocationTokens = getCompleteCRLSource().getRevocationTokens(certificateToken, issuerToken);
-				}
-
-				if (Utils.isCollectionEmpty(revocationTokens)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private Map<CertificateToken, List<CertificateToken>> order(List<CertificateToken> certificates) {
-		CertificateReorderer reorderer = new CertificateReorderer(certificates);
-		return reorderer.getOrderedCertificateChains();
-	}
-
-	private boolean isRevocationRequired(CertificateToken certificateToken) {
-		if (certPool.isTrusted(certificateToken) || certificateToken.isSelfSigned()) {
-			return false;
-		}
-
-		return !DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken);
 	}
 
 	/* Defines the level LTA */

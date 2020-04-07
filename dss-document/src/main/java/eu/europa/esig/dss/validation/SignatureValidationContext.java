@@ -52,6 +52,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -116,6 +117,9 @@ public class SignatureValidationContext implements ValidationContext {
 	// Certificates collected from AIA
 	private ListCertificateSource aiaCertificateSources = new ListCertificateSource();
 
+	// Certificates collected from revocation tokens
+	private ListCertificateSource revocationCertificateSources = new ListCertificateSource();
+
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
@@ -141,6 +145,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public void initialize(final CertificateVerifier certificateVerifier) {
 		Objects.requireNonNull(certificateVerifier);
 
+		this.certificateVerifier = certificateVerifier;
 		this.crlSource = certificateVerifier.getCrlSource();
 		this.ocspSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
@@ -252,6 +257,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private ListCertificateSource getAllCertificateSources() {
 		ListCertificateSource allCertificateSources = new ListCertificateSource();
 		allCertificateSources.addAll(signatureCertificateSource);
+		allCertificateSources.addAll(revocationCertificateSources);
 		allCertificateSources.addAll(aiaCertificateSources);
 		allCertificateSources.add(adjunctCertSource);
 		allCertificateSources.addAll(trustedCertSources);
@@ -314,8 +320,11 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 			}
 		}
-		LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
-		return issuers.iterator().next();
+		if (Utils.isCollectionNotEmpty(issuers)) {
+			LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
+			return issuers.iterator().next();
+		}
+		return null;
 	}
 
 	/**
@@ -361,6 +370,16 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public void addRevocationTokenForVerification(RevocationToken<Revocation> revocationToken) {
 		if (addTokenForVerification(revocationToken)) {
+
+			// only certificate sources for OCSP tokens must be processed
+			RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
+			if (revocationCertificateSource != null) {
+				revocationCertificateSources.add(revocationCertificateSource);
+				for (CertificateToken certificateToken : revocationCertificateSource.getCertificates()) {
+					addCertificateTokenForVerification(certificateToken);
+				}
+			}
+
 			final boolean added = processedRevocations.add(revocationToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
@@ -389,6 +408,13 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
 		if (addTokenForVerification(timestampToken)) {
+
+			// Inject all certificate chain (needed in case of missing AIA on the TSA with
+			// intermediate CAs)
+			for (CertificateToken certificateToken : timestampToken.getCertificates()) {
+				addCertificateTokenForVerification(certificateToken);
+			}
+
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {

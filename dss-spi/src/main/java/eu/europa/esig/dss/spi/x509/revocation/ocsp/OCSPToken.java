@@ -23,7 +23,6 @@ package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
@@ -102,6 +101,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		Objects.requireNonNull(basicOCSPResp, "The OCSP Response must be defined!");
 		Objects.requireNonNull(certificate, "The related certificate token cannot be null!");
 		this.basicOCSPResp = basicOCSPResp;
+		this.productionDate = basicOCSPResp.getProducedAt();
 		this.relatedCertificate = certificate;
 		this.latestSingleResp = latestSingleResp;
 
@@ -200,14 +200,6 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		}
 	}
 
-	@Override
-	public Date getProductionDate() {
-		if (productionDate == null) {
-			productionDate = basicOCSPResp.getProducedAt();
-		}
-		return productionDate;
-	}
-	
 	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		if (signatureAlgorithm == null) {

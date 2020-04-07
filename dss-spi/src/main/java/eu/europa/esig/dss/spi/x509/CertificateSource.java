@@ -74,7 +74,7 @@ public interface CertificateSource extends Serializable {
 	 * @param certificateToken the certificate to be tested
 	 * @return true if the certificate is part of the current source
 	 */
-	boolean isKnown(CertificateToken token);
+	boolean isKnown(CertificateToken certificateToken);
 
 	/**
 	 * This method returns the Set of certificates with the same subjectDN.

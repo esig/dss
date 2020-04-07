@@ -367,8 +367,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
 		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
+		ListCertificateSource listCertificateSource = mergeCertificateSource(allSignatures, detachedTimestamps);
         
-		prepareCertificateVerifier(listCRLSource, listOCSPSource);
+		prepareCertificateVerifier(listCRLSource, listOCSPSource, listCertificateSource);
 		
 		prepareSignatureValidationContext(validationContext, allSignatures);
         prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
@@ -396,12 +397,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Sets revocation sources for a following certificate valdiation
 	 * 
-	 * @param listCRLSource  {@link ListRevocationSource}
-	 * @param listOCSPSource {@link ListRevocationSource}
+	 * @param listCRLSource         {@link ListRevocationSource}
+	 * @param listOCSPSource        {@link ListRevocationSource}
+	 * @param listCertificateSource {@link ListCertificateSource}
 	 */
-	protected void prepareCertificateVerifier(ListRevocationSource<CRL> listCRLSource, ListRevocationSource<OCSP> listOCSPSource) {
+	protected void prepareCertificateVerifier(ListRevocationSource<CRL> listCRLSource, ListRevocationSource<OCSP> listOCSPSource,
+			ListCertificateSource listCertificateSource) {
 		certificateVerifier.setSignatureCRLSource(listCRLSource);
 		certificateVerifier.setSignatureOCSPSource(listOCSPSource);
+		certificateVerifier.setSignatureCertificateSource(listCertificateSource);
 	}
 
 	/**
@@ -455,21 +459,22 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 	
 	/**
-	 * For all signatures to be validated this method merges the Certificate sources.
+	 * For all signatures to be validated this method merges the Certificate
+	 * sources.
 	 *
-	 * @param validationContext   {@code ValidationContext} including validation results of signatures
 	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
 	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps   {@code Collection} of {@code TimestampToken}s
+	 * @param detachedTimestamps {@code Collection} of {@code TimestampToken}s
 	 *                           detached to a validating file
 	 * @return merged Certificate Source
 	 */
-	protected ListCertificateSource mergeCertificateSource(final ValidationContext validationContext, final Collection<AdvancedSignature> allSignatureList, 
+	protected ListCertificateSource mergeCertificateSource(
+			final Collection<AdvancedSignature> allSignatureList,
 			Collection<TimestampToken> detachedTimestamps) {
 		ListCertificateSource allCertificatesSource = new ListCertificateSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (AdvancedSignature advancedSignature : allSignatureList) {
-				allCertificatesSource.add(advancedSignature.getCertificateSource());
+				allCertificatesSource.addAll(advancedSignature.getCompleteCertificateSource());
 			}
 		}
 		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
