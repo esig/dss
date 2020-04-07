@@ -631,7 +631,9 @@ public final class DSSXMLUtils {
 			String str = new String(bytes);
 			// TODO: better
 			// remove <?xml version="1.0" encoding="UTF-8"?>
-			str = str.substring(str.indexOf("?>") + 2);
+			if (str.startsWith("<?")) {
+				str = str.substring(str.indexOf("?>") + 2);
+			}
 			return str.getBytes();
 		} else if (node.getNodeType() == Node.TEXT_NODE) {
 			String textContent = node.getTextContent();

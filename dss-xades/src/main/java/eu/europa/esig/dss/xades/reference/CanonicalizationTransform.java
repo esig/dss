@@ -29,7 +29,7 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public class CanonicalizationTransform extends AbstractTransform {
 
-	public CanonicalizationTransform( String canonicalizationAlgorithm) {
+	public CanonicalizationTransform(String canonicalizationAlgorithm) {
 		this(XAdESNamespaces.XMLDSIG, canonicalizationAlgorithm);
 	}
 

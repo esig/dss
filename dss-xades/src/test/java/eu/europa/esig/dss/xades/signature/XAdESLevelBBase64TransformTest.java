@@ -172,7 +172,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 
 			signAndValidate(document, signatureParameters);
 		});
-		assertEquals("Reference setting is not correct! Base64 transform is not compatible with Enveloped signature format.", exception.getMessage());		
+		assertEquals("Reference setting is not correct! Base64 transform is not compatible with ENVELOPED signature format.", exception.getMessage());		
 	}
 	
 	@Test

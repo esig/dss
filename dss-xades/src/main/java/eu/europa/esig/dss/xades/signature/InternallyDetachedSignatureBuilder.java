@@ -120,7 +120,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 		Document dom = DomUtils.buildDOM(contents);
 		Element root = dom.getDocumentElement();
 		final List<DSSTransform> transforms = reference.getTransforms();
-		return new InMemoryDocument(applyTransformations(contents, transforms, root));
+		return new InMemoryDocument(applyTransformations(transforms, root));
 	}
 
 }

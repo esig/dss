@@ -278,7 +278,7 @@ public class DSS1770Test {
 		
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
-		assertEquals(3, signatureScopes.size());
+		assertEquals(2, signatureScopes.size());
 		
 		int fullScopeCounter = 0;
 		int partialScopeCounter = 0;
@@ -290,7 +290,7 @@ public class DSS1770Test {
 				partialScopeCounter++;
 			}
 		}
-		assertEquals(1, fullScopeCounter);
+		assertEquals(0, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
 	
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
@@ -370,7 +370,7 @@ public class DSS1770Test {
 		
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
-		assertEquals(3, signatureScopes.size());
+		assertEquals(2, signatureScopes.size());
 		
 		int fullScopeCounter = 0;
 		int partialScopeCounter = 0;
@@ -382,7 +382,7 @@ public class DSS1770Test {
 				partialScopeCounter++;
 			}
 		}
-		assertEquals(1, fullScopeCounter);
+		assertEquals(0, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
 	
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
