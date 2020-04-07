@@ -23,22 +23,23 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import eu.europa.esig.dss.alert.Alert;
-import eu.europa.esig.dss.alert.DSSExceptionAlert;
-import eu.europa.esig.dss.alert.DSSLogAlert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
@@ -100,6 +101,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private ListRevocationSource<OCSP> signatureOCSPSource;
 	
 	/**
+	 * This variable contains the {@code ListCertificateSource} extracted from the
+	 * signatures to validate.
+	 */
+	private ListCertificateSource signatureCertificateSource;
+
+	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
 	 * of digests for validation tokens and signed data
 	 * Default: SHA256
@@ -127,42 +134,49 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of invalid timestamp
 	 * (augmentation process).
-	 * Default : DSSExceptionAlert - throw the exception
+	 * 
+	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
-	private Alert<Exception> alertOnInvalidTimestamp = new DSSExceptionAlert();
+	private StatusAlert alertOnInvalidTimestamp = new ExceptionOnStatusAlert();
 
 	/**
 	 * This variable set the behavior to follow in case of missing revocation data
 	 * (augmentation process).
-	 * Default : DSSExceptionAlert - throw the exception
+	 * 
+	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
-	private Alert<Exception> alertOnMissingRevocationData = new DSSExceptionAlert();
+	private StatusAlert alertOnMissingRevocationData = new ExceptionOnStatusAlert();
 
 	/**
 	 * This variable set the behavior to follow in case of revoked certificate
-	 * (augmentation process). 
-	 * Default : DSSExceptionAlert - throw the exception
+	 * (augmentation process).
+	 * 
+	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
-	private Alert<Exception> alertOnRevokedCertificate = new DSSExceptionAlert();
+	private StatusAlert alertOnRevokedCertificate = new ExceptionOnStatusAlert();
 
 	/**
 	 * This variable set the behavior to follow in case of no revocation data issued
-	 * after the bestSignatureTime (augmentation process). 
-	 * Default : DSSLogAlert - log a warning message
+	 * after the bestSignatureTime (augmentation process).
+	 * 
+	 * Default : LogOnStatusAlert - log a warning message
 	 */
-	private Alert<Exception> alertOnNoRevocationAfterBestSignatureTime = new DSSLogAlert(Level.WARN, LOG.isDebugEnabled());
+	private StatusAlert alertOnNoRevocationAfterBestSignatureTime = new LogOnStatusAlert(Level.WARN);
 
 	/**
 	 * This variable set the behavior to follow in case of missing revocation data
 	 * for a POE.
-	 * Default : DSSLogAlert - log a warning message
+	 * 
+	 * Default : LogOnStatusAlert - log a warning message
 	 */
-	private Alert<Exception> alertOnUncoveredPOE = new DSSLogAlert(Level.WARN, LOG.isDebugEnabled());
+	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
 
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
-	 * untrusted certificate chains. Default : false (revocation are not checked in
-	 * case of certificates issued from an unsure source)
+	 * untrusted certificate chains.
+	 * 
+	 * Default : false (revocation are not checked in case of certificates issued
+	 * from an unsure source)
 	 */
 	private boolean checkRevocationForUntrustedChains = false;
 
@@ -307,52 +321,67 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public Alert<Exception> getAlertOnInvalidTimestamp() {
+	public ListCertificateSource getSignatureCertificateSource() {
+		return signatureCertificateSource;
+	}
+
+	@Override
+	public void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource) {
+		this.signatureCertificateSource = signatureCertificateSource;
+	}
+
+	@Override
+	public StatusAlert getAlertOnInvalidTimestamp() {
 		return alertOnInvalidTimestamp;
 	}
 
 	@Override
-	public void setAlertOnInvalidTimestamp(Alert<Exception> alertOnInvalidTimestamp) {
+	public void setAlertOnInvalidTimestamp(StatusAlert alertOnInvalidTimestamp) {
+		Objects.requireNonNull(alertOnInvalidTimestamp);
 		this.alertOnInvalidTimestamp = alertOnInvalidTimestamp;
 	}
 
 	@Override
-	public void setAlertOnMissingRevocationData(Alert<Exception> alertOnMissingRevocationData) {
-		this.alertOnMissingRevocationData = alertOnMissingRevocationData;
-	}
-
-	@Override
-	public Alert<Exception> getAlertOnMissingRevocationData() {
+	public StatusAlert getAlertOnMissingRevocationData() {
 		return alertOnMissingRevocationData;
 	}
 
 	@Override
-	public Alert<Exception> getAlertOnUncoveredPOE() {
+	public void setAlertOnMissingRevocationData(StatusAlert alertOnMissingRevocationData) {
+		Objects.requireNonNull(alertOnMissingRevocationData);
+		this.alertOnMissingRevocationData = alertOnMissingRevocationData;
+	}
+
+	@Override
+	public StatusAlert getAlertOnUncoveredPOE() {
 		return alertOnUncoveredPOE;
 	}
 
 	@Override
-	public void setAlertOnUncoveredPOE(Alert<Exception> alertOnUncoveredPOE) {
+	public void setAlertOnUncoveredPOE(StatusAlert alertOnUncoveredPOE) {
+		Objects.requireNonNull(alertOnUncoveredPOE);
 		this.alertOnUncoveredPOE = alertOnUncoveredPOE;
 	}
 
 	@Override
-	public Alert<Exception> getAlertOnRevokedCertificate() {
+	public StatusAlert getAlertOnRevokedCertificate() {
 		return alertOnRevokedCertificate;
 	}
 
 	@Override
-	public void setAlertOnRevokedCertificate(Alert<Exception> alertOnRevokedCertificate) {
+	public void setAlertOnRevokedCertificate(StatusAlert alertOnRevokedCertificate) {
+		Objects.requireNonNull(alertOnRevokedCertificate);
 		this.alertOnRevokedCertificate = alertOnRevokedCertificate;
 	}
 
 	@Override
-	public Alert<Exception> getAlertOnNoRevocationAfterBestSignatureTime() {
+	public StatusAlert getAlertOnNoRevocationAfterBestSignatureTime() {
 		return alertOnNoRevocationAfterBestSignatureTime;
 	}
 
 	@Override
-	public void setAlertOnNoRevocationAfterBestSignatureTime(Alert<Exception> alertOnNoRevocationAfterBestSignatureTime) {
+	public void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime) {
+		Objects.requireNonNull(alertOnNoRevocationAfterBestSignatureTime);
 		this.alertOnNoRevocationAfterBestSignatureTime = alertOnNoRevocationAfterBestSignatureTime;
 	}
 
@@ -364,18 +393,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
 		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
-	}
-
-	@Override
-	public CertificatePool createValidationPool() {
-		final CertificatePool validationPool = new CertificatePool();
-		for (CertificateSource trustedSource : trustedCertSources) {
-			validationPool.importCerts(trustedSource);
-		}
-		if (adjunctCertSource != null) {
-			validationPool.importCerts(adjunctCertSource);
-		}
-		return validationPool;
 	}
 
 	@Override

@@ -22,8 +22,8 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 
 import org.slf4j.event.Level;
 
-import eu.europa.esig.dss.alert.DSSExceptionAlert;
-import eu.europa.esig.dss.alert.DSSLogAlert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -81,29 +81,30 @@ public class CertificateVerifierSnippet {
 		// extension)
 
 		// DSS throws an exception by default in case of missing revocation data
-		// Default : DSSExceptionAlert
-		cv.setAlertOnMissingRevocationData(new DSSExceptionAlert());
+		// Default : ExceptionOnStatusAlert
+		cv.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
 
-		// DSS throws an exception if a TSU certificate chain is not covered with a
+		// DSS logs a warning if a TSU certificate chain is not covered with a
 		// revocation data (timestamp generation time > CRL/OCSP production time).
-		// Default : DSSLogAlert
-		cv.setAlertOnUncoveredPOE(new DSSLogAlert(Level.WARN, false));
+		// Default : LogOnStatusAlert
+		cv.setAlertOnUncoveredPOE(new LogOnStatusAlert(Level.WARN));
 
 		// DSS interrupts by default the extension process if a revoked certificate is
 		// present
-		// Default : DSSExceptionAlert
-		cv.setAlertOnRevokedCertificate(new DSSExceptionAlert());
+		// Default : ExceptionOnStatusAlert
+		cv.setAlertOnRevokedCertificate(new ExceptionOnStatusAlert());
 
 		// DSS stops the extension process if an invalid timestamp is met
-		// Default : DSSExceptionAlert
-		cv.setAlertOnInvalidTimestamp(new DSSExceptionAlert());
+		// Default : ExceptionOnStatusAlert
+		cv.setAlertOnInvalidTimestamp(new ExceptionOnStatusAlert());
 		
-		// DSS v5.5+ : throw an exception in case if there is no valid revocation data 
+		// DSS v5.5+ : logs a warning message in case if there is no valid revocation
+		// data
 		// with thisUpdate time after the best signature time
 		// Example: if a signature was extended to T level then the obtained revocation 
 		// must have thisUpdate time after production time of the signature timestamp.
-		// Default : DSSLogAlert
-		cv.setAlertOnNoRevocationAfterBestSignatureTime(new DSSLogAlert(Level.ERROR, true));
+		// Default : LogOnStatusAlert
+		cv.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert(Level.ERROR));
 		
 		// DSS v5.4+ : defines if binary of certificates used during validation must be included
 		// to produced validation reports. If false only digests will be included.

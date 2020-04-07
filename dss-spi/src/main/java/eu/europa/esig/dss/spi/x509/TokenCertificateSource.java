@@ -2,6 +2,7 @@ package eu.europa.esig.dss.spi.x509;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,10 +33,6 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		super();
 	}
 
-	protected TokenCertificateSource(final CertificatePool certPool) {
-		super(certPool);
-	}
-	
 	/**
 	 * Adds a {@code CertificateIdentifier} with its origin
 	 * 
@@ -98,8 +95,8 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	 */
 	public List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
 		List<CertificateToken> result = new ArrayList<>();
-		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
-			for (CertificateRef certificateRef : certificateRefs) {
+		for (CertificateRef certificateRef : certificateRefs) {
+			for (CertificateToken certificateToken : certificateOrigins.keySet()) {
 				if (certificateMatcher.match(certificateToken, certificateRef)) {
 					result.add(certificateToken);
 				}
@@ -181,7 +178,7 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	}
 
 	protected List<CertificateToken> getCertificateTokensByOrigin(CertificateOrigin origin) {
-		List<CertificateToken> result = new ArrayList<>();
+		List<CertificateToken> result = new LinkedList<>();
 		for (Entry<CertificateToken, List<CertificateOrigin>> entry : certificateOrigins.entrySet()) {
 			List<CertificateOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
@@ -192,7 +189,7 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	}
 
 	protected List<CertificateRef> getCertificateRefsByOrigin(CertificateRefOrigin origin) {
-		List<CertificateRef> result = new ArrayList<>();
+		List<CertificateRef> result = new LinkedList<>();
 		for (Entry<CertificateRef, List<CertificateRefOrigin>> entry : certificateRefOrigins.entrySet()) {
 			List<CertificateRefOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {

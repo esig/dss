@@ -36,7 +36,6 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.utils.Utils;
@@ -66,12 +65,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 *                         {@code Element} that contains an XML signature
 	 * @param xadesPaths
 	 *                         adapted {@code XAdESPaths}
-	 * @param certificatePool
-	 *                         {@code CertificatePool} to use to declare the found
-	 *                         certificates
 	 */
-	public XAdESCertificateSource(final Element signatureElement, final XAdESPaths xadesPaths, final CertificatePool certificatePool) {
-		super(certificatePool);
+	public XAdESCertificateSource(final Element signatureElement, final XAdESPaths xadesPaths) {
 		Objects.requireNonNull(signatureElement, "Element signature must not be null");
 		Objects.requireNonNull(xadesPaths, "XAdESPaths must not be null");
 

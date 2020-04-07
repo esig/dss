@@ -1,16 +1,17 @@
 package eu.europa.esig.dss.jaxb;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
-import eu.europa.esig.dss.alert.Alert;
-import eu.europa.esig.dss.alert.DSSLogAlert;
-import eu.europa.esig.dss.jaxb.exception.XmlSecurityException;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
+import eu.europa.esig.dss.alert.status.Status;
 
 public abstract class AbstractFactoryBuilder<F extends Object> {
 
@@ -19,14 +20,16 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	private Map<String, Boolean> features = new HashMap<>();
 	private Map<String, Object> attributes = new HashMap<>();
 	
-	private Alert<Exception> securityExceptionAlert = new DSSLogAlert(Level.WARN, LOG.isDebugEnabled());
+	private StatusAlert securityExceptionAlert = new ExceptionOnStatusAlert();
 
 	/**
-	 * This method allows to configure a custom alert on security exception in the builder
+	 * This method allows to configure a custom alert on security exception in the
+	 * builder
 	 * 
-	 * @param securityExceptionAlert {@link Alert} to define
+	 * @param securityExceptionAlert {@link StatusAlert} to define
 	 */
-	public void setSecurityExceptionAlert(Alert<Exception> securityExceptionAlert) {
+	public void setSecurityExceptionAlert(StatusAlert securityExceptionAlert) {
+		Objects.requireNonNull(securityExceptionAlert);
 		this.securityExceptionAlert = securityExceptionAlert;
 	}
 	
@@ -99,14 +102,21 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	 * Sets all features to the factory
 	 */
 	protected void setSecurityFeatures(F factory) {
+		List<String> messages = new ArrayList<>();
 		for (Map.Entry<String, Boolean> entry : features.entrySet()) {
 			try {
 				setSecurityFeature(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				String message = String.format("SECURITY : unable to set feature '%s' = '%s'. Cause : %s", 
+				String message = String.format(
+						"Feature '%s' = '%s'. Cause : %s",
 						entry.getKey(), entry.getValue(), e.getMessage());
-				securityExceptionAlert.alert(new XmlSecurityException(message, e));
+				messages.add(message);
 			}
+		}
+
+		if (!messages.isEmpty()) {
+			Status status = new Status("SECURITY : unable to set feature(s)", messages);
+			securityExceptionAlert.alert(status);
 		}
 	}
 	
@@ -124,14 +134,21 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	 * Sets all attributes to the factory
 	 */
 	protected void setSecurityAttributes(F factory) {
+		List<String> messages = new ArrayList<>();
 		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
 			try {
 				setSecurityAttribute(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				String message = String.format("SECURITY : unable to set attribute '%s' = '%s'. Cause : %s", 
+				String message = String.format(
+						"Attribute '%s' = '%s'. Cause : %s",
 						entry.getKey(), entry.getValue(), e.getMessage());
-				securityExceptionAlert.alert(new XmlSecurityException(message, e));
+				messages.add(message);
 			}
+		}
+
+		if (!messages.isEmpty()) {
+			Status status = new Status("SECURITY : unable to set attribute(s)", messages);
+			securityExceptionAlert.alert(status);
 		}
 	}
 	

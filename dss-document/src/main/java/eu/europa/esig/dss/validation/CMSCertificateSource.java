@@ -57,7 +57,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -76,10 +75,8 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	 * @param cmsSignedData            {@link CMSSignedData}
 	 * @param currentSignerInformation the current {@link SignerInformation}
 	 *                                 extracted from cmsSignedData
-	 * @param certPool                 {@link CertificatePool}
 	 */
-	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation currentSignerInformation, final CertificatePool certPool) {
-		super(certPool);
+	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation currentSignerInformation) {
 		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
 		Objects.requireNonNull(currentSignerInformation, "currentSignerInformation is null, it must be provided!");
 		this.cmsSignedData = cmsSignedData;

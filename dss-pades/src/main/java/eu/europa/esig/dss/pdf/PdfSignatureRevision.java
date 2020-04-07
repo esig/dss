@@ -20,10 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.IOException;
 import java.util.List;
 
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public class PdfSignatureRevision extends PdfCMSRevision {
@@ -37,17 +35,13 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 *            the DSS dictionary
 	 * @param signatureFieldNames
 	 *            list of signature field names
-	 * @param validationCertPool
-	 *            Certificate validation pool
 	 * @param originalBytes
 	 *            the original bytes of the whole signed document
 	 * @param coverCompleteRevision
 	 *            identifies if the signature covers the whole revision
-	 * @throws IOException
-	 *            if an exception occurs
 	 */
 	public PdfSignatureRevision(PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, List<String> signatureFieldNames,
-			CertificatePool validationCertPool, byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
+			byte[] originalBytes, boolean coverCompleteRevision) {
 		super(signatureDictionary, signatureFieldNames, originalBytes, coverCompleteRevision);
 		this.dssDictionarySource = dssDictionary;
 	}

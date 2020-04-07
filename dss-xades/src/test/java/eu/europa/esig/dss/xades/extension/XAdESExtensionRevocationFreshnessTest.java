@@ -29,15 +29,14 @@ import java.io.File;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
 
-import eu.europa.esig.dss.alert.DSSExceptionAlert;
-import eu.europa.esig.dss.alert.DSSLogAlert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -73,7 +72,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		
-		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new DSSLogAlert(Level.WARN, false));
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
 		XAdESService service = new XAdESService(certificateVerifier);
         service.setTspSource(getAlternateGoodTsa());
 
@@ -88,10 +87,10 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	
 	@Test
 	public void throwExceptionTest() {
-		Exception exception = assertThrows(DSSException.class, () -> {
+		Exception exception = assertThrows(AlertException.class, () -> {
 			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 			
-			certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new DSSExceptionAlert());
+			certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
 			XAdESService service = new XAdESService(certificateVerifier);
 	        service.setTspSource(getGoodTsa());
 
@@ -100,8 +99,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 			service.extendDocument(signedDocument, signatureParameters);
 		});
-		assertTrue(exception.getMessage().contains("No fresh revocation data found. "
-				+ "Cause : No revocation data found after the best signature time"));
+		assertTrue(exception.getMessage().contains("Fresh revocation data is missing for one or more certificate(s)."));
 	}
 	
 	@Test
@@ -109,7 +107,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
-		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new DSSExceptionAlert());
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
 		XAdESService service = new XAdESService(certificateVerifier);
         service.setTspSource(getAlternateGoodTsa());
 

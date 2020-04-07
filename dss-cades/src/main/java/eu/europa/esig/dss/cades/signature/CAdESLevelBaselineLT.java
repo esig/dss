@@ -30,7 +30,6 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
@@ -55,14 +54,13 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException {
 		// add a LT level or replace an existing LT level
-		CertificatePool validationPool = certificateVerifier.createValidationPool();
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationPool);
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 
 		// add T level if needed
 		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
-			cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationPool);
+			cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		}
 		// check if the resulted signature can be extended

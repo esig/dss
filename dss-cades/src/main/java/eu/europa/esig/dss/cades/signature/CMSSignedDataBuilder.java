@@ -289,7 +289,7 @@ public class CMSSignedDataBuilder {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(detachedContents);
 		
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);

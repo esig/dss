@@ -118,7 +118,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
-			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xadesPathsHolders, validationCertPool);
+			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xadesPathsHolders);
 			xadesSignature.setSignatureFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setContainerContents(containerContents);

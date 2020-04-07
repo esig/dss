@@ -102,7 +102,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		List<AdvancedSignature> signatures = new ArrayList<>();
 		if (cmsSignedData != null) {
 			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
-				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
+				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 				if (document != null) {
 					cadesSignature.setSignatureFilename(document.getName());
 				}
@@ -123,7 +123,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		List<DSSDocument> results = new ArrayList<>();
 
 		for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
-			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
+			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			cadesSignature.setSignatureFilename(document.getName());
 			cadesSignature.setDetachedContents(detachedContents);
 			cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);

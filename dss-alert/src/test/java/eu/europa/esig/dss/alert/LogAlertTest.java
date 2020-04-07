@@ -9,7 +9,8 @@ import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
-import eu.europa.esig.dss.alert.handler.log.LogExceptionAlertHandler;
+import eu.europa.esig.dss.alert.handler.LogHandler;
+import eu.europa.esig.dss.alert.status.Status;
 
 public class LogAlertTest {
 	
@@ -17,14 +18,14 @@ public class LogAlertTest {
 	
 	@Test
 	public void warnLogAlertTest() {
-		Exception exception = new Exception(EXCEPTION_MESSAGE);
+		Status exception = new Status(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(Level.WARN, false);
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<Status>(Level.WARN);
 		
-		CompositeAlertHandler<Exception> alertHandler = new CompositeAlertHandler<Exception>(Arrays.asList(callback, logExceptionAlertHandler));
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<Status>(Arrays.asList(callback, logExceptionAlertHandler));
 		
-		ExceptionAlert exceptionAlert = new ExceptionAlert(alertHandler);
+		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
 		exceptionAlert.alert(exception);
 		
 		assertTrue(callback.called);
@@ -32,14 +33,14 @@ public class LogAlertTest {
 	
 	@Test
 	public void errorLogAlertTest() {
-		Exception exception = new Exception(EXCEPTION_MESSAGE);
+		Status exception = new Status(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogExceptionAlertHandler logExceptionAlertHandler = new LogExceptionAlertHandler(Level.ERROR, true);
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<Status>(Level.ERROR);
 		
-		CompositeAlertHandler<Exception> alertHandler = new CompositeAlertHandler<Exception>(Arrays.asList(callback, logExceptionAlertHandler));
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<Status>(Arrays.asList(callback, logExceptionAlertHandler));
 		
-		ExceptionAlert exceptionAlert = new ExceptionAlert(alertHandler);
+		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
 		exceptionAlert.alert(exception);
 		
 		assertTrue(callback.called);
@@ -47,19 +48,27 @@ public class LogAlertTest {
 	
 	@Test
 	public void dssLogAlertTest() {
-		Exception exception = new Exception(EXCEPTION_MESSAGE);
+		Status exception = new Status(EXCEPTION_MESSAGE);
 		
 		// manual testing
-		DSSLogAlert dssLogAlert = new DSSLogAlert(Level.INFO, false);
+		LogOnStatusAlert dssLogAlert = new LogOnStatusAlert(Level.INFO);
 		dssLogAlert.alert(exception);
 	}
 	
-	class CallbackExceptionAlertHandler implements AlertHandler<Exception> {
+	class CustomStatusAlert extends AbstractStatusAlert {
+
+		public CustomStatusAlert(AlertHandler<Status> handler) {
+			super(handler);
+		}
+
+	}
+
+	class CallbackExceptionAlertHandler implements AlertHandler<Status> {
 		
 		private boolean called = false;
 
 		@Override
-		public void process(Exception e) {
+		public void process(Status e) {
 			called = true;
 		}
 		

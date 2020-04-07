@@ -63,7 +63,6 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
@@ -147,27 +146,23 @@ public class TimestampToken extends Token {
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 	
 	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
-		this(binaries, type, new CertificatePool());
+		this(binaries, type, new ArrayList<TimestampedReference>(), null);
 	}
 
-	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) throws TSPException, IOException, CMSException {
-		this(binaries, type, certPool, new ArrayList<TimestampedReference>(), null);
-	}
-
-	public TimestampToken(final PdfRevision pdfTimestampRevision, final TimestampType type, final CertificatePool certPool,
-			final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
-		this(pdfTimestampRevision.getPdfSigDictInfo().getCMSSignedData(), type, certPool, new ArrayList<TimestampedReference>(), timestampLocation);
+	public TimestampToken(final PdfRevision pdfTimestampRevision, final TimestampType type, final TimestampLocation timestampLocation)
+			throws TSPException, IOException, CMSException {
+		this(pdfTimestampRevision.getPdfSigDictInfo().getCMSSignedData(), type, new ArrayList<TimestampedReference>(), timestampLocation);
 		this.pdfRevision = pdfTimestampRevision;
 	}
 
-	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool,
-			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
-		this(new CMSSignedData(binaries), type, certPool, timestampedReferences, timestampLocation);
+	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+			final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
+		this(new CMSSignedData(binaries), type, timestampedReferences, timestampLocation);
 	}
 
-	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool,
-			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) throws TSPException, IOException {
-		this(new TimeStampToken(cms), type, timestampedReferences, timestampLocation, certPool);
+	public TimestampToken(final CMSSignedData cms, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+			final TimestampLocation timestampLocation) throws TSPException, IOException {
+		this(new TimeStampToken(cms), type, timestampedReferences, timestampLocation);
 	}
 
 	/**
@@ -183,22 +178,16 @@ public class TimestampToken extends Token {
 	 * @param timestampLocation
 	 *                              {@code TimestampLocation} defines where the
 	 *                              timestamp comes from
-	 * @param certPool
-	 *                              {@code CertificatePool} which is used to
-	 *                              identify the signing certificate of the
-	 *                              timestamp
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
-			final TimestampLocation timestampLocation, final CertificatePool certPool) {
+			final TimestampLocation timestampLocation) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
-		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
+		this.certificateSource = new TimestampCertificateSource(timeStamp);
 		this.ocspSource = new TimestampOCSPSource(timeStamp);
 		this.crlSource = new TimestampCRLSource(timeStamp);
 		this.timestampedReferences = timestampedReferences;
-		if (timestampLocation != null) {
-			this.timestampLocation = timestampLocation;
-		}
+		this.timestampLocation = timestampLocation;
 	}
 
 	@Override

@@ -38,7 +38,6 @@ import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.pdf.PdfSignatureDictionaryComparator;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.PdfRevision;
@@ -53,8 +52,8 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	
 	private final transient List<PdfRevision> documentRevisions;
 	
-	public PAdESTimestampSource(final PAdESSignature signature, final CertificatePool certificatePool, final List<PdfRevision> documentRevisions) {
-		super(signature, certificatePool);
+	public PAdESTimestampSource(final PAdESSignature signature, final List<PdfRevision> documentRevisions) {
+		super(signature);
 		Objects.requireNonNull(documentRevisions, "List of Document revisions must be provided!");
 		this.pdfSignatureRevision = signature.getPdfRevision();
 		// Reverse list to iterate in chronological order

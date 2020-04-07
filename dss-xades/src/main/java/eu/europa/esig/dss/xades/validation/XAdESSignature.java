@@ -63,7 +63,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -185,7 +184,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            the signature DOM element
 	 */
 	public XAdESSignature(final Element signatureElement) {
-		this(signatureElement, Arrays.asList(new XAdES132Paths()), new CertificatePool());
+		this(signatureElement, Arrays.asList(new XAdES132Paths()));
 	}
 
 	/**
@@ -196,11 +195,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @param xadesPathsHolders
 	 *                          List of {@code XAdESPaths} to use when handling
 	 *                          signature
-	 * @param certPool
-	 *                          the certificate pool (can be null)
 	 */
-	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders, final CertificatePool certPool) {
-		super(certPool);
+	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders) {
 		Objects.requireNonNull(signatureElement, "Signature Element cannot be null");
 		this.signatureElement = signatureElement;
 		this.xadesPathsHolders = xadesPathsHolders;
@@ -330,7 +326,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new XAdESCertificateSource(signatureElement, xadesPaths, certPool);
+			offlineCertificateSource = new XAdESCertificateSource(signatureElement, xadesPaths);
 		}
 		return offlineCertificateSource;
 	}
@@ -370,7 +366,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public XAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths, certPool);
+			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths);
 		}
 		return (XAdESTimestampSource) signatureTimestampSource;
 	}
@@ -1010,7 +1006,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (counterSignaturesList != null && counterSignaturesList.getLength() > 0) {
 					for (int jj = 0; jj < counterSignaturesList.getLength(); jj++) {
 						// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
-						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders, certPool);
+						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders);
 						if (isCounterSignature(xadesCounterSignature)) {
 							xadesCounterSignature.setMasterSignature(this);
 							xadesList.add(xadesCounterSignature);

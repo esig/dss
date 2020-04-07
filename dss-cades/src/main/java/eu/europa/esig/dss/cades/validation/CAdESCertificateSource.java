@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cades.validation;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 
 /**
@@ -38,10 +37,9 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	 *
 	 * @param cmsSignedData {@link CMSSignedData} of the signature
 	 * @param signerInformation {@link SignerInformation} extracted from cmsSignedData
-	 * @param certPool {@link CertificatePool} is being used
 	 */
-	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
-		super(cmsSignedData, signerInformation, certPool);
+	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
+		super(cmsSignedData, signerInformation);
 	}
 
 }

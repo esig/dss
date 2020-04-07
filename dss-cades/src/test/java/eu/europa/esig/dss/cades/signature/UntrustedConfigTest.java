@@ -26,15 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
 
-import eu.europa.esig.dss.alert.DSSLogAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -87,7 +86,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
-		assertThrows(DSSException.class, () -> service.signDocument(documentToSign, params, signatureValue));
+		assertThrows(AlertException.class, () -> service.signDocument(documentToSign, params, signatureValue));
 	}
 
 	@Test
@@ -107,7 +106,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
-		assertThrows(DSSException.class, () -> service.signDocument(documentToSign, params, signatureValue));
+		assertThrows(AlertException.class, () -> service.signDocument(documentToSign, params, signatureValue));
 	}
 
 	@Test
@@ -120,7 +119,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
-		certificateVerifier.setAlertOnMissingRevocationData(new DSSLogAlert(Level.WARN, false));
+		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert());
 
 		CAdESService service = new CAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsa());

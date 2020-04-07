@@ -39,7 +39,6 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -69,15 +68,12 @@ public class PAdESSignature extends CAdESSignature {
 	 * The default constructor for PAdESSignature.
 	 *
 	 * @param pdfSignatureRevision a related {@link PdfSignatureRevision}
-	 * @param certPool             {@link CertificatePool}
 	 * @param documentRevisions    a list of {@link PdfRevision} extracted from the
 	 *                             validating document
 	 * 
 	 */
-	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool,
-			final List<PdfRevision> documentRevisions) {
-		super(pdfSignatureRevision.getCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMSSignedData()),
-				certPool);
+	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final List<PdfRevision> documentRevisions) {
+		super(pdfSignatureRevision.getCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMSSignedData()));
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
 		this.detachedContents = Arrays.asList(new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
@@ -94,7 +90,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getSignerInformation(), certPool);
+			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getSignerInformation());
 		}
 		return offlineCertificateSource;
 	}
@@ -118,7 +114,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public PAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new PAdESTimestampSource(this, certPool, documentRevisions);
+			signatureTimestampSource = new PAdESTimestampSource(this, documentRevisions);
 		}
 		return (PAdESTimestampSource) signatureTimestampSource;
 	}

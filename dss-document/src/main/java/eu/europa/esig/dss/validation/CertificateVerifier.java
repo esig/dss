@@ -22,11 +22,13 @@ package eu.europa.esig.dss.validation;
 
 import java.util.List;
 
-import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
@@ -147,7 +149,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method returns the OCSP source (information extracted from signatures).
 	 * 
-	 * @return the OCSP sources from the signature
+	 * @return the OCSP sources from the signatures
 	 */
 	ListRevocationSource<OCSP> getSignatureOCSPSource();
 
@@ -159,6 +161,22 @@ public interface CertificateVerifier {
 	 *                            the OCSP sources from the signature
 	 */
 	void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource);
+
+	/**
+	 * This method returns the Certificate Source (information extracted from
+	 * signatures)
+	 * 
+	 * @return the certificate sources from the signatures
+	 */
+	ListCertificateSource getSignatureCertificateSource();
+
+	/**
+	 * This method allows to set the Certificate source (information extracted from
+	 * signatures).
+	 *
+	 * @param signatureCertificateSource the Certificate sources from the signatures
+	 */
+	void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource);
 
 	/**
 	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
@@ -231,99 +249,99 @@ public interface CertificateVerifier {
 
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
-	 * augmentation). 
-	 * Default : DSSExceptionAlert - throw an exception.
+	 * augmentation).
 	 * 
-	 * @param alertOnInvalidTimestamp
-	 *                                         defines a behaviour in case of
-	 *                                         invalid timestamp
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 * 
+	 * @param alertOnInvalidTimestamp defines a behaviour in case of invalid
+	 *                                timestamp
 	 */
-	void setAlertOnInvalidTimestamp(Alert<Exception> alertOnInvalidTimestamp);
+	void setAlertOnInvalidTimestamp(StatusAlert alertOnInvalidTimestamp);
 
 	/**
 	 * This method returns true if an exception needs to be thrown on invalid
 	 * timestamp.
 	 * 
-	 * @return {@link Alert} to be processed in case of an invalid timestamp
+	 * @return {@link StatusAlert} to be processed in case of an invalid timestamp
 	 */
-	Alert<Exception> getAlertOnInvalidTimestamp();
+	StatusAlert getAlertOnInvalidTimestamp();
 
 	/**
 	 * This method allows to change the behavior on missing revocation data (LT/LTA
 	 * augmentation).
-	 * Default : DSSExceptionAlert - throw an exception.
 	 * 
-	 * @param alertOnMissingRevocationData
-	 *                                              defines a behaviour in case of
-	 *                                              missing revocation data
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 * 
+	 * @param alertOnMissingRevocationData defines a behaviour in case of missing
+	 *                                     revocation data
 	 */
-	void setAlertOnMissingRevocationData(Alert<Exception> alertOnMissingRevocationData);
+	void setAlertOnMissingRevocationData(StatusAlert alertOnMissingRevocationData);
 
 	/**
 	 * This method returns true if an exception needs to be thrown on missing
 	 * revocation data.
 	 * 
-	 * @return {@link Alert} to be processed in case of missing revocation data
+	 * @return {@link StatusAlert} to be processed in case of missing revocation
+	 *         data
 	 */
-	Alert<Exception> getAlertOnMissingRevocationData();
+	StatusAlert getAlertOnMissingRevocationData();
 
 	/**
 	 * This method allows to change the behavior on revoked certificates (LT/LTA
 	 * augmentation).
-	 * Default : DSSExceptionAlert - throw an exception.
 	 * 
-	 * @param alertOnRevokedCertificate
-	 *                                         defines a behaviour in case of
-	 *                                         revoked certificate
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 * 
+	 * @param alertOnRevokedCertificate defines a behaviour in case of revoked
+	 *                                  certificate
 	 */
-	void setAlertOnRevokedCertificate(Alert<Exception> alertOnRevokedCertificate);
+	void setAlertOnRevokedCertificate(StatusAlert alertOnRevokedCertificate);
 
 	/**
 	 * This method returns true if an exception needs to be thrown on revoked
 	 * certificate.
 	 * 
-	 * @return {@link Alert} to be processed in case of revoked certificate
+	 * @return {@link StatusAlert} to be processed in case of revoked certificate
 	 */
-	Alert<Exception> getAlertOnRevokedCertificate();
+	StatusAlert getAlertOnRevokedCertificate();
 
 	/**
-	 * This method allows to change the behavior on revocation data issued after
-	 * a control time.
-	 * Default : DSSLogAlert - log a warning.
+	 * This method allows to change the behavior on revocation data issued after a
+	 * control time.
 	 * 
-	 * @param alertOnNoRevocationAfterBestSignatureTime
-	 *                                         defines a behaviour in case of
-	 *                                         no revocation data issued after 
-	 *                                         the bestSignatureTime
+	 * Default : {@link LogOnStatusAlert} - log a warning.
+	 * 
+	 * @param alertOnNoRevocationAfterBestSignatureTime defines a behaviour in case
+	 *                                                  of no revocation data issued
+	 *                                                  after the bestSignatureTime
 	 */
-	void setAlertOnNoRevocationAfterBestSignatureTime(Alert<Exception> alertOnNoRevocationAfterBestSignatureTime);
+	void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime);
 	
 	/**
-	 * This method returns true if an exception needs to be thrown in case if
-	 * no revocation data obtained with an issuance time after the bestSignatureTime
+	 * This method returns true if an exception needs to be thrown in case if no
+	 * revocation data obtained with an issuance time after the bestSignatureTime
 	 * 
-	 * @return {@link Alert} to be processed in case of no revocation data 
-	 * 										   after best signature time
+	 * @return {@link StatusAlert} to be processed in case of no revocation data
+	 *         after best signature time
 	 */
-	Alert<Exception> getAlertOnNoRevocationAfterBestSignatureTime();
+	StatusAlert getAlertOnNoRevocationAfterBestSignatureTime();
 	
 	/**
 	 * This method allows to change the behavior on uncovered POE (timestamp).
-	 * Default : DSSLogAlert - log a warning.
 	 * 
-	 * @param alertOnUncoveredPOE
-	 *                                     defines a behaviour in case of
-	 *                                     uncovered POE
+	 * Default : {@link LogOnStatusAlert} - log a warning.
+	 * 
+	 * @param alertOnUncoveredPOE defines a behaviour in case of uncovered POE
 	 */
-	void setAlertOnUncoveredPOE(Alert<Exception> alertOnUncoveredPOE);
+	void setAlertOnUncoveredPOE(StatusAlert alertOnUncoveredPOE);
 	
 	/**
 	 * This method returns true if an exception needs to be thrown on uncovered
 	 * POE(timestamp).
 	 * 
-	 * @return {@link Alert} to be processed in case of uncovered POE
+	 * @return {@link StatusAlert} to be processed in case of uncovered POE
 	 */
-	Alert<Exception> getAlertOnUncoveredPOE();
+	StatusAlert getAlertOnUncoveredPOE();
 
 	/**
 	 * This method allows to enable revocation checking for untrusted certificate
@@ -343,11 +361,5 @@ public interface CertificateVerifier {
 	 *         chains
 	 */
 	boolean isCheckRevocationForUntrustedChains();
-
-	/**
-	 * This method creates the validation pool of certificates which is used
-	 * during the validation process.
-	 */
-	CertificatePool createValidationPool();
 
 }

@@ -26,14 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.CertificateReorderer;
-import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -42,9 +39,8 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -62,12 +58,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private static final long serialVersionUID = 6452189007886779360L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultAdvancedSignature.class);
-
-	/**
-	 * This is the reference to the global (external) pool of certificates. All encapsulated certificates in the signature are added to this pool. See
-	 * {@link eu.europa.esig.dss.spi.x509.CertificatePool}
-	 */
-	protected final CertificatePool certPool;
 
 	/**
 	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.
@@ -132,14 +122,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Build and defines {@code signatureIdentifier} value
 	 */
 	protected abstract SignatureIdentifier buildSignatureIdentifier();
-
-	/**
-	 * @param certPool
-	 *            can be null
-	 */
-	protected DefaultAdvancedSignature(final CertificatePool certPool) {
-		this.certPool = certPool;
-	}
 
 	@Override
 	public String getSignatureFilename() {
@@ -283,10 +265,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
-		final ValidationContext validationContext = new SignatureValidationContext(certPool);
-		
+		final ValidationContext validationContext = new SignatureValidationContext();
 		certificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
 		certificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
+		certificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
 		
 		validationContext.initialize(certificateVerifier);
 
@@ -300,64 +282,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		prepareTimestamps(validationContext);
 		validationContext.validate();
 
-		checkTimestamps(certificateVerifier, validationContext);
-		checkAllRevocationDataPresent(certificateVerifier, validationContext);
-		checkAllTimestampsCoveredByRevocationData(certificateVerifier, validationContext);
-		checkAllCertificatesNotRevoked(certificateVerifier, validationContext);
-		checkRevocationThisUpdateIsAfterBestSignatureTime(certificateVerifier, validationContext);
+		validationContext.checkAllTimestampsValid();
+		validationContext.checkAllRequiredRevocationDataPresent();
+		validationContext.checkAllPOECoveredByRevocationData();
+		validationContext.checkAllCertificatesValid();
+
+		CertificateToken signingCertificateToken = getSigningCertificateToken();
+		validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
 
 		return validationContext;
-	}
-
-	private void checkTimestamps(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllTimestampsValid();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnInvalidTimestamp();
-			String message = String.format("Broken timestamp detected. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkAllRevocationDataPresent(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllRequiredRevocationDataPresent();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnMissingRevocationData();
-			String message = String.format("Revocation data is missing. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkAllTimestampsCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllPOECoveredByRevocationData();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnUncoveredPOE();
-			String message = String.format("A POE is not covered by a usable revocation data. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkAllCertificatesNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			validationContext.checkAllCertificatesValid();
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnRevokedCertificate();
-			String message = String.format("Revoked certificate detected. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
-	}
-
-	private void checkRevocationThisUpdateIsAfterBestSignatureTime(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		try {
-			CertificateToken signingCertificateToken = getSigningCertificateToken();
-			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
-		} catch (DSSException e) {
-			Alert<Exception> alert = certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime();
-			String message = String.format("No fresh revocation data found. Cause : %s", e.getMessage());
-			alert.alert(new DSSException(message, e));
-		}
 	}
 
 	/**
@@ -449,12 +382,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return list of {@link CRLToken}s to be included to the signature
 	 */
 	private List<CRLToken> getCRLsForInclusion(
-			final Set<RevocationToken<Revocation>> processedRevocations, 
+			final Set<RevocationToken<Revocation>> processedRevocations,
 			final Set<CertificateToken> certificatesToBeIncluded) {
-		
+
 		final List<CRLToken> crlTokens = new ArrayList<>();
 		final List<TokenIdentifier> revocationIds = new ArrayList<>();
-		
+
 		for (final RevocationToken revocationToken : processedRevocations) {
 			if (!revocationIds.contains(revocationToken.getDSSId()) && isAtLeastOneCertificateCovered(revocationToken, certificatesToBeIncluded)) {
 				revocationIds.add(revocationToken.getDSSId());
@@ -711,23 +644,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificateMapWithinSignatureAndTimestamps(true);
+		boolean allSelfSigned = areAllSelfSignedCertificates(certificateChains);
 
 		boolean emptyCRLs = getCompleteCRLSource().isEmpty();
 		boolean emptyOCSPs = getCompleteOCSPSource().isEmpty();
+		boolean emptyRevocation = emptyCRLs && emptyOCSPs;
 
-		if (Utils.isMapEmpty(certificateChains) && (emptyCRLs || emptyOCSPs)) {
-			return false;
-		}
-
-		if (!areAllCertChainsHaveRevocationData(certificateChains)) {
-			return false;
-		}
-
-		if (areAllSelfSignedCertificates(certificateChains) && (emptyCRLs && emptyOCSPs)) {
-			return false;
-		}
-
-		return true;
+		return !allSelfSigned && !emptyRevocation;
 	}
 	
 	@Override
@@ -736,8 +659,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean areAllSelfSignedCertificates(Map<String, List<CertificateToken>> certificateChains) {
-		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
-			List<CertificateToken> chain = entryCertChain.getValue();
+		if (Utils.isMapEmpty(certificateChains)) {
+			// not certificates (only key)
+			return false;
+		}
+		for (List<CertificateToken> chain : certificateChains.values()) {
 			if (Utils.collectionSize(chain) == 1) {
 				CertificateToken certificateToken = chain.get(0);
 				if (!certificateToken.isSelfSigned()) {
@@ -748,59 +674,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			}
 		}
 		return true;
-	}
-
-	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
-		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
-			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!areAllCertsHaveRevocationData(entryCertChain.getValue())) {
-				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean areAllCertsHaveRevocationData(List<CertificateToken> certificates) {
-		// we reorder the certificate list, the order is not guaranteed
-		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
-		for (List<CertificateToken> chain : orderedCerts.values()) {
-			for (CertificateToken certificateToken : chain) {
-				if (!isRevocationRequired(certificateToken)) {
-					// Skip this loop to avoid checking upper levels than trusted certificates
-					// (cross certification)
-					break;
-				}
-				CertificateToken issuerToken = certPool.getIssuer(certificateToken);
-				if (issuerToken == null) {
-					LOG.warn("Issuer not found for certificate {}", certificateToken.getDSSIdAsString());
-					return false;
-				}
-
-				List<RevocationToken<Revocation>> revocationTokens = getCompleteOCSPSource().getRevocationTokens(certificateToken, issuerToken);
-				if (Utils.isCollectionEmpty(revocationTokens)) {
-					revocationTokens = getCompleteCRLSource().getRevocationTokens(certificateToken, issuerToken);
-				}
-
-				if (Utils.isCollectionEmpty(revocationTokens)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private Map<CertificateToken, List<CertificateToken>> order(List<CertificateToken> certificates) {
-		CertificateReorderer reorderer = new CertificateReorderer(certificates);
-		return reorderer.getOrderedCertificateChains();
-	}
-
-	private boolean isRevocationRequired(CertificateToken certificateToken) {
-		if (certPool.isTrusted(certificateToken) || certificateToken.isSelfSigned()) {
-			return false;
-		}
-
-		return !DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken);
 	}
 
 	/* Defines the level LTA */
@@ -836,7 +709,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
 		// Not applicable by default (CAdES/PAdES only)
-		return null;
+		return Collections.emptySet();
 	}
 	
 	@Override

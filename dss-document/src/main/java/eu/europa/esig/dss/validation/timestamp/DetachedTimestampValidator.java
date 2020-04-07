@@ -35,8 +35,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificatePoolSharer;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -45,7 +43,7 @@ import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
-public class DetachedTimestampValidator extends SignedDocumentValidator implements CertificatePoolSharer {
+public class DetachedTimestampValidator extends SignedDocumentValidator {
 
 	protected TimestampType timestampType;
 	protected TimestampToken timestampToken;
@@ -94,7 +92,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 			Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
 
 			try {
-				timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType, validationCertPool);
+				timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
 				timestampToken.setFileName(document.getName());
 				timestampToken.matchData(getTimestampedData());
 				timestampToken.setTimestampScopes(getTimestampSignatureScope());
@@ -144,14 +142,6 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 			}
 		}
 		return Collections.emptyList();
-	}
-
-	/**
-	 * In case of ASiC container (S/E)
-	 */
-	@Override
-	public void setValidationCertPool(CertificatePool validationCertPool) {
-		this.validationCertPool = validationCertPool;
 	}
 
 	@Override

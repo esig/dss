@@ -43,7 +43,6 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
@@ -75,13 +74,12 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	private transient XAdESTimestampDataBuilder timestampDataBuilder;
 	
 	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
-			final XAdESPaths xadesPaths, final CertificatePool certificatePool) {
+			final XAdESPaths xadesPaths) {
 		super(signature);
 		this.references = signature.getReferences();
 		this.referenceValidations = signature.getReferenceValidations();
 		this.signatureElement = signatureElement;
 		this.xadesPaths = xadesPaths;
-		this.certificatePool = certificatePool;
 	}
 
 	@Override
@@ -236,7 +234,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 		TimestampToken timestampToken = null;
 		try {
 			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, 
-					certificatePool, references, TimestampLocation.XAdES);
+					references, TimestampLocation.XAdES);
 		} catch (Exception e) {
 			LOG.warn("Unable to build timestamp token from binaries '{}'. Reason : {}", timestampTokenNode.getTextContent(), e.getMessage(), e);
 			return null;

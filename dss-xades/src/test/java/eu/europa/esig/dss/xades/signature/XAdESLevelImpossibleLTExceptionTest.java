@@ -28,10 +28,10 @@ import java.io.File;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -59,11 +59,10 @@ public class XAdESLevelImpossibleLTExceptionTest extends AbstractXAdESTestSignat
 	@Override
 	@Test
 	public void signAndVerify() {
-		Exception exception = assertThrows(DSSException.class, () -> {
+		Exception exception = assertThrows(AlertException.class, () -> {
 			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
 		});
-		assertTrue(exception.getMessage().contains("Revocation data is missing. "
-				+ "Cause : No revocation data found for certificate : "));
+		assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 	}
 
 	@Override

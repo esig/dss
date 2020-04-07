@@ -79,7 +79,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			signatureValidators = new ArrayList<>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
-				cadesValidator.setValidationCertPool(validationCertPool);
 				cadesValidator.setCertificateVerifier(certificateVerifier);
 				cadesValidator.setProcessExecutor(processExecutor);
 				cadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
@@ -106,7 +105,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 								getTimestampType(validatedManifestFile), validatedManifestFile, getAllDocuments());
 
 						timestampValidator.setTimestampedData(archiveManifest);
-						timestampValidator.setValidationCertPool(validationCertPool);
 						timestampValidator.setCertificateVerifier(certificateVerifier);
 						timestampValidators.add(timestampValidator);
 					} else {
@@ -117,7 +115,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 					if (Utils.collectionSize(signedDocuments) == 1) {
 						DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
 						timestampValidator.setTimestampedData(signedDocuments.get(0));
-						timestampValidator.setValidationCertPool(validationCertPool);
 						timestampValidator.setCertificateVerifier(certificateVerifier);
 						timestampValidators.add(timestampValidator);
 					} else {

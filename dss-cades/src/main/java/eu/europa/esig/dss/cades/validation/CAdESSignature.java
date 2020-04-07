@@ -102,7 +102,6 @@ import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -140,27 +139,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private final SignerInformation signerInformation;
 
 	/**
-	 * @param cmsSignedData
-	 *            CMSSignedData
-	 * @param signerInformation
-	 *            an expanded SignerInfo block from a CMS Signed message
-	 */
-	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
-		this(cmsSignedData, signerInformation, new CertificatePool());
-	}
-
-	/**
 	 * The default constructor for CAdESSignature.
 	 *
 	 * @param cmsSignedData
 	 *            CMSSignedData
 	 * @param signerInformation
 	 *            an expanded SignerInfo block from a CMS Signed message
-	 * @param certPool
-	 *            can be null
 	 */
-	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
-		super(certPool);
+	public CAdESSignature(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
 		Objects.requireNonNull(cmsSignedData, "CMSSignedData cannot be null!");
 		Objects.requireNonNull(signerInformation, "SignerInformation must be provided!");
 		this.cmsSignedData = cmsSignedData;
@@ -175,7 +161,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new CAdESCertificateSource(cmsSignedData, signerInformation, certPool);
+			offlineCertificateSource = new CAdESCertificateSource(cmsSignedData, signerInformation);
 		}
 		return offlineCertificateSource;
 	}
@@ -205,7 +191,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public CAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new CAdESTimestampSource(this, certPool);
+			signatureTimestampSource = new CAdESTimestampSource(this);
 		}
 		return (CAdESTimestampSource) signatureTimestampSource;
 	}
@@ -995,7 +981,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private void recursiveCollect(List<AdvancedSignature> collector, SignerInformation currentSignerInformation, AdvancedSignature master) {
 		for (final SignerInformation counterSignerInformation : currentSignerInformation.getCounterSignatures()) {
-			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation, certPool);
+			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
 			countersignature.setMasterSignature(master);
 			collector.add(countersignature);
 			recursiveCollect(collector, counterSignerInformation, countersignature);

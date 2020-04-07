@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -42,30 +43,24 @@ public class CertificatePoolEntryTest {
 
 	@Test
 	public void test() {
-		CertificatePoolEntity cpe = new CertificatePoolEntity(c1, CertificateSourceType.SIGNATURE);
+		CertificateSourceEntity cpe = new CertificateSourceEntity(c1);
+		final byte[] ski = cpe.getSki();
+		assertNotNull(ski);
+
 		cpe.addEquivalentCertificate(c1);
 		cpe.addEquivalentCertificate(c2);
-		cpe.addEquivalentCertificate(wrongCert);
-
-		cpe.addSource(CertificateSourceType.AIA);
-
-		assertFalse(cpe.isTrusted());
-
 		assertEquals(2, cpe.getEquivalentCertificates().size());
-		assertEquals(2, cpe.getSources().size());
 
-		cpe.addSource(CertificateSourceType.TRUSTED_STORE);
-		cpe.addSource(CertificateSourceType.TRUSTED_STORE);
-
-		assertEquals(3, cpe.getSources().size());
-		assertTrue(cpe.isTrusted());
+		cpe.addEquivalentCertificate(wrongCert);
+		assertEquals(2, cpe.getEquivalentCertificates().size());
+		assertArrayEquals(ski, cpe.getSki());
 	}
 
 	@Test
 	public void testEquals() {
-		CertificatePoolEntity cpe1 = new CertificatePoolEntity(c1, CertificateSourceType.SIGNATURE);
-		CertificatePoolEntity cpe2 = new CertificatePoolEntity(c2, CertificateSourceType.SIGNATURE);
-		CertificatePoolEntity cpeWrong = new CertificatePoolEntity(wrongCert, CertificateSourceType.SIGNATURE);
+		CertificateSourceEntity cpe1 = new CertificateSourceEntity(c1);
+		CertificateSourceEntity cpe2 = new CertificateSourceEntity(c2);
+		CertificateSourceEntity cpeWrong = new CertificateSourceEntity(wrongCert);
 
 		assertTrue(cpe1.equals(cpe2));
 		assertFalse(cpe1.equals(cpeWrong));

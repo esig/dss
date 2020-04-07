@@ -27,9 +27,8 @@ import java.io.File;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.slf4j.event.Level;
 
-import eu.europa.esig.dss.alert.DSSLogAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -64,7 +63,7 @@ public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 
 		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
-		completeCertificateVerifier.setAlertOnRevokedCertificate(new DSSLogAlert(Level.WARN, false));
+		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert());
 		service = new XAdESService(completeCertificateVerifier);
 		service.setTspSource(getGoodTsa());
 	}

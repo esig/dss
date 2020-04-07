@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 
@@ -40,18 +39,10 @@ import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 public abstract class SignatureCertificateSource extends TokenCertificateSource {
 
 	/**
-	 * The reference to the object containing all candidates to the signing certificate.
+	 * The reference to the object containing all candidates to the signing
+	 * certificate.
 	 */
 	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
-
-	/**
-	 * The default constructor with mandatory certificates pool.
-	 *
-	 * @param certPool the certificate pool
-	 */
-	protected SignatureCertificateSource(final CertificatePool certPool) {
-		super(certPool);
-	}
 
 	/**
 	 * Retrieves the list of all certificates present in a signed element (i.e. the CMS Signed data (CAdES))

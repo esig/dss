@@ -74,7 +74,6 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
@@ -99,12 +98,11 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected final transient CMSSignedData cmsSignedData;
 	protected final transient List<DSSDocument> detachedDocuments;
 	
-	public CAdESTimestampSource(final CAdESSignature signature, final CertificatePool certificatePool) {
+	public CAdESTimestampSource(final CAdESSignature signature) {
 		super(signature);
 		this.cmsSignedData = signature.getCmsSignedData();
 		this.detachedDocuments = signature.getDetachedContents();
 		this.signerInformation = signature.getSignerInformation();
-		this.certificatePool = certificatePool;
 	}
 
 	@Override
@@ -224,7 +222,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		if (timestamp == null) {
 			return null;
 		}
-		return new TimestampToken(timestamp, timestampType, references, TimestampLocation.CAdES, certificatePool);
+		return new TimestampToken(timestamp, timestampType, references, TimestampLocation.CAdES);
 	}
 
 	@Override
