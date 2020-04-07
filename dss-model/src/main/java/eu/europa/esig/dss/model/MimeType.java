@@ -167,12 +167,13 @@ public class MimeType implements Serializable {
 	 * @return the extrapolated mime-type of the file name
 	 */
 	public static MimeType fromFileName(final String fileName) {
-
 		final String fileExtension = getFileExtension(fileName);
-		final String lowerCaseExtension = fileExtension.toLowerCase();
-		final MimeType mimeType = fileExtensions.get(lowerCaseExtension);
-		if (mimeType != null) {
-			return mimeType;
+		if (fileExtension != null) {
+			final String lowerCaseExtension = fileExtension.toLowerCase();
+			final MimeType mimeType = fileExtensions.get(lowerCaseExtension);
+			if (mimeType != null) {
+				return mimeType;
+			}
 		}
 		return BINARY;
 	}
@@ -206,7 +207,7 @@ public class MimeType implements Serializable {
 	 */
 	public static String getFileExtension(final String fileName) {
 		if (fileName == null || fileName.trim().length() == 0) {
-			throw new IllegalArgumentException("The fileName cannot be null or blank!");
+			return null;
 		}
 
 		String extension = "";

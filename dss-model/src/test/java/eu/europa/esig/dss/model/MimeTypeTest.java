@@ -38,11 +38,8 @@ public class MimeTypeTest {
 		assertEquals(MimeType.BINARY, MimeType.fromFileName("binaries"));
 		assertEquals(MimeType.BINARY, MimeType.fromFileName("new.folder/binaries"));
 		
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> MimeType.fromFileName(""));
-		assertEquals("The fileName cannot be null or blank!", exception.getMessage());
-		
-		exception = assertThrows(IllegalArgumentException.class, () -> MimeType.fromFileName(null));
-		assertEquals("The fileName cannot be null or blank!", exception.getMessage());
+		assertEquals(MimeType.BINARY, MimeType.fromFileName(""));
+		assertEquals(MimeType.BINARY, MimeType.fromFileName(null));
 	}
 	
 	@Test
@@ -69,11 +66,8 @@ public class MimeTypeTest {
 		assertEquals("", MimeType.getFileExtension("binaries"));
 		assertEquals("folder/binaries", MimeType.getFileExtension("new.folder/binaries"));
 		
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> MimeType.getFileExtension(""));
-		assertEquals("The fileName cannot be null or blank!", exception.getMessage());
-		
-		exception = assertThrows(IllegalArgumentException.class, () -> MimeType.getFileExtension(null));
-		assertEquals("The fileName cannot be null or blank!", exception.getMessage());
+		assertNull(MimeType.getFileExtension(""));
+		assertNull(MimeType.getFileExtension(null));
 	}
 	
 	@Test
