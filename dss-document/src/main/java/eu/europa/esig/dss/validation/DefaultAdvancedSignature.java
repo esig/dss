@@ -103,11 +103,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	protected String structureValidation;
 
-	/**
-	 * The reference to the object containing all candidates to the signing certificate.
-	 */
-	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
-
 	// Cached {@code SignatureCertificateSource}
 	protected SignatureCertificateSource offlineCertificateSource;
 
@@ -264,6 +259,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * ETSI TS 101 733 V2.2.1 (2013-04)
+	 * 5.6.3 Signature Verification Process
+	 * ...the public key from the first certificate identified in the sequence
+	 * of certificate identifiers from SigningCertificate shall be the key used
+	 * to verify the digital signature.
+	 *
+	 * @return
+	 */
+	@Override
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
+		return getCertificateSource().getCandidatesForSigningCertificate(providedSigningCertificateToken);
 	}
 
 	/**
@@ -562,9 +571,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public CertificateToken getSigningCertificateToken() {
 		// This ensures that the variable candidatesForSigningCertificate has been initialized
-		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
+		CandidatesForSigningCertificate candidatesForSigningCertificate = getCertificateSource()
+				.getCandidatesForSigningCertificate(providedSigningCertificateToken);
 		// This ensures that the variable signatureCryptographicVerification has been initialized
-		checkSignatureIntegrity();
 		signatureCryptographicVerification = getSignatureCryptographicVerification();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 		if (theCertificateValidity != null) {

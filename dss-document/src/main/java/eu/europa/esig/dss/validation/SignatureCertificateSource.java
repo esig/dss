@@ -40,6 +40,11 @@ import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 public abstract class SignatureCertificateSource extends TokenCertificateSource {
 
 	/**
+	 * The reference to the object containing all candidates to the signing certificate.
+	 */
+	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
+
+	/**
 	 * The default constructor with mandatory certificates pool.
 	 *
 	 * @param certPool the certificate pool
@@ -176,6 +181,29 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	public List<CertificateToken> getAttributeCertificates() {
 		return findTokensFromRefs(getAttributeCertificateRefs());
 	}
+	
+	/**
+	 * Gets an object containing the signing certificate or information indicating why it is impossible to extract it
+	 * from the signature. If the signing certificate is identified then it is cached and the subsequent calls to this
+	 * method will return this cached value. This method never returns null.
+	 * 
+	 * @param providedSigningCertificateToken {@link CertificateToken} provided by a user (if defined)
+	 * @return {@link CandidatesForSigningCertificate}
+	 */
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+		if (candidatesForSigningCertificate == null) {
+			candidatesForSigningCertificate = extractCandidatesForSigningCertificate(providedSigningCertificateToken);
+		}
+		return candidatesForSigningCertificate;
+	}
+	
+	/**
+	 * Extracts candidates to be a signing certificate from the source
+	 * 
+	 * @param providedSigningCertificateToken {@link CertificateToken} provided by a user (if defined)
+	 * @return {@link CandidatesForSigningCertificate}
+	 */
+	protected abstract CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken);
 
 	@Override
 	public CertificateSourceType getCertificateSourceType() {

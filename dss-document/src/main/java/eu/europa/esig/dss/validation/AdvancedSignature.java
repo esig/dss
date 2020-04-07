@@ -254,12 +254,6 @@ public interface AdvancedSignature extends Serializable {
 	SignatureCryptographicVerification getSignatureCryptographicVerification();
 
 	/**
-	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
-	 * substitution attack.
-	 */
-	void checkSigningCertificate();
-
-	/**
 	 * Returns the Signature Policy OID from the signature.
 	 *
 	 * @return {@code SignaturePolicy}

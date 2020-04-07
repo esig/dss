@@ -674,7 +674,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void processSignaturesValidation(List<AdvancedSignature> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
-			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
 			signature.validateStructure();
 			signature.checkSignaturePolicy(getSignaturePolicyProvider());

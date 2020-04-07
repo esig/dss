@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,11 +20,11 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public abstract class TokenCertificateSource extends CommonCertificateSource {
 
-	private final Map<CertificateIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new HashMap<>();
+	private final Map<CertificateIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new LinkedHashMap<>();
 	
-	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new HashMap<>();
+	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new LinkedHashMap<>();
 
-	private final Map<CertificateRef, List<CertificateRefOrigin>> certificateRefOrigins = new HashMap<>();
+	private final Map<CertificateRef, List<CertificateRefOrigin>> certificateRefOrigins = new LinkedHashMap<>();
 	
 	private final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 

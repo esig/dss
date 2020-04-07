@@ -239,18 +239,17 @@ public class DSS1788Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
+		assertTrue(signature.isBLevelTechnicallyValid());
+		
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		assertNotNull(signingCertificate);
-		assertTrue(signature.isAttributePresent());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-		assertTrue(signature.isIssuerSerialMatch());
+		assertNull(signingCertificate);
 		
 		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
-		assertTrue(Utils.isCollectionNotEmpty(certificateChain));
+		assertFalse(Utils.isCollectionNotEmpty(certificateChain));
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 	}
 
 }

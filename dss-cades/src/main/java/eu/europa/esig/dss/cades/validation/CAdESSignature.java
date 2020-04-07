@@ -107,8 +107,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CMSCertificateSource;
-import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ManifestEntry;
@@ -218,24 +216,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public SignerId getSignerId() {
 		return signerInformation.getSID();
-	}
-
-	/**
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * 5.6.3 Signature Verification Process
-	 * ...the public key from the first certificate identified in the sequence
-	 * of certificate identifiers from SigningCertificate shall be the key used
-	 * to verify the digital signature.
-	 *
-	 * @return
-	 */
-	@Override
-	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		if (candidatesForSigningCertificate == null) {
-			candidatesForSigningCertificate = ((CMSCertificateSource) getCertificateSource())
-					.getCandidatesForSigningCertificate(providedSigningCertificateToken);
-		}
-		return candidatesForSigningCertificate;
 	}
 
 	@Override
@@ -890,10 +870,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final SignerId signerId = getSignerId();
 		final SignerInformation signerInformationToCheck = cmsSignedDataParser.getSignerInfos().get(signerId);
 		return signerInformationToCheck;
-	}
-	
-	@Override
-	public void checkSigningCertificate() {
 	}
 
 	public Set<DigestAlgorithm> getMessageDigestAlgorithms() {
