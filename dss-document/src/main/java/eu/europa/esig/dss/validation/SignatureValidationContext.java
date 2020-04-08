@@ -233,7 +233,7 @@ public class SignatureValidationContext implements ValidationContext {
 		Set<CertificateToken> candidates = getIssuersFromSources(token, allCertificateSources);
 		CertificateToken issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
 
-		if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
+		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && dataLoader != null) {
 			AIACertificateSource aiaSource = new AIACertificateSource((CertificateToken) token, dataLoader);
 			aiaCertificateSources.add(aiaSource);
 			issuerCertificateToken = aiaSource.getIssuerFromAIA();

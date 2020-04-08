@@ -29,6 +29,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -89,6 +91,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected SignatureCryptographicVerification signatureCryptographicVerification;
 
 	protected String structureValidation;
+
+	private CertificateVerifier offlineCertificateVerifier;
 
 	// Cached {@code SignatureCertificateSource}
 	protected SignatureCertificateSource offlineCertificateSource;
@@ -258,6 +262,31 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
 		return getCertificateSource().getCandidatesForSigningCertificate(providedSigningCertificateToken);
+	}
+
+	/**
+	 * This method prepares an offline CertificateVerifier. The instance is used to
+	 * know if all required revocation data are present
+	 * 
+	 * @param certificateVerifier the configured CertificateVerifier with all
+	 *                            external sources
+	 */
+	public void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier) {
+		// AIA is disabled
+		offlineCertificateVerifier = new CommonCertificateVerifier(true);
+		if (certificateVerifier != null) {
+			offlineCertificateVerifier.setAdjunctCertSource(certificateVerifier.getAdjunctCertSource());
+			List<CertificateSource> trustedCertSources = certificateVerifier.getTrustedCertSources();
+			for (CertificateSource certificateSource : trustedCertSources) {
+				offlineCertificateVerifier.setTrustedCertSource(certificateSource);
+			}
+		}
+		// disable alerting
+		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
 	}
 
 	/**
@@ -634,9 +663,26 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 		boolean minimalLTrequirement = !allSelfSigned && !emptyRevocation;
 		if (minimalLTrequirement) {
-			// TODO check presence of all revocation data
+			// check presence of all revocation data
+			return isAllRevocationDataPresent(certificateSources);
 		}
 		return minimalLTrequirement;
+	}
+
+	private boolean isAllRevocationDataPresent(ListCertificateSource certificateSources) {
+		SignatureValidationContext validationContext = new SignatureValidationContext();
+		offlineCertificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
+		offlineCertificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
+		offlineCertificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
+		validationContext.initialize(offlineCertificateVerifier);
+		if (providedSigningCertificateToken != null) {
+			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+		}
+		for (final CertificateToken certificate : certificateSources.getAllCertificateTokens()) {
+			validationContext.addCertificateTokenForVerification(certificate);
+		}
+		validationContext.validate();
+		return validationContext.checkAllRequiredRevocationDataPresent();
 	}
 	
 	@Override

@@ -1,12 +1,11 @@
 package eu.europa.esig.dss.alert;
 
-import eu.europa.esig.dss.alert.detector.StatusDetector;
-import eu.europa.esig.dss.alert.status.Status;
+import eu.europa.esig.dss.alert.handler.SilentHandler;
 
-public class SilentOnStatusAlert extends SilentOnAlert<Status> {
+public class SilentOnStatusAlert extends AbstractStatusAlert {
 
 	public SilentOnStatusAlert() {
-		super(new StatusDetector());
+		super(new SilentHandler<>());
 	}
 
 }

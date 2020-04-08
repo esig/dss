@@ -138,6 +138,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			}
 			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
 			xadesSignature.setDetachedContents(params.getDetachedContents());
+			xadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 			extendSignatureTag();
 		}
 		return createXmlDocument();

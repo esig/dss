@@ -177,6 +177,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 					final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, documentRevisions);
 					padesSignature.setSignatureFilename(document.getName());
 					padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+					padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 					signatures.add(padesSignature);
 					
 				} catch (Exception e) {
