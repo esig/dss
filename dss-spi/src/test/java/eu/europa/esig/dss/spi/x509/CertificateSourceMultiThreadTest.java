@@ -37,9 +37,9 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
-public class CertificatePoolMultiThreadTest {
+public class CertificateSourceMultiThreadTest {
 
-	public CertificatePoolMultiThreadTest() {
+	public CertificateSourceMultiThreadTest() {
 	}
 
 	@RepeatedTest(5)

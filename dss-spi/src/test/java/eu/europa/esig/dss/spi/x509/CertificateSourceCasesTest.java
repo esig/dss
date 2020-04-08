@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class CertificatePoolCasesTest {
+public class CertificateSourceCasesTest {
 
 	@Test
 	public void sameSubjectDifferentKeys() {

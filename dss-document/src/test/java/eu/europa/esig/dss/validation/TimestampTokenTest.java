@@ -99,10 +99,8 @@ public class TimestampTokenTest {
 			assertEquals(2, refs.size());
 			assertNotEquals(refs.get(0), refs.get(1));
 
-			List<CertificateToken> sigCertValues = certificateSource.getSigningCertificates();
-			assertEquals(2, sigCertValues.size());
-			assertEquals(sigCertValues.get(0), sigCertValues.get(1)); // TODO review (avoid duplicate)
-			assertTrue(sigCertValues.get(0).isEquivalent(sigCertValues.get(1)));
+			Set<CertificateToken> sigCertValues = certificateSource.getSigningCertificates();
+			assertEquals(1, sigCertValues.size());
 
 			for (CertificateRef certificateRef : refs) {
 				for (CertificateToken sigCertValue : sigCertValues) {

@@ -646,8 +646,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		Map<String, List<CertificateToken>> certificateChains = getCertificateMapWithinSignatureAndTimestamps(true);
 		boolean allSelfSigned = areAllSelfSignedCertificates(certificateChains);
 
-		boolean emptyCRLs = getCompleteCRLSource().isEmpty();
-		boolean emptyOCSPs = getCompleteOCSPSource().isEmpty();
+		boolean emptyCRLs = getCompleteCRLSource().getAllRevocationBinaries().isEmpty();
+		boolean emptyOCSPs = getCompleteOCSPSource().getAllRevocationBinaries().isEmpty();
 		boolean emptyRevocation = emptyCRLs && emptyOCSPs;
 
 		return !allSelfSigned && !emptyRevocation;

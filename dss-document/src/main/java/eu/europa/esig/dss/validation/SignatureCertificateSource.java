@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -142,34 +143,34 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	}
 
 	/**
-	 * Retrieves the list of {@link CertificateToken}s for the signing certificate
+	 * Retrieves the Set of {@link CertificateToken}s for the signing certificate
 	 * (V1/V2)
 	 * 
-	 * @return list of {@link CertificateToken}s
+	 * @return Set of {@link CertificateToken}s
 	 */
-	public List<CertificateToken> getSigningCertificates() {
+	public Set<CertificateToken> getSigningCertificates() {
 		return findTokensFromRefs(getSigningCertificateRefs());
 	}
 	
 	/**
-	 * Retrieves the list of {@link CertificateToken}s according references to included in the attribute
-	 * complete-certificate-references (CAdES) or the
+	 * Retrieves the Set of {@link CertificateToken}s according references to
+	 * included in the attribute complete-certificate-references (CAdES) or the
 	 * CompleteCertificateRefs/CompleteCertificateRefsV2 (XAdES)
 	 * 
-	 * @return list of {@link CertificateToken}s
+	 * @return Set of {@link CertificateToken}s
 	 */
-	public List<CertificateToken> getCompleteCertificates() {
+	public Set<CertificateToken> getCompleteCertificates() {
 		return findTokensFromRefs(getCompleteCertificateRefs());
 	}
 	
 	/**
-	 * Retrieves the list of {@link CertificateToken}s according to references included in the attribute
-	 * attribute-certificate-references (CAdES) or the
+	 * Retrieves the Set of {@link CertificateToken}s according to references
+	 * included in the attribute attribute-certificate-references (CAdES) or the
 	 * AttributeCertificateRefs/AttributeCertificateRefsV2 (XAdES)
 	 * 
-	 * @return list of {@link CertificateToken}s
+	 * @return Set of {@link CertificateToken}s
 	 */
-	public List<CertificateToken> getAttributeCertificates() {
+	public Set<CertificateToken> getAttributeCertificates() {
 		return findTokensFromRefs(getAttributeCertificateRefs());
 	}
 	

@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.spi.x509;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,12 +90,14 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	}
 
 	/**
-	 * Returns list of {@link CertificateToken}s for the provided {@link CertificateRef}s
+	 * Returns Set of {@link CertificateToken}s for the provided
+	 * {@link CertificateRef}s
+	 * 
 	 * @param certificateRefs list of {@link CertificateRef}s
-	 * @return list of {@link CertificateToken}s
+	 * @return Set of {@link CertificateToken}s
 	 */
-	public List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
-		List<CertificateToken> result = new ArrayList<>();
+	public Set<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
+		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateRef certificateRef : certificateRefs) {
 			for (CertificateToken certificateToken : certificateOrigins.keySet()) {
 				if (certificateMatcher.match(certificateToken, certificateRef)) {

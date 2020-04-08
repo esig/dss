@@ -36,7 +36,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 /**
  * This class re-groups equivalent certificates.
  * 
- * All certificates for a given {@code CertificatePoolEntity} have the same
+ * All certificates for a given {@code CertificateSourceEntity} share the same
  * public key.
  */
 class CertificateSourceEntity implements Serializable {
