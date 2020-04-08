@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -183,6 +182,36 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		return result;
 	}
 	
+	@Override
+	public ListCertificateSource getTimestampCertificateSourcesExceptLastArchiveTimestamp() {
+		ListCertificateSource result = new ListCertificateSource();
+
+		for (final TimestampToken timestampToken : getContentTimestamps()) {
+			result.add(timestampToken.getCertificateSource());
+		}
+		for (final TimestampToken timestampToken : getTimestampsX1()) {
+			result.add(timestampToken.getCertificateSource());
+		}
+		for (final TimestampToken timestampToken : getTimestampsX2()) {
+			result.add(timestampToken.getCertificateSource());
+		}
+		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
+			result.add(timestampToken.getCertificateSource());
+		}
+
+		List<TimestampToken> archiveTsps = getArchiveTimestamps();
+		int archiveTimestampsSize = archiveTsps.size();
+		if (archiveTimestampsSize > 0) {
+			archiveTimestampsSize--;
+		}
+		for (int ii = 0; ii < archiveTimestampsSize; ii++) {
+			TimestampToken timestampToken = archiveTsps.get(ii);
+			result.add(timestampToken.getCertificateSource());
+		}
+
+		return result;
+	}
+
 	@Override
 	public ListRevocationSource<CRL> getTimestampCRLSources() {
 		ListRevocationSource<CRL> result = new ListRevocationSource<CRL>();
@@ -869,43 +898,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected abstract TimestampDataBuilder getTimestampDataBuilder();
 
-	@Override
-	public Map<String, List<CertificateToken>> getCertificateMapWithinTimestamps(boolean skipLastArchiveTimestamp) {
-		if (certificateMap != null) {
-			return certificateMap;
-		}
-		
-		certificateMap = new HashMap<>();
-
-		// We can have more than one chain in the signature : signing certificate, ocsp
-		// responder, ...
-		int timestampCounter = 0;
-		for (final TimestampToken timestampToken : getContentTimestamps()) {
-			certificateMap.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getTimestampsX1()) {
-			certificateMap.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getTimestampsX2()) {
-			certificateMap.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-			certificateMap.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-
-		List<TimestampToken> archiveTsps = getArchiveTimestamps();
-		int archiveTimestampsSize = archiveTsps.size();
-		if (skipLastArchiveTimestamp && archiveTimestampsSize > 0) {
-			archiveTimestampsSize--;
-		}
-		for (int ii = 0; ii < archiveTimestampsSize; ii++) {
-			TimestampToken timestampToken = archiveTsps.get(ii);
-			certificateMap.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-
-		return certificateMap;
-	}
-	
 	private void processExternalTimestamp(TimestampToken externalTimestamp) {
 		// add all validation data present in Signature CMS SignedData, because an external timestamp covers a whole signature file
 		addReferences(externalTimestamp.getTimestampedReferences(), getSignatureSignedDataReferences());

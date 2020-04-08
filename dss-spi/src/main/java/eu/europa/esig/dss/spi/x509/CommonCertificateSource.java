@@ -228,4 +228,14 @@ public class CommonCertificateSource implements CertificateSource {
 		return false;
 	}
 
+	@Override
+	public boolean isAllSelfSigned() {
+		for (CertificateToken certificate : getCertificates()) {
+			if (!certificate.isSelfSigned()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

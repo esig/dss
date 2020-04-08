@@ -22,9 +22,7 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
@@ -59,20 +57,20 @@ public interface TimestampSource extends Serializable {
 	void addExternalTimestamp(TimestampToken timestamp);
 	
 	/**
-	 * Returns a map between all found timestamps and their certificates
-	 * @param skipLastArchiveTimestamp
-	 *            in case if the last Archive Timestamp is not needed to be returned
-	 * @return a map between timestamp-id and list of related {@link CertificateToken}s
-	 */
-	Map<String, List<CertificateToken>> getCertificateMapWithinTimestamps(boolean skipLastArchiveTimestamp);
-	
-	/**
 	 * Returns a merged {@code ListCertificateSource} of all embedded timestamp certificate sources
 	 * 
 	 * @return {@link ListCertificateSource}
 	 */
 	ListCertificateSource getTimestampCertificateSources();
-	
+
+	/**
+	 * Returns a merged {@code ListCertificateSource} of all embedded timestamp
+	 * certificate sources except the latest Archive Timestamp
+	 * 
+	 * @return {@link ListCertificateSource}
+	 */
+	ListCertificateSource getTimestampCertificateSourcesExceptLastArchiveTimestamp();
+
 	/**
 	 * Returns a merged {@code ListRevocationSource} of all embedded timestamp CRL
 	 * sources

@@ -113,4 +113,11 @@ public interface CertificateSource extends Serializable {
 
 	List<CertificateSourceEntity> getEntities();
 
+	/**
+	 * This method checks if all certificates are self-signed
+	 * 
+	 * @return true if all certificates are self-signed
+	 */
+	boolean isAllSelfSigned();
+
 }

@@ -23,15 +23,12 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -210,6 +207,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certificateSource;
 	}
 	
+	public ListCertificateSource getCertificateSourcesExceptLastArchiveTimestamp() {
+		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
+		certificateSource.addAll(getTimestampSource().getTimestampCertificateSourcesExceptLastArchiveTimestamp());
+		return certificateSource;
+	}
+
 	@Override
 	public ListRevocationSource getCompleteCRLSource() {
 		ListRevocationSource crlSource = new ListRevocationSource(getCRLSource());
@@ -342,28 +345,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certificatesForInclusion;
 	}
 
-	/**
-	 * Returns a map between found certificate chains in signature and timestamps
-	 * @param skipLastArchiveTimestamp - if chain for the last archive timestamp must not be included to the final map
-	 * @return map between signature/timestamp instances and their certificate chains
-	 */
-	public Map<String, List<CertificateToken>> getCertificateMapWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
-		// We can have more than one chain in the signature : signing certificate, ocsp
-		// responder, ...
-		Map<String, List<CertificateToken>> certificateMap = new HashMap<>();
-		
-		// add signature certificates
-		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
-		if (Utils.isCollectionNotEmpty(certificatesSig)) {
-			certificateMap.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
-		}
-		
-		// add timestamp certificates
-		certificateMap.putAll(getTimestampSource().getCertificateMapWithinTimestamps(skipLastArchiveTimestamp));
-
-		return certificateMap;
-	}
-	
 	private List<EntityIdentifier> getEntityIdentifierList(Collection<CertificateToken> certificateTokens) {
 		final List<EntityIdentifier> entityIdentifiers = new ArrayList<>();
 		for (CertificateToken certificateToken : certificateTokens) {
@@ -643,37 +624,26 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
-		Map<String, List<CertificateToken>> certificateChains = getCertificateMapWithinSignatureAndTimestamps(true);
-		boolean allSelfSigned = areAllSelfSignedCertificates(certificateChains);
+		ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
+		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
+		boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
 
 		boolean emptyCRLs = getCompleteCRLSource().getAllRevocationBinaries().isEmpty();
 		boolean emptyOCSPs = getCompleteOCSPSource().getAllRevocationBinaries().isEmpty();
 		boolean emptyRevocation = emptyCRLs && emptyOCSPs;
 
-		return !allSelfSigned && !emptyRevocation;
+		boolean minimalLTrequirement = !allSelfSigned && !emptyRevocation;
+		if (minimalLTrequirement) {
+			// TODO check presence of all revocation data
+		}
+		return minimalLTrequirement;
 	}
 	
 	@Override
 	public boolean areAllSelfSignedCertificates() {
-		return areAllSelfSignedCertificates(getCertificateMapWithinSignatureAndTimestamps(false));
-	}
-
-	private boolean areAllSelfSignedCertificates(Map<String, List<CertificateToken>> certificateChains) {
-		if (Utils.isMapEmpty(certificateChains)) {
-			// not certificates (only key)
-			return false;
-		}
-		for (List<CertificateToken> chain : certificateChains.values()) {
-			if (Utils.collectionSize(chain) == 1) {
-				CertificateToken certificateToken = chain.get(0);
-				if (!certificateToken.isSelfSigned()) {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-		return true;
+		ListCertificateSource certificateSources = getCompleteCertificateSource();
+		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
+		return certificateFound && certificateSources.isAllSelfSigned();
 	}
 
 	/* Defines the level LTA */

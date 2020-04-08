@@ -142,6 +142,20 @@ public class ListCertificateSource {
 	}
 
 	/**
+	 * This method checks in all sources if all embedded certificate are self-signed
+	 * 
+	 * @return true if all certificates from all sources are self-signed
+	 */
+	public boolean isAllSelfSigned() {
+		for (CertificateSource certificateSource : sources) {
+			if (!certificateSource.isAllSelfSigned()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * This method return the different {@link CertificateSourceType} where the
 	 * certificate is found
 	 * 
