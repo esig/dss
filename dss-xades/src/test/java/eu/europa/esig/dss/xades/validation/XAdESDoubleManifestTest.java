@@ -28,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -38,22 +36,18 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class XAdESDoubleManifestTest {
+public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 
-	@Test
-	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-X-SK_DIT-1.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/Signature-X-SK_DIT-1.xml");
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
 		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		
@@ -76,7 +70,14 @@ public class XAdESDoubleManifestTest {
 		}
 		assertEquals(2, manifestCounter);
 		assertEquals(2, manifestEntryCounter);
-		
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertEquals(5, signatureScopes.size());
 		for (XmlSignatureScope signatureScope : signatureScopes) {
@@ -89,7 +90,6 @@ public class XAdESDoubleManifestTest {
 		}
 		
 		assertEquals(5, diagnosticData.getOriginalSignerDocuments().size());
-		
 	}
 
 }

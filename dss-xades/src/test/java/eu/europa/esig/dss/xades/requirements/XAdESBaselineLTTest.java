@@ -24,38 +24,55 @@ import java.io.File;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.junit.jupiter.api.BeforeEach;
+
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESBaselineLTTest extends AbstractRequirementChecks {
 
-	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
-		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
+	private XAdESSignatureParameters signatureParameters;
+	private DSSDocument documentToSign;
 
-		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+	@BeforeEach
+	public void init() throws Exception {
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+
+		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 
 	@Override
 	public void checkArchiveTimeStampPresent() throws XPathExpressionException {
 		// No ArchiveTimestamp in Baseline Profile LT
+	}
+
+	@Override
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected XAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
 	}
 
 	@Override

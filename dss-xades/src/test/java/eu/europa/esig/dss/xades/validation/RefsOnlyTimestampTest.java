@@ -22,37 +22,31 @@ package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashSet;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 
-public class RefsOnlyTimestampTest {
+public class RefsOnlyTimestampTest extends AbstractXAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/signing-cert-multiple-refs-sig.xml");
+	}
 	
-	@Test
-	public void test() {
-		// the timestamp is broken in the file
-		DSSDocument doc = new FileDocument("src/test/resources/validation/signing-cert-multiple-refs-sig.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		validator.setCertificateVerifier(commonCertificateVerifier);
-		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(2, timestampList.size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestampList.get(0).getType());
@@ -86,12 +80,31 @@ public class RefsOnlyTimestampTest {
 		assertEquals(1, refsOnlyTimestampCounter);
 		assertFalse(coversSignature);
 		assertFalse(coversTimestamp);
-		
 	}
 	
 	private void assertDoesNotContainDuplicates(List<XmlTimestampedObject> timestampedObjects) {
 		HashSet<XmlTimestampedObject> timestampedObjectsSet = new HashSet<>(timestampedObjects);
 		assertEquals(timestampedObjectsSet.size(), timestampedObjects.size());
+	}
+	
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> signatures, DiagnosticData diagnosticData) {
+		AdvancedSignature advancedSignature = signatures.get(0);
+		
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+
+		SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
+		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+		
+		assertEquals(certificateSource.getAttributeCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size() +
+				foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+	}
+	
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(2, diagnosticData.getAllOrphanCertificateReferences().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
 }

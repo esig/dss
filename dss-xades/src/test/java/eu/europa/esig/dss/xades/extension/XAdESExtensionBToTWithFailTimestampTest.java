@@ -48,9 +48,9 @@ public class XAdESExtensionBToTWithFailTimestampTest extends AbstractTestXAdESEx
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 		assertEquals("No retrieved timestamp token (TSP Status : Error for testing / PKIFailureInfo: 0x40000000)", exception.getMessage());
 	}

@@ -22,28 +22,30 @@ package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class EccBrainpoolTest {
+public class EccBrainpoolTest extends AbstractXAdESTestValidation {
 
-	@Test
-	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/xades-ecc-brainpool.xml");
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(doc);
-		sdv.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = sdv.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/xades-ecc-brainpool.xml");
+	}
+	
+	@Override
+	protected void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
+		super.checkEncryptionAlgorithm(diagnosticData);
+		
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(EncryptionAlgorithm.ECDSA, signatureWrapper.getEncryptionAlgorithm());
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		// XPath error
 	}
 
 }

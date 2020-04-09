@@ -71,7 +71,11 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	public void init(DSSDocument fileToTest) throws Exception {
 		this.fileToTest = fileToTest;
 
-		super.test();
+		super.extendAndVerify();
+	}
+
+	@Override
+	public void extendAndVerify() throws Exception {
 	}
 
 	@Override

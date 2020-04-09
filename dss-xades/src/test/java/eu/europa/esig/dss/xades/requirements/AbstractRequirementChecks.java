@@ -22,7 +22,9 @@ package eu.europa.esig.dss.xades.requirements;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 
 import javax.xml.namespace.NamespaceContext;
@@ -35,20 +37,17 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.signature.AbstractXAdESTestSignature;
 
-public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
+public abstract class AbstractRequirementChecks extends AbstractXAdESTestSignature {
 
 	private static DocumentBuilderFactory dbf;
 	private static XPath xpath;
@@ -90,22 +89,33 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 			
 		});
 	}
-
-	@BeforeEach
-	public void init() throws Exception {
-		DSSDocument signedDocument = getSignedDocument();
-		signedDocument.save("target/requirement-check.xml");
-
-		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-		document = documentBuilder.parse(signedDocument.openStream());
+	
+	@Override
+	protected void onDocumentSigned(byte[] byteArray)  {
+		super.onDocumentSigned(byteArray);
+		
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteArray)) {
+			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+			document = documentBuilder.parse(bais);
+			
+			checkX509CertificatePresent();
+			checkSignedInfoCanonicalizationMethodPresent();
+			checkReferencesPresent();
+			checkSigningTimePresent();
+			checkSigningCertificatePresent();
+			checkDataObjectFormatPresent();
+			checkDataObjectFormatMimeTypePresent();
+			checkSignatureTimeStampPresent();
+			checkArchiveTimeStampPresent();
+			
+		} catch (Exception e) {
+			fail(e);
+		}
 	}
-
-	protected abstract DSSDocument getSignedDocument() throws Exception;
 
 	/**
 	 * ds:KeyInfo/X509Data/X509Certificate shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkX509CertificatePresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//ds:KeyInfo/ds:X509Data/ds:X509Certificate");
 		NodeList nodeList = (NodeList) exp.evaluate(document, XPathConstants.NODESET);
@@ -125,7 +135,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * ds:SignedInfo/ds:CanonicalizationMethod shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkSignedInfoCanonicalizationMethodPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//ds:SignedInfo/ds:CanonicalizationMethod");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
@@ -138,7 +147,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * ds:Reference shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkReferencesPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//ds:Reference");
 		NodeList nodeList = (NodeList) exp.evaluate(document, XPathConstants.NODESET);
@@ -150,7 +158,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * SigningTime shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkSigningTimePresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningTime");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
@@ -160,7 +167,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * SigingCertificate shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkSigningCertificatePresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
@@ -170,7 +176,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * DataObjectFormat with attribute ObjectReference shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkDataObjectFormatPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
@@ -184,7 +189,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * DataObjectFormat/MimeType shall be present in B/T/LT/LTA
 	 */
-	@Test
 	public void checkDataObjectFormatMimeTypePresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat/xades:MimeType");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
@@ -195,7 +199,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * SignatureTimeStamp shall be present in T/LT/LTA
 	 */
-	@Test
 	public void checkSignatureTimeStampPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
@@ -205,7 +208,6 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	/**
 	 * ArchiveTimeStamp shall be present in LTA
 	 */
-	@Test
 	public void checkArchiveTimeStampPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:ArchiveTimeStamp");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);

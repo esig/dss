@@ -47,9 +47,9 @@ public class PAdESExtensionBToTWithError500TimestampTest extends AbstractTestPAd
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 	}
 

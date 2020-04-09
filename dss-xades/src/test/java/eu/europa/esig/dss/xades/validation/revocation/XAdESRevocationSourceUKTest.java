@@ -1,0 +1,51 @@
+package eu.europa.esig.dss.xades.validation.revocation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
+
+public class XAdESRevocationSourceUKTest extends AbstractXAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/Signature-X-UK_ELD-4.xml");
+	}
+	
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+			DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(1, signature.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, signature.foundRevocations().getOrphanRevocationData().size());
+		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
+		RevocationRefWrappper revocationRef = signature.foundRevocations().getRelatedRevocationData().get(0).getReferences().get(0);
+		assertNotNull(revocationRef.getOrigins());
+		assertNotNull(revocationRef.getDigestAlgoAndValue());
+		assertNotNull(revocationRef.getProductionTime());
+		assertNotNull(revocationRef.getResponderIdKey());
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		// the reference does not have type "Object"
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertTrue(Utils.isCollectionEmpty(originalDocuments));
+	}
+
+}

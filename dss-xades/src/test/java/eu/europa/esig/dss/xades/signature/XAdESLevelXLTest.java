@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -66,6 +67,7 @@ public class XAdESLevelXLTest extends AbstractXAdESTestSignature {
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertEquals(SignatureLevel.XAdES_BASELINE_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override

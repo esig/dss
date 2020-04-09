@@ -22,43 +22,45 @@ package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1338Test {
+public class DSS1338Test extends AbstractXAdESTestValidation {
 
-	@Test
-	public void test() throws UnsupportedEncodingException {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/11068_signed.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		validator.setCertificateVerifier(certificateVerifier);
-
-		Reports reports = validator.validateDocument();
-		String firstSignatureId = reports.getSimpleReport().getFirstSignatureId();
-
-		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSignatureId);
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/11068_signed.xml");
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
+		
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
 		assertEquals(1, originalDocuments.size());
 
-		boolean found = false;
-		for (DSSDocument dssDocument : originalDocuments) {
-			byte[] byteArray = DSSUtils.toByteArray(dssDocument);
-			String signedContent = new String(byteArray, "UTF-8");
-			if (signedContent.contains("<ns2:flusso xmlns:ns2=\"http://www.bancaditalia.it") && signedContent.endsWith("</ns2:flusso>")) {
-				found = true;
+		try {
+			boolean found = false;
+			for (DSSDocument dssDocument : originalDocuments) {
+				byte[] byteArray = DSSUtils.toByteArray(dssDocument);
+				String signedContent;
+					signedContent = new String(byteArray, "UTF-8");
+				if (signedContent.contains("<ns2:flusso xmlns:ns2=\"http://www.bancaditalia.it") && signedContent.endsWith("</ns2:flusso>")) {
+					found = true;
+				}
 			}
+			assertTrue(found);
+		} catch (UnsupportedEncodingException e) {
+			fail(e);
 		}
-		assertTrue(found);
 	}
 
 }

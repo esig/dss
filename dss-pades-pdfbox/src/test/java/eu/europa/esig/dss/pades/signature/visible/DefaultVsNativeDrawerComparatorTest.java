@@ -56,7 +56,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextVerticalA
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 @Tag("slow")
 public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {

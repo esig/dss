@@ -47,9 +47,9 @@ public class CAdESExtensionLTToLTAWithFailTimestampTest extends AbstractTestCAdE
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 	}
 

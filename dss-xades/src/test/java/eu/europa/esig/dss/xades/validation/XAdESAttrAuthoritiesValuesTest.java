@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -24,26 +22,22 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
 /*
  * see DSS-2010
  */
-public class XAdESAttrAuthoritiesValuesTest extends PKIFactoryAccess {
-	
-	@Test
-	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/xades-attr-authorities-values.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+public class XAdESAttrAuthoritiesValuesTest extends AbstractXAdESTestValidation {
 
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/xades-attr-authorities-values.xml");
+	}
+	
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
 		
-		List<AdvancedSignature> advancedSignatures = validator.getSignatures();
 		assertEquals(1, advancedSignatures.size());
 		AdvancedSignature advancedSignature = advancedSignatures.get(0);
 		
@@ -100,11 +94,6 @@ public class XAdESAttrAuthoritiesValuesTest extends PKIFactoryAccess {
 		}
 		assertEquals(1, crlValues);
 		assertEquals(1, ocspValues);
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return null;
 	}
 
 }

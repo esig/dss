@@ -27,7 +27,4 @@ public class OpenDocumentExtensionTToLTASelfSignedTest extends OpenDocumentExten
 		return SELF_SIGNED_USER;
 	}
 
-	@Override
-	public void test() throws Exception {
-	}
 }

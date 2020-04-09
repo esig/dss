@@ -53,7 +53,7 @@ public class EmbeddedNotXmlSignatureExceptionTest extends AbstractXAdESTestSigna
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setEmbedXML(true);
 	}
-
+	
 	@Override
 	@Test
 	public void signAndVerify() {

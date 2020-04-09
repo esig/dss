@@ -23,8 +23,9 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -32,22 +33,18 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1661Test extends PKIFactoryAccess {
+public class DSS1661Test extends AbstractXAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/xades-with-no-name-reference.xml");
+	}
 	
-	@Test
-	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/xades-with-no-name-reference.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		
@@ -60,12 +57,12 @@ public class DSS1661Test extends PKIFactoryAccess {
 				assertFalse(digestMatcher.isDataIntact());
 			}
 		}
-		
 	}
-
+	
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertTrue(Utils.isCollectionEmpty(originalDocuments));
 	}
 
 }

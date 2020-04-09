@@ -193,16 +193,6 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns signing certificate dss id for the first signature.
-	 *
-	 * @return signing certificate dss id.
-	 */
-	public String getFirstSigningCertificateId() {
-		SignatureWrapper signature = getFirstSignatureNullSafe();
-		return signature.getSigningCertificate().getId();
-	}
-
-	/**
 	 * This method returns signing certificate dss id for the given signature.
 	 *
 	 * @param signatureId

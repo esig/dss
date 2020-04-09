@@ -48,9 +48,9 @@ public class XAdESExtensionBToTWithError500TimestampTest extends AbstractTestXAd
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 		assertTrue(exception.getMessage().contains("Unable to process POST call for url [http://dss.nowina.lu/pki-factory//tsa/error-500/good-tsa]"));
 	}
