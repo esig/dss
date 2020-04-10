@@ -2,6 +2,7 @@ package eu.europa.esig.dss.test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -763,8 +764,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(simpleReport);
 
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
-		assertTrue(Utils.isCollectionNotEmpty(signatureIdList));
-
 		for (String sigId : signatureIdList) {
 			Indication indication = simpleReport.getIndication(sigId);
 			assertNotNull(indication);
@@ -788,7 +787,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 
 		List<String> signatureIds = detailedReport.getSignatureIds();
-		assertTrue(Utils.isCollectionNotEmpty(signatureIds));
 		for (String sigId : signatureIds) {
 			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
 			assertNotNull(basicIndication);
@@ -834,24 +832,28 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		List<SignatureValidationReportType> reports = etsiValidationReportJaxb.getSignatureValidationReport();
 		for (SignatureValidationReportType signatureValidationReport : reports) {
 			assertNotNull(signatureValidationReport);
-			
-			SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
-			validateEtsiSignatureIdentifier(signatureIdentifier);
-
-			SignerInformationType signerInformation = signatureValidationReport.getSignerInformation();
-			validateSignerInformation(signerInformation);
-
-			ValidationTimeInfoType validationTimeInfo = signatureValidationReport.getValidationTimeInfo();
-			validateTimeInfo(validationTimeInfo);
 
 			ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
 			validateValidationStatus(signatureValidationStatus);
 
-			List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
-			validateAssociatedValidationReportData(validationTimeInfo, associatedValidationReportData);
+			if (!Indication.NO_SIGNATURE_FOUND.equals(signatureValidationStatus.getMainIndication())) {
 			
-			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
-			validateETSISignatureAttributes(signatureAttributes);
+				SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+				validateEtsiSignatureIdentifier(signatureIdentifier);
+	
+				SignerInformationType signerInformation = signatureValidationReport.getSignerInformation();
+				validateSignerInformation(signerInformation);
+	
+				ValidationTimeInfoType validationTimeInfo = signatureValidationReport.getValidationTimeInfo();
+				validateTimeInfo(validationTimeInfo);
+	
+				List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+				validateAssociatedValidationReportData(validationTimeInfo, associatedValidationReportData);
+				
+				SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
+				validateETSISignatureAttributes(signatureAttributes);
+				
+			}
 		}
 		
 		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
@@ -885,6 +887,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void validateValidationStatus(ValidationStatusType signatureValidationStatus) {
 		assertNotNull(signatureValidationStatus);
 		assertNotNull(signatureValidationStatus.getMainIndication());
+		assertNotEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationStatus.getMainIndication());
 	}
 	
 	protected void validateAssociatedValidationReportData(ValidationTimeInfoType validationTimeInfo, 
@@ -894,8 +897,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
 				if (cryptoInformation != null && !cryptoInformation.isSecureAlgorithm()) {
 					Date expired = cryptoInformation.getNotAfter();
-					assertNotNull(expired);
-					assertTrue(expired.before(validationTimeInfo.getValidationTime()));
+					if (expired != null) {
+						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
+					}
 				}
 			}
 		}
@@ -1044,36 +1048,41 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
-		assertEquals(diagnosticData.getSignatures().size(), etsiValidationReportJaxb.getSignatureValidationReport().size());
+		if (Utils.isCollectionEmpty(diagnosticData.getSignatures())) {
+			// one empty report with NO_SIGNATURES_FOUND indication
+			assertEquals(1, etsiValidationReportJaxb.getSignatureValidationReport().size());
+		} else {
+			assertEquals(diagnosticData.getSignatures().size(), etsiValidationReportJaxb.getSignatureValidationReport().size());
 		
-		for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
-			assertNotNull(signatureValidationReport.getSignatureIdentifier());
-			SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
-			assertNotNull(signature);
-			
-			List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-			List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
-			
-			if (signatureScopes != null) {
-				assertNotNull(signersDocuments);
-				assertEquals(signatureScopes.size(), signersDocuments.size());
-				for (int i = 0; i < signatureScopes.size(); i++) {
-					XmlSignatureScope xmlSignatureScope = signatureScopes.get(i);
-					XmlSignerData signerData = xmlSignatureScope.getSignerData();
-					assertNotNull(signerData);
-					XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
-					assertNotNull(digestAlgoAndValue);
-					
-					SignersDocumentType signersDocument = signersDocuments.get(i);
-					DigestAlgAndValueType digestAlgAndValue = signersDocument.getDigestAlgAndValue();
-					assertNotNull(digestAlgAndValue);
-
-					assertEquals(digestAlgoAndValue.getDigestMethod(),
-							DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
-					assertArrayEquals(digestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
+			for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
+				assertNotNull(signatureValidationReport.getSignatureIdentifier());
+				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+				assertNotNull(signature);
+				
+				List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+				
+				if (signatureScopes != null) {
+					assertNotNull(signersDocuments);
+					assertEquals(signatureScopes.size(), signersDocuments.size());
+					for (int i = 0; i < signatureScopes.size(); i++) {
+						XmlSignatureScope xmlSignatureScope = signatureScopes.get(i);
+						XmlSignerData signerData = xmlSignatureScope.getSignerData();
+						assertNotNull(signerData);
+						XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
+						assertNotNull(digestAlgoAndValue);
+						
+						SignersDocumentType signersDocument = signersDocuments.get(i);
+						DigestAlgAndValueType digestAlgAndValue = signersDocument.getDigestAlgAndValue();
+						assertNotNull(digestAlgAndValue);
+	
+						assertEquals(digestAlgoAndValue.getDigestMethod(),
+								DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
+						assertArrayEquals(digestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
+					}
+				} else {
+					assertNull(signersDocuments);
 				}
-			} else {
-				assertNull(signersDocuments);
 			}
 		}
 	}
@@ -1133,42 +1142,47 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void checkReportsSignatureIdentifier(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
-		for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
-			SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
-			
-			SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
-			assertNotNull(signatureIdentifier);
-			
-			assertNotNull(signatureIdentifier.getSignatureValue());
-			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
-			assertNotNull(signatureIdentifier.getDAIdentifier());
-			assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
+		
+		if (Utils.isCollectionNotEmpty(diagnosticData.getSignatures())) {
+			for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+				
+				SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+				assertNotNull(signatureIdentifier);
+				
+				assertNotNull(signatureIdentifier.getSignatureValue());
+				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertNotNull(signatureIdentifier.getDAIdentifier());
+				assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
+			}
 		}
 	}
 	
 	protected void checkReportsSignaturePolicyIdentifier(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
-		for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
-			SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
-			if (Utils.isStringNotEmpty(signature.getPolicyId()) && // implicit policies are ignored
-					!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId())) {
-				List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport
-						.getSignatureAttributes().getSigningTimeOrSigningCertificateOrDataObjectFormat();
-				assertNotNull(signingTimeOrSigningCertificateOrDataObjectFormat);
-				boolean signaturePolicyIdPresent = false;
-				for (Object object : signingTimeOrSigningCertificateOrDataObjectFormat) {
-					JAXBElement<?> jaxbElement = (JAXBElement<?>) object;
-					if (jaxbElement.getValue() instanceof SASigPolicyIdentifierType) {
-						SASigPolicyIdentifierType sigPolicyIdentifier = (SASigPolicyIdentifierType) jaxbElement.getValue();
-						assertNotNull(sigPolicyIdentifier);
-						assertEquals(signature.getPolicyId(), sigPolicyIdentifier.getSigPolicyId());
-						signaturePolicyIdPresent = true;
+		if (Utils.isCollectionNotEmpty(diagnosticData.getSignatures())) {
+			for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+				if (Utils.isStringNotEmpty(signature.getPolicyId()) && // implicit policies are ignored
+						!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId())) {
+					List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport
+							.getSignatureAttributes().getSigningTimeOrSigningCertificateOrDataObjectFormat();
+					assertNotNull(signingTimeOrSigningCertificateOrDataObjectFormat);
+					boolean signaturePolicyIdPresent = false;
+					for (Object object : signingTimeOrSigningCertificateOrDataObjectFormat) {
+						JAXBElement<?> jaxbElement = (JAXBElement<?>) object;
+						if (jaxbElement.getValue() instanceof SASigPolicyIdentifierType) {
+							SASigPolicyIdentifierType sigPolicyIdentifier = (SASigPolicyIdentifierType) jaxbElement.getValue();
+							assertNotNull(sigPolicyIdentifier);
+							assertEquals(signature.getPolicyId(), sigPolicyIdentifier.getSigPolicyId());
+							signaturePolicyIdPresent = true;
+						}
 					}
+					assertTrue(signaturePolicyIdPresent);
 				}
-				assertTrue(signaturePolicyIdPresent);
+				
 			}
-			
 		}
 	}
 	

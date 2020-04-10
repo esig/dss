@@ -20,14 +20,20 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,6 +43,10 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<CAdESSignatureParameters, CAdESTimestampParameters> {
 
@@ -59,6 +69,28 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 			throw new DSSException("Unable to create the original document", e);
 		}
 		return new FileDocument(originalDoc);
+	}
+	
+	@Override
+	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNotNull(signatureWrapper.getSignatureValue());
+		}
+	}
+	
+	@Override
+	protected void checkReportsSignatureIdentifier(Reports reports) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+			SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+			
+			SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+			assertNotNull(signatureIdentifier);
+			
+			assertNotNull(signatureIdentifier.getSignatureValue());
+			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+		}
 	}
 
 	@Override

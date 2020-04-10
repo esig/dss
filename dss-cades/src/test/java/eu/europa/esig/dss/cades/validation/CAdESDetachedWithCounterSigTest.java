@@ -26,48 +26,66 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public class CAdESDetachedWithCounterSigTest extends PKIFactoryAccess {
+public class CAdESDetachedWithCounterSigTest extends AbstractCAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/dss-1892/detached_with_counter_sig.p7m");
+	}
 	
-	@Test
-	public void test() {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1892/detached_with_counter_sig.p7m");
-		DSSDocument detachedDocument = new FileDocument("src/test/resources/validation/dss-1892/signed_content.bin");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.setDetachedContents(Arrays.asList(detachedDocument));
-		
-		Reports reports = validator.validateDocument();
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected List<DSSDocument> getDetachedContents() {
+		return Arrays.asList(new FileDocument("src/test/resources/validation/dss-1892/signed_content.bin"));
+	}
+	
+	@Override
+	protected void checkCounterSignatures(DiagnosticData diagnosticData) {
+		super.checkCounterSignatures(diagnosticData);
 		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		boolean counterSigFound = false;
 		for (SignatureWrapper signature : signatures) {
-			assertTrue(signature.isSignatureIntact());
-			assertTrue(signature.isSignatureValid());
 			if (signature.isCounterSignature()) {
 				counterSigFound = true;
 			}
 			assertEquals(1, signature.getTimestampList().size());
 		}
 		assertTrue(counterSigFound);
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 		
 		assertEquals(2, diagnosticData.getTimestampList().size());
 	}
-
+	
 	@Override
-	protected String getSigningAlias() {
-		return null;
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+			DiagnosticData diagnosticData) {
+		for (AdvancedSignature advancedSignature : advancedSignatures) {
+			List<TimestampToken> allTimestamps = advancedSignature.getAllTimestamps();
+			for (TimestampToken timestampToken : allTimestamps) {
+				TimestampCertificateSource certificateSource = timestampToken.getCertificateSource();
+				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampToken.getDSSIdAsString());
+				FoundCertificatesProxy foundCertificates = timestampWrapper.foundCertificates();
+				
+				assertEquals(certificateSource.getSigningCertificateRefs().size(),
+						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+			}
+		}
 	}
 
 }

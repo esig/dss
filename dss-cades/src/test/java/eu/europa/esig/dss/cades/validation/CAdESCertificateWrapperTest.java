@@ -28,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -39,20 +37,20 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 
-public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
+public class CAdESCertificateWrapperTest extends AbstractCAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/Signature-CBp-LT-2.p7m");
+	}
 	
-	@Test
-	public void certificateSourcesTest() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-CBp-LT-2.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		// reports.print();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+			DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+		
 		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
 		int certsFromOcspResponse = 0;
 		int certsFromTimestamp = 0;
@@ -93,11 +91,6 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		assertNotNull(certRef.getDigestAlgoAndValue().getDigestMethod());
 		assertNotNull(certRef.getDigestAlgoAndValue().getDigestValue());
 		assertNotNull(certRef.getIssuerSerial());
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
 	}
 
 }

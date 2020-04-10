@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -35,23 +33,18 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESDoubleLTATest extends PKIFactoryAccess {
+public class CAdESDoubleLTATest extends AbstractCAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m");
+	}
 	
-	@Test
-	public void test() {
-
-		DSSDocument document = new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-
-		assertEquals(1, diagnosticData.getSignatures().size());
-
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
 		List<TimestampWrapper> allTimestamps = signatureById.getTimestampList();
@@ -71,13 +64,6 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		assertEquals(0, allTimestamps.get(0).getTimestampedRevocations().size());
 		assertEquals(2, allTimestamps.get(1).getTimestampedRevocations().size());
 		assertEquals(2, allTimestamps.get(2).getTimestampedRevocations().size());
-		
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
-	
+	}	
 
 }

@@ -74,11 +74,11 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
+public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -304,6 +304,23 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 			logger.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
+		
+		List<DSSDocument> results = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertEquals(1, results.size());
+
+		String firstDocument = new String(DSSUtils.toByteArray(documentToSign));
+		String secondDocument = new String(DSSUtils.toByteArray(results.get(0)));
+		assertEquals(firstDocument, secondDocument);
+
+		String digest = documentToSign.getDigest(DigestAlgorithm.SHA256);
+		String digest2 = results.get(0).getDigest(DigestAlgorithm.SHA256);
+
+		assertEquals(digest, digest2);
 	}
 
 	@Override

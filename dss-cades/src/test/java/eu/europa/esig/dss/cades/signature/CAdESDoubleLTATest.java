@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bouncycastle.cms.CMSException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -42,37 +43,40 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESDoubleLTATest extends PKIFactoryAccess {
+public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
+	
+	private DSSDocument documentToSign;
+	private CAdESSignatureParameters parameters;
+	private CAdESService service;
+	
+	@BeforeEach
+	public void init() {
+		documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8));
+		
+		parameters = new CAdESSignatureParameters();
+		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		parameters.setSigningCertificate(getSigningCert());
+		parameters.setCertificateChain(getCertificateChain());
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+
+        service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+	}
+	
+	@Override
+	@Test
+	public void signAndVerify() {
+		// do nothing
+	}
 
 	@Test
 	public void doubleLTA() throws DSSException, CMSException {
-		DSSDocument doc = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8));
-
-		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-
-		CAdESSignatureParameters params = new CAdESSignatureParameters();
-		params.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		params.setSigningCertificate(getSigningCert());
-		params.setCertificateChain(getCertificateChain());
-		params.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-
-		ToBeSigned dataToSign = service.getDataToSign(doc, params);
-
-		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument ltaDoc = service.signDocument(doc, params, signatureValue);
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(ltaDoc);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
+		DSSDocument signed = sign();
+		Reports reports = verify(signed);
 		// reports.print();
 
 		DiagnosticData diagnosticData1 = reports.getDiagnosticData();
@@ -81,17 +85,8 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 
 		checkAllRevocationOnce(diagnosticData1);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getAlternateGoodTsa());
-
-		CAdESSignatureParameters extendParams = new CAdESSignatureParameters();
-		extendParams.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		DSSDocument doubleLtaDoc = service.extendDocument(ltaDoc, extendParams);
-
-		validator = SignedDocumentValidator.fromDocument(doubleLtaDoc);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		reports = validator.validateDocument();
-
+		DSSDocument doubleLtaDoc = service.extendDocument(signed, parameters);
+		reports = verify(doubleLtaDoc);
 		// reports.print();
 
 		DiagnosticData diagnosticData2 = reports.getDiagnosticData();
@@ -149,6 +144,21 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected CAdESSignatureParameters getSignatureParameters() {
+		return parameters;
 	}
 
 }

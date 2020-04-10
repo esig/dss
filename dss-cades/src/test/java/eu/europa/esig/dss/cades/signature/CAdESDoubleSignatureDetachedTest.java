@@ -23,11 +23,11 @@ package eu.europa.esig.dss.cades.signature;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -41,65 +41,68 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESDoubleSignatureDetachedTest extends PKIFactoryAccess {
+public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
+	
+	private DSSDocument documentToSign;
+	private CAdESSignatureParameters parameters;
+	private CAdESService service;
 
 	private String user;
+	
+	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+	
+	@BeforeEach
+	public void init() {
+		documentToSign = original;
+		
+        user = GOOD_USER;
+		
+		parameters = new CAdESSignatureParameters();
+		parameters.setSigningCertificate(getSigningCert());
+		parameters.setCertificateChain(getCertificateChain());
+		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+
+        service = new CAdESService(getOfflineCertificateVerifier());
+	}
+	
+	@Override
+	protected List<DSSDocument> getDetachedContents() {
+		return Arrays.asList(original);
+	}
 
 	@Test
 	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
-
-		byte[] expectedDigest = Utils.fromBase64(documentToSign.getDigest(DigestAlgorithm.SHA256));
-
-		user = GOOD_USER;
-		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-
-		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
-
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
+		DSSDocument signedDocument = sign();
+		Reports reports = verify(signedDocument);
+		
+        byte[] expectedDigest = Utils.fromBase64(documentToSign.getDigest(DigestAlgorithm.SHA256));
+		
+		documentToSign = signedDocument;
 		user = EE_GOOD_USER;
-		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.setDetachedContents(Arrays.asList(documentToSign));
-
-		service = new CAdESService(getOfflineCertificateVerifier());
-
-		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
-		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
-		validator.setDetachedContents(Arrays.asList(documentToSign));
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		Reports reports = validator.validateDocument();
-
-//		reports.print();
+		
+		parameters = new CAdESSignatureParameters();
+		parameters.setSigningCertificate(getSigningCert());
+		parameters.setCertificateChain(getCertificateChain());
+		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		parameters.setDetachedContents(Arrays.asList(original));
+		
+		DSSDocument resignedDocument = sign();
+		
+		reports = verify(resignedDocument);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 
 		for (String id : diagnosticData.getSignatureIdList()) {
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
-
 			SignatureWrapper signatureById = diagnosticData.getSignatureById(id);
 			List<XmlDigestMatcher> digestMatchers = signatureById.getDigestMatchers();
 			assertEquals(1, digestMatchers.size());
@@ -111,33 +114,81 @@ public class CAdESDoubleSignatureDetachedTest extends PKIFactoryAccess {
 		}
 
 		user = EE_GOOD_USER;
-		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		parameters = new CAdESSignatureParameters();
+		parameters.setSigningCertificate(getSigningCert());
+		parameters.setCertificateChain(getCertificateChain());
+		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
 		// explicit missing file
 		// signatureParameters.setDetachedContents(Arrays.asList(documentToSign));
 
-		final CAdESService service2 = new CAdESService(getOfflineCertificateVerifier());
-		final CAdESSignatureParameters params2 = signatureParameters;
-		SignatureValue signatureValue2 = signatureValue;
-
 		DSSException e = assertThrows(DSSException.class, () -> {
-			service2.getDataToSign(signedDocument, params2);
+			sign();
 		});
 		assertEquals("Unknown SignedContent", e.getMessage());
 
-		e = assertThrows(DSSException.class, () -> {
-			service2.signDocument(signedDocument, params2, signatureValue2);
-		});
-		assertEquals("Unknown SignedContent", e.getMessage());
-
+	}
+	
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		// do nothing
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		// do nothing
+	}
+	
+	@Override
+	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
+		// do nothing
+	}
+	
+	@Override
+	protected void checkSigningDate(DiagnosticData diagnosticData) {
+		// do nothing
+	}
+	
+	@Override
+	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
+		// do nothing
+	}
+	
+	@Override
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		// do nothing
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		// do nothing
+	}
+	
+	@Override
+	@Test
+	public void signAndVerify() {
+		// do nothing
 	}
 
 	@Override
 	protected String getSigningAlias() {
 		return user;
 	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected CAdESSignatureParameters getSignatureParameters() {
+		return parameters;
+	}
+	
 }
