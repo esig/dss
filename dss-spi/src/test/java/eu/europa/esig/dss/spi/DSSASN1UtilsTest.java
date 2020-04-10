@@ -297,7 +297,7 @@ public class DSSASN1UtilsTest {
 			CMSSignedData cms = new CMSSignedData(bais);
 			TimeStampToken tst = new TimeStampToken(cms);
 
-			byte[] defaultEncoded = tst.getEncoded();
+			byte[] defaultEncoded = tst.getEncoded(ASN1Encoding.BER);
 			String defaultEncodedBase64 = Utils.toBase64(defaultEncoded);
 			assertEquals(berEncodedTST, defaultEncodedBase64);
 

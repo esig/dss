@@ -88,6 +88,7 @@ public abstract class PKIFactoryAccess {
 	private static final String TSA_ROOT_PATH = "/tsa/";
 	private static final String GOOD_TSA = "good-tsa";
 	private static final String PSS_GOOD_TSA = "pss-good-tsa";
+	private static final String RSASSA_PSS_GOOD_TSA = "rsassa-pss-good-tsa";
 	private static final String SHA3_GOOD_TSA = "sha3-good-tsa";
 	private static final String REVOKED_TSA = "revoked-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
@@ -104,7 +105,10 @@ public abstract class PKIFactoryAccess {
 	private static final String TRUSTSTORE_TYPE = "JKS";
 
 	protected static final String GOOD_USER = "good-user";
+	// RSA key with RSASSA-PSS signature
 	protected static final String PSS_GOOD_USER = "pss-good-user";
+	// RSASSA-PSS key with RSASSA-PSS signature
+	protected static final String RSASSA_PSS_GOOD_USER = "rsassa-pss-good-user";
 	protected static final String UNTRUSTED_USER = "untrusted-user";
 	protected static final String GOOD_USER_WRONG_AIA = "good-user-wrong-aia";
 	protected static final String GOOD_USER_OCSP_ERROR_500 = "good-user-ocsp-error-500";
@@ -267,6 +271,10 @@ public abstract class PKIFactoryAccess {
 		return getOnlineTSPSource(PSS_GOOD_TSA);
 	}
 	
+	protected TSPSource getRSASSAPSSGoodTsa() {
+		return getOnlineTSPSource(RSASSA_PSS_GOOD_TSA);
+	}
+
 	protected TSPSource getSHA3GoodTsa() {
 		return getOnlineTSPSource(SHA3_GOOD_TSA);
 	}

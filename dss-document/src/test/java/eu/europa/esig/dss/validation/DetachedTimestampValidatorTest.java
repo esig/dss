@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -65,7 +66,18 @@ public class DetachedTimestampValidatorTest {
 		timestampValidator.setTimestampedData(timestampedContent);
 		timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
 
-		validate(timestampValidator.validateDocument());
+		Reports reports = timestampValidator.validateDocument();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		for (CertificateWrapper cert : diagnosticData.getUsedCertificates()) {
+			assertNotNull(cert.getMaskGenerationFunction());
+		}
+
+		for (TimestampWrapper tst : diagnosticData.getTimestampList()) {
+			assertNotNull(tst.getMaskGenerationFunction());
+		}
+
+		validate(reports);
 	}
 
 	@Test

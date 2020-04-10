@@ -105,6 +105,11 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 			return PLAIN_ECDSA;
 		}
 
+		// org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPublicKey.getAlgorithm()
+		if ("RSASSA-PSS".equals(name)) {
+			return RSA;
+		}
+
 		try {
 			return valueOf(name);
 		} catch (Exception e) {
