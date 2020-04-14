@@ -674,6 +674,13 @@ public class DiagnosticData {
 				}
 			}
 		}
+		for (RevocationWrapper revocationWrapper : getAllRevocationData()) {
+			for (OrphanCertificateWrapper certificate : extractOrphanCertificateObjects(revocationWrapper.foundCertificates())) {
+				if (!orphanCertificateValues.contains(certificate)) {
+					orphanCertificateValues.add(certificate);
+				}
+			}
+		}
 		return orphanCertificateValues;
 	}
 	
