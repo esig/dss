@@ -20,9 +20,14 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class PAdESExtensionBToLTATest extends AbstractTestPAdESExtension {
+public class PAdESExtensionBToLTATest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
@@ -32,6 +37,22 @@ public class PAdESExtensionBToLTATest extends AbstractTestPAdESExtension {
 	@Override
 	protected SignatureLevel getFinalSignatureLevel() {
 		return SignatureLevel.PAdES_BASELINE_LTA;
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		String signatureId = diagnosticData.getFirstSignatureId();
+		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(signatureId)) {
+			boolean found = false;
+			for (SignatureWrapper signatureWrapper : wrapper.getTimestampedSignatures()) {
+				if (signatureId.equals(signatureWrapper.getId())) {
+					found = true;
+				}
+			}
+			assertTrue(found);
+		}
 	}
 
 }

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -37,25 +37,20 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PDFTimestampFiltersTest extends PKIFactoryAccess {
+public class PDFTimestampFiltersTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-
-	@Test
-	public void test() throws Exception {
+	
+	@BeforeEach
+	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -75,18 +70,18 @@ public class PDFTimestampFiltersTest extends PKIFactoryAccess {
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
+		
 		assertEquals(SignatureLevel.PAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertTrue(Utils.isCollectionNotEmpty(timestampList));
@@ -116,12 +111,27 @@ public class PDFTimestampFiltersTest extends PKIFactoryAccess {
 		
 		assertTrue(signatureTimestampFound);
 		assertTrue(archivalTimestampFound);
-		
 	}
+
 
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
 	}
 
 }

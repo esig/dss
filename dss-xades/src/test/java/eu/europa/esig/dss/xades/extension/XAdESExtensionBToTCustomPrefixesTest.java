@@ -30,7 +30,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESExtensionBToTCustomPrefixesTest extends AbstractTestXAdESExtension {
+public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {
 	
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

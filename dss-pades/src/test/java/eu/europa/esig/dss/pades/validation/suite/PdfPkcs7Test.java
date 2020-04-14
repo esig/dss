@@ -21,10 +21,9 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -33,32 +32,48 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PdfPkcs7Test {
+public class PdfPkcs7Test extends AbstractPAdESTestValidation {
 
-	@Test
-	public void test() throws Exception {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/pkcs7.pdf")));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/pkcs7.pdf"));
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+		
+		assertEquals(1, signatures.size());
+		AdvancedSignature advancedSignature = signatures.get(0);
+		assertEquals(SignatureForm.PKCS7, advancedSignature.getSignatureForm());
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(SignatureLevel.PKCS7_T, signatureById.getSignatureFormat());
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureById.isSigningCertificateIdentified());
+	}
+	
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+			DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+		
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
 		// no signing certificate attribute
 		assertEquals(0, signatureById.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 		assertEquals(4, signatureById.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-
-		List<AdvancedSignature> signatures = validator.getSignatures();
-		assertEquals(1, signatures.size());
-		AdvancedSignature advancedSignature = signatures.get(0);
-		assertEquals(SignatureForm.PKCS7, advancedSignature.getSignatureForm());
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(1, timestampList.size());
@@ -66,7 +81,6 @@ public class PdfPkcs7Test {
 		TimestampWrapper signatureTimestamp = timestampList.get(0);
 		assertEquals(2, signatureTimestamp.foundCertificates().getRelatedCertificates().size());
 		assertEquals(1, signatureTimestamp.foundCertificates().getRelatedCertificateRefs().size());
-
 	}
 
 }

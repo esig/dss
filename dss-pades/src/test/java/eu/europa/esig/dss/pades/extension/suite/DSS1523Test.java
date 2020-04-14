@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,27 +33,38 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SADSSType;
+import eu.europa.esig.validationreport.jaxb.SAFilterType;
+import eu.europa.esig.validationreport.jaxb.SASubFilterType;
+import eu.europa.esig.validationreport.jaxb.SAVRIType;
 
-public class DSS1523Test extends PKIFactoryAccess {
+public class DSS1523Test extends AbstractPkiFactoryTestValidation<PAdESSignatureParameters, PAdESTimestampParameters> {
 
 	@Test
 	public void validation() {
 		// <</Type /DSS/Certs [20 0 R]/CRLs [21 0 R]/OCSPs [22 0 R]>>
 		DSSDocument doc = new InMemoryDocument(DSS1523Test.class.getResourceAsStream("/validation/PAdES-LTA.pdf"), "PAdES-LTA.pdf", MimeType.PDF);
+		
+		verify(doc);
+		
 		PDFDocumentValidator validator = new PDFDocumentValidator(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -89,6 +102,8 @@ public class DSS1523Test extends PKIFactoryAccess {
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendDocument = service.extendDocument(doc, parameters);
+		
+		verify(extendDocument);
 
 		// extendDocument.save("target/extended.pdf");
 
@@ -134,6 +149,51 @@ public class DSS1523Test extends PKIFactoryAccess {
 			}
 		}
 		assertEquals(1, crlAppearence);
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signature.isDigestValuePresent());
+		assertTrue(signature.isDigestValueMatch());
+		assertTrue(signature.isIssuerSerialMatch());
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature.getSignatureValue());
+	}
+	
+	@Override
+	protected void validateETSIDSSType(SADSSType dss) {
+		assertNotNull(dss);
+	}
+	
+	@Override
+	protected void validateETSIVRIType(SAVRIType vri) {
+		assertNotNull(vri);
+	}
+	
+	@Override
+	protected void validateETSIFilter(SAFilterType filterType) {
+		assertNotNull(filterType);
+	}
+	
+	@Override
+	protected void validateETSISubFilter(SASubFilterType subFilterType) {
+		assertNotNull(subFilterType);
+	}
+	
+	@Override
+	protected void checkReportsSignatureIdentifier(Reports reports) {
+		// do nothing
 	}
 
 	@Override

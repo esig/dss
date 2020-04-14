@@ -24,13 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
@@ -39,36 +32,40 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PolicyZeroHashTest extends PKIFactoryAccess {
+public class PolicyZeroHashTest extends AbstractPAdESTestValidation {
 
-	@Test
-	public void test() throws JAXBException, IOException, SAXException {
-
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/TEST2_signed_with_zero_policy_hash.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/TEST2_signed_with_zero_policy_hash.pdf"));
+	}
+	
+	@Override
+	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyIdentifier(diagnosticData);
+		
 		String signatureId = diagnosticData.getFirstSignatureId();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
 		assertTrue(signatureWrapper.getPolicyStatus());
 		assertTrue(signatureWrapper.isZeroHashPolicy());
-
-		DetailedReport detailedReport = reports.getDetailedReport();
-		XmlBasicBuildingBlocks basicBuildingBlocks = detailedReport.getBasicBuildingBlockById(signatureId);
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureWrapper.isAttributePresent());
+		assertTrue(signatureWrapper.isDigestValuePresent());
+		assertTrue(signatureWrapper.isDigestValueMatch());
+	}
+	
+	@Override
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		super.verifyDetailedReport(detailedReport);
+		
+		XmlBasicBuildingBlocks basicBuildingBlocks = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
 		XmlVCI vci = basicBuildingBlocks.getVCI();
 		assertNotNull(vci);
 		assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return null;
 	}
 
 }

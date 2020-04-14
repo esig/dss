@@ -20,38 +20,51 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
+import java.util.Set;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class ASN1PolicyTest extends PKIFactoryAccess {
+public class ASN1PolicyTest extends AbstractPAdESTestValidation {
 
-	@Test
-	public void testAR() throws Exception {
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/AD-RB.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/AD-RB.pdf"));
+	}
+	
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put("http://politicas.icpbrasil.gov.br/PA_PAdES_AD_RB_v1_0.der",
 				new InMemoryDocument(getClass().getResourceAsStream("/validation/PA_PAdES_AD_RB_v1_0.der")));
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		return validator;
+	}
+	
+	@Override
+	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyIdentifier(diagnosticData);
+		
 		SignatureWrapper firstSignature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(firstSignature.isBLevelTechnicallyValid());
 
@@ -59,12 +72,56 @@ public class ASN1PolicyTest extends PKIFactoryAccess {
 		assertTrue(firstSignature.isPolicyAsn1Processable());
 		assertTrue(firstSignature.isPolicyIdentified());
 		assertTrue(firstSignature.getPolicyStatus());
-
 	}
-
+	
 	@Override
-	protected String getSigningAlias() {
-		return null;
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		super.checkNumberOfSignatures(diagnosticData);
+		
+		assertEquals(2, diagnosticData.getSignatureIdList().size());
+	}
+	
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+			DiagnosticData diagnosticData) {
+		SignatureCertificateSource certificateSource = advancedSignatures.get(0).getCertificateSource();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+
+		assertEquals(certificateSource.getSigningCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size() +
+				foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper firstSignature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(firstSignature.isSigningCertificateIdentified());
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+		
+		Set<SignatureWrapper> signatures = diagnosticData.getAllSignatures();
+		assertNotNull(signatures);
+		for (SignatureWrapper signature : signatures) {
+			List<BigInteger> byteRange = signature.getSignatureByteRange();
+			assertNotNull(byteRange);
+			assertEquals(4, byteRange.size());
+			assertEquals(-1, byteRange.get(1).compareTo(byteRange.get(2)));
+		}
 	}
 
 }

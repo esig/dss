@@ -115,9 +115,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		LOG.info("=================== VALIDATION =================");
 
 		SignedDocumentValidator validator = getValidator(signedDocument);
+		checkValidationContext(validator);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		checkAdvancedSignatures(signatures);
+		checkDetachedTimestamps(validator.getDetachedTimestamps());
 
 		Reports reports = validator.validateDocument();
 		// reports.setValidateXml(true);
@@ -150,6 +152,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		return reports;
 	}
 
+	protected void checkValidationContext(SignedDocumentValidator validator) {
+		// not implemented by default
+	}
+
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -168,6 +174,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
+	}
+
+	protected void checkDetachedTimestamps(List<TimestampToken> detachedTimestamps) {
+		// not implemented by default
 	}
 	
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
@@ -853,6 +863,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
 				validateETSISignatureAttributes(signatureAttributes);
 				
+				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+				validateETSISignerDocuments(signersDocuments);
+				
 			}
 		}
 		
@@ -1035,6 +1048,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					break;
 			}
 		}
+	}
+
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionNotEmpty(signersDocuments));
 	}
 
 	protected void verifyReportsData(Reports reports) {

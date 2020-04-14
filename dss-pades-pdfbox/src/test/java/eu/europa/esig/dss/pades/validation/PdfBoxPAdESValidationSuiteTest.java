@@ -25,27 +25,19 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
 
 import eu.europa.esig.dss.pades.validation.suite.ASN1PolicyTest;
-import eu.europa.esig.dss.pades.validation.suite.ArchiveTimestampCoverageTest;
 import eu.europa.esig.dss.pades.validation.suite.BadEncodedCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS1188Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1376GetOriginalDocTest;
-import eu.europa.esig.dss.pades.validation.suite.DSS1420Test;
-import eu.europa.esig.dss.pades.validation.suite.DSS1443Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1538Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1683Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1690Test;
-import eu.europa.esig.dss.pades.validation.suite.DSS1794Test;
-import eu.europa.esig.dss.pades.validation.suite.DSS1899Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1972Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1983Test;
-import eu.europa.esig.dss.pades.validation.suite.DSS818Test;
-import eu.europa.esig.dss.pades.validation.suite.DSS917Test;
-import eu.europa.esig.dss.pades.validation.suite.DiagnosticDataCompleteTest;
-import eu.europa.esig.dss.pades.validation.suite.EtsiValidationReportCompleteTest;
-import eu.europa.esig.dss.pades.validation.suite.PAdESCorruptedSigTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
-import eu.europa.esig.dss.pades.validation.suite.PAdESNonLatinCharactersValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
@@ -53,16 +45,40 @@ import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
 import eu.europa.esig.dss.pades.validation.suite.PolicyZeroHashTest;
 import eu.europa.esig.dss.pades.validation.suite.SIWATest;
 import eu.europa.esig.dss.pades.validation.suite.SignatureTimestampCertificateNotFoundTest;
+import eu.europa.esig.dss.pades.validation.suite.dss1420.DSS1420Sha224Test;
+import eu.europa.esig.dss.pades.validation.suite.dss1420.DSS1420Test;
+import eu.europa.esig.dss.pades.validation.suite.dss1469.DSS1469LTTest;
+import eu.europa.esig.dss.pades.validation.suite.dss1469.DSS1469Test;
+import eu.europa.esig.dss.pades.validation.suite.dss1696.ArchiveTimestampCoverageTest;
+import eu.europa.esig.dss.pades.validation.suite.dss1696.DoubleArchiveTstCoverageTest;
+import eu.europa.esig.dss.pades.validation.suite.dss1794.DSS1794CrlTest;
+import eu.europa.esig.dss.pades.validation.suite.dss1794.DSS1794OcspTest;
+import eu.europa.esig.dss.pades.validation.suite.dss1899.DSS1899Test;
+import eu.europa.esig.dss.pades.validation.suite.dss1899.DSS1899TstWithNullTypeTest;
+import eu.europa.esig.dss.pades.validation.suite.dss818.DSS818ADOTest;
+import eu.europa.esig.dss.pades.validation.suite.dss818.DSS818CRYTest;
+import eu.europa.esig.dss.pades.validation.suite.dss818.DSS818SKTest;
+import eu.europa.esig.dss.pades.validation.suite.dss917.DSS917CorruptedTest;
+import eu.europa.esig.dss.pades.validation.suite.dss917.DSS917Test;
+import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESDssAndVriTest;
+import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESFiveSignaturesDocTest;
+import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESMultiSignedDocRevocTest;
+import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESRevocationOriginTest;
+import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigestReferenceTest;
 
 @RunWith(JUnitPlatform.class)
-@SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class,
-		DSS818Test.class, DSS917Test.class, PadesWrongDigestAlgoTest.class, PdfPkcs7Test.class, DSS1443Test.class,
-		DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, DiagnosticDataCompleteTest.class,
-		EtsiValidationReportCompleteTest.class, SignatureTimestampCertificateNotFoundTest.class,
-		PAdESCorruptedSigTest.class, PAdESNonLatinCharactersValidationTest.class, ArchiveTimestampCoverageTest.class,
-		PolicyZeroHashTest.class, SIWATest.class, DSS1794Test.class, PAdESMultipleFieldSignatureReferenceTest.class,
-		DSS1899Test.class, PAdESInfiniteLoopTest.class, PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class,
-		BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class })
+@SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS1420Sha224Test.class,
+		DSS818CRYTest.class, DSS818ADOTest.class, DSS818SKTest.class, DSS917Test.class, DSS917CorruptedTest.class, PadesWrongDigestAlgoTest.class, 
+		PdfPkcs7Test.class, 
+		DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class,
+		PAdESMultiSignedDocRevocTest.class, PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class,
+		PAdESSignatureDigestReferenceTest.class, SignatureTimestampCertificateNotFoundTest.class, PAdESSimpleValidationTest.class, 
+		PAdESSimpleCorruptedTest.class, PAdESOutOfByteRangeTest.class, ArchiveTimestampCoverageTest.class,
+		DoubleArchiveTstCoverageTest.class,
+		PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class, DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class,
+		DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class, PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class,
+		BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class, PDFDocumentValidatorCheckTest.class, DSS1469Test.class,
+		DSS1469LTTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

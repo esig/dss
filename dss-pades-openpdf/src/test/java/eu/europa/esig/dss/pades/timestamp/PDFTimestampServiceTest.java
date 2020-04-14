@@ -20,53 +20,6 @@
  */
 package eu.europa.esig.dss.pades.timestamp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import com.lowagie.text.pdf.AcroFields;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfReader;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-
-public class PDFTimestampServiceTest extends PKIFactoryAccess {
-
-	@Test
-	public void timestampAlone() throws IOException {
-		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-
-		PAdESTimestampParameters parameters = new PAdESTimestampParameters();
-
-		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-		DSSDocument timestamped = service.timestamp(document, parameters);
-
-		try (InputStream is = timestamped.openStream(); PdfReader reader = new PdfReader(is)) {
-			AcroFields af = reader.getAcroFields();
-
-			List<String> names = af.getSignedFieldNames();
-			assertEquals(1, names.size());
-
-			String first = names.get(0);
-
-			PdfDictionary signatureDictionary = af.getSignatureDictionary(first);
-			assertNotNull(signatureDictionary);
-		}
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return null;
-	}
+public class PDFTimestampServiceTest extends AbstractPDFTimestampServiceTest {
 
 }

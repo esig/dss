@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,6 +59,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
@@ -66,6 +68,9 @@ import eu.europa.esig.validationreport.jaxb.SAReasonType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> {
 
@@ -300,6 +305,30 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(vri);
 		} else {
 			assertNull(vri);
+		}
+	}
+	
+	@Override
+	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature.getSignatureValue());
+	}
+
+	@Override
+	protected void checkReportsSignatureIdentifier(Reports reports) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		
+		if (Utils.isCollectionNotEmpty(diagnosticData.getSignatures())) {
+			for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+				
+				SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+				assertNotNull(signatureIdentifier);
+				
+				assertNotNull(signatureIdentifier.getSignatureValue());
+				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+			}
 		}
 	}
 
