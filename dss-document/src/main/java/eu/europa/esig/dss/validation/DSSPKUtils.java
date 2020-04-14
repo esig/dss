@@ -25,6 +25,8 @@ import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 
+import org.bouncycastle.jcajce.interfaces.EdDSAPublicKey;
+import org.bouncycastle.jcajce.interfaces.XDHPublicKey;
 import org.bouncycastle.jce.provider.JCEECPublicKey;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.slf4j.Logger;
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.utils.Utils;
 
 public final class DSSPKUtils {
 
@@ -102,6 +105,17 @@ public final class DSSPKUtils {
 		} else if (publicKey instanceof DSAPublicKey) {
 			DSAPublicKey dsaPublicKey = (DSAPublicKey) publicKey;
 			publicKeySize = dsaPublicKey.getParams().getP().bitLength();
+		} else if (publicKey instanceof EdDSAPublicKey) {
+			EdDSAPublicKey eddsaPK = (EdDSAPublicKey) publicKey;
+			// remove prefix size
+//			int prefixSize = Utils.fromHex("302a300506032b6570032100").length;
+			int prefixSize = Utils.fromHex("3043300506032b6571033a00").length;
+			return eddsaPK.getEncoded().length - prefixSize ;
+		} else if (publicKey instanceof XDHPublicKey) {
+			XDHPublicKey xdhPK = (XDHPublicKey) publicKey;
+//			int prefixSize = Utils.fromHex("302a300506032b656e032100").length;
+			int prefixSize = Utils.fromHex("3042300506032b656f033900").length;
+			return xdhPK.getEncoded().length - prefixSize;
 		} else {
 			LOG.error("Unknown public key infrastructure: {}", publicKey.getClass().getName());
 		}

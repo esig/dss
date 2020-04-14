@@ -35,19 +35,25 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -68,6 +74,8 @@ public class DSSUtilsTest {
 
 	@Test
 	public void digest() {
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+
 		byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);
 		assertEquals("d3486ae9136e7856bc42212385ea797094475802", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, data)));
 		assertEquals("7e81ebe9e604a0c97fef0e4cfe71f9ba0ecba13332bde953ad1c66e4", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA224, data)));
@@ -81,6 +89,17 @@ public class DSSUtilsTest {
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_384, data)));
 		assertEquals("95decc72f0a50ae4d9d5378e1b2252587cfc71977e43292c8f1b84648248509f1bc18bc6f0b0d0b8606a643eff61d611ae84e6fbd4a2683165706bd6fd48b334",
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_512, data)));
+
+		assertEquals("ee8ee3ada079996b80d926eef439a502", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE128, data)));
+		assertEquals("e80627c7a1dd02229936bb2822572025e17b91ef3a94f7ade9d810aee8d6a873",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE256, data)));
+
+		// BC JCAJCE
+		// org.bouncycastle.jcajce.provider.digest.DigestShake256_512
+		String shake256_512 = "e80627c7a1dd02229936bb2822572025e17b91ef3a94f7ade9d810aee8d6a873f3d6795a6f7b042a3b65ba0faa872f32e513eb8f460dc60768ee86a05d22e7ac";
+		assertEquals(512, Utils.fromHex(shake256_512).length * 8);
+		assertEquals(shake256_512,
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE256_512, data)));
 	}
 
 	@Test
@@ -327,6 +346,41 @@ public class DSSUtilsTest {
 		assertEquals("", DSSUtils.removeControlCharacters("\r\n"));
 		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=RotCAOK", DSSUtils.removeControlCharacters(
 				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw=="))));
+	}
+
+	@Test
+	public void loadEdDSACert() throws NoSuchAlgorithmException, IOException {
+
+		// RFC 8410
+
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+		
+		CertificateToken token = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIIBLDCB36ADAgECAghWAUdKKo3DMDAFBgMrZXAwGTEXMBUGA1UEAwwOSUVURiBUZXN0IERlbW8wHhcNMTYwODAxMTIxOTI0WhcNNDAxMjMxMjM1OTU5WjAZMRcwFQYDVQQDDA5JRVRGIFRlc3QgRGVtbzAqMAUGAytlbgMhAIUg8AmJMKdUdIt93LQ+91oNvzoNJjga9OukqY6qm05qo0UwQzAPBgNVHRMBAf8EBTADAQEAMA4GA1UdDwEBAAQEAwIDCDAgBgNVHQ4BAQAEFgQUmx9e7e0EM4Xk97xiPFl1uQvIuzswBQYDK2VwA0EAryMB/t3J5v/BzKc9dNZIpDmAgs3babFOTQbs+BolzlDUwsPrdGxO3YNGhW7Ibz3OGhhlxXrCe1Cgw1AH9efZBw==");
+		assertNotNull(token);
+		logger.info("{}", token);
+		logger.info("{}", token.getPublicKey());
+		assertFalse(token.isSelfSigned());
+		assertFalse(token.isSignedBy(token));
+		assertEquals(SignatureAlgorithm.ED25519, token.getSignatureAlgorithm());
+		assertTrue(token.checkKeyUsage(KeyUsageBit.KEY_AGREEMENT));
+		assertEquals(EncryptionAlgorithm.X25519, EncryptionAlgorithm.forKey(token.getPublicKey()));
+
+		X509CertificateHolder holder = new X509CertificateHolder(token.getEncoded());
+		SubjectPublicKeyInfo subjectPublicKeyInfo = holder.getSubjectPublicKeyInfo();
+		assertNotNull(subjectPublicKeyInfo);
+		assertEquals(EncryptionAlgorithm.X25519.getOid(), subjectPublicKeyInfo.getAlgorithm().getAlgorithm().getId());
+
+		token = DSSUtils
+				.loadCertificateFromBase64EncodedString(
+				"MIIBCDCBuwIUGW78zw0OL0GptJi++a91dBa7DsQwBQYDK2VwMCcxCzAJBgNVBAYTAkRFMRgwFgYDVQQDDA93d3cuZXhhbXBsZS5jb20wHhcNMTkwMzMxMTc1MTIyWhcNMjEwMjI4MTc1MTIyWjAnMQswCQYDVQQGEwJERTEYMBYGA1UEAwwPd3d3LmV4YW1wbGUuY29tMCowBQYDK2VwAyEAK87g0b8CC1eA5mvKXt9uezZwJYWEyg74Y0xTZEkqCcwwBQYDK2VwA0EAIIu/aa3Qtr3IE5to/nvWVY9y3ciwG5DnA70X3ALUhFs+U5aLtfY8sNT1Ng72ht+UBwByuze20UsL9qMsmknQCA==");
+		assertNotNull(token);
+		logger.info("{}", token);
+		logger.info("{}", token.getPublicKey());
+		assertEquals(SignatureAlgorithm.ED25519, token.getSignatureAlgorithm());
+		assertEquals(EncryptionAlgorithm.ED25519, EncryptionAlgorithm.forKey(token.getPublicKey()));
+		assertTrue(token.isSelfSigned());
+		assertTrue(token.isSignedBy(token));
 	}
 
 }

@@ -65,6 +65,8 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.crypto.digests.SHAKEDigest;
+import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.io.pem.PemObject;
@@ -348,8 +350,24 @@ public final class DSSUtils {
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
 		Objects.requireNonNull(data, "The data cannot be null");
-		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
-		return messageDigest.digest(data);
+		switch (digestAlgorithm) {
+		case SHAKE128:
+			return computeDigest(new SHAKEDigest(128), data);
+		case SHAKE256:
+			return computeDigest(new SHAKEDigest(256), data);
+		default:
+			final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+			return messageDigest.digest(data);
+		}
+	}
+
+	private static byte[] computeDigest(org.bouncycastle.crypto.Digest digest, byte[] data) {
+		try (DigestOutputStream dos = new DigestOutputStream(digest)) {
+			dos.write(data);
+			return dos.getDigest();
+		} catch (IOException e) {
+			throw new DSSException("Unable to compute digest : " + e.getMessage(), e);
+		}
 	}
 
 	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {

@@ -109,6 +109,8 @@ public abstract class PKIFactoryAccess {
 	protected static final String PSS_GOOD_USER = "pss-good-user";
 	// RSASSA-PSS key with RSASSA-PSS signature
 	protected static final String RSASSA_PSS_GOOD_USER = "rsassa-pss-good-user";
+	protected static final String ED25519_GOOD_USER = "Ed25519-good-user";
+	protected static final String ED448_GOOD_USER = "Ed448-good-user";
 	protected static final String UNTRUSTED_USER = "untrusted-user";
 	protected static final String GOOD_USER_WRONG_AIA = "good-user-wrong-aia";
 	protected static final String GOOD_USER_OCSP_ERROR_500 = "good-user-ocsp-error-500";

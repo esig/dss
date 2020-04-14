@@ -39,6 +39,12 @@ public class DigestAlgorithmParameterizedBouncyCastleTest {
 	@ParameterizedTest(name = "Digest {index} : {0}")
 	@EnumSource(DigestAlgorithm.class)
 	public void getMessageDigest(DigestAlgorithm digestAlgo) throws NoSuchAlgorithmException {
+		
+		// Not registered
+		if (DigestAlgorithm.SHAKE128.equals(digestAlgo) ||DigestAlgorithm.SHAKE256.equals(digestAlgo)) {
+			return;
+		}
+		
 		MessageDigest md = digestAlgo.getMessageDigest(provider);
 		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));

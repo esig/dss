@@ -49,6 +49,8 @@ public class EncryptionAlgorithmParserTest {
 		assertNotNull(EncryptionAlgorithmParser.parse("ECC"));
 		assertNotNull(EncryptionAlgorithmParser.parse("PLAIN-ECDSA"));
 		assertNotNull(EncryptionAlgorithmParser.parse("PLAIN_ECDSA"));
+		assertNotNull(EncryptionAlgorithmParser.parse("Ed25519"));
+		assertNotNull(EncryptionAlgorithmParser.parse("Ed448"));
 	}
 	
 	@Test

@@ -21,12 +21,16 @@
 package eu.europa.esig.dss.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -63,6 +67,25 @@ public class DSSPKUtilsTest {
 		assertEquals(2048, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
 		assertEquals("2048", DSSPKUtils.getPublicKeySize(certificate));
 
+	}
+
+	@Test
+	public void x25519() {
+		CertificateToken token = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIIBLDCB36ADAgECAghWAUdKKo3DMDAFBgMrZXAwGTEXMBUGA1UEAwwOSUVURiBUZXN0IERlbW8wHhcNMTYwODAxMTIxOTI0WhcNNDAxMjMxMjM1OTU5WjAZMRcwFQYDVQQDDA5JRVRGIFRlc3QgRGVtbzAqMAUGAytlbgMhAIUg8AmJMKdUdIt93LQ+91oNvzoNJjga9OukqY6qm05qo0UwQzAPBgNVHRMBAf8EBTADAQEAMA4GA1UdDwEBAAQEAwIDCDAgBgNVHQ4BAQAEFgQUmx9e7e0EM4Xk97xiPFl1uQvIuzswBQYDK2VwA0EAryMB/t3J5v/BzKc9dNZIpDmAgs3babFOTQbs+BolzlDUwsPrdGxO3YNGhW7Ibz3OGhhlxXrCe1Cgw1AH9efZBw==");
+		assertEquals(EncryptionAlgorithm.X25519, EncryptionAlgorithm.forKey(token.getPublicKey()));
+		assertEquals(32, DSSPKUtils.getPublicKeySize(token.getPublicKey()));
+		assertTrue(token.checkKeyUsage(KeyUsageBit.KEY_AGREEMENT));
+	}
+
+	@Test
+	public void Ed25519() {
+		CertificateToken token = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIIBCDCBuwIUGW78zw0OL0GptJi++a91dBa7DsQwBQYDK2VwMCcxCzAJBgNVBAYTAkRFMRgwFgYDVQQDDA93d3cuZXhhbXBsZS5jb20wHhcNMTkwMzMxMTc1MTIyWhcNMjEwMjI4MTc1MTIyWjAnMQswCQYDVQQGEwJERTEYMBYGA1UEAwwPd3d3LmV4YW1wbGUuY29tMCowBQYDK2VwAyEAK87g0b8CC1eA5mvKXt9uezZwJYWEyg74Y0xTZEkqCcwwBQYDK2VwA0EAIIu/aa3Qtr3IE5to/nvWVY9y3ciwG5DnA70X3ALUhFs+U5aLtfY8sNT1Ng72ht+UBwByuze20UsL9qMsmknQCA==");
+		assertNotNull(token);
+		assertEquals(EncryptionAlgorithm.ED25519, EncryptionAlgorithm.forKey(token.getPublicKey()));
+		assertEquals(32, DSSPKUtils.getPublicKeySize(token.getPublicKey()));
+		assertFalse(token.checkKeyUsage(KeyUsageBit.KEY_AGREEMENT));
 	}
 
 }

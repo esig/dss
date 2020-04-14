@@ -89,9 +89,17 @@ public class DigestDocumentTest {
 		byte[] stringToEncode = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
+			// Not registered
+			if (DigestAlgorithm.SHAKE128.equals(digestAlgorithm) || DigestAlgorithm.SHAKE256.equals(digestAlgorithm)) {
+				continue;
+			}
 			doc.addDigest(digestAlgorithm, Base64.getEncoder().encodeToString(digestAlgorithm.getMessageDigest().digest(stringToEncode)));
 		}
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
+			// Not registered
+			if (DigestAlgorithm.SHAKE128.equals(digestAlgorithm) || DigestAlgorithm.SHAKE256.equals(digestAlgorithm)) {
+				continue;
+			}
 			assertNotNull(doc.getDigest(digestAlgorithm));
 		}
 		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);

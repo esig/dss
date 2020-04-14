@@ -261,12 +261,14 @@
 			<Algo>DSA</Algo>
 			<Algo>ECDSA</Algo>
 			<Algo>PLAIN-ECDSA</Algo>
+			<Algo>Ed25519</Algo>
 		</AcceptableEncryptionAlgo>
 		<MiniPublicKeySize>
 			<Algo Size="160">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
 			<Algo Size="160">ECDSA</Algo>
 			<Algo Size="160">PLAIN-ECDSA</Algo>
+			<Algo Size="24">Ed25519</Algo>
 		</MiniPublicKeySize>
 		<AcceptableDigestAlgo>
 			<Algo>MD2</Algo>
@@ -320,6 +322,8 @@
 			<Algo Date="2026" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<Algo Date="2026" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<Algo Date="2026" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			
+			<Algo Date="2026" Size="32">Ed25519</Algo>
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic> 

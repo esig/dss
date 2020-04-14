@@ -27,13 +27,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -44,13 +46,26 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
 
-	private CertificateToken certificateToken;
-	private CertificateToken rootToken;
+	private static CertificateToken certificateToken;
+	private static CertificateToken rootToken;
 
-	@BeforeEach
-	public void init() {
+	private static CertificateToken goodUser;
+	private static CertificateToken goodCa;
+	private static CertificateToken ed25519goodUser;
+	private static CertificateToken ed25519goodCa;
+
+	@BeforeAll
+	public static void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
+
+		CommonsDataLoader dataLoader = new CommonsDataLoader();
+		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
+		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+
+		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
+		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
+
 	}
 
 	@Test
@@ -59,6 +74,24 @@ public class OnlineOCSPSourceTest {
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
+	}
+
+	@Test
+	public void testOCSP() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
+		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+	}
+
+	@Test
+	public void testOCSPEd25519() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
+		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertEquals(SignatureAlgorithm.ED25519, ocspToken.getSignatureAlgorithm());
+		assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
 	}
 
 	@Test
