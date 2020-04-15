@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
 
 /**
  * For Seals or Web Authentication are only allowed after eIDAS
@@ -38,6 +39,12 @@ class TrustedServicePreEIDASConsistency implements TrustedServiceCondition {
 
 		Date startDate = trustedService.getStartDate();
 		if (EIDASUtils.isPreEIDAS(startDate)) {
+
+			String status = trustedService.getStatus();
+			if (TrustedServiceStatus.GRANTED.equals(status) || TrustedServiceStatus.WITHDRAWN.equals(status)) {
+				return false;
+			}
+
 			List<String> asis = trustedService.getAdditionalServiceInfos();
 			if (AdditionalServiceInformation.isForeSealsOnly(asis) || AdditionalServiceInformation.isForWebAuthOnly(asis)) {
 				return false;
