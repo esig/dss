@@ -93,9 +93,13 @@ public final class XAdESSignatureUtils {
 		
 		// if not an object or object has not been found
 		try {
-			return new InMemoryDocument(reference.getReferencedBytes(), reference.getURI());
+			byte[] referencedBytes = reference.getReferencedBytes();
+			if (referencedBytes != null) {
+				return new InMemoryDocument(referencedBytes, reference.getURI());
+			}
+			LOG.warn("Reference bytes returned null value : {}", reference.getId());
 		} catch (Exception e) {
-			LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
+			LOG.warn("Unable to retrieve reference {}. Reason : {}", reference.getId(), e.getMessage(), e);
 		}
 		
 		if (LOG.isDebugEnabled()) {
