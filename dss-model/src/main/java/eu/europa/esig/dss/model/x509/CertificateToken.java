@@ -21,13 +21,9 @@
 package eu.europa.esig.dss.model.x509;
 
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
-import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
@@ -300,16 +296,10 @@ public class CertificateToken extends Token {
 		try {
 			x509Certificate.verify(candidate.getPublicKey());
 			signatureValidity = SignatureValidity.VALID;
-		} catch (InvalidKeyException e) {
-			signatureInvalidityReason = "InvalidKeyException - on incorrect key.";
-		} catch (CertificateException e) {
-			signatureInvalidityReason = "CertificateException -  on encoding errors.";
-		} catch (NoSuchAlgorithmException e) {
-			signatureInvalidityReason = "NoSuchAlgorithmException - on unsupported signature algorithms.";
-		} catch (SignatureException e) {
-			signatureInvalidityReason = "SignatureException - on signature errors.";
 		} catch (NoSuchProviderException e) { // if there's no default provider.
 			throw new DSSException(e);
+		} catch (Exception e) {
+			signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
 		}
 		return signatureValidity;
 	}
