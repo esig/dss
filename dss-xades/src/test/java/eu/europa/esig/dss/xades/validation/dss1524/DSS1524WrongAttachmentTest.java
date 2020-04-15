@@ -17,6 +17,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class DSS1524WrongAttachmentTest extends AbstractXAdESTestValidation {
 
@@ -70,6 +71,11 @@ public class DSS1524WrongAttachmentTest extends AbstractXAdESTestValidation {
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

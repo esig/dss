@@ -20,10 +20,15 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -44,6 +49,22 @@ public class OpenDocumentLevelLTASignatureTest extends AbstractOpenDocumentTestS
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		String signatureId = diagnosticData.getFirstSignatureId();
+		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(signatureId)) {
+			boolean found = false;
+			for (SignatureWrapper signatureWrapper : wrapper.getTimestampedSignatures()) {
+				if (signatureId.equals(signatureWrapper.getId())) {
+					found = true;
+				}
+			}
+			assertTrue(found);
+		}
 	}
 
 	@Override

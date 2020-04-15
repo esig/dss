@@ -18,6 +18,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class XAdESNoReferenceTest extends AbstractXAdESTestValidation {
 
@@ -69,6 +70,11 @@ public class XAdESNoReferenceTest extends AbstractXAdESTestValidation {
 
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND,
 				detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

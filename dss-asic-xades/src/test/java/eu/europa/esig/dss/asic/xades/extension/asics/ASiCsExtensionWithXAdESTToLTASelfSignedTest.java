@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.asics;
 
-import eu.europa.esig.dss.asic.xades.extension.AbstractTestASiCwithXAdESExtension;
+import eu.europa.esig.dss.asic.xades.extension.AbstractASiCwithXAdESTestExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class ASiCsExtensionWithXAdESTToLTASelfSignedTest extends AbstractTestASiCwithXAdESExtension {
+public class ASiCsExtensionWithXAdESTToLTASelfSignedTest extends AbstractASiCwithXAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

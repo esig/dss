@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Date;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -28,7 +30,11 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -55,6 +61,15 @@ public class ASiCEXAdESLevelBInclusiveCanonicalizationTest extends AbstractASiCE
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+	}
+	
+	@Override
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		super.verifyDetailedReport(detailedReport);
+		
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
 	}
 
 	@Override

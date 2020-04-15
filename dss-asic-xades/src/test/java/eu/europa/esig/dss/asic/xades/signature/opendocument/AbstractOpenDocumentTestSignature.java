@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +36,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -46,6 +47,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
@@ -105,23 +107,31 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 	}
 	
 	@Override
-	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) throws IOException {
+	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		assertNotNull(diagnosticData.getContainerInfo());
+		assertNotNull(diagnosticData.getContainerType());
+		assertNotNull(diagnosticData.getMimetypeFileContent());
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(getOriginalDocuments().get(0));
 		ASiCExtractResult extractOriginal = extractor.extract();
-				
-		extractor = new ASiCWithXAdESContainerExtractor(signedDocument);
-		ASiCExtractResult extractSigned = extractor.extract();
 		
-		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
-		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
+		AbstractASiCContainerValidator asicValidator = (AbstractASiCContainerValidator) validator;
+		List<DSSDocument> signedDocuments = asicValidator.getSignedDocuments();
+		
+		List<String> fileNames = getSignedFilesNames(signedDocuments);		
+		List<String> fileDigests = getSignedFilesDigests(signedDocuments);
 
 		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
 			assertTrue(fileNames.contains(doc.getName()));
 			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	
 		
-		verifySignatureFileName(extractSigned.getSignatureDocuments());
+		verifySignatureFileName(asicValidator.getSignatureDocuments());
 	}
 	
 	private List<String> getSignedFilesNames(List<DSSDocument> files) {

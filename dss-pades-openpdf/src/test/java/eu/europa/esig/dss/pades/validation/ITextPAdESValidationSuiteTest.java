@@ -69,16 +69,13 @@ import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigest
 @RunWith(JUnitPlatform.class)
 @SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS1420Sha224Test.class,
 		DSS818CRYTest.class, DSS818ADOTest.class, DSS818SKTest.class, DSS917Test.class, DSS917CorruptedTest.class, PadesWrongDigestAlgoTest.class,
-		PdfPkcs7Test.class, 
-		DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class,
-		PAdESMultiSignedDocRevocTest.class, PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class,
-		PAdESSignatureDigestReferenceTest.class, SignatureTimestampCertificateNotFoundTest.class, PAdESSimpleValidationTest.class, 
-		PAdESSimpleCorruptedTest.class, PAdESOutOfByteRangeTest.class, ArchiveTimestampCoverageTest.class,
-		DoubleArchiveTstCoverageTest.class,
-		PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class, DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class,
-		DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class, PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class,
-		BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class, PDFDocumentValidatorCheckTest.class, DSS1469Test.class,
-		DSS1469LTTest.class })
+		PdfPkcs7Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class, PAdESMultiSignedDocRevocTest.class, 
+		PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class, PAdESSignatureDigestReferenceTest.class, 
+		SignatureTimestampCertificateNotFoundTest.class, PAdESSimpleValidationTest.class, PAdESSimpleCorruptedTest.class, PAdESOutOfByteRangeTest.class, 
+		ArchiveTimestampCoverageTest.class, DoubleArchiveTstCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class, 
+		DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class, DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class,
+		PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class, BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class, 
+		DSS1469Test.class, DSS1469LTTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

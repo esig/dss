@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.asic.cades.extension.AbstractTestASiCwithCAdESExtension;
+import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class ASiCeExtensionWithCAdESLTToLTAWithFailTimestampTest extends AbstractTestASiCwithCAdESExtension {
+public class ASiCeExtensionWithCAdESLTToLTAWithFailTimestampTest extends AbstractASiCWithCAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {

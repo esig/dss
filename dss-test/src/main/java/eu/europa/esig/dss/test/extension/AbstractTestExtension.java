@@ -128,15 +128,15 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 	protected abstract SP getExtensionParameters();
 
-	private void checkOriginalLevel(DiagnosticData diagnosticData) {
+	protected void checkOriginalLevel(DiagnosticData diagnosticData) {
 		assertEquals(getOriginalSignatureLevel(), diagnosticData.getFirstSignatureFormat());
 	}
 
-	private void checkFinalLevel(DiagnosticData diagnosticData) {
+	protected void checkFinalLevel(DiagnosticData diagnosticData) {
 		assertEquals(getFinalSignatureLevel(), diagnosticData.getFirstSignatureFormat());
 	}
 	
-    private void checkTLevelAndValid(DiagnosticData diagnosticData) {
+	protected void checkTLevelAndValid(DiagnosticData diagnosticData) {
         assertTrue(diagnosticData.isThereTLevel(diagnosticData.getFirstSignatureId()));
         assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }

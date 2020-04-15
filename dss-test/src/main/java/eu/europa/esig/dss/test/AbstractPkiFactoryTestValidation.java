@@ -290,6 +290,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkTokens(diagnosticData);
 		checkCounterSignatures(diagnosticData);
 		checkTrustedServices(diagnosticData);
+		checkContainerInfo(diagnosticData);
 
 		checkNoDuplicateCompleteCertificates(diagnosticData);
 		checkNoDuplicateCompleteRevocationData(diagnosticData);
@@ -695,6 +696,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void checkTrustedServices(DiagnosticData diagnosticData) {
 		// not implemented by default
+	}
+
+	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		assertNull(diagnosticData.getContainerInfo());
+		assertNull(diagnosticData.getContainerType());
+		assertNull(diagnosticData.getZipComment());
+		assertNull(diagnosticData.getMimetypeFileContent());
 	}
 	
 	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {

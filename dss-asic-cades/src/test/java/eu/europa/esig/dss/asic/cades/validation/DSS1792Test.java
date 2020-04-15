@@ -39,23 +39,20 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1792Test extends PKIFactoryAccess {
+public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/validation/dss1792.asice");
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return document;
+	}
 	
-	@Test
-	public void validationTest() {
-		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 		
 		assertEquals(2, diagnosticData.getTimestampList().size());
 		boolean archiveTimestampFound = false;
@@ -65,6 +62,11 @@ public class DSS1792Test extends PKIFactoryAccess {
 			}
 		}
 		assertTrue(archiveTimestampFound);
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
 		
 		List<SignatureWrapper> signatureWrappers = diagnosticData.getSignatures();
 		assertEquals(2, signatureWrappers.size());
@@ -84,7 +86,6 @@ public class DSS1792Test extends PKIFactoryAccess {
     			fail("Unexpected signature found with name : " + signature.getSignatureFilename());
 			}
 		}
-		
 	}
 	
 	@Test
@@ -127,11 +128,6 @@ public class DSS1792Test extends PKIFactoryAccess {
         
         assertEquals(2, result.getSignedDocuments().size());
 		
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return null;
 	}
 
 }

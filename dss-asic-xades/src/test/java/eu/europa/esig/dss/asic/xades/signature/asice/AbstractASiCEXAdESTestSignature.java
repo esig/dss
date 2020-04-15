@@ -20,14 +20,20 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public abstract class AbstractASiCEXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
@@ -52,6 +58,14 @@ public abstract class AbstractASiCEXAdESTestSignature extends AbstractPkiFactory
 	@Override
 	protected boolean isBaselineLTA() {
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
+	}
+	
+	@Override
+	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		assertNotNull(diagnosticData.getContainerInfo());
+		assertEquals("ASiC-E", diagnosticData.getContainerType());
+		assertNotNull(diagnosticData.getMimetypeFileContent());
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
 	}
 
 }

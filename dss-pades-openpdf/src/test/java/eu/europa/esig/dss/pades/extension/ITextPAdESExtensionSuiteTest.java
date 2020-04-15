@@ -49,16 +49,16 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTWithSelfSignedTest;
 import eu.europa.esig.dss.pades.extension.suite.PDFArchiveTimestampingTest;
 import eu.europa.esig.dss.pades.extension.suite.PDFTimestampingTest;
-import eu.europa.esig.dss.pades.signature.BuildKnownObjectsTest;
 
 @RunWith(JUnitPlatform.class)
 @SelectClasses({ PAdESExtensionBToLTTest.class, PAdESExtensionBToLTATest.class, PAdESExtensionBToTTest.class, PAdESExtensionBToTWithCompositeTSATest.class,
-		PAdESExtensionBToTWithError500TimestampTest.class, PAdESExtensionBToTWithFailTimestampTest.class, PAdESExtensionLTAToLTATest.class, PAdESExtensionLTToLTATest.class,
-		PAdESExtensionLTToLTAWithError500TimestampTest.class, PAdESExtensionLTToLTAWithFailTimestampTest.class, PAdESExtensionTToLTTest.class, PAdESExtensionTToLTATest.class,
-		DSS1523Test.class, PAdESExtensionTToLTWithSelfSignedTest.class, PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class,
-		PAdESExtensionBToLTASelfSignedTSATest.class, PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class,
-		PAdESExtensionLTToLTASelfSignedTSATest.class, PAdESExtensionAllSelfSignedCertsTest.class, PDFTimestampingTest.class, PDFArchiveTimestampingTest.class,
-		DSS1443Test.class, BuildKnownObjectsTest.class, DSS1469ExtensionTest.class })
+		PAdESExtensionBToTWithError500TimestampTest.class, PAdESExtensionBToTWithFailTimestampTest.class, PAdESExtensionLTAToLTATest.class, 
+		PAdESExtensionLTToLTATest.class, PAdESExtensionLTToLTAWithError500TimestampTest.class, PAdESExtensionLTToLTAWithFailTimestampTest.class, 
+		PAdESExtensionTToLTTest.class, PAdESExtensionTToLTATest.class, DSS1523Test.class, PAdESExtensionTToLTWithSelfSignedTest.class, 
+		PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class, PAdESExtensionBToLTASelfSignedTSATest.class, 
+		PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class, PAdESExtensionLTToLTASelfSignedTSATest.class, 
+		PAdESExtensionAllSelfSignedCertsTest.class, PDFTimestampingTest.class, PDFArchiveTimestampingTest.class, DSS1443Test.class, 
+		DSS1469ExtensionTest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

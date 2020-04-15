@@ -21,85 +21,84 @@
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
-import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.test.UnmarshallingTester;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class ASiCECAdESLevelBSignFourTimeTest extends PKIFactoryAccess {
+public class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSignature {
 
-	@Test
-	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
+	private ASiCWithCAdESSignatureParameters signatureParameters;
+	private DSSDocument documentToSign;
 
-		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
+	@BeforeEach
+	public void init() throws Exception {
+		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+
+		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
-
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
-		signatureParameters.bLevel().setSigningDate(new Date());
-
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
-
-		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
-		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
-
+	}
+	
+	@Override
+	@Test
+	public void signAndVerify() {
+		super.signAndVerify();
 		signatureParameters.bLevel().setSigningDate(new Date());
-
-		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
-
-		dataToSign = service.getDataToSign(resignedDocument, signatureParameters);
-		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		resignedDocument = service.signDocument(resignedDocument, signatureParameters, signatureValue);
-
+		super.signAndVerify();
 		signatureParameters.bLevel().setSigningDate(new Date());
-
-		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
-
-		dataToSign = service.getDataToSign(resignedDocument, signatureParameters);
-		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		resignedDocument = service.signDocument(resignedDocument, signatureParameters, signatureValue);
-
-		// resignedDocument.save("target/resigned.asice");
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
+		super.signAndVerify();
+		signatureParameters.bLevel().setSigningDate(new Date());
+		super.signAndVerify();
+	}
+	
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-
-		Reports reports = validator.validateDocument();
-		UnmarshallingTester.unmarshallXmlReports(reports);
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<String> signatureIdList = diagnosticData.getSignatureIdList();
-		assertEquals(4, signatureIdList.size());
-		for (String sigId : signatureIdList) {
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(sigId));
-			assertEquals(Indication.TOTAL_PASSED, reports.getSimpleReport().getIndication(sigId));
+		return validator;
+	}
+	
+	@Override
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		super.verifySimpleReport(simpleReport);
+		
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(sigId));
 		}
+	}
 
+	@Override
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
 	}
 
 	@Override

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,20 +29,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Unit test added to fix : https://joinup.ec.europa.eu/asset/sd-dss/issue/xades-signedproperties-reference
@@ -49,16 +47,17 @@ import eu.europa.esig.dss.validation.reports.Reports;
  * one referencing one of them)
  * plus one ds:Reference element referencing xades:SignedProperties element.
  */
-public class SignedPropertiesNotCheckedTest {
+public class SignedPropertiesNotCheckedTest extends AbstractASiCWithXAdESTestValidation {
 
-	@Test
-	public void testNoSignedProperties() {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/xades_no-signedpropref.asice_.zip");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/xades_no-signedpropref.asice_.zip");
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
@@ -77,14 +76,33 @@ public class SignedPropertiesNotCheckedTest {
 
 		assertNull(signedPropertiesDigest);
 		assertNotNull(refDigest);
-		assertTrue(refDigest.isDataFound());
-		assertTrue(refDigest.isDataIntact());
-
-		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.INDETERMINATE,
-				detailedReport.getBasicBuildingBlocksIndication(diagnosticData.getFirstSignatureId()));
-		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE,
-				detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		
+		TimestampWrapper timestampWrapper = timestampList.get(0);
+		assertTrue(timestampWrapper.isMessageImprintDataFound());
+		assertFalse(timestampWrapper.isMessageImprintDataIntact());
+	}
+	
+	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			FoundCertificatesProxy foundCertificates = revocationWrapper.foundCertificates();
+			
+			List<RelatedCertificateWrapper> relatedCertificates = foundCertificates.getRelatedCertificates();
+			for (RelatedCertificateWrapper certificate : relatedCertificates) {
+				assertTrue(Utils.isCollectionEmpty(certificate.getOrigins()));
+			}
+		}
 	}
 
 }

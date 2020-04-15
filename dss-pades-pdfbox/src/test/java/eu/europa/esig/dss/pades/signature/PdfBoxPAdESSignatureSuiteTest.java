@@ -61,14 +61,14 @@ import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDiffer
 
 @RunWith(JUnitPlatform.class)
 @SelectClasses({ DigestStabilityTest.class, GetOriginalDocumentTest.class, PAdESDoubleSignatureTest.class, PAdESLevelBTest.class,
-		PAdESLevelBExternalSignatureTest.class, PAdESLevelBLoopTest.class, PAdESLevelBNotEnoughSpaceForSignatureTest.class, PAdESLevelBOnlySigningCertTest.class,
-		PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class, PAdESLevelBWithECDSATest.class, PAdESLevelBWithMoreThanOneSecondDelayTest.class,
-		PAdESLevelBWithSHA256andMGF1Test.class, PAdESLevelImpossibleLTAExceptionTest.class, PAdESLevelImpossibleLTExceptionTest.class, PAdESLevelLTTest.class,
-		PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class, PAdESLevelTTest.class,
-		PDFTimestampFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class, InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class,
-		PAdESDoubleLTAValidationDataTest.class, PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, PAdESWithSHA3Test.class,
-		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class,
-		PAdESTwoSignersLTALevelTest.class, ExternalCMSPAdESSignatureTest.class })
+		PAdESLevelBExternalSignatureTest.class, PAdESLevelBLoopTest.class, PAdESLevelBNotEnoughSpaceForSignatureTest.class, 
+		PAdESLevelBOnlySigningCertTest.class, PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class, PAdESLevelBWithECDSATest.class, 
+		PAdESLevelBWithMoreThanOneSecondDelayTest.class, PAdESLevelBWithSHA256andMGF1Test.class, PAdESLevelImpossibleLTAExceptionTest.class, 
+		PAdESLevelImpossibleLTExceptionTest.class, PAdESLevelLTTest.class, PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class, PAdESLevelTTest.class,
+		PDFTimestampFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class, InvisibleSignatureFieldSignTest.class, 
+		PAdESSpaceEOFTest.class, PAdESDoubleLTAValidationDataTest.class, PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, 
+		PAdESWithSHA3Test.class, PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, 
+		CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class, PAdESTwoSignersLTALevelTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

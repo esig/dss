@@ -21,45 +21,45 @@
 package eu.europa.esig.dss.asic.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.test.UnmarshallingTester;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class ASiCETwoSignaturesInOneTimeTest extends PKIFactoryAccess {
-	
-	@Test
-	public void test() {
-		DSSDocument document = new FileDocument("src/test/resources/validation/twoSignaturesOneTimeOneSigner.asice");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertNotNull(diagnosticData);
-		List<String> signatureIdList = diagnosticData.getSignatureIdList();
-		assertEquals(2, signatureIdList.size());
-		
-		// signatures must not have the same id
-		assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
-		
-		UnmarshallingTester.unmarshallXmlReports(reports);
-	}
+public class ASiCETwoSignaturesInOneTimeTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
-	protected String getSigningAlias() {
-		return null;
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/twoSignaturesOneTimeOneSigner.asice");
+	}
+	
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		super.checkNumberOfSignatures(diagnosticData);
+		
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		assertEquals(2, signatureIdList.size());
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertFalse(signatureWrapper.isBLevelTechnicallyValid());
+		}
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertTrue(signatureWrapper.isAttributePresent());
+			assertTrue(signatureWrapper.isDigestValuePresent());
+			assertTrue(signatureWrapper.isDigestValueMatch());
+		}
 	}
 
 }

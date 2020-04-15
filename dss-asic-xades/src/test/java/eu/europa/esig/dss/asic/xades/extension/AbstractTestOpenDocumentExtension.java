@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.extension;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -38,6 +39,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -166,6 +168,14 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	@Override
 	protected void deleteOriginalFile(DSSDocument originalDocument) {
 		//Skip step
+	}
+
+	@Override
+	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		assertNotNull(diagnosticData.getContainerInfo());
+		assertNotNull(diagnosticData.getContainerType());
+		assertNotNull(diagnosticData.getMimetypeFileContent());
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
 	}
 
 }

@@ -45,11 +45,12 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
+public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 	
 	@Test
 	public void test() throws IOException {
@@ -71,7 +72,8 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentsToSign, signatureParameters, signatureValue);
 		
-		DiagnosticData diagnosticData = validateDocument(signedDocument);
+		Reports reports = verify(signedDocument);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		
 		assertEquals(1, diagnosticData.getSignatures().size());
 		assertEquals(2, diagnosticData.getTimestampList().size());
@@ -90,14 +92,14 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 		// doubleSignedDocument.save("target/doubleSignedDocument.asice");
 
-		diagnosticData = validateDocument(doubleSignedDocument);
+		reports = verify(doubleSignedDocument);
+		diagnosticData = reports.getDiagnosticData();
 		
 		assertEquals(2, diagnosticData.getSignatures().size());
 		assertEquals(4, diagnosticData.getTimestampList().size());
 		
 		assertArchiveTimestampFound(diagnosticData);
 		validateSignatures(diagnosticData.getSignatures());
-		
 		
 		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doubleSignedDocument);
         ASiCExtractResult result = extractor.extract();
@@ -114,14 +116,6 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
         assertEquals(0, result.getTimestampDocuments().size());
         assertEquals(0, result.getUnsupportedDocuments().size());
 		
-	}
-	
-	private DiagnosticData validateDocument(DSSDocument document) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		Reports reports = validator.validateDocument();
-		return reports.getDiagnosticData();
 	}
 	
 	private void assertArchiveTimestampFound(DiagnosticData diagnosticData) {
@@ -144,6 +138,14 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
 				assertTrue(digestMatcher.isDataIntact());
 			}
 		}
+	}
+	
+	@Override
+	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		assertNotNull(diagnosticData.getContainerInfo());
+		assertEquals("ASiC-E", diagnosticData.getContainerType());
+		assertNotNull(diagnosticData.getMimetypeFileContent());
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
 	}
 
 	@Override

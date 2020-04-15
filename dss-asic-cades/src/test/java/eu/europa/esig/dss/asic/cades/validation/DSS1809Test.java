@@ -27,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -40,32 +38,25 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1809Test extends PKIFactoryAccess {
+public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/validation/ASICE-CAdES-BpLTA-2-BpLTA-DSS5.4.asice");
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return document;
+	}
 	
-	@Test
-	public void test() {
-		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertNotNull(signature);
-		
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<XmlManifestFile> manifestFiles = diagnosticData.getContainerInfo().getManifestFiles();
 		assertTrue(Utils.isCollectionNotEmpty(manifestFiles));
 		assertEquals(3, manifestFiles.size());
 		
 		int archiveTimestampWithManifestCounter = 0;
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
 		for (TimestampWrapper timestamp : timestampList) {
 			if (timestamp.getType().isArchivalTimestamp()) {
@@ -81,13 +72,24 @@ public class DSS1809Test extends PKIFactoryAccess {
 			}
 		}
 		assertEquals(2, archiveTimestampWithManifestCounter);
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		super.verifyDetailedReport(detailedReport);
 		
-		DetailedReport detailedReport = reports.getDetailedReport();
-		assertNotEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampList.get(0).getId())); // signature_timestamp
-		assertEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampList.get(1).getId())); // first archive_timestamp
-		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getTimestampValidationSubIndication(timestampList.get(1).getId())); // first archive_timestamp
-		assertNotEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampList.get(2).getId())); // second archive_timestamp
+		List<String> timestampIds = detailedReport.getTimestampIds();
 		
+		assertNotEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampIds.get(0))); // signature_timestamp
+		assertEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampIds.get(1))); // first archive_timestamp
+		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getTimestampValidationSubIndication(timestampIds.get(1))); // first archive_timestamp
+		assertNotEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampIds.get(2))); // second archive_timestamp
 	}
 	
 	private int getNumberOfManifestEntries(TimestampWrapper timestampWrapper) {
@@ -102,11 +104,6 @@ public class DSS1809Test extends PKIFactoryAccess {
 		}
 		
 		return counter;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return null;
 	}
 
 }
