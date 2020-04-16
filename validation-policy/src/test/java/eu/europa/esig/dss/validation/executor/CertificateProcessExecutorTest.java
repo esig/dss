@@ -387,9 +387,10 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(CertificateQualification.QCERT_FOR_ESIG,
+		assertEquals(
+				CertificateQualification.NA,
 				simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test

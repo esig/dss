@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceS
 public class GrantedServiceFilter extends AbstractTrustedServiceFilter {
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	public boolean isAcceptable(TrustedServiceWrapper service) {
 		if (EIDASUtils.isPostEIDAS(service.getStartDate())) {
 			return TrustedServiceStatus.isAcceptableStatusAfterEIDAS(service.getStatus());
 		} else {

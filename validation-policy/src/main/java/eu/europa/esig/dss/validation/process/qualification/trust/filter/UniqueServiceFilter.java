@@ -31,16 +31,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationMatrix;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
-import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategy;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategyFactory;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategy;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategyFactory;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
+import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationCalculation;
 
 public class UniqueServiceFilter implements TrustedServiceFilter {
 
@@ -64,17 +55,8 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 			EnumMap<CertificateQualification, List<String>> qualificationResults = new EnumMap<>(
 					CertificateQualification.class);
 			for (TrustedServiceWrapper trustService : trustServices) {
-				QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(endEntityCert, trustService);
-				QualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
-
-				TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(endEntityCert, trustService, qualifiedStatus);
-				Type type = typeStrategy.getType();
-
-				QSCDStrategy qscdStrategy = QSCDStrategyFactory.createQSCDFromCertAndTL(endEntityCert, trustService, qualifiedStatus);
-				QSCDStatus qscdStatus = qscdStrategy.getQSCDStatus();
-
-				CertificateQualification certQualification = CertQualificationMatrix.getCertQualification(qualifiedStatus, type, qscdStatus);
-
+				CertificateQualificationCalculation calculator = new CertificateQualificationCalculation(endEntityCert, trustService);
+				CertificateQualification certQualification = calculator.getQualification();
 				if (!qualificationResults.containsKey(certQualification)) {
 					qualificationResults.put(certQualification, trustService.getServiceNames());
 				}

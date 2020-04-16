@@ -37,9 +37,12 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
+import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
 
 public class UniqueServiceFilterTest {
 
+	private final static Date BEFORE_EIDAS_DATE = DatatypeConverter.parseDateTime("2014-07-01T00:00:00-00:00").getTime();
 	private final static Date AFTER_EIDAS_DATE = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
 
 	@Test
@@ -51,6 +54,9 @@ public class UniqueServiceFilterTest {
 		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(AFTER_EIDAS_DATE);
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
 		trustServices.add(ts0);
 
@@ -68,10 +74,16 @@ public class UniqueServiceFilterTest {
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
 		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(AFTER_EIDAS_DATE);
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
 		trustServices.add(ts0);
 
 		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
+		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts1.setStatus(TrustedServiceStatus.GRANTED);
+		ts1.setStartDate(AFTER_EIDAS_DATE);
 		ts1.setCapturedQualifiers(
 				Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF, ServiceQualification.QC_FOR_ESIG));
 		trustServices.add(ts1);
@@ -81,7 +93,7 @@ public class UniqueServiceFilterTest {
 	}
 
 	@Test
-	public void testCannotConclude() {
+	public void testCannotConcludeServiceDateConflict() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -90,19 +102,137 @@ public class UniqueServiceFilterTest {
 
 		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
 		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(BEFORE_EIDAS_DATE);
+		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts0);
+
+		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
+		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts1.setStatus(TrustedServiceStatus.GRANTED);
+		ts1.setStartDate(AFTER_EIDAS_DATE);
+		ts1.setCapturedQualifiers(
+				Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts1);
+
+		List<TrustedServiceWrapper> filtered = filter.filter(trustServices);
+		assertTrue(Utils.isCollectionEmpty(filtered));
+	}
+
+	@Test
+	public void testCannotConcludeTypeConflict() {
+
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
+
+		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
+
+		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(AFTER_EIDAS_DATE);
 		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
 		trustServices.add(ts0);
 
 		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
 		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts1.setStatus(TrustedServiceStatus.GRANTED);
+		ts1.setStartDate(AFTER_EIDAS_DATE);
 		ts1.setCapturedQualifiers(
-				Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF, ServiceQualification.QC_FOR_ESEAL));
+				Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESEAL));
 		trustServices.add(ts1);
 
 		List<TrustedServiceWrapper> filtered = filter.filter(trustServices);
 		assertTrue(Utils.isCollectionEmpty(filtered));
 	}
 	
+	@Test
+	public void testCannotConcludeConflictWithdrawn() {
+
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
+
+		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
+
+		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(AFTER_EIDAS_DATE);
+		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts0);
+
+		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
+		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts1.setStatus(TrustedServiceStatus.WITHDRAWN);
+		ts1.setStartDate(AFTER_EIDAS_DATE);
+		ts1.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts1);
+
+		List<TrustedServiceWrapper> filtered = filter.filter(trustServices);
+		assertTrue(Utils.isCollectionEmpty(filtered));
+	}
+
+	@Test
+	public void testCannotConcludeConflictQSCD() {
+
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
+
+		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
+
+		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(AFTER_EIDAS_DATE);
+		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts0);
+
+		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
+		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts1.setStatus(TrustedServiceStatus.GRANTED);
+		ts1.setStartDate(AFTER_EIDAS_DATE);
+		ts1.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_NO_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts1);
+
+		List<TrustedServiceWrapper> filtered = filter.filter(trustServices);
+		assertTrue(Utils.isCollectionEmpty(filtered));
+	}
+
+	@Test
+	public void testCannotConcludeConflictQualified() {
+
+		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
+
+		UniqueServiceFilter filter = new UniqueServiceFilter(emptyCert);
+		List<TrustedServiceWrapper> trustServices = new ArrayList<>();
+
+		TrustedServiceWrapper ts0 = new TrustedServiceWrapper();
+		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts0.setStatus(TrustedServiceStatus.GRANTED);
+		ts0.setStartDate(AFTER_EIDAS_DATE);
+		ts0.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT, ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts0);
+
+		TrustedServiceWrapper ts1 = new TrustedServiceWrapper();
+		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
+		ts1.setStatus(TrustedServiceStatus.GRANTED);
+		ts1.setStartDate(AFTER_EIDAS_DATE);
+		ts1.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD, ServiceQualification.QC_FOR_ESIG));
+		trustServices.add(ts1);
+
+		List<TrustedServiceWrapper> filtered = filter.filter(trustServices);
+		assertTrue(Utils.isCollectionEmpty(filtered));
+	}
+
 	private CertificateWrapper getCertificate(Date notBefore) {
 		XmlCertificate xmlCertificate = new XmlCertificate();
 		xmlCertificate.setNotBefore(notBefore);

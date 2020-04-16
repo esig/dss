@@ -367,6 +367,9 @@ public enum MessageTag {
 	QUAL_HAS_CAQC,
 	QUAL_HAS_CAQC_ANS,
 
+	QUAL_HAS_CONF,
+	QUAL_HAS_CONF_ANS,
+
 	QUAL_HAS_QTST,
 	QUAL_HAS_QTST_ANS,
 	
@@ -475,6 +478,8 @@ public enum MessageTag {
 
 	X509_CERTIFICATE_VALIDATION,
 	
+	RESULTS,
+
 	/* Validation Process Definitions */
 
 	CERT_QUALIFICATION,
