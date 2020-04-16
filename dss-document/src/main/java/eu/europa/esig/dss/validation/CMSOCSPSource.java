@@ -172,9 +172,13 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 			if (object instanceof ASN1Sequence) {
 				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
-				ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-				addBinary(ocspResponseIdentifier, RevocationOrigin.CMS_SIGNED_DATA);
+				if (basicOCSPResp != null) {
+					OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
+					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+					addBinary(ocspResponseIdentifier, RevocationOrigin.CMS_SIGNED_DATA);
+				} else {
+					LOG.warn("Unable to create an OCSP response from an objects. The entry is skipped.");
+				}
 			} else {
 				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
