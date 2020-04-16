@@ -977,11 +977,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signerInformation.getSignature();
 	}
 	
-	/**
-	 * Checks if the signature is a counter signature
-	 * 
-	 * @return TRUE if the signature is a counter signature, FALSE otherwise
-	 */
+	@Override
 	public boolean isCounterSignature() {
 		return signerInformation.isCounterSignature();
 	}

@@ -591,10 +591,10 @@ public class DiagnosticDataBuilder {
 	
 	private void attachCounterSignatures(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
-			XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
-			// attach master
-			AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
-			if (masterSignature != null) {
+			if (advancedSignature.isCounterSignature()) {
+				XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
+				// attach master
+				AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
 				XmlSignature xmlMasterSignature = xmlSignaturesMap.get(masterSignature.getId());
 				currentSignature.setCounterSignature(true);
 				currentSignature.setParent(xmlMasterSignature);

@@ -41,10 +41,10 @@ public final class CAdESSignatureIdentifier extends SignatureIdentifier {
 	private static int getUniqueIntegerIfNeeded(CAdESSignature cadesSignature) {
 		Collection<SignerInformation> signerInformations;
 		SignerId signerId = cadesSignature.getSignerId();
-		if (cadesSignature.getMasterSignature() == null) {
-			signerInformations = cadesSignature.getCmsSignedData().getSignerInfos().getSigners(signerId);
-		} else {
+		if (!cadesSignature.isCounterSignature()) {
 			signerInformations = cadesSignature.getSignerInformation().getCounterSignatures().getSigners(signerId);
+		} else {
+			signerInformations = cadesSignature.getCmsSignedData().getSignerInfos().getSigners(signerId);
 		}
 		int counter = 0;
 		for (SignerInformation currentSignerInformation : signerInformations) {

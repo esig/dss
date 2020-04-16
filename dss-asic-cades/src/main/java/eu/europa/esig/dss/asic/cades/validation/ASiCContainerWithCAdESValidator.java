@@ -282,6 +282,10 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
+		if (advancedSignature.isCounterSignature()) {
+			CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
+			return Arrays.asList(cadesSignature.getOriginalDocument());
+		}
 		List<DSSDocument> retrievedDocs = advancedSignature.getDetachedContents();
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);
