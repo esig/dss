@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
+import java.awt.Color;
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,20 +39,26 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageTextParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -89,6 +97,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			case PAdES:
 				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
 				padesParams.setContentSize(9472 * 2); // double reserved space for signature
+				padesParams.setImageParameters(this.toImageParameters(remoteParameters.getImageParameters()));
 				parameters = padesParams;
 				break;
 			case XAdES:
@@ -237,6 +246,117 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			return commitmentTypeEnums.stream().map(obj -> (CommitmentType) obj).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	private SignatureImageParameters toImageParameters(final RemoteSignatureImageParameters remoteImageParameters) {
+		if (remoteImageParameters == null) {
+			return null;
+		}
+
+		final SignatureImageParameters imageParameters = new SignatureImageParameters();
+		// alignmentHorizontal
+		if (remoteImageParameters.getAlignmentHorizontal() != null) {
+			imageParameters.setAlignmentHorizontal(SignatureImageParameters.VisualSignatureAlignmentHorizontal.valueOf(remoteImageParameters.getAlignmentHorizontal()));
+		}
+		// alignmentVertical
+		if (remoteImageParameters.getAlignmentVertical() != null) {
+			imageParameters.setAlignmentVertical(SignatureImageParameters.VisualSignatureAlignmentVertical.valueOf(remoteImageParameters.getAlignmentVertical()));
+		}
+		// backgroundColor
+		if (remoteImageParameters.getBackgroundColor() != null) {
+			imageParameters.setBackgroundColor(this.toColor(remoteImageParameters.getBackgroundColor()));
+		}
+		// dpi
+		imageParameters.setDpi(remoteImageParameters.getDpi());
+		// height
+		if (remoteImageParameters.getHeight() != null) {
+			imageParameters.setHeight(remoteImageParameters.getHeight());
+		}
+		// image
+		if (remoteImageParameters.getImage() != null && remoteImageParameters.getImage().getBytes() != null && remoteImageParameters.getImage().getName() != null) {
+			imageParameters.setImage(new InMemoryDocument(remoteImageParameters.getImage().getBytes(), remoteImageParameters.getImage().getName()));
+		}
+		// page
+		if (remoteImageParameters.getPage() != null) {
+			imageParameters.setPage(remoteImageParameters.getPage());
+		}
+		// rotation
+		if (remoteImageParameters.getRotation() != null) {
+			imageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.valueOf(remoteImageParameters.getRotation()));
+		}
+		// textParameters
+		imageParameters.setTextParameters(this.toTextParameters(remoteImageParameters.getTextParameters()));
+		// width
+		if (remoteImageParameters.getWidth() != null) {
+			imageParameters.setWidth(remoteImageParameters.getWidth());
+		}
+		// xAxis
+		if (remoteImageParameters.getxAxis() != null) {
+			imageParameters.setxAxis(remoteImageParameters.getxAxis());
+		}
+		// yAxis
+		if (remoteImageParameters.getyAxis() != null) {
+			imageParameters.setyAxis(remoteImageParameters.getyAxis());
+		}
+		// zoom
+		if (remoteImageParameters.getZoom() != null) {
+			imageParameters.setZoom(remoteImageParameters.getZoom());
+		}
+
+		return imageParameters;
+	}
+
+	private SignatureImageTextParameters toTextParameters(final RemoteSignatureImageTextParameters remoteTextParameters){
+		if (remoteTextParameters == null) {
+			return null;
+		}
+
+		final SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		// backgroundColor
+		if (remoteTextParameters.getBackgroundColor() != null) {
+			textParameters.setBackgroundColor(this.toColor(remoteTextParameters.getBackgroundColor()));
+		}
+		// font
+		if (remoteTextParameters.getFont() != null && remoteTextParameters.getFont().getBytes() != null) {
+			textParameters.setFont(new DSSFileFont(new ByteArrayInputStream(remoteTextParameters.getFont().getBytes())));
+		}
+		// padding
+		if (remoteTextParameters.getPadding() != null) {
+			textParameters.setPadding(remoteTextParameters.getPadding());
+		}
+		// signerTextHorizontalAlignment
+		if (remoteTextParameters.getSignerTextHorizontalAlignment() != null) {
+			textParameters.setSignerTextHorizontalAlignment(SignatureImageTextParameters.SignerTextHorizontalAlignment.valueOf(remoteTextParameters.getSignerTextHorizontalAlignment()));
+		}
+		// signerTextPosition
+		if (remoteTextParameters.getSignerTextPosition() != null) {
+			textParameters.setSignerTextPosition(SignatureImageTextParameters.SignerTextPosition.valueOf(remoteTextParameters.getSignerTextPosition()));
+		}
+		// signerTextVerticalAlignment
+		if (remoteTextParameters.getSignerTextVerticalAlignment() != null) {
+			textParameters.setSignerTextVerticalAlignment(SignatureImageTextParameters.SignerTextVerticalAlignment.valueOf(remoteTextParameters.getSignerTextVerticalAlignment()));
+		}
+		// size
+		if (remoteTextParameters.getSize() != null) {
+			textParameters.setSize(8);
+		}
+		// text
+		textParameters.setText(remoteTextParameters.getText());
+		// textColor
+		if (remoteTextParameters.getTextColor() != null) {
+			textParameters.setTextColor(this.toColor(remoteTextParameters.getTextColor()));
+		}
+
+		return textParameters;
+	}
+
+	private Color toColor(final int[] colorValues) {
+		if (colorValues.length == 3) {
+			return new Color(colorValues[0], colorValues[1], colorValues[2]);
+		} else if (colorValues.length == 4) {
+			return new Color(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
+		}
+		return null;
 	}
 
 }
