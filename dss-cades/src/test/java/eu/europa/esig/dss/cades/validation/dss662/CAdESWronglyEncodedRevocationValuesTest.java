@@ -46,7 +46,7 @@ public class CAdESWronglyEncodedRevocationValuesTest extends AbstractCAdESTestVa
 	}
 	
 	@Override
-	protected void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
+	protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
 		assertNull(signatureIdentifier);
 	}
 	

@@ -112,7 +112,7 @@ public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 	}
 	
 	@Override
-	protected void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
+	protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
 		assertNotNull(signatureIdentifier);
 		assertNull(signatureIdentifier.getDigestAlgAndValue());
 	}

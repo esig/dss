@@ -20,6 +20,7 @@ public class CAdESNoKeInfoTrustedStoreTest extends AbstractCAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument("src/test/resources/validation/no-key-info-cert.pkcs7");
 	}
+	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);

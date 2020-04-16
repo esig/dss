@@ -114,8 +114,8 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 	}
 	
 	@Override
-	protected void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
-		super.validateEtsiSignatureIdentifier(signatureIdentifier);
+	protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
+		super.validateETSISignatureIdentifier(signatureIdentifier);
 		
 		assertNotNull(signatureIdentifier);
 		assertFalse(signatureIdentifier.isDocHashOnly());

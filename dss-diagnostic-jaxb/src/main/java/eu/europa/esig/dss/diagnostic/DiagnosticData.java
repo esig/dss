@@ -201,7 +201,10 @@ public class DiagnosticData {
 	 */
 	public String getSigningCertificateId(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getSigningCertificate().getId();
+		if (signature.getSigningCertificate() != null) {
+			return signature.getSigningCertificate().getId();
+		}
+		return null;
 	}
 
 	/**

@@ -50,7 +50,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -432,29 +431,28 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertNotNull(revocationWrapper.getRevocationType());
 			assertNotNull(revocationWrapper.getOrigin());
 			assertNotNull(revocationWrapper.getProductionDate());
-			assertNotNull(revocationWrapper.getSigningCertificate());
-			assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
 			assertNotNull(revocationWrapper.foundCertificates());
 			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
 			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
-			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
-				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
-				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
-				boolean signingCertFound = false;
-				for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
-					assertTrue(certificateWrapper.getSources().contains(CertificateSourceType.OCSP_RESPONSE));
-					assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getOrigins()));
-					for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
-						if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
-							signingCertFound = true;
+			if (revocationWrapper.getSigningCertificate() != null) {
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
+				if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
+					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
+					boolean signingCertFound = false;
+					for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
+						for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
+							if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
+								signingCertFound = true;
+							}
+							assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
+							assertNull(refWrapper.getDigestAlgoAndValue());
+							assertNull(refWrapper.getIssuerSerial());
+							assertEquals(certificateWrapper.getId(), revocationWrapper.getSigningCertificate().getId());
 						}
-						assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
-						assertNull(refWrapper.getDigestAlgoAndValue());
-						assertNull(refWrapper.getIssuerSerial());
-						assertEquals(certificateWrapper.getId(), revocationWrapper.getSigningCertificate().getId());
 					}
+					assertTrue(signingCertFound);
 				}
-				assertTrue(signingCertFound);
 			}
 		}
 	}
@@ -797,7 +795,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(detailedReport);
 
 		int nbBBBs = detailedReport.getBasicBuildingBlocksNumber();
-		assertTrue(nbBBBs > 0);
 		for (int i = 0; i < nbBBBs; i++) {
 			String id = detailedReport.getBasicBuildingBlocksSignatureId(i);
 			assertNotNull(id);
@@ -857,7 +854,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (!Indication.NO_SIGNATURE_FOUND.equals(signatureValidationStatus.getMainIndication())) {
 			
 				SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
-				validateEtsiSignatureIdentifier(signatureIdentifier);
+				validateETSISignatureIdentifier(signatureIdentifier);
 	
 				SignerInformationType signerInformation = signatureValidationReport.getSignerInformation();
 				validateSignerInformation(signerInformation);
@@ -881,7 +878,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		validateETSISignatureValidationObjects(signatureValidationObjects);
 	}
 
-	protected void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
+	protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
@@ -1038,22 +1035,24 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 	
 	protected void validateETSISignatureValidationObjects(ValidationObjectListType signatureValidationObjects) {
-		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
-			assertNotNull(validationObject.getId());
-			assertNotNull(validationObject.getObjectType());
-			assertNotNull(validationObject.getValidationObjectRepresentation());
-			assertTrue(validationObject.getValidationObjectRepresentation().getDigestAlgAndValue() != null || 
-					validationObject.getValidationObjectRepresentation().getBase64() != null);
-			switch (validationObject.getObjectType()) {
-				case TIMESTAMP:
-					assertNotNull(validationObject.getPOEProvisioning());
-					assertNotNull(validationObject.getValidationReport());
-					break;
-				default:
-					assertNotNull(validationObject.getPOE());
-					assertNotNull(validationObject.getPOE().getTypeOfProof());
-					assertNotNull(validationObject.getPOE().getPOETime());
-					break;
+		if (signatureValidationObjects != null) {
+			for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+				assertNotNull(validationObject.getId());
+				assertNotNull(validationObject.getObjectType());
+				assertNotNull(validationObject.getValidationObjectRepresentation());
+				assertTrue(validationObject.getValidationObjectRepresentation().getDigestAlgAndValue() != null || 
+						validationObject.getValidationObjectRepresentation().getBase64() != null);
+				switch (validationObject.getObjectType()) {
+					case TIMESTAMP:
+						assertNotNull(validationObject.getPOEProvisioning());
+						assertNotNull(validationObject.getValidationReport());
+						break;
+					default:
+						assertNotNull(validationObject.getPOE());
+						assertNotNull(validationObject.getPOE().getTypeOfProof());
+						assertNotNull(validationObject.getPOE().getPOETime());
+						break;
+				}
 			}
 		}
 	}
@@ -1118,50 +1117,61 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		
 		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
-		List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
-		
-		int certificateCounter = 0;
-		int crlCounter = 0;
-		int ocspCounter = 0;
-		int timestampCounter = 0;
-		int signedDataCounter = 0;
-		int otherCounter = 0;
-		for (ValidationObjectType validationObject : validationObjects) {
-			switch (validationObject.getObjectType()) {
-				case CERTIFICATE:
-					++certificateCounter;
-					break;
-				case CRL:
-					++crlCounter;
-					break;
-				case OCSP_RESPONSE:
-					++ocspCounter;
-					break;
-				case TIMESTAMP:
-					++timestampCounter;
-					break;
-				case SIGNED_DATA:
-					++signedDataCounter;
-					break;
-				default:
-					++otherCounter;
+		if (signatureValidationObjects != null) {
+			List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
+			
+			int certificateCounter = 0;
+			int crlCounter = 0;
+			int ocspCounter = 0;
+			int timestampCounter = 0;
+			int signedDataCounter = 0;
+			int otherCounter = 0;
+			for (ValidationObjectType validationObject : validationObjects) {
+				switch (validationObject.getObjectType()) {
+					case CERTIFICATE:
+						++certificateCounter;
+						break;
+					case CRL:
+						++crlCounter;
+						break;
+					case OCSP_RESPONSE:
+						++ocspCounter;
+						break;
+					case TIMESTAMP:
+						++timestampCounter;
+						break;
+					case SIGNED_DATA:
+						++signedDataCounter;
+						break;
+					default:
+						++otherCounter;
+				}
 			}
+			
+			assertEquals(diagnosticData.getUsedCertificates().size(), certificateCounter);
+			long ddCrls = diagnosticData.getAllRevocationData().stream()
+					.filter(r -> RevocationType.CRL.equals(r.getRevocationType())).count();
+			ddCrls += diagnosticData.getAllOrphanRevocationObjects().stream()
+					.filter(r -> RevocationType.CRL.equals(r.getRevocationType())).count();
+			assertEquals(ddCrls, crlCounter);
+			long ddOcsps = diagnosticData.getAllRevocationData().stream()
+					.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
+			ddOcsps += diagnosticData.getAllOrphanRevocationObjects().stream()
+					.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
+			assertEquals(ddOcsps, ocspCounter);
+			assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
+			assertEquals(diagnosticData.getOriginalSignerDocuments().size(), signedDataCounter);
+			assertEquals(0, otherCounter);
+			
+		} else {
+			assertEquals(0, diagnosticData.getSignatures().size());
+			assertEquals(0, diagnosticData.getUsedCertificates().size());
+			assertEquals(0, diagnosticData.getAllRevocationData().size());
+			assertEquals(0, diagnosticData.getTimestampList().size());
+			assertEquals(0, diagnosticData.getOriginalSignerDocuments().size());
+			checkOrphanTokens(diagnosticData);
 		}
 		
-		assertEquals(diagnosticData.getUsedCertificates().size(), certificateCounter);
-		long ddCrls = diagnosticData.getAllRevocationData().stream()
-				.filter(r -> RevocationType.CRL.equals(r.getRevocationType())).count();
-		ddCrls += diagnosticData.getAllOrphanRevocationObjects().stream()
-				.filter(r -> RevocationType.CRL.equals(r.getRevocationType())).count();
-		assertEquals(ddCrls, crlCounter);
-		long ddOcsps = diagnosticData.getAllRevocationData().stream()
-				.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
-		ddOcsps += diagnosticData.getAllOrphanRevocationObjects().stream()
-				.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
-		assertEquals(ddOcsps, ocspCounter);
-		assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
-		assertEquals(diagnosticData.getOriginalSignerDocuments().size(), signedDataCounter);
-		assertEquals(0, otherCounter);
 	}
 	
 	protected void checkReportsSignatureIdentifier(Reports reports) {

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.test.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -47,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -55,17 +57,21 @@ import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -364,6 +370,40 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				assertEquals(signaturePolicy.getSpuri(), signature.getPolicyUrl());
 			} else {
 				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
+			}
+		}
+	}
+	
+	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			assertNotNull(revocationWrapper.getId());
+			assertNotNull(revocationWrapper.getRevocationType());
+			assertNotNull(revocationWrapper.getOrigin());
+			assertNotNull(revocationWrapper.getProductionDate());
+			assertNotNull(revocationWrapper.getSigningCertificate());
+			assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
+			assertNotNull(revocationWrapper.foundCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
+			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
+				boolean signingCertFound = false;
+				for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
+					assertTrue(certificateWrapper.getSources().contains(CertificateSourceType.OCSP_RESPONSE));
+					assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getOrigins()));
+					for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
+						if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
+							signingCertFound = true;
+						}
+						assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
+						assertNull(refWrapper.getDigestAlgoAndValue());
+						assertNull(refWrapper.getIssuerSerial());
+						assertEquals(certificateWrapper.getId(), revocationWrapper.getSigningCertificate().getId());
+					}
+				}
+				assertTrue(signingCertFound);
 			}
 		}
 	}
