@@ -139,6 +139,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -1056,7 +1057,19 @@ public class DiagnosticDataBuilder {
 
 	private CertificateToken getIssuerCertificate(final Token token) {
 		if (token != null && token.getPublicKeyOfTheSigner() != null) {
-			List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner());
+			if (token instanceof OCSPToken) {
+				CertificateToken issuer = getIssuerForOCSPToken((OCSPToken) token);
+				if (issuer != null) {
+					return issuer;
+				}
+			}
+			if (token instanceof TimestampToken) {
+				CertificateToken issuer = getIssuerForTimestampToken((TimestampToken) token);
+				if (issuer != null) {
+					return issuer;
+				}
+			}
+			List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), usedCertificates);
 			if (Utils.isCollectionNotEmpty(issuers)) {
 				for (CertificateToken cert : issuers) {
 					if (cert.isValidOn(token.getCreationDate())) {
@@ -1064,6 +1077,30 @@ public class DiagnosticDataBuilder {
 					}
 				}
 				return issuers.iterator().next();
+			}
+		}
+		return null;
+	}
+	
+	private CertificateToken getIssuerForOCSPToken(final OCSPToken token) {
+		List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), token.getCertificateSource().getCertificates());
+		if (Utils.isCollectionNotEmpty(issuers)) {
+			for (CertificateToken cert : issuers) {
+				if (cert.isValidOn(token.getCreationDate())) {
+					return cert;
+				}
+			}
+		}
+		return null;
+	}
+	
+	private CertificateToken getIssuerForTimestampToken(final TimestampToken token) {
+		List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), token.getCertificateSource().getCertificates());
+		if (Utils.isCollectionNotEmpty(issuers)) {
+			for (CertificateToken cert : issuers) {
+				if (cert.isValidOn(token.getCreationDate())) {
+					return cert;
+				}
 			}
 		}
 		return null;
@@ -1084,7 +1121,7 @@ public class DiagnosticDataBuilder {
 	
 	private CertificateToken getCertificateByPubKey(final PublicKey publicKey) {
 		if (publicKey != null) {
-			List<CertificateToken> issuers = getCertsWithPublicKey(publicKey);
+			List<CertificateToken> issuers = getCertsWithPublicKey(publicKey, usedCertificates);
 			if (Utils.isCollectionNotEmpty(issuers)) {
 				return issuers.iterator().next();
 			}
@@ -1092,11 +1129,11 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private List<CertificateToken> getCertsWithPublicKey(final PublicKey publicKey) {
+	private List<CertificateToken> getCertsWithPublicKey(final PublicKey publicKey, final Collection<CertificateToken> candidates) {
 		List<CertificateToken> founds = new ArrayList<>();
 		
 		if (publicKey != null) {			
-			for (CertificateToken cert : usedCertificates) {
+			for (CertificateToken cert : candidates) {
 				if (publicKey.equals(cert.getPublicKey())) {
 					founds.add(cert);
 					if (isTrusted(cert)) {
