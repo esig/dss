@@ -88,6 +88,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -1290,13 +1291,15 @@ public class DiagnosticDataBuilder {
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
 		List<CertificateRef> referencesForCertificateToken = certificateSource.getReferencesForCertificateToken(cert);
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
-			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
-			referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
+			for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
+				xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef, refOrigin));
+				referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
+			}
 		}		
 		return xrc;
 	}
 	
-	private XmlCertificateRef getXmlCertificateRef(CertificateRef ref) {
+	private XmlCertificateRef getXmlCertificateRef(CertificateRef ref, CertificateRefOrigin origin) {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
 		CertificateIdentifier certificateIdentifier = ref.getCertificateIdentifier();
 		if (certificateIdentifier != null) {
@@ -1311,7 +1314,7 @@ public class DiagnosticDataBuilder {
 		} else if (responderId != null) {
 			certificateRef.setSerialInfo(getXmlSignerInfo(responderId));
 		}
-		certificateRef.setOrigin(ref.getOrigin());
+		certificateRef.setOrigin(origin);
 		return certificateRef;
 	}
 	
@@ -1320,7 +1323,7 @@ public class DiagnosticDataBuilder {
 		for (CertificateRef certificateRef : certificateSource.getOrphanCertificateRefs()) {
 			CertificateToken certificateToken = getUsedCertificateByCertificateRef(certificateRef);
 			if (certificateToken != null) {
-				relatedCertificates.add(getXmlRelatedCertificate(certificateToken, certificateRef));
+				relatedCertificates.add(getXmlRelatedCertificate(certificateSource, certificateToken, certificateRef));
 			}
 		}
 		return relatedCertificates;
@@ -1337,10 +1340,13 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
+	private XmlRelatedCertificate getXmlRelatedCertificate(TokenCertificateSource certificateSource, 
+			CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
-		xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
+		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
+			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef, refOrigin));
+		}
 		referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
 		return xrc;
 	}
@@ -1353,17 +1359,19 @@ public class DiagnosticDataBuilder {
 		for (CertificateRef orphanCertificateRef : orphanCertificateRefs) {
 			// create orphan if certificate is not present
 			if (getUsedCertificateByCertificateRef(orphanCertificateRef) == null) {
-				orphanCertificates.add(createXmlOrphanCertificate(orphanCertificateRef));
+				orphanCertificates.add(createXmlOrphanCertificate(certificateSource, orphanCertificateRef));
 			}
 		}
 		
 		return orphanCertificates;
 	}
 	
-	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateRef orphanCertificateRef) {
+	private XmlOrphanCertificate createXmlOrphanCertificate(TokenCertificateSource certificateSource, CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
 		orphanCertificate.setToken(createXmlOrphanCertificateToken(orphanCertificateRef));
-		orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef));
+		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(orphanCertificateRef)) {
+			orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef, refOrigin));
+		}
 		return orphanCertificate;
 	}
 	
