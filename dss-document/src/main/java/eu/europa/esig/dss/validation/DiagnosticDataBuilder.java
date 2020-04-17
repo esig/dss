@@ -933,10 +933,26 @@ public class DiagnosticDataBuilder {
 		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap)) {
 			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
 		}
+		buildOrphanRevocationTokensFromCommonSources(); // necessary to collect all data from DSS PDF revisions
 		if (Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
 			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
 		}
 		return xmlOrphanTokens;
+	}
+	
+	private void buildOrphanRevocationTokensFromCommonSources() {
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : commonCRLSource.getAllRevocationBinaries()) {
+			String id = revocationIdentifier.asXmlId();
+			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
+				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
+			}
+		}
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : commonOCSPSource.getAllRevocationBinaries()) {
+			String id = revocationIdentifier.asXmlId();
+			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
+				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
+			}
+		}
 	}
 	
 	private XmlRevocation buildDetachedXmlRevocation(RevocationToken<Revocation> revocationToken) {
