@@ -1896,10 +1896,10 @@ The method allows retrieving the data to be signed. The user sends the document 
 WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
 
 .Request
-include::restdocs/get-data-to-sign-one-document/http-request.adoc[]
+include::restdocs/sign-and-extend-one-document/1/http-request.adoc[]
 
 .Response
-include::restdocs/get-data-to-sign-one-document/http-response.adoc[]
+include::restdocs/sign-and-extend-one-document/1/http-response.adoc[]
 
 ==== Sign document
 
@@ -1908,20 +1908,20 @@ The method allows generation of the signed document with the received signature 
 WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
 
 .Request
-include::restdocs/sign-document-one-document/http-request.adoc[]
+include::restdocs/sign-and-extend-one-document/2/http-request.adoc[]
 
 .Response
-include::restdocs/sign-document-one-document/http-response.adoc[]
+include::restdocs/sign-and-extend-one-document/2/http-response.adoc[]
 
 ==== Extend document
 
 The method allows extension of an existing signature to a stronger level.
 
 .Request
-include::restdocs/extend-one-document/http-request.adoc[]
+include::restdocs/sign-and-extend-one-document/3/http-request.adoc[]
 
 .Response
-include::restdocs/extend-one-document/http-response.adoc[]
+include::restdocs/sign-and-extend-one-document/3/http-response.adoc[]
 
 ==== Timestamp document
 
@@ -1949,30 +1949,30 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestServer
 This method allows retrieving of all available keys on the server side (PKCS#11, PKCS#12, HSM,...). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
 
 .Request
-include::restdocs/get-keys/http-request.adoc[]
+include::restdocs/get-keys/1/http-request.adoc[]
 
 .Response
-include::restdocs/get-keys/http-response.adoc[]
+include::restdocs/get-keys/1/http-response.adoc[]
 
 ==== Get key
 
 This method allows retrieving of key informations for a given alias.
 
 .Request
-include::restdocs/get-key/http-request.adoc[]
+include::restdocs/get-key/1/http-request.adoc[]
 
 .Response
-include::restdocs/get-key/http-response.adoc[]
+include::restdocs/get-key/1/http-response.adoc[]
 
 ==== Sign
 
 This method allows signing of given digests with a server side certificate.
 
 .Request
-include::restdocs/sign/http-request.adoc[]
+include::restdocs/sign-digest-document-remotely/3/http-request.adoc[]
 
 .Response
-include::restdocs/sign/http-response.adoc[]
+include::restdocs/sign-digest-document-remotely/3/http-response.adoc[]
 
 === REST validation service
 
@@ -1983,20 +1983,20 @@ DSS provides also a module for documents validation.
 This service allows a signature validation (all formats/types) against a validation policy.
 
 .Request
-include::restdocs/validate-doc/http-request.adoc[]
+include::restdocs/validate-doc/1/http-request.adoc[]
 
 .Response
-include::restdocs/validate-doc/http-response.adoc[]
+include::restdocs/validate-doc/1/http-response.adoc[]
 
 ==== Retrieve original document(s)
 
 This service returns the signed data for a given signature.
 
 .Request
-include::restdocs/get-original-documents/http-request.adoc[]
+include::restdocs/get-original-documents/1/http-request.adoc[]
 
 .Response
-include::restdocs/get-original-documents/http-response.adoc[]
+include::restdocs/get-original-documents/1/http-response.adoc[]
 
 === REST certificate validation service
 
@@ -2005,10 +2005,10 @@ include::restdocs/get-original-documents/http-response.adoc[]
 This service allows a certificate validation (provided in a binary format).
 
 .Request
-include::restdocs/validate-cert/http-request.adoc[]
+include::restdocs/validate-cert/1/http-request.adoc[]
 
 .Response
-include::restdocs/validate-cert/http-response.adoc[]
+include::restdocs/validate-cert/1/http-response.adoc[]
 
 === REST remote timestamp service
 

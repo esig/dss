@@ -1,0 +1,5 @@
+[source,bash]
+----
+$ http GET 'http://localhost:8080/services/rest/server-signing/key/certificate' \
+    'Accept:application/json, application/javascript, text/javascript, text/json'
+----
