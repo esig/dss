@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.XMLSignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -32,6 +31,7 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -47,8 +47,6 @@ public final class XAdESSignatureUtils {
 	 * @return list of {@link DSSDocument}s
 	 */
 	public static List<DSSDocument> getSignerDocuments(XAdESSignature signature) {
-		signature.checkSignatureIntegrity();
-		
 		List<DSSDocument> result = new ArrayList<>();
 
 		SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();
@@ -58,11 +56,16 @@ public final class XAdESSignatureUtils {
 		List<Reference> references = signature.getReferences();
 		if (Utils.isCollectionNotEmpty(references)) {
 			for (Reference reference : references) {
-				if (isReferenceLinkedToDocument(reference, signature)) {
-					DSSDocument referenceDocument = getReferenceDocument(reference, signature);
-					if (referenceDocument != null) {
-						result.add(referenceDocument);
+				try {
+					if (isReferenceLinkedToDocument(reference, signature)) {
+						DSSDocument referenceDocument = getReferenceDocument(reference, signature);
+						if (referenceDocument != null) {
+							result.add(referenceDocument);
+						}
 					}
+				} catch (DSSException e) {
+					LOG.warn("Not able to extract an original content for a reference with name '{}' and URI '{}'. "
+							+ "Reason : {}", reference.getId(), reference.getURI(), e.getMessage());
 				}
 			}
 			
@@ -86,13 +89,19 @@ public final class XAdESSignatureUtils {
 					}
 				}
 			}
-		} else {
-			try {
-				return new InMemoryDocument(reference.getReferencedBytes(), reference.getURI());
-			} catch (XMLSignatureException e) {
-				LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
-			}
 		}
+		
+		// if not an object or object has not been found
+		try {
+			byte[] referencedBytes = reference.getReferencedBytes();
+			if (referencedBytes != null) {
+				return new InMemoryDocument(referencedBytes, reference.getURI());
+			}
+			LOG.warn("Reference bytes returned null value : {}", reference.getId());
+		} catch (Exception e) {
+			LOG.warn("Unable to retrieve reference {}. Reason : {}", reference.getId(), e.getMessage(), e);
+		}
+		
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("A referenced document not found for a reference with Id : [{}]", reference.getId());
 		}
@@ -118,7 +127,8 @@ public final class XAdESSignatureUtils {
 				return false;
 			}
 		// if type refers to object or manifest - it is a document
-		} else if (DSSXMLUtils.isObjectReferenceType(referenceType) || DSSXMLUtils.isManifestReferenceType(referenceType)) {
+		} else if (DSSXMLUtils.isObjectReferenceType(referenceType) || DSSXMLUtils.isManifestReferenceType(referenceType) ||
+				DSSXMLUtils.isCounterSignatureReferenceType(referenceType)) {
 			return true;
 		// otherwise not a document
 		} else {

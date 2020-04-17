@@ -28,6 +28,8 @@ public class XMLDSigPaths extends AbstractPaths {
 
 	public static final String MANIFEST_TYPE = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
+	public static final String COUNTER_SIGNATURE_TYPE = "http://uri.etsi.org/01903#CountersignedSignature";
+
 	public static final String SIGNATURE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE);
 
 	public static final String ALL_SIGNATURES_PATH = all(XMLDSigElement.SIGNATURE);

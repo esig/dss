@@ -20,49 +20,6 @@
  */
 package eu.europa.esig.dss.pades.timestamp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-
-public class PDFTimestampServiceTest extends PKIFactoryAccess {
-
-	@Test
-	public void timestampAlone() throws IOException {
-
-		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-
-		PAdESTimestampParameters parameters = new PAdESTimestampParameters();
-
-		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-		DSSDocument timestamped = service.timestamp(document, parameters);
-
-		try (InputStream is = timestamped.openStream(); PDDocument doc = PDDocument.load(is)) {
-			List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
-			assertEquals(1, signatureDictionaries.size());
-			PDSignature pdSignature = signatureDictionaries.get(0);
-			assertNotNull(pdSignature);
-			assertEquals("Adobe.PPKLite", pdSignature.getFilter());
-			assertEquals("ETSI.RFC3161", pdSignature.getSubFilter());
-		}
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return null;
-	}
+public class PDFTimestampServiceTest extends AbstractPDFTimestampServiceTest {
 
 }

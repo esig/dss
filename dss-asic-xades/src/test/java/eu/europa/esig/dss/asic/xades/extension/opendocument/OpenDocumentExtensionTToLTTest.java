@@ -41,7 +41,4 @@ public class OpenDocumentExtensionTToLTTest extends AbstractTestOpenDocumentExte
 		return ASiCContainerType.ASiC_E;
 	}
 
-	@Override
-	public void test() throws Exception {
-	}
 }

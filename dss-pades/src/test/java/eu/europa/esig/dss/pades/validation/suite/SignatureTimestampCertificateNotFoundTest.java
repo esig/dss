@@ -28,35 +28,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.test.signature.UnmarshallingTester;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
 @Disabled
-public class SignatureTimestampCertificateNotFoundTest {
+public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTestValidation {
 
-	@Test
-	public void test() throws Exception {
-		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/TestToSignPDFSHA256_TST_SIG_NOT_FOUND.pdf")));
-		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setIncludeTimestampTokenValues(true);
-		validator.setCertificateVerifier(certificateVerifier);
-
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-//		reports.print();
-		UnmarshallingTester.unmarshallXmlReports(reports);
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/TestToSignPDFSHA256_TST_SIG_NOT_FOUND.pdf"));
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signatureWrapper);
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
@@ -71,6 +60,11 @@ public class SignatureTimestampCertificateNotFoundTest {
 		assertFalse(timestampWrapper.isAttributePresent()); // 2 signing-certificate attributes
 		assertEquals(2, timestampWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 		assertFalse(timestampWrapper.isSignatureValid());
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));	
 	}
 
 }

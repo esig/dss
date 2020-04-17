@@ -817,10 +817,19 @@ public final class DSSXMLUtils {
 	/**
 	 * Checks if the given {@code referenceType} is an xmldsig Manifest type
 	 * @param referenceType {@link String} to check the type for
-	 * @return TRUE if the provided {@code referenceType} is an Manifest type, FALSE otherwise
+	 * @return TRUE if the provided {@code referenceType} is a Manifest type, FALSE otherwise
 	 */
 	public static boolean isManifestReferenceType(String referenceType) {
 		return XMLDSigPaths.MANIFEST_TYPE.equals(referenceType);
+	}
+	
+	/**
+	 * Checks if the given {@code referenceType} is an etsi Countersignature type
+	 * @param referenceType {@link String} to check the type for
+	 * @return TRUE if the provided {@code referenceType} is a Countersignature type, FALSE otherwise
+	 */
+	public static boolean isCounterSignatureReferenceType(String referenceType) {
+		return XMLDSigPaths.COUNTER_SIGNATURE_TYPE.equals(referenceType);
 	}
 	
 	/**

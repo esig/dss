@@ -231,6 +231,13 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@code AdvancedSignature}
 	 */
 	AdvancedSignature getMasterSignature();
+	
+	/**
+	 * Checks if the current signature is a counter signature (i.e. has a Master signature)
+	 * 
+	 * @return TRUE if it is a counter signature, FALSE otherwise
+	 */
+	boolean isCounterSignature();
 
 	/**
 	 * This method returns the signing certificate token or null if there is no valid signing certificate. Note that to

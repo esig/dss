@@ -1,37 +1,23 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1972Test {
+public class DSS1972Test extends AbstractPAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1959/pades-revoc-removed-from-dss-dict.pdf"));
+	}
 	
-	@Test
-	public void test() throws Exception {
-		
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1959/pades-revoc-removed-from-dss-dict.pdf"));
-
-		PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		// reports.print();
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertNotNull(diagnosticData);
-		
-		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 		
 //		String orphanRevocationId = diagnosticData.getAllOrphanRevocationReferences().get(0).getId();
 		
@@ -46,7 +32,12 @@ public class DSS1972Test {
 			}
 		}
 		assertEquals(3, archiveTimestampCounter);
-		
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 }

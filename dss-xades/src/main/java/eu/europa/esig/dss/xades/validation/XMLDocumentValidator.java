@@ -33,6 +33,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
@@ -157,6 +158,20 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 
 		List<AdvancedSignature> signatureList = getSignatures();
+		List<DSSDocument> result = getOriginalDocumentsFromListOfSignatures(signatureList, signatureId);
+		if (Utils.isCollectionEmpty(result)) {
+			for (AdvancedSignature advancedSignature : signatureList) {
+				result = getOriginalDocumentsFromListOfSignatures(advancedSignature.getCounterSignatures(), signatureId);
+				if (Utils.isCollectionNotEmpty(result)) {
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	private List<DSSDocument> getOriginalDocumentsFromListOfSignatures(List<AdvancedSignature> signatureList, String signatureId) {
 		for (AdvancedSignature advancedSignature : signatureList) {
 			if (signatureId.equals(advancedSignature.getId())) {
 				return getOriginalDocuments(advancedSignature);

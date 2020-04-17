@@ -28,9 +28,5 @@ public class OpenDocumentExtensionBToLTASelfSignedTSATest extends OpenDocumentEx
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
 		return getSelfSignedTsa();
 	}
-
-	@Override
-	public void test() throws Exception {
-	}
-
+	
 }

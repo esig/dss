@@ -20,9 +20,16 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class XAdESExtensionBToLTATest extends AbstractTestXAdESExtension {
+public class XAdESExtensionBToLTATest extends AbstractXAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
@@ -32,6 +39,23 @@ public class XAdESExtensionBToLTATest extends AbstractTestXAdESExtension {
 	@Override
 	protected SignatureLevel getFinalSignatureLevel() {
 		return SignatureLevel.XAdES_BASELINE_LTA;
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		String signatureId = diagnosticData.getFirstSignatureId();
+		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(signatureId)) {
+			List<SignatureWrapper> timestampedSignatures = wrapper.getTimestampedSignatures();
+			boolean found = false;
+			for (SignatureWrapper signatureWrapper : timestampedSignatures) {
+				if (signatureId.equals(signatureWrapper.getId())) {
+					found = true;
+				}
+			}
+			assertTrue(found);
+		}
 	}
 
 }

@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
@@ -55,10 +55,7 @@ public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureT
 				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		Reports reports = validator.validateDocument();
+		Reports reports = verify(doubleSignedDocument);
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		
 		assertEquals(2, diagnosticData.getSignatures().size());
@@ -83,6 +80,11 @@ public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureT
 				assertTrue(digestMatcher.isDataIntact());
 			}
 		}
+	}
+	
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getSignatures()));
 	}
 	
 	@Override

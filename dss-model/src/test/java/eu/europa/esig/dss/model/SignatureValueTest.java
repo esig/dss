@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +36,11 @@ public class SignatureValueTest {
 	public void testToString() {
 		SignatureValue sv = new SignatureValue();
 		LOG.info("{}", sv);
+		assertEquals("SignatureValue [algorithm=null, value=null]", sv.toString());
 		sv.setAlgorithm(SignatureAlgorithm.RSA_SSA_PSS_SHA224_MGF1);
 		sv.setValue(new byte[] { 1, 2, 3 });
 		LOG.info("{}", sv);
+		assertEquals("SignatureValue [algorithm=RSA_SSA_PSS_SHA224_MGF1, value=AQID]", sv.toString());
 	}
 
 }

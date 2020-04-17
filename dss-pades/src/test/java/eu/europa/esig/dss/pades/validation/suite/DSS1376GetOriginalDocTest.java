@@ -23,52 +23,71 @@ package eu.europa.esig.dss.pades.validation.suite;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class DSS1376GetOriginalDocTest {
+public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSS1376GetOriginalDocTest.class);
 
 	private DSSDocument rev_n = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1376/DSS1376-rev_n.pdf"));
 	private DSSDocument rev_n_1 = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1376/DSS1376-rev_n-1.pdf"));
 
-	@Test
-	public void getTestOriginSig() throws IOException {
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(rev_n);
-		sdv.setCertificateVerifier(new CommonCertificateVerifier());
-		List<AdvancedSignature> signatures = sdv.getSignatures();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return rev_n;
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+
 		assertEquals(2, signatures.size());
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
+		
+		List<AdvancedSignature> signatures = validator.getSignatures();
 
 		AdvancedSignature firstSig = signatures.get(1);
 
-		List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(firstSig.getId());
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSig.getId());
 		assertEquals(1, originalDocuments.size());
 		DSSDocument retrievedDoc = originalDocuments.get(0);
-		LOG.info("{} : {}", retrievedDoc.getName(), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
+		LOG.debug("{} : {}", retrievedDoc.getName(), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
 		assertEquals(rev_n_1.getDigest(DigestAlgorithm.SHA256), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
 
 		AdvancedSignature secondSig = signatures.get(0);
 
-		originalDocuments = sdv.getOriginalDocuments(secondSig.getId());
+		originalDocuments = validator.getOriginalDocuments(secondSig.getId());
 		assertEquals(1, originalDocuments.size());
 		retrievedDoc = originalDocuments.get(0);
 
 		// Signature has been generated in the very first version of the PDF
 		byte[] byteArray = DSSUtils.toByteArray(retrievedDoc);
 		assertTrue(byteArray.length == 0);
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertTrue(signatureWrapper.isAttributePresent());
+			assertTrue(signatureWrapper.isDigestValuePresent());
+			assertTrue(signatureWrapper.isDigestValueMatch());
+		}
 	}
 
 }

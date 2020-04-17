@@ -26,10 +26,10 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.extension.AbstractTestXAdESExtension;
+import eu.europa.esig.dss.xades.extension.AbstractXAdESTestExtension;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESDoubleLTAPrettyPrintAndClassicTest extends AbstractTestXAdESExtension {
+public class XAdESDoubleLTAPrettyPrintAndClassicTest extends AbstractXAdESTestExtension {
 
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

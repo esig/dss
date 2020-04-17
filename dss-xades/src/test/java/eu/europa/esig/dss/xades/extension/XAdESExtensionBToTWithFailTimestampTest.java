@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class XAdESExtensionBToTWithFailTimestampTest extends AbstractTestXAdESExtension {
+public class XAdESExtensionBToTWithFailTimestampTest extends AbstractXAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
@@ -48,9 +48,9 @@ public class XAdESExtensionBToTWithFailTimestampTest extends AbstractTestXAdESEx
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 		assertEquals("No retrieved timestamp token (TSP Status : Error for testing / PKIFailureInfo: 0x40000000)", exception.getMessage());
 	}

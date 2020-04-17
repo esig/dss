@@ -156,50 +156,57 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatureList = new ArrayList<>();
 		for (DocumentValidator validator : getSignatureValidators()) {
-			signatureList.addAll(validator.getSignatures());
+			for (AdvancedSignature advancedSignature : validator.getSignatures()) {
+				signatureList.add(advancedSignature);
+				signatureList.addAll(advancedSignature.getCounterSignatures());
+			}
 		}
 		return signatureList;
 	}
 
 	protected abstract List<DocumentValidator> getSignatureValidators();
 
-	protected List<DSSDocument> getSignatureDocuments() {
+	public List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();
 	}
 
-	protected List<DSSDocument> getSignedDocuments() {
+	public List<DSSDocument> getSignedDocuments() {
 		return extractResult.getSignedDocuments();
 	}
 
-	protected List<DSSDocument> getAllDocuments() {
+	public List<DSSDocument> getAllDocuments() {
 		return extractResult.getAllDocuments();
 	}
 
-	protected List<DSSDocument> getManifestDocuments() {
+	public List<DSSDocument> getManifestDocuments() {
 		return extractResult.getManifestDocuments();
 	}
 
-	protected List<DSSDocument> getTimestampDocuments() {
+	public List<DSSDocument> getTimestampDocuments() {
 		return extractResult.getTimestampDocuments();
 	}
 
-	protected List<DSSDocument> getArchiveManifestDocuments() {
+	public List<DSSDocument> getArchiveManifestDocuments() {
 		return extractResult.getArchiveManifestDocuments();
 	}
 	
-	protected List<DSSDocument> getAllManifestDocuments() {
+	public List<DSSDocument> getAllManifestDocuments() {
 		return extractResult.getAllManifestDocuments();
 	}
 	
-	protected List<DSSDocument> getArchiveDocuments() {
+	public List<DSSDocument> getArchiveDocuments() {
 		return extractResult.getContainerDocuments();
 	}
 
-	protected DSSDocument getMimeTypeDocument() {
+	public DSSDocument getMimeTypeDocument() {
 		return extractResult.getMimeTypeDocument();
 	}
 	
-	protected List<ManifestFile> getManifestFiles() {
+	public List<DSSDocument> getUnsupportedDocuments() {
+		return extractResult.getUnsupportedDocuments();
+	}
+	
+	public List<ManifestFile> getManifestFiles() {
 		if (manifestFiles == null) {
 			manifestFiles = getManifestFilesDecriptions();
 		}

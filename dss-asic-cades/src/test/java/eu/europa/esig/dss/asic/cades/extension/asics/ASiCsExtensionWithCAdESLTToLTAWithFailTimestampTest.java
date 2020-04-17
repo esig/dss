@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.asic.cades.extension.AbstractTestASiCwithCAdESExtension;
+import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class ASiCsExtensionWithCAdESLTToLTAWithFailTimestampTest extends AbstractTestASiCwithCAdESExtension {
+public class ASiCsExtensionWithCAdESLTToLTAWithFailTimestampTest extends AbstractASiCWithCAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
@@ -55,9 +55,9 @@ public class ASiCsExtensionWithCAdESLTToLTAWithFailTimestampTest extends Abstrac
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 		assertEquals("No retrieved timestamp token (TSP Status : Error for testing / PKIFailureInfo: 0x40000000)", exception.getMessage());
 	}

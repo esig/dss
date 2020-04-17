@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class XAdESExtensionLTToLTAWithError500TimestampTest extends AbstractTestXAdESExtension {
+public class XAdESExtensionLTToLTAWithError500TimestampTest extends AbstractXAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
@@ -48,9 +48,9 @@ public class XAdESExtensionLTToLTAWithError500TimestampTest extends AbstractTest
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 		assertTrue(exception.getMessage().contains("Unable to process POST call for url [http://dss.nowina.lu/pki-factory//tsa/error-500/good-tsa]"));
 	}

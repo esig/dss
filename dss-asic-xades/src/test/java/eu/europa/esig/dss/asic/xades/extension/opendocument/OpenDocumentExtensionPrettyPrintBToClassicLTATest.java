@@ -54,8 +54,4 @@ public class OpenDocumentExtensionPrettyPrintBToClassicLTATest extends OpenDocum
 		extensionParameters.setPrettyPrint(false);
 		return extensionParameters;
 	}
-
-	@Override
-	public void test() throws Exception {
-	}
 }

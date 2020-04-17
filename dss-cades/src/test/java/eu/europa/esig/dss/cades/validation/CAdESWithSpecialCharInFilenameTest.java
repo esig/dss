@@ -20,43 +20,19 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.signature.UnmarshallingTester;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-768
  */
-public class CAdESWithSpecialCharInFilenameTest {
+public class CAdESWithSpecialCharInFilenameTest extends AbstractCAdESTestValidation {
 
 	private static final String FILE_TO_TEST = "src/test/resources/validation/dss-768/FD1&FD2&FEA.pdf.p7m";
 
-	@Test
-	public void testFile1() {
-		DSSDocument dssDocument = new FileDocument(FILE_TO_TEST);
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		UnmarshallingTester.unmarshallSimpleReport(reports);
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument(FILE_TO_TEST);
 	}
-
-	@Test
-	public void testFile1SkipETSIVR() {
-		DSSDocument dssDocument = new FileDocument(FILE_TO_TEST);
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setEnableEtsiValidationReport(false);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		UnmarshallingTester.unmarshallSimpleReport(reports);
-	}
-
+	
 }

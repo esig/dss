@@ -463,6 +463,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public AdvancedSignature getMasterSignature() {
 		return masterSignature;
 	}
+	
+	@Override
+	public boolean isCounterSignature() {
+		return masterSignature != null;
+	}
 
 	@Override
 	public SignatureCryptographicVerification getSignatureCryptographicVerification() {
@@ -749,6 +754,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public int hashCode() {
 		return getDSSId().hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s Signature with Id : %s", getSignatureForm(), getId());
 	}
 
 }

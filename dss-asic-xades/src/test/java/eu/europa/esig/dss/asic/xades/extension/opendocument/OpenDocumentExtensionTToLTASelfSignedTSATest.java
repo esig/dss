@@ -29,7 +29,4 @@ public class OpenDocumentExtensionTToLTASelfSignedTSATest extends OpenDocumentEx
 		return getSelfSignedTsa();
 	}
 
-	@Override
-	public void test() throws Exception {
-	}
 }

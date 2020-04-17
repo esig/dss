@@ -128,11 +128,22 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			cadesSignature.setSignatureFilename(document.getName());
 			cadesSignature.setDetachedContents(detachedContents);
 			cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
-			if (Utils.areStringsEqual(cadesSignature.getId(), signatureId)) {
+			if (Utils.areStringsEqual(cadesSignature.getId(), signatureId) || isCounterSignature(cadesSignature, signatureId)) {
 				results.add(cadesSignature.getOriginalDocument());
 			}
 		}
 		return results;
+	}
+	
+	private boolean isCounterSignature(final CAdESSignature masterSignature, final String signatureId) {
+		for (final SignerInformation counterSignerInformation : masterSignature.getSignerInformation().getCounterSignatures()) {
+			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
+			countersignature.setMasterSignature(masterSignature);
+			if (Utils.areStringsEqual(countersignature.getId(), signatureId) || isCounterSignature(countersignature, signatureId)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

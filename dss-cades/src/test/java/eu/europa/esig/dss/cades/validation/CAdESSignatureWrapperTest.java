@@ -32,7 +32,6 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -42,7 +41,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -55,24 +53,33 @@ import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
+public class CAdESSignatureWrapperTest extends AbstractCAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/Signature-C-HU_POL-3.p7m");
+	}
 	
-	@Test
-	public void signatureIdentifierTest() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/Signature-C-HU_POL-3.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports report = validator.validateDocument();
-		// report.print();
-		DiagnosticData diagnosticData = report.getDiagnosticData();
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		assertNotNull(signature.getDigestMatchers());
 		assertEquals(1, signature.getDigestMatchers().size());
 		assertNotNull(signature.getSignatureValue());
+	}
+	
+	@Override
+	protected void checkReportsSignatureIdentifier(Reports reports) {
+		// TODO Auto-generated method stub
+		super.checkReportsSignatureIdentifier(reports);
 		
-		ValidationReportType etsiValidationReport = report.getEtsiValidationReportJaxb();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
 		assertNotNull(signatureValidationReport);
 		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
@@ -83,7 +90,13 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 		assertTrue(Arrays.equals(signature.getDigestMatchers().get(0).getDigestValue(), signatureIdentifier.getDigestAlgAndValue().getDigestValue()));
 		assertNotNull(signatureIdentifier.getSignatureValue());
 		assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
-		
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
 		assertNotNull(signatureDigestReference);
 		
@@ -100,7 +113,19 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);
 		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
+	}
+	
+	@Override
+	protected void verifyReportsData(Reports reports) {
+		super.verifyReportsData(reports);
 		
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
+
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		List<ValidationObjectType> validationObjects = etsiValidationReport.getSignatureValidationObjects().getValidationObject();
 		int timestampCounter = 0;
 		for (ValidationObjectType validationObject : validationObjects) {
@@ -120,10 +145,11 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 		}
 		assertEquals(2, timestampCounter);
 	}
-
+	
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 }

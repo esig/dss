@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class DSS1220Test extends PKIFactoryAccess {

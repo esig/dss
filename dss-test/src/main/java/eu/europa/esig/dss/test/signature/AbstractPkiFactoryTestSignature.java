@@ -29,20 +29,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -52,33 +48,28 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.detailedreport.DetailedReport;
-import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
-import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -95,52 +86,20 @@ import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
-import eu.europa.esig.validationreport.jaxb.POEType;
-import eu.europa.esig.validationreport.jaxb.SACertIDListType;
-import eu.europa.esig.validationreport.jaxb.SACertIDType;
 import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
-import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
-import eu.europa.esig.validationreport.jaxb.SADSSType;
-import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
-import eu.europa.esig.validationreport.jaxb.SAFilterType;
-import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
-import eu.europa.esig.validationreport.jaxb.SANameType;
 import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
-import eu.europa.esig.validationreport.jaxb.SAReasonType;
-import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
-import eu.europa.esig.validationreport.jaxb.SASigningTimeType;
-import eu.europa.esig.validationreport.jaxb.SASubFilterType;
-import eu.europa.esig.validationreport.jaxb.SATimestampType;
-import eu.europa.esig.validationreport.jaxb.SAVRIType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
-import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
-import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
-import eu.europa.esig.validationreport.jaxb.SignerInformationType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
-import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSignatureParameters, 
-				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
+				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 
@@ -151,7 +110,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected abstract boolean isBaselineT();
 
 	protected abstract boolean isBaselineLTA();
-
+	
 	@Test
 	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
@@ -159,8 +118,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		assertNotNull(signedDocument.getName());
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
 		assertNotNull(signedDocument.getMimeType());
-
-		LOG.info("=================== VALIDATION =================");
 
 		// signedDocument.save("target/" + signedDocument.getName());
 
@@ -171,538 +128,34 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 
 		checkMimeType(signedDocument);
-
-		SignedDocumentValidator validator = getValidator(signedDocument);
-
-		List<AdvancedSignature> signatures = validator.getSignatures();
-		checkAdvancedSignatures(signatures);
-
-		Reports reports = validator.validateDocument();
-		// reports.setValidateXml(true);
-		// reports.print();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifySourcesAndDiagnosticData(signatures, diagnosticData);
-
-		verifyDiagnosticData(diagnosticData);
-
-		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
-
-		SimpleReport simpleReport = reports.getSimpleReport();
-		verifySimpleReport(simpleReport);
-
-		DetailedReport detailedReport = reports.getDetailedReport();
-		verifyDetailedReport(detailedReport);
-
-		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
-		verifyETSIValidationReport(etsiValidationReportJaxb);
-
-		try {
-			getOriginalDocument(signedDocument, diagnosticData);
-		} catch (IOException e) {
-			fail("Unable to retrieve the original document", e);
-		}
-
-		UnmarshallingTester.unmarshallXmlReports(reports);
-
-		generateHtmlPdfReports(reports);
-	}
-	
-	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> signatures, DiagnosticData diagnosticData) {
-		for (AdvancedSignature advancedSignature : signatures) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
-
-			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
-			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
-
-			// Tokens
-			assertEquals(certificateSource.getKeyInfoCertificates().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-			assertEquals(certificateSource.getCertificateValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
-			assertEquals(certificateSource.getSignedDataCertificates().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-			assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
-			assertEquals(certificateSource.getVRIDictionaryCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
-			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
-
-			// Refs
-			assertEquals(certificateSource.getSigningCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-			assertEquals(certificateSource.getAttributeCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-			assertEquals(certificateSource.getCompleteCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
-
-			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
-			for (TimestampToken timestampToken : timestamps) {
-				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampToken.getDSSIdAsString());
-
-				certificateSource = timestampToken.getCertificateSource();
-				foundCertificates = timestampWrapper.foundCertificates();
-
-				// Tokens
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
-				assertEquals(certificateSource.getSignedDataCertificates()
-						.size(),
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
-
-				// Refs
-				assertEquals(certificateSource.getSigningCertificateRefs()
-						.size(),
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
-			}
-
-			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
-			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
-			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
-				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
-				if (revocationCertificateSource != null) {
-					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocationToken.getDSSIdAsString());
-					foundCertificates = revocationWrapper.foundCertificates();
-
-					assertEquals(revocationCertificateSource.getCertificates().size(), foundCertificates.getRelatedCertificates().size());
-					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
-				}
-			}
-		}
-	}
-
-	protected void generateHtmlPdfReports(Reports reports) {
-		if (!isGenerateHtmlPdfReports()) {
-			return;
-		}
-
-		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
-
-		String marshalledSimpleReport = null;
-		try {
-			marshalledSimpleReport = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
-			assertNotNull(marshalledSimpleReport);
-		} catch (Exception e) {
-			String message = "Unable to marshall the simple report";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* Bootstrap 4 Simple Report */
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlReport(marshalledSimpleReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* Bootstrap 3 Simple Report */
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(marshalledSimpleReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(reports.getSimpleReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* PDF Simple Report */
-		try (StringWriter sw = new StringWriter()) {
-			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try (StringWriter sw = new StringWriter()) {
-			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf simple report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
-
-		String marshalledDetailedReport = null;
-		try {
-			marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
-			assertNotNull(marshalledDetailedReport);
-		} catch (Exception e) {
-			String message = "Unable to marshall the detailed report";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* Bootstrap 4 Detailed Report */
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* Bootstrap 3 Detailed Report */
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(marshalledDetailedReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(reports.getDetailedReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* PDF Detailed Report */
-		try (StringWriter sw = new StringWriter()) {
-			detailedReportFacade.generatePdfReport(marshalledDetailedReport, new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try (StringWriter sw = new StringWriter()) {
-			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf detailed report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-	}
-
-	protected boolean isGenerateHtmlPdfReports() {
-		return false;
-	}
-
-	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
-		assertTrue(Utils.isCollectionNotEmpty(signatures));
-	}
-
-	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) throws IOException {
-		List<String> signatureIdList = diagnosticData.getSignatureIdList();
-		for (String signatureId : signatureIdList) {
-
-			SignedDocumentValidator validator = getValidator(signedDocument);
-			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
-
-			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
-			List<DSSDocument> originalDocuments = getOriginalDocuments();
-
-			for (DSSDocument original : originalDocuments) {
-				boolean found = false;
-				boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
-				String originalDigest = getDigest(original, toBeCanonicalized);
-				for (DSSDocument retrieved : retrievedOriginalDocuments) {
-					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
-					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
-						found = true;
-					}
-				}
-
-				if (!MimeType.PDF.equals(original.getMimeType())) {
-					assertTrue(found, "Unable to retrieve the original document " + original.getName());
-				} else if (!found) {
-					byte[] originalByteArray = DSSUtils.toByteArray(original);
-					DSSDocument retrieved = retrievedOriginalDocuments.get(0);
-					byte[] retrievedByteArray = DSSUtils.toByteArray(retrieved);
-					assertTrue(isOnlyTwoBytesDifferAtLastPosition(originalByteArray, retrievedByteArray));
-					
-					SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
-					List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-					assertNotNull(signatureScopes);
-					assertEquals(1, signatureScopes.size());
-					XmlSignerData signerData = signatureScopes.get(0).getSignerData();
-					assertNotNull(signerData);
-					assertDigestEqual(original, signerData);
-				}
-			}
-		}
-	}
-
-	/**
-	 * In some cases, PDF files finish with %%EOF + EOL and some other cases only
-	 * %%EOF
-	 * 
-	 * There's no technical way to extract the exact file ending.
-	 */
-	private boolean isOnlyTwoBytesDifferAtLastPosition(byte[] originalByteArray, byte[] retrievedByteArray) {
-		int lengthOrigin = originalByteArray.length;
-		int lengthRetrieved = retrievedByteArray.length;
-
-		int min = Math.min(lengthOrigin, lengthRetrieved);
-		if ((lengthOrigin - min > 2) || (lengthRetrieved - min > 2)) {
-			return false;
-		}
-
-		for (int i = 0; i < min; i++) {
-			if (originalByteArray[i] != retrievedByteArray[i]) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-	
-	private void assertDigestEqual(DSSDocument originalDocument, XmlSignerData signerData) throws IOException {
-
-		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
-		assertNotNull(digestAlgoAndValue);
-		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-		assertNotNull(digestAlgorithm);
 		
-		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
-		boolean equals = false;
-		for (DSSDocument documentToCompare : similarDocuments) {
-			if (documentToCompare.getDigest(digestAlgorithm).equals(Utils.toBase64(digestAlgoAndValue.getDigestValue()))) {
-				equals = true;
-				break;
-			}
-		}
-		assertTrue(equals);
-		
+		verify(signedDocument);
 	}
-	
-	/**
-	 * Documents can end with optional characters
-	 * This method returns all possible cases of the originalDocument end string
-	 */
-	private List<DSSDocument> buildCloseDocuments(DSSDocument originalDocument) throws IOException {
-		List<DSSDocument> documentList = new ArrayList<>();
-		documentList.add(originalDocument);
-		documentList.add(getReducedDocument(originalDocument, 1));
-		documentList.add(getReducedDocument(originalDocument, 2));
-		documentList.add(getExpandedDocument(originalDocument, new byte[] {'\n'}));
-		documentList.add(getExpandedDocument(originalDocument, new byte[] {'\r', '\n'}));
-		documentList.add(getExpandedDocument(originalDocument, new byte[] {' ', '\r', '\n'}));
-		documentList.add(getExpandedDocument(originalDocument, new byte[] {' ', '\n'}));
-		return documentList;
-	}
-	
-	private DSSDocument getReducedDocument(DSSDocument document, int bytesToRemove) throws IOException {
-		try (InputStream inputStream = document.openStream()) {
-			byte[] originalBytes = Utils.toByteArray(inputStream);
-			byte[] subarray = Utils.subarray(originalBytes, 0, originalBytes.length - bytesToRemove);
-			return new InMemoryDocument(subarray);
-		}
-	}
-	
-	private DSSDocument getExpandedDocument(DSSDocument document, byte[] bytesToExpand) throws IOException {
-		try (InputStream inputStream = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			byte[] originalBytes = Utils.toByteArray(inputStream);
-			baos.write(originalBytes);
-			baos.write(bytesToExpand);
-			return new InMemoryDocument(baos.toByteArray());
-		}
-	}
-
-	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
-		byte[] byteArray = DSSUtils.toByteArray(doc);
-		if (toBeCanonicalized) {
-			try {
-				// we canonicalize to ignore the header (which is not covered by the signature)
-				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
-				byteArray = c14n.canonicalize(byteArray);
-			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
-				// Not always able to canonicalize (more than one file can be covered (XML +
-				// something else) )
-			}
-		}
-		// LOG.info("Bytes : {}", new String(byteArray));
-		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
-	}
-	
-	protected String getCanonicalizationMethod() {
-		// Inclusive by default
-		return CanonicalizationMethod.INCLUSIVE;
-	}
-
-	protected abstract List<DSSDocument> getOriginalDocuments();
-
-	protected abstract DSSDocument sign();
 
 	protected void onDocumentSigned(byte[] byteArray) {
-	}
-
-	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
-		checkBLevelValid(diagnosticData);
-		checkNumberOfSignatures(diagnosticData);
-		checkDigestAlgorithm(diagnosticData);
-		checkMaskGenerationFunction(diagnosticData);
-		checkEncryptionAlgorithm(diagnosticData);
-		checkSigningCertificateValue(diagnosticData);
-		checkIssuerSigningCertificateValue(diagnosticData);
-		checkCertificateChain(diagnosticData);
-		checkSignatureLevel(diagnosticData);
-		checkSigningDate(diagnosticData);
-		checkTLevelAndValid(diagnosticData);
-		checkALevelAndValid(diagnosticData);
-		checkRevocationData(diagnosticData);
-		checkTimestamps(diagnosticData);
-		checkSignatureScopes(diagnosticData);
-		checkCommitmentTypeIndications(diagnosticData);
-		checkClaimedRoles(diagnosticData);
-		checkMessageDigestAlgorithm(diagnosticData);
-		checkSignaturePolicyIdentifier(diagnosticData);
-		checkSignatureInformationStore(diagnosticData);
-		checkPdfRevision(diagnosticData);
-		checkStructureValidation(diagnosticData);
-		checkOrphanTokens(diagnosticData);
-
-		checkNoDuplicateCompleteCertificates(diagnosticData);
-		checkNoDuplicateCompleteRevocationData(diagnosticData);
-	}
-
-	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
-
-	}
-
-	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
-	}
-
-	protected void verifySimpleReport(SimpleReport simpleReport) {
-		assertNotNull(simpleReport);
-
-		List<String> signatureIdList = simpleReport.getSignatureIdList();
-		assertTrue(Utils.isCollectionNotEmpty(signatureIdList));
-
-		for (String sigId : signatureIdList) {
-			Indication indication = simpleReport.getIndication(sigId);
-			assertNotNull(indication);
-			if (indication != Indication.TOTAL_PASSED) {
-				assertNotNull(simpleReport.getSubIndication(sigId));
-			}
-			assertNotNull(simpleReport.getSignatureQualification(sigId));
-			
-			CertificateToken certificate = getSigningCert();			
-			String name = DSSASN1Utils.getHumanReadableName(certificate);
-			assertEquals(name, simpleReport.getSignedBy(sigId));
-		}
-		assertNotNull(simpleReport.getValidationTime());
-	}
-
-	protected void verifyDetailedReport(DetailedReport detailedReport) {
-		assertNotNull(detailedReport);
-
-		int nbBBBs = detailedReport.getBasicBuildingBlocksNumber();
-		assertTrue(nbBBBs > 0);
-		for (int i = 0; i < nbBBBs; i++) {
-			String id = detailedReport.getBasicBuildingBlocksSignatureId(i);
-			assertNotNull(id);
-			assertNotNull(detailedReport.getBasicBuildingBlocksIndication(id));
-		}
-
-		List<String> signatureIds = detailedReport.getSignatureIds();
-		assertTrue(Utils.isCollectionNotEmpty(signatureIds));
-		for (String sigId : signatureIds) {
-			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
-			assertNotNull(basicIndication);
-			if (!Indication.PASSED.equals(basicIndication)) {
-				assertNotNull(detailedReport.getBasicValidationSubIndication(sigId));
-			}
-		}
-
-		if (isBaselineT()) {
-			List<String> timestampIds = detailedReport.getTimestampIds();
-			assertTrue(Utils.isCollectionNotEmpty(timestampIds));
-			for (String tspId : timestampIds) {
-				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
-				assertNotNull(timestampIndication);
-				if (!Indication.PASSED.equals(timestampIndication)) {
-					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
-				}
-			}
-		}
-
-		for (String sigId : signatureIds) {
-			Indication ltvIndication = detailedReport.getLongTermValidationIndication(sigId);
-			assertNotNull(ltvIndication);
-			if (!Indication.PASSED.equals(ltvIndication)) {
-				assertNotNull(detailedReport.getLongTermValidationSubIndication(sigId));
-			}
-		}
-
-		for (String sigId : signatureIds) {
-			Indication archiveDataIndication = detailedReport.getArchiveDataValidationIndication(sigId);
-			assertNotNull(archiveDataIndication);
-			if (!Indication.PASSED.equals(archiveDataIndication)) {
-				assertNotNull(detailedReport.getArchiveDataValidationSubIndication(sigId));
-			}
-		}
-	}
-
-	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
-		return validator;
-	}
-
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
+		assertTrue(Utils.isArrayNotEmpty(byteArray));
 	}
 
 	protected void checkMimeType(DSSDocument signedDocument) {
 		assertTrue(getExpectedMime().equals(signedDocument.getMimeType()));
 	}
 
+	@Override
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		super.checkNumberOfSignatures(diagnosticData);
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
 	}
 
+	@Override
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
+		super.checkDigestAlgorithm(diagnosticData);
 		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
-	private void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
+	@Override
+	protected void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
+		super.checkMaskGenerationFunction(diagnosticData);
+		
 		MaskGenerationFunction maskGenerationFunction = getSignatureParameters().getMaskGenerationFunction();
 		if (maskGenerationFunction != null) {
 			assertEquals(maskGenerationFunction, diagnosticData.getSignatureMaskGenerationFunction(diagnosticData.getFirstSignatureId()));
@@ -710,17 +163,23 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
+	@Override
+	protected void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
+		super.checkEncryptionAlgorithm(diagnosticData);
+		
 		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
 		assertEquals(signatureParameters.getSignatureAlgorithm().getEncryptionAlgorithm(),
 				diagnosticData.getSignatureEncryptionAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
-
+	
+	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
+		super.checkSigningCertificateValue(diagnosticData);
+		
+		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
+		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
-		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		assertEquals(certificate.getSubject().getRFC2253(), certificateDN);
 		assertEquals(certificate.getSerialNumber().toString(), certificateSerialNumber);
 
@@ -728,22 +187,31 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateById(signingCertificateId);
 		assertEquals(signatureAlgorithm.getDigestAlgorithm(), certificateWrapper.getDigestAlgorithm());
 		assertEquals(signatureAlgorithm.getEncryptionAlgorithm(), certificateWrapper.getEncryptionAlgorithm());
-
-		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-		for (SignatureWrapper signatureWrapper : allSignatures) {
-			assertTrue(signatureWrapper.isSigningCertificateIdentified());
-		}
-
 	}
 
+	@Override
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
-		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
+		super.checkIssuerSigningCertificateValue(diagnosticData);
+		
+		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		assertEquals(certificate.getIssuer().getRFC2253(), issuerDN);
 	}
 
+	@Override
+	@SuppressWarnings({ "unchecked" })
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
+		
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
+		super.checkCertificateChain(diagnosticData);
+		
 		KSPrivateKeyEntry entry = getPrivateKeyEntry();
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
@@ -751,80 +219,26 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		assertTrue(entry.getCertificateChain().length >= signatureCertificateChain.size());
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
-		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
-	}
+	@Override
+	protected void checkSigningDate(DiagnosticData diagnosticData) {
+		super.checkSigningDate(diagnosticData);
+		
+		Date signatureDate = diagnosticData.getFirstSignatureDate();
+		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
 
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		// Date in signed documents is truncated
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
 
-		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
-		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
-		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
-				assertTrue(digestMatcher.isDataFound());
-				assertTrue(digestMatcher.isDataIntact());
-			}
-		}
-
-		assertTrue(signatureWrapper.isSignatureIntact());
-		assertTrue(signatureWrapper.isSignatureValid());
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-
-	protected void checkTLevelAndValid(DiagnosticData diagnosticData) {
-		assertEquals(isBaselineT(), diagnosticData.isThereTLevel(diagnosticData.getFirstSignatureId()));
-		assertEquals(isBaselineT(), diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-
-	protected void checkALevelAndValid(DiagnosticData diagnosticData) {
-		assertEquals(isBaselineLTA(), diagnosticData.isThereALevel(diagnosticData.getFirstSignatureId()));
-		assertEquals(isBaselineLTA(), diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
 	}
 	
-	protected void checkRevocationData(DiagnosticData diagnosticData) {
-		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
-			assertNotNull(revocationWrapper.getId());
-			assertNotNull(revocationWrapper.getRevocationType());
-			assertNotNull(revocationWrapper.getOrigin());
-			assertNotNull(revocationWrapper.getProductionDate());
-			assertNotNull(revocationWrapper.getSigningCertificate());
-			assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
-			assertNotNull(revocationWrapper.foundCertificates());
-			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
-			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
-			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
-				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
-				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
-				boolean signingCertFound = false;
-				for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
-					assertTrue(certificateWrapper.getSources().contains(CertificateSourceType.OCSP_RESPONSE));
-					assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getOrigins()));
-					for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
-						if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
-							signingCertFound = true;
-						}
-						assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
-						assertNull(refWrapper.getDigestAlgoAndValue());
-						assertNull(refWrapper.getIssuerSerial());
-						assertEquals(certificateWrapper.getId(), revocationWrapper.getSigningCertificate().getId());
-					}
-				}
-				assertTrue(signingCertFound);
-			}
-		}
-	}
-
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
-
 		int nbContentTimestamps = 0;
-		boolean foundSignatureTimeStamp = false;
-		boolean foundArchiveTimeStamp = false;
-
 		if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
 			for (String timestampId : timestampIdList) {
 				TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
@@ -834,59 +248,19 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
 						nbContentTimestamps++;
 						break;
-					case SIGNATURE_TIMESTAMP:
-						foundSignatureTimeStamp = true;
-						break;
-					case ARCHIVE_TIMESTAMP:
-						foundArchiveTimeStamp = true;
-						break;
 					default:
 						break;
 					}
 			}
 		}
-
 		AbstractSignatureParameters<TP> signatureParameters = (AbstractSignatureParameters<TP>) getSignatureParameters();
 		assertEquals(nbContentTimestamps, Utils.collectionSize(signatureParameters.getContentTimestamps()));
-
-		if (isBaselineT()) {
-			assertTrue(foundSignatureTimeStamp);
-		}
-
-		if (isBaselineLTA()) {
-			assertTrue(foundArchiveTimeStamp);
-		}
-
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
-		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			assertNotNull(timestampWrapper.getProductionTime());
-			assertTrue(timestampWrapper.isMessageImprintDataFound());
-			assertTrue(timestampWrapper.isMessageImprintDataIntact());
-			assertTrue(timestampWrapper.isSignatureIntact());
-			assertTrue(timestampWrapper.isSignatureValid());
-
-			List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
-			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				assertTrue(xmlDigestMatcher.isDataFound());
-				assertTrue(xmlDigestMatcher.isDataIntact());
-			}
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
-				assertNotNull(timestampWrapper.getArchiveTimestampType());
-			}
-		}
 	}
 
-	protected void checkSigningDate(DiagnosticData diagnosticData) {
-		Date signatureDate = diagnosticData.getFirstSignatureDate();
-		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
-
-		// Date in signed documents is truncated
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-
-		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
-	}
-
+	@Override
 	protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
+		super.checkCommitmentTypeIndications(diagnosticData);
+		
 		List<CommitmentType> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -928,7 +302,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
+	@Override
 	protected void checkClaimedRoles(DiagnosticData diagnosticData) {
+		super.checkClaimedRoles(diagnosticData);
+		
 		List<String> claimedRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
 		if (Utils.isCollectionNotEmpty(claimedRoles)) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -936,9 +313,20 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			assertEquals(claimedRoles, foundClaimedRoles);
 		}
 	}
-
+	
+	@Override
 	@SuppressWarnings({ "unchecked" })
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+		super.checkMessageDigestAlgorithm(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+				assertNotNull(xmlDigestMatcher.getDigestMethod());
+				assertNotNull(xmlDigestMatcher.getDigestValue());
+			}
+		}
 		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
 		DigestAlgorithm expectedDigestAlgorithm = signatureParameters.getReferenceDigestAlgorithm();
 		if (expectedDigestAlgorithm == null) {
@@ -955,7 +343,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
+	@Override
 	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyIdentifier(diagnosticData);
+		
 		Policy signaturePolicy = getSignatureParameters().bLevel().getSignaturePolicy();
 		if (signaturePolicy != null) {
 			SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -982,121 +373,96 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			}
 		}
 	}
-
-	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
-		// not implemented by default
-	}
 	
-	protected void checkPdfRevision(DiagnosticData diagnosticData) {
-		// not implemented by default
-	}
-	
-	protected void checkStructureValidation(DiagnosticData diagnosticData) {
-		// not implemented by default
-	}
-	
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		// orphan data must not be added into the signature
-		assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanCertificateObjects()));
-		assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanRevocationObjects()));
-	}
-
-	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
-
-		// Validation report is not signed
-		assertNull(etsiValidationReportJaxb.getSignature());
-		// Validation report is not generated by a TSP
-		assertNull(etsiValidationReportJaxb.getSignatureValidator());
-
-		List<SignatureValidationReportType> reports = etsiValidationReportJaxb.getSignatureValidationReport();
-		for (SignatureValidationReportType signatureValidationReport : reports) {
-			assertNotNull(signatureValidationReport);
-			
-			SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
-			validateEtsiSignatureIdentifier(signatureIdentifier);
-
-			SignerInformationType signerInformation = signatureValidationReport.getSignerInformation();
-			assertNotNull(signerInformation);
-			assertNotNull(signerInformation.getSignerCertificate());
-			assertTrue(Utils.isStringNotEmpty(signerInformation.getSigner()));
-
-			ValidationTimeInfoType validationTimeInfo = signatureValidationReport.getValidationTimeInfo();
-			assertNotNull(validationTimeInfo.getValidationTime());
-			POEType bestSignatureTime = validationTimeInfo.getBestSignatureTime();
-			assertNotNull(bestSignatureTime);
-			assertNotNull(bestSignatureTime.getPOETime());
-			assertNotNull(bestSignatureTime.getTypeOfProof());
-
-			ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
-			assertNotNull(signatureValidationStatus);
-			assertNotNull(signatureValidationStatus.getMainIndication());
-
-			List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
-			if (Utils.isCollectionNotEmpty(associatedValidationReportData)) {
-				for (ValidationReportDataType validationReportDataType : associatedValidationReportData) {
-					CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
-					if (cryptoInformation != null && !cryptoInformation.isSecureAlgorithm()) {
-						Date expired = cryptoInformation.getNotAfter();
-						assertNotNull(expired);
-						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
+	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			assertNotNull(revocationWrapper.getId());
+			assertNotNull(revocationWrapper.getRevocationType());
+			assertNotNull(revocationWrapper.getOrigin());
+			assertNotNull(revocationWrapper.getProductionDate());
+			assertNotNull(revocationWrapper.getSigningCertificate());
+			assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
+			assertNotNull(revocationWrapper.foundCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
+			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
+				boolean signingCertFound = false;
+				for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
+					assertTrue(certificateWrapper.getSources().contains(CertificateSourceType.OCSP_RESPONSE));
+					assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getOrigins()));
+					for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
+						if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
+							signingCertFound = true;
+						}
+						assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
+						assertNull(refWrapper.getDigestAlgoAndValue());
+						assertNull(refWrapper.getIssuerSerial());
+						assertEquals(certificateWrapper.getId(), revocationWrapper.getSigningCertificate().getId());
 					}
 				}
+				assertTrue(signingCertFound);
 			}
-
-			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
-			validateETSISignatureAttributes(signatureAttributes);
 		}
 	}
 
-	private void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
-		assertNotNull(signatureIdentifier);
-		assertNotNull(signatureIdentifier.getId());
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestMethod());
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestValue());
-		assertNotNull(signatureIdentifier.getSignatureValue());
+	@Override
+	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {
+		super.checkNoDuplicateCompleteCertificates(foundCertificates);
+		
+		List<RelatedCertificateWrapper> relatedCertificates = foundCertificates.getRelatedCertificates();
+		for (RelatedCertificateWrapper foundCert : relatedCertificates) {
+			assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+		}
+		List<OrphanCertificateWrapper> orphanCertificates = foundCertificates.getOrphanCertificates();
+		for (OrphanCertificateWrapper foundCert : orphanCertificates) {
+			assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
+	@Override
+	protected void checkNoDuplicateCompleteRevocationData(FoundRevocationsProxy foundRevocations) {
+		super.checkNoDuplicateCompleteRevocationData(foundRevocations);
+		
+		List<RelatedRevocationWrapper> relatedRevocations = foundRevocations.getRelatedRevocationData();
+		for (RelatedRevocationWrapper foundRevocation : relatedRevocations) {
+			assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+		}
+		List<OrphanRevocationWrapper> orphanRevocations = foundRevocations.getOrphanRevocationData();
+		for (OrphanRevocationWrapper foundRevocation : orphanRevocations) {
+			assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+		}
+	}
+	
+	@Override
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		super.verifySimpleReport(simpleReport);
+		List<String> signatureIdList = simpleReport.getSignatureIdList();
+		for (String sigId : signatureIdList) {			
+			CertificateToken certificate = getSigningCert();			
+			String name = DSSASN1Utils.getHumanReadableName(certificate);
+			assertEquals(name, simpleReport.getSignedBy(sigId));
+		}
+	}
+	
+	@Override
+	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
+		super.validateETSISignatureAttributes(signatureAttributes);
 		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		assertTrue(Utils.isCollectionNotEmpty(signatureAttributeObjects));
-
 		for (Object signatureAttributeObj : signatureAttributeObjects) {
 			if (signatureAttributeObj instanceof JAXBElement) {
 				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
 				Object value = jaxbElement.getValue();
-
-				if (value instanceof SASigningTimeType) {
-					SASigningTimeType signingTime = (SASigningTimeType) value;
-					assertNotNull(signingTime.getTime());
-				} else if (value instanceof SACertIDListType) {
-					SACertIDListType certIdList = (SACertIDListType) value;
-					List<SACertIDType> certIds = certIdList.getCertID();
-					for (SACertIDType saCertIDType : certIds) {
-						assertNotNull(saCertIDType.getDigestMethod());
-						assertNotNull(saCertIDType.getDigestValue());
-						assertNotNull(saCertIDType.getX509IssuerSerial());
-					}
-				} else if (value instanceof SADataObjectFormatType) {
-					SADataObjectFormatType dataObjectFormatType = (SADataObjectFormatType) value;
-					assertTrue((dataObjectFormatType.getContentType() != null) || (dataObjectFormatType.getMimeType() != null));
-				} else if (value instanceof SACommitmentTypeIndicationType) {
+				
+				if (value instanceof SACommitmentTypeIndicationType) {
 					// TODO multiple value -> multiple tag in signatureattributes ??
 					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
 					List<CommitmentType> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
 					List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
 					List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
 					assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
-				} else if (value instanceof SATimestampType) {
-					SATimestampType timestamp = (SATimestampType) value;
-					assertNotNull(timestamp.getAttributeObject());
-					assertNotNull(timestamp.getTimeStampValue());
-
-				} else if (value instanceof SASignatureProductionPlaceType) {
-					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
-					validateETSISASignatureProductionPlaceType(productionPlace);
-
 				} else if (value instanceof SASignerRoleType) {
 					SASignerRoleType signerRoles = (SASignerRoleType) value;
 
@@ -1113,79 +479,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 						}
 						assertTrue(found);
 					}
-				} else if (value instanceof SAMessageDigestType) {
-					SAMessageDigestType md = (SAMessageDigestType) value;
-					validateETSIMessageDigest(md);
-				} else if (value instanceof SAReasonType) {
-					SAReasonType reasonType = (SAReasonType) value;
-					validateETSISAReasonType(reasonType);
-				} else if (value instanceof SAFilterType) {
-					SAFilterType filterType = (SAFilterType) value;
-					validateETSIFilter(filterType);
-				} else if (value instanceof SASubFilterType) {
-					SASubFilterType subFilterType = (SASubFilterType) value;
-					validateETSISubFilter(subFilterType);
-				} else if (value instanceof SANameType) {
-					SANameType nameType = (SANameType) value;
-					validateETSISAName(nameType);
-				} else if (value instanceof SAContactInfoType) {
-					SAContactInfoType contactTypeInfo = (SAContactInfoType) value;
-					validateETSIContactInfo(contactTypeInfo);
-				} else if (value instanceof SADSSType) {
-					SADSSType dss = (SADSSType) value;
-					validateETSIDSSType(dss);
-				} else if (value instanceof SAVRIType) {
-					SAVRIType vri = (SAVRIType) value;
-					validateETSIVRIType(vri);
-				} else if (value instanceof SARevIDListType) {
-					SARevIDListType revIdList = (SARevIDListType) value;
-					validateETSIRevIDListType(revIdList);
-				} else {
-					LOG.warn("{} not tested", value.getClass());
-				}
+				} else if (value instanceof SASignatureProductionPlaceType) {
+					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
+					validateETSISASignatureProductionPlaceType(productionPlace);
 
-			} else {
-				fail("Only JAXBElement are accepted");
+				}
 			}
 		}
-	}
-
-	protected void validateETSIMessageDigest(SAMessageDigestType md) {
-		assertNotNull(md.getDigest());
-	}
-
-	protected void validateETSIFilter(SAFilterType filterType) {
-		assertNull(filterType);
-	}
-
-	protected void validateETSISubFilter(SASubFilterType subFilterType) {
-		assertNull(subFilterType);
-	}
-
-	protected void validateETSIContactInfo(SAContactInfoType contactTypeInfo) {
-		assertNull(contactTypeInfo);
-	}
-
-	protected void validateETSISAReasonType(SAReasonType reasonType) {
-		assertNull(reasonType);
-	}
-
-	protected void validateETSISAName(SANameType nameType) {
-		assertNull(nameType);
-	}
-
-	protected void validateETSIDSSType(SADSSType dss) {
-		assertNull(dss);
-	}
-
-	protected void validateETSIVRIType(SAVRIType vri) {
-		assertNull(vri);
-	}
-
-	private void validateETSIRevIDListType(SARevIDListType revIdList) {
-		assertNotNull(revIdList);
-		List<Serializable> crlidOrOCSPID = revIdList.getCRLIDOrOCSPID();
-		assertNotNull(crlidOrOCSPID);
 	}
 
 	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
@@ -1214,32 +514,153 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
-	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
-		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<RelatedCertificateWrapper> relatedCertificates = signatureWrapper.foundCertificates().getRelatedCertificates();
-			for (RelatedCertificateWrapper foundCert : relatedCertificates) {
-				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+	/**
+	 * In some cases, PDF files finish with %%EOF + EOL and some other cases only
+	 * %%EOF
+	 * 
+	 * There's no technical way to extract the exact file ending.
+	 */
+	private boolean isOnlyTwoBytesDifferAtLastPosition(byte[] originalByteArray, byte[] retrievedByteArray) {
+		int lengthOrigin = originalByteArray.length;
+		int lengthRetrieved = retrievedByteArray.length;
+
+		int min = Math.min(lengthOrigin, lengthRetrieved);
+		if ((lengthOrigin - min > 2) || (lengthRetrieved - min > 2)) {
+			return false;
+		}
+
+		for (int i = 0; i < min; i++) {
+			if (originalByteArray[i] != retrievedByteArray[i]) {
+				return false;
 			}
-			List<OrphanCertificateWrapper> orphanCertificates = signatureWrapper.foundCertificates().getOrphanCertificates();
-			for (OrphanCertificateWrapper foundCert : orphanCertificates) {
-				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+		}
+
+		return true;
+	}
+	
+	private void assertDigestEqual(DSSDocument originalDocument, XmlSignerData signerData) {
+
+		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValue);
+		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
+		assertNotNull(digestAlgorithm);
+		
+		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
+		boolean equals = false;
+		for (DSSDocument documentToCompare : similarDocuments) {
+			if (documentToCompare.getDigest(digestAlgorithm).equals(Utils.toBase64(digestAlgoAndValue.getDigestValue()))) {
+				equals = true;
+				break;
+			}
+		}
+		assertTrue(equals);
+		
+	}
+	
+	/**
+	 * Documents can end with optional characters
+	 * This method returns all possible cases of the originalDocument end string
+	 */
+	private List<DSSDocument> buildCloseDocuments(DSSDocument originalDocument) {
+		List<DSSDocument> documentList = new ArrayList<>();
+		documentList.add(originalDocument);
+		documentList.add(getReducedDocument(originalDocument, 1));
+		documentList.add(getReducedDocument(originalDocument, 2));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {'\n'}));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {'\r', '\n'}));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {' ', '\r', '\n'}));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {' ', '\n'}));
+		return documentList;
+	}
+	
+	private DSSDocument getReducedDocument(DSSDocument document, int bytesToRemove) {
+		try (InputStream inputStream = document.openStream()) {
+			byte[] originalBytes = Utils.toByteArray(inputStream);
+			byte[] subarray = Utils.subarray(originalBytes, 0, originalBytes.length - bytesToRemove);
+			return new InMemoryDocument(subarray);
+		} catch (IOException e) {
+			fail(e);
+			return null;
+		}
+	}
+	
+	private DSSDocument getExpandedDocument(DSSDocument document, byte[] bytesToExpand) {
+		try (InputStream inputStream = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			byte[] originalBytes = Utils.toByteArray(inputStream);
+			baos.write(originalBytes);
+			baos.write(bytesToExpand);
+			return new InMemoryDocument(baos.toByteArray());
+		} catch (IOException e) {
+			fail(e);
+			return null;
+		}
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
+
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		for (String signatureId : signatureIdList) {
+
+			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+			
+			List<DSSDocument> originalDocuments = getOriginalDocuments();
+			for (DSSDocument original : originalDocuments) {
+				boolean found = false;
+				boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
+				String originalDigest = getDigest(original, toBeCanonicalized);
+				for (DSSDocument retrieved : retrievedOriginalDocuments) {
+					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+						found = true;
+					}
+				}
+
+				if (!MimeType.PDF.equals(original.getMimeType())) {
+					assertTrue(found, "Unable to retrieve the original document " + original.getName());
+				} else if (!found) {
+					byte[] originalByteArray = DSSUtils.toByteArray(original);
+					DSSDocument retrieved = retrievedOriginalDocuments.get(0);
+					byte[] retrievedByteArray = DSSUtils.toByteArray(retrieved);
+					assertTrue(isOnlyTwoBytesDifferAtLastPosition(originalByteArray, retrievedByteArray));
+					
+					SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
+					List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+					assertNotNull(signatureScopes);
+					assertEquals(1, signatureScopes.size());
+					XmlSignerData signerData = signatureScopes.get(0).getSignerData();
+					assertNotNull(signerData);
+					assertDigestEqual(original, signerData);
+				}
 			}
 		}
 	}
 
-	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
-		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<RelatedRevocationWrapper> relatedRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
-			for (RelatedRevocationWrapper foundRevocation : relatedRevocations) {
-				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
-			}
-			List<OrphanRevocationWrapper> orphanRevocations = signatureWrapper.foundRevocations().getOrphanRevocationData();
-			for (OrphanRevocationWrapper foundRevocation : orphanRevocations) {
-				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+		byte[] byteArray = DSSUtils.toByteArray(doc);
+		if (toBeCanonicalized) {
+			try {
+				// we canonicalize to ignore the header (which is not covered by the signature)
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
+				byteArray = c14n.canonicalize(byteArray);
+			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
+				// Not always able to canonicalize (more than one file can be covered (XML +
+				// something else) )
 			}
 		}
+		// LOG.info("Bytes : {}", new String(byteArray));
+		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
 	}
+	
+	protected String getCanonicalizationMethod() {
+		// Inclusive by default
+		return CanonicalizationMethod.INCLUSIVE;
+	}
+
+	protected abstract List<DSSDocument> getOriginalDocuments();
+
+	protected abstract DSSDocument sign();
 
 }

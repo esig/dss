@@ -88,6 +88,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -138,6 +139,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -591,10 +593,10 @@ public class DiagnosticDataBuilder {
 	
 	private void attachCounterSignatures(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
-			XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
-			// attach master
-			AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
-			if (masterSignature != null) {
+			if (advancedSignature.isCounterSignature()) {
+				XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
+				// attach master
+				AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
 				XmlSignature xmlMasterSignature = xmlSignaturesMap.get(masterSignature.getId());
 				currentSignature.setCounterSignature(true);
 				currentSignature.setParent(xmlMasterSignature);
@@ -931,10 +933,26 @@ public class DiagnosticDataBuilder {
 		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap)) {
 			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
 		}
+		buildOrphanRevocationTokensFromCommonSources(); // necessary to collect all data from DSS PDF revisions
 		if (Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
 			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
 		}
 		return xmlOrphanTokens;
+	}
+	
+	private void buildOrphanRevocationTokensFromCommonSources() {
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : commonCRLSource.getAllRevocationBinaries()) {
+			String id = revocationIdentifier.asXmlId();
+			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
+				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
+			}
+		}
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : commonOCSPSource.getAllRevocationBinaries()) {
+			String id = revocationIdentifier.asXmlId();
+			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
+				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
+			}
+		}
 	}
 	
 	private XmlRevocation buildDetachedXmlRevocation(RevocationToken<Revocation> revocationToken) {
@@ -1055,7 +1073,19 @@ public class DiagnosticDataBuilder {
 
 	private CertificateToken getIssuerCertificate(final Token token) {
 		if (token != null && token.getPublicKeyOfTheSigner() != null) {
-			List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner());
+			if (token instanceof OCSPToken) {
+				CertificateToken issuer = getIssuerForOCSPToken((OCSPToken) token);
+				if (issuer != null) {
+					return issuer;
+				}
+			}
+			if (token instanceof TimestampToken) {
+				CertificateToken issuer = getIssuerForTimestampToken((TimestampToken) token);
+				if (issuer != null) {
+					return issuer;
+				}
+			}
+			List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), usedCertificates);
 			if (Utils.isCollectionNotEmpty(issuers)) {
 				for (CertificateToken cert : issuers) {
 					if (cert.isValidOn(token.getCreationDate())) {
@@ -1063,6 +1093,30 @@ public class DiagnosticDataBuilder {
 					}
 				}
 				return issuers.iterator().next();
+			}
+		}
+		return null;
+	}
+	
+	private CertificateToken getIssuerForOCSPToken(final OCSPToken token) {
+		List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), token.getCertificateSource().getCertificates());
+		if (Utils.isCollectionNotEmpty(issuers)) {
+			for (CertificateToken cert : issuers) {
+				if (cert.isValidOn(token.getCreationDate())) {
+					return cert;
+				}
+			}
+		}
+		return null;
+	}
+	
+	private CertificateToken getIssuerForTimestampToken(final TimestampToken token) {
+		List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), token.getCertificateSource().getCertificates());
+		if (Utils.isCollectionNotEmpty(issuers)) {
+			for (CertificateToken cert : issuers) {
+				if (cert.isValidOn(token.getCreationDate())) {
+					return cert;
+				}
 			}
 		}
 		return null;
@@ -1083,7 +1137,7 @@ public class DiagnosticDataBuilder {
 	
 	private CertificateToken getCertificateByPubKey(final PublicKey publicKey) {
 		if (publicKey != null) {
-			List<CertificateToken> issuers = getCertsWithPublicKey(publicKey);
+			List<CertificateToken> issuers = getCertsWithPublicKey(publicKey, usedCertificates);
 			if (Utils.isCollectionNotEmpty(issuers)) {
 				return issuers.iterator().next();
 			}
@@ -1091,11 +1145,11 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private List<CertificateToken> getCertsWithPublicKey(final PublicKey publicKey) {
+	private List<CertificateToken> getCertsWithPublicKey(final PublicKey publicKey, final Collection<CertificateToken> candidates) {
 		List<CertificateToken> founds = new ArrayList<>();
 		
 		if (publicKey != null) {			
-			for (CertificateToken cert : usedCertificates) {
+			for (CertificateToken cert : candidates) {
 				if (publicKey.equals(cert.getPublicKey())) {
 					founds.add(cert);
 					if (isTrusted(cert)) {
@@ -1290,13 +1344,15 @@ public class DiagnosticDataBuilder {
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
 		List<CertificateRef> referencesForCertificateToken = certificateSource.getReferencesForCertificateToken(cert);
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
-			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
-			referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
+			for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
+				xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef, refOrigin));
+				referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
+			}
 		}		
 		return xrc;
 	}
 	
-	private XmlCertificateRef getXmlCertificateRef(CertificateRef ref) {
+	private XmlCertificateRef getXmlCertificateRef(CertificateRef ref, CertificateRefOrigin origin) {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
 		CertificateIdentifier certificateIdentifier = ref.getCertificateIdentifier();
 		if (certificateIdentifier != null) {
@@ -1311,7 +1367,7 @@ public class DiagnosticDataBuilder {
 		} else if (responderId != null) {
 			certificateRef.setSerialInfo(getXmlSignerInfo(responderId));
 		}
-		certificateRef.setOrigin(ref.getOrigin());
+		certificateRef.setOrigin(origin);
 		return certificateRef;
 	}
 	
@@ -1320,7 +1376,7 @@ public class DiagnosticDataBuilder {
 		for (CertificateRef certificateRef : certificateSource.getOrphanCertificateRefs()) {
 			CertificateToken certificateToken = getUsedCertificateByCertificateRef(certificateRef);
 			if (certificateToken != null) {
-				relatedCertificates.add(getXmlRelatedCertificate(certificateToken, certificateRef));
+				relatedCertificates.add(getXmlRelatedCertificate(certificateSource, certificateToken, certificateRef));
 			}
 		}
 		return relatedCertificates;
@@ -1337,10 +1393,13 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
+	private XmlRelatedCertificate getXmlRelatedCertificate(TokenCertificateSource certificateSource, 
+			CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
-		xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
+		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
+			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef, refOrigin));
+		}
 		referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
 		return xrc;
 	}
@@ -1353,17 +1412,19 @@ public class DiagnosticDataBuilder {
 		for (CertificateRef orphanCertificateRef : orphanCertificateRefs) {
 			// create orphan if certificate is not present
 			if (getUsedCertificateByCertificateRef(orphanCertificateRef) == null) {
-				orphanCertificates.add(createXmlOrphanCertificate(orphanCertificateRef));
+				orphanCertificates.add(createXmlOrphanCertificate(certificateSource, orphanCertificateRef));
 			}
 		}
 		
 		return orphanCertificates;
 	}
 	
-	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateRef orphanCertificateRef) {
+	private XmlOrphanCertificate createXmlOrphanCertificate(TokenCertificateSource certificateSource, CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
 		orphanCertificate.setToken(createXmlOrphanCertificateToken(orphanCertificateRef));
-		orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef));
+		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(orphanCertificateRef)) {
+			orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef, refOrigin));
+		}
 		return orphanCertificate;
 	}
 	
@@ -1451,10 +1512,23 @@ public class DiagnosticDataBuilder {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source.getOrphanRevocationReferencesWithOrigins();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
-			if (allSources.isOrphan(ref)) {
+			if (allSources.isOrphan(ref) && sourceDoesNotContainOrphanBinaries(source, ref)) {
 				xmlOrphanRevocationRefs.add(createOrphanRevocationFromRef(ref, entry.getValue()));
 			}
 		}
+	}
+	
+	private <R extends Revocation> boolean sourceDoesNotContainOrphanBinaries(OfflineRevocationSource<R> source, RevocationRef<R> ref) {
+		String tokenId = referenceMap.get(ref.getDSSIdAsString());
+		if (tokenId == null) {
+			return true;
+		}
+		for (Identifier revocationIdentifier : source.getAllRevocationBinaries()) {
+			if (tokenId.equals(revocationIdentifier.asXmlId())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(String tokenId, Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {

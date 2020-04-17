@@ -22,35 +22,27 @@ package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1619Test extends PKIFactoryAccess {
+public class DSS1619Test extends AbstractCAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/dss-1619/CAdES-XL-T1-Double-AV2.png.p7m");
+	}
 	
-	@Test
-	public void test() {
-		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1619/CAdES-XL-T1-Double-AV2.png.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-
-		// System.out.println(reports.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(8, timestampList.size());
@@ -58,9 +50,7 @@ public class DSS1619Test extends PKIFactoryAccess {
 		int archiveTimestampCounter = 0;
 		int timestampsWithArchiveTypeCounter = 0;
 		int timestampV2Counter = 0;
-		for (TimestampWrapper timestamp : timestampList) {
-			assertTrue(timestamp.isMessageImprintDataFound());
-			assertTrue(timestamp.isMessageImprintDataIntact());
+		for (TimestampWrapper timestamp : timestampList) {;
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
 				archiveTimestampCounter++;
 				assertNotNull(timestamp.getArchiveTimestampType());
@@ -75,12 +65,19 @@ public class DSS1619Test extends PKIFactoryAccess {
 		assertEquals(2, archiveTimestampCounter);
 		assertEquals(2, timestampsWithArchiveTypeCounter);
 		assertEquals(2, timestampV2Counter);
-		
 	}
-
+	
 	@Override
-	protected String getSigningAlias() {
-		return null;
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.CAdES_101733_X, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocationObjects().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
 }

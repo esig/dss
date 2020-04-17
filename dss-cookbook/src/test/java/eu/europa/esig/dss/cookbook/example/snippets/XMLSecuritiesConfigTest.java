@@ -1,11 +1,15 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javax.xml.XMLConstants;
+import javax.xml.transform.TransformerFactory;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.jaxb.TransformerFactoryBuilder;
 import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
 
@@ -22,6 +26,9 @@ public class XMLSecuritiesConfigTest {
 		// returns a predefined {@link TransformerFactoryBuilder} with all securities in place
 		TransformerFactoryBuilder transformerBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
 		
+		// sets an alert in case of exception on feature/attribute setting
+		transformerBuilder.setSecurityExceptionAlert(new LogOnStatusAlert(Level.WARN));
+		
 		// allows to enable a feature
 		transformerBuilder.enableFeature(XMLConstants.FEATURE_SECURE_PROCESSING);
 		
@@ -31,14 +38,13 @@ public class XMLSecuritiesConfigTest {
 		// allows to set an attribute with a value
 		transformerBuilder.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		
-		// sets an alert in case of exception on feature/attribute setting
-		transformerBuilder.setSecurityExceptionAlert(new ExceptionOnStatusAlert());
-		
 		// sets the transformer (will be applied for all calls)
 		xmlDefinerUtils.setTransformerFactoryBuilder(transformerBuilder);
 
 		// end::demo[]
-
+		
+		TransformerFactory transformerFactory = transformerBuilder.build();
+		assertNotNull(transformerFactory);
 
 		// tag::dbf[]
 		

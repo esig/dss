@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.alert;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -51,8 +52,10 @@ public class LogAlertTest {
 		Status exception = new Status(EXCEPTION_MESSAGE);
 		
 		// manual testing
-		LogOnStatusAlert dssLogAlert = new LogOnStatusAlert(Level.INFO);
-		dssLogAlert.alert(exception);
+		assertDoesNotThrow(() -> {
+			LogOnStatusAlert dssLogAlert = new LogOnStatusAlert(Level.INFO);
+			dssLogAlert.alert(exception);
+		});
 	}
 	
 	class CustomStatusAlert extends AbstractStatusAlert {

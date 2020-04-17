@@ -21,13 +21,10 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -44,25 +41,18 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1647Test {
+public class DSS1647Test extends AbstractXAdESTestValidation {
 
-	@Test
-	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss-1647_OJ_L_2018_109_FULL.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		//commonCertificateVerifier.setIncludeCertificateRevocationValues(true);
-		validator.setCertificateVerifier(commonCertificateVerifier);
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/dss-1647_OJ_L_2018_109_FULL.xml");
+	}
+	
+	@Override
+	protected void checkTokens(DiagnosticData diagnosticData) {
+		super.checkTokens(diagnosticData);
 		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		// reports.print();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertEquals(2, timestamps.size());
 		
@@ -110,6 +100,18 @@ public class DSS1647Test {
 		assertEquals(1, ocspRevocationValues.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocations().stream().map(RevocationWrapper::getId)
 				.collect(Collectors.toList()).contains(ocspRevocationValues.get(0).getId()));
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		// has no LTA profile, because the chain is not trusted in offline
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		// do nothing
 	}
 
 }

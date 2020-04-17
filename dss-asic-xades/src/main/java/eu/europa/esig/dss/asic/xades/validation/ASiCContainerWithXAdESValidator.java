@@ -103,7 +103,12 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) {
 		List<DSSDocument> result = new ArrayList<>();
-		List<DSSDocument> potentials = getSignedDocuments();
+		List<DSSDocument> potentials;
+		if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
+			potentials = OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult);
+		} else {
+			potentials = getSignedDocuments();
+		}
 		for (final DSSDocument signature : getSignatureDocuments()) {
 			XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
 			xadesValidator.setCertificateVerifier(certificateVerifier);

@@ -45,12 +45,14 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
 
-public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
-	private static final String HELLO_WORLD = "Hello World";
+public class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature {
+	
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBExternalSignatureTest.class);
+	
+	private static final String HELLO_WORLD = "Hello World";
+	
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;

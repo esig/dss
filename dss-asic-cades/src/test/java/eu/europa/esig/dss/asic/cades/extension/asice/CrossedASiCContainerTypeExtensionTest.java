@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
-import eu.europa.esig.dss.asic.cades.extension.AbstractTestASiCwithCAdESExtension;
+import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class CrossedASiCContainerTypeExtensionTest extends AbstractTestASiCwithCAdESExtension {
+public class CrossedASiCContainerTypeExtensionTest extends AbstractASiCWithCAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

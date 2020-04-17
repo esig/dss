@@ -58,13 +58,7 @@ public class OpenDocumentExtensionLTToLTAWithFailTimestampTest extends AbstractT
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
 	public void init(DSSDocument fileToTest) throws Exception {
-		this.fileToTest = fileToTest;
-
-		assertThrows(DSSException.class, () -> super.test());
-	}
-
-	@Override
-	public void test() throws Exception {
+		assertThrows(DSSException.class, () -> super.init(fileToTest));
 	}
 
 }

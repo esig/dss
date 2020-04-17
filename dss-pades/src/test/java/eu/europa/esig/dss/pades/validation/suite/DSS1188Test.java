@@ -21,32 +21,23 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1188Test {
+public class DSS1188Test extends AbstractPAdESTestValidation {
 
-	@Test
-	public void testSigWithAttached() {
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1188/Test.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1188/Test.pdf"));
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals("C-A5518784E8001EF099F4BAEC5573BC965830079EDDED92752EA94B6548DFFC06", signature.getSigningCertificate().getId());
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 }

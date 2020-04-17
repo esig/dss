@@ -24,30 +24,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class LevelBWithCertificateValueTest {
+public class LevelBWithCertificateValueTest extends AbstractXAdESTestValidation {
 
-	@Test
-	public void test() {
-		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument("src/test/resources/validation/BaselineBWithCertificateValues.xml"));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		SimpleReport simpleReport = reports.getSimpleReport();
-
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/BaselineBWithCertificateValues.xml");
+	}
+	
+	@Override
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		super.verifySimpleReport(simpleReport);
+		
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
 		assertEquals(1, signatureIdList.size());
 
 		SignatureLevel signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
 		assertEquals(SignatureLevel.XAdES_BASELINE_B, signatureFormat);
 	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		// reference is not found
+	}
+	
 }

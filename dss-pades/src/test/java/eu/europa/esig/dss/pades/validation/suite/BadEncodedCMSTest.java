@@ -21,29 +21,57 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
-public class BadEncodedCMSTest {
+public class BadEncodedCMSTest extends AbstractPAdESTestValidation {
 
-	@Test
-	public void validation() {
-
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/BadEncodedCMS.pdf"));
-
-		PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		assertNotNull(reports);
-		assertEquals(0, reports.getDiagnosticData().getAllSignatures().size());
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/BadEncodedCMS.pdf"));
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		assertTrue(Utils.isCollectionEmpty(signatures));
+	}
+	
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		assertEquals(0, diagnosticData.getAllSignatures().size());
+	}
+	
+	@Override
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		assertEquals(0, detailedReport.getBasicBuildingBlocksNumber());
+	}
+	
+	@Override
+	protected void validateValidationStatus(ValidationStatusType signatureValidationStatus) {
+		assertEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationStatus.getMainIndication());
+	}
+	
+	@Override
+	protected void validateETSISignatureValidationObjects(ValidationObjectListType signatureValidationObjects) {
+		assertNull(signatureValidationObjects);
+	}
+	
+	@Override
+	protected void checkReportsTokens(Reports reports) {
+		// do nothing
 	}
 
 }

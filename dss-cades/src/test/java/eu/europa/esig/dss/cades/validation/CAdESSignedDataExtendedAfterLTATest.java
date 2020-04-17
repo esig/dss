@@ -21,30 +21,26 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESSignedDataExtendedAfterLTATest extends PKIFactoryAccess {
+public class CAdESSignedDataExtendedAfterLTATest extends AbstractCAdESTestValidation {
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/cades_signeddata_extended_after_lta.p7m");
+	}
 	
-	@Test
-	public void test() {
-		
-		DSSDocument document = new FileDocument("src/test/resources/validation/cades_signeddata_extended_after_lta.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<TimestampWrapper> allTimestamps = signatureById.getTimestampList();
@@ -52,12 +48,12 @@ public class CAdESSignedDataExtendedAfterLTATest extends PKIFactoryAccess {
 		assertEquals(0, allTimestamps.get(0).getTimestampedRevocations().size());
 		assertEquals(2, allTimestamps.get(1).getTimestampedRevocations().size());
 		assertEquals(3, allTimestamps.get(2).getTimestampedRevocations().size());
-		
 	}
-
+	
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 }

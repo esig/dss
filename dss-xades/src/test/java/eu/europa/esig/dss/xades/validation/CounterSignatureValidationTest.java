@@ -28,40 +28,34 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
+import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class CounterSignatureValidationTest {
+public class CounterSignatureValidationTest extends AbstractXAdESTestValidation {
+	
+	private String ddCounterSignatureId = null;
 
-	@Test
-	public void test() {
-
-		DSSDocument doc = new FileDocument("src/test/resources/validation/TEST_S1a_C1a_InTL_VALID.xml");
-
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(doc);
-		sdv.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = sdv.validateDocument();
-
-		assertNotNull(reports);
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/TEST_S1a_C1a_InTL_VALID.xml");
+	}
+	
+	@Override
+	protected void checkCounterSignatures(DiagnosticData diagnosticData) {
+		super.checkCounterSignatures(diagnosticData);
+		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		int countSignatures = 0;
 		int countCounterSignatures = 0;
-		String ddCounterSignatureId = null; 
 
 		for (SignatureWrapper signatureWrapper : signatures) {
 			if (signatureWrapper.isCounterSignature()) {
@@ -75,41 +69,62 @@ public class CounterSignatureValidationTest {
 		assertEquals(1, countSignatures);
 		assertEquals(1, countCounterSignatures);
 		
-		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		assertNotNull(ddCounterSignatureId);
+	}
+	
+	@Override
+	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
+		super.verifyETSIValidationReport(etsiValidationReportJaxb);
 
-		countSignatures = 0;
-		countCounterSignatures = 0;
-		String etsiCounterSignatureId = null; 
+		int countSignatures = 0;
+		int countCounterSignatures = 0;
 		
-		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
-		for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
-			List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport.getSignatureAttributes()
-					.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		String etsiCounterSignatureId = null;
+
+		List<SignatureValidationReportType> reports = etsiValidationReportJaxb.getSignatureValidationReport();
+		for (SignatureValidationReportType signatureValidationReport : reports) {
 			boolean containsCounterSignatures = false;
-			for (Object object : signingTimeOrSigningCertificateOrDataObjectFormat) {
-				JAXBElement<?> jaxbElement = (JAXBElement<?>) object;
-				if (jaxbElement.getValue() instanceof SACounterSignatureType) {
-					SACounterSignatureType counterSignatureType = (SACounterSignatureType) jaxbElement.getValue();
-					assertNotNull(counterSignatureType.getAttributeObject());
-					assertEquals(1, counterSignatureType.getAttributeObject().size());
-					assertTrue(Utils.isCollectionNotEmpty(counterSignatureType.getAttributeObject()));
-					assertNotNull(counterSignatureType.getCounterSignature());
-					ValidationObjectType counterSignatureReference = (ValidationObjectType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
-					etsiCounterSignatureId = counterSignatureReference.getId();
-					countCounterSignatures++;
-					containsCounterSignatures = true;
+
+			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
+			List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+			for (Object signatureAttributeObj : signatureAttributeObjects) {
+				if (signatureAttributeObj instanceof JAXBElement) {
+					JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
+					Object value = jaxbElement.getValue();
+	
+					if (value instanceof SACounterSignatureType) {
+						SACounterSignatureType counterSignatureType = (SACounterSignatureType) jaxbElement.getValue();
+						assertNotNull(counterSignatureType.getAttributeObject());
+						assertEquals(1, counterSignatureType.getAttributeObject().size());
+						assertTrue(Utils.isCollectionNotEmpty(counterSignatureType.getAttributeObject()));
+						assertNotNull(counterSignatureType.getCounterSignature());
+						ValidationObjectType counterSignatureReference = (ValidationObjectType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
+						etsiCounterSignatureId = counterSignatureReference.getId();
+						countCounterSignatures++;
+						containsCounterSignatures = true;
+					}
 				}
 			}
 			if (!containsCounterSignatures) {
 				countSignatures++;
 			}
 		}
+		
 		assertEquals(1, countSignatures);
 		assertEquals(1, countCounterSignatures);
-		assertNotNull(ddCounterSignatureId);
 		assertNotNull(etsiCounterSignatureId);
-		assertEquals(ddCounterSignatureId, etsiCounterSignatureId);
 		
+		assertEquals(ddCounterSignatureId, etsiCounterSignatureId);
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		// counter signature reference fails
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		// no original documents
 	}
 
 }

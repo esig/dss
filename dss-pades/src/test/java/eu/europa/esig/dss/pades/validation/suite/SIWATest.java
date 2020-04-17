@@ -23,36 +23,37 @@ package eu.europa.esig.dss.pades.validation.suite;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 
-public class SIWATest {
+public class SIWATest extends AbstractPAdESTestValidation {
 
-	@Test
-	public void test() {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/siwa.pdf"));
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new IgnoreDataLoader());
-		validator.setCertificateVerifier(certificateVerifier);
-
-		Reports reports = validator.validateDocument();
-		assertEquals(1, reports.getSimpleReport().getSignaturesCount());
-		assertEquals(0, reports.getSimpleReport().getValidSignaturesCount());
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/siwa.pdf"));
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isBLevelTechnicallyValid());
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureById.isSigningCertificateIdentified());
+	}
+	
+	@Override
+	protected void verifySimpleReport(SimpleReport simpleReport) {
+		super.verifySimpleReport(simpleReport);
+		
+		assertEquals(1, simpleReport.getSignaturesCount());
+		assertEquals(0, simpleReport.getValidSignaturesCount());
 	}
 
 }

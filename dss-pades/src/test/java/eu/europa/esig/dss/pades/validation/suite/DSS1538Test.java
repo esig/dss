@@ -21,49 +21,59 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.utils.Utils;
 
-public class DSS1538Test {
+public class DSS1538Test extends AbstractPAdESTestValidation {
 
-	@Test
-	public void test() {
-		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/encrypted.pdf"));
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new IgnoreDataLoader());
-		validator.setCertificateVerifier(certificateVerifier);
-
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/encrypted.pdf"));
+	}
+	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
 
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureById.isSignatureIntact());
-		assertTrue(signatureById.isSignatureValid());
 
 		List<XmlDigestMatcher> digestMatchers = signatureById.getDigestMatchers();
 		assertEquals(1, digestMatchers.size());
-
+		
 		XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
 		assertEquals(DigestMatcherType.MESSAGE_DIGEST, xmlDigestMatcher.getType());
-		assertTrue(xmlDigestMatcher.isDataFound());
-		assertTrue(xmlDigestMatcher.isDataIntact());
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureById.isSigningCertificateIdentified());
+	}
+	
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+		assertNotNull(pdfRevision);
+		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldName()));
+		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
+		assertNotNull(pdfSignatureDictionary);
+		assertNotNull(pdfSignatureDictionary.getSubFilter());
+		assertNotNull(pdfSignatureDictionary.getSignatureByteRange());
+		assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
 	}
 
 }

@@ -24,37 +24,39 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS817Test {
+public class DSS817Test extends AbstractXAdESTestValidation {
 
-	@Test
-	public void test()  {
-		DSSDocument doc = new FileDocument("src/test/resources/dss-817-test.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/dss-817-test.xml");
+	}
+	
+	@Override
+	protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
+		super.checkCommitmentTypeIndications(diagnosticData);
 		
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlCommitmentTypeIndication> commitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIndications();
 		
+		assertEquals(1, commitmentTypeIdentifiers.size());
+		assertEquals(CommitmentTypeEnum.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0).getIdentifier());
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
+
 		String signatureId = diagnosticData.getFirstSignatureId();
 		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 		assertEquals(1, retrievedOriginalDocuments.size());
-		
-		assertEquals(1, commitmentTypeIdentifiers.size());
-		assertEquals(CommitmentTypeEnum.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0).getIdentifier());
 	}
 	
 }

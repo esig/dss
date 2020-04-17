@@ -49,6 +49,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -133,9 +134,9 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-
+	
 	@Override
-	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) {
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		// Ignored sampleWithPlaceOfSignature itself is not covered
 	}
 

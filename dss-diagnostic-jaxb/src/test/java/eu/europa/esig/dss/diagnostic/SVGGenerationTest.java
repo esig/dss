@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.diagnostic;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +28,10 @@ public class SVGGenerationTest {
 			Result result = new StreamResult(fos);
 			newFacade.generateSVG(diagnosticData, result);
 		}
+		
+		File file = new File("target/diag-data.svg");
+		assertTrue(file.exists());
+		assertTrue(file.length() > 0);
 	}
 
 }

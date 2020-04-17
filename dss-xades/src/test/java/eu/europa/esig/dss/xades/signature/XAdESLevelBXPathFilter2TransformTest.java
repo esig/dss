@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,6 +35,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -77,7 +77,7 @@ public class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSigna
 	}
 	
 	@Override
-	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) throws IOException {
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		// the reference output does not equal to the original file content
 		// do nothing
 	}

@@ -20,11 +20,19 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -47,6 +55,34 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		String timestampId = diagnosticData.getSignatures().get(0).getTimestampList().get(0).getId();
+		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId())) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
+				boolean coverPreviousTsp = false;
+				List<TimestampWrapper> timestampedTimestamps = wrapper.getTimestampedTimestamps();
+				for (TimestampWrapper timestamp : timestampedTimestamps) {
+					if (timestampId.equals(timestamp.getId())) {
+						coverPreviousTsp = true;
+					}
+				}
+				assertTrue(coverPreviousTsp);
+			}
+			
+			List<SignatureWrapper> timestampedSignatures = wrapper.getTimestampedSignatures();
+			boolean found = false;
+			for (SignatureWrapper signatureWrapper : timestampedSignatures) {
+				if (diagnosticData.getFirstSignatureId().equals(signatureWrapper.getId())) {
+					found = true;
+				}
+			}
+			assertTrue(found);
+		}
 	}
 
 	@Override

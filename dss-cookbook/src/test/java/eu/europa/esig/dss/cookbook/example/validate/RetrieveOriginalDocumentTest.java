@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -62,6 +64,8 @@ public class RetrieveOriginalDocumentTest {
 
 		original.save("target/original.xml");
 		// end::demo[]
+		
+		assertNotNull(original);
 
 	}
 

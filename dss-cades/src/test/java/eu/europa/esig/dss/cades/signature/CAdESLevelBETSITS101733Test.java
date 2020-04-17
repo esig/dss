@@ -72,11 +72,10 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
-public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
+public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 

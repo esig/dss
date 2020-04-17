@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class CAdESExtensionLTToLTAWithError500TimestampTest extends AbstractTestCAdESExtension {
+public class CAdESExtensionLTToLTAWithError500TimestampTest extends AbstractCAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
@@ -47,9 +47,9 @@ public class CAdESExtensionLTToLTAWithError500TimestampTest extends AbstractTest
 
 	@Override
 	@Test
-	public void test() throws Exception {
+	public void extendAndVerify() throws Exception {
 		assertThrows(DSSException.class, () -> {
-			super.test();
+			super.extendAndVerify();
 		});
 	}
 

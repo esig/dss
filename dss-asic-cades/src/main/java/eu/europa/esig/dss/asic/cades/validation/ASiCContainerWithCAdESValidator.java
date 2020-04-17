@@ -136,7 +136,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected List<DSSDocument> getArchiveDocuments() {
+	public List<DSSDocument> getArchiveDocuments() {
 		List<DSSDocument> archiveContents = super.getArchiveDocuments();
 		// in case of Manifest file (ASiC-E CAdES signature) add signed documents
 		if (Utils.isCollectionNotEmpty(getManifestDocuments())) {
@@ -279,6 +279,10 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
+		if (advancedSignature.isCounterSignature()) {
+			CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
+			return Arrays.asList(cadesSignature.getOriginalDocument());
+		}
 		List<DSSDocument> retrievedDocs = advancedSignature.getDetachedContents();
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);

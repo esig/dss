@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -48,43 +47,37 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.validationreport.enums.ObjectType;
-import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
-import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class DSS874Test {
+public class DSS874Test extends AbstractXAdESTestValidation {
+	
+    private static final File policyDocument = new File("src/test/resources/validation/dss874/policy.pdf");
 
-	@Test
-	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss874/sellosFNMT-XAdES_A.xml");
-		File policyDocument = new File("src/test/resources/validation/dss874/policy.pdf");
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return new FileDocument("src/test/resources/validation/dss874/sellosFNMT-XAdES_A.xml");
+	}
+	
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesById = new HashMap<>();
 		signaturePoliciesById.put("2.16.724.1.3.1.1.2.1.9", new FileDocument(policyDocument));
 		signaturePolicyProvider.setSignaturePoliciesById(signaturePoliciesById);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
-		Reports reports = validator.validateDocument();
+		return validator;
+	}
+	
+	@Override
+	protected void checkTokens(DiagnosticData diagnosticData) {
+		super.checkTokens(diagnosticData);
 
-		UnmarshallingTester.unmarshallXmlReports(reports);
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-		assertEquals(1, signatures.size());
-		
-		String signatureId = diagnosticData.getFirstSignatureId();
-		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
-		assertEquals(1, retrievedOriginalDocuments.size());
-
-		SignatureWrapper signatureWrapper = signatures.get(0);
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatures().get(0);
 		assertTrue(signatureWrapper.isPolicyStatus());
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
@@ -109,27 +102,24 @@ public class DSS874Test {
 		for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations().getOrphanRevocationData()) {
 			revocationIds.add(revocation.getId());
 		}
+	}
+	
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		super.verifyOriginalDocuments(validator, diagnosticData);
 		
-		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
-		assertNotNull(etsiValidationReportJaxb);
-		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
-		List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
-		
-		int ocspRevocationsCounter = 0;
-		for (ValidationObjectType validationObject : validationObjects) {
-			if (ObjectType.OCSP_RESPONSE.equals(validationObject.getObjectType())) {
-				assertTrue(revocationIds.contains(validationObject.getId()));
-				ocspRevocationsCounter++;
-			}
-		}
-		
-		assertEquals(5, ocspRevocationsCounter);
-		
+		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertEquals(1, retrievedOriginalDocuments.size());
+	}
+	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
-	public void test2() throws IOException {
-		File policyDocument = new File("src/test/resources/validation/dss874/policy.pdf");
+	public void policyTest() throws IOException {
 		byte[] byteArray = Utils.toByteArray(new FileInputStream(policyDocument));
 
 		byte[] asn1SignaturePolicyDigest = DSSUtils.digest(DigestAlgorithm.SHA1, byteArray);

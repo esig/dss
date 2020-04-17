@@ -25,6 +25,7 @@
 				<configuration>
 					<excludes>
 						<exclude>eu/**/suite/*Test.java</exclude>
+						<exclude>eu/**/suite/**/*Test.java</exclude>
 					</excludes>
 				</configuration>	
 			</plugin>

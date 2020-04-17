@@ -424,5 +424,15 @@ public class TimestampTokenTest {
 		assertEquals(SignatureAlgorithm.RSA_SHA1, timestampToken.getSignatureAlgorithm());
 		assertEquals(SignatureValidity.VALID, timestampToken.getSignatureValidity());
 	}
+	
+	@Test
+	public void wrongOCSPResponseTest() throws Exception {
+		DSSDocument tst = new FileDocument("src/test/resources/tst_with_broken_ocsp.tst");
+		TimestampToken timestampToken = new TimestampToken(DSSUtils.toByteArray(tst), TimestampType.CONTENT_TIMESTAMP);
+		assertNotNull(timestampToken);
+		
+		TimestampOCSPSource ocspSource = timestampToken.getOCSPSource();
+		assertEquals(1, ocspSource.getAllRevocationBinaries().size());
+	}
 
 }
