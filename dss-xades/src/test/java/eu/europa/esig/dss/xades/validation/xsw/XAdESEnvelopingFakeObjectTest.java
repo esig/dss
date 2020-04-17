@@ -8,8 +8,10 @@ import java.io.File;
 import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -55,6 +57,16 @@ public class XAdESEnvelopingFakeObjectTest extends AbstractXAdESTestValidation {
 	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		assertTrue(Utils.isCollectionEmpty(diagnosticData.getOriginalSignerDocuments()));
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		TimestampWrapper timestampWrapper = timestampList.get(0);
+		assertEquals(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, timestampWrapper.getType());
+		
+		assertTrue(Utils.isCollectionEmpty(timestampWrapper.getTimestampedObjects()));
 	}
 	
 	@Override

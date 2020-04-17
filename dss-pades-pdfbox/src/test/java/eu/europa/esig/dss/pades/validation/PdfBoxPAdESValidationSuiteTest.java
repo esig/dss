@@ -34,13 +34,14 @@ import eu.europa.esig.dss.pades.validation.suite.DSS1690Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1972Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1983Test;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESOrphanOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
-import eu.europa.esig.dss.pades.validation.suite.PAdESOrphanOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithDssVriAndCertRefTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
@@ -78,7 +79,8 @@ import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigest
 		ArchiveTimestampCoverageTest.class, DoubleArchiveTstCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class, 
 		DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class, DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class,
 		PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class, BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class, 
-		DSS1469Test.class, DSS1469LTTest.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class, PAdESOrphanOcspFromDssRevisionTest.class })
+		DSS1469Test.class, DSS1469LTTest.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class, 
+		PAdESOrphanOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

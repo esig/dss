@@ -588,6 +588,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						orphanRevocIds.contains(revocation.getId());
 					}
 				}
+				
+				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
 			}
 		}
 	}

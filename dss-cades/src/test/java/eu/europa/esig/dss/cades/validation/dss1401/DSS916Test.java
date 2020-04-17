@@ -52,7 +52,7 @@ public class DSS916Test extends AbstractCAdESTestValidation {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(1, diagnosticData.getAllOrphanRevocationReferences().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
 }

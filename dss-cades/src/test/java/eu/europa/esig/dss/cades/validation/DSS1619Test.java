@@ -77,7 +77,7 @@ public class DSS1619Test extends AbstractCAdESTestValidation {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
 		assertEquals(2, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(3, diagnosticData.getAllOrphanRevocationReferences().size());
+		assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
 }

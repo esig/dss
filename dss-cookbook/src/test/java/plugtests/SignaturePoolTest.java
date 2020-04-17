@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -136,11 +138,29 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	}
 	
 	@Override
+	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.isSigningCertificateIdentified()) {
+				assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getDigestMatchers()));
+			}
+		}
+	}
+	
+	@Override
+	protected void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.isSigningCertificateIdentified()) {
+				assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getDigestMatchers()));
+			}
+		}
+	}
+	
+	@Override
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getDigestMatchers()));
 			for (XmlDigestMatcher xmlDigestMatcher : signatureWrapper.getDigestMatchers()) {
-				if (xmlDigestMatcher.isDataFound()) {
+				if (xmlDigestMatcher.isDataIntact()) {
 					assertNotNull(xmlDigestMatcher.getDigestMethod());
 					assertNotNull(xmlDigestMatcher.getDigestValue());
 				}
@@ -159,7 +179,6 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 				assertEquals(signingCertificate.getCertificateDN(), certificateDN);
 				assertEquals(signingCertificate.getSerialNumber(), certificateSerialNumber);
 				assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getCertificateChain()));
-				assertNotNull(signatureWrapper.getDigestAlgorithm());
 			}
 		}
 	}
@@ -180,7 +199,9 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 					assertNotNull(timestampWrapper.getDigestAlgorithm());
 				}
 			}
-			assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+			if (!timestampWrapper.getType().isContentTimestamp() || timestampWrapper.isMessageImprintDataIntact()) {
+				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+			}
 		}
 	}
 	
@@ -251,14 +272,14 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 
 			// Refs
 			assertEquals(certificateSource.getSigningCertificateRefs().size(),
-					getUniqueRelatedCertificateRefsAmount(foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)) + 
-					getUniqueOrphanCertificateRefsAmount(foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)) );
+					getUniqueRelatedCertificateRefsAmount(foundCertificates, CertificateRefOrigin.SIGNING_CERTIFICATE) + 
+					getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.SIGNING_CERTIFICATE) );
 			assertEquals(certificateSource.getAttributeCertificateRefs().size(),
-					getUniqueRelatedCertificateRefsAmount(foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS)) + 
-					getUniqueOrphanCertificateRefsAmount(foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS)));
+					getUniqueRelatedCertificateRefsAmount(foundCertificates, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS) + 
+					getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS) );
 			assertEquals(certificateSource.getCompleteCertificateRefs().size(),
-					getUniqueRelatedCertificateRefsAmount(foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS)) + 
-					getUniqueOrphanCertificateRefsAmount(foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS)));
+					getUniqueRelatedCertificateRefsAmount(foundCertificates, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS) + 
+					getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS) );
 
 			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
 			for (TimestampToken timestampToken : timestamps) {
@@ -294,14 +315,14 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 
 				// Refs
 				assertEquals(certificateSource.getSigningCertificateRefs().size(),
-						getUniqueRelatedCertificateRefsAmount(foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)) + 
-						getUniqueOrphanCertificateRefsAmount(foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)) );
+						getUniqueRelatedCertificateRefsAmount(foundCertificates, CertificateRefOrigin.SIGNING_CERTIFICATE) + 
+						getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.SIGNING_CERTIFICATE) );
 				assertEquals(certificateSource.getAttributeCertificateRefs().size(),
-						getUniqueRelatedCertificateRefsAmount(foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS)) + 
-						getUniqueOrphanCertificateRefsAmount(foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS)));
+						getUniqueRelatedCertificateRefsAmount(foundCertificates, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS) + 
+						getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS) );
 				assertEquals(certificateSource.getCompleteCertificateRefs().size(),
-						getUniqueRelatedCertificateRefsAmount(foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS)) + 
-						getUniqueOrphanCertificateRefsAmount(foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS)));
+						getUniqueRelatedCertificateRefsAmount(foundCertificates, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS) + 
+						getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS) );
 			}
 
 			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
@@ -322,28 +343,18 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		}
 	}
 	
-	private int getUniqueRelatedCertificateRefsAmount(List<RelatedCertificateWrapper> certificates) {
-		int refCounter = 0;
-		List<String> certIds = new ArrayList<>();
-		for (RelatedCertificateWrapper certificateWrapper : certificates) {
-			if (!certIds.contains(certificateWrapper.getId())) {
-				certIds.add(certificateWrapper.getId());
-				refCounter += certificateWrapper.getReferences().size();
-			}
-		}
-		return refCounter;
+	private long getUniqueRelatedCertificateRefsAmount(FoundCertificatesProxy foundCertificates, CertificateRefOrigin refOrigin) {
+		List<RelatedCertificateWrapper> certificates = foundCertificates.getRelatedCertificatesByRefOrigin(refOrigin);
+		Set<CertificateRefWrapper> refsSet = new HashSet<>();
+		certificates.stream().map(RelatedCertificateWrapper::getReferences).collect(Collectors.toList()).forEach(refsSet::addAll);
+		return refsSet.stream().filter(r -> refOrigin.equals(r.getOrigin())).count();
 	}
 	
-	private int getUniqueOrphanCertificateRefsAmount(List<OrphanCertificateWrapper> certificates) {
-		int refCounter = 0;
-		List<String> certIds = new ArrayList<>();
-		for (OrphanCertificateWrapper certificateWrapper : certificates) {
-			if (!certIds.contains(certificateWrapper.getId())) {
-				certIds.add(certificateWrapper.getId());
-				refCounter += certificateWrapper.getReferences().size();
-			}
-		}
-		return refCounter;
+	private long getUniqueOrphanCertificateRefsAmount(FoundCertificatesProxy foundCertificates, CertificateRefOrigin refOrigin) {
+		List<OrphanCertificateWrapper> certificates = foundCertificates.getOrphanCertificatesByRefOrigin(refOrigin);
+		Set<CertificateRefWrapper> refsSet = new HashSet<>();
+		certificates.stream().map(OrphanCertificateWrapper::getReferences).collect(Collectors.toList()).forEach(refsSet::addAll);
+		return refsSet.stream().filter(r -> refOrigin.equals(r.getOrigin())).count();
 	}
 	
 	@Override
@@ -376,7 +387,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
 				DigestMatcherType type = digestMatcher.getType();
 				if (!DigestMatcherType.KEY_INFO.equals(type) && !DigestMatcherType.REFERENCE.equals(type) && 
-						!DigestMatcherType.SIGNED_PROPERTIES.equals(type)) {
+						!DigestMatcherType.SIGNED_PROPERTIES.equals(type) && !DigestMatcherType.XPOINTER.equals(type)) {
 					containsDocumentDigestMatcher = true;
 					break;
 				}

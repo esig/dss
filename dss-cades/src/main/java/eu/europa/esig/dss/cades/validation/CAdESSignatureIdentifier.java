@@ -41,7 +41,7 @@ public final class CAdESSignatureIdentifier extends SignatureIdentifier {
 	private static int getUniqueIntegerIfNeeded(CAdESSignature cadesSignature) {
 		Collection<SignerInformation> signerInformations;
 		SignerId signerId = cadesSignature.getSignerId();
-		if (!cadesSignature.isCounterSignature()) {
+		if (cadesSignature.isCounterSignature()) {
 			signerInformations = cadesSignature.getSignerInformation().getCounterSignatures().getSigners(signerId);
 		} else {
 			signerInformations = cadesSignature.getCmsSignedData().getSignerInfos().getSigners(signerId);
