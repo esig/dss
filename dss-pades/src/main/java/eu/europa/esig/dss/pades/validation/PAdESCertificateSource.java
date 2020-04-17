@@ -29,6 +29,7 @@ import java.util.Map;
 import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.cades.validation.CAdESCertificateSource;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
@@ -66,9 +67,11 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	}
 
 	private void extractFromDSSDict() {
-		Map<Long, CertificateToken> certificateMap = getCertificateMap();
-		for (CertificateToken certToken : certificateMap.values()) {
-			addCertificate(certToken);
+		for (CertificateToken certToken : getDSSDictionaryCertValues()) {
+			addCertificate(certToken, CertificateOrigin.DSS_DICTIONARY);
+		}
+		for (CertificateToken certToken : getVRIDictionaryCertValues()) {
+			addCertificate(certToken, CertificateOrigin.VRI_DICTIONARY);
 		}
 	}
 
