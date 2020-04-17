@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.alert;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -50,8 +51,10 @@ public class LogAlertTest {
 		Exception exception = new Exception(EXCEPTION_MESSAGE);
 		
 		// manual testing
-		DSSLogAlert dssLogAlert = new DSSLogAlert(Level.INFO, false);
-		dssLogAlert.alert(exception);
+		assertDoesNotThrow(() -> {
+			DSSLogAlert dssLogAlert = new DSSLogAlert(Level.INFO, false);
+			dssLogAlert.alert(exception);
+		});
 	}
 	
 	class CallbackExceptionAlertHandler implements AlertHandler<Exception> {

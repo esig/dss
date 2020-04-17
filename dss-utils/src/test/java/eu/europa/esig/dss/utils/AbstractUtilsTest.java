@@ -400,12 +400,14 @@ public abstract class AbstractUtilsTest {
 		FileOutputStream fos = new FileOutputStream(newFileName);
 		fos.write(newFileContent.getBytes("UTF-8"));
 		fos.close();
+		assertTrue(new File(newFileName).exists());
 
 		Utils.closeQuietly(new FileInputStream(newFileName));
 		
 		FileOutputStream sampleFos = new FileOutputStream("target/sample3.txt");
 		Utils.closeQuietly(sampleFos);
 		Utils.closeQuietly(sampleFos); // must handle closed
+		assertTrue(new File("target/sample3.txt").exists());
 	}
 
 	@Test
@@ -449,6 +451,8 @@ public abstract class AbstractUtilsTest {
 		File dir = new File(pathToFolder.toString());
 		dir.mkdir();
 		Utils.cleanDirectory(dir);
+		assertTrue(dir.exists());
+		assertTrue(dir.list().length == 0);
 	}
 
 	@Test

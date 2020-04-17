@@ -1,6 +1,9 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javax.xml.XMLConstants;
+import javax.xml.transform.TransformerFactory;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +41,9 @@ public class XMLSecuritiesConfigTest {
 		xmlDefinerUtils.setTransformerFactoryBuilder(transformerBuilder);
 
 		// end::demo[]
-
+		
+		TransformerFactory transformerFactory = transformerBuilder.build();
+		assertNotNull(transformerFactory);
 
 		// tag::dbf[]
 		

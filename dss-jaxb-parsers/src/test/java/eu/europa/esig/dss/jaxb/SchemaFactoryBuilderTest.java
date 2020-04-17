@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import javax.xml.validation.SchemaFactory;
+
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.alert.DSSExceptionAlert;
@@ -16,7 +18,8 @@ public class SchemaFactoryBuilderTest {
 	@Test
 	public void buildTest() {
 		SchemaFactoryBuilder schemaBuilder = SchemaFactoryBuilder.getSecureSchemaBuilder();
-		schemaBuilder.build();
+		SchemaFactory schemaFactory = schemaBuilder.build();
+		assertNotNull(schemaFactory);
 	}
 	
 	@Test

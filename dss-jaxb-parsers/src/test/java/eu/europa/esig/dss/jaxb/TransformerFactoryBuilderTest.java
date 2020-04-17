@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.jaxb;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+
+import javax.xml.transform.TransformerFactory;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
@@ -17,7 +20,8 @@ public class TransformerFactoryBuilderTest {
 	@Test
 	public void buildTest() {
 		TransformerFactoryBuilder secureTransformerBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
-		secureTransformerBuilder.build();
+		TransformerFactory transformerFactory = secureTransformerBuilder.build();
+		assertNotNull(transformerFactory);
 	}
 	
 	@Test
