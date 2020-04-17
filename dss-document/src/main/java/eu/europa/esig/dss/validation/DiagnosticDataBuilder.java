@@ -1512,10 +1512,23 @@ public class DiagnosticDataBuilder {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source.getOrphanRevocationReferencesWithOrigins();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
-			if (allSources.isOrphan(ref)) {
+			if (allSources.isOrphan(ref) && sourceDoesNotContainOrphanBinaries(source, ref)) {
 				xmlOrphanRevocationRefs.add(createOrphanRevocationFromRef(ref, entry.getValue()));
 			}
 		}
+	}
+	
+	private <R extends Revocation> boolean sourceDoesNotContainOrphanBinaries(OfflineRevocationSource<R> source, RevocationRef<R> ref) {
+		String tokenId = referenceMap.get(ref.getDSSIdAsString());
+		if (tokenId == null) {
+			return true;
+		}
+		for (Identifier revocationIdentifier : source.getAllRevocationBinaries()) {
+			if (tokenId.equals(revocationIdentifier.asXmlId())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(String tokenId, Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
