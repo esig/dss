@@ -1,8 +1,8 @@
-package eu.europa.esig.dss.ws.signature.common;
+package eu.europa.esig.dss.ws.converter;
 
 import java.awt.Color;
 
-import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteColor;
+import eu.europa.esig.dss.ws.dto.RemoteColor;
 
 public final class ColorConverter {
 

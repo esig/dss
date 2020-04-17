@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.ws.signature.dto.parameters;
+package eu.europa.esig.dss.ws.dto;
 
 import java.io.Serializable;
 
