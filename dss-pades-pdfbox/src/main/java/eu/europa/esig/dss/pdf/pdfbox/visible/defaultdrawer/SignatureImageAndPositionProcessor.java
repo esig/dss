@@ -31,6 +31,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
@@ -144,7 +146,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processXAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
-        SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
+		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
 
         switch (alignmentVertical) {
             case TOP:
@@ -167,7 +169,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processXAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
-        SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
+		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
 
         switch (alignmentHorizontal) {
             case LEFT:
@@ -190,7 +192,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processXAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
-        SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
+		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
 
         switch (alignmentVertical) {
             case TOP:
@@ -213,7 +215,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processXAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
-        SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
+		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
 
         switch (alignmentHorizontal) {
             case LEFT:
@@ -236,7 +238,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processYAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
-        SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
+		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
 
         switch (alignmentHorizontal) {
             case LEFT:
@@ -259,7 +261,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processYAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
-        SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
+		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
 
         switch (alignmentVertical) {
             case TOP:
@@ -282,7 +284,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processYAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
-        SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
+		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
 
         switch (alignmentHorizontal) {
             case LEFT:
@@ -305,7 +307,7 @@ public final class SignatureImageAndPositionProcessor {
     private static float processYAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
-        SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
+		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
 
         switch (alignmentVertical) {
             case TOP:

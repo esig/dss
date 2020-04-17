@@ -28,8 +28,9 @@ import java.awt.image.BufferedImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
+import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
@@ -45,7 +46,7 @@ public final class ImageMerger {
 	}
 
 	public static BufferedImage mergeOnTop(final BufferedImage bottom, final BufferedImage top, final Color bgColor,
-			final SignatureImageTextParameters.SignerTextHorizontalAlignment imageHorizontalAlignment) {
+			final SignerTextHorizontalAlignment imageHorizontalAlignment) {
 		if (bottom == null) {
 			return top;
 		} else if (top == null) {
@@ -83,7 +84,7 @@ public final class ImageMerger {
 	}
 
 	public static BufferedImage mergeOnRight(final BufferedImage left, final BufferedImage right, final Color bgColor,
-			final SignatureImageTextParameters.SignerTextVerticalAlignment imageVerticalAlignment) {
+			final SignerTextVerticalAlignment imageVerticalAlignment) {
 		if (left == null) {
 			return right;
 		} else if (right == null) {

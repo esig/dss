@@ -22,8 +22,7 @@ package eu.europa.esig.dss.pdf.pdfbox.visible;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureRotation;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 
 public class ImageRotationUtils {
 	
@@ -37,8 +36,8 @@ public class ImageRotationUtils {
 	private ImageRotationUtils() {
 	}
 	
-    private static boolean needRotation(SignatureImageParameters.VisualSignatureRotation visualSignatureRotation) {
-        return visualSignatureRotation != null && !SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation);
+	private static boolean needRotation(VisualSignatureRotation visualSignatureRotation) {
+		return visualSignatureRotation != null && !VisualSignatureRotation.NONE.equals(visualSignatureRotation);
     }
     
     /**

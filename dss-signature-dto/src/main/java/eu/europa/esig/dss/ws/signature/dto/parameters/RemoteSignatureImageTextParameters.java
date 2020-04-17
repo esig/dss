@@ -1,37 +1,39 @@
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-import eu.europa.esig.dss.ws.dto.RemoteDocument;
-
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Objects;
+
+import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
+import eu.europa.esig.dss.enumerations.SignerTextPosition;
+import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 @SuppressWarnings("serial")
 public class RemoteSignatureImageTextParameters implements Serializable {
 
-    private int[] backgroundColor;
+	private RemoteColor backgroundColor;
 
     private RemoteDocument font;
 
     private Float padding;
 
-    private String signerTextHorizontalAlignment;
+	private SignerTextHorizontalAlignment signerTextHorizontalAlignment;
 
-    private String signerTextPosition;
+	private SignerTextPosition signerTextPosition;
 
-    private String signerTextVerticalAlignment;
+	private SignerTextVerticalAlignment signerTextVerticalAlignment;
 
     private Integer size;
 
     private String text;
 
-    private int[] textColor;
+	private RemoteColor textColor;
 
-    public int[] getBackgroundColor() {
+	public RemoteColor getBackgroundColor() {
         return this.backgroundColor;
     }
 
-    public void setBackgroundColor(final int[] backgroundColor) {
+	public void setBackgroundColor(final RemoteColor backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
@@ -51,27 +53,27 @@ public class RemoteSignatureImageTextParameters implements Serializable {
         this.padding = padding;
     }
 
-    public String getSignerTextHorizontalAlignment() {
+	public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
         return this.signerTextHorizontalAlignment;
     }
 
-    public void setSignerTextHorizontalAlignment(final String signerTextHorizontalAlignment) {
+	public void setSignerTextHorizontalAlignment(final SignerTextHorizontalAlignment signerTextHorizontalAlignment) {
         this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
     }
 
-    public String getSignerTextPosition() {
+	public SignerTextPosition getSignerTextPosition() {
         return this.signerTextPosition;
     }
 
-    public void setSignerTextPosition(final String signerTextPosition) {
+	public void setSignerTextPosition(final SignerTextPosition signerTextPosition) {
         this.signerTextPosition = signerTextPosition;
     }
 
-    public String getSignerTextVerticalAlignment() {
+	public SignerTextVerticalAlignment getSignerTextVerticalAlignment() {
         return this.signerTextVerticalAlignment;
     }
 
-    public void setSignerTextVerticalAlignment(final String signerTextVerticalAlignment) {
+	public void setSignerTextVerticalAlignment(final SignerTextVerticalAlignment signerTextVerticalAlignment) {
         this.signerTextVerticalAlignment = signerTextVerticalAlignment;
     }
 
@@ -91,11 +93,11 @@ public class RemoteSignatureImageTextParameters implements Serializable {
         this.text = text;
     }
 
-    public int[] getTextColor() {
+	public RemoteColor getTextColor() {
         return this.textColor;
     }
 
-    public void setTextColor(final int[] textColor) {
+	public void setTextColor(final RemoteColor textColor) {
         this.textColor = textColor;
     }
 
@@ -108,7 +110,7 @@ public class RemoteSignatureImageTextParameters implements Serializable {
             return false;
         }
         final RemoteSignatureImageTextParameters that = (RemoteSignatureImageTextParameters) o;
-        return Arrays.equals(backgroundColor, that.backgroundColor) &&
+		return Objects.equals(backgroundColor, that.backgroundColor) &&
                 Objects.equals(font, that.font) &&
                 Objects.equals(padding, that.padding) &&
                 Objects.equals(signerTextHorizontalAlignment, that.signerTextHorizontalAlignment) &&
@@ -116,21 +118,19 @@ public class RemoteSignatureImageTextParameters implements Serializable {
                 Objects.equals(signerTextVerticalAlignment, that.signerTextVerticalAlignment) &&
                 Objects.equals(size, that.size) &&
                 Objects.equals(text, that.text) &&
-                Arrays.equals(textColor, that.textColor);
+				Objects.equals(textColor, that.textColor);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(font, padding, signerTextHorizontalAlignment, signerTextPosition, signerTextVerticalAlignment, size, text);
-        result = 31 * result + Arrays.hashCode(backgroundColor);
-        result = 31 * result + Arrays.hashCode(textColor);
-        return result;
+		return Objects.hash(backgroundColor, font, padding, signerTextHorizontalAlignment, signerTextPosition, signerTextVerticalAlignment, size, text,
+				textColor);
     }
 
     @Override
     public String toString() {
         return "RemoteSignatureImageTextParameters{" +
-                "backgroundColor=" + Arrays.toString(backgroundColor) +
+				"backgroundColor=" + backgroundColor +
                 ", font=" + font +
                 ", padding=" + padding +
                 ", signerTextHorizontalAlignment='" + signerTextHorizontalAlignment + '\'' +
@@ -138,7 +138,7 @@ public class RemoteSignatureImageTextParameters implements Serializable {
                 ", signerTextVerticalAlignment='" + signerTextVerticalAlignment + '\'' +
                 ", size=" + size +
                 ", text='" + text + '\'' +
-                ", textColor=" + Arrays.toString(textColor) +
+				", textColor=" + textColor +
                 '}';
     }
 

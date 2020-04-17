@@ -22,6 +22,9 @@ package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
 
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 
@@ -34,77 +37,6 @@ public class SignatureImageParameters {
 	public static final int DEFAULT_PAGE = 1;
 
 	public static final int NO_SCALING = 100;
-
-	/**
-	 * Visual signature horizontal position on the pdf page
-	 */
-	public enum VisualSignatureAlignmentHorizontal {
-		/**
-		 * default, x axis is the x coordinate
-		 */
-		NONE,
-		/**
-		 * x axis is left padding
-		 */
-		LEFT,
-		/**
-		 * x axis automatically calculated
-		 */
-		CENTER,
-		/**
-		 * x axis is right padding
-		 */
-		RIGHT;
-	}
-
-	/**
-	 * Visual signature vertical position on the pdf page
-	 */
-	public enum VisualSignatureAlignmentVertical {
-		/**
-		 * default, y axis is the y coordinate
-		 */
-		NONE,
-		/**
-		 * y axis is the top padding
-		 */
-		TOP,
-		/**
-		 * y axis automatically calculated
-		 */
-		MIDDLE,
-		/**
-		 * y axis is the bottom padding
-		 */
-		BOTTOM;
-	}
-
-	/**
-	 * Rotation support
-	 *
-	 */
-	public enum VisualSignatureRotation {
-		/**
-		 * default, no rotate
-		 */
-		NONE,
-		/**
-		 * automatically rotate
-		 */
-		AUTOMATIC,
-		/**
-		 * rotate by 90
-		 */
-		ROTATE_90,
-		/**
-		 * rotate by 180
-		 */
-		ROTATE_180,
-		/**
-		 * rotate by 270
-		 */
-		ROTATE_270;
-	}
 
 	/**
 	 * This variable contains the image to use (company logo,...)
@@ -366,7 +298,7 @@ public class SignatureImageParameters {
 	 * Returns a horizontal alignment value of the signature field
 	 * @return {@link VisualSignatureAlignmentHorizontal}
 	 */
-    public SignatureImageParameters.VisualSignatureAlignmentHorizontal getVisualSignatureAlignmentHorizontal() {
+	public VisualSignatureAlignmentHorizontal getVisualSignatureAlignmentHorizontal() {
         return alignmentHorizontal;
     }
 
@@ -382,7 +314,7 @@ public class SignatureImageParameters {
 	 * Returns a vertical alignment value of the signature field
 	 * @return {@link VisualSignatureAlignmentVertical}
 	 */
-    public SignatureImageParameters.VisualSignatureAlignmentVertical getVisualSignatureAlignmentVertical() {
+	public VisualSignatureAlignmentVertical getVisualSignatureAlignmentVertical() {
         return alignmentVertical;
     }
 

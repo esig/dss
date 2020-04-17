@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
@@ -256,15 +255,15 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		final SignatureImageParameters imageParameters = new SignatureImageParameters();
 		// alignmentHorizontal
 		if (remoteImageParameters.getAlignmentHorizontal() != null) {
-			imageParameters.setAlignmentHorizontal(SignatureImageParameters.VisualSignatureAlignmentHorizontal.valueOf(remoteImageParameters.getAlignmentHorizontal()));
+			imageParameters.setAlignmentHorizontal(remoteImageParameters.getAlignmentHorizontal());
 		}
 		// alignmentVertical
 		if (remoteImageParameters.getAlignmentVertical() != null) {
-			imageParameters.setAlignmentVertical(SignatureImageParameters.VisualSignatureAlignmentVertical.valueOf(remoteImageParameters.getAlignmentVertical()));
+			imageParameters.setAlignmentVertical(remoteImageParameters.getAlignmentVertical());
 		}
 		// backgroundColor
 		if (remoteImageParameters.getBackgroundColor() != null) {
-			imageParameters.setBackgroundColor(this.toColor(remoteImageParameters.getBackgroundColor()));
+			imageParameters.setBackgroundColor(ColorConverter.toColor(remoteImageParameters.getBackgroundColor()));
 		}
 		// dpi
 		imageParameters.setDpi(remoteImageParameters.getDpi());
@@ -282,7 +281,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 		// rotation
 		if (remoteImageParameters.getRotation() != null) {
-			imageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.valueOf(remoteImageParameters.getRotation()));
+			imageParameters.setRotation(remoteImageParameters.getRotation());
 		}
 		// textParameters
 		imageParameters.setTextParameters(this.toTextParameters(remoteImageParameters.getTextParameters()));
@@ -314,7 +313,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		final SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		// backgroundColor
 		if (remoteTextParameters.getBackgroundColor() != null) {
-			textParameters.setBackgroundColor(this.toColor(remoteTextParameters.getBackgroundColor()));
+			textParameters.setBackgroundColor(ColorConverter.toColor(remoteTextParameters.getBackgroundColor()));
 		}
 		// font
 		if (remoteTextParameters.getFont() != null && remoteTextParameters.getFont().getBytes() != null) {
@@ -326,15 +325,15 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 		// signerTextHorizontalAlignment
 		if (remoteTextParameters.getSignerTextHorizontalAlignment() != null) {
-			textParameters.setSignerTextHorizontalAlignment(SignatureImageTextParameters.SignerTextHorizontalAlignment.valueOf(remoteTextParameters.getSignerTextHorizontalAlignment()));
+			textParameters.setSignerTextHorizontalAlignment(remoteTextParameters.getSignerTextHorizontalAlignment());
 		}
 		// signerTextPosition
 		if (remoteTextParameters.getSignerTextPosition() != null) {
-			textParameters.setSignerTextPosition(SignatureImageTextParameters.SignerTextPosition.valueOf(remoteTextParameters.getSignerTextPosition()));
+			textParameters.setSignerTextPosition(remoteTextParameters.getSignerTextPosition());
 		}
 		// signerTextVerticalAlignment
 		if (remoteTextParameters.getSignerTextVerticalAlignment() != null) {
-			textParameters.setSignerTextVerticalAlignment(SignatureImageTextParameters.SignerTextVerticalAlignment.valueOf(remoteTextParameters.getSignerTextVerticalAlignment()));
+			textParameters.setSignerTextVerticalAlignment(remoteTextParameters.getSignerTextVerticalAlignment());
 		}
 		// size
 		if (remoteTextParameters.getSize() != null) {
@@ -344,19 +343,12 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		textParameters.setText(remoteTextParameters.getText());
 		// textColor
 		if (remoteTextParameters.getTextColor() != null) {
-			textParameters.setTextColor(this.toColor(remoteTextParameters.getTextColor()));
+			textParameters.setTextColor(ColorConverter.toColor(remoteTextParameters.getTextColor()));
 		}
 
 		return textParameters;
 	}
 
-	private Color toColor(final int[] colorValues) {
-		if (colorValues.length == 3) {
-			return new Color(colorValues[0], colorValues[1], colorValues[2]);
-		} else if (colorValues.length == 4) {
-			return new Color(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
-		}
-		return null;
-	}
+
 
 }

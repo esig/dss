@@ -50,7 +50,7 @@ import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 
-public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
+public class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
 	private RemoteMultipleDocumentsSignatureServiceImpl signatureService;
 	

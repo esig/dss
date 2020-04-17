@@ -22,6 +22,10 @@ package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
 
+import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
+import eu.europa.esig.dss.enumerations.SignerTextPosition;
+import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+
 /**
  * This class allows to custom text generation in the PAdES visible signature
  *
@@ -31,27 +35,6 @@ public class SignatureImageTextParameters {
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 	private static final float DEFAULT_PADDING = 5f;
 	private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
-
-	/**
-	 * Enum to define where to add a signer text inside a signature field relatively to an image
-	 */
-	public enum SignerTextPosition {
-		TOP, BOTTOM, RIGHT, LEFT
-	}
-
-	/**
-	 * Enum to define image from text vertical alignment in connection with the image
-	 */
-	public enum SignerTextVerticalAlignment {
-		TOP, MIDDLE, BOTTOM
-	}
-
-    /**
-     * Enum to define the more line text horizontal alignment
-     */
-    public enum SignerTextHorizontalAlignment {
-        LEFT, CENTER, RIGHT
-    }
 
 	/**
 	 * This variable allows to add signer name on the image (by default, LEFT)

@@ -1,19 +1,21 @@
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-import eu.europa.esig.dss.ws.dto.RemoteDocument;
-
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Objects;
+
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 @SuppressWarnings("serial")
 public class RemoteSignatureImageParameters implements Serializable {
 
-    private String alignmentHorizontal;
+	private VisualSignatureAlignmentHorizontal alignmentHorizontal;
 
-    private String alignmentVertical;
+	private VisualSignatureAlignmentVertical alignmentVertical;
 
-    private int[] backgroundColor;
+	private RemoteColor backgroundColor;
 
     private Integer dpi;
 
@@ -23,7 +25,7 @@ public class RemoteSignatureImageParameters implements Serializable {
 
     private Integer page;
 
-    private String rotation;
+	private VisualSignatureRotation rotation;
 
     private RemoteSignatureImageTextParameters textParameters;
 
@@ -35,27 +37,27 @@ public class RemoteSignatureImageParameters implements Serializable {
 
     private Integer zoom;
 
-    public String getAlignmentHorizontal() {
+	public VisualSignatureAlignmentHorizontal getAlignmentHorizontal() {
         return this.alignmentHorizontal;
     }
 
-    public void setAlignmentHorizontal(final String alignmentHorizontal) {
+	public void setAlignmentHorizontal(final VisualSignatureAlignmentHorizontal alignmentHorizontal) {
         this.alignmentHorizontal = alignmentHorizontal;
     }
 
-    public String getAlignmentVertical() {
+	public VisualSignatureAlignmentVertical getAlignmentVertical() {
         return this.alignmentVertical;
     }
 
-    public void setAlignmentVertical(final String alignmentVertical) {
+	public void setAlignmentVertical(final VisualSignatureAlignmentVertical alignmentVertical) {
         this.alignmentVertical = alignmentVertical;
     }
 
-    public int[] getBackgroundColor() {
+	public RemoteColor getBackgroundColor() {
         return this.backgroundColor;
     }
 
-    public void setBackgroundColor(final int[] backgroundColor) {
+	public void setBackgroundColor(final RemoteColor backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
@@ -99,11 +101,11 @@ public class RemoteSignatureImageParameters implements Serializable {
         this.page = page;
     }
 
-    public String getRotation() {
+	public VisualSignatureRotation getRotation() {
         return this.rotation;
     }
 
-    public void setRotation(final String rotation) {
+	public void setRotation(final VisualSignatureRotation rotation) {
         this.rotation = rotation;
     }
 
@@ -150,7 +152,7 @@ public class RemoteSignatureImageParameters implements Serializable {
         final RemoteSignatureImageParameters that = (RemoteSignatureImageParameters) o;
         return Objects.equals(alignmentHorizontal, that.alignmentHorizontal) &&
                 Objects.equals(alignmentVertical, that.alignmentVertical) &&
-                Arrays.equals(backgroundColor, that.backgroundColor) &&
+				Objects.equals(backgroundColor, that.backgroundColor) &&
                 Objects.equals(dpi, that.dpi) &&
                 Objects.equals(height, that.height) &&
                 Objects.equals(image, that.image) &&
@@ -165,9 +167,8 @@ public class RemoteSignatureImageParameters implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(alignmentHorizontal, alignmentVertical, dpi, height, image, page, rotation, textParameters, width, xAxis, yAxis, zoom);
-        result = 31 * result + Arrays.hashCode(backgroundColor);
-        return result;
+		return Objects.hash(alignmentHorizontal, alignmentVertical, dpi, height, image, page, rotation, textParameters, width, xAxis, yAxis, zoom,
+				backgroundColor);
     }
 
     @Override
@@ -175,7 +176,8 @@ public class RemoteSignatureImageParameters implements Serializable {
         return "RemoteSignatureImageParameters{" +
                 "alignmentHorizontal='" + alignmentHorizontal + '\'' +
                 ", alignmentVertical='" + alignmentVertical + '\'' +
-                ", backgroundColor=" + Arrays.toString(backgroundColor) +
+				", backgroundColor=" + backgroundColor
+				+
                 ", dpi=" + dpi +
                 ", height=" + height +
                 ", image=" + image +
