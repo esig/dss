@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -389,6 +391,21 @@ public abstract class AbstractUtilsTest {
 		fos.write(newFileContent.getBytes("UTF-8"));
 		fos.close();
 		assertArrayEquals(newFileContent.getBytes("UTF-8"), Utils.toByteArray(new FileInputStream(newFileName)));
+	}
+
+	@Test
+	public void toByteArrayCRLForLF() throws IOException, NoSuchAlgorithmException {
+
+		try (InputStream is = AbstractUtilsTest.class.getResourceAsStream("/sample-lf.xml")) {
+			byte[] byteArray = Utils.toByteArray(is);
+			assertEquals("68ArneI9PhOBJytj5sP/zEewR2DkFObxewMY1wiUvak=", Utils.toBase64(MessageDigest.getInstance("SHA-256").digest(byteArray)));
+		}
+		
+		try (InputStream is = AbstractUtilsTest.class.getResourceAsStream("/sample-cr-lf.xml")) {
+			byte[] byteArray = Utils.toByteArray(is);
+			assertEquals("kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=", Utils.toBase64(MessageDigest.getInstance("SHA-256").digest(byteArray)));
+		}
+
 	}
 
 	@Test
