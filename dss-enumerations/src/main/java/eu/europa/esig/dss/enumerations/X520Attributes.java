@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.enumerations;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -481,9 +482,17 @@ public enum X520Attributes implements OidDescription {
 
 	SUBSTRINGASSERTION("substringAssertion", "1.3.6.1.4.1.1466.115.121.1.58");
 	
-	public static final Map<String, String> UPPERCASE_DESCRIPTION_OID = registerUpperCaseDescriptionAndOids();
+	private static final Map<String, String> UPPERCASE_DESCRIPTION_OID = registerUpperCaseDescriptionAndOids();
 
-	public static final Map<String, String> OID_DESCRIPTION = registerOidAndDescriptions();
+	private static final Map<String, String> OID_DESCRIPTION = registerOidAndDescriptions();
+
+	public static Map<String, String> getUppercaseDescriptionForOids() {
+		return Collections.unmodifiableMap(UPPERCASE_DESCRIPTION_OID);
+	}
+
+	public static Map<String, String> getOidDescriptions() {
+		return Collections.unmodifiableMap(OID_DESCRIPTION);
+	}
 
 	private static Map<String, String> registerOidAndDescriptions() {
 		Map<String, String> map = new HashMap<>();

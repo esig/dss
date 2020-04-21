@@ -687,7 +687,7 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-            return new X500Principal(x500PrincipalString, X520Attributes.UPPERCASE_DESCRIPTION_OID);
+			return new X500Principal(x500PrincipalString, X520Attributes.getUppercaseDescriptionForOids());
 		} catch (Exception e) {
 			LOG.warn("Unable to create an instance of X500Principal : {}", e.getMessage());
 			return null;

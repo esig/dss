@@ -25,7 +25,7 @@ public class X500PrincipalHelper {
 	}
 
 	public String getPrettyPrintRFC2253() {
-		return principal.getName(X500Principal.RFC2253, X520Attributes.OID_DESCRIPTION);
+		return principal.getName(X500Principal.RFC2253, X520Attributes.getOidDescriptions());
 	}
 
 	public byte[] getEncoded() {
