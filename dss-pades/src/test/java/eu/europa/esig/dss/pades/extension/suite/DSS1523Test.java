@@ -33,6 +33,7 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -154,9 +155,16 @@ public class DSS1523Test extends AbstractPkiFactoryTestValidation<PAdESSignature
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-		assertTrue(signature.isIssuerSerialMatch());
+		assertTrue(signature.isSigningCertificateIdentified());
+		assertTrue(signature.isSigningCertificateReferencePresent());
+		assertFalse(signature.isSigningCertificateReferenceUnique());
+		
+		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

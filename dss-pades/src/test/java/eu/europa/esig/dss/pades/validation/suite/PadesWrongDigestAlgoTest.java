@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -82,9 +83,20 @@ public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		super.checkTimestamps(diagnosticData);
-		
 		assertEquals(4, diagnosticData.getTimestampSet().size());
+		
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			assertTrue(timestampWrapper.isSigningCertificateIdentified());
+			assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+			assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
+			
+			CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
+			assertNotNull(signingCertificateReference);
+			assertTrue(signingCertificateReference.isDigestValuePresent());
+			assertTrue(signingCertificateReference.isDigestValueMatch());
+			assertTrue(signingCertificateReference.isIssuerSerialPresent());
+			assertTrue(signingCertificateReference.isIssuerSerialMatch());
+		}
 	}
 	
 	@Override

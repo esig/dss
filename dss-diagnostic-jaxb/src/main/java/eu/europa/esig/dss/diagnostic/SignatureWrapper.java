@@ -244,9 +244,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isSigningCertificateIdentified() {
-		XmlSigningCertificate signingCertificate = signature.getSigningCertificate();
-		if (signingCertificate != null) {
-			return signingCertificate.isDigestValueMatch() && signingCertificate.isIssuerSerialMatch();
+		CertificateWrapper signingCertificate = getSigningCertificate();
+		CertificateRefWrapper signingCertificateReference = getSigningCertificateReference();
+		if (signingCertificate != null && signingCertificateReference != null) {
+			return signingCertificateReference.isDigestValueMatch() && 
+					(!signingCertificateReference.isIssuerSerialPresent() || signingCertificateReference.isIssuerSerialMatch());
 		}
 		return false;
 	}

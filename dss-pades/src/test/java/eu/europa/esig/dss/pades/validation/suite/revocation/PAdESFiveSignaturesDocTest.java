@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
@@ -36,13 +37,21 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		super.checkTimestamps(diagnosticData);
-		
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();		
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
 		List<String> usedTimestampIds = new ArrayList<>();
 		for (TimestampWrapper timestamp : timestamps) {
+			assertTrue(timestamp.isSigningCertificateIdentified());
+			assertTrue(timestamp.isSigningCertificateReferencePresent());
+			
+			CertificateRefWrapper signingCertificateReference = timestamp.getSigningCertificateReference();
+			assertNotNull(signingCertificateReference);
+			assertTrue(signingCertificateReference.isDigestValuePresent());
+			assertTrue(signingCertificateReference.isDigestValueMatch());
+			assertFalse(signingCertificateReference.isIssuerSerialPresent());
+			assertFalse(signingCertificateReference.isIssuerSerialMatch());
+			
 			assertFalse(usedTimestampIds.contains(timestamp.getId()));
 			usedTimestampIds.add(timestamp.getId());
 			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
@@ -132,10 +141,17 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertTrue(signatureWrapper.isDigestValuePresent());
-			assertTrue(signatureWrapper.isDigestValueMatch());
-			assertTrue(signatureWrapper.isIssuerSerialMatch());
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isSigningCertificateIdentified());
+			assertTrue(signature.isSigningCertificateReferencePresent());
+			assertFalse(signature.isSigningCertificateReferenceUnique());
+			
+			CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
+			assertNotNull(signingCertificateReference);
+			assertTrue(signingCertificateReference.isDigestValuePresent());
+			assertTrue(signingCertificateReference.isDigestValueMatch());
+			assertTrue(signingCertificateReference.isIssuerSerialPresent());
+			assertTrue(signingCertificateReference.isIssuerSerialMatch());
 		}
 	}
 	

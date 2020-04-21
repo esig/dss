@@ -2,7 +2,6 @@ package eu.europa.esig.dss.pades.validation.suite.revocation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -71,15 +70,6 @@ public class PAdESMultiSignedDocRevocTest extends AbstractPAdESTestValidation {
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(0).getType());
 		assertEquals(5, timestamps.get(1).getTimestampedObjects().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(1).getType());
-	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertTrue(signatureWrapper.isAttributePresent());
-			assertTrue(signatureWrapper.isDigestValuePresent());
-			assertTrue(signatureWrapper.isDigestValueMatch());
-		}
 	}
 
 }

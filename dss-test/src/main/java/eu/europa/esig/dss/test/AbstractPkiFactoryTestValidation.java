@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -336,9 +337,16 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertTrue(signatureWrapper.isSigningCertificateIdentified());
-			assertTrue(signatureWrapper.isAttributePresent());
-			assertTrue(signatureWrapper.isDigestValuePresent());
-			assertTrue(signatureWrapper.isDigestValueMatch());
+			assertTrue(signatureWrapper.isSigningCertificateReferencePresent());
+			assertTrue(signatureWrapper.isSigningCertificateReferenceUnique());
+			
+			CertificateRefWrapper signingCertificateReference = signatureWrapper.getSigningCertificateReference();
+			assertNotNull(signingCertificateReference);
+			assertTrue(signingCertificateReference.isDigestValuePresent());
+			assertTrue(signingCertificateReference.isDigestValueMatch());
+			if (signingCertificateReference.isIssuerSerialPresent()) {
+				assertTrue(signingCertificateReference.isIssuerSerialMatch());
+			}
 			
 			CertificateWrapper signingCertificate = signatureWrapper.getSigningCertificate();
 			assertNotNull(signingCertificate);
@@ -347,8 +355,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 			assertEquals(signingCertificate.getCertificateDN(), certificateDN);
 			assertEquals(signingCertificate.getSerialNumber(), certificateSerialNumber);
+			
+			assertTrue(Utils.isCollectionEmpty(signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
 		}
-
 	}
 
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
@@ -362,7 +372,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			SignatureLevel signatureFormat = signatureWrapper.getSignatureFormat();
@@ -434,11 +443,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertNotNull(revocationWrapper.foundCertificates());
 			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
 			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
+			
 			if (revocationWrapper.getSigningCertificate() != null) {
 				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
+				
 				if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
 					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
 					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
+					
+					assertTrue(revocationWrapper.isSigningCertificateReferencePresent());
+					assertTrue(revocationWrapper.isSigningCertificateReferenceUnique());
+					assertNotNull(revocationWrapper.getSigningCertificateReference());
+					
 					boolean signingCertFound = false;
 					for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
 						for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
@@ -504,6 +520,29 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
 					assertNotNull(timestampWrapper.getArchiveTimestampType());
 				}
+				
+				assertTrue(timestampWrapper.isSigningCertificateIdentified());
+				assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+				assertTrue(timestampWrapper.isSigningCertificateReferenceUnique());
+				
+				CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
+				assertNotNull(signingCertificateReference);
+				assertTrue(signingCertificateReference.isDigestValuePresent());
+				assertTrue(signingCertificateReference.isDigestValueMatch());
+				if (signingCertificateReference.isIssuerSerialPresent()) {
+					assertTrue(signingCertificateReference.isIssuerSerialMatch());
+				}
+				
+				CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
+				assertNotNull(signingCertificate);
+				String signingCertificateId = signingCertificate.getId();
+				String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
+				String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
+				assertEquals(signingCertificate.getCertificateDN(), certificateDN);
+				assertEquals(signingCertificate.getSerialNumber(), certificateSerialNumber);
+				
+				assertTrue(Utils.isCollectionEmpty(timestampWrapper.foundCertificates()
+						.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
 
 				List<String> certIds = timestampWrapper.getTimestampedCertificates().stream()
 						.map(CertificateWrapper::getId).collect(Collectors.toList());
@@ -953,7 +992,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					SATimestampType timestamp = (SATimestampType) value;
 					assertNotNull(timestamp.getAttributeObject());
 					assertNotNull(timestamp.getTimeStampValue());
-
 				} else if (value instanceof SAMessageDigestType) {
 					SAMessageDigestType md = (SAMessageDigestType) value;
 					validateETSIMessageDigest(md);
@@ -984,6 +1022,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				} else if (value instanceof SASigPolicyIdentifierType) {
 					SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
 					validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
+				} else if ("ByteRange".equals(jaxbElement.getName().getLocalPart())) {
+					assertTrue(value instanceof List<?>);
+					List<?> byteArray = (List<?>) value;
+					validateETSIByteArray(byteArray);
 				} else {
 					LOG.warn("{} not tested", value.getClass());
 				}
@@ -1034,6 +1076,16 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void validateETSISASigPolicyIdentifierType(SASigPolicyIdentifierType saSigPolicyIdentifier) {
 		assertNotNull(saSigPolicyIdentifier);
+	}
+
+	protected void validateETSIByteArray(List<?> byteArray) {
+		assertEquals(4, byteArray.size());
+		for (Object obj : byteArray) {
+			assertTrue(obj instanceof BigInteger);
+		}
+		assertEquals(0, ((BigInteger)byteArray.get(0)).intValue());
+		assertTrue(((BigInteger)byteArray.get(0)).compareTo((BigInteger)byteArray.get(1)) < 0);
+		assertTrue(((BigInteger)byteArray.get(1)).compareTo((BigInteger)byteArray.get(2)) < 0);
 	}
 	
 	protected void validateETSISignatureValidationObjects(ValidationObjectListType signatureValidationObjects) {

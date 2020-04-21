@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -31,10 +29,8 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -46,14 +42,7 @@ public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signingCertificateRecognitionCheck() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/it.xml"));
-		assertNotNull(diagnosticData);
-
 		XmlSigningCertificate xsc = new XmlSigningCertificate();
-		xsc.setAttributePresent(true);
-		xsc.setDigestValueMatch(true);
-		xsc.setDigestValuePresent(true);
-		xsc.setIssuerSerialMatch(true);
 		XmlCertificate xCert = new XmlCertificate();
 		xCert.setId("C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC");
 		xsc.setCertificate(xCert);
@@ -64,7 +53,6 @@ public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		new eu.europa.esig.dss.diagnostic.DiagnosticData(diagnosticData);
 		XmlISC result = new XmlISC();
 
 		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(i18nProvider, result,
@@ -75,7 +63,48 @@ public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+	
+	@Test
+	public void signingCertificateNotRecognizedCheck() throws Exception {
+		XmlSignature sig = new XmlSignature();
 
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlISC result = new XmlISC();
+
+		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(i18nProvider, result,
+				new SignatureWrapper(sig), constraint);
+
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+	
+	@Test
+	public void publicKeyCheck() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		
+		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
+		xmlSigningCertificate.setPublicKey("Public Key".getBytes());
+		sig.setSigningCertificate(xmlSigningCertificate);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlISC result = new XmlISC();
+
+		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(i18nProvider, result,
+				new SignatureWrapper(sig), constraint);
+
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}
 
 }

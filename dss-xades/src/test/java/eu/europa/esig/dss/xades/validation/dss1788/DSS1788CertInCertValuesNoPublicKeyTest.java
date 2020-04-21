@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.xades.validation.dss1788;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -24,7 +26,10 @@ public class DSS1788CertInCertValuesNoPublicKeyTest extends AbstractXAdESTestVal
 		super.checkSigningCertificateValue(diagnosticData);
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signature.isIssuerSerialMatch());
+		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

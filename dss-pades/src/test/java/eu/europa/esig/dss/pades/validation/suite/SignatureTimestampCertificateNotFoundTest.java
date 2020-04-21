@@ -27,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -36,7 +34,7 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
-@Disabled
+// See DSS-2025
 public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTestValidation {
 
 	@Override
@@ -54,10 +52,9 @@ public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTest
 		assertNotNull(timestampWrapper.getSigningCertificate());
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isIssuerSerialMatch());
-		assertTrue(timestampWrapper.isDigestValuePresent());
-		assertTrue(timestampWrapper.isDigestValueMatch());
-		assertFalse(timestampWrapper.isAttributePresent()); // 2 signing-certificate attributes
+		assertTrue(timestampWrapper.isSigningCertificateIdentified());
+		assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+		assertFalse(timestampWrapper.isSigningCertificateReferenceUnique()); // 2 signing-certificate attributes
 		assertEquals(2, timestampWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 		assertFalse(timestampWrapper.isSignatureValid());
 	}

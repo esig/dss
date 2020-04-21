@@ -21,11 +21,13 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -58,6 +60,22 @@ public class XAdESLTATest extends AbstractXAdESTestValidation {
 		certificateVerifier.setTrustedCertSource(trustedCertSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		return validator;
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		assertTrue(signatureWrapper.isSigningCertificateIdentified());
+		assertTrue(signatureWrapper.isSigningCertificateReferencePresent());
+		assertFalse(signatureWrapper.isSigningCertificateReferenceUnique());
+		
+		CertificateRefWrapper signingCertificateReference = signatureWrapper.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

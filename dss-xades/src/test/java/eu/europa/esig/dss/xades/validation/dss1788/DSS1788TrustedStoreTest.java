@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -61,10 +62,14 @@ public class DSS1788TrustedStoreTest extends AbstractXAdESTestValidation {
 		assertNull(signingCertificate);
 		byte[] signingCertificatePublicKey = signature.getSigningCertificatePublicKey();
 		assertNotNull(signingCertificatePublicKey);
-		assertTrue(signature.isAttributePresent());
-		assertTrue(signature.isDigestValuePresent());
-		assertFalse(signature.isDigestValueMatch());
-		assertFalse(signature.isIssuerSerialMatch());
+		assertTrue(signature.isSigningCertificateReferencePresent());
+		
+		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertFalse(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertFalse(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

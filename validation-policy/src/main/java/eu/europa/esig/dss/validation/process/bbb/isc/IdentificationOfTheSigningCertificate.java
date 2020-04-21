@@ -25,6 +25,7 @@ import java.util.List;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -101,25 +102,32 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 			item = item.setNextItem(signingCertificateAttributePresent());
 
 			item = item.setNextItem(unicitySigningCertificateAttribute());
+			
+			if (token.isSigningCertificateReferenceUnique()) {
+				
+				CertificateRefWrapper signingCertificateRef = token.getSigningCertificateReference();
 
-			/*
-			 * 2) The building block shall take the first reference and shall check that the digest of the certificate
-			 * referenced matches the result of digesting the signing certificate with the algorithm indicated. If they
-			 * do not match, the building block shall take the next element and shall repeat this step until a matching
-			 * element has been found or all elements have been checked. If they do match, the building block shall
-			 * continue with step 3. If the last element is reached without finding any match, the validation of this
-			 * property shall be taken as failed and the building block shall return the indication INDETERMINATE with
-			 * the sub-indication NO_SIGNING_CERTIFICATE_FOUND.
-			 */
-			item = item.setNextItem(digestValuePresent());
-			item = item.setNextItem(digestValueMatch());
-
-			/*
-			 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
-			 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in
-			 * the signing certificate: if they do not match, an additional warning shall be returned with the output.
-			 */
-			item = item.setNextItem(issuerSerialMatch());
+				/*
+				 * 2) The building block shall take the first reference and shall check that the digest of the certificate
+				 * referenced matches the result of digesting the signing certificate with the algorithm indicated. If they
+				 * do not match, the building block shall take the next element and shall repeat this step until a matching
+				 * element has been found or all elements have been checked. If they do match, the building block shall
+				 * continue with step 3. If the last element is reached without finding any match, the validation of this
+				 * property shall be taken as failed and the building block shall return the indication INDETERMINATE with
+				 * the sub-indication NO_SIGNING_CERTIFICATE_FOUND.
+				 */
+				item = item.setNextItem(digestValuePresent(signingCertificateRef));
+				item = item.setNextItem(digestValueMatch(signingCertificateRef));
+	
+				/*
+				 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
+				 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in
+				 * the signing certificate: if they do not match, an additional warning shall be returned with the output.
+				 */
+				if (signingCertificateRef.isIssuerSerialPresent()) {
+					item = item.setNextItem(issuerSerialMatch(signingCertificateRef));
+				}
+			}
 		}
 	}
 
@@ -161,19 +169,19 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
 	}
 
-	private ChainItem<XmlISC> digestValuePresent() {
+	private ChainItem<XmlISC> digestValuePresent(CertificateRefWrapper signingCertificateRef) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValuePresentConstraint(context);
-		return new DigestValuePresentCheck(i18nProvider, result, token, constraint);
+		return new DigestValuePresentCheck(i18nProvider, result, signingCertificateRef, constraint);
 	}
 
-	private ChainItem<XmlISC> digestValueMatch() {
+	private ChainItem<XmlISC> digestValueMatch(CertificateRefWrapper signingCertificateRef) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValueMatchConstraint(context);
-		return new DigestValueMatchCheck(i18nProvider, result, token, constraint);
+		return new DigestValueMatchCheck(i18nProvider, result, signingCertificateRef, constraint);
 	}
 
-	private ChainItem<XmlISC> issuerSerialMatch() {
+	private ChainItem<XmlISC> issuerSerialMatch(CertificateRefWrapper signingCertificateRef) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuerSerialMatchConstraint(context);
-		return new IssuerSerialMatchCheck(i18nProvider, result, token, constraint);
+		return new IssuerSerialMatchCheck(i18nProvider, result, signingCertificateRef, constraint);
 	}
 
 }

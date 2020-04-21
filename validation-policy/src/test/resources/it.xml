@@ -22,12 +22,7 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Certificate="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
-	            <AttributePresent>true</AttributePresent>
-	            <DigestValuePresent>true</DigestValuePresent>
-	            <DigestValueMatch>true</DigestValueMatch>
-	            <IssuerSerialMatch>true</IssuerSerialMatch>
-	        </SigningCertificate>
+	        <SigningCertificate Certificate="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC"/>
 	        <CertificateChain>
 	            <ChainItem Certificate="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC"/>
 	            <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>

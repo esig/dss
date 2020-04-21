@@ -24,10 +24,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class SigningCertificateAttributePresentCheck extends ChainItem<XmlISC> {
 
@@ -40,7 +40,7 @@ public class SigningCertificateAttributePresentCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected boolean process() {
-		return token.isAttributePresent();
+		return token.isSigningCertificateReferencePresent();
 	}
 
 	@Override

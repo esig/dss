@@ -55,13 +55,5 @@ public class CAdESDetachedTstV2NoFileTest extends AbstractCAdESTestValidation {
 		}
 		assertEquals(1, v2ArchiveTsts);
 	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isAttributePresent());
-		assertTrue(signatureWrapper.isDigestValuePresent());
-		assertTrue(signatureWrapper.isDigestValueMatch());
-	}
 
 }

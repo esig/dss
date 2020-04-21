@@ -1,23 +1,3 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,18 +13,20 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.isc.checks.UnicitySigningCertificateAttributeCheck;
 
-public class SigningCertificateAttributePresentCheckTest extends AbstractTestCheck {
+public class UnicitySigningCertificateAttributeCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signingCertificateAttributePresentCheck() throws Exception {
+	public void singleSigningCertRefAttributePresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
@@ -62,9 +44,9 @@ public class SigningCertificateAttributePresentCheckTest extends AbstractTestChe
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+		UnicitySigningCertificateAttributeCheck uscac = new UnicitySigningCertificateAttributeCheck(i18nProvider, result,
 				new SignatureWrapper(sig), constraint);
-		scapc.execute();
+		uscac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -72,7 +54,7 @@ public class SigningCertificateAttributePresentCheckTest extends AbstractTestChe
 	}
 
 	@Test
-	public void signingCertificateAttributeNotPresentCheck() throws Exception {
+	public void noSigningCertRefAttributePresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		
@@ -90,12 +72,47 @@ public class SigningCertificateAttributePresentCheckTest extends AbstractTestChe
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+		UnicitySigningCertificateAttributeCheck uscac = new UnicitySigningCertificateAttributeCheck(i18nProvider, result,
 				new SignatureWrapper(sig), constraint);
-		scapc.execute();
+		uscac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}
+	
+	@Test
+	public void multipleSigningCertRefAttributePresentCheck() throws Exception {
+		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
+		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
+		XmlOrphanCertificate xmlOrphanCertificate = new XmlOrphanCertificate();
+		xmlOrphanCertificate.setToken(new XmlOrphanCertificateToken());
+		xmlOrphanCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		xmlFoundCertificates.getOrphanCertificates().add(xmlOrphanCertificate);
+		
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(xmlFoundCertificates);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlISC result = new XmlISC();
+		UnicitySigningCertificateAttributeCheck uscac = new UnicitySigningCertificateAttributeCheck(i18nProvider, result,
+				new SignatureWrapper(sig), constraint);
+		uscac.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+	
 }

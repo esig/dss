@@ -1,12 +1,15 @@
 package eu.europa.esig.dss.cades.validation.dss1401;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -28,9 +31,16 @@ public class DSS916QesDetachedTest extends AbstractCAdESTestValidation {
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-		assertTrue(signature.isIssuerSerialMatch());
+		assertTrue(signature.isSigningCertificateIdentified());
+		assertTrue(signature.isSigningCertificateReferencePresent());
+		assertFalse(signature.isSigningCertificateReferenceUnique());
+		
+		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

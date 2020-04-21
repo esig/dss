@@ -33,7 +33,21 @@ public class CertificateRefWrapper {
 	 * @return a byte array
 	 */
 	public byte[] getIssuerSerial() {
-		return certificateRef.getIssuerSerial();
+		if (certificateRef.getIssuerSerial() != null) {
+			return certificateRef.getIssuerSerial().getValue();
+		}
+		return null;
+	}
+	
+	public boolean isIssuerSerialPresent() {
+		return certificateRef.getIssuerSerial() != null;
+	}
+	
+	public boolean isIssuerSerialMatch() {
+		if (certificateRef.getIssuerSerial() != null && certificateRef.getIssuerSerial().isMatch() != null) {
+			return certificateRef.getIssuerSerial().isMatch();
+		}
+		return false;
 	}
 
 	/**
@@ -69,6 +83,25 @@ public class CertificateRefWrapper {
 	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
 		return certificateRef.getDigestAlgoAndValue();
 	}
+
+	/**
+	 * Checks if the DigestAlgoAndValue of the reference present in the signing certificate reference
+	 * 
+	 * @return TRUE if DigestAlgoAndValue present in the signing certificate reference, FALSE otherwise
+	 */
+	public boolean isDigestValuePresent() {
+		return getDigestAlgoAndValue() != null;
+	}
+	
+	/**
+	 * Checks if the DigestAlgoAndValue of the reference matches one of the signing certificate
+	 * 
+	 * @return TRUE if DigestAlgoAndValue matches the signing certificate, FALSE otherwise
+	 */
+	public boolean isDigestValueMatch() {
+		XmlDigestAlgoAndValue digestAlgoAndValue = getDigestAlgoAndValue();
+		return digestAlgoAndValue != null && digestAlgoAndValue.isMatch();
+	}
 	
 	@Override
 	public String toString() {
@@ -84,7 +117,7 @@ public class CertificateRefWrapper {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((certificateRef.getOrigin() == null) ? 0 : certificateRef.getOrigin().hashCode());
-		result = prime * result + ((certificateRef.getIssuerSerial() == null) ? 0 : Arrays.hashCode(certificateRef.getIssuerSerial()));
+		result = prime * result + ((certificateRef.getIssuerSerial() == null) ? 0 : Arrays.hashCode(certificateRef.getIssuerSerial().getValue()));
 		result = prime * result + ((certificateRef.getSerialInfo() == null || certificateRef.getSerialInfo().getIssuerName() == null) ?
 				0 : certificateRef.getSerialInfo().getIssuerName().hashCode());
 		result = prime * result + ((certificateRef.getSerialInfo() == null || certificateRef.getSerialInfo().getSki() == null) ?
@@ -126,7 +159,7 @@ public class CertificateRefWrapper {
 			if (other.certificateRef.getIssuerSerial() != null) {
 				return false;
 			}
-		} else if (!Arrays.equals(certificateRef.getIssuerSerial(), other.certificateRef.getIssuerSerial())) {
+		} else if (!Arrays.equals(certificateRef.getIssuerSerial().getValue(), other.certificateRef.getIssuerSerial().getValue())) {
 			return false;
 		}
 		if (certificateRef.getSerialInfo() == null) {

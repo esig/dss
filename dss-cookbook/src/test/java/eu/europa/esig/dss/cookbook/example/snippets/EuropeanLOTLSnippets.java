@@ -24,16 +24,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.alerts.LOTLAlert;
 import eu.europa.esig.dss.tsl.alerts.TLAlert;
@@ -50,6 +55,9 @@ import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class EuropeanLOTLSnippets {
 	
@@ -60,6 +68,27 @@ public class EuropeanLOTLSnippets {
 	// Should be externalized
 	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 	private static final String OJ_URL = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG";
+	
+	@Test
+	public void test() {
+		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+		TLValidationJob job = job();
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+		job.setTrustedListCertificateSource(trustedListsCertificateSource);
+		job.onlineRefresh();
+		commonCertificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
+		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
+		commonCertificateVerifier.setCrlSource(new OnlineCRLSource());
+		commonCertificateVerifier.setOcspSource(new OnlineOCSPSource());
+		commonCertificateVerifier.setDataLoader(commonsDataLoader);
+		
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(
+				new FileDocument("C:\\Users\\aleksandr.beliakov\\Downloads\\prova_firma.pdf"));
+		validator.setCertificateVerifier(commonCertificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+		reports.print();
+	}
 	
 	public TLValidationJob job() {
 		TLValidationJob job = new TLValidationJob();
@@ -85,7 +114,8 @@ public class EuropeanLOTLSnippets {
 	public LOTLSource europeanLOTL() {
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setUrl(LOTL_URL);
-		lotlSource.setCertificateSource(officialJournalContentKeyStore());
+//		lotlSource.setCertificateSource(officialJournalContentKeyStore());
+		lotlSource.setCertificateSource(new CommonCertificateSource());
 		lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI(OJ_URL));
 		lotlSource.setPivotSupport(true);
 		return lotlSource;
