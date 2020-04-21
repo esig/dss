@@ -56,11 +56,17 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 			SignatureAlgorithm sa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.DSA, digestAlgo);
 			if (sa != null && Utils.isStringNotBlank(sa.getOid())) {
 				for (DigestAlgorithm messageDigest : DigestAlgorithm.values()) {
-					args.add(Arguments.of(digestAlgo, messageDigest));
+					if (!isShake(messageDigest)) {
+						args.add(Arguments.of(digestAlgo, messageDigest));
+					}
 				}
 			}
 		}
 		return args.stream();
+	}
+
+	private static boolean isShake(DigestAlgorithm algo) {
+		return DigestAlgorithm.SHAKE128.equals(algo) || DigestAlgorithm.SHAKE256.equals(algo) || DigestAlgorithm.SHAKE256_512.equals(algo);
 	}
 
 	@ParameterizedTest(name = "Combination {index} of DSA with {0} and message-digest algorithm {1}")
