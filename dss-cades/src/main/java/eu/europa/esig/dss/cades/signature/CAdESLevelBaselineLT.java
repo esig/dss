@@ -27,10 +27,10 @@ import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**
@@ -58,7 +58,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 
 		// add T level if needed
-		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
+		if (Utils.isCollectionEmpty(cadesSignature.getSignatureTimestamps())) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			cadesSignature.setDetachedContents(parameters.getDetachedContents());

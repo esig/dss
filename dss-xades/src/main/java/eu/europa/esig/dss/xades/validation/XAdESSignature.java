@@ -1081,44 +1081,31 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
-
-		boolean dataForLevelPresent = true;
-		switch (signatureLevel) {
-		case XML_NOT_ETSI:
-			break;
-		case XAdES_BASELINE_LTA:
-			dataForLevelPresent = hasLTAProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_LT);
-			break;
-		case XAdES_BASELINE_LT:
-			dataForLevelPresent = hasLTProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
-			break;
-		case XAdES_BASELINE_T:
-			dataForLevelPresent = hasTProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_B);
-			break;
-		case XAdES_BASELINE_B:
-			dataForLevelPresent = hasBProfile();
-			break;
-		case XAdES_X:
-			dataForLevelPresent = hasXProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_C);
-			break;
-		case XAdES_C:
-			dataForLevelPresent = hasCProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown level " + signatureLevel);
+	public SignatureLevel getDataFoundUpToLevel() {
+		if (!hasBProfile()) {
+			return SignatureLevel.XML_NOT_ETSI;
 		}
-		return dataForLevelPresent;
+		if (!hasTProfile()) {
+			return SignatureLevel.XAdES_BASELINE_B;
+		}
+
+		if (hasLTProfile()) {
+			if (hasLTAProfile()) {
+				return SignatureLevel.XAdES_BASELINE_LTA;
+			}
+			return SignatureLevel.XAdES_BASELINE_LT;
+		} else if (hasCProfile()) {
+			if (hasXProfile()) {
+				return SignatureLevel.XAdES_X;
+			}
+			return SignatureLevel.XAdES_C;
+		} else {
+			return SignatureLevel.XAdES_BASELINE_T;
+		}
 	}
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-
 		return signatureLevels;
 	}
 

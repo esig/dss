@@ -172,40 +172,36 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public boolean isDataForSignatureLevelPresent(SignatureLevel signatureLevel) {
-		boolean dataForLevelPresent = true;
-		switch (signatureLevel) {
-		case PDF_NOT_ETSI:
-			break;
-		case PAdES_BASELINE_LTA:
-			dataForLevelPresent = hasLTAProfile() && hasLTProfile() && hasCAdESDetachedSubFilter();
-			break;
-		case PKCS7_LTA:
-			dataForLevelPresent = hasLTAProfile() && hasLTProfile() && hasPKCS7SubFilter();
-			break;
-		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasLTProfile() && hasDSSDictionary() && (hasTProfile() || hasLTAProfile()) && hasCAdESDetachedSubFilter();
-			break;
-		case PKCS7_LT:
-			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasPKCS7SubFilter();
-			break;
-		case PAdES_BASELINE_T:
-			dataForLevelPresent = hasTProfile() && hasCAdESDetachedSubFilter();
-			break;
-		case PKCS7_T:
-			dataForLevelPresent = hasTProfile() && hasPKCS7SubFilter();
-			break;
-		case PAdES_BASELINE_B:
-			dataForLevelPresent = hasCAdESDetachedSubFilter();
-			break;
-		case PKCS7_B:
-			dataForLevelPresent = hasPKCS7SubFilter();
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown level " + signatureLevel);
+	public SignatureLevel getDataFoundUpToLevel() {
+		if (hasCAdESDetachedSubFilter()) {
+			if (hasLTProfile() && hasDSSDictionary()) {
+				if (hasLTAProfile()) {
+					return SignatureLevel.PAdES_BASELINE_LTA;
+				}
+				if (hasTProfile()) {
+					return SignatureLevel.PAdES_BASELINE_LT;
+				}
+			}
+			if (hasTProfile()) {
+				return SignatureLevel.PAdES_BASELINE_T;
+			}
+			return SignatureLevel.PAdES_BASELINE_B;
+		} else if (hasPKCS7SubFilter()) {
+			if (hasLTProfile()) {
+				if (hasLTAProfile()) {
+					return SignatureLevel.PKCS7_LTA;
+				}
+				if (hasTProfile()) {
+					return SignatureLevel.PKCS7_LT;
+				}
+			}
+			if (hasTProfile()) {
+				return SignatureLevel.PKCS7_T;
+			}
+			return SignatureLevel.PKCS7_B;
+		} else {
+			return SignatureLevel.PDF_NOT_ETSI;
 		}
-		LOG.debug("Level {} found on document {} = {}", signatureLevel, getSignatureFilename(), dataForLevelPresent);
-		return dataForLevelPresent;
 	}
 
 	private boolean hasDSSDictionary() {

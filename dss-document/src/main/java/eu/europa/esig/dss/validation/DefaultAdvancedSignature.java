@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -193,17 +192,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return foundManifestedDocuments;
 	}
 	
-	/**
-	 * @return the upper level for which data have been found. Doesn't mean any validity of the data found. Null if
-	 *         unknown.
-	 */
-	@Override
-	public SignatureLevel getDataFoundUpToLevel() {
-		final SignatureLevel[] signatureLevels = getSignatureLevels();
-		final SignatureLevel dataFoundUpToProfile = getDataFoundUpToProfile(signatureLevels);
-		return dataFoundUpToProfile;
-	}
-	
 	@Override
 	public ListCertificateSource getCompleteCertificateSource() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
@@ -231,25 +219,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return ocspSource;
 	}
 
-	/**
-	 * This method returns the {@code SignatureLevel} which was reached.
-	 *
-	 * @param signatureLevels
-	 *            the array of the all levels associated with the given signature type
-	 * @return {@code SignatureLevel}
-	 */
-	private SignatureLevel getDataFoundUpToProfile(final SignatureLevel... signatureLevels) {
-
-		for (int ii = signatureLevels.length - 1; ii >= 0; ii--) {
-
-			final SignatureLevel signatureLevel = signatureLevels[ii];
-			if (isDataForSignatureLevelPresent(signatureLevel)) {
-				return signatureLevel;
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
 	 * 5.6.3 Signature Verification Process
