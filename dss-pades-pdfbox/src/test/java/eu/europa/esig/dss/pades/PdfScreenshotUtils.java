@@ -133,7 +133,7 @@ public class PdfScreenshotUtils {
             // ImageIO.write(checkImage, "png", new File("target\\checkImage.png"));
             
 			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
-			assertTrue(checkSimilarity >= minSimilarity);
+			assertTrue(checkSimilarity >= minSimilarity, "The image similarity " + checkSimilarity + " is lower the allowed limit " + minSimilarity);
 		}
 	}
 	
