@@ -32,8 +32,10 @@ import java.util.Date;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
@@ -65,10 +67,17 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
+	private String testName;
+	
 	/**
 	 * The degree of similarity between generated and original images
 	 */
 	private static final float SIMILARITY_LIMIT = 0.988f;
+	
+	@BeforeEach
+	public void init(TestInfo testInfo) {
+		testName = testInfo.getTestMethod().get().getName();
+	}
 	
 	private void initPdfATest() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
@@ -665,9 +674,9 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	
 	private void drawAndCompareVisually() throws IOException {
 		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		DSSDocument defaultDrawerPdf = sign("default");
+		DSSDocument defaultDrawerPdf = sign(testName + "_default");
 		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-		DSSDocument nativeDrawerPdf = sign("native");
+		DSSDocument nativeDrawerPdf = sign(testName + "_native");
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 	}
@@ -686,7 +695,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument document = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		// document.save("target/" + docName + ".pdf");
+		 document.save("target/" + docName + ".pdf");
 		return document;
 	}
 	
