@@ -29,9 +29,14 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -48,12 +53,29 @@ public class IssuerSerialMatchCheckTest extends AbstractTestCheck {
 		XmlIssuerSerial xmlIssuerSerial = new XmlIssuerSerial();
 		xmlIssuerSerial.setMatch(true);
 		xmlCertificateRef.setIssuerSerial(xmlIssuerSerial);
+		
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		xmlCertificate.setId("Id-DSS");
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(xmlCertificate);
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
+		XmlSignature xmlSignature = new XmlSignature();
+		xmlSignature.setFoundCertificates(xmlFoundCertificates);
+		
+		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
+		xmlSigningCertificate.setCertificate(xmlCertificate);
+		xmlSignature.setSigningCertificate(xmlSigningCertificate);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(i18nProvider, result, new CertificateRefWrapper(xmlCertificateRef), constraint);
+		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
 		ismc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -69,12 +91,29 @@ public class IssuerSerialMatchCheckTest extends AbstractTestCheck {
 		XmlIssuerSerial xmlIssuerSerial = new XmlIssuerSerial();
 		xmlIssuerSerial.setMatch(false);
 		xmlCertificateRef.setIssuerSerial(xmlIssuerSerial);
+		
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		xmlCertificate.setId("Id-DSS");
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(xmlCertificate);
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
+		XmlSignature xmlSignature = new XmlSignature();
+		xmlSignature.setFoundCertificates(xmlFoundCertificates);
+		
+		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
+		xmlSigningCertificate.setCertificate(xmlCertificate);
+		xmlSignature.setSigningCertificate(xmlSigningCertificate);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(i18nProvider, result, new CertificateRefWrapper(xmlCertificateRef), constraint);
+		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
 		ismc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -31,16 +32,20 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 
-	private final CertificateRefWrapper signingCertificateRef;
+	private final TokenProxy token;
 
-	public DigestValueMatchCheck(I18nProvider i18nProvider, XmlISC result, CertificateRefWrapper signingCertificateRef, LevelConstraint constraint) {
+	public DigestValueMatchCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-		this.signingCertificateRef = signingCertificateRef;
+		this.token = token;
 	}
 
 	@Override
 	protected boolean process() {
-		return signingCertificateRef.isDigestValueMatch();
+		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
+		if (signingCertificateReference != null) {
+			return signingCertificateReference.isDigestValueMatch();
+		}
+		return false;
 	}
 
 	@Override

@@ -100,7 +100,7 @@ public class CertificateRefWrapper {
 	 */
 	public boolean isDigestValueMatch() {
 		XmlDigestAlgoAndValue digestAlgoAndValue = getDigestAlgoAndValue();
-		return digestAlgoAndValue != null && digestAlgoAndValue.isMatch();
+		return digestAlgoAndValue != null && digestAlgoAndValue.isMatch() != null && digestAlgoAndValue.isMatch();
 	}
 	
 	@Override

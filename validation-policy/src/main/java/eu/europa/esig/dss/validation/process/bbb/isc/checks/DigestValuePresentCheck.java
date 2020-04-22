@@ -20,27 +20,39 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
+import java.util.List;
+
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class DigestValuePresentCheck extends ChainItem<XmlISC> {
 
-	private final CertificateRefWrapper signingCertificateRef;
+	private final TokenProxy token;
 
-	public DigestValuePresentCheck(I18nProvider i18nProvider, XmlISC result, CertificateRefWrapper signingCertificateRef, LevelConstraint constraint) {
+	public DigestValuePresentCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-		this.signingCertificateRef = signingCertificateRef;
+		this.token = token;
 	}
 
 	@Override
 	protected boolean process() {
-		return signingCertificateRef.getDigestAlgoAndValue() != null;
+		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
+		if (signingCertificateReference != null) {
+			return signingCertificateReference.isDigestValuePresent();
+		}
+		List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
+		if (Utils.isCollectionNotEmpty(signingCertificateReferences)) {
+			return signingCertificateReferences.iterator().next().isDigestValuePresent();
+		}
+		return false;
 	}
 
 	@Override

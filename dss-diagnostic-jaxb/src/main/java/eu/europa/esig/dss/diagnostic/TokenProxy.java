@@ -50,6 +50,8 @@ public interface TokenProxy {
 	boolean isSigningCertificateReferenceUnique();
 	
 	CertificateRefWrapper getSigningCertificateReference();
+	
+	List<CertificateRefWrapper> getSigningCertificateReferences();
 
 	byte[] getSigningCertificatePublicKey();
 

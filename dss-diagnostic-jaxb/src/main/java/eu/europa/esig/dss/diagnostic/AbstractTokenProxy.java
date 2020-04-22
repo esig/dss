@@ -155,7 +155,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	
 	@Override
 	public CertificateRefWrapper getSigningCertificateReference() {
-		List<CertificateRefWrapper> signingCertificateReferences = getSigningCertificateReferences();
+		List<CertificateRefWrapper> signingCertificateReferences = foundCertificates()
+				.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		if (signingCertificateReferences.size() > 0) {
 			// return a reference matching a signing certificate
 			CertificateWrapper signingCertificate = getSigningCertificate();
@@ -163,16 +164,21 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 				for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
 					if (signingCertificate.getId().equals(relatedCertificate.getId()) && relatedCertificate.getReferences().size() > 0) {
 						return relatedCertificate.getReferences().iterator().next();
-					} 
+					}
 				}
 			}
-			// return the first occurrence if signing certificate is not found
-			return signingCertificateReferences.iterator().next();
+		} else {
+			List<CertificateRefWrapper> orphanSigningCertificateReferences = foundCertificates()
+					.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+			if (orphanSigningCertificateReferences.size() > 0) {
+				return orphanSigningCertificateReferences.iterator().next();
+			}
 		}
 		return null;
 	}
 	
-	private List<CertificateRefWrapper> getSigningCertificateReferences() {
+	@Override
+	public List<CertificateRefWrapper> getSigningCertificateReferences() {
 		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
 		certificateRefs.addAll(foundCertificates().getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE));
 		certificateRefs.addAll(foundCertificates().getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE));

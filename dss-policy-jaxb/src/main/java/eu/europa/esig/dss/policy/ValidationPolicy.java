@@ -29,6 +29,7 @@ import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 
 /**
@@ -444,6 +445,8 @@ public interface ValidationPolicy {
 	Model getValidationModel();
 
 	SignatureConstraints getSignatureConstraints();
+
+	TimestampConstraints getTimestampConstraints();
 
 	CryptographicConstraint getCryptographic();
 
