@@ -424,13 +424,10 @@ public interface AdvancedSignature extends Serializable {
 	String getDAIdentifier();
 
 	/**
-	 * @param signatureLevel
-	 *            {@code SignatureLevel} to be checked
-	 * @return true if the signature contains the data needed for this {@code SignatureLevel}. Doesn't mean any validity
-	 *         of the data found.
+	 * This method returns the signature level
+	 * 
+	 * @return a value of {@link SignatureLevel}
 	 */
-	boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel);
-
 	SignatureLevel getDataFoundUpToLevel();
 
 	/**

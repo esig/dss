@@ -1018,47 +1018,50 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
-		final AttributeTable signedAttributes = CMSUtils.getSignedAttributes(signerInformation);
-		final AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		boolean dataForProfilePresent = true;
-		switch (signatureLevel) {
-		case CAdES_BASELINE_LTA:
-			dataForProfilePresent = hasLTAProfile();
-			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LT);
-			break;
-		case CAdES_101733_A:
-			dataForProfilePresent = unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LT);
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_101733_X);
-			break;
-		case CAdES_BASELINE_LT:
-			dataForProfilePresent = hasLTProfile();
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
-			break;
-		case CAdES_101733_X:
-			dataForProfilePresent = ((unsignedAttributes.get(id_aa_ets_certCRLTimestamp) != null) || (unsignedAttributes.get(id_aa_ets_escTimeStamp) != null));
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_101733_C);
-			break;
-		case CAdES_101733_C:
-			dataForProfilePresent = unsignedAttributes.get(id_aa_ets_certificateRefs) != null;
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
-			break;
-		case CAdES_BASELINE_T:
-			dataForProfilePresent = hasTProfile();
-			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_B);
-			break;
-		case CAdES_BASELINE_B:
-			dataForProfilePresent = ((signedAttributes.get(id_aa_signingCertificate) != null) || (signedAttributes.get(id_aa_signingCertificateV2) != null));
-			break;
-		case CMS_NOT_ETSI:
-			dataForProfilePresent = true;
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown level " + signatureLevel);
+	public SignatureLevel getDataFoundUpToLevel() {
+		if (!hasBProfile()) {
+			return SignatureLevel.CMS_NOT_ETSI;
 		}
-		return dataForProfilePresent;
+		if (!hasTProfile()) {
+			return SignatureLevel.CAdES_BASELINE_B;
+		}
+
+		if (hasLTProfile()) {
+			if (hasLTAProfile()) {
+				return SignatureLevel.CAdES_BASELINE_LTA;
+			}
+			return SignatureLevel.CAdES_BASELINE_LT;
+		} else if (hasCProfile()) {
+			if (hasXProfile()) {
+// Revocation are not complete
+//				if (hasAProfile()) {
+//					return SignatureLevel.CAdES_101733_A;
+//				}
+				return SignatureLevel.CAdES_101733_X;
+			}
+			return SignatureLevel.CAdES_101733_C;
+		} else {
+			return SignatureLevel.CAdES_BASELINE_T;
+		}
+	}
+
+	public boolean hasBProfile() {
+		return ((getSignedAttribute(id_aa_signingCertificate) != null) || (getSignedAttribute(id_aa_signingCertificateV2) != null));
+	}
+
+	public boolean hasCProfile() {
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		return unsignedAttributes.get(id_aa_ets_certificateRefs) != null;
+	}
+
+	public boolean hasXProfile() {
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		return ((unsignedAttributes.get(id_aa_ets_certCRLTimestamp) != null) || (unsignedAttributes.get(id_aa_ets_escTimeStamp) != null));
+	}
+
+	public boolean hasAProfile() {
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		return unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;
 	}
 
 	@Override

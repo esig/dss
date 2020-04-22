@@ -96,7 +96,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		
 		PdfSignatureRevision pdfSignatureRevision = padesSig.getPdfRevision();
 
-		if (padesSig.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
+		SignatureLevel currentLevel = padesSig.getDataFoundUpToLevel();
+		if (SignatureLevel.PAdES_BASELINE_LT.equals(currentLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(currentLevel)) {
 			assertNotNull(pdfSignatureRevision.getDssDictionary());
 		}
 
