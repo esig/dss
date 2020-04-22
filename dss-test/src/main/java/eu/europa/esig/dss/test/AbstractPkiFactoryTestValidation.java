@@ -61,6 +61,8 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -72,6 +74,8 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
+import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
@@ -131,6 +135,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
 
+		runDifferentValidationLevels(reports.getDiagnosticDataJaxb());
+
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
 
@@ -149,6 +155,33 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		generateHtmlPdfReports(reports);
 		
 		return reports;
+	}
+
+	protected void runDifferentValidationLevels(XmlDiagnosticData diagnosticDataJaxb) {
+
+		ValidationPolicy defaultValidationPolicy = null;
+		try {
+			defaultValidationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		} catch (Exception e) {
+			fail("Unable to load the default validation policy", e);
+		}
+
+		for (ValidationLevel validationLevel : ValidationLevel.values()) {
+			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+			executor.setDiagnosticData(diagnosticDataJaxb);
+			executor.setValidationPolicy(defaultValidationPolicy);
+			executor.setValidationLevel(validationLevel);
+			executor.setEnableEtsiValidationReport(true);
+			Reports reports = executor.execute();
+			assertNotNull(reports);
+			assertNotNull(reports.getDetailedReportJaxb());
+			assertNotNull(reports.getSimpleReportJaxb());
+			assertNotNull(reports.getEtsiValidationReportJaxb());
+
+			assertNotNull(reports.getDetailedReport());
+			assertNotNull(reports.getSimpleReport());
+		}
+
 	}
 
 	protected void checkValidationContext(SignedDocumentValidator validator) {
@@ -362,7 +395,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			SignatureLevel signatureFormat = signatureWrapper.getSignatureFormat();

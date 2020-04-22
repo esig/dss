@@ -116,11 +116,6 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	}
 	
 	@Override
-	public void validate() {
-		// do nothing
-	}
-	
-	@Override
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		// do nothing
 	}
