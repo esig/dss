@@ -25,12 +25,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB"/>
             <CertificateChain>
                 <ChainItem Certificate="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB"/>
                 <ChainItem Certificate="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C"/>
@@ -46,8 +41,8 @@
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
                         <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
-                        <IssuerSerial>MHAwWKRWMFQxCzAJBgNVBAYTAkJNMRkwFwYDVQQKDBBRdW9WYWRpcyBMaW1pdGVkMSowKAYDVQQDDCFRdW9WYWRpcyBFbnRlcnByaXNlIFRydXN0IENBIDEgRzMCFED2BlNDwEy2cenIJQ6Q69WN2G5V</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MHAwWKRWMFQxCzAJBgNVBAYTAkJNMRkwFwYDVQQKDBBRdW9WYWRpcyBMaW1pdGVkMSowKAYDVQQDDCFRdW9WYWRpcyBFbnRlcnByaXNlIFRydXN0IENBIDEgRzMCFED2BlNDwEy2cenIJQ6Q69WN2G5V</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>hgrKgvjD8f5t9M9lexO2SR2zJuaUM259ZSbkRMLtjgmdjXbyLkiJDAqndZQLE/+DqILFjFLF47Wrst8nenn/9w==</DigestValue>
                         </DigestAlgoAndValue>
@@ -58,8 +53,8 @@
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MIGPMHekdTBzMQswCQYDVQQGEwJCRTEZMBcGA1UEYQwQTlRSQkUtMDUzNzY5ODMxODEgMB4GA1UECgwXUXVvVmFkaXMgVHJ1c3RsaW5rIEJWQkExJzAlBgNVBAMMHlF1b1ZhZGlzIEJlbGdpdW0gSXNzdWluZyBDQSBHMgIUEQcf4B1qBG/LnLVqTopHw3pjfVE=</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MIGPMHekdTBzMQswCQYDVQQGEwJCRTEZMBcGA1UEYQwQTlRSQkUtMDUzNzY5ODMxODEgMB4GA1UECgwXUXVvVmFkaXMgVHJ1c3RsaW5rIEJWQkExJzAlBgNVBAMMHlF1b1ZhZGlzIEJlbGdpdW0gSXNzdWluZyBDQSBHMgIUEQcf4B1qBG/LnLVqTopHw3pjfVE=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>2dj7pixKkLwuofI7NSTGjsdLSK9zXkdz045mwe0+JCLVjt91CzavA3qbWooun6xXNpDnmwzDBEiUj3X4vb2Z0w==</DigestValue>
                         </DigestAlgoAndValue>

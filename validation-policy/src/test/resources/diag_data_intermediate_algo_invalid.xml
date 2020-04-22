@@ -40,12 +40,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3"/>
             <CertificateChain>
                 <ChainItem Certificate="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3"/>
                 <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
@@ -53,7 +48,18 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndications/>
             
-            <FoundCertificates/>
+            
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>QXu38zaCKZDT5pWRlxg3wtVX+DE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-0E5DB20309AE960AA331A018523D52150AF811892E538A4B8C4708EFACE7D9FA"/>

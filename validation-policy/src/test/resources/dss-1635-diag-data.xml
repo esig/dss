@@ -32,12 +32,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
             <CertificateChain>
                 <ChainItem Certificate="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
                 <ChainItem Certificate="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548"/>
@@ -65,8 +60,8 @@
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MFcwUKROMEwxCzAJBgNVBAYTAkxVMRYwFAYDVQQKEw1MdXhUcnVzdCBTLkEuMSUwIwYDVQQDExxMdXhUcnVzdCBHbG9iYWwgUXVhbGlmaWVkIENBAgMJOwI=</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MFcwUKROMEwxCzAJBgNVBAYTAkxVMRYwFAYDVQQKEw1MdXhUcnVzdCBTLkEuMSUwIwYDVQQDExxMdXhUcnVzdCBHbG9iYWwgUXVhbGlmaWVkIENBAgMJOwI=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA1</DigestMethod>
                             <DigestValue>P8ZTf361+59xDxfvjMqw9wepNwE=</DigestValue>
                         </DigestAlgoAndValue>

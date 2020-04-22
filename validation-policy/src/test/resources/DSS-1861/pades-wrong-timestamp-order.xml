@@ -25,12 +25,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC"/>
             <CertificateChain>
                 <ChainItem Certificate="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC"/>
                 <ChainItem Certificate="C-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0"/>
@@ -68,8 +63,8 @@
                     <Origin>DSS_DICTIONARY</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MIGQMH6kfDB6MQswCQYDVQQGEwJIVTERMA8GA1UEBwwIQnVkYXBlc3QxFjAUBgNVBAoMDU1pY3Jvc2VjIEx0ZC4xFzAVBgNVBGEMDlZBVEhVLTIzNTg0NDk3MScwJQYDVQQDDB5lLVN6aWdubyBRdWFsaWZpZWQgUUNQIENBIDIwMTcCDgEZBQz3LIFZMJ9xmOgK</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MIGQMH6kfDB6MQswCQYDVQQGEwJIVTERMA8GA1UEBwwIQnVkYXBlc3QxFjAUBgNVBAoMDU1pY3Jvc2VjIEx0ZC4xFzAVBgNVBGEMDlZBVEhVLTIzNTg0NDk3MScwJQYDVQQDDB5lLVN6aWdubyBRdWFsaWZpZWQgUUNQIENBIDIwMTcCDgEZBQz3LIFZMJ9xmOgK</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA256</DigestMethod>
                             <DigestValue>wvz0d6VcqlRwlsMYgz5fWEl7S/xv+5EEdrPiiOxpEaw=</DigestValue>
                         </DigestAlgoAndValue>

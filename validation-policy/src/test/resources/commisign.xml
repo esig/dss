@@ -25,12 +25,7 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
-            <AttributePresent>true</AttributePresent>
-            <DigestValuePresent>true</DigestValuePresent>
-            <DigestValueMatch>true</DigestValueMatch>
-            <IssuerSerialMatch>true</IssuerSerialMatch>
-         </SigningCertificate>
+         <SigningCertificate Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC"/>
          <CertificateChain>
             <ChainItem Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC"/>
             <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
@@ -38,7 +33,17 @@
          <ContentType>application/pdf</ContentType>
          <CommitmentTypeIndications/>
          
-         <FoundCertificates/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>spo0d1SBHli0X0D3cUwAjF/YSpU=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
          <FoundRevocations/>
          <FoundTimestamps/>
          <SignatureScopes>
