@@ -68,7 +68,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	/**
 	 * The degree of similarity between generated and original images
 	 */
-	private static final float SIMILARITY_LIMIT = 0.989f;
+	private static final float SIMILARITY_LIMIT = 0.988f;
 	
 	private void initPdfATest() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
@@ -435,6 +435,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		
 		// with dpi
 		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
+		imageParameters.getTextParameters().setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		imageParameters.setDpi(144);
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareVisually();
