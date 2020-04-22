@@ -1241,9 +1241,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
-		IllegalStateException exception = assertThrows(IllegalStateException.class, () -> executor.execute());
-		assertEquals("Missing Basic Building Blocks result for token 'T-6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E'",
-				exception.getMessage());
+		checkReports(executor.execute());
 
 		executor.setValidationLevel(ValidationLevel.TIMESTAMPS);
 		checkReports(executor.execute());
