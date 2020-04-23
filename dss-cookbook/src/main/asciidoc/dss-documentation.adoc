@@ -1236,6 +1236,8 @@ Since version 5.5, DSS supports two types of fonts. The custom font must be adde
  * `DSSFileFont` for using of physical fonts, which must be embedded to the produced PDF document. To create an instance of the class, you must pass to a `DSSFileFont` constructor an object of `DSSDocument` type or InputStream of the font file;
  * `DSSJavaFont` for using of logical fonts (default Java fonts). The logical Java fonts allow you to significantly reduce the document size, because these fonts cannot be embedded to the final PDF document. Be aware, because of the fact, using of logical fonts does not allow producing PDF documents satisfying the PDF/A standard. To create an instance of this class, you should pass as an input a `java.awt.Font` object or target font parameters (name, style, size).
 
+WARNING: Logical fonts may have different implementations depending on a used PAdES Visible signature service or Operating System (OS). Keep this in mind when switching an implementation or system environment.
+
 You can create a custom font as following (for a physical font):
 
 [source,java,indent=0]
