@@ -389,6 +389,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	@Test
 	public void multilinesTextAndImageTest() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		imageParameters.getTextParameters().setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareVisually();
 	}
@@ -396,6 +397,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	@Test
 	public void multilinesTextWithRightAlignmentAndImageTest() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		imageParameters.getTextParameters().setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
 		imageParameters.getTextParameters().setPadding(50);
 		signatureParameters.setImageParameters(imageParameters);
@@ -408,6 +410,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		Color transparent = new Color(0, 0, 0, 0.25f);
 		imageParameters.getTextParameters().setBackgroundColor(transparent);
 		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
+		imageParameters.getTextParameters().setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		imageParameters.setBackgroundColor(transparent);
 		imageParameters.setxAxis(10);
 		imageParameters.setyAxis(10);
@@ -695,7 +698,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument document = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		 document.save("target/" + docName + ".pdf");
+		// document.save("target/" + docName + ".pdf");
 		return document;
 	}
 	
