@@ -27,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.RepeatedTest;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -59,10 +57,10 @@ public class DSS1690Test extends AbstractPAdESTestValidation {
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
-	@Override
-	@RepeatedTest(10)
-	public void validate() {
-		super.validate();
-	}
+//	@Override
+//	@RepeatedTest(10)
+//	public void validate() {
+//		super.validate();
+//	}
 	
 }

@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.RepeatedTest;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -84,10 +82,10 @@ public class DSS1983Test extends AbstractPAdESTestValidation {
 		assertEquals(1, signedDataCounter);
 	}
 	
-	@Override
-	@RepeatedTest(10)
-	public void validate() {
-		super.validate();
-	}
+//	@Override
+//	@RepeatedTest(10)
+//	public void validate() {
+//		super.validate();
+//	}
 
 }
