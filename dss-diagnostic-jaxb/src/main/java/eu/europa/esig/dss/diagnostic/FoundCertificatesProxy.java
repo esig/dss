@@ -158,5 +158,25 @@ public class FoundCertificatesProxy {
 		}
 		return certificateRefs;
 	}
+	
+	public List<CertificateRefWrapper> getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin refOrigin) {
+		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
+		for (CertificateRefWrapper ref : getRelatedCertificateRefs()) {
+			if (refOrigin.equals(ref.getOrigin())) {
+				certificateRefs.add(ref);
+			}
+		}
+		return certificateRefs;
+	}
+	
+	public List<CertificateRefWrapper> getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin refOrigin) {
+		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
+		for (CertificateRefWrapper ref : getOrphanCertificateRefs()) {
+			if (refOrigin.equals(ref.getOrigin())) {
+				certificateRefs.add(ref);
+			}
+		}
+		return certificateRefs;
+	}
 
 }

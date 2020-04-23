@@ -22,7 +22,6 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -50,15 +49,6 @@ public class ASiCETwoSignaturesInOneTimeTest extends AbstractASiCWithCAdESTestVa
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertFalse(signatureWrapper.isBLevelTechnicallyValid());
-		}
-	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertTrue(signatureWrapper.isAttributePresent());
-			assertTrue(signatureWrapper.isDigestValuePresent());
-			assertTrue(signatureWrapper.isDigestValueMatch());
 		}
 	}
 

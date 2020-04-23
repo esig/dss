@@ -51,14 +51,6 @@ public class PolicyZeroHashTest extends AbstractPAdESTestValidation {
 	}
 	
 	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isAttributePresent());
-		assertTrue(signatureWrapper.isDigestValuePresent());
-		assertTrue(signatureWrapper.isDigestValueMatch());
-	}
-	
-	@Override
 	protected void verifyDetailedReport(DetailedReport detailedReport) {
 		super.verifyDetailedReport(detailedReport);
 		

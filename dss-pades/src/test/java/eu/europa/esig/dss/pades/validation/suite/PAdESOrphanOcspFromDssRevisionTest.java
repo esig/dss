@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
@@ -21,14 +20,6 @@ public class PAdESOrphanOcspFromDssRevisionTest extends AbstractPAdESTestValidat
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationReferences().size());
-	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isAttributePresent());
-		assertTrue(signatureWrapper.isDigestValuePresent());
-		assertTrue(signatureWrapper.isDigestValueMatch());
 	}
 	
 	@Override

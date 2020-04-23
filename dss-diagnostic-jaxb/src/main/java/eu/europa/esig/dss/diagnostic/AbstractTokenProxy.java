@@ -28,6 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -125,34 +126,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public boolean isIssuerSerialMatch() {
-		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null)
-				&& (currentSigningCertificate.isIssuerSerialMatch() != null && currentSigningCertificate.isIssuerSerialMatch());
-	}
-
-	@Override
-	public boolean isAttributePresent() {
-		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null)
-				&& (currentSigningCertificate.isAttributePresent() != null && currentSigningCertificate.isAttributePresent());
-	}
-
-	@Override
-	public boolean isDigestValueMatch() {
-		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null)
-				&& (currentSigningCertificate.isDigestValueMatch() != null && currentSigningCertificate.isDigestValueMatch());
-	}
-
-	@Override
-	public boolean isDigestValuePresent() {
-		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null)
-				&& (currentSigningCertificate.isDigestValuePresent() != null && currentSigningCertificate.isDigestValuePresent());
-	}
-
-	@Override
 	public CertificateWrapper getSigningCertificate() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		if (currentSigningCertificate != null && currentSigningCertificate.getCertificate() != null) {
@@ -168,6 +141,48 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return currentSigningCertificate.getPublicKey();
 		}
 		return null;
+	}
+	
+	@Override
+	public boolean isSigningCertificateReferencePresent() {
+		return getSigningCertificateReferences().size() > 0;
+	}
+	
+	@Override
+	public boolean isSigningCertificateReferenceUnique() {
+		return getSigningCertificateReferences().size() == 1;
+	}
+	
+	@Override
+	public CertificateRefWrapper getSigningCertificateReference() {
+		List<CertificateRefWrapper> signingCertificateReferences = foundCertificates()
+				.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		if (signingCertificateReferences.size() > 0) {
+			// return a reference matching a signing certificate
+			CertificateWrapper signingCertificate = getSigningCertificate();
+			if (signingCertificate != null) {
+				for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
+					if (signingCertificate.getId().equals(relatedCertificate.getId()) && relatedCertificate.getReferences().size() > 0) {
+						return relatedCertificate.getReferences().iterator().next();
+					}
+				}
+			}
+		} else {
+			List<CertificateRefWrapper> orphanSigningCertificateReferences = foundCertificates()
+					.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+			if (orphanSigningCertificateReferences.size() > 0) {
+				return orphanSigningCertificateReferences.iterator().next();
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public List<CertificateRefWrapper> getSigningCertificateReferences() {
+		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
+		certificateRefs.addAll(foundCertificates().getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE));
+		certificateRefs.addAll(foundCertificates().getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE));
+		return certificateRefs;
 	}
 
 	@Override

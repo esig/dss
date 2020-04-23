@@ -50,12 +50,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-7C7A9FE7D2806E276868C5DDC67C0587C4D4B875A2E2DD4DD299A7A3576F20B1">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-7C7A9FE7D2806E276868C5DDC67C0587C4D4B875A2E2DD4DD299A7A3576F20B1"/>
             <CertificateChain>
                 <ChainItem Certificate="C-7C7A9FE7D2806E276868C5DDC67C0587C4D4B875A2E2DD4DD299A7A3576F20B1"/>
                 <ChainItem Certificate="C-E73F1F19A4459A6067A45E84DB585D6C1DF8F12A739D733F5B28996546F1875A"/>
@@ -75,8 +70,8 @@
                     <Origin>KEY_INFO</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MHgwZKRiMGAxCzAJBgNVBAYTAkVFMSIwIAYDVQQKExlBUyBTZXJ0aWZpdHNlZXJpbWlza2Vza3VzMRcwFQYDVQRhEw5OVFJFRS0xMDc0NzAxMzEUMBIGA1UEAxMLRUlELVNLIDIwMTYCEAls4tkExDMgXWfYPasghRE=</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MHgwZKRiMGAxCzAJBgNVBAYTAkVFMSIwIAYDVQQKExlBUyBTZXJ0aWZpdHNlZXJpbWlza2Vza3VzMRcwFQYDVQRhEw5OVFJFRS0xMDc0NzAxMzEUMBIGA1UEAxMLRUlELVNLIDIwMTYCEAls4tkExDMgXWfYPasghRE=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA256</DigestMethod>
                             <DigestValue>fHqf59KAbidoaMXdxnwFh8TUuHWi4t1N0pmno1dvILE=</DigestValue>
                         </DigestAlgoAndValue>

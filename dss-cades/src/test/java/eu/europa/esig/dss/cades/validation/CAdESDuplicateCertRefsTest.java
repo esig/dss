@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -47,9 +49,9 @@ public class CAdESDuplicateCertRefsTest extends AbstractCAdESTestValidation {
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isDigestValuePresent());
-		assertTrue(signatureWrapper.isDigestValueMatch());
-		assertTrue(signatureWrapper.isIssuerSerialMatch());
+		assertTrue(signatureWrapper.isSigningCertificateReferencePresent());
+		assertFalse(signatureWrapper.isSigningCertificateReferenceUnique());
+		assertNotNull(signatureWrapper.getSigningCertificateReference());
 	}
 
 }

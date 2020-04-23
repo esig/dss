@@ -43,15 +43,15 @@ public interface TokenProxy {
 
 	String getKeyLengthUsedToSignThisToken();
 
-	boolean isIssuerSerialMatch();
-
-	boolean isAttributePresent();
-
-	boolean isDigestValueMatch();
-
-	boolean isDigestValuePresent();
-
 	CertificateWrapper getSigningCertificate();
+	
+	boolean isSigningCertificateReferencePresent();
+	
+	boolean isSigningCertificateReferenceUnique();
+	
+	CertificateRefWrapper getSigningCertificateReference();
+	
+	List<CertificateRefWrapper> getSigningCertificateReferences();
 
 	byte[] getSigningCertificatePublicKey();
 

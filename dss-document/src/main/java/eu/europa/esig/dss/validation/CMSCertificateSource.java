@@ -259,11 +259,9 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		}
 
 		List<CertificateRef> signingCertRefs = getSigningCertificateRefs();
-		certificateValidity.setAttributePresent(Utils.collectionSize(signingCertRefs) == 1);
 		if (Utils.isCollectionNotEmpty(signingCertRefs)) {
 			// first one
 			CertificateRef signingCertRef = signingCertRefs.iterator().next();
-			CertificateIdentifier sigCertIdentifier = signingCertRef.getCertificateIdentifier();
 			Digest certDigest = signingCertRef.getCertDigest();
 			certificateValidity.setDigestPresent(certDigest != null);
 
@@ -272,6 +270,8 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 				certificateValidity.setDigestEqual(Arrays.equals(certificateDigest, certDigest.getValue()));
 			}
 
+			CertificateIdentifier sigCertIdentifier = signingCertRef.getCertificateIdentifier();
+			certificateValidity.setIssuerSerialPresent(sigCertIdentifier != null);
 			if (sigCertIdentifier != null) {
 				if (certificate != null) {
 					certificateValidity.setSerialNumberEqual(certificate.getSerialNumber().equals(sigCertIdentifier.getSerialNumber()));

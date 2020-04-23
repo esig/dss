@@ -32,12 +32,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0"/>
             <CertificateChain>
                 <ChainItem Certificate="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0"/>
                 <ChainItem Certificate="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0"/>
@@ -55,8 +50,8 @@
                     <Origin>KEY_INFO</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MH8weaR3MHUxCzAJBgNVBAYTAlVTMRgwFgYDVQQKEw9HVEUgQ29ycG9yYXRpb24xJzAlBgNVBAsTHkdURSBDeWJlclRydXN0IFNvbHV0aW9ucywgSW5jLjEjMCEGA1UEAxMaR1RFIEN5YmVyVHJ1c3QgR2xvYmFsIFJvb3QCAgGl</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MH8weaR3MHUxCzAJBgNVBAYTAlVTMRgwFgYDVQQKEw9HVEUgQ29ycG9yYXRpb24xJzAlBgNVBAsTHkdURSBDeWJlclRydXN0IFNvbHV0aW9ucywgSW5jLjEjMCEGA1UEAxMaR1RFIEN5YmVyVHJ1c3QgR2xvYmFsIFJvb3QCAgGl</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA256</DigestMethod>
                             <DigestValue>pTElGI0hEKqWSwLHt8baMgMXCJTl+3H/+2Zn1eaBCjY=</DigestValue>
                         </DigestAlgoAndValue>
@@ -69,8 +64,8 @@
                     <Origin>KEY_INFO</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MIGBMHmkdzB1MQswCQYDVQQGEwJVUzEYMBYGA1UEChMPR1RFIENvcnBvcmF0aW9uMScwJQYDVQQLEx5HVEUgQ3liZXJUcnVzdCBTb2x1dGlvbnMsIEluYy4xIzAhBgNVBAMTGkdURSBDeWJlclRydXN0IEdsb2JhbCBSb290AgQHJxQz</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MIGBMHmkdzB1MQswCQYDVQQGEwJVUzEYMBYGA1UEChMPR1RFIENvcnBvcmF0aW9uMScwJQYDVQQLEx5HVEUgQ3liZXJUcnVzdCBTb2x1dGlvbnMsIEluYy4xIzAhBgNVBAMTGkdURSBDeWJlclRydXN0IEdsb2JhbCBSb290AgQHJxQz</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA256</DigestMethod>
                             <DigestValue>PWLmVXwduMKBFEILhfljIgahJYbp7sT5EoDk1bYXHho=</DigestValue>
                         </DigestAlgoAndValue>
@@ -81,8 +76,8 @@
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MG8wYKReMFwxCzAJBgNVBAYTAkJFMRwwGgYDVQQKExNDZXJ0aXBvc3Qgcy5hLi9uLnYuMS8wLQYDVQQDEyZDZXJ0aXBvc3QgRS1UcnVzdCBQcmltYXJ5IFF1YWxpZmllZCBDQQILBAAAAAABKV+S8pw=</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MG8wYKReMFwxCzAJBgNVBAYTAkJFMRwwGgYDVQQKExNDZXJ0aXBvc3Qgcy5hLi9uLnYuMS8wLQYDVQQDEyZDZXJ0aXBvc3QgRS1UcnVzdCBQcmltYXJ5IFF1YWxpZmllZCBDQQILBAAAAAABKV+S8pw=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA256</DigestMethod>
                             <DigestValue>Ggc3YiK/RjGIhOqUlTAD7PjjVjXDczBclzwbORaSAvA=</DigestValue>
                         </DigestAlgoAndValue>
@@ -93,8 +88,8 @@
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MIGGMHekdTBzMQswCQYDVQQGEwJCRTEcMBoGA1UEChMTQ2VydGlwb3N0IHMuYS4vbi52LjFGMEQGA1UEAxM9Q2VydGlwb3N0IEUtVHJ1c3QgU2Vjb25kYXJ5IFF1YWxpZmllZCBDQSBmb3IgUGh5c2ljYWwgUGVyc29ucwILAQAAAAABKdamdKM=</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MIGGMHekdTBzMQswCQYDVQQGEwJCRTEcMBoGA1UEChMTQ2VydGlwb3N0IHMuYS4vbi52LjFGMEQGA1UEAxM9Q2VydGlwb3N0IEUtVHJ1c3QgU2Vjb25kYXJ5IFF1YWxpZmllZCBDQSBmb3IgUGh5c2ljYWwgUGVyc29ucwILAQAAAAABKdamdKM=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA256</DigestMethod>
                             <DigestValue>4H8RRyvHK7BKbjwBLfyDjNMj0TC9s/DlselVjeG3I9A=</DigestValue>
                         </DigestAlgoAndValue>

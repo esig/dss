@@ -65,13 +65,19 @@ public class DSS1690Test extends AbstractPAdESTestValidation {
 
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
-
+		assertEquals(2, diagnosticData.getTimestampList().size());
+		
 		String firstTimestampId = "T-32902C8337E0351C4AA33052A3E1DA9232D204C4839BB52879DF7183678CEE61";
-
 		TimestampWrapper firstATST = diagnosticData.getTimestampById(firstTimestampId);
 		assertNotNull(firstATST, "Timestamp " + firstTimestampId + " not found");
 		List<TimestampWrapper> timestampedTimestamps = firstATST.getTimestampedTimestamps();
 		assertEquals(0, timestampedTimestamps.size(), "First timestamp can't cover the second one");
+		
+		String secondTimestampId = "T-8E4BDE2CF1609CCB38EDABCC07DBD17B0842A1A08CB376C76B752D6E14475AC9";
+		TimestampWrapper secondATST = diagnosticData.getTimestampById(secondTimestampId);
+		assertNotNull(secondATST, "Timestamp " + secondTimestampId + " not found");
+		timestampedTimestamps = secondATST.getTimestampedTimestamps();
+		assertEquals(1, timestampedTimestamps.size(), "Second archive timestamp must cover the first one");
 	}
 	
 	@Override

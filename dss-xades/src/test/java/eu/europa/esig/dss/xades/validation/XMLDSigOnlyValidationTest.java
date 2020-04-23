@@ -66,10 +66,8 @@ public class XMLDSigOnlyValidationTest extends AbstractXAdESTestValidation {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureWrapper.isSignatureIntact());
 		assertTrue(signatureWrapper.isSignatureValid());
-		assertFalse(signatureWrapper.isAttributePresent());
-		assertFalse(signatureWrapper.isIssuerSerialMatch());
-		assertFalse(signatureWrapper.isDigestValuePresent());
-		assertFalse(signatureWrapper.isDigestValueMatch());
+		assertFalse(signatureWrapper.isSigningCertificateReferencePresent());
+		assertNull(signatureWrapper.getSigningCertificateReference());
 	}
 	
 	@Override

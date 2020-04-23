@@ -9,7 +9,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -50,14 +49,6 @@ public class CAdESDetachedTstV2WithDigestDocTest extends AbstractCAdESTestValida
 					}
 				}
 				assertEquals(1, v2ArchiveTsts);
-	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isAttributePresent());
-		assertTrue(signatureWrapper.isDigestValuePresent());
-		assertTrue(signatureWrapper.isDigestValueMatch());
 	}
 
 }

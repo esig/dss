@@ -30,8 +30,14 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -41,17 +47,35 @@ public class DigestValueMatchCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void digestValueMatchCheckTest() throws Exception {
-		XmlSigningCertificate xsc = new XmlSigningCertificate();
-		xsc.setDigestValueMatch(true);
-
-		XmlSignature sig = new XmlSignature();
-		sig.setSigningCertificate(xsc);
+		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
+		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		
+		XmlDigestAlgoAndValue xmlDigestAlgoAndValue = new XmlDigestAlgoAndValue();
+		xmlDigestAlgoAndValue.setMatch(true);
+		xmlCertificateRef.setDigestAlgoAndValue(xmlDigestAlgoAndValue);
+		
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		xmlCertificate.setId("Id-DSS");
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(xmlCertificate);
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
+		XmlSignature xmlSignature = new XmlSignature();
+		xmlSignature.setFoundCertificates(xmlFoundCertificates);
+		
+		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
+		xmlSigningCertificate.setCertificate(xmlCertificate);
+		xmlSignature.setSigningCertificate(xmlSigningCertificate);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
 		dvmc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -61,17 +85,35 @@ public class DigestValueMatchCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void digestValueNotMatchCheckTest() throws Exception {
-		XmlSigningCertificate xsc = new XmlSigningCertificate();
-		xsc.setDigestValueMatch(false);
-
-		XmlSignature sig = new XmlSignature();
-		sig.setSigningCertificate(xsc);
+		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
+		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		
+		XmlDigestAlgoAndValue xmlDigestAlgoAndValue = new XmlDigestAlgoAndValue();
+		xmlDigestAlgoAndValue.setMatch(false);
+		xmlCertificateRef.setDigestAlgoAndValue(xmlDigestAlgoAndValue);
+		
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		xmlCertificate.setId("Id-DSS");
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(xmlCertificate);
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
+		XmlSignature xmlSignature = new XmlSignature();
+		xmlSignature.setFoundCertificates(xmlFoundCertificates);
+		
+		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
+		xmlSigningCertificate.setCertificate(xmlCertificate);
+		xmlSignature.setSigningCertificate(xmlSigningCertificate);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
 		dvmc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

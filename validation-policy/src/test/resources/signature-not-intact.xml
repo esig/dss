@@ -26,12 +26,7 @@
                 <SignatureIntact>false</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-329C25DE339658A3F265E9B0694FB973FCD8636C7534105A354EC1A3E0669965">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-329C25DE339658A3F265E9B0694FB973FCD8636C7534105A354EC1A3E0669965"/>
             <CertificateChain>
                 <ChainItem Certificate="C-329C25DE339658A3F265E9B0694FB973FCD8636C7534105A354EC1A3E0669965"/>
                 <ChainItem Certificate="C-6D2795065FBDFBE6D65592927E15B619482DEEEC6B7C418DB1831C7E32D4A2AB"/>
@@ -47,8 +42,8 @@
                     <Origin>KEY_INFO</Origin>
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
-                        <IssuerSerial>MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</IssuerSerial>
-                        <DigestAlgoAndValue>
+                        <IssuerSerial match="true">MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>hA59mWd9tc9Py1hWzrYB01JRaymWLBP1FrM76UzLsy2pwAKACCzO6W/0X95EhUE03sKFa93bdDMVYY5UtKhrYA==</DigestValue>
                         </DigestAlgoAndValue>

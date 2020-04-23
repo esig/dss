@@ -8,9 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -49,6 +51,39 @@ public class XAdESMultipeCertSourcesTest extends AbstractXAdESTestValidation {
 			assertEquals(DigestAlgorithm.SHA256, certificate.getDigestAlgoAndValue().getDigestMethod());
 		}
 		assertEquals(1, certsFromTimestamp);
+	}
+	
+	// DSS-2025
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		
+		TimestampWrapper timestampWrapper = timestampList.get(0);
+		assertTrue(timestampWrapper.isSigningCertificateIdentified());
+		assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+		assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
+		
+		CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
+		
+		assertEquals(1, timestampWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		List<OrphanCertificateWrapper> orphanSignCertRefs = timestampWrapper.foundCertificates()
+				.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		assertEquals(1, orphanSignCertRefs.size());
+		
+		OrphanCertificateWrapper orphanCertificateWrapper = orphanSignCertRefs.get(0);
+		assertEquals(1, orphanCertificateWrapper.getReferences().size());
+		
+		CertificateRefWrapper orphanSigningCertificateRefWrapper = orphanCertificateWrapper.getReferences().get(0);
+		assertTrue(orphanSigningCertificateRefWrapper.isDigestValuePresent());
+		assertFalse(orphanSigningCertificateRefWrapper.isDigestValueMatch());
+		assertFalse(orphanSigningCertificateRefWrapper.isIssuerSerialPresent());
+		assertFalse(orphanSigningCertificateRefWrapper.isIssuerSerialMatch());
 	}
 	
 	@Override

@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -55,6 +57,22 @@ public class DSS1794CrlTest extends AbstractPAdESTestValidation {
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			assertTrue(timestampWrapper.isSigningCertificateIdentified());
+			assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+			assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
+			
+			CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
+			assertNotNull(signingCertificateReference);
+			assertTrue(signingCertificateReference.isDigestValuePresent());
+			assertTrue(signingCertificateReference.isDigestValueMatch());
+			assertTrue(signingCertificateReference.isIssuerSerialPresent());
+			assertTrue(signingCertificateReference.isIssuerSerialMatch());
+		}
 	}
 
 }

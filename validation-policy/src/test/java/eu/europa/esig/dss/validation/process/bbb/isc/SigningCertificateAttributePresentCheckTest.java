@@ -30,8 +30,12 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -41,11 +45,18 @@ public class SigningCertificateAttributePresentCheckTest extends AbstractTestChe
 
 	@Test
 	public void signingCertificateAttributePresentCheck() throws Exception {
-		XmlSigningCertificate xsc = new XmlSigningCertificate();
-		xsc.setAttributePresent(true);
-
+		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
+		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
 		XmlSignature sig = new XmlSignature();
-		sig.setSigningCertificate(xsc);
+		sig.setFoundCertificates(xmlFoundCertificates);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -62,11 +73,18 @@ public class SigningCertificateAttributePresentCheckTest extends AbstractTestChe
 
 	@Test
 	public void signingCertificateAttributeNotPresentCheck() throws Exception {
-		XmlSigningCertificate xsc = new XmlSigningCertificate();
-		xsc.setAttributePresent(false);
-
+		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
+		xmlCertificateRef.setOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
+		
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getCertificateRefs().add(xmlCertificateRef);
+		
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+		
 		XmlSignature sig = new XmlSignature();
-		sig.setSigningCertificate(xsc);
+		sig.setFoundCertificates(xmlFoundCertificates);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);

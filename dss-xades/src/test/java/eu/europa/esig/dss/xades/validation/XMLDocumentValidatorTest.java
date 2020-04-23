@@ -66,9 +66,9 @@ public class XMLDocumentValidatorTest extends AbstractTestValidator {
 	@Override
 	protected List<DSSDocument> getValidDocuments() {
 		List<DSSDocument> documents = new ArrayList<>();
-		documents.add(new FileDocument("src/test/resources/validation/dss-signed.xml"));
-		documents.add(new FileDocument("src/test/resources/validation/valid-xades.xml"));
-		documents.add(new FileDocument("src/test/resources/validation/xades-x-level.xml"));
+//		documents.add(new FileDocument("src/test/resources/validation/dss-signed.xml"));
+//		documents.add(new FileDocument("src/test/resources/validation/valid-xades.xml"));
+//		documents.add(new FileDocument("src/test/resources/validation/xades-x-level.xml"));
 		documents.add(new FileDocument("src/test/resources/validation/valid.xades"));
 		return documents;
 	}

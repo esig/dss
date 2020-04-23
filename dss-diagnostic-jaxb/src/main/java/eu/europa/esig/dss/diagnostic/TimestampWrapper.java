@@ -253,6 +253,16 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamps;
 	}
 
+	public boolean isSigningCertificateIdentified() {
+		CertificateWrapper signingCertificate = getSigningCertificate();
+		CertificateRefWrapper signingCertificateReference = getSigningCertificateReference();
+		if (signingCertificate != null && signingCertificateReference != null) {
+			return signingCertificateReference.isDigestValueMatch() && 
+					(!signingCertificateReference.isIssuerSerialPresent() || signingCertificateReference.isIssuerSerialMatch());
+		}
+		return false;
+	}
+
 	private List<XmlAbstractToken> getTimestampedObjectsByCategory(TimestampedObjectType category) {
 		List<XmlAbstractToken> timestampedObjectIds = new ArrayList<>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {

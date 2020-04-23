@@ -25,19 +25,24 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524"/>
             <CertificateChain>
                 <ChainItem Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524"/>
                 <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndications/>
-            <FoundCertificates/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>9dNRCulCqMssAtCUon8YTOCcqnc=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-478805477111202956F33117583157569FBFA250686FE98FBF5D7131AACC8A57"/>
@@ -68,12 +73,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-B500D1A6A280C57C5433DCCD8924B5517E6AA08B18D4687E6A5820780D3FA250">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-B500D1A6A280C57C5433DCCD8924B5517E6AA08B18D4687E6A5820780D3FA250"/>
             <CertificateChain>
                 <ChainItem Certificate="C-B500D1A6A280C57C5433DCCD8924B5517E6AA08B18D4687E6A5820780D3FA250"/>
                 <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
@@ -81,7 +81,17 @@
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndications/>
             
-            <FoundCertificates/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-B500D1A6A280C57C5433DCCD8924B5517E6AA08B18D4687E6A5820780D3FA250">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>fjkployc4ZmvD23JYMfZm/TMMiM=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-57FC751EC68ABA100E9D1A03354DD2BB90AB7C332190782077468B5E4F3098BE"/>

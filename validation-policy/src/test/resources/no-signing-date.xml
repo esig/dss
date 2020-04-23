@@ -30,12 +30,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
-                <AttributePresent>false</AttributePresent>
-                <DigestValuePresent>false</DigestValuePresent>
-                <DigestValueMatch>false</DigestValueMatch>
-                <IssuerSerialMatch>false</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74"/>
             <CertificateChain>
                 <ChainItem Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74"/>
                 <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>

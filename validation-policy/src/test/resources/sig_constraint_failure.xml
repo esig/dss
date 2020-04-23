@@ -22,18 +22,23 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
-	            <AttributePresent>true</AttributePresent>
-	            <DigestValuePresent>true</DigestValuePresent>
-	            <DigestValueMatch>true</DigestValueMatch>
-	            <IssuerSerialMatch>true</IssuerSerialMatch>
-	        </SigningCertificate>
+	        <SigningCertificate Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314"/>
 	        <CertificateChain>
 	            <ChainItem Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314"/>
 	            <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
-            <FoundCertificates/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>2XT5uIRnsODHwsXx40XiH1lBuq4=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps/>
 	        <SignatureScopes>

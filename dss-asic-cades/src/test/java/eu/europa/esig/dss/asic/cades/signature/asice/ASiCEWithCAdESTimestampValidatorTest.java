@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -131,7 +130,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertNotNull(simpleReport.getProductionTime(timestampId));
 		assertNotNull(simpleReport.getValidationTime());
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(timestampId)));
-		assertFalse(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getInfo(timestampId)));
 	}
 	
@@ -150,7 +149,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertEquals(Indication.PASSED, timestampBBB.getConclusion().getIndication());
 		
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getErrors()));
-		assertFalse(Utils.isCollectionEmpty(timestampBBB.getConclusion().getWarnings()));
+		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getWarnings()));
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getInfos()));
 	}
 	

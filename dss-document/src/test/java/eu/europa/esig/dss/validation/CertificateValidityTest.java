@@ -58,9 +58,9 @@ public class CertificateValidityTest {
 		CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 		assertFalse(certificateValidity.isValid());
 		
-		assertFalse(certificateValidity.isAttributePresent());
-		certificateValidity.setAttributePresent(true);
-		assertTrue(certificateValidity.isAttributePresent());
+		assertFalse(certificateValidity.isIssuerSerialPresent());
+		certificateValidity.setIssuerSerialPresent(true);
+		assertTrue(certificateValidity.isIssuerSerialPresent());
 
 		assertFalse(certificateValidity.isDigestEqual());
 		certificateValidity.setDigestEqual(true);

@@ -2,11 +2,13 @@ package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -39,10 +41,17 @@ public class PAdESWithDssVriAndCertRefTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isDigestValuePresent());
-		assertTrue(signatureWrapper.isDigestValueMatch());
-		assertTrue(signatureWrapper.isIssuerSerialMatch());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signature.isSigningCertificateIdentified());
+		assertTrue(signature.isSigningCertificateReferencePresent());
+		assertFalse(signature.isSigningCertificateReferenceUnique());
+		
+		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

@@ -44,7 +44,7 @@ public class CertificateValidity implements Serializable {
 	private boolean signerIdMatch;
 	private boolean digestPresent;
 	private boolean digestEqual;
-	private boolean attributePresent;
+	private boolean issuerSerialPresent;
 	private boolean serialNumberEqual;
 	private boolean distinguishedNameEqual;
 
@@ -146,12 +146,12 @@ public class CertificateValidity implements Serializable {
 	 *
 	 * @return
 	 */
-	public boolean isAttributePresent() {
-		return attributePresent;
+	public boolean isIssuerSerialPresent() {
+		return issuerSerialPresent;
 	}
 
-	public void setAttributePresent(boolean attributePresent) {
-		this.attributePresent = attributePresent;
+	public void setIssuerSerialPresent(boolean issuerSerialPresent) {
+		this.issuerSerialPresent = issuerSerialPresent;
 	}
 
 	public boolean isSerialNumberEqual() {

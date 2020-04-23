@@ -21,10 +21,6 @@
 package eu.europa.esig.dss.cades.validation;
 
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
@@ -35,12 +31,12 @@ public class DSS1871Test extends AbstractCAdESTestValidation {
 		return new FileDocument("src/test/resources/validation/wrongContentHints.p7m");
 	}
 	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signature.isAttributePresent());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-	}
+//	@Override
+//	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+//		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+//		assertTrue(signature.isSigningCertificateReferencePresent());
+//		assertTrue(signature.isDigestValuePresent());
+//		assertTrue(signature.isDigestValueMatch());
+//	}
 
 }

@@ -456,10 +456,6 @@
 	
 	<xs:complexType name="SigningCertificate">
 		<xs:sequence>
-			<xs:element name="AttributePresent" type="xs:boolean" minOccurs="0" />
-			<xs:element name="DigestValuePresent" type="xs:boolean" minOccurs="0" />
-			<xs:element name="DigestValueMatch" type="xs:boolean" minOccurs="0" />
-			<xs:element name="IssuerSerialMatch" type="xs:boolean" minOccurs="0" />
 			<xs:element name="PublicKey" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Certificate" type="xs:IDREF" use="optional" />
@@ -548,6 +544,7 @@
 			<xs:element name="DigestMethod" type="xs:string" minOccurs="0" /> <!-- Optional in case the digest cannot be retrieved -->
 			<xs:element name="DigestValue" type="xs:base64Binary" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="match" type="xs:boolean" use="optional" /> <!-- Used for Signing Certificate ref -->
 	</xs:complexType>
 	
 	<xs:complexType name="DigestMatcher">
@@ -633,12 +630,20 @@
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateRefOriginType" />
-			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
+			<xs:element name="IssuerSerial" type="IssuerSerial" minOccurs="0" />
 			<xs:choice>
 				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue"/>
 				<xs:element name="SerialInfo" type="SignerInfo" /> <!-- OCSP -->
 			</xs:choice>
 		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="IssuerSerial">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attribute name="match" type="xs:boolean" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:simpleType name="CertificateSourceType" final="restriction">

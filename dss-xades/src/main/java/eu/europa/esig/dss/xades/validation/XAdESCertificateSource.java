@@ -227,8 +227,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
 				
-				certificateValidity.setAttributePresent(signingCert != null);
 				certificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
+				certificateValidity.setIssuerSerialPresent(signingCert.getCertificateIdentifier() != null);
 
 				CertificateToken certificateToken = certificateValidity.getCertificateToken();
 				

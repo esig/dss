@@ -25,12 +25,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF"/>
             <CertificateChain>
                 <ChainItem Certificate="C-10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF"/>
                 <ChainItem Certificate="C-A4247099ED92021FB0CE6717CA52B10ABA75F7212810B79C169E59BDD2430504"/>
@@ -39,7 +34,17 @@
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndications/>
-            <FoundCertificates/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>p7lGbFsOQhV/2tI/Ks7HsyJGoXo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps/>
             <SignatureScopes>

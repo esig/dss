@@ -41,14 +41,5 @@ public class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 			assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
 		}
 	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertTrue(signatureWrapper.isAttributePresent());
-			assertTrue(signatureWrapper.isDigestValuePresent());
-			assertTrue(signatureWrapper.isDigestValueMatch());
-		}
-	}
 
 }

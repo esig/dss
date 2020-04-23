@@ -25,12 +25,7 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Certificate="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
+            <SigningCertificate Certificate="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532"/>
             <CertificateChain>
                 <ChainItem Certificate="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532"/>
                 <ChainItem Certificate="C-F4703E9EF1A4F93A57EB9CD2E63738870838FBB59F6DE9C07D4ADABE2255B729"/>
@@ -38,7 +33,17 @@
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndications/>
-            <FoundCertificates/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>biPNuWfwbT/ahTFsW0c2HNVVQqw=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps/>
             <SignatureScopes>

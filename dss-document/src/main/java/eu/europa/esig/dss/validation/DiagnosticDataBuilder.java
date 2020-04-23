@@ -57,6 +57,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
@@ -187,6 +188,8 @@ public class DiagnosticDataBuilder {
 	
 	// A map between references ids and their related token ids (used to map references for timestamped refs)
 	private Map<String, String> referenceMap = new HashMap<>();
+	
+	private Map<String, CertificateToken> signingCertificateMap = new HashMap<>();
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -768,12 +771,14 @@ public class DiagnosticDataBuilder {
 
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+		
 		PublicKey signingCertificatePublicKey = null;
 		if (theCertificateValidity != null) {
-			xmlSignature.setSigningCertificate(getXmlSigningCertificate(theCertificateValidity));
+			xmlSignature.setSigningCertificate(getXmlSigningCertificate(signature.getDSSId(), theCertificateValidity));
 			signingCertificatePublicKey = theCertificateValidity.getPublicKey();
 			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificatePublicKey));
 		}
+		
 		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificatePublicKey));
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
@@ -784,7 +789,7 @@ public class DiagnosticDataBuilder {
 		
 		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
 
-		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature.getCertificateSource()));
+		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature.getDSSId(), signature.getCertificateSource()));
 		xmlSignature.setFoundRevocations(getXmlFoundRevocations(signature.getCRLSource(), signature.getOCSPSource()));
 		
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
@@ -988,7 +993,7 @@ public class DiagnosticDataBuilder {
 
 		if (revocationToken.getCertificateSource() != null) {
 			// in case of OCSP token
-			xmlRevocation.setFoundCertificates(getXmlFoundCertificates(revocationToken.getCertificateSource()));
+			xmlRevocation.setFoundCertificates(getXmlFoundCertificates(revocationToken.getDSSId(), revocationToken.getCertificateSource()));
 		}
 
 		if (includeRawRevocationData) {
@@ -1063,6 +1068,7 @@ public class DiagnosticDataBuilder {
 		final CertificateToken certificateByPubKey = getIssuerCertificate(token);
 		if (certificateByPubKey != null) {
 			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateByPubKey.getDSSIdAsString()));
+			signingCertificateMap.put(token.getDSSIdAsString(), certificateByPubKey);
 		} else if (token.getPublicKeyOfTheSigner() != null) {
 			xmlSignCertType.setPublicKey(token.getPublicKeyOfTheSigner().getEncoded());
 		} else {
@@ -1122,19 +1128,6 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private XmlSigningCertificate getXmlCertificateByPubKey(final PublicKey publicKey) {
-		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-		final CertificateToken certificateByPubKey = getCertificateByPubKey(publicKey);
-		if (certificateByPubKey != null) {
-			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateByPubKey.getDSSIdAsString()));
-		} else if (publicKey != null) {
-			xmlSignCertType.setPublicKey(publicKey.getEncoded());
-		} else {
-			return null;
-		}
-		return xmlSignCertType;
-	}
-	
 	private CertificateToken getCertificateByPubKey(final PublicKey publicKey) {
 		if (publicKey != null) {
 			List<CertificateToken> issuers = getCertsWithPublicKey(publicKey, usedCertificates);
@@ -1160,19 +1153,6 @@ public class DiagnosticDataBuilder {
 		}
 		return founds;
 	}
-	
-	private XmlSigningCertificate getXmlCertificateByCertificateIdentifier(final CertificateIdentifier certificateIdentifier) {
-		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-		final CertificateToken certificateByCertificateIdentifier = getCertificateByCertificateIdentifier(certificateIdentifier);
-		if (certificateByCertificateIdentifier != null) {
-			xmlSignCertType.setCertificate(xmlCertsMap.get(certificateByCertificateIdentifier.getDSSIdAsString()));
-		} else if (certificateIdentifier != null) {
-			// TODO: add info to xsd
-		} else {
-			return null;
-		}
-		return xmlSignCertType;
-	}
 
 	private CertificateToken getCertificateByCertificateIdentifier(final CertificateIdentifier certificateIdentifier) {
 		if (certificateIdentifier == null) {
@@ -1195,28 +1175,30 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 
-	private XmlSigningCertificate getXmlSigningCertificate(CertificateValidity certificateValidity) {
+	private XmlSigningCertificate getXmlSigningCertificate(Identifier tokenIdentifier, CertificateValidity certificateValidity) {
 		XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
+		CertificateToken signingCertificate = getSigningCertificate(certificateValidity);
+		if (signingCertificate != null) {
+			xmlSignCertType.setCertificate(xmlCertsMap.get(signingCertificate.getDSSIdAsString()));
+			signingCertificateMap.put(tokenIdentifier.asXmlId(), signingCertificate);
+		} else if (certificateValidity.getPublicKey() != null) {
+			xmlSignCertType.setPublicKey(certificateValidity.getPublicKey().getEncoded());
+		} else if (certificateValidity.getSignerInfo() != null) {
+			// TODO: add info to xsd
+		}
+		return xmlSignCertType;
+	}
+	
+	private CertificateToken getSigningCertificate(CertificateValidity certificateValidity) {
 		CertificateToken signingCertificateToken = certificateValidity.getCertificateToken();
 		if (signingCertificateToken != null) {
-			xmlSignCertType.setCertificate(xmlCertsMap.get(signingCertificateToken.getDSSIdAsString()));
+			return signingCertificateToken;
 		} else if (certificateValidity.getPublicKey() != null) {
-			XmlSigningCertificate xmlSignCert = getXmlCertificateByPubKey(certificateValidity.getPublicKey());
-			if (xmlSignCert != null) {
-				xmlSignCertType = xmlSignCert;
-			}
+			return getCertificateByPubKey(certificateValidity.getPublicKey());
 		} else if (certificateValidity.getSignerInfo() != null) {
-			XmlSigningCertificate xmlSignCertBySignInfo = getXmlCertificateByCertificateIdentifier(certificateValidity.getSignerInfo());
-			if (xmlSignCertBySignInfo != null) {
-				xmlSignCertType = xmlSignCertBySignInfo;
-			}
+			return getCertificateByCertificateIdentifier(certificateValidity.getSignerInfo());
 		}
-		xmlSignCertType.setAttributePresent(certificateValidity.isAttributePresent());
-		xmlSignCertType.setDigestValuePresent(certificateValidity.isDigestPresent());
-		xmlSignCertType.setDigestValueMatch(certificateValidity.isDigestEqual());
-		final boolean issuerSerialMatch = certificateValidity.isSerialNumberEqual() && certificateValidity.isDistinguishedNameEqual();
-		xmlSignCertType.setIssuerSerialMatch(issuerSerialMatch);
-		return xmlSignCertType;
+		return null;
 	}
 
 	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(SignatureProductionPlace signatureProductionPlace) {
@@ -1281,7 +1263,7 @@ public class DiagnosticDataBuilder {
 		return cleanedUrls;
 	}
 
-	private XmlFoundCertificates getXmlFoundCertificates(TokenCertificateSource certificateSource) {
+	private XmlFoundCertificates getXmlFoundCertificates(Identifier tokenIdentifier, TokenCertificateSource certificateSource) {
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
 		if (CertificateSourceType.OCSP_RESPONSE.equals(certificateSource.getCertificateSourceType())) {
 			xmlFoundCertificates.getRelatedCertificates().addAll(getXmlRelatedCertificates((OCSPCertificateSource)certificateSource));
@@ -1289,7 +1271,8 @@ public class DiagnosticDataBuilder {
 			xmlFoundCertificates.getRelatedCertificates().addAll(getXmlRelatedCertificates((SignatureCertificateSource)certificateSource));
 		}
 		xmlFoundCertificates.getRelatedCertificates().addAll(getXmlRelatedCertificateForOrphanReferences(certificateSource));
-		xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificates(certificateSource));
+		CertificateToken signingCertificate = signingCertificateMap.get(tokenIdentifier.asXmlId());
+		xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificates(certificateSource, signingCertificate));
 		return xmlFoundCertificates;
 	}
 	
@@ -1345,9 +1328,13 @@ public class DiagnosticDataBuilder {
 		List<CertificateRef> referencesForCertificateToken = certificateSource.getReferencesForCertificateToken(cert);
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
 			for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
-				xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef, refOrigin));
-				referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
+				XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
+				if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
+					verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, cert);
+				}
+				xrc.getCertificateRefs().add(xmlCertificateRef);
 			}
+			referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
 		}		
 		return xrc;
 	}
@@ -1356,7 +1343,7 @@ public class DiagnosticDataBuilder {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
 		CertificateIdentifier certificateIdentifier = ref.getCertificateIdentifier();
 		if (certificateIdentifier != null) {
-			certificateRef.setIssuerSerial(certificateIdentifier.getIssuerSerialEncoded());
+			certificateRef.setIssuerSerial(getXmlIssuerSerial(certificateIdentifier));
 		}
 		Digest refDigest = ref.getCertDigest();
 		ResponderId responderId = ref.getResponderId();
@@ -1369,6 +1356,25 @@ public class DiagnosticDataBuilder {
 		}
 		certificateRef.setOrigin(origin);
 		return certificateRef;
+	}
+	
+	private void verifyAgainstCertificateToken(XmlCertificateRef xmlCertificateRef, CertificateRef ref, CertificateToken signingCertificate) {		
+		CertificateTokenRefMatcher tokenRefMatcher = new CertificateTokenRefMatcher();
+		XmlDigestAlgoAndValue digestAlgoAndValue = xmlCertificateRef.getDigestAlgoAndValue();
+		if (digestAlgoAndValue != null) {
+			digestAlgoAndValue.setMatch(signingCertificate != null && tokenRefMatcher.matchByDigest(signingCertificate, ref));
+		}
+		XmlIssuerSerial issuerSerial = xmlCertificateRef.getIssuerSerial();
+		if (issuerSerial != null) {
+			issuerSerial.setMatch(signingCertificate != null && 
+					tokenRefMatcher.matchByIssuerName(signingCertificate, ref) && tokenRefMatcher.matchBySerialNumber(signingCertificate, ref));
+		}
+	}
+	
+	private XmlIssuerSerial getXmlIssuerSerial(CertificateIdentifier certificateIdentifier) {
+		XmlIssuerSerial xmlIssuerSerial = new XmlIssuerSerial();
+		xmlIssuerSerial.setValue(certificateIdentifier.getIssuerSerialEncoded());
+		return xmlIssuerSerial;
 	}
 	
 	private List<XmlRelatedCertificate> getXmlRelatedCertificateForOrphanReferences(TokenCertificateSource certificateSource) {
@@ -1398,13 +1404,17 @@ public class DiagnosticDataBuilder {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
 		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
-			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef, refOrigin));
+			XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
+			if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
+				verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, cert);
+			}
+			xrc.getCertificateRefs().add(xmlCertificateRef);
 		}
 		referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
 		return xrc;
 	}
 	
-	private List<XmlOrphanCertificate> getOrphanCertificates(TokenCertificateSource certificateSource) {
+	private List<XmlOrphanCertificate> getOrphanCertificates(TokenCertificateSource certificateSource, CertificateToken signingCertificate) {
 		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<>();
 
 		// Orphan Certificate References
@@ -1412,22 +1422,27 @@ public class DiagnosticDataBuilder {
 		for (CertificateRef orphanCertificateRef : orphanCertificateRefs) {
 			// create orphan if certificate is not present
 			if (getUsedCertificateByCertificateRef(orphanCertificateRef) == null) {
-				orphanCertificates.add(createXmlOrphanCertificate(certificateSource, orphanCertificateRef));
+				orphanCertificates.add(createXmlOrphanCertificate(certificateSource, orphanCertificateRef, signingCertificate));
 			}
 		}
 		
 		return orphanCertificates;
 	}
 	
-	private XmlOrphanCertificate createXmlOrphanCertificate(TokenCertificateSource certificateSource, CertificateRef orphanCertificateRef) {
+	private XmlOrphanCertificate createXmlOrphanCertificate(TokenCertificateSource certificateSource, CertificateRef orphanCertificateRef, 
+			CertificateToken signingCertificate) {
 		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
 		orphanCertificate.setToken(createXmlOrphanCertificateToken(orphanCertificateRef));
 		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(orphanCertificateRef)) {
-			orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef, refOrigin));
+			XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(orphanCertificateRef, refOrigin);
+			if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
+				verifyAgainstCertificateToken(xmlCertificateRef, orphanCertificateRef, signingCertificate);
+			}
+			orphanCertificate.getCertificateRefs().add(xmlCertificateRef);
 		}
 		return orphanCertificate;
 	}
-	
+
 	private XmlOrphanCertificateToken createXmlOrphanCertificateToken(CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificateToken orphanToken = new XmlOrphanCertificateToken();
 		orphanToken.setId(orphanCertificateRef.getDSSIdAsString());
@@ -1710,16 +1725,16 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 		xmlTimestampToken.setSignerInformationStore(getXmlSignerInformationStore(timestampToken.getSignerInformationStoreInfos()));
 		xmlTimestampToken.setPDFRevision(getXmlPDFRevision(timestampToken.getPdfRevision())); // used only for PAdES RFC 3161 timestamps
-		
-		xmlTimestampToken.setFoundCertificates(getXmlFoundCertificates(timestampToken.getCertificateSource()));
-		xmlTimestampToken.setFoundRevocations(getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
 
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 		if (theCertificateValidity != null) {
-			xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(theCertificateValidity));
+			xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getDSSId(), theCertificateValidity));
 			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity.getPublicKey()));
 		}
+		
+		xmlTimestampToken.setFoundCertificates(getXmlFoundCertificates(timestampToken.getDSSId(), timestampToken.getCertificateSource()));
+		xmlTimestampToken.setFoundRevocations(getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
 
 		if (includeRawTimestampTokens) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());

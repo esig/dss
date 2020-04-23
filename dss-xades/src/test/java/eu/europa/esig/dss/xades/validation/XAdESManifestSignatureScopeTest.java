@@ -1,12 +1,15 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -62,6 +65,24 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 		assertEquals(certificateSource.getSigningCertificateRefs().size(),
 				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size() +
 				foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		
+		TimestampWrapper timestampWrapper = timestampList.get(0);
+		assertTrue(timestampWrapper.isSigningCertificateIdentified());
+		assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+		assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
+		
+		CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertTrue(signingCertificateReference.isIssuerSerialMatch());
 	}
 	
 	@Override

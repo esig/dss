@@ -981,6 +981,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public TimestampConstraints getTimestampConstraints() {
+		return policy.getTimestamp();
+	}
+
+	@Override
 	public CryptographicConstraint getCryptographic() {
 		return policy.getCryptographic();
 	}
