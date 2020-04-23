@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,13 +45,22 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
+import eu.europa.esig.dss.tsl.job.TLValidationJob;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -80,10 +91,37 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	
 	private static DSSDocument document;
 	
+	private static TrustedListsCertificateSource trustedCertSource;
+	
 	@BeforeAll
 	public static void init() throws Exception {
 		// preload JAXB context before validation
 		ValidationReportUtils.getInstance().getJAXBContext();
+		
+		trustedCertSource = new TrustedListsCertificateSource();
+		
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setTrustedListCertificateSource(trustedCertSource);
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy());
+		
+		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
+		lotlSource.setCertificateSource(new CommonCertificateSource());
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setFileCacheDirectory(new File("src/test/resources/signature-pool/cache"));
+		fileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		
+		Map<String, byte[]> tlMap = new HashMap<>();
+		tlMap.put("https://www.agentschaptelecom.nl/binaries/agentschap-telecom/documenten/publicaties/2018/januari/01/digitale-statuslijst-van-vertrouwensdiensten/current-tsl.xml", 
+				DSSUtils.toByteArray(new FileDocument("src/test/resources/signature-pool/cache/NL_TL_xml")));
+		fileCacheDataLoader.setDataLoader(new MemoryDataLoader(tlMap));
+		tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+		
+		tlValidationJob.offlineRefresh();
+		
+		LOG.info("TrustedListsCertificateSource size : " + trustedCertSource.getNumberOfCertificates());
 	}
 
 	private static Stream<Arguments> data() throws IOException {
@@ -108,6 +146,26 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		document = new FileDocument(fileToTest);
 		assertTimeout(ofSeconds(3L), () -> super.validate());
 		LOG.info("End : {}", fileToTest.getAbsolutePath());
+	}
+	
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
+		
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(null);
+		certificateVerifier.setCrlSource(null);
+		certificateVerifier.setOcspSource(null);
+		certificateVerifier.setTrustedCertSource(trustedCertSource);
+		
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		return validator;
+	}
+	
+	@Override
+	public void validate() {
+		// do nothing
 	}
 
 	@Override
