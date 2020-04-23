@@ -6,6 +6,15 @@ This is the official repository for project DSS : https://ec.europa.eu/cefdigita
 
 Please, use the new JIRA for project is on https://ec.europa.eu/cefdigital/tracker/projects/DSS/issues. 
 
+# Requirements
+
+The latest version of DSS framework has the following minimal requirements:
+
+ * Java 9 and higher (tested up to Java 14) for the build is required. For usage Java 8 is a mimimum requirement;
+ * Maven 3.6 and higher;
+ * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
+ * Operating system: no specific requirements (tested on Windows and Linux).
+
 # Maven repository
 
 The release is published on CEF Digital repository : 
@@ -20,15 +29,49 @@ https://ec.europa.eu/cefdigital/artifact/#browse/welcome
 &lt;/repository&gt;
 </pre>
 
+# Build and usage
+
+A simple build of the DSS Maven project can be done with the following command:
+
+```
+mvn clean install
+```
+
+These installation will run all unit tests present in the modules, which can take more than one hour to do the complete build.
+
+In addition to the general build, the framework provides a list of custom profiles, allowing a customized behavior:
+
+ * quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes). Be aware, that some modules (dss-utils, dss-crl-parser and dss-pades) still have to be built completely.
+ * slow-tests - executes all tests, including time-consuming unit tests.
+ * owasp - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
+ * jdk19-plus - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
+ * spotless - used to add a licence header into project files.
+ 
+In order to run a build with a specific profile, the following command must be executed:
+
+```
+mvn clean install -P *profile_name*
+```
+
 # Documentation
 
 The [documentation](dss-cookbook/src/main/asciidoc/dss-documentation.adoc) and samples are available in the dss-cookbook module. [SoapUI project](dss-cookbook/src/main/soapui) and [Postman project](dss-cookbook/src/main/postman) are also provided to illustrate SOAP/REST calls.
+
+In order to build the documentation by yourself, the following command must be executed in *dss-cookbook* module:
+
+```
+mvn clean install -P asciidoctor
+```
+
+# JavaDoc
 
 The JavaDoc is available on https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html
 
 # Demonstration
 
-The release is deployed on https://ec.europa.eu/cefdigital/DSS/webapp-demo 
+The release is deployed on https://ec.europa.eu/cefdigital/DSS/webapp-demo
+
+The source code of the demonstrations is available on https://github.com/esig/dss-demonstrations
 
 # Ready-to-use bundles
 
