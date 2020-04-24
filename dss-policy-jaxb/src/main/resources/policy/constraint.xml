@@ -334,7 +334,7 @@
 	<eIDAS>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="WARN" />
-		<TLWellSigned Level="FAIL" />
+		<TLWellSigned Level="WARN" />
 		<TLVersion Level="FAIL" value="5" />
 		<TLConsistency Level="FAIL" />
 	</eIDAS>

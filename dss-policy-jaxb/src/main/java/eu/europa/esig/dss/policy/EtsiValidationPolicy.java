@@ -986,6 +986,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public EIDAS getEIDASConstraints() {
+		return policy.getEIDAS();
+	}
+	
+	@Override
 	public CryptographicConstraint getCryptographic() {
 		return policy.getCryptographic();
 	}

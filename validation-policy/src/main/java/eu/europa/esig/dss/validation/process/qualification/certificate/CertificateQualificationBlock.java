@@ -38,7 +38,9 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
@@ -73,45 +75,61 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null)
-					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
+			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
 
+			Set<String> acceptableLOTLUrls = new HashSet<>();
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
 				if (lotlAnalysis != null) {
-					item = item.setNextItem(isAcceptableTL(lotlAnalysis));
-				}
-			}
-
-			Set<String> acceptableUrls = new HashSet<>();
-			for (String tlURL : trustedListUrls) {
-				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
-				if (currentTL != null) {
-					AcceptableTrustedListCheck<XmlCertificate> acceptableTL = isAcceptableTL(currentTL);
-					item = item.setNextItem(acceptableTL);
-					if (acceptableTL.process()) {
-						acceptableUrls.add(tlURL);
+					AcceptableListOfTrustedListsCheck<XmlCertificate> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
+					item = item.setNextItem(acceptableLOTL);
+					if (acceptableLOTL.process()) {
+						acceptableLOTLUrls.add(lotlURL);
 					}
 				}
 			}
+			
+			// filter TLs with a found valid set of LOTLs (if assigned)
+			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null && 
+					(t.getListOfTrustedLists() == null || acceptableLOTLUrls.contains(t.getListOfTrustedLists().getUrl())) )
+					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
 
-			// 1. filter by service for CAQC
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableUrls);
-			List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+			Set<String> acceptableTLUrls = new HashSet<>();
+			if (Utils.isCollectionNotEmpty(trustedListUrls)) {
+				for (String tlURL : trustedListUrls) {
+					XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
+					if (currentTL != null) {
+						AcceptableTrustedListCheck<XmlCertificate> acceptableTL = isAcceptableTL(currentTL);
+						item = item.setNextItem(acceptableTL);
+						if (acceptableTL.process()) {
+							acceptableTLUrls.add(tlURL);
+						}
+					}
+				}
+			}
+			
+			item = item.setNextItem(isAcceptableTLPresent(acceptableTLUrls));
+			
+			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
-			filter = TrustedServicesFilterFactory.createFilterByCaQc();
-			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
-
-			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, caqcServices);
-			result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
-
-			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.VALIDATION_TIME, 
-					validationTime, signingCertificate, caqcServices);
-			result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
-
+				// 1. filter by service for CAQC
+				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+	
+				filter = TrustedServicesFilterFactory.createFilterByCaQc();
+				List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
+	
+				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
+						signingCertificate, caqcServices);
+				result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
+	
+				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.VALIDATION_TIME, 
+						validationTime, signingCertificate, caqcServices);
+				result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
+			
+			}
 		}
 	}
 
@@ -143,8 +161,16 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 		}
 	}
 
+	private AcceptableListOfTrustedListsCheck<XmlCertificate> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+	}
+
 	private AcceptableTrustedListCheck<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlCertificate> isAcceptableTLPresent(Set<String> acceptableUrls) {
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableBuildingBlockConclusion(XmlConclusion buildingBlocksConclusion) {

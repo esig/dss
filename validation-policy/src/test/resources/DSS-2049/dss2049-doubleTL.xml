@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-C-CZ_ICA-1.p7m</DocumentName>
+    <ValidationDate>2016-04-24T09:54:43</ValidationDate>
+    <Signatures>
+        <Signature Id="S-A9FD0993671106A2630BF4A66A0C4FE6F08CC13C9918BA414807133B93D2D64D">
+            <SignatureFilename>Signature-C-CZ_ICA-1.p7m</SignatureFilename>
+            <ClaimedSigningTime>2016-04-25T21:30:40</ClaimedSigningTime>
+            <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>JJZt41Nt8VsYahP+Xti4rR3vBDkUfRd6gquItl6R5Os=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-4AE84856DAD3520D875D28EDF71D513AA08EF813C96B22A9B6C3A562956FF4B1"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-4AE84856DAD3520D875D28EDF71D513AA08EF813C96B22A9B6C3A562956FF4B1"/>
+                <ChainItem Certificate="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>OU=I.CA - Accredited Provider of Certification Services, O="První certifikační autorita, a.s.", CN="I.CA - Qualified Certification Authority, 09/2009", C=CZ</IssuerName>
+                    <SerialNumber>11048597</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-4AE84856DAD3520D875D28EDF71D513AA08EF813C96B22A9B6C3A562956FF4B1">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIHGMIG9pIG6MIG3MQswCQYDVQQGEwJDWjE6MDgGA1UEAwwxSS5DQSAtIFF1YWxpZmllZCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSwgMDkvMjAwOTEtMCsGA1UECgwkUHJ2bsOtIGNlcnRpZmlrYcSNbsOtIGF1dG9yaXRhLCBhLnMuMT0wOwYDVQQLDDRJLkNBIC0gQWNjcmVkaXRlZCBQcm92aWRlciBvZiBDZXJ0aWZpY2F0aW9uIFNlcnZpY2VzAgQAqJaV</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>SuhIVtrTUg2HXSjt9x1ROqCO+BPJayKptsOlYpVv9LE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-8D4F17960D48F39E1A04A5F3EA8F263E97304A7DD9132EC02672C584547AF727">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>d7wgdyABN3E+RqcDObN1oAqG5dgKSQJT7Tgy7qfb5zc=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>U551MuM+yBl+aIO4V+w0jRMi+3bppAAvOKI4PtEKOpCVpNXYJdQ1kgtEYjbu1bfccZ1FJEPO1e705MRwDrWcGUaz+tkO2pfMB4Hbn6Sj9eLNERs3dAtlmYFItpwJJWt6I0neXToL9tozvy1UTbSMgaIpEwSleKlyFj9KbRlqzmVGWtsjGrIfAiu9PDOSG6TDQCkn7u6IZw3e7UKkNzp1URSgscKgXOWd2hfPBTcasVqrH+j5xBMkjbC6owNcbX5Ppm4Orjc2ltb3I5DVart/mu7DIyub7IXpH2NQrTUgPfH6hF9Yh4aSXdn0H7BHbngOcHHOC1e8nVt1KpT5jcQ1Uw==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-4AE84856DAD3520D875D28EDF71D513AA08EF813C96B22A9B6C3A562956FF4B1">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1303437343436333130f494443435a2034,2.5.4.5=#203130313733373037130e494341202d,1.2.840.113549.1.9.1=#72406963612e637a160c73616c65,cn=slav koler,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1303437343436333130f494443435a2034,2.5.4.5=#203130313733373037130e494341202d,1.2.840.113549.1.9.1=#72406963612e637a160c73616c65,CN=Slav Koler,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>85971104</SerialNumber>
+            <CommonName>Slav Koler</CommonName>
+            <CountryName>CZ</CountryName>
+            <Email>koler@mail.cz</Email>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://q.ica.cz/ca_nbusr09.p7c</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://qcrldp1.ica.cz/qica09.crl</crlUrl>
+                <crlUrl>http://qcrldp2.ica.cz/qica09.crl</crlUrl>
+                <crlUrl>http://qcrldp3.ica.cz/qica09.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2016-08-09T14:22:53</NotAfter>
+            <NotBefore>2015-08-10T14:22:53</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.23624.1.1.30.3.1</certificatePolicy>
+                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">První certifikační autorita, a.s.</TSPName>
+                        <TSPName lang="en">First certification authority, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(16) I.CA - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(16) I.CA - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(16) I.CA - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(16) I.CA - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2009-09-01T00:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+                <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">První certifikační autorita, a.s.</TSPName>
+                        <TSPName lang="en">First certification authority, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-CZ26439395</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRCZ-26439395</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="en">(33) I.CA - Qualified Certification Authority, 09/2009</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:01</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="en">(33) I.CA - Qualified Certification Authority, 09/2009</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:01</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="en">(33) I.CA - Qualified Certification Authority, 09/2009</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2005-06-15T00:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-9C46B1720C0D69196832AC41CD34E59C421251E1F18AED430446A790B86466EF">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SuhIVtrTUg2HXSjt9x1ROqCO+BPJayKptsOlYpVv9LE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+            <SubjectDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=i.ca - accredited provider of certification services,o=první certifikační autorita\, a.s.,cn=i.ca - qualified certification authority\, 09/2009,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=I.CA - Accredited Provider of Certification Services,O=První certifikační autorita\, a.s.,CN=I.CA - Qualified Certification Authority\, 09/2009,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>10500000</SerialNumber>
+            <CommonName>I.CA - Qualified Certification Authority, 09/2009</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationName>První certifikační autorita, a.s.</OrganizationName>
+            <OrganizationalUnit>I.CA - Accredited Provider of Certification Services</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2019-09-01T00:00:00</NotAfter>
+            <NotBefore>2009-09-01T00:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">První certifikační autorita, a.s.</TSPName>
+                        <TSPName lang="en">First certification authority, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(16) I.CA - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(16) I.CA - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(16) I.CA - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(16) I.CA - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2009-09-01T00:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+                <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">První certifikační autorita, a.s.</TSPName>
+                        <TSPName lang="en">First certification authority, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-CZ26439395</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRCZ-26439395</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="en">(33) I.CA - Qualified Certification Authority, 09/2009</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:01</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="en">(33) I.CA - Qualified Certification Authority, 09/2009</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:01</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802">
+                            <ServiceNames>
+                                <ServiceName lang="en">(33) I.CA - Qualified Certification Authority, 09/2009</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2005-06-15T00:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wMBajY2lXq8nqpuRCwpu8Ni73tNGko24cuGCwgc+mAI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-9C46B1720C0D69196832AC41CD34E59C421251E1F18AED430446A790B86466EF">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://qcrldp1.ica.cz/qica09.crl</SourceAddress>
+            <ProductionDate>2016-03-31T19:52:02</ProductionDate>
+            <ThisUpdate>2016-03-31T19:52:02</ThisUpdate>
+            <NextUpdate>2016-09-01T19:52:02</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nEaxcgwNaRloMqxBzTTlnEISUeHxiu1DBEankLhkZu8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OriginalDocuments>
+        <SignerData Id="D-8D4F17960D48F39E1A04A5F3EA8F263E97304A7DD9132EC02672C584547AF727">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JJZt41Nt8VsYahP+Xti4rR3vBDkUfRd6gquItl6R5Os=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>263</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-04-24T09:50:43</LastLoading>
+            <IssueDate>2020-04-15T08:00:00</IssueDate>
+            <NextUpdate>2020-10-15T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F">
+            <CountryCode>CZ</CountryCode>
+            <Url>https://tsl.gov.cz/publ/TSL_CZ.xtsl</Url>
+            <SequenceNumber>87</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-04-24T09:50:44</LastLoading>
+            <IssueDate>2020-04-16T08:30:00</IssueDate>
+            <NextUpdate>2020-10-15T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC">
+            <CountryCode>SK</CountryCode>
+            <Url>http://tl.nbu.gov.sk/kca/tsl/tsl.xml</Url>
+            <SequenceNumber>63</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-04-24T09:50:44</LastLoading>
+            <IssueDate>2020-03-26T08:00:00</IssueDate>
+            <NextUpdate>2020-09-17T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

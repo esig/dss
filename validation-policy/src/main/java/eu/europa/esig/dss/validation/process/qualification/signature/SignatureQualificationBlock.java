@@ -43,7 +43,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.ForeSignatureAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCDCertificateAtSigningTimeCheck;
@@ -88,39 +90,47 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null)
-					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
+			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
 
-			boolean isLOTLAcceptable = false;
+			Set<String> acceptableLOTLUrls = new HashSet<>();
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
 				if (lotlAnalysis != null) {
-					AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableLOTL = isAcceptableTL(lotlAnalysis);
+					AcceptableListOfTrustedListsCheck<XmlValidationSignatureQualification> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
 					item = item.setNextItem(acceptableLOTL);
-					isLOTLAcceptable = acceptableLOTL.process();
+					if (acceptableLOTL.process()) {
+						acceptableLOTLUrls.add(lotlURL);
+					}
 				}
 			}
+			
+			// filter TLs with a found valid set of LOTLs (if assigned)
+			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null && 
+					(t.getListOfTrustedLists() == null || acceptableLOTLUrls.contains(t.getListOfTrustedLists().getUrl())) )
+					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
 
-			Set<String> acceptableUrls = new HashSet<>();
-			if (isLOTLAcceptable) {
+			Set<String> acceptableTLUrls = new HashSet<>();
+			if (Utils.isCollectionNotEmpty(trustedListUrls)) {
 				for (String tlURL : trustedListUrls) {
 					XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 					if (currentTL != null) {
 						AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableTL = isAcceptableTL(currentTL);
 						item = item.setNextItem(acceptableTL);
 						if (acceptableTL.process()) {
-							acceptableUrls.add(tlURL);
+							acceptableTLUrls.add(tlURL);
 						}
 					}
 				}
 			}
 			
-			if (Utils.isCollectionNotEmpty(acceptableUrls)) {
+			item = item.setNextItem(isAcceptableTLPresent(acceptableTLUrls));
+			
+			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
 				// 1. filter by service for CAQC
-				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableUrls);
+				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
 				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 	
 				filter = TrustedServicesFilterFactory.createFilterByCaQc();
@@ -217,9 +227,16 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
-	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(
-			XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+	private AcceptableListOfTrustedListsCheck<XmlValidationSignatureQualification> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+	}
+
+	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationSignatureQualification> isAcceptableTLPresent(Set<String> acceptableUrls) {
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {
