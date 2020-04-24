@@ -435,8 +435,6 @@ public interface ValidationPolicy {
 
 	ValueConstraint getTLVersionConstraint();
 
-	LevelConstraint getTLConsistencyConstraint();
-
 	/**
 	 * Returns the used validation model (default is SHELL). Alternatives are CHAIN
 	 * and HYBRID
