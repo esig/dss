@@ -62,18 +62,22 @@ public abstract class ComplexTransform extends AbstractTransform {
 	}
 	
 	@Override
-	public byte[] getBytesAfterTranformation(Node node) {
+	public byte[] getBytesAfterTranformation(Node node, String uri) {
 		if (transformObject == null) {
 			buildTransformObject();
 		}
 		try {
-			final XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(node);
+			final XMLSignatureInput xmlSignatureInput = getXMLSignatureInput(node, uri);
 			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
 			return xmlSignatureInputOut.getBytes();
 		} catch (IOException | XMLSecurityException e) {
 			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]", 
 					algorithm, e.getMessage()), e);
 		}
+	}
+	
+	protected XMLSignatureInput getXMLSignatureInput(Node node, String uri) {
+		return new XMLSignatureInput(node);
 	}
 
 }

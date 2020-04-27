@@ -64,6 +64,7 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 
 @Tag("slow")
 public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
+	
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
@@ -167,7 +168,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		// ------------------------------------ ORIGINAL FILE
 		// -----------------------------------------------------
 		String originalFileDigest = "";
-		byte[] originalFilByteArray = null;
+		byte[] originalFileByteArray = null;
 
 		if (packaging == SignaturePackaging.ENVELOPED) {
 			// Original File base64 extraction + Verification
@@ -181,7 +182,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			File orginalFile = new File("src/test/resources/sample.xml");
 			// Transform original file into byte array
 			byte[] fileContent = Files.readAllBytes(orginalFile.toPath());
-			originalFilByteArray = canonicalizer.canonicalize(fileContent);
+			originalFileByteArray = canonicalizer.canonicalize(fileContent);
 		} else {
 			// Original File base64 extraction + Verification
 			NodeList originalFileNodeList = DomUtils.getNodeList(doc, AbstractPaths.all(XMLDSigElement.OBJECT));
@@ -200,11 +201,11 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			// Calculate Original File digest from retrieved base64
 			String originalBase64String = orignalFile.getTextContent();
 			// Get byte array from base64 string
-			originalFilByteArray = Base64.getDecoder().decode(originalBase64String);
+			originalFileByteArray = Base64.getDecoder().decode(originalBase64String);
 		}
 
 		// Calculate Original File Digest
-		byte[] digestOriginalFile = DSSUtils.digest(DigestAlgorithm.SHA256, originalFilByteArray);
+		byte[] digestOriginalFile = DSSUtils.digest(DigestAlgorithm.SHA256, originalFileByteArray);
 		String originalDigestBase64 = Base64.getEncoder().encodeToString(digestOriginalFile);
 
 		// Assert that both values are equivalent

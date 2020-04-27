@@ -46,7 +46,7 @@ public class Base64Transform extends AbstractTransform {
 	}
 
 	@Override
-	public byte[] getBytesAfterTranformation(Node node) {
+	public byte[] getBytesAfterTranformation(Node node, String uri) {
 		return DSSXMLUtils.serializeNode(node);
 	}
 

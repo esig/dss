@@ -319,7 +319,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			} else {
 				String uri = reference.getUri();
 				if (Utils.isStringBlank(uri) || DomUtils.isElementReference(uri)) {
-					LOG.warn("A reference with id='{}' and uri='{}' points to an XML Node, while no transforms are defines! "
+					LOG.warn("A reference with id='{}' and uri='{}' points to an XML Node, while no transforms are defined! "
 							+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
 				}
 				if (SignaturePackaging.ENVELOPED.equals(params.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
@@ -1273,21 +1273,27 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @param nodeToTransform {@link Node} to apply transforms on
 	 * @return a byte array, representing a content obtained after transformations
 	 */
-	protected byte[] applyTransformations(final List<DSSTransform> transforms, Node nodeToTransform) {
+	protected byte[] applyTransformations(final DSSReference reference, Node nodeToTransform) {
 		byte[] transformedReferenceBytes = null;
-		Iterator<DSSTransform> iterator = transforms.iterator();
-		while (iterator.hasNext()) {
-			DSSTransform transform = iterator.next();
-			transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform);
-			if (iterator.hasNext()) {
-				nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
+		List<DSSTransform> transforms = reference.getTransforms();
+		if (Utils.isCollectionNotEmpty(transforms)) {
+			Iterator<DSSTransform> iterator = transforms.iterator();
+			while (iterator.hasNext()) {
+				DSSTransform transform = iterator.next();
+				transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform, reference.getUri());
+				if (iterator.hasNext()) {
+					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
+				}
 			}
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Reference bytes after transforms: ");
+				LOG.debug(new String(transformedReferenceBytes));
+			}
+			return transformedReferenceBytes;
+			
+		} else {
+			return DSSXMLUtils.getNodeBytes(nodeToTransform);
 		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Reference bytes after transforms: ");
-			LOG.debug(new String(transformedReferenceBytes));
-		}
-		return transformedReferenceBytes;
 	}
 	
 	protected Node getNodeToCanonicalize(Node node) {

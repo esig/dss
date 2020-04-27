@@ -152,7 +152,7 @@ public abstract class XAdESBuilder {
 			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
 			Document doc = DomUtils.buildDOM(originalDocument);
 			
-			byte[] bytes = dssTransform.getBytesAfterTranformation(doc);
+			byte[] bytes = dssTransform.getBytesAfterTranformation(doc, dssReference.getUri());
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else if (params.isEmbedXML()) {
 			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
@@ -170,7 +170,7 @@ public abstract class XAdESBuilder {
 			Node adopted = doc2.adoptNode(root);
 			dom.appendChild(adopted);
 
-			byte[] bytes = dssTransform.getBytesAfterTranformation(dom);
+			byte[] bytes = dssTransform.getBytesAfterTranformation(dom, dssReference.getUri());
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else {
 			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);

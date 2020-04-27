@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.List;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,7 +33,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 /**
  * This class handles the specifics of the detached XML signature.
@@ -93,8 +90,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 			DSSDocument contents = reference.getContents();
 			Document dom = DomUtils.buildDOM(contents);
 			Element root = dom.getDocumentElement();
-			final List<DSSTransform> transforms = reference.getTransforms();
-			return new InMemoryDocument(applyTransformations(transforms, root));
+			return new InMemoryDocument(applyTransformations(reference, root));
 		}
 		return reference.getContents();
 	}

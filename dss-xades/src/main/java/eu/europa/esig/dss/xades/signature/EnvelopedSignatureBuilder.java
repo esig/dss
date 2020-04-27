@@ -157,7 +157,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	protected DSSDocument transformReference(final DSSReference reference) {
 
 		DSSDocument dssDocument = reference.getContents();
-		final List<DSSTransform> transforms = reference.getTransforms();
 
 		// In the case of ENVELOPED signature the document to sign is an XML. However one of the references can point to
 		// another document this test case is not taken into account!
@@ -172,7 +171,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 			nodeToTransform = document.getElementById(targetId);
 			
 		}
-		if (Utils.isCollectionEmpty(transforms)) {
+		if (Utils.isCollectionEmpty(reference.getTransforms())) {
 			if (nodeToTransform == null) {
 				return dssDocument;
 			} else {
@@ -184,7 +183,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 			nodeToTransform = DomUtils.buildDOM(dssDocument);
 		}
 		
-		byte[] transformedReferenceBytes = applyTransformations(transforms, nodeToTransform);
+		byte[] transformedReferenceBytes = applyTransformations(reference, nodeToTransform);
 		return new InMemoryDocument(transformedReferenceBytes);
 	}
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content>
+<content Id="ROOT">
 	<doc Id="dss1">Hello, world!<!-- Comment 1 --></doc>
 	
 	<!-- Comment 2 -->

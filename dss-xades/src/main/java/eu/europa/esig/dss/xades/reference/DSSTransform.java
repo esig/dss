@@ -43,9 +43,10 @@ public interface DSSTransform {
 	/**
 	 * Performs transformation on the given {@code node} and returns resulting bytes
 	 * @param node {@link Node} to perform transformation on
+	 * @param uri {@link String} the uri used in a reference to extract the node content
 	 * @return byte array
 	 */
-	byte[] getBytesAfterTranformation(Node node);
+	byte[] getBytesAfterTranformation(Node node, String uri);
 	
 	/**
 	 * Creates a Transform element DOM and appends it to the {@code parentNode}
