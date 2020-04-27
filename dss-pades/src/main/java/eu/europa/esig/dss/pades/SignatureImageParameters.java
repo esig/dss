@@ -24,12 +24,13 @@ import java.awt.Color;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import java.io.Serializable;
 
 /**
  * Parameters for a visible signature creation
  *
  */
-public class SignatureImageParameters {
+public class SignatureImageParameters implements Serializable {
 
 	public static final int DEFAULT_PAGE = 1;
 
