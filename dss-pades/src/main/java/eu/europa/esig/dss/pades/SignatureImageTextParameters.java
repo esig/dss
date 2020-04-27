@@ -21,12 +21,13 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * This class allows to custom text generation in the PAdES visible signature
  *
  */
-public class SignatureImageTextParameters {
+public class SignatureImageTextParameters implements Serializable {
 
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 	private static final float DEFAULT_PADDING = 5f;

@@ -21,8 +21,9 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Font;
+import java.io.Serializable;
 
-public abstract class AbstractDSSFont implements DSSFont {
+public abstract class AbstractDSSFont implements DSSFont, Serializable {
 	
 	protected static final float DEFAULT_TEXT_SIZE = 12f;
 	

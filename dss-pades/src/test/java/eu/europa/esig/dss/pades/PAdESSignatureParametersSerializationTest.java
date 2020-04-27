@@ -72,9 +72,14 @@ public class PAdESSignatureParametersSerializationTest extends PKIFactoryAccess 
 
 	@Test
 	public void testSerialization() throws IOException, ClassNotFoundException {
+		
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+		SignatureImageTextParameters imageTextParameters = new SignatureImageTextParameters();
+		imageTextParameters.setText("test");
+		imageParameters.setTextParameters(imageTextParameters);
 		signatureParameters.setImageParameters(imageParameters);
+
 
 		PAdESTimestampParameters timestampParameters = new PAdESTimestampParameters();
 		signatureParameters.setArchiveTimestampParameters(timestampParameters);
