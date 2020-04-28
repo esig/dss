@@ -191,63 +191,6 @@ public interface CertificateVerifier {
 	DigestAlgorithm getDefaultDigestAlgorithm();
 	
 	/**
-	 * This method allows to change the behavior by including raw certificate tokens
-	 * in the diagnostic data report.
-	 * 
-	 * @param include
-	 *                true if raw certificate tokens should be included (default:
-	 *                false)
-	 */
-	void setIncludeCertificateTokenValues(boolean include);
-
-	/**
-	 * This method returns true if the certificate tokens need to be exported in the
-	 * diagnostic data report.
-	 * 
-	 * @return true if raw certificate tokens should be included in the diagnotic
-	 *         data report (default: false)
-	 */
-	boolean isIncludeCertificateTokenValues();
-
-	/**
-	 * This method allows to change the behavior by including raw revocation data in
-	 * the diagnostic data report.
-	 * 
-	 * @param include
-	 *                true if raw revocation data should be included (default:
-	 *                false)
-	 */
-	void setIncludeCertificateRevocationValues(boolean include);
-
-	/**
-	 * This method returns true if the revocation data need to be exported in the
-	 * diagnostic data report.
-	 * 
-	 * @return true if raw revocation data should be included in the diagnotic data
-	 *         report (default: false)
-	 */
-	boolean isIncludeCertificateRevocationValues();
-
-	/**
-	 * This method allows to change the behavior by including raw timestamp tokens
-	 * in the diagnostic data report.
-	 * 
-	 * @param include
-	 *                true if raw timestamp tokens should be included (default:
-	 *                false)
-	 */
-	void setIncludeTimestampTokenValues(boolean include);
-
-	/**
-	 * This method returns true if the timestamp tokens need to be exported in the
-	 * diagnostic data report.
-	 * 
-	 * @return true if raw timestamp tokens should be included in the diagnotic data
-	 *         report (default: false)
-	 */
-	boolean isIncludeTimestampTokenValues();
-
-	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
 	 * augmentation).
 	 * 

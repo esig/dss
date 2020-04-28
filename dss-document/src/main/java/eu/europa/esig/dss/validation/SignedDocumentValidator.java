@@ -41,6 +41,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -120,6 +121,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected CertificateVerifier certificateVerifier;
 
+	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+
 	protected final SignatureScopeFinder signatureScopeFinder;
 
 	private SignaturePolicyProvider signaturePolicyProvider;
@@ -194,6 +197,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
+	}
+
+	@Override
+	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+		Objects.requireNonNull(tokenExtractionStategy);
+		this.tokenExtractionStategy = tokenExtractionStategy;
 	}
 
 	@Override
@@ -386,16 +395,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return new DiagnosticDataBuilder().document(document).usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
-				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
-				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
+				.tokenExtractionStategy(
+						tokenExtractionStategy)
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes()).trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).foundSignatures(signatures)
 				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
 	}
 	
 	/**
-	 * Sets revocation sources for a following certificate valdiation
+	 * Sets revocation sources for a following certificate validation
 	 * 
 	 * @param listCRLSource         {@link ListRevocationSource}
 	 * @param listOCSPSource        {@link ListRevocationSource}

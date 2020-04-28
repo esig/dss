@@ -106,20 +106,11 @@ public class CertificateVerifierSnippet {
 		// Default : LogOnStatusAlert
 		cv.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert(Level.ERROR));
 		
-		// DSS v5.4+ : defines if binary of certificates used during validation must be included
-		// to produced validation reports. If false only digests will be included.
-		// Default : false
-		cv.setIncludeCertificateRevocationValues(true);
-
-		// DSS v5.4+ : defines if binary of revocation data used during validation must be included
-		// to produced validation reports. If false only digests will be included.
-		// Default : false
-		cv.setIncludeCertificateRevocationValues(true);
-
-		// DSS v5.4+ : defines if binary of timestamps present into the signature must be included
-		// to produced validation reports. If false only digests will be included.
-		// Default : false
-		cv.setIncludeTimestampTokenValues(true);
+		// 5.7 : The below methods have been moved to DocumentValidator /
+		// CertificateValidator
+//		cv.setIncludeCertificateRevocationValues(true);
+//		cv.setIncludeCertificateRevocationValues(true);
+//		cv.setIncludeTimestampTokenValues(true);
 
 		// end::demo[]
 

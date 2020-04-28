@@ -37,6 +37,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 public class RemoteDocumentValidationServiceTest {
@@ -59,8 +61,17 @@ public class RemoteDocumentValidationServiceTest {
 	@Test
 	public void testWithNoPolicyAndNoOriginalFile() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+	}
 
-		WSReportsDTO result = validationService.validateDocument(signedFile, null, null);
+	@Test
+	public void testWithNoPolicyAndNoOriginalFileAndStrategy() throws Exception {
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
+		dto.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_CERTIFICATES_ONLY);
+		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 	}
 
@@ -68,8 +79,8 @@ public class RemoteDocumentValidationServiceTest {
 	public void testWithNoPolicyAndOriginalFile() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
-
-		WSReportsDTO result = validationService.validateDocument(signedFile, Arrays.asList(originalFile), null);
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, null);
+		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 	}
 
@@ -78,8 +89,8 @@ public class RemoteDocumentValidationServiceTest {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.png");
 		RemoteDocument originalFile = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileDocument), DigestAlgorithm.SHA256, fileDocument.getName());
-
-		WSReportsDTO result = validationService.validateDocument(signedFile, Arrays.asList(originalFile), null);
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, null);
+		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 	}
 
@@ -88,8 +99,8 @@ public class RemoteDocumentValidationServiceTest {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
 		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
-
-		WSReportsDTO result = validationService.validateDocument(signedFile, Arrays.asList(originalFile), policy);
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, policy);
+		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 	}
 
@@ -97,8 +108,8 @@ public class RemoteDocumentValidationServiceTest {
 	public void testWithPolicyAndNoOriginalFile() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
-
-		WSReportsDTO result = validationService.validateDocument(signedFile, null, policy);
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, policy);
+		WSReportsDTO result = validationService.validateDocument(dto);
 
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
@@ -129,11 +140,12 @@ public class RemoteDocumentValidationServiceTest {
 	@Test
 	public void testGetOriginals() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
-
-		WSReportsDTO reports = validationService.validateDocument(signedFile, null, null);
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
+		WSReportsDTO reports = validationService.validateDocument(dto);
 		String signatureId = reports.getDiagnosticData().getSignatures().get(0).getId();
 
-		List<RemoteDocument> result = validationService.getOriginalDocuments(signedFile, null, signatureId);
+		dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null, signatureId);
+		List<RemoteDocument> result = validationService.getOriginalDocuments(dto);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		RemoteDocument document = result.get(0);
@@ -144,9 +156,9 @@ public class RemoteDocumentValidationServiceTest {
 	@Test
 	public void testGetOriginalsWithoutId() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
-
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
 		// returns original signer data of the first signature
-		List<RemoteDocument> result = validationService.getOriginalDocuments(signedFile, null, null);
+		List<RemoteDocument> result = validationService.getOriginalDocuments(dto);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		RemoteDocument document = result.get(0);
@@ -157,8 +169,8 @@ public class RemoteDocumentValidationServiceTest {
 	@Test
 	public void testGetOriginalsWithWrongId() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
-
-		List<RemoteDocument> result = validationService.getOriginalDocuments(signedFile, null, "id-wrong");
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null, "id-wrong");
+		List<RemoteDocument> result = validationService.getOriginalDocuments(dto);
 		assertNotNull(result);
 		assertEquals(0, result.size());
 	}
@@ -167,8 +179,9 @@ public class RemoteDocumentValidationServiceTest {
 	public void testGetOriginalFromDetachedSignature() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		RemoteDocument originalDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, Arrays.asList(originalDocument), null);
 
-		List<RemoteDocument> result = validationService.getOriginalDocuments(signedFile, Arrays.asList(originalDocument), null);
+		List<RemoteDocument> result = validationService.getOriginalDocuments(dto);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		RemoteDocument document = result.get(0);

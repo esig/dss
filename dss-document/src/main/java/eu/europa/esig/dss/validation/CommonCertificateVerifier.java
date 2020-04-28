@@ -114,24 +114,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
-	 * This variable set the behavior to include raw certificate tokens into the
-	 * diagnostic report. (default: false)
-	 */
-	private boolean includeCertificateTokens = false;
-	
-	/**
-	 * This variable set the behavior to include raw revocation data into the diagnostic report.
-	 * (default: false) 
-	 */
-	private boolean includeRawRevocationData = false;
-
-	/**
-	 * This variable set the behavior to include raw timestamp tokens into the
-	 * diagnostic report. (default: false)
-	 */
-	private boolean includeRawTimestampTokens = false;
-
-	/**
 	 * This variable set the behavior to follow in case of invalid timestamp
 	 * (augmentation process).
 	 * 
@@ -403,36 +385,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public DigestAlgorithm getDefaultDigestAlgorithm() {
 		return defaultDigestAlgorithm;
-	}
-
-	@Override
-	public void setIncludeCertificateTokenValues(boolean includeCertificateTokens) {
-		this.includeCertificateTokens = includeCertificateTokens;
-	}
-
-	@Override
-	public boolean isIncludeCertificateTokenValues() {
-		return includeCertificateTokens;
-	}
-
-	@Override
-	public void setIncludeCertificateRevocationValues(boolean include) {
-		this.includeRawRevocationData = include;
-	}
-
-	@Override
-	public boolean isIncludeCertificateRevocationValues() {
-		return this.includeRawRevocationData;
-	}
-
-	@Override
-	public void setIncludeTimestampTokenValues(boolean include) {
-		this.includeRawTimestampTokens = include;
-	}
-
-	@Override
-	public boolean isIncludeTimestampTokenValues() {
-		return this.includeRawTimestampTokens;
 	}
 
 }

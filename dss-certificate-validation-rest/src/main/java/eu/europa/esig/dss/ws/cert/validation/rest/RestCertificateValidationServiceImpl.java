@@ -36,8 +36,7 @@ public class RestCertificateValidationServiceImpl implements RestCertificateVali
 
 	@Override
 	public CertificateReportsDTO validateCertificate(CertificateToValidateDTO certificateToValidate) {
-		return validationService.validateCertificate(certificateToValidate.getCertificate(), certificateToValidate.getCertificateChain(), 
-				certificateToValidate.getValidationTime());
+		return validationService.validateCertificate(certificateToValidate);
 	}
 
 }

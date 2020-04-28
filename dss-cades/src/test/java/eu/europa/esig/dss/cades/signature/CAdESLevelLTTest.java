@@ -40,11 +40,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 
@@ -67,12 +67,8 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected CertificateVerifier getOfflineCertificateVerifier() {
-		CertificateVerifier certificateVerifier = super.getOfflineCertificateVerifier();
-		certificateVerifier.setIncludeCertificateTokenValues(true);
-		certificateVerifier.setIncludeCertificateRevocationValues(true);
-		certificateVerifier.setIncludeTimestampTokenValues(true);
-		return certificateVerifier;
+	protected TokenExtractionStategy getTokenExtractionStrategy() {
+		return TokenExtractionStategy.EXTRACT_ALL;
 	}
 
 	@Override

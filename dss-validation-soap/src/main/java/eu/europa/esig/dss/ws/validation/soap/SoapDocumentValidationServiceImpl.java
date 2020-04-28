@@ -39,15 +39,12 @@ public class SoapDocumentValidationServiceImpl implements SoapDocumentValidation
 
 	@Override
 	public WSReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
-		WSReportsDTO reportsDTO = validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(),
-				dataToValidate.getPolicy());
-		return reportsDTO;
+		return validationService.validateDocument(dataToValidate);
 	}
 
 	@Override
 	public List<RemoteDocument> getOriginalDocuments(DataToValidateDTO dataToValidate) {
-		return validationService.getOriginalDocuments(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(),
-				dataToValidate.getSignatureId());
+		return validationService.getOriginalDocuments(dataToValidate);
 	}
 
 }

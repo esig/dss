@@ -29,7 +29,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -37,7 +36,6 @@ import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -241,21 +239,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *                            external sources
 	 */
 	public void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier) {
-		// AIA is disabled
-		offlineCertificateVerifier = new CommonCertificateVerifier(true);
-		if (certificateVerifier != null) {
-			offlineCertificateVerifier.setAdjunctCertSource(certificateVerifier.getAdjunctCertSource());
-			List<CertificateSource> trustedCertSources = certificateVerifier.getTrustedCertSources();
-			for (CertificateSource certificateSource : trustedCertSources) {
-				offlineCertificateVerifier.setTrustedCertSource(certificateSource);
-			}
-		}
-		// disable alerting
-		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
+		offlineCertificateVerifier = new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
 	}
 
 	/**

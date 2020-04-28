@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -38,6 +39,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	private Date validationTime;
 	private final CertificateToken token;
 	private CertificateVerifier certificateVerifier;
+	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
 	
 	/**
 	 * Locale to use for reports generation
@@ -58,6 +60,11 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	public void setCertificateVerifier(CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
+	}
+
+	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+		Objects.requireNonNull(tokenExtractionStategy);
+		this.tokenExtractionStategy = tokenExtractionStategy;
 	}
 
 	public void setValidationTime(Date validationTime) {
@@ -94,8 +101,8 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		svc.validate();
 
 		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
-				.usedRevocations(svc.getProcessedRevocations()).includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
-				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
+				.usedRevocations(svc.getProcessedRevocations()).tokenExtractionStategy(
+						tokenExtractionStategy)
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).build();

@@ -39,12 +39,12 @@ public class RestDocumentValidationServiceImpl implements RestDocumentValidation
 	
 	@Override
 	public WSReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
-		return validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(), dataToValidate.getPolicy());
+		return validationService.validateDocument(dataToValidate);
 	}
 
 	@Override
 	public List<RemoteDocument> getOriginalDocuments(DataToValidateDTO dataToValidate) {
-		return validationService.getOriginalDocuments(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(),
-				dataToValidate.getSignatureId());
+		return validationService.getOriginalDocuments(dataToValidate);
 	}
+
 }

@@ -59,6 +59,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -192,9 +193,14 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		validator.setTokenExtractionStategy(getTokenExtractionStrategy());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		validator.setDetachedContents(getDetachedContents());
 		return validator;
+	}
+
+	protected TokenExtractionStategy getTokenExtractionStrategy() {
+		return TokenExtractionStategy.NONE;
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {

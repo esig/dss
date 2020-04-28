@@ -23,6 +23,7 @@ package eu.europa.esig.dss.ws.cert.validation.dto;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 
 public class CertificateToValidateDTO {
@@ -46,6 +47,13 @@ public class CertificateToValidateDTO {
 	 */
 	private Date validationTime;
 	
+	/**
+	 * Allows to specify the token extraction to follow
+	 * 
+	 * NONE by default
+	 */
+	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+
 	public CertificateToValidateDTO() {
 	}
 	
@@ -59,6 +67,14 @@ public class CertificateToValidateDTO {
 		this.validationTime = validationTime;
 	}
 	
+	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
+			Date validationTime, TokenExtractionStategy tokenExtractionStategy) {
+		this.certificate = certificate;
+		this.certificateChain = certificateChain;
+		this.validationTime = validationTime;
+		this.tokenExtractionStategy = tokenExtractionStategy;
+	}
+
 	public RemoteCertificate getCertificate() {
 		return certificate;
 	}
@@ -81,6 +97,14 @@ public class CertificateToValidateDTO {
 	
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
+	}
+
+	public TokenExtractionStategy getTokenExtractionStategy() {
+		return tokenExtractionStategy;
+	}
+
+	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+		this.tokenExtractionStategy = tokenExtractionStategy;
 	}
 
 }

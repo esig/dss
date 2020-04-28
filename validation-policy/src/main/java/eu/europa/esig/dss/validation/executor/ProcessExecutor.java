@@ -42,6 +42,13 @@ public interface ProcessExecutor<R extends AbstractReports> {
 	void setCurrentTime(Date currentDate);
 
 	/**
+	 * Returns the validation time {@code Date}
+	 * 
+	 * @return {@link Date}
+	 */
+	Date getCurrentTime();
+
+	/**
 	 * This method allows to set the {@code XmlDiagnosticData} that is used during
 	 * the validation process execution.
 	 *
@@ -59,15 +66,13 @@ public interface ProcessExecutor<R extends AbstractReports> {
 	 */
 	void setValidationPolicy(ValidationPolicy validationPolicy);
 
+	/**
+	 * This method returns the used {@link ValidationPolicy}
+	 * 
+	 * @return the used validation policy
+	 */
 	ValidationPolicy getValidationPolicy();
 
-	/**
-	 * Returns the validation time {@code Date}
-	 * 
-	 * @return {@link Date}
-	 */
-	Date getCurrentTime();
-	
 	/**
 	 * Allows to set a language setting for generated Reports
 	 * 

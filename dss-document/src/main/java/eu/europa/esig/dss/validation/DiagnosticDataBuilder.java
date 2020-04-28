@@ -100,6 +100,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -171,10 +172,7 @@ public class DiagnosticDataBuilder {
 	private ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<CRL>();
 	private ListRevocationSource<OCSP> commonOCSPSource = new ListRevocationSource<OCSP>();
 
-	private boolean includeRawCertificateTokens = false;
-	private boolean includeRawRevocationData = false;
-	private boolean includeRawTimestampTokens = false;
-	
+	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	private Map<String, XmlCertificate> xmlCertsMap = new HashMap<>();
@@ -276,53 +274,22 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method allows set the behavior to include raw certificate tokens into
-	 * the diagnostic report. (default: false)
+	 * This method allows to set the {@link TokenExtractionStategy} to follow for
+	 * the token extraction
 	 * 
-	 * @param includeRawCertificateTokens
-	 *                                    true if the certificate tokens need to be
-	 *                                    exported in the diagnostic data
+	 * @param tokenExtractionStategy {@link TokenExtractionStategy} to use
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder includeRawCertificateTokens(boolean includeRawCertificateTokens) {
-		this.includeRawCertificateTokens = includeRawCertificateTokens;
+	public DiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+		this.tokenExtractionStategy = tokenExtractionStategy;
 		return this;
 	}
 
-	/**
-	 * This method allows set the behavior to include raw revocation data into the
-	 * diagnostic report. (default: false)
-	 * 
-	 * @param includeRawRevocationData
-	 *                                 true if the revocation data need to be
-	 *                                 exported in the diagnostic data
-	 * @return the builder
-	 */
-	public DiagnosticDataBuilder includeRawRevocationData(boolean includeRawRevocationData) {
-		this.includeRawRevocationData = includeRawRevocationData;
-		return this;
-	}
-
-	/**
-	 * This method allows set the behavior to include raw timestamp tokens into the
-	 * diagnostic report. (default: false)
-	 * 
-	 * @param includeRawTimestampTokens
-	 *                                  true if the timestamp tokens need to be
-	 *                                  exported in the diagnostic data
-	 * @return the builder
-	 */
-	public DiagnosticDataBuilder includeRawTimestampTokens(boolean includeRawTimestampTokens) {
-		this.includeRawTimestampTokens = includeRawTimestampTokens;
-		return this;
-	}
-	
 	/**
 	 * This method allows to set the default {@link DigestAlgorithm} which will be
 	 * used for tokens' DigestAlgoAndValue calculation
 	 * 
-	 * @param digestAlgorithm
-	 *                        {@link DigestAlgorithm} to set as default
+	 * @param digestAlgorithm {@link DigestAlgorithm} to set as default
 	 * @return the builder
 	 */
 	public DiagnosticDataBuilder setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
@@ -996,7 +963,7 @@ public class DiagnosticDataBuilder {
 			xmlRevocation.setFoundCertificates(getXmlFoundCertificates(revocationToken.getDSSId(), revocationToken.getCertificateSource()));
 		}
 
-		if (includeRawRevocationData) {
+		if (tokenExtractionStategy.isRevocationData()) {
 			xmlRevocation.setBase64Encoded(revocationToken.getEncoded());
 		} else {
 			byte[] revocationDigest = revocationToken.getDigest(defaultDigestAlgorithm);
@@ -1602,7 +1569,7 @@ public class DiagnosticDataBuilder {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
 		String tokenId = revocationIdentifier.asXmlId();
 		orphanToken.setId(tokenId);
-		if (includeRawRevocationData) {
+		if (tokenExtractionStategy.isRevocationData()) {
 			orphanToken.setBase64Encoded(revocationIdentifier.getBinaries());
 		} else {
 			byte[] digestValue = revocationIdentifier.getDigestValue(defaultDigestAlgorithm);
@@ -1736,7 +1703,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setFoundCertificates(getXmlFoundCertificates(timestampToken.getDSSId(), timestampToken.getCertificateSource()));
 		xmlTimestampToken.setFoundRevocations(getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
 
-		if (includeRawTimestampTokens) {
+		if (tokenExtractionStategy.isTimestamp()) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
 		} else {
 			byte[] certDigest = timestampToken.getDigest(defaultDigestAlgorithm);
@@ -2049,7 +2016,7 @@ public class DiagnosticDataBuilder {
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(isTrusted(certToken));
 
-		if (includeRawCertificateTokens) {
+		if (tokenExtractionStategy.isCertificate()) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
 		} else {
 			byte[] certDigest = certToken.getDigest(defaultDigestAlgorithm);
