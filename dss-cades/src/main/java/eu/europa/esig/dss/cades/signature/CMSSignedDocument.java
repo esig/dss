@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -70,11 +71,7 @@ public class CMSSignedDocument extends CommonDocument {
 
 	public byte[] getBytes() {
 		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-			final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(output, ASN1Encoding.DER);
-			final byte[] encoded = signedData.getEncoded();
-			final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
-			asn1OutputStream.writeObject(asn1Primitive);
-			asn1OutputStream.close();
+			writeTo(output);
 			return output.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -83,6 +80,14 @@ public class CMSSignedDocument extends CommonDocument {
 
 	public String getBase64Encoded() {
 		return Utils.toBase64(getBytes());
+	}
+	
+	@Override
+	public void writeTo(OutputStream stream) throws IOException {
+		final byte[] encoded = signedData.getEncoded();
+		final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
+		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DER);
+		asn1OutputStream.writeObject(asn1Primitive);
 	}
 
 	@Override

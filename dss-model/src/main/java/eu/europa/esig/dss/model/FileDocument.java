@@ -73,9 +73,9 @@ public class FileDocument extends CommonDocument {
 	public boolean exists() {
 		return file.exists();
 	}
-
-	public File getParentFile() {
-		return file.getParentFile();
+	
+	public File getFile() {
+		return file;
 	}
 
 	@Override
