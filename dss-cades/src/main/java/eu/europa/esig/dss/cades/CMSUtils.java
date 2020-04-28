@@ -48,6 +48,7 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSProcessableFile;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
@@ -59,6 +60,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -292,6 +294,9 @@ public final class CMSUtils {
 		CMSTypedData content = null;
 		if (toSignData instanceof DigestDocument) {
 			content = new CMSAbsentContent();
+		} else if (toSignData instanceof FileDocument) {
+			FileDocument fileDocument = (FileDocument) toSignData;
+			content = new CMSProcessableFile(fileDocument.getFile());
 		} else {
 			content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
 		}
