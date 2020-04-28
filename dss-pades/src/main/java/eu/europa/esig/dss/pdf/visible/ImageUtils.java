@@ -149,7 +149,7 @@ public class ImageUtils {
 
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
 		if (image.getMimeType() != null) {
-			return expectedContentType == image.getMimeType();
+			return image.getMimeType().equals(expectedContentType);
 		} else if (image.getName() != null) {
 			String contentType = null;
 			try {
