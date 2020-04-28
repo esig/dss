@@ -32,6 +32,7 @@ import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.tsl.function.OfficialRegistrationIdentifierPredicate;
+import eu.europa.esig.dss.tsl.function.TradeNamePredicate;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.AddressType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ElectronicAddressType;
@@ -65,9 +66,12 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	}
 
 	private void extractTSPInfo(TrustServiceProviderBuilder tspBuilder, TSPInformationType tspInformation) {
-		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
 		tspBuilder.setTerritory(territory);
+
+		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
 		tspBuilder.setNames(converter.apply(tspInformation.getTSPName()));
+
+		converter = new InternationalNamesTypeConverter(new TradeNamePredicate()); // filter registration identifiers
 		tspBuilder.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
 
 		tspBuilder.setRegistrationIdentifiers(extractRegistrationIdentifiers(tspInformation.getTSPTradeName()));
@@ -88,7 +92,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 		if (internationalNamesType != null && Utils.isCollectionNotEmpty(internationalNamesType.getName())) {
 			for (MultiLangNormStringType multiLangNormString : internationalNamesType.getName()) {
 				final String value = multiLangNormString.getValue();
-				if (predicate.test(value)) {
+				if (predicate.test(value) && !result.contains(value)) {
 					result.add(value);
 				}
 			}

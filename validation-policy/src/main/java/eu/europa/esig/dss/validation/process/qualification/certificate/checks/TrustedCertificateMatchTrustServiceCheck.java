@@ -29,11 +29,11 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -77,6 +77,7 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 
 		List<String> possibleMatchers = new ArrayList<>();
 		possibleMatchers.addAll(trustService.getTspNames());
+		possibleMatchers.addAll(trustService.getTspTradeNames());
 		possibleMatchers.addAll(trustService.getServiceNames());
 
 		for (String candidate : candidates) {

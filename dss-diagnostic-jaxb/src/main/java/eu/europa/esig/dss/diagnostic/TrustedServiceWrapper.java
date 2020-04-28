@@ -30,6 +30,7 @@ public class TrustedServiceWrapper {
 	private XmlTrustedList trustedList;
 	private XmlTrustedList lotl;
 	private List<String> tspNames;
+	private List<String> tspTradeNames;
 	private CertificateWrapper serviceDigitalIdentifier;
 	private List<String> serviceNames;
 	private String countryCode;
@@ -62,6 +63,14 @@ public class TrustedServiceWrapper {
 
 	public void setTspNames(List<String> tspNames) {
 		this.tspNames = tspNames;
+	}
+
+	public List<String> getTspTradeNames() {
+		return tspTradeNames;
+	}
+
+	public void setTspTradeNames(List<String> tspTradeNames) {
+		this.tspTradeNames = tspTradeNames;
 	}
 
 	public CertificateWrapper getServiceDigitalIdentifier() {

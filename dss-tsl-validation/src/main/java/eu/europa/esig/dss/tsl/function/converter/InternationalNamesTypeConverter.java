@@ -25,12 +25,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 
 public class InternationalNamesTypeConverter implements Function<InternationalNamesType, Map<String, List<String>>> {
+
+	private final Predicate<String> predicate;
+
+	public InternationalNamesTypeConverter() {
+		// select all
+		this(x -> true);
+	}
+
+	public InternationalNamesTypeConverter(Predicate<String> predicate) {
+		super();
+		this.predicate = predicate;
+	}
 
 	@Override
 	public Map<String, List<String>> apply(InternationalNamesType original) {
@@ -39,12 +52,9 @@ public class InternationalNamesTypeConverter implements Function<InternationalNa
 			for (MultiLangNormStringType multiLangNormString : original.getName()) {
 				final String lang = multiLangNormString.getLang();
 				final String value = multiLangNormString.getValue();
-				List<String> resultsByLang = result.get(lang);
-				if (resultsByLang == null) {
-					resultsByLang = new ArrayList<>();
-					result.put(lang, resultsByLang);
+				if (predicate.test(value)) {
+					result.computeIfAbsent(lang, k -> new ArrayList<>()).add(value);
 				}
-				resultsByLang.add(value);
 			}
 		}
 		return result;

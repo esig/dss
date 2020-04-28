@@ -224,6 +224,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		if (tsps != null) {
 			for (XmlTrustedServiceProvider tsp : tsps) {
 				List<String> tspNames = getValues(tsp.getTSPNames());
+				List<String> tspTradeNames = getValues(tsp.getTSPTradeNames());
 				List<XmlTrustedService> trustedServices = tsp.getTrustedServices();
 				if (trustedServices != null) {
 					for (XmlTrustedService trustedService : trustedServices) {
@@ -231,6 +232,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 						wrapper.setTrustedList(tsp.getTL());
 						wrapper.setListOfTrustedLists(tsp.getLOTL());
 						wrapper.setTspNames(tspNames);
+						wrapper.setTspTradeNames(tspTradeNames);
 						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
 						wrapper.setServiceNames(getValues(trustedService.getServiceNames()));
 						wrapper.setStatus(trustedService.getStatus());

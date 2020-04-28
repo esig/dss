@@ -2110,6 +2110,7 @@ public class DiagnosticDataBuilder {
 		}
 		TrustServiceProvider tsp = trustProperties.getTrustServiceProvider();
 		result.setTSPNames(getLangAndValues(tsp.getNames()));
+		result.setTSPTradeNames(getLangAndValues(tsp.getTradeNames()));
 		result.setTSPRegistrationIdentifiers(tsp.getRegistrationIdentifiers());
 		return result;
 	}
@@ -2118,9 +2119,10 @@ public class DiagnosticDataBuilder {
 		if (Utils.isMapNotEmpty(map)) {
 			List<XmlLangAndValue> result = new ArrayList<>();
 			for (Entry<String, List<String>> entry : map.entrySet()) {
+				String lang = entry.getKey();
 				for (String value : entry.getValue()) {
 					XmlLangAndValue langAndValue = new XmlLangAndValue();
-					langAndValue.setLang(entry.getKey());
+					langAndValue.setLang(lang);
 					langAndValue.setValue(value);
 					result.add(langAndValue);
 				}
