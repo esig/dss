@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -52,6 +53,10 @@ public class CertificateValidationTest {
 		// We create an instance of the CertificateValidator with the certificate
 		CertificateValidator validator = CertificateValidator.fromCertificate(token);
 		validator.setCertificateVerifier(cv);
+		
+		// Allows specifying which tokens need to be extracted in the diagnostic data (Base64).
+		// Default : NONE)
+		validator.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
 
 		// We execute the validation
 		CertificateReports certificateReports = validator.validate();
