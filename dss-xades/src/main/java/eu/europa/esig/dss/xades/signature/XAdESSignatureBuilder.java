@@ -1269,7 +1269,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	/**
 	 * Applies transforms on a node and returns the byte array to be used for a reference digest computation
 	 * 
-	 * @param transforms a list of {@link DSSTransform}s to be applied on a node
+	 * @param reference a {@link DSSReference} to apply transforms from
 	 * @param nodeToTransform {@link Node} to apply transforms on
 	 * @return a byte array, representing a content obtained after transformations
 	 */
