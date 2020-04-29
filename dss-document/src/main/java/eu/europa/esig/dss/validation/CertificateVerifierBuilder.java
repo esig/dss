@@ -18,8 +18,8 @@ public class CertificateVerifierBuilder {
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
-			copy.setAdjunctListCertSource(certificateVerifier.getAdjunctCertSources());
-			copy.setTrustedListCertSource(certificateVerifier.getTrustedCertSources());
+			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
+			copy.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			copy.setAlertOnInvalidTimestamp(certificateVerifier.getAlertOnInvalidTimestamp());
 			copy.setAlertOnMissingRevocationData(certificateVerifier.getAlertOnMissingRevocationData());
 			copy.setAlertOnNoRevocationAfterBestSignatureTime(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime());
@@ -33,8 +33,8 @@ public class CertificateVerifierBuilder {
 		CertificateVerifier offlineCertificateVerifier = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
 			offlineCertificateVerifier.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
-			offlineCertificateVerifier.setAdjunctListCertSource(certificateVerifier.getAdjunctCertSources());
-			offlineCertificateVerifier.setTrustedListCertSource(certificateVerifier.getTrustedCertSources());
+			offlineCertificateVerifier.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
+			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());

@@ -112,7 +112,7 @@ public interface CertificateVerifier {
 	 * @param trustedListCertificateSource
 	 *                   {@link ListCertificateSource} of trusted cert sources
 	 */
-	void setTrustedListCertSource(final ListCertificateSource trustedListCertificateSource);
+	void setTrustedCertSources(final ListCertificateSource trustedListCertificateSource);
 
 	/**
 	 * Returns the list of adjunct certificate sources assigned to this verifier.
@@ -158,7 +158,7 @@ public interface CertificateVerifier {
 	 * @param adjunctListCertificateSource
 	 *                   {@link ListCertificateSource} of adjunct cert sources
 	 */
-	void setAdjunctListCertSource(final ListCertificateSource adjunctListCertificateSource);
+	void setAdjunctCertSources(final ListCertificateSource adjunctListCertificateSource);
 
 	/**
 	 * The data loader used to access AIA certificate source.

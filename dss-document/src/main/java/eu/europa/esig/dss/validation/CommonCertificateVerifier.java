@@ -256,7 +256,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 	
 	@Override
-	public void setTrustedListCertSource(ListCertificateSource trustedListCertificateSource) {
+	public void setTrustedCertSources(ListCertificateSource trustedListCertificateSource) {
 		if (trustedListCertificateSource == null) {
 			this.trustedCertSources = new ListCertificateSource();
 		} else if (trustedListCertificateSource.areAllCertSourcesTrusted()) {
@@ -294,7 +294,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 	
 	@Override
-	public void setAdjunctListCertSource(ListCertificateSource adjunctListCertificateSource) {
+	public void setAdjunctCertSources(ListCertificateSource adjunctListCertificateSource) {
 		if (adjunctListCertificateSource == null) {
 			adjunctListCertificateSource = new ListCertificateSource();
 		}
