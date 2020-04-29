@@ -141,7 +141,7 @@ public abstract class PKIFactoryAccess {
 		cv.setDataLoader(getFileCacheDataLoader());
 		cv.setCrlSource(cacheCRLSource());
 		cv.setOcspSource(cacheOCSPSource());
-		cv.setTrustedCertSource(getTrustedCertificateSource());
+		cv.setTrustedCertSources(getTrustedCertificateSource());
 		return cv;
 	}
 	
@@ -156,7 +156,7 @@ public abstract class PKIFactoryAccess {
 	protected CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setDataLoader(new IgnoreDataLoader());
-		cv.setTrustedCertSource(getTrustedCertificateSource());
+		cv.setTrustedCertSources(getTrustedCertificateSource());
 		return cv;
 	}
 	

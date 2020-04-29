@@ -78,7 +78,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 
 	private Reports validateTL() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
-		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(certificateSource));
+		certificateVerifier.setTrustedCertSources(buildTrustedCertificateSource(certificateSource));
 
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);

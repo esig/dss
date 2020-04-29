@@ -68,7 +68,7 @@ public class RemoteCertificateValidationService {
 			usedCertificateVerifier = verifier;
 		} else {
 			usedCertificateVerifier = new CertificateVerifierBuilder(verifier).buildCompleteCopy();
-			usedCertificateVerifier.setAdjunctCertSource(adjunctCertSource);
+			usedCertificateVerifier.setAdjunctCertSources(adjunctCertSource);
 		}
 
 		CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(certificateToValidate.getCertificate());

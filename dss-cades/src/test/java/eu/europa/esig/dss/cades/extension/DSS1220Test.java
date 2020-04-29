@@ -36,6 +36,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
@@ -84,8 +85,8 @@ public class DSS1220Test extends PKIFactoryAccess {
 
 		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
 
-		List<CertificateSource> trustedCertSources = completeCertificateVerifier.getTrustedCertSources();
-		trustedCertSources.get(0).addCertificate(trustAnchor);
+		ListCertificateSource trustedCertSources = completeCertificateVerifier.getTrustedCertSources();
+		trustedCertSources.getSources().get(0).addCertificate(trustAnchor);
 
 		CAdESService service = new CAdESService(completeCertificateVerifier);
 		service.setTspSource(getGoodTsa());

@@ -95,7 +95,7 @@ public class CertificateConflictTest {
 		for (CertificateToken cert : privateKey.getCertificateChain()) {
 			certificateSource.addCertificate(cert);
 		}
-		cv.setTrustedCertSource(certificateSource);
+		cv.setTrustedCertSources(certificateSource);
 
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		documentValidator.setCertificateVerifier(cv);
@@ -118,7 +118,7 @@ public class CertificateConflictTest {
 		for (CertificateToken cert : privateKey.getCertificateChain()) {
 			certificateSource.addCertificate(cert);
 		}
-		cv.setTrustedCertSource(certificateSource);
+		cv.setTrustedCertSources(certificateSource);
 
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		documentValidator.setCertificateVerifier(cv);

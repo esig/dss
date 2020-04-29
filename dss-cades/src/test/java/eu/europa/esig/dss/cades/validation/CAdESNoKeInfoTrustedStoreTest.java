@@ -29,7 +29,7 @@ public class CAdESNoKeInfoTrustedStoreTest extends AbstractCAdESTestValidation {
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(signingCertificateToken);
-		commonCertificateVerifier.setTrustedCertSource(trustedCertSource);
+		commonCertificateVerifier.setTrustedCertSources(trustedCertSource);
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
 		// the signing certificates are checked only from the embedded certs

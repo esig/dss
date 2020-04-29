@@ -43,7 +43,7 @@ public class XAdESEnvelopingFakeObjectTest extends AbstractXAdESTestValidation {
 		
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
-		certificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
+		certificateVerifier.setTrustedCertSources(trustedListsCertificateSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		
 		return validator;

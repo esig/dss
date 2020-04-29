@@ -81,7 +81,7 @@ public class DuplicatedStatusInTLValidationJob {
 	public void certVal() {
 		CertificateValidator certificateValidator = CertificateValidator.fromCertificate(C1);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setTrustedCertSource(getSynchronizedTLSource());
+		certificateVerifier.setTrustedCertSources(getSynchronizedTLSource());
 		certificateValidator.setCertificateVerifier(certificateVerifier);
 		CertificateReports reports = certificateValidator.validate();
 

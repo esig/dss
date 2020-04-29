@@ -76,7 +76,7 @@ public class EuropeanLOTLSnippets {
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 		job.setTrustedListCertificateSource(trustedListsCertificateSource);
 		job.onlineRefresh();
-		commonCertificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
+		commonCertificateVerifier.setTrustedCertSources(trustedListsCertificateSource);
 		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
 		commonCertificateVerifier.setCrlSource(new OnlineCRLSource());
 		commonCertificateVerifier.setOcspSource(new OnlineOCSPSource());

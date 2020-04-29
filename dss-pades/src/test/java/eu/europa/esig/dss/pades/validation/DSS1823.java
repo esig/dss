@@ -215,7 +215,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 	
 	private CommonCertificateVerifier getCertificateVerifier(PdfDocumentReader documentReader) throws IOException {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
+		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 		certificateVerifier.setCrlSource(new OnlineCRLSource());

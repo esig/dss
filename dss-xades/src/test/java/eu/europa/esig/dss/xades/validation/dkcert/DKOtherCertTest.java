@@ -23,7 +23,7 @@ public class DKOtherCertTest extends AbstractDKTestCertificate {
 			CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 			CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 			certSource.addCertificate(WRONG);
-			certificateVerifier.setTrustedCertSource(certSource);
+			certificateVerifier.setTrustedCertSources(certSource);
 			certificateVerifier.setDataLoader(getMemoryDataLoader());
 			validator.setCertificateVerifier(certificateVerifier);
 			validator.setProcessExecutor(fixedTime());

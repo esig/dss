@@ -41,7 +41,7 @@ public class XAdESEnvelopedFakeContentSameIdTest extends AbstractXAdESTestValida
 		
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
-		certificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
+		certificateVerifier.setTrustedCertSources(trustedListsCertificateSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		
 		return validator;

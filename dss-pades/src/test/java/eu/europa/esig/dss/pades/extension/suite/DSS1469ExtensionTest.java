@@ -31,7 +31,7 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado-T.pdf"));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
+		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
 
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(TSA_CA_URL, Utils.fromBase64(TSA_CA));

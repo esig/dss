@@ -50,7 +50,7 @@ public abstract class AbstractDSS1987Test extends AbstractXAdESTestValidation {
 		certSource.addCertificate(trustAnchor2);
 		certSource.addCertificate(trustAnchor3);
 		certSource.addCertificate(trustAnchor4);
-		offlineCertificateVerifier.setTrustedCertSource(certSource);
+		offlineCertificateVerifier.setTrustedCertSources(certSource);
 		return offlineCertificateVerifier;
 	}
 	

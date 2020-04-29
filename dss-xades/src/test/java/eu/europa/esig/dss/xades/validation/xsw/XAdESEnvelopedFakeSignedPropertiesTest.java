@@ -39,7 +39,7 @@ public class XAdESEnvelopedFakeSignedPropertiesTest extends AbstractXAdESTestVal
 		
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
-		certificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
+		certificateVerifier.setTrustedCertSources(trustedListsCertificateSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		
 		return validator;

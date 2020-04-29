@@ -50,7 +50,7 @@ public class SignatureValidationContextTest {
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIDZDCCAkygAwIBAgICC7gwDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTExMDMxNzA5NTEzN1oXDTIxMDMxNzA5NTEzN1owRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsn+nQPAiygz267Hxyw6VV0B1r6A/Ps7sqjJX5hmxZ0OYWmt8s7j6eJyqpoSyYBuAQc5jzR8XCJmk9e8+EsdMsFeaXHhAePxFjdqRZ9w6Ubltc+a3OY52OrQfBfVpVfmTz3iISr6qm9d7R1tGBEyCFqY19vx039a0r9jitScRdFmiwmYsaArhmIiIPIoFdRTjuK7zCISbasE/MRivJ6VLm6T9eTHemD0OYcqHmMH4ijCc+j4z1aXEAwfh95Z0GAAnOCfRK6qq4UFFi2/xJcLcopeVx0IUM115hCNq52XAV6DYXaljAeew5Ivo+MVjuOVsdJA9x3f8K7p56aTGEnin/wIDAQABo2AwXjAMBgNVHRMEBTADAQH/MA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBQXFYWJCS8kh28/HRvk8pZ5g0gTzjAdBgNVHQ4EFgQUFxWFiQkvJIdvPx0b5PKWeYNIE84wDQYJKoZIhvcNAQELBQADggEBAFrwHNDUUM9Bfua4nX3DcNBeNv9ujnov3kgR1TQuPLdFwlQlp+HBHjeDtpSutkVIA+qVvuucarQ3XB8u02uCgUNbCj8RVWOs+nwIAjegPDkEM/6XMshS5dklTbDG7mgfcKpzzlcD3H0KDTPy0lrfCmw7zBFRlxqkIaKFNQLXgCLShLL4wKpov9XrqsMLq6F8K/f1O4fhVFfsBSTveUJO84ton+Ruy4KZycwq3FPCH3CDqyEPVrRI/98HIrOM+R2mBN8tAza53W/+MYhm/2xtRDSvCHc+JtJy9LtHVpM8mGPhM7uZI5K1g3noHZ9nrWLWidb2/CfeMifLhNp3hSGhEiE="));
-		certificateVerifier.setTrustedCertSource(certSource);
+		certificateVerifier.setTrustedCertSources(certSource);
 
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.initialize(certificateVerifier);
@@ -80,7 +80,7 @@ public class SignatureValidationContextTest {
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIDZDCCAkygAwIBAgICC7gwDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTExMDMxNzA5NTEzN1oXDTIxMDMxNzA5NTEzN1owRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsn+nQPAiygz267Hxyw6VV0B1r6A/Ps7sqjJX5hmxZ0OYWmt8s7j6eJyqpoSyYBuAQc5jzR8XCJmk9e8+EsdMsFeaXHhAePxFjdqRZ9w6Ubltc+a3OY52OrQfBfVpVfmTz3iISr6qm9d7R1tGBEyCFqY19vx039a0r9jitScRdFmiwmYsaArhmIiIPIoFdRTjuK7zCISbasE/MRivJ6VLm6T9eTHemD0OYcqHmMH4ijCc+j4z1aXEAwfh95Z0GAAnOCfRK6qq4UFFi2/xJcLcopeVx0IUM115hCNq52XAV6DYXaljAeew5Ivo+MVjuOVsdJA9x3f8K7p56aTGEnin/wIDAQABo2AwXjAMBgNVHRMEBTADAQH/MA4GA1UdDwEB/wQEAwIBBjAfBgNVHSMEGDAWgBQXFYWJCS8kh28/HRvk8pZ5g0gTzjAdBgNVHQ4EFgQUFxWFiQkvJIdvPx0b5PKWeYNIE84wDQYJKoZIhvcNAQELBQADggEBAFrwHNDUUM9Bfua4nX3DcNBeNv9ujnov3kgR1TQuPLdFwlQlp+HBHjeDtpSutkVIA+qVvuucarQ3XB8u02uCgUNbCj8RVWOs+nwIAjegPDkEM/6XMshS5dklTbDG7mgfcKpzzlcD3H0KDTPy0lrfCmw7zBFRlxqkIaKFNQLXgCLShLL4wKpov9XrqsMLq6F8K/f1O4fhVFfsBSTveUJO84ton+Ruy4KZycwq3FPCH3CDqyEPVrRI/98HIrOM+R2mBN8tAza53W/+MYhm/2xtRDSvCHc+JtJy9LtHVpM8mGPhM7uZI5K1g3noHZ9nrWLWidb2/CfeMifLhNp3hSGhEiE="));
-		certificateVerifier.setTrustedCertSource(certSource);
+		certificateVerifier.setTrustedCertSources(certSource);
 
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 
@@ -108,7 +108,7 @@ public class SignatureValidationContextTest {
 	public void testBridgeCertificateMovesUpInsteadofSidewaysWithoutRootOnValidation() throws Exception {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
-		certificateVerifier.setTrustedCertSource(certSource);
+		certificateVerifier.setTrustedCertSources(certSource);
 
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put("http://ssp-aia.symauth.com/STNSSP/Certs_issued_to_Class3SSPCA-G3.p7c", Utils.fromBase64(
@@ -139,7 +139,7 @@ public class SignatureValidationContextTest {
 	public void testBridgeCertificateMovesUpInsteadofSidewaysAndFindsRootOnValidation() throws Exception {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
-		certificateVerifier.setTrustedCertSource(certSource);
+		certificateVerifier.setTrustedCertSources(certSource);
 
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put("http://ssp-aia.symauth.com/STNSSP/Certs_issued_to_Class3SSPCA-G3.p7c", Utils.fromBase64(

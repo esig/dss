@@ -81,7 +81,7 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 		TLValidationJobSummary summary = new TLValidationJobSummary(Collections.emptyList(), Arrays.asList(tlInfo));
 		trustedCertSource.setSummary(summary);
 		
-		certificateVerifier.setTrustedCertSource(trustedCertSource);
+		certificateVerifier.setTrustedCertSources(trustedCertSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		
 		return validator;

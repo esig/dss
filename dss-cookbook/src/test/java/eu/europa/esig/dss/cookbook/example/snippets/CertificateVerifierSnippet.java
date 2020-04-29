@@ -50,13 +50,13 @@ public class CertificateVerifierSnippet {
 		// (AIA)
 		cv.setDataLoader(dataLoader);
 
-		// This certificate source is used to provide missing intermediate certificates
+		// The adjunct certificate source is used to provide missing intermediate certificates
 		// (not trusted certificates)
-		cv.setAdjunctCertSource(adjunctCertSource);
+		cv.setAdjunctCertSources(adjunctCertSource);
 
-		// This certificate source is used to provide trusted certificates (the trust
-		// anchors where the certificate chain building should stop)
-		cv.setTrustedCertSource(trustedCertSource);
+		// The trusted certificate source is used to provide trusted certificates 
+		// (the trust anchors where the certificate chain building should stop)
+		cv.setTrustedCertSources(trustedCertSource);
 
 		// The CRL Source to be used for external accesses (can be configured with a
 		// cache,...)

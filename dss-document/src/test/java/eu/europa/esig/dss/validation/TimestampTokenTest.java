@@ -131,7 +131,7 @@ public class TimestampTokenTest {
 			CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
 //			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
-			certificateVerifier.setTrustedCertSource(trustedCertSource);
+			certificateVerifier.setTrustedCertSources(trustedCertSource);
 
 			validator.setCertificateVerifier(certificateVerifier);
 			reports = validator.validateDocument();
@@ -147,7 +147,7 @@ public class TimestampTokenTest {
 			trustedCertSource = new CommonTrustedCertificateSource();
 //			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
 			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
-			certificateVerifier.setTrustedCertSource(trustedCertSource);
+			certificateVerifier.setTrustedCertSources(trustedCertSource);
 
 			validator.setCertificateVerifier(certificateVerifier);
 			reports = validator.validateDocument();
@@ -163,7 +163,7 @@ public class TimestampTokenTest {
 			trustedCertSource = new CommonTrustedCertificateSource();
 			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
 			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
-			certificateVerifier.setTrustedCertSource(trustedCertSource);
+			certificateVerifier.setTrustedCertSources(trustedCertSource);
 
 			validator.setCertificateVerifier(certificateVerifier);
 			reports = validator.validateDocument();
@@ -277,7 +277,7 @@ public class TimestampTokenTest {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource adjunctCertSource = new CommonCertificateSource();
 		adjunctCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(base64TsuCert));
-		certificateVerifier.setAdjunctCertSource(adjunctCertSource);
+		certificateVerifier.setAdjunctCertSources(adjunctCertSource);
 
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.initialize(certificateVerifier);
