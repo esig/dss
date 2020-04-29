@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,13 +30,11 @@ import org.slf4j.event.Level;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
@@ -65,13 +61,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This field contains the reference to multiple trusted certificate sources. These sources are fixed, it means that the same
 	 * sources are used for different validations.
 	 */
-	private List<CertificateSource> trustedCertSources = new ArrayList<>();
+	private ListCertificateSource trustedCertSources = new ListCertificateSource();
 
 	/**
-	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate
-	 * certificates.
+	 * This field contains the reference to arbitrary certificate source, can contain a trust store, 
+	 * or the any intermediate certificates.
 	 */
-	private CertificateSource adjunctCertSource;
+	private ListCertificateSource adjunctCertSources = new ListCertificateSource();
 
 	/**
 	 * This field contains the reference to the {@code OCSPSource}.
@@ -200,7 +196,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			final DataLoader dataLoader) {
 
 		LOG.info("+ New CommonCertificateVerifier created with parameters.");
-		this.trustedCertSources = trustedCertSources;
+		this.trustedCertSources = new ListCertificateSource(trustedCertSources);
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 		this.dataLoader = dataLoader;
@@ -210,8 +206,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public List<CertificateSource> getTrustedCertSources() {
-		return Collections.unmodifiableList(trustedCertSources);
+	public ListCertificateSource getTrustedCertSources() {
+		return trustedCertSources;
 	}
 
 	@Override
@@ -235,41 +231,83 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	@Deprecated
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-		if (CertificateSourceType.TRUSTED_STORE.equals(trustedCertSource.getCertificateSourceType()) ||
-				CertificateSourceType.TRUSTED_LIST.equals(trustedCertSource.getCertificateSourceType())) {
-			this.trustedCertSources.add(trustedCertSource);
-		} else {
-			throw new DSSException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
-					+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", trustedCertSource.getCertificateSourceType()));
-		}
+		Objects.requireNonNull(trustedCertSource, "CertificateSource cannot be null!");
+		setTrustedCertSources(trustedCertSource);
 	}
 	
 	@Override
 	public void setTrustedCertSources(final CertificateSource... certSources) {
-		for (CertificateSource source : certSources) {
-			setTrustedCertSource(source);
+		this.trustedCertSources = new ListCertificateSource();
+		addTrustedCertSources(certSources);
+	}
+	
+	@Override
+	public void addTrustedCertSources(final CertificateSource... certSources) {
+		for (CertificateSource certificateSource : certSources) {
+			if (certificateSource.getCertificateSourceType().isTrusted()) {
+				this.trustedCertSources.add(certificateSource);
+			} else {
+	            throw new DSSException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
+	                    + "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", certificateSource.getCertificateSourceType()));
+			}
 		}
 	}
 	
-	/**
-	 * This methods clears the list of defined trusted certificate sources
-	 */
-	public void clearTrustedCertSources() {
-		trustedCertSources.clear();
-	}
-
 	@Override
-	public CertificateSource getAdjunctCertSource() {
-		return adjunctCertSource;
-	}
-
-	@Override
-	public void setAdjunctCertSource(final CertificateSource adjunctCertSource) {
-		if (adjunctCertSource instanceof CommonTrustedCertificateSource) {
-			LOG.warn("Adjunct certificate source shouldn't be trusted. This source contains missing intermediate certificates");
+	public void setTrustedListCertSource(ListCertificateSource trustedListCertificateSource) {
+		if (trustedListCertificateSource == null) {
+			this.trustedCertSources = new ListCertificateSource();
+		} else if (trustedListCertificateSource.areAllCertSourcesTrusted()) {
+			this.trustedCertSources = trustedListCertificateSource;
+		} else {
+            throw new DSSException(String.format("The trusted ListCertificateSource must contain only trusted sources "
+                    + "with a type TRUSTED_STORE or TRUSTED_LIST."));
 		}
-		this.adjunctCertSource = adjunctCertSource;
+	}
+
+	@Override
+	public ListCertificateSource getAdjunctCertSources() {
+		return adjunctCertSources;
+	}
+
+	@Override
+	@Deprecated
+	public void setAdjunctCertSource(final CertificateSource adjunctCertSource) {
+		Objects.requireNonNull(adjunctCertSource, "CertificateSource cannot be null!");
+		addAdjunctCertSources(adjunctCertSource);
+	}
+	
+	@Override
+	public void setAdjunctCertSources(final CertificateSource... certSources) {
+		this.adjunctCertSources = new ListCertificateSource();
+		addAdjunctCertSources(certSources);
+	}
+
+	@Override
+	public void addAdjunctCertSources(final CertificateSource... certSources) {
+		for (CertificateSource certificateSource : certSources) {
+			assertNotTrusted(certificateSource);
+			this.adjunctCertSources.add(certificateSource);
+		}
+	}
+	
+	@Override
+	public void setAdjunctListCertSource(ListCertificateSource adjunctListCertificateSource) {
+		if (adjunctListCertificateSource == null) {
+			adjunctListCertificateSource = new ListCertificateSource();
+		}
+		for (CertificateSource certificateSource : adjunctListCertificateSource.getSources()) {
+			assertNotTrusted(certificateSource);
+		}
+		this.adjunctCertSources = adjunctListCertificateSource;
+	}
+	
+	private void assertNotTrusted(final CertificateSource adjunctCertificateSource) {
+		if (adjunctCertificateSource.getCertificateSourceType().isTrusted()) {
+			LOG.warn("Adjunct certificate sources shouldn't be trusted. An adjunct certificate source contains missing intermediate certificates");
+		}
 	}
 
 	@Override

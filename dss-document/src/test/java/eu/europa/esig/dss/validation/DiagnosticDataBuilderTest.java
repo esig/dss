@@ -44,9 +44,10 @@ import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DiagnosticDataBuilderTest {
@@ -131,7 +132,8 @@ public class DiagnosticDataBuilderTest {
 		hashMap.put(rootToken, Arrays.asList(trustProperties));
 		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
 
-		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSources(Arrays.asList(trustedCertSource));
+		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates)
+				.trustedCertificateSources(new ListCertificateSource(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();
 
 		assertNotNull(dd);

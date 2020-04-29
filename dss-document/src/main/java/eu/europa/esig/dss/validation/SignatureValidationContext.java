@@ -103,7 +103,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private ListCertificateSource trustedCertSources;
 
 	// External adjunct certificate sources
-	private CertificateSource adjunctCertSource;
+	private ListCertificateSource adjunctCertSources;
 
 	// CRLs from the signature.
 	private ListRevocationSource<CRL> signatureCRLSource;
@@ -152,8 +152,8 @@ public class SignatureValidationContext implements ValidationContext {
 		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
 		this.signatureCertificateSource = certificateVerifier.getSignatureCertificateSource();
-		this.adjunctCertSource = certificateVerifier.getAdjunctCertSource();
-		this.trustedCertSources = new ListCertificateSource(certificateVerifier.getTrustedCertSources());
+		this.adjunctCertSources = certificateVerifier.getAdjunctCertSources();
+		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
 	}
 
@@ -259,7 +259,7 @@ public class SignatureValidationContext implements ValidationContext {
 		allCertificateSources.addAll(signatureCertificateSource);
 		allCertificateSources.addAll(revocationCertificateSources);
 		allCertificateSources.addAll(aiaCertificateSources);
-		allCertificateSources.add(adjunctCertSource);
+		allCertificateSources.addAll(adjunctCertSources);
 		allCertificateSources.addAll(trustedCertSources);
 		return allCertificateSources;
 	}

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
@@ -77,18 +75,21 @@ public interface CertificateVerifier {
 	 * sources are used to identify the trusted anchors.
 	 *
 	 * @return the certificate sources which contain trusted certificates
-	 */	
-	List<CertificateSource> getTrustedCertSources();
+	 */
+	ListCertificateSource getTrustedCertSources();
 
 	/**
 	 * Sets the trusted certificates source.
+	 * 
+	 * @deprecated since 5.7. Will be removed in 5.8.
+	 * Use {@code setTrustedCertSources(CertificateSource... certSources)} instead
 	 *
 	 * @param certSource
 	 *                   The certificates source with known trusted certificates
 	 */
+	@Deprecated
 	void setTrustedCertSource(final CertificateSource certSource);
 	
-
 	/**
 	 * Sets multiple trusted certificates source.
 	 *
@@ -98,21 +99,66 @@ public interface CertificateVerifier {
 	void setTrustedCertSources(final CertificateSource... certSources);
 
 	/**
-	 * Returns the adjunct certificates source associated with this verifier.
+	 * Adds trusted certificates sources to a existing list of trusted certificate sources
+	 *
+	 * @param certSources
+	 *                   The certificate sources with known trusted certificates
+	 */
+	void addTrustedCertSources(final CertificateSource... certSources);
+
+	/**
+	 * Sets a list of trusted certificate sources
+	 *
+	 * @param trustedListCertificateSource
+	 *                   {@link ListCertificateSource} of trusted cert sources
+	 */
+	void setTrustedListCertSource(final ListCertificateSource trustedListCertificateSource);
+
+	/**
+	 * Returns the list of adjunct certificate sources assigned to this verifier.
 	 *
 	 * @return the certificate source which contains additional certificate (missing
 	 *         CA,...)
 	 */
-	CertificateSource getAdjunctCertSource();
+	ListCertificateSource getAdjunctCertSources();
 
 	/**
 	 * Associates an adjunct certificates source to this verifier.
+	 * 
+	 * @deprecated since 5.7. Will be removed in 5.8.
+	 * Use {@code setAdjunctCertSource(CertificateSource... certSources)} instead
 	 *
 	 * @param adjunctCertSource
 	 *                          the certificate source with additional and missing
 	 *                          certificates
 	 */
+	@Deprecated
 	void setAdjunctCertSource(final CertificateSource adjunctCertSource);
+	
+	/**
+	 * Sets multiple adjunct certificates source.
+	 *
+	 * @param certSources
+	 *                          the certificate sources with additional and/or missing
+	 *                          certificates
+	 */
+	void setAdjunctCertSources(final CertificateSource... certSources);
+
+	/**
+	 * Adds adjunct certificates sources to a existing list of adjunct certificate sources
+	 *
+	 * @param certSources
+	 *                   The certificate sources with additional certificates
+	 */
+	void addAdjunctCertSources(final CertificateSource... certSources);
+
+	/**
+	 * Sets a list of adjunct certificate sources
+	 *
+	 * @param adjunctListCertificateSource
+	 *                   {@link ListCertificateSource} of adjunct cert sources
+	 */
+	void setAdjunctListCertSource(final ListCertificateSource adjunctListCertificateSource);
 
 	/**
 	 * The data loader used to access AIA certificate source.

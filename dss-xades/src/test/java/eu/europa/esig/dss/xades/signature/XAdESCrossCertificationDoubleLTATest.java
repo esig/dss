@@ -93,7 +93,6 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         commonTrustedCertificateSource.importAsTrusted(trustedListsCertificateSource);
         
         CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
-        customCertificateVerifier.clearTrustedCertSources();
         customCertificateVerifier.setCrlSource(new OnlineCRLSource(getFileCacheDataLoader()));
         customCertificateVerifier.setTrustedCertSource(commonTrustedCertificateSource);
 		

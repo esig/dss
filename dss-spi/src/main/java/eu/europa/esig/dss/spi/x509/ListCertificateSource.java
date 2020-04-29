@@ -2,6 +2,7 @@ package eu.europa.esig.dss.spi.x509;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,12 +84,12 @@ public class ListCertificateSource {
 	}
 
 	/**
-	 * Returns a list of embedded {@code CertificateSource}s
+	 * Returns an unmodifiable list of embedded {@code CertificateSource}s
 	 * 
 	 * @return a list of {@link CertificateSource}s
 	 */
 	public List<CertificateSource> getSources() {
-		return sources;
+		return Collections.unmodifiableList(sources);
 	}
 
 	/**
@@ -124,6 +125,20 @@ public class ListCertificateSource {
 	 */
 	public boolean isEmpty() {
 		return sources.isEmpty();
+	}
+	
+	/**
+	 * Checks if the ListCertificateSource contains only trusted CertificateSources
+	 * 
+	 * @return TRUE if all embedded CertificateSources are trusted, FALSE otherwise
+	 */
+	public boolean areAllCertSourcesTrusted() {
+		for (CertificateSource certificateSource : sources) {
+			if (!certificateSource.getCertificateSourceType().isTrusted()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -232,6 +247,15 @@ public class ListCertificateSource {
 			result.addAll(source.getByCertificateIdentifier(certificateIdentifier));
 		}
 		return result;
+	}
+
+	/**
+	 * This method returns the number of set {@link CertificateSource}s
+	 * 
+	 * @return the number of found {@link CertificateSource}
+	 */
+	public int getNumberOfSources() {
+		return sources.size();
 	}
 
 	/**

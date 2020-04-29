@@ -1,9 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
 
 public class CertificateVerifierBuilder {
 
@@ -21,11 +18,8 @@ public class CertificateVerifierBuilder {
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
-			copy.setAdjunctCertSource(certificateVerifier.getAdjunctCertSource());
-			List<CertificateSource> trustedCertSources = certificateVerifier.getTrustedCertSources();
-			for (CertificateSource certificateSource : trustedCertSources) {
-				copy.setTrustedCertSource(certificateSource);
-			}
+			copy.setAdjunctListCertSource(certificateVerifier.getAdjunctCertSources());
+			copy.setTrustedListCertSource(certificateVerifier.getTrustedCertSources());
 			copy.setAlertOnInvalidTimestamp(certificateVerifier.getAlertOnInvalidTimestamp());
 			copy.setAlertOnMissingRevocationData(certificateVerifier.getAlertOnMissingRevocationData());
 			copy.setAlertOnNoRevocationAfterBestSignatureTime(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime());
@@ -39,11 +33,8 @@ public class CertificateVerifierBuilder {
 		CertificateVerifier offlineCertificateVerifier = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
 			offlineCertificateVerifier.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
-			offlineCertificateVerifier.setAdjunctCertSource(certificateVerifier.getAdjunctCertSource());
-			List<CertificateSource> trustedCertSources = certificateVerifier.getTrustedCertSources();
-			for (CertificateSource certificateSource : trustedCertSources) {
-				offlineCertificateVerifier.setTrustedCertSource(certificateSource);
-			}
+			offlineCertificateVerifier.setAdjunctListCertSource(certificateVerifier.getAdjunctCertSources());
+			offlineCertificateVerifier.setTrustedListCertSource(certificateVerifier.getTrustedCertSources());
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());

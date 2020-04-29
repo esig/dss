@@ -26,5 +26,9 @@ package eu.europa.esig.dss.enumerations;
 public enum CertificateSourceType {
 
 	TRUSTED_STORE, TRUSTED_LIST, SIGNATURE, OCSP_RESPONSE, OTHER, AIA, TIMESTAMP, UNKNOWN;
+	
+	public boolean isTrusted() {
+		return TRUSTED_STORE.equals(this) || TRUSTED_LIST.equals(this);
+	}
 
 }

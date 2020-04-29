@@ -31,12 +31,25 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 
 public class CommonCertificateVerifierTest {
+	
+	@Test
+	public void testTrustedCertSources() {
+		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
+		ccv.setTrustedCertSources(new CommonTrustedCertificateSource());
+		assertEquals(1, ccv.getTrustedCertSources().getNumberOfSources());
+		
+		ccv.setTrustedCertSources(new CommonTrustedCertificateSource(), new TrustedListsCertificateSource());
+		assertEquals(2, ccv.getTrustedCertSources().getNumberOfSources());
+		
+		ccv.addTrustedCertSources(new CommonTrustedCertificateSource());
+		assertEquals(3, ccv.getTrustedCertSources().getNumberOfSources());
+	}
 
 	@Test
 	public void testNotTrustedCertificateSource() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		Exception exception = assertThrows(DSSException.class, () -> {
-			ccv.setTrustedCertSource(new CommonCertificateSource());
+			ccv.setTrustedCertSources(new CommonCertificateSource());
 		});
 		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
 				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());
@@ -49,29 +62,26 @@ public class CommonCertificateVerifierTest {
 	}
 	
 	@Test
-	public void testReflection() {
+	public void testAdjunctCertSources() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
-		ccv.setTrustedCertSource(new CommonTrustedCertificateSource());
-		assertThrows(UnsupportedOperationException.class, () -> {
-			ccv.getTrustedCertSources().add(new CommonCertificateSource());
-		});
+		ccv.setAdjunctCertSources(new CommonCertificateSource());
+		assertEquals(1, ccv.getAdjunctCertSources().getNumberOfSources());
 		
-		assertThrows(UnsupportedOperationException.class, () -> {
-			ccv.getTrustedCertSources().clear();
-		});
+		ccv.setAdjunctCertSources(new CommonCertificateSource(), new CommonCertificateSource());
+		assertEquals(2, ccv.getAdjunctCertSources().getNumberOfSources());
+		
+		ccv.addAdjunctCertSources(new CommonCertificateSource());
+		assertEquals(3, ccv.getAdjunctCertSources().getNumberOfSources());
 	}
-	
+
 	@Test
-	public void testClearTrustedCertSources() {
+	public void testNotAdjunctCertificateSource() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
-		ccv.setTrustedCertSource(new CommonTrustedCertificateSource());
-		assertEquals(1, ccv.getTrustedCertSources().size());
+		ccv.setAdjunctCertSources(new CommonTrustedCertificateSource());
+		assertEquals(1, ccv.getAdjunctCertSources().getNumberOfSources());
 		
-		ccv.clearTrustedCertSources();
-		assertEquals(0, ccv.getTrustedCertSources().size());
-		
-		ccv.setTrustedCertSources(new CommonTrustedCertificateSource(), new TrustedListsCertificateSource());
-		assertEquals(2, ccv.getTrustedCertSources().size());
+		ccv.addAdjunctCertSources(new CommonCertificateSource(), new CommonTrustedCertificateSource());
+		assertEquals(3, ccv.getAdjunctCertSources().getNumberOfSources());
 	}
 
 }
