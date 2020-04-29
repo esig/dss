@@ -39,13 +39,13 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.AbstractCRLUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.crl.ICRLUtils;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
@@ -68,12 +68,13 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	@Override
 	public CRLValidity buildCRLValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) throws IOException {
 		
-		final X509CRLValidity crlValidity= new X509CRLValidity(crlBinary);
+		final X509CRLValidity crlValidity= new X509CRLValidity();
 		
 		try (InputStream bais = new ByteArrayInputStream(crlBinary.getBinaries())) {
 			
 			X509CRL x509CRL = loadCRL(bais);
 			crlValidity.setX509CRL(x509CRL);
+			crlValidity.setDerEncoded(getDerEncoded(x509CRL));
 
 			final String sigAlgOID = x509CRL.getSigAlgOID();
 			final byte[] sigAlgParams = x509CRL.getSigAlgParams();
@@ -150,6 +151,14 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 				throw new DSSException("Unable to parse the CRL");
 			}
 			return crl;
+		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
+	}
+	
+	private byte[] getDerEncoded(X509CRL x509crl) {
+		try {
+			return x509crl.getEncoded();
 		} catch (CRLException e) {
 			throw new DSSException(e);
 		}

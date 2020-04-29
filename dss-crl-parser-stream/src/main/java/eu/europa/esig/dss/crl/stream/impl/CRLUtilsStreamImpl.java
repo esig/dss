@@ -37,13 +37,13 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.AbstractCRLUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.crl.ICRLUtils;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
@@ -53,10 +53,12 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	@Override
 	public CRLValidity buildCRLValidity(CRLBinary crlBinaryIdentifier, CertificateToken issuerToken) throws IOException {
 		
-		final CRLValidity crlValidity = new CRLValidity(crlBinaryIdentifier);
+		final CRLValidity crlValidity = new CRLValidity();
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(crlBinaryIdentifier.getBinaries()); ByteArrayOutputStream baos = getDERContent(bais)) {
-			CRLInfo crlInfos = getCrlInfo(baos);
-
+			byte[] derEncoded = baos.toByteArray();
+			crlValidity.setDerEncoded(derEncoded);
+			
+			CRLInfo crlInfos = getCrlInfo(derEncoded);
 			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOidAndParams(crlInfos.getCertificateListSignatureAlgorithmOid(),
 					crlInfos.getCertificateListSignatureAlgorithmParams());
 			crlValidity.setSignatureAlgorithm(signatureAlgorithm);
@@ -127,8 +129,8 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	}
 
 
-	private CRLInfo getCrlInfo(ByteArrayOutputStream baos) throws IOException {
-		try (InputStream is = new ByteArrayInputStream(baos.toByteArray()); BufferedInputStream bis = new BufferedInputStream(is)) {
+	private CRLInfo getCrlInfo(byte[] derEncoded) throws IOException {
+		try (InputStream is = new ByteArrayInputStream(derEncoded); BufferedInputStream bis = new BufferedInputStream(is)) {
 			CRLParser parser = new CRLParser();
 			return parser.retrieveInfo(bis);
 		}

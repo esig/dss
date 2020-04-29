@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service.crl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -151,7 +150,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			crlToken.setSourceURL(dataAndUrl.getUrlString());
 			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.getUrlString()));
 			return crlToken;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.getUrlString() + ") : " + e.getMessage(), e);
 			return null;
 		}

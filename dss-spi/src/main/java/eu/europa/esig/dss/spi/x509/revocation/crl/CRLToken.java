@@ -158,7 +158,7 @@ public class CRLToken extends RevocationToken<CRL> {
 
 	@Override
 	public byte[] getEncoded() {
-		return crlValidity.getCrlEncoded();
+		return crlValidity.getDerEncoded();
 	}
 
 	public InputStream getCRLStream() {

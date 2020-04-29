@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.crl;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -202,6 +203,24 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 			assertFalse(validCRL.isIssuerX509PrincipalMatches());
 			assertFalse(validCRL.isSignatureIntact());
 			assertFalse(validCRL.isValid());
+		}
+	}
+	
+	@Test
+	public void derVsPemEncodedTest() throws Exception {
+		try (InputStream isDer = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/crl.der");
+				InputStream isPem = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/crl.pem");
+				InputStream isCert = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/ca.pem") ) {
+
+			CertificateToken certificateToken = loadCert(isCert);
+			
+			CRLBinary crlBinaryDER = new CRLBinary(toByteArray(isDer));
+			CRLValidity crlDER = CRLUtils.buildCRLValidity(crlBinaryDER, certificateToken);
+			
+			CRLBinary crlBinaryPEM = new CRLBinary(toByteArray(isPem));
+			CRLValidity crlPEM = CRLUtils.buildCRLValidity(crlBinaryPEM, certificateToken);
+			
+			assertArrayEquals(crlDER.getDerEncoded(), crlPEM.getDerEncoded());
 		}
 	}
 
