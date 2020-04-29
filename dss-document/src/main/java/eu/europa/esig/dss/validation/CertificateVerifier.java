@@ -79,7 +79,7 @@ public interface CertificateVerifier {
 	ListCertificateSource getTrustedCertSources();
 
 	/**
-	 * Sets the trusted certificates source.
+	 * Sets the trusted certificate source.
 	 * 
 	 * @deprecated since 5.7. Will be removed in 5.8.
 	 * Use {@code setTrustedCertSources(CertificateSource... certSources)} instead
@@ -91,7 +91,7 @@ public interface CertificateVerifier {
 	void setTrustedCertSource(final CertificateSource certSource);
 	
 	/**
-	 * Sets multiple trusted certificates source.
+	 * Sets multiple trusted certificate sources.
 	 *
 	 * @param certSources
 	 *                   The certificate sources with known trusted certificates
@@ -99,7 +99,7 @@ public interface CertificateVerifier {
 	void setTrustedCertSources(final CertificateSource... certSources);
 
 	/**
-	 * Adds trusted certificates sources to a existing list of trusted certificate sources
+	 * Adds trusted certificate sources to an existing list of trusted certificate sources
 	 *
 	 * @param certSources
 	 *                   The certificate sources with known trusted certificates
@@ -123,7 +123,7 @@ public interface CertificateVerifier {
 	ListCertificateSource getAdjunctCertSources();
 
 	/**
-	 * Associates an adjunct certificates source to this verifier.
+	 * Sets an adjunct certificate source to this verifier.
 	 * 
 	 * @deprecated since 5.7. Will be removed in 5.8.
 	 * Use {@code setAdjunctCertSource(CertificateSource... certSources)} instead
@@ -136,7 +136,7 @@ public interface CertificateVerifier {
 	void setAdjunctCertSource(final CertificateSource adjunctCertSource);
 	
 	/**
-	 * Sets multiple adjunct certificates source.
+	 * Sets multiple adjunct certificate sources.
 	 *
 	 * @param certSources
 	 *                          the certificate sources with additional and/or missing
@@ -145,7 +145,7 @@ public interface CertificateVerifier {
 	void setAdjunctCertSources(final CertificateSource... certSources);
 
 	/**
-	 * Adds adjunct certificates sources to a existing list of adjunct certificate sources
+	 * Adds adjunct certificate sources to an existing list of adjunct certificate sources
 	 *
 	 * @param certSources
 	 *                   The certificate sources with additional certificates
