@@ -93,7 +93,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c2);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
@@ -110,7 +110,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c2);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
@@ -131,7 +131,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
@@ -149,7 +149,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3Bis);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
@@ -167,7 +167,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
@@ -185,7 +185,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c2);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
@@ -204,7 +204,7 @@ public class BaselineBCertificateSelectorTest {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3);
-		certificateVerifier.setTrustedCertSource(trustCertSource);
+		certificateVerifier.setTrustedCertSources(trustCertSource);
 
 		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);

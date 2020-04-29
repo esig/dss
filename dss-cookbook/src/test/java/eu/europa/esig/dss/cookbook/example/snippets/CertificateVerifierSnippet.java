@@ -52,11 +52,11 @@ public class CertificateVerifierSnippet {
 
 		// This certificate source is used to provide missing intermediate certificates
 		// (not trusted certificates)
-		cv.setAdjunctCertSource(adjunctCertSource);
+		cv.setAdjunctCertSources(adjunctCertSource);
 
 		// This certificate source is used to provide trusted certificates (the trust
 		// anchors where the certificate chain building should stop)
-		cv.setTrustedCertSource(trustedCertSource);
+		cv.setTrustedCertSources(trustedCertSource);
 
 		// The CRL Source to be used for external accesses (can be configured with a
 		// cache,...)

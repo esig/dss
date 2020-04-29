@@ -48,7 +48,7 @@ public class DSS1788TrustedStoreTest extends AbstractXAdESTestValidation {
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(signingCertificateToken);
-		commonCertificateVerifier.setTrustedCertSource(trustedCertSource);
+		commonCertificateVerifier.setTrustedCertSources(trustedCertSource);
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
 		return validator;

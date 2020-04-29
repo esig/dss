@@ -115,7 +115,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			validationJob.setListOfTrustedListSources(lotlSource);
 			validationJob.onlineRefresh();
 
-			commonCertificateVerifier.setTrustedCertSource(tslCertificateSource);
+			commonCertificateVerifier.setTrustedCertSources(tslCertificateSource);
 
 			OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
 			onlineCRLSource.setDataLoader(commonsHttpDataLoader);

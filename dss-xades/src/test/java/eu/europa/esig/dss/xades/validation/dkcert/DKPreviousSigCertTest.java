@@ -22,7 +22,7 @@ public class DKPreviousSigCertTest extends AbstractDKTestCertificate {
 			CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 			CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 			certSource.addCertificate(PREVIOUS_SIG_CERT);
-			certificateVerifier.setTrustedCertSource(certSource);
+			certificateVerifier.setTrustedCertSources(certSource);
 			certificateVerifier.setDataLoader(getMemoryDataLoader());
 			validator.setCertificateVerifier(certificateVerifier);
 			validator.setProcessExecutor(fixedTime());

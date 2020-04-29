@@ -41,7 +41,7 @@ public class CAdESLTALevelExtendedExpiredTest extends AbstractCAdESTestValidatio
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonCertificateSource certificateSource = new CommonCertificateSource();
 		certificateSource.addCertificate(tstCaCert);
-		certificateVerifier.setAdjunctCertSource(certificateSource);
+		certificateVerifier.setAdjunctCertSources(certificateSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		return validator;
 	}

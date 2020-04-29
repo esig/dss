@@ -32,7 +32,7 @@ public class DSS1469LTTest extends AbstractPAdESTestValidation {
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		CertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(TRUST_ANCHOR));
-		certificateVerifier.setTrustedCertSource(trustedCertSource);
+		certificateVerifier.setTrustedCertSources(trustedCertSource);
 		validator.setCertificateVerifier(certificateVerifier);
 		return validator;
 	}

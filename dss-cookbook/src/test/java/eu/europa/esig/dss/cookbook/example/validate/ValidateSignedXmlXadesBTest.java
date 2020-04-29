@@ -76,10 +76,10 @@ public class ValidateSignedXmlXadesBTest {
 		trustedCertSource.importAsTrusted(keystoreCertSource);
 
 		// We now add trust anchors (trusted list, keystore,...)
-		cv.setTrustedCertSource(trustedCertSource);
+		cv.setTrustedCertSources(trustedCertSource);
 
 		// We also can add missing certificates
-		cv.setAdjunctCertSource(adjunctCertSource);
+		cv.setAdjunctCertSources(adjunctCertSource);
 
 		// Here is the document to be validated (any kind of signature file)
 		DSSDocument document = new FileDocument(new File("src/test/resources/signature-pool/signedXmlXadesLT.xml"));
