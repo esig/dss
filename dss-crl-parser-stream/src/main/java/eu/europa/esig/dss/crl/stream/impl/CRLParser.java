@@ -397,11 +397,13 @@ class CRLParser {
 	 * @throws IOException
 	 */
 	private void skip(InputStream s, int length) throws IOException {
-		int skipped = 0;
+		long skipped = 0;
+		long skip = -1;
 		// Loops because BufferedInputStream.skip only skips in its buffer
-		while (skipped < length) {
-			skipped += s.skip((long) length - skipped);
-		}
+		while (skipped < length && skip != 0) {
+			skip = s.skip(length - skipped);
+			skipped += skip;
+		};
 	}
 
 	private void extractExtensions(ASN1Sequence seq, CRLInfo infos) throws IOException {

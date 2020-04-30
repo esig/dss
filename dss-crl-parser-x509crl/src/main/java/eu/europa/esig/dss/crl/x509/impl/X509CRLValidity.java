@@ -32,8 +32,8 @@ public class X509CRLValidity extends CRLValidity {
 	/**
 	 * Default constructor
 	 */
-	public X509CRLValidity(CRLBinary crlBinaryIdentifier) {
-		super(crlBinaryIdentifier);
+	public X509CRLValidity(CRLBinary crlBinary) {
+		super(crlBinary);
 	}
 
 	public X509CRL getX509CRL() {

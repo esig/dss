@@ -23,9 +23,11 @@ package eu.europa.esig.dss.spi.x509.revocation.crl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -34,7 +36,7 @@ import eu.europa.esig.dss.utils.Utils;
 public class OfflineCRLSourceTest {
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
 
 		String crlB64 = "MIIBbTBXMA0GCSqGSIb3DQEBBQUAMCgxCzAJBgNVBAYTAkJFMRkwFwYDVQQDExBCZWxnaXVtIFJvb3QgQ0EyFw0xNDA3MDExMTAwMDBaFw0xNTAxMzExMTAwMDBaMA0GCSqGSIb3DQEBBQUAA4IBAQClCqf+EHb/ZafCIrRXdEmIOrHV0fFYfIbLEWUhMLIDBdNgcDeKjUOB6dc3WnxfyuE4RzndBbZA1dlDv7wEX8sxaGzAdER166uDS/CF7wwVz8voDq+ju5xopN01Vy7FNcCA43IpnZal9HPIQfb2EyrfNu5hQal7WiKE7q8PSch1vBlB9h8NbyIfnyPiHZ7A0B6MPJBqSCFwgGm+YZB/4DQssOVui0+kBT19uUBjTG0QEe7dLxZTBEgBowq5axv93QBXe0j+xOXZ97tlU2iJ51bsLY3E134ziMV6hKPsBw6ARMq/BF64P6axLIUOqdCRaYoMu2ekfYSoFuaM3l2o79aw";
 
@@ -45,7 +47,7 @@ public class OfflineCRLSourceTest {
 		CertificateToken certToValidate = DSSUtils.loadCertificateFromBase64EncodedString(certToValidateB64);
 
 		OfflineCRLSource crlSource = new MockCRLSource();
-		crlSource.addBinary(new CRLBinary(Utils.fromBase64(crlB64)), RevocationOrigin.EXTERNAL);
+		crlSource.addBinary(CRLUtils.buildCRLBinary(Utils.fromBase64(crlB64)), RevocationOrigin.EXTERNAL);
 		
 		assertEquals(0, crlSource.getRevocationTokens(certToValidate, certToValidate).size());
 		

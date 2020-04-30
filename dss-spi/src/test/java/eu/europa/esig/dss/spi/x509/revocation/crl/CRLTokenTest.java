@@ -46,7 +46,7 @@ public class CRLTokenTest {
 		FileDocument caCert = new FileDocument("src/test/resources/belgiumrs2.crt");
 		FileDocument tsaCert = new FileDocument("src/test/resources/TSA_BE.cer");
 
-		CRLBinary crlBinary = new CRLBinary(DSSUtils.toByteArray(doc));
+		CRLBinary crlBinary = CRLUtils.buildCRLBinary(DSSUtils.toByteArray(doc));
 		CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, DSSUtils.loadCertificate(caCert.openStream()));
 		assertNotNull(crlValidity);
 		assertTrue(crlValidity.isSignatureIntact());
@@ -74,7 +74,7 @@ public class CRLTokenTest {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument tsaCert = new FileDocument("src/test/resources/TSA_BE.cer");
 
-		CRLBinary crlBinary = new CRLBinary(DSSUtils.toByteArray(doc));
+		CRLBinary crlBinary = CRLUtils.buildCRLBinary(DSSUtils.toByteArray(doc));
 		CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, DSSUtils.loadCertificate(tsaCert.openStream()));
 		assertNotNull(crlValidity);
 		assertFalse(crlValidity.isSignatureIntact());
@@ -89,7 +89,7 @@ public class CRLTokenTest {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument caCert = new FileDocument("src/test/resources/belgiumrs2.crt");
 
-		CRLBinary crlBinary = new CRLBinary(DSSUtils.toByteArray(doc));
+		CRLBinary crlBinary = CRLUtils.buildCRLBinary(DSSUtils.toByteArray(doc));
 		CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, DSSUtils.loadCertificate(caCert.openStream()));
 		assertNotNull(crlValidity);
 		assertTrue(crlValidity.isSignatureIntact());

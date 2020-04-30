@@ -42,7 +42,7 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSException;
@@ -152,7 +152,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	 */
 	protected void addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
-			addBinary(new CRLBinary(crlHolder.getEncoded()), origin);
+			addBinary(CRLUtils.buildCRLBinary(crlHolder.getEncoded()), origin);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

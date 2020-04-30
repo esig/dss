@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.x509.ReasonFlags;
 
@@ -35,8 +36,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  * exposes the method {@code isValid} to check the validity.
  */
 public class CRLValidity {
-
-	private final CRLBinary crlBinaryIdentifier;
+	
+	private final CRLBinary crlBinary;
 	
 	private boolean indirectCrl;
 	private boolean onlyAttributeCerts;
@@ -45,7 +46,6 @@ public class CRLValidity {
 	private boolean crlSignKeyUsage = false;
 	private boolean issuerX509PrincipalMatches = false;
 	private boolean signatureIntact = false;
-	private Boolean unknownCriticalExtension;
 	private CertificateToken issuerToken = null;
 	private Collection<String> criticalExtensionsOid;
 	private Date expiredCertsOnCRL;
@@ -60,20 +60,17 @@ public class CRLValidity {
 	/**
 	 * Default constructor
 	 */	
-	public CRLValidity(CRLBinary crlBinaryIdentifier) {
-		this.crlBinaryIdentifier = crlBinaryIdentifier;
+	public CRLValidity(CRLBinary crlBinary) {
+		Objects.requireNonNull(crlBinary, "CRLBinary cannot be null!");
+		this.crlBinary = crlBinary;
 	}
 
-	public CRLBinary getCrlBinaryIdentifier() {
-		return crlBinaryIdentifier;
+	public byte[] getDerEncoded() {
+		return crlBinary.getBinaries();
 	}
 
-	public byte[] getCrlEncoded() {
-		return crlBinaryIdentifier.getBinaries();
-	}
-
-	public InputStream getCrlInputStream() {
-		return new ByteArrayInputStream(getCrlEncoded());
+	public InputStream toCRLInputStream() {
+		return new ByteArrayInputStream(getDerEncoded());
 	}
 
 	public String getKey() {
@@ -187,10 +184,6 @@ public class CRLValidity {
 	public void setCriticalExtensionsOid(Collection<String> criticalExtensionsOid) {
 		this.criticalExtensionsOid = criticalExtensionsOid;
 	}
-	
-	public void setUnknownCriticalExtension(boolean unknownCriticalExtension) {
-		this.unknownCriticalExtension = unknownCriticalExtension;
-	}
 
 	/**
 	 * This method indicates if the CRL is valid. To be valid the CRL must full
@@ -211,22 +204,19 @@ public class CRLValidity {
 	}
 	
 	public boolean isUnknownCriticalExtension() {
-		if (unknownCriticalExtension == null) {
-			unknownCriticalExtension = areCriticalExtensionsOidNotEmpty() && 
+		return areCriticalExtensionsOidNotEmpty() && 
 					((onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) || (onlySomeReasonFlags != null) || (url == null));
-		}
-		return unknownCriticalExtension;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((crlBinaryIdentifier == null) ? 0 : crlBinaryIdentifier.hashCode());
-		result = (prime * result) + ((issuerToken == null) ? 0 : issuerToken.hashCode());
+		result = prime * result + ((crlBinary == null) ? 0 : crlBinary.hashCode());
+		result = prime * result + ((issuerToken == null) ? 0 : issuerToken.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -238,19 +228,19 @@ public class CRLValidity {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CRLValidity crl = (CRLValidity) obj;
-		if (crlBinaryIdentifier == null) {
-			if (crl.getCrlBinaryIdentifier() != null) {
+		CRLValidity other = (CRLValidity) obj;
+		if (crlBinary == null) {
+			if (other.crlBinary != null) {
 				return false;
 			}
-		} else if (!crlBinaryIdentifier.equals(crl.getCrlBinaryIdentifier())) {
+		} else if (!crlBinary.equals(other.crlBinary)) {
 			return false;
 		}
 		if (issuerToken == null) {
-			if (crl.getIssuerToken() != null) {
+			if (other.issuerToken != null) {
 				return false;
 			}
-		} else if (!issuerToken.equals(crl.getIssuerToken())) {
+		} else if (!issuerToken.equals(other.issuerToken)) {
 			return false;
 		}
 		return true;
@@ -258,7 +248,7 @@ public class CRLValidity {
 
 	@Override
 	public String toString() {
-		return "CRLValidity{" + "DSSID=" + crlBinaryIdentifier.asXmlId() + ", issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + 
+		return "CRLValidity{" + "DSS ID=" + crlBinary.asXmlId() + ", issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + 
 				", signatureIntact=" + signatureIntact + ", crlSignKeyUsage=" + crlSignKeyUsage + ", unknownCriticalExtension=" 
 				+ isUnknownCriticalExtension() + ", issuerToken=" + issuerToken + ", signatureInvalidityReason='"
 				+ signatureInvalidityReason + '\'' + '}';

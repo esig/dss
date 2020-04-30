@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -103,7 +104,7 @@ public class PAdESCRLSource extends OfflineCRLSource {
 		if (revValues != null) {
 			for (final CertificateList revValue : revValues.getCrlVals()) {
 				try {
-					addBinary(new CRLBinary(revValue.getEncoded()), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+					addBinary(CRLUtils.buildCRLBinary(revValue.getEncoded()), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 				} catch (IOException e) {
 					LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
 				}

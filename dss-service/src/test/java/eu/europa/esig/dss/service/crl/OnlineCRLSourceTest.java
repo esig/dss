@@ -23,7 +23,6 @@ package eu.europa.esig.dss.service.crl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -94,9 +92,8 @@ public class OnlineCRLSourceTest {
 
 	@Test
 	public void getRevocationTokenWithAlternateUrlTest() {
-		assertThrows(DSSException.class, () -> {
-			onlineCRLSource.getRevocationToken(goodUser, goodCa, Arrays.asList(alternative_url));
-		});
+		CRLToken wrongRevocationToken = onlineCRLSource.getRevocationToken(goodUser, goodCa, Arrays.asList(alternative_url));
+		assertNull(wrongRevocationToken);
 		
 		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Arrays.asList(alternative_url));
 		assertNotNull(revocationToken);

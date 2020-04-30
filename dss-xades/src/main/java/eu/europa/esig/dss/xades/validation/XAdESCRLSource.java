@@ -22,11 +22,14 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
@@ -39,6 +42,8 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
  */
 @SuppressWarnings("serial")
 public class XAdESCRLSource extends OfflineCRLSource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESCRLSource.class);
 
 	private final Element signatureElement;
 	private final XAdESPaths xadesPaths;
@@ -78,9 +83,14 @@ public class XAdESCRLSource extends OfflineCRLSource {
 			final Element revocationValuesElement = (Element) revocationValuesNodeList.item(i);
 			final NodeList crlValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentCRLValuesChildren());
 			for (int ii = 0; ii < crlValueNodes.getLength(); ii++) {
-				final Element crlValueEl = (Element) crlValueNodes.item(ii);
-				if (crlValueEl != null) {
-					addBinary(new CRLBinary(Utils.fromBase64(crlValueEl.getTextContent())), revocationOrigin);
+				try {
+					final Element crlValueEl = (Element) crlValueNodes.item(ii);
+					if (crlValueEl != null) {
+						CRLBinary crlBinary = CRLUtils.buildCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()));
+						addBinary(crlBinary, revocationOrigin);
+					}
+				} catch (Exception e) {
+					LOG.warn("Unable to build CRLBinary from an obtained element with origin {}", revocationOrigin);
 				}
 			}
 		}

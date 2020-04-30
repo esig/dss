@@ -27,6 +27,16 @@ import java.security.cert.X509CRLEntry;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public interface ICRLUtils {
+	
+	/**
+	 * Takes binaries and returns DER encoded {@code CRLBinary}
+	 * 
+	 * @param binaries byte array representing an encoded CRL
+	 * @return DER encoded {@link CRLBinary}
+	 * @throws IOException
+	 *             if an IO error occurred
+	 */
+	CRLBinary buildCRLBinary(final byte[] binaries) throws IOException;
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
@@ -34,15 +44,15 @@ public interface ICRLUtils {
 	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
 	 * and accordingly updated.
 	 *
-	 * @param crlBinaryIdentifier
-	 * 			  (@code CRLBinaryIdentifier) to build the {@code CRLValidity} and verify token (cannot be null)
+	 * @param crlBinary
+	 * 			  (@code CRLBinary) to build the {@code CRLValidity} and verify token (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
 	 * @return {@code CRLValidity}
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	CRLValidity buildCRLValidity(final CRLBinary crlBinaryIdentifier, final CertificateToken issuerToken) throws IOException;
+	CRLValidity buildCRLValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) throws IOException;
 
 	/**
 	 * This method verifies the revocation status for a given serial number

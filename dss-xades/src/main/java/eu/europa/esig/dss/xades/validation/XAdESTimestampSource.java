@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
@@ -389,7 +389,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			try {
 				Element element = (Element) encapsulatedNodes.item(ii);
 				byte[] binaries = getEncapsulatedTokenBinaries(element);
-				crlIdentifiers.add(new CRLBinary(binaries));
+				crlIdentifiers.add(CRLUtils.buildCRLBinary(binaries));
 			} catch (Exception e) {
 				String errorMessage = "Unable to parse CRL binaries : {}";
 				if (LOG.isDebugEnabled()) {

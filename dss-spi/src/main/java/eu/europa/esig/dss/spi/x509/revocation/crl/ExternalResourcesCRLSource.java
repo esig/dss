@@ -26,7 +26,7 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
@@ -72,7 +72,7 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 
 	private void addCRLToken(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
-			addBinary(new CRLBinary(Utils.toByteArray(is)), RevocationOrigin.EXTERNAL);
+			addBinary(CRLUtils.buildCRLBinary(Utils.toByteArray(is)), RevocationOrigin.EXTERNAL);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
