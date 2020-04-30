@@ -728,7 +728,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 		
-		assertEquals(0, simpleReport.getErrors(simpleReport.getFirstSignatureId()).size());
+		// cert is not TSA/QTST
+		assertEquals(1, simpleReport.getErrors(simpleReport.getFirstSignatureId()).size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
