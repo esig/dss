@@ -41,6 +41,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
@@ -395,6 +396,24 @@ public class DetailedReport {
 		}
 		return result;
 	}
+	/**
+	 * This method returns the a complete block of a TL validation
+	 * 
+	 * @param tlId
+	 *            the LOTL/TL identifier
+	 * @return XmlTLAnalysis
+	 */
+	public XmlTLAnalysis getTLAnalysisById(String tlId) {
+		List<XmlTLAnalysis> tlAnalysisBlocks = jaxbDetailedReport.getTLAnalysis();
+		if (tlAnalysisBlocks != null) {
+			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysisBlocks) {
+				if (tlId.equals(xmlTLAnalysis.getId())) {
+					return xmlTLAnalysis;
+				}
+			}
+		}
+		return null;
+	}
 
 	public XmlDetailedReport getJAXBModel() {
 		return jaxbDetailedReport;
@@ -509,6 +528,10 @@ public class DetailedReport {
 	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
 		List<XmlTimestamp> timestamps = signatureById.getTimestamp();
 		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
+			if (validationTimestampQualification != null) {
+				collect(type, result, validationTimestampQualification);
+			}
 			XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
 			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
 					getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
@@ -530,6 +553,7 @@ public class DetailedReport {
 					String constraintId = constraint.getId();
 					if (constraintId != null && !constraintId.isEmpty()) {
 						collect(type, result, getBasicBuildingBlockById(constraintId));
+						collect(type, result, getTLAnalysisById(constraintId));
 					}
 				}
 
@@ -557,6 +581,12 @@ public class DetailedReport {
 				}
 			}
 			collect(type, result, bbb.getVCI());
+		}
+	}
+	
+	private void collect(MessageType type, Set<String> result, XmlTLAnalysis xmlTLAnalysis) {
+		if (xmlTLAnalysis != null) {
+			collect(type, result, (XmlConstraintsConclusion) xmlTLAnalysis);
 		}
 	}
 

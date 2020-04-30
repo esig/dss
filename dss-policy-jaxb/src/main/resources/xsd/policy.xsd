@@ -620,11 +620,6 @@
 					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to the given value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLConsistency" type="LevelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if the Trusted List is consistent and haven't any incoherence which could influence the validation result</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

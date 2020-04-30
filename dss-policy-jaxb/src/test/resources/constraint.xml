@@ -351,6 +351,5 @@
 		<TLNotExpired Level="WARN" />
 		<TLWellSigned Level="WARN" />
 		<TLVersion Level="FAIL" value="5" />
-		<TLConsistency Level="WARN" />
 	</eIDAS>
 </ConstraintsParameters>

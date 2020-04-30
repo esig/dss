@@ -37,7 +37,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.GrantedStatusAtProductionTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.QTSTCheck;
@@ -71,55 +73,72 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null).map(t -> t.getTrustedList().getUrl())
-					.collect(Collectors.toSet());
+			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
 
+			Set<String> acceptableLOTLUrls = new HashSet<>();
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
 				if (lotlAnalysis != null) {
-					item = item.setNextItem(isAcceptableTL(lotlAnalysis));
-				}
-			}
-
-			Set<String> acceptableUrls = new HashSet<>();
-			for (String tlURL : trustedListUrls) {
-				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
-				if (currentTL != null) {
-					AcceptableTrustedListCheck<XmlValidationTimestampQualification> acceptableTL = isAcceptableTL(currentTL);
-					item = item.setNextItem(acceptableTL);
-					if (acceptableTL.process()) {
-						acceptableUrls.add(tlURL);
+					AcceptableListOfTrustedListsCheck<XmlValidationTimestampQualification> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
+					item = item.setNextItem(acceptableLOTL);
+					if (acceptableLOTL.process()) {
+						acceptableLOTLUrls.add(lotlURL);
 					}
 				}
 			}
+			
+			// filter TLs with a found valid set of LOTLs (if assigned)
+			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null && 
+					(t.getListOfTrustedLists() == null || acceptableLOTLUrls.contains(t.getListOfTrustedLists().getUrl())) )
+					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
 
-			// 1. filter by service for QTST
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableUrls);
-			List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
-
-			filter = TrustedServicesFilterFactory.createFilterByQTST();
-			List<TrustedServiceWrapper> qtstServices = filter.filter(acceptableServices);
-
-			item = item.setNextItem(hasQTST(qtstServices));
-
-			// 2. filter by granted
-			filter = TrustedServicesFilterFactory.createFilterByGranted();
-			List<TrustedServiceWrapper> grantedServices = filter.filter(qtstServices);
-
-			item = item.setNextItem(hasGrantedStatus(grantedServices));
-
-			// 3. filter by date (generation time)
-			filter = TrustedServicesFilterFactory.createFilterByDate(timestamp.getProductionTime());
-			List<TrustedServiceWrapper> grantedAtDateServices = filter.filter(grantedServices);
-
-			item = item.setNextItem(hasGrantedStatusAtDate(grantedAtDateServices));
-
-			if (grantedAtDateServices.size() > 0) {
-				tstQualif = TimestampQualification.QTSA;
-			} else {
-				tstQualif = TimestampQualification.TSA;
+			Set<String> acceptableTLUrls = new HashSet<>();
+			if (Utils.isCollectionNotEmpty(trustedListUrls)) {
+				for (String tlURL : trustedListUrls) {
+					XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
+					if (currentTL != null) {
+						AcceptableTrustedListCheck<XmlValidationTimestampQualification> acceptableTL = isAcceptableTL(currentTL);
+						item = item.setNextItem(acceptableTL);
+						if (acceptableTL.process()) {
+							acceptableTLUrls.add(tlURL);
+						}
+					}
+				}
+			}
+			
+			item = item.setNextItem(isAcceptableTLPresent(acceptableTLUrls));
+			
+			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
+	
+				// 1. filter by service for QTST
+				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+	
+				filter = TrustedServicesFilterFactory.createFilterByQTST();
+				List<TrustedServiceWrapper> qtstServices = filter.filter(acceptableServices);
+	
+				item = item.setNextItem(hasQTST(qtstServices));
+	
+				// 2. filter by granted
+				filter = TrustedServicesFilterFactory.createFilterByGranted();
+				List<TrustedServiceWrapper> grantedServices = filter.filter(qtstServices);
+	
+				item = item.setNextItem(hasGrantedStatus(grantedServices));
+	
+				// 3. filter by date (generation time)
+				filter = TrustedServicesFilterFactory.createFilterByDate(timestamp.getProductionTime());
+				List<TrustedServiceWrapper> grantedAtDateServices = filter.filter(grantedServices);
+	
+				item = item.setNextItem(hasGrantedStatusAtDate(grantedAtDateServices));
+	
+				if (grantedAtDateServices.size() > 0) {
+					tstQualif = TimestampQualification.QTSA;
+				} else {
+					tstQualif = TimestampQualification.TSA;
+				}
+				
 			}
 		}
 
@@ -147,8 +166,16 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
+	private AcceptableListOfTrustedListsCheck<XmlValidationTimestampQualification> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+	}
+
 	private AcceptableTrustedListCheck<XmlValidationTimestampQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationTimestampQualification> isAcceptableTLPresent(Set<String> acceptableUrls) {
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustedServiceWrapper> services) {

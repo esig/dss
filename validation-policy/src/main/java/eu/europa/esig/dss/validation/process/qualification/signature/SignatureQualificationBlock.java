@@ -43,13 +43,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
-import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.ForeSignatureAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtSigningTimeCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
@@ -88,79 +90,96 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null)
-					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
+			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
 
+			Set<String> acceptableLOTLUrls = new HashSet<>();
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
 				if (lotlAnalysis != null) {
-					item = item.setNextItem(isAcceptableTL(lotlAnalysis));
-				}
-			}
-
-			Set<String> acceptableUrls = new HashSet<>();
-			for (String tlURL : trustedListUrls) {
-				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
-				if (currentTL != null) {
-					AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableTL = isAcceptableTL(currentTL);
-					item = item.setNextItem(acceptableTL);
-					if (acceptableTL.process()) {
-						acceptableUrls.add(tlURL);
+					AcceptableListOfTrustedListsCheck<XmlValidationSignatureQualification> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
+					item = item.setNextItem(acceptableLOTL);
+					if (acceptableLOTL.process()) {
+						acceptableLOTLUrls.add(lotlURL);
 					}
 				}
 			}
+			
+			// filter TLs with a found valid set of LOTLs (if assigned)
+			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null && 
+					(t.getListOfTrustedLists() == null || acceptableLOTLUrls.contains(t.getListOfTrustedLists().getUrl())) )
+					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
 
-			// 1. filter by service for CAQC
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableUrls);
-			List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+			Set<String> acceptableTLUrls = new HashSet<>();
+			if (Utils.isCollectionNotEmpty(trustedListUrls)) {
+				for (String tlURL : trustedListUrls) {
+					XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
+					if (currentTL != null) {
+						AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableTL = isAcceptableTL(currentTL);
+						item = item.setNextItem(acceptableTL);
+						if (acceptableTL.process()) {
+							acceptableTLUrls.add(tlURL);
+						}
+					}
+				}
+			}
+			
+			item = item.setNextItem(isAcceptableTLPresent(acceptableTLUrls));
+			
+			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
-			filter = TrustedServicesFilterFactory.createFilterByCaQc();
-			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
-
-			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, caqcServices);
-			XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
-			result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
-			CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
-
-			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
-					signingCertificate, caqcServices);
-			XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
-			result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
-			qualificationAtSigningTime = certQualAtSigningTimeResult.getCertificateQualification();
-
-			// Article 32 :
-			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
-			// electronic signature complying with Annex I;
-			item = item.setNextItem(qualifiedCertificateAtSigningTime(qualificationAtSigningTime));
-
-			item = item.setNextItem(foreSignatureAtSigningTime(qualificationAtSigningTime));
-
-			// (b) the qualified certificate
-			// 1. was issued by a qualified trust service provider
-			item = item.setNextItem(qualifiedCertificateAtIssuance(qualificationAtIssuance));
-
-			// 2. was valid at the time of signing;
-			// covered in isAdES
-
-			// (c) the signature validation data corresponds to the data provided to the relying party;
-			// covered in isAdES
-
-			// (d) the unique set of data representing the signatory in the certificate is correctly provided to the
-			// relying party;
-			// covered in isAdES
-
-			// (e) the use of any pseudonym is clearly indicated to the relying party if a pseudonym was used at the
-			// time of signing;
-			// covered in isAdES
-
-			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			item = item.setNextItem(qscdAtSigningTime(qualificationAtSigningTime));
-
-			// (g) the integrity of the signed data has not been compromised;
-			// covered in isAdES
+				// 1. filter by service for CAQC
+				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+	
+				filter = TrustedServicesFilterFactory.createFilterByCaQc();
+				List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
+	
+				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
+						signingCertificate, caqcServices);
+				XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
+				result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
+				CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
+	
+				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
+						signingCertificate, caqcServices);
+				XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
+				result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
+				qualificationAtSigningTime = certQualAtSigningTimeResult.getCertificateQualification();
+	
+				// Article 32 :
+				// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
+				// electronic signature complying with Annex I;
+				item = item.setNextItem(qualifiedCertificateAtSigningTime(qualificationAtSigningTime));
+	
+				item = item.setNextItem(foreSignatureAtSigningTime(qualificationAtSigningTime));
+	
+				// (b) the qualified certificate
+				// 1. was issued by a qualified trust service provider
+				item = item.setNextItem(qualifiedCertificateAtIssuance(qualificationAtIssuance));
+	
+				// 2. was valid at the time of signing;
+				// covered in isAdES
+	
+				// (c) the signature validation data corresponds to the data provided to the relying party;
+				// covered in isAdES
+	
+				// (d) the unique set of data representing the signatory in the certificate is correctly provided to the
+				// relying party;
+				// covered in isAdES
+	
+				// (e) the use of any pseudonym is clearly indicated to the relying party if a pseudonym was used at the
+				// time of signing;
+				// covered in isAdES
+	
+				// (f) the electronic signature was created by a qualified electronic signature creation device;
+				item = item.setNextItem(qscdAtSigningTime(qualificationAtSigningTime));
+	
+				// (g) the integrity of thesigned data has not been compromised;
+				// covered in isAdES
+				
+			}
 		}
 	}
 
@@ -208,9 +227,16 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
-	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(
-			XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
+	private AcceptableListOfTrustedListsCheck<XmlValidationSignatureQualification> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+	}
+
+	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationSignatureQualification> isAcceptableTLPresent(Set<String> acceptableUrls) {
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {

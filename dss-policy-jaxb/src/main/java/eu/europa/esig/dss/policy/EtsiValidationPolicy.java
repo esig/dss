@@ -966,15 +966,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getTLConsistencyConstraint() {
-		EIDAS eIDASConstraints = policy.getEIDAS();
-		if (eIDASConstraints != null) {
-			return eIDASConstraints.getTLConsistency();
-		}
-		return null;
-	}
-
-	@Override
 	public Model getValidationModel() {
 		Model currentModel = DEFAULT_VALIDATION_MODEL;
 		ModelConstraint modelConstraint = policy.getModel();
@@ -994,6 +985,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return policy.getTimestamp();
 	}
 
+	@Override
+	public EIDAS getEIDASConstraints() {
+		return policy.getEIDAS();
+	}
+	
 	@Override
 	public CryptographicConstraint getCryptographic() {
 		return policy.getCryptographic();

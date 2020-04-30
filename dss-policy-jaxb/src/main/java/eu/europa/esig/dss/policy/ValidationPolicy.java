@@ -24,6 +24,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -436,8 +437,6 @@ public interface ValidationPolicy {
 
 	ValueConstraint getTLVersionConstraint();
 
-	LevelConstraint getTLConsistencyConstraint();
-
 	/**
 	 * Returns the used validation model (default is SHELL). Alternatives are CHAIN
 	 * and HYBRID
@@ -449,6 +448,8 @@ public interface ValidationPolicy {
 	SignatureConstraints getSignatureConstraints();
 
 	TimestampConstraints getTimestampConstraints();
+
+	EIDAS getEIDASConstraints();
 
 	CryptographicConstraint getCryptographic();
 

@@ -199,11 +199,10 @@
     </xsl:template>
     
     <xsl:template match="dss:TLAnalysis">
-  		<xsl:if test="@Id != ''">
-  			<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
-  		</xsl:if>
- 		
  		<div>
+	  		<xsl:if test="@Id != ''">
+	  			<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
+	  		</xsl:if>
  			<xsl:attribute name="class">card mb-3</xsl:attribute>
 	   		<div>
 	   			<xsl:attribute name="class">card-header</xsl:attribute>
