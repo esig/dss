@@ -210,17 +210,23 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 	public void derVsPemEncodedTest() throws Exception {
 		try (InputStream isDer = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/crl.der");
 				InputStream isPem = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/crl.pem");
-				InputStream isCert = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/ca.pem") ) {
+				InputStream isCert = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/cert.pem");
+				InputStream isCA = AbstractTestCRLUtils.class.getResourceAsStream("/DSS-2039/ca.pem") ) {
 
-			CertificateToken certificateToken = loadCert(isCert);
+			CertificateToken cert = loadCert(isCert);
+			CertificateToken ca = loadCert(isCA);
 			
 			CRLBinary crlBinaryDER = CRLUtils.buildCRLBinary(toByteArray(isDer));
-			CRLValidity crlDER = CRLUtils.buildCRLValidity(crlBinaryDER, certificateToken);
+			CRLValidity crlDER = CRLUtils.buildCRLValidity(crlBinaryDER, ca);
 			
 			CRLBinary crlBinaryPEM = CRLUtils.buildCRLBinary(toByteArray(isPem));
-			CRLValidity crlPEM = CRLUtils.buildCRLValidity(crlBinaryPEM, certificateToken);
+			CRLValidity crlPEM = CRLUtils.buildCRLValidity(crlBinaryPEM, ca);
 			
 			assertArrayEquals(crlDER.getDerEncoded(), crlPEM.getDerEncoded());
+			
+			X509CRLEntry revocationInfoDER = CRLUtils.getRevocationInfo(crlDER, cert.getSerialNumber());
+			X509CRLEntry revocationInfoPEM = CRLUtils.getRevocationInfo(crlPEM, cert.getSerialNumber());
+			assertEquals(revocationInfoDER, revocationInfoPEM);
 		}
 	}
 
