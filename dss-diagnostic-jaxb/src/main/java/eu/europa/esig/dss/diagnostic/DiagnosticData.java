@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -443,7 +444,7 @@ public class DiagnosticData {
 		
 		final boolean signatureValid = certificate.isSignatureValid();
 		CertificateRevocationWrapper latestRevocationData = getLatestRevocationDataForCertificate(certificate) ;
-		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.isStatus();
+		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.getStatus().isGood();
 		final boolean trusted = certificate.isTrusted();
 
 		final boolean validity = signatureValid && (trusted ? true : revocationValid);
@@ -504,16 +505,15 @@ public class DiagnosticData {
 	/**
 	 * This method returns the revocation status for the given certificate.
 	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return revocation status
+	 * @param dssCertificateId DSS certificate identifier to be checked
+	 * @return certificate status
 	 */
-	public boolean getCertificateRevocationStatus(final String dssCertificateId) {
+	public CertificateStatus getCertificateRevocationStatus(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return getLatestRevocationDataForCertificate(certificate).isStatus();
+			return getLatestRevocationDataForCertificate(certificate).getStatus();
 		}
-		return false;
+		return CertificateStatus.UNKNOWN;
 	}
 
 	/**

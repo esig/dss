@@ -18,44 +18,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.diagnostic;
+package eu.europa.esig.dss.jaxb.parsers;
 
-import java.util.Date;
-
-import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
-import eu.europa.esig.dss.enumerations.RevocationReason;
 
-/**
- * Complete revocation wrapper, containing detailed certificate revocation and common information
- */
-public class CertificateRevocationWrapper extends RevocationWrapper {
-	
-	private final XmlCertificateRevocation certificateRevocation;
-	
-	public CertificateRevocationWrapper(XmlCertificateRevocation certificateRevocation) {
-		super(certificateRevocation.getRevocation());
-		this.certificateRevocation = certificateRevocation;
+public class CertificateStatusParser {
+
+	private CertificateStatusParser() {
 	}
 
-	public CertificateStatus getStatus() {
-		return certificateRevocation.getStatus();
+	public static CertificateStatus parse(String v) {
+		return CertificateStatus.valueOf(v);
 	}
 
-	public RevocationReason getReason() {
-		return certificateRevocation.getReason();
+	public static String print(CertificateStatus v) {
+		return v.name();
 	}
 
-	public Date getRevocationDate() {
-		return certificateRevocation.getRevocationDate();
-	}
-	
-	public boolean isRevoked() {
-		return getStatus().isRevoked();
-	}
-	
-	public boolean isKnown() {
-		return getStatus().isKnown();
-	}
-	
 }

@@ -50,8 +50,8 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected boolean process() {
-		boolean isRevoked = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
-				!RevocationReason.CERTIFICATE_HOLD.equals(certificateRevocation.getReason());
+		boolean isRevoked = (certificateRevocation != null) && certificateRevocation.isRevoked()
+				&& !RevocationReason.CERTIFICATE_HOLD.equals(certificateRevocation.getReason());
 		if (isRevoked) {
 			isRevoked = certificateRevocation.getRevocationDate() != null && currentTime.compareTo(certificateRevocation.getRevocationDate()) >= 0;
 		}

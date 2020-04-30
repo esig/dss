@@ -296,7 +296,7 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-4805687433DCD55E012F95A2C6E1CEDA7EE8AF63B0EC7863328FB0D23388BEF8">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>
@@ -502,10 +502,10 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
                 <CertificateRevocation Revocation="R-7D8C7AB2A7A62EC0B259F2C46468D5E9CCD4C14A741E9FECE5C24E292560BC35">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>
@@ -801,7 +801,7 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>
@@ -938,7 +938,7 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-4805687433DCD55E012F95A2C6E1CEDA7EE8AF63B0EC7863328FB0D23388BEF8">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>
@@ -1016,7 +1016,7 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-AB6DB0C3A509E54ED9C7CE6A1BCCC4FC1327C3BCFE33C76B186294757D20F4E9">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>

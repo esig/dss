@@ -34,7 +34,6 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.CertificateStatus;
 import org.bouncycastle.cert.ocsp.RevokedStatus;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.cert.ocsp.UnknownStatus;
@@ -43,6 +42,7 @@ import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -117,18 +117,18 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	}
 
 	private void extractStatusInfo(SingleResp bestSingleResp) {
-		CertificateStatus certStatus = bestSingleResp.getCertStatus();
-		if (CertificateStatus.GOOD == certStatus) {
+		org.bouncycastle.cert.ocsp.CertificateStatus certStatus = bestSingleResp.getCertStatus();
+		if (org.bouncycastle.cert.ocsp.CertificateStatus.GOOD == certStatus) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status is good");
 			}
-			status = true;
+			status = CertificateStatus.GOOD;
 		} else if (certStatus instanceof RevokedStatus) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status revoked");
 			}
 			final RevokedStatus revokedStatus = (RevokedStatus) certStatus;
-			status = false;
+			status = CertificateStatus.REVOKED;
 			revocationDate = revokedStatus.getRevocationTime();
 			int reasonId = 0; // unspecified
 			if (revokedStatus.hasRevocationReason()) {
@@ -139,7 +139,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status unknown");
 			}
-			reason = RevocationReason.UNSPECIFIED;
+			status = CertificateStatus.UNKNOWN;
 		} else {
 			LOG.info("OCSP certificate status: {}", certStatus);
 		}
@@ -276,9 +276,6 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	@Override
 	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
-		if (basicOCSPResp == null) {
-			return SignatureValidity.INVALID;
-		}
 		try {
 			signatureInvalidityReason = "";
 			JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();

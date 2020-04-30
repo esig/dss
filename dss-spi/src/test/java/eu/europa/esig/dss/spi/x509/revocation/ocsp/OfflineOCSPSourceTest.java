@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -70,13 +71,13 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getProductionDate());
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
-		assertTrue(ocspToken.getStatus());
+		assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
 		assertFalse(ocspToken.isCertHashPresent());
 		assertFalse(ocspToken.isCertHashMatch());
 	}
 
 	@Test
-	public void testOCSP() {
+	public void testOCSPwithUnknownStatus() {
 
 		String ocspResponse = "MIIFmgoBAKCCBZMwggWPBgkrBgEFBQcwAQEEggWAMIIFfDCBk6IWBBRG9FLh93YFoTCS3jTUkgpprd/GtRgPMjAxODAyMTMwNjMyNDhaMFMwUTA8MAkGBSsOAwIaBQAEFMzG72J5OVL0/31Lq6L3ZXYqftwTBBQ0Fhvx02RnYkyjNLwNs1OkfKHxFwIDC0wwggAYDzIwMTgwMjEzMDYzMjQ4WqETMBEwDwYJKwYBBQUHMAEJBAIFADANBgkqhkiG9w0BAQsFAAOCAQEAduyhdmJ1pxB6Y9wavgysICD2UjkusDLDNnj2xlNuYHK+c5OVdQ3XKxyUgdIVqNxxudVAmwtuX+vKFk7xjE16A27agZU2KO4llwpAVKrbYsrWMBj3FS/WJzTBk0G+SXKuSgDt5UkwfcZiUxmoMQBntWJTmVon0Ji2VJMALd0HzzEaVp47qqYGYtJX6L5HjvZIC7r/G5C3lEddBgmfNbSPei3EuBVRlLn8LZNLMk+49P7jNMHmlYt3InfSKwEiU18R1WGgQ5yrkyYxyMfhhBrjYZpptT0zs8AuwdAZb7xA4P7rrHgc6IMhQWXmRaKUWoJdOInKt1N59Hyl+mjk36kFQ6CCA84wggPKMIIDxjCCAq6gAwIBAgICHR0wDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTE3MDYyNzEyMzMxNloXDTE4MDYyNzEyMzMxNlowXjELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IFMuQS4xEzARBgNVBAsTClBraSBlbnRpdHkxIjAgBgNVBAMTGUx1eFRydXN0IFMuQS4gT0NTUCBTZXJ2ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDSFDnPz4sWi+w+xMVUWq74fDelftPUqXt+bofmeIgKKC9pZ4FNrT6FCd/N7kpRjRbtKkfBUMiv88jwUFcHMC75EESf0OPeqBlubRkeSwTj60FqB8bBK2aIauGQMFSSLF2emfVvBkpw/qjR9/0bxd1R4FQ7rcl4CyrRGd/jfca6vTAi+rqFI5bOaxKT0MUHVtegJtshmj8zHlOBpm+BG2udKcpx79KIHVVKEb2AyFYdZefXV65FkRLri7l7ew08UYHV90Dq1hI/uAc8IHauSKkGE0arCRwNcLrsfVUPoh41HK3pqs7bTFJ2qmZu2mobAdBqDJBnfTxN+oHZ4whVNh5RAgMBAAGjgacwgaQwCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCB4AwEwYDVR0lBAwwCgYIKwYBBQUHAwkwHwYDVR0jBBgwFoAUFxWFiQkvJIdvPx0b5PKWeYNIE84wMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVEdSQ0EuY3JsMB0GA1UdDgQWBBRG9FLh93YFoTCS3jTUkgpprd/GtTANBgkqhkiG9w0BAQsFAAOCAQEANR/sq+gfaAtWqUXTbNFkisEan6abNbv9C8Pgt79rlDBkhAOOksyi/9tcfEZd5XqsMobIdaRZzAOlyN5SP5MgyZxSWmNArcqImofpg5RiIzbwewZzTIGaKh/xRrl8LkABKEhJ+tvTwrw0de2ad5nMUy2t2hCdO7Y5dMGzQRdJVnu10LcziEgZSW98C2SfdV3JxkW0rTsSi1vpRmSicpVxeEfbMvnlDKaMF17uM/eeTjqq7hsQOUbXPPbDOM8LcH0UmnkXkW6FVN4QDKjuKDlaL9bsRHJCuikebzwG+FOmKXhpHxMaUWLrRMvbeBIJvmd64LURIdhdjOt+Iho1lI4Oaw==";
 
@@ -98,7 +99,9 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
 		assertFalse(ocspToken.isCertHashPresent());
-		assertNotNull(ocspToken.getReason());
+		assertNull(ocspToken.getReason());
+		assertNull(ocspToken.getRevocationDate());
+		assertEquals(CertificateStatus.UNKNOWN, ocspToken.getStatus());
 	}
 
 	@Test
@@ -140,7 +143,7 @@ public class OfflineOCSPSourceTest {
 		assertTrue(ocspToken.isValid());
 		assertTrue(ocspToken.isCertHashPresent());
 		assertTrue(ocspToken.isCertHashMatch());
-		assertTrue(ocspToken.getStatus());
+		assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
 		assertNull(ocspToken.getReason());
 		assertNull(ocspToken.getRevocationDate());
 	}

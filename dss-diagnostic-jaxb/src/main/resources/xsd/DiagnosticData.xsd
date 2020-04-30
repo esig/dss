@@ -748,12 +748,20 @@
 	
 	<xs:complexType name="CertificateRevocation">
 		<xs:sequence>
-			<xs:element name="Status" type="xs:boolean" />
+			<xs:element name="Status" type="CertificateStatus" />
 			<xs:element name="Reason" type="RevocationReason" minOccurs="0" />
 			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Revocation" type="xs:IDREF" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="CertificateStatus" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GOOD" />
+			<xs:enumeration value="REVOKED" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="RevocationReason" final="restriction">
 		<xs:restriction base="xs:string">

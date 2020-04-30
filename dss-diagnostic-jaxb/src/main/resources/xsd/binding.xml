@@ -37,6 +37,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationTypeParser.print" />
 		</jaxb:bindings>
+
+  <jaxb:bindings node="//xs:simpleType[@name='CertificateStatus']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.CertificateStatus" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateStatusParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateStatusParser.print" />
+		</jaxb:bindings>
 		
   <jaxb:bindings node="//xs:simpleType[@name='RevocationOriginType']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.RevocationOrigin" 

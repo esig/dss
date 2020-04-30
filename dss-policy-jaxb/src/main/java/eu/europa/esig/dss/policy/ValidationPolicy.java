@@ -234,6 +234,8 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getCertificateSignatureConstraint(Context context, SubContext subContext);
 
+	LevelConstraint getUnknownStatusConstraint();
+
 	/**
 	 * @param context
 	 * @return {@code LevelConstraint} if RevocationDataAvailable for a given context element is present in the

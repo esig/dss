@@ -747,14 +747,14 @@ public class SignatureValidationContext implements ValidationContext {
 			if (!isRevocationDataNotRequired(certificateToken)) {
 				for (RevocationToken<Revocation> revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())
-							&& !Utils.isTrue(revocationToken.getStatus())) {
+							&& !revocationToken.getStatus().isGood()) {
 						invalidCertificateIds.add(certificateToken.getDSSIdAsString());
 					}
 				}
 			}
 		}
 		if (!invalidCertificateIds.isEmpty()) {
-			Status status = new Status("Revoked certificate(s) detected.", invalidCertificateIds);
+			Status status = new Status("Revoked/Suspended certificate(s) detected.", invalidCertificateIds);
 			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
 		}
 		return invalidCertificateIds.isEmpty();

@@ -489,14 +489,9 @@ public class DiagnosticDataBuilder {
 					XmlRevocation xmlRevocation = xmlRevocationsMap.get(revocationToken.getDSSIdAsString());
 					XmlCertificateRevocation xmlCertificateRevocation = new XmlCertificateRevocation();
 					xmlCertificateRevocation.setRevocation(xmlRevocation);
-
-					final Boolean revocationTokenStatus = revocationToken.getStatus();
-					// revocationTokenStatus can be null when OCSP return Unknown. In this case we
-					// set status to false.
-					xmlCertificateRevocation.setStatus(revocationTokenStatus == null ? false : revocationTokenStatus);
+					xmlCertificateRevocation.setStatus(revocationToken.getStatus());
 					xmlCertificateRevocation.setRevocationDate(revocationToken.getRevocationDate());
 					xmlCertificateRevocation.setReason(revocationToken.getReason());
-
 					xmlCertificate.getRevocations().add(xmlCertificateRevocation);
 				}
 			}

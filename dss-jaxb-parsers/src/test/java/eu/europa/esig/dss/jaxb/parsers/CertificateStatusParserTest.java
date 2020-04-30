@@ -18,44 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.diagnostic;
+package eu.europa.esig.dss.jaxb.parsers;
 
-import java.util.Date;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
+import org.junit.jupiter.api.Test;
+
 import eu.europa.esig.dss.enumerations.CertificateStatus;
-import eu.europa.esig.dss.enumerations.RevocationReason;
 
-/**
- * Complete revocation wrapper, containing detailed certificate revocation and common information
- */
-public class CertificateRevocationWrapper extends RevocationWrapper {
-	
-	private final XmlCertificateRevocation certificateRevocation;
-	
-	public CertificateRevocationWrapper(XmlCertificateRevocation certificateRevocation) {
-		super(certificateRevocation.getRevocation());
-		this.certificateRevocation = certificateRevocation;
+public class CertificateStatusParserTest {
+
+	@Test
+	public void printAndParse() {
+		for (CertificateStatus status : CertificateStatus.values()) {
+			assertEquals(status, CertificateStatusParser.parse(CertificateStatusParser.print(status)));
+		}
 	}
 
-	public CertificateStatus getStatus() {
-		return certificateRevocation.getStatus();
+	@Test
+	public void unknow() {
+		assertThrows(IllegalArgumentException.class, () -> CertificateStatusParser.parse("bla"));
+		assertThrows(NullPointerException.class, () -> CertificateStatusParser.parse(null));
 	}
 
-	public RevocationReason getReason() {
-		return certificateRevocation.getReason();
-	}
-
-	public Date getRevocationDate() {
-		return certificateRevocation.getRevocationDate();
-	}
-	
-	public boolean isRevoked() {
-		return getStatus().isRevoked();
-	}
-	
-	public boolean isKnown() {
-		return getStatus().isKnown();
-	}
-	
 }

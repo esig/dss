@@ -452,6 +452,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getUnknownStatusConstraint() {
+		RevocationConstraints revocationConstraints = policy.getRevocation();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getUnknownStatus();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getRevocationDataAvailableConstraint(final Context context, final SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.spi.x509.revocation;
 import java.util.Date;
 import java.util.Objects;
 
+import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -49,9 +50,9 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	protected RevocationOrigin externalOrigin;
 
 	/**
-	 * Contains the revocation status of the token. True if is not revoked, false if is revoked or null if unknown.
+	 * Contains the revocation status of the token.
 	 */
-	protected Boolean status;
+	protected CertificateStatus status;
 
 	/**
 	 * Represents the production date of the OCSP response or the thisUpdate in case of CRL.
@@ -144,11 +145,11 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	}
 
 	/**
-	 * Returns the revocation status
+	 * Returns the certificate status
 	 * 
-	 * @return true if valid, false if revoked/onhold, null if not available
+	 * @return the certificate status
 	 */
-	public Boolean getStatus() {
+	public CertificateStatus getStatus() {
 		return status;
 	}
 

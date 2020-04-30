@@ -18,53 +18,51 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignature {
+public class ASiCEXAdESLevelBUnknownTest extends AbstractASiCEXAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
-	private CAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
+	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World".getBytes());
+		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
-		signatureParameters = new CAdESSignatureParameters();
+		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		service = new CAdESService(getOfflineCertificateVerifier());
-
+		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<>();
-		detachedContents.add(documentToSign);
-		validator.setDetachedContents(detachedContents);
 		return validator;
 	}
 
@@ -72,17 +70,20 @@ public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignat
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		super.verifySimpleReport(simpleReport);
 
+		// Certificate is suspended
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		assertNotNull(simpleReport.getValidationTime());
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected CAdESSignatureParameters getSignatureParameters() {
+	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
@@ -93,7 +94,7 @@ public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignat
 
 	@Override
 	protected String getSigningAlias() {
-		return GOOD_USER_OCSP_ERROR_500;
+		return GOOD_USER_UNKNOWN;
 	}
 
 }

@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
@@ -117,13 +118,15 @@ public class CRLToken extends RevocationToken<CRL> {
 		final BigInteger serialNumber = certificateToken.getSerialNumber();
 		X509CRLEntry crlEntry = CRLUtils.getRevocationInfo(crlValidity, serialNumber);
 
-		status = null == crlEntry;
-		if (!status) {
+		if (crlEntry != null) {
+			status = CertificateStatus.REVOKED;
 			revocationDate = crlEntry.getRevocationDate();
 			CRLReason revocationReason = crlEntry.getRevocationReason();
 			if (revocationReason != null) {
 				reason = RevocationReason.fromInt(revocationReason.ordinal());
 			}
+		} else {
+			status = CertificateStatus.GOOD;
 		}
 	}
 

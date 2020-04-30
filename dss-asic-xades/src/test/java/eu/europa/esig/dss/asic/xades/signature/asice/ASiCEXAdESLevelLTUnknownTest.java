@@ -20,21 +20,23 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import java.util.Date;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCEXAdESLevelBSHA512Test extends AbstractASiCEXAdESTestSignature {
+public class ASiCEXAdESLevelLTUnknownTest extends AbstractASiCEXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -45,14 +47,20 @@ public class ASiCEXAdESLevelBSHA512Test extends AbstractASiCEXAdESTestSignature 
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	@Test
+	public void signAndVerify() {
+		AlertException exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
 	}
 
 	@Override
@@ -72,7 +80,7 @@ public class ASiCEXAdESLevelBSHA512Test extends AbstractASiCEXAdESTestSignature 
 
 	@Override
 	protected String getSigningAlias() {
-		return GOOD_USER;
+		return GOOD_USER_UNKNOWN;
 	}
 
 }

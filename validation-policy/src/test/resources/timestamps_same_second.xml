@@ -141,10 +141,10 @@
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
-	                <Status>true</Status>
+	                <Status>GOOD</Status>
 	            </CertificateRevocation>
 	            <CertificateRevocation Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC">
-	                <Status>true</Status>
+	                <Status>GOOD</Status>
 	            </CertificateRevocation>
 	        </Revocations>
             <DigestAlgoAndValue>
@@ -241,7 +241,7 @@
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
-	                <Status>false</Status>
+	                <Status>REVOKED</Status>
             		<RevocationDate>2014-04-29T12:50:05</RevocationDate>
 	            </CertificateRevocation>
 	       	</Revocations>

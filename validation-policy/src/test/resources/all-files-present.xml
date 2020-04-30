@@ -191,7 +191,7 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
-                    <Status>true</Status>
+                    <Status>GOOD</Status>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>

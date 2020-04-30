@@ -43,6 +43,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertifica
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
@@ -81,7 +82,9 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	@Override
 	protected void initChain() {
 
-		ChainItem<XmlRAC> item = firstItem = revocationDataConsistent();
+		ChainItem<XmlRAC> item = firstItem = revocationDataKnown();
+
+		item = item.setNextItem(revocationDataConsistent());
 		
 		item = item.setNextItem(revocationDataIntact());
 		
@@ -145,6 +148,10 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			
 		}
 		
+	}
+
+	private ChainItem<XmlRAC> revocationDataKnown() {
+		return new RevocationDataKnownCheck(i18nProvider, result, revocationData, policy.getUnknownStatusConstraint());
 	}
 
 	private ChainItem<XmlRAC> revocationDataConsistent() {
