@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
-import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
@@ -435,7 +435,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		if (revocationValues != null) {
 			for (final CertificateList revValue : revocationValues.getCrlVals()) {
 				try {
-					crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
+					crlBinaryIdentifiers.add(CRLUtils.buildCRLBinary(revValue.getEncoded()));
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse CRL binaries : {}";
 					if (LOG.isDebugEnabled()) {

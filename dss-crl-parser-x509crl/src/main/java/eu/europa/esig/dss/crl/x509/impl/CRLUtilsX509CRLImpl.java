@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.crl.x509.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -68,13 +67,12 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	@Override
 	public CRLValidity buildCRLValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) throws IOException {
 		
-		final X509CRLValidity crlValidity= new X509CRLValidity();
+		final X509CRLValidity crlValidity= new X509CRLValidity(crlBinary);
 		
-		try (InputStream bais = new ByteArrayInputStream(crlBinary.getBinaries())) {
+		try (InputStream bais = crlValidity.toCRLInputStream()) {
 			
 			X509CRL x509CRL = loadCRL(bais);
 			crlValidity.setX509CRL(x509CRL);
-			crlValidity.setDerEncoded(getDerEncoded(x509CRL));
 
 			final String sigAlgOID = x509CRL.getSigAlgOID();
 			final byte[] sigAlgParams = x509CRL.getSigAlgParams();
@@ -121,20 +119,18 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	@Override
 	public X509CRLEntry getRevocationInfo(CRLValidity crlValidity, BigInteger serialNumber) {
-		X509CRL crl = getCRL(crlValidity);
-		return crl.getRevokedCertificate(serialNumber);
-	}
-
-	private X509CRL getCRL(CRLValidity crlValidity) {
 		X509CRL crl = null;
 		if (crlValidity instanceof X509CRLValidity) {
-			X509CRLValidity x509Validity = (X509CRLValidity) crlValidity;
-			crl = x509Validity.getX509CRL();
+			crl = ((X509CRLValidity) crlValidity).getX509CRL();
 		}
 		if (crl == null) {
-			crl = loadCRL(crlValidity.getCrlInputStream());
+			try (InputStream is = crlValidity.toCRLInputStream()) {
+				crl = loadCRL(is);
+			} catch (IOException e) {
+				throw new DSSException(String.format("Unable to get revocation info. Reason : %s", e.getMessage()), e);
+			}
 		}
-		return crl;
+		return crl.getRevokedCertificate(serialNumber);
 	}
 
 	/**
@@ -151,14 +147,6 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 				throw new DSSException("Unable to parse the CRL");
 			}
 			return crl;
-		} catch (CRLException e) {
-			throw new DSSException(e);
-		}
-	}
-	
-	private byte[] getDerEncoded(X509CRL x509crl) {
-		try {
-			return x509crl.getEncoded();
 		} catch (CRLException e) {
 			throw new DSSException(e);
 		}

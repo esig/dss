@@ -163,8 +163,11 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	@Override
 	protected RevocationToken<CRL> buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
-			final CRLValidity cached = new CRLValidity();
 			cached.setDerEncoded(rs.getBytes(SQL_FIND_QUERY_DATA));
+			CRLBinary crlBinary = CRLUtils.buildCRLBinary(rs.getBytes(SQL_FIND_QUERY_DATA));
+			CertificateToken cachedIssuerCertificate = DSSUtils.loadCertificate(rs.getBytes(SQL_FIND_QUERY_ISSUER));
+			
+			final CRLValidity cached = CRLUtils.buildCRLValidity(crlBinary, cachedIssuerCertificate);
 			cached.setKey(rs.getString(SQL_FIND_QUERY_ID));
 			cached.setSignatureAlgorithm(SignatureAlgorithm.valueOf(rs.getString(SQL_FIND_QUERY_SIGNATURE_ALGO)));
 			cached.setThisUpdate(rs.getTimestamp(SQL_FIND_QUERY_THIS_UPDATE));
@@ -179,8 +182,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 			CRLToken crlToken = new CRLToken(certificateToken, cached);
 			crlToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return crlToken;
-		} catch (SQLException e) {
 			throw new RevocationException("An error occurred during an attempt to get a revocation token");
+		} catch (SQLException | IOException e) {
 		}
 	}
 

@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.crl;
 
+import java.io.IOException;
+
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1String;
+import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
@@ -33,9 +36,37 @@ import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSException;
+
 public abstract class AbstractCRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCRLUtils.class);
+
+	public CRLBinary buildCRLBinary(byte[] binaries) throws IOException {
+		return new CRLBinary(getDERContent(binaries));
+	}
+	
+	private byte[] getDERContent(byte[] binaries) throws IOException {
+		if (binaries != null && binaries.length > 0) {
+			byte first = binaries[0];
+			if (isDerEncoded(first)) {
+				return binaries;
+			} else if (isPemEncoded(first)) {
+				return PemToDerConverter.convert(binaries);
+			} else {
+				throw new DSSException("Unable to load CRL. Not possible to convert to DER!");
+			}
+		}
+		throw new DSSException("Unsupported CRL. The obtained CRL content is empty!");
+	}
+
+	private boolean isDerEncoded(byte first) {
+		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == first;
+	}
+
+	private boolean isPemEncoded(byte first) {
+		return '-' == first;
+	}
 
 	protected void extractExpiredCertsOnCRL(CRLValidity validity, byte[] expiredCertsOnCRLBinaries) {
 		if (expiredCertsOnCRLBinaries != null) {

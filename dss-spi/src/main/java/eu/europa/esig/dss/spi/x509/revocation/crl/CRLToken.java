@@ -162,7 +162,7 @@ public class CRLToken extends RevocationToken<CRL> {
 	}
 
 	public InputStream getCRLStream() {
-		return crlValidity.getCrlInputStream();
+		return crlValidity.toCRLInputStream();
 	}
 
 	/**

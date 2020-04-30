@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.crl.stream.impl;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,6 @@ import java.security.cert.X509CRLEntry;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.x509.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +41,6 @@ import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.crl.ICRLUtils;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
@@ -51,39 +48,35 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsStreamImpl.class);
 
 	@Override
-	public CRLValidity buildCRLValidity(CRLBinary crlBinaryIdentifier, CertificateToken issuerToken) throws IOException {
+	public CRLValidity buildCRLValidity(CRLBinary crlBinary, CertificateToken issuerToken) throws IOException {
 		
-		final CRLValidity crlValidity = new CRLValidity();
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(crlBinaryIdentifier.getBinaries()); ByteArrayOutputStream baos = getDERContent(bais)) {
-			byte[] derEncoded = baos.toByteArray();
-			crlValidity.setDerEncoded(derEncoded);
-			
-			CRLInfo crlInfos = getCrlInfo(derEncoded);
-			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOidAndParams(crlInfos.getCertificateListSignatureAlgorithmOid(),
-					crlInfos.getCertificateListSignatureAlgorithmParams());
-			crlValidity.setSignatureAlgorithm(signatureAlgorithm);
+		final CRLValidity crlValidity = new CRLValidity(crlBinary);
+		
+		CRLInfo crlInfos = getCrlInfo(crlValidity);
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOidAndParams(crlInfos.getCertificateListSignatureAlgorithmOid(),
+				crlInfos.getCertificateListSignatureAlgorithmParams());
+		crlValidity.setSignatureAlgorithm(signatureAlgorithm);
 
-			crlValidity.setThisUpdate(crlInfos.getThisUpdate());
-			crlValidity.setNextUpdate(crlInfos.getNextUpdate());
+		crlValidity.setThisUpdate(crlInfos.getThisUpdate());
+		crlValidity.setNextUpdate(crlInfos.getNextUpdate());
 
-			crlValidity.setCriticalExtensionsOid(crlInfos.getCriticalExtensions().keySet());
-			extractIssuingDistributionPointBinary(crlValidity, crlInfos.getCriticalExtension(Extension.issuingDistributionPoint.getId()));
-			extractExpiredCertsOnCRL(crlValidity, crlInfos.getNonCriticalExtension(Extension.expiredCertsOnCRL.getId()));
+		crlValidity.setCriticalExtensionsOid(crlInfos.getCriticalExtensions().keySet());
+		extractIssuingDistributionPointBinary(crlValidity, crlInfos.getCriticalExtension(Extension.issuingDistributionPoint.getId()));
+		extractExpiredCertsOnCRL(crlValidity, crlInfos.getNonCriticalExtension(Extension.expiredCertsOnCRL.getId()));
 
-			final X500Principal x509CRLIssuerX500Principal = crlInfos.getIssuer();
-			final X500Principal issuerTokenSubjectX500Principal = issuerToken.getSubject().getPrincipal();
-			if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
-				crlValidity.setIssuerX509PrincipalMatches(true);
-			}
-
-			checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm, getSignedData(baos), issuerToken);
+		final X500Principal x509CRLIssuerX500Principal = crlInfos.getIssuer();
+		final X500Principal issuerTokenSubjectX500Principal = issuerToken.getSubject().getPrincipal();
+		if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
+			crlValidity.setIssuerX509PrincipalMatches(true);
 		}
+
+		checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm, getSignedData(crlValidity), issuerToken);
 		
 		return crlValidity;
 	}
 
-	private ByteArrayOutputStream getSignedData(ByteArrayOutputStream originalBaos) throws IOException {
-		try (InputStream is = new ByteArrayInputStream(originalBaos.toByteArray())) {
+	private ByteArrayOutputStream getSignedData(CRLValidity crlValidity) throws IOException {
+		try (InputStream is = crlValidity.toCRLInputStream()) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			BinaryFilteringInputStream bfis = new BinaryFilteringInputStream(is, baos);
 			CRLParser parser = new CRLParser();
@@ -96,7 +89,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	public X509CRLEntry getRevocationInfo(CRLValidity crlValidity, BigInteger serialNumber) {
 		CRLParser parser = new CRLParser();
 		X509CRLEntry crlEntry = null;
-		try (InputStream is = crlValidity.getCrlInputStream()) {
+		try (InputStream is = crlValidity.toCRLInputStream()) {
 			crlEntry = parser.retrieveRevocationInfo(is, serialNumber);
 		} catch (IOException e) {
 			LOG.error("Unable to retrieve the revocation status", e);
@@ -128,40 +121,11 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 		}
 	}
 
-
-	private CRLInfo getCrlInfo(byte[] derEncoded) throws IOException {
-		try (InputStream is = new ByteArrayInputStream(derEncoded); BufferedInputStream bis = new BufferedInputStream(is)) {
+	private CRLInfo getCrlInfo(CRLValidity crlValidity) throws IOException {
+		try (InputStream is = crlValidity.toCRLInputStream(); BufferedInputStream bis = new BufferedInputStream(is)) {
 			CRLParser parser = new CRLParser();
 			return parser.retrieveInfo(bis);
 		}
-	}
-
-	@SuppressWarnings("resource")
-	private ByteArrayOutputStream getDERContent(InputStream crlStream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		int first = crlStream.read();
-		baos.write(first);
-
-		byte[] buffer = new byte[4096];
-		int n;
-		while (-1 != (n = crlStream.read(buffer))) {
-			baos.write(buffer, 0, n);
-		}
-
-		if (isPemEncoded(first)) {
-			baos = PemToDerConverter.convert(baos);
-		} else if (!isDerEncoded(first)) {
-			throw new DSSException("Unsupported CRL");
-		}
-		return baos;
-	}
-
-	private boolean isPemEncoded(int first) {
-		return '-' == (byte) first;
-	}
-
-	private boolean isDerEncoded(int first) {
-		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == first;
 	}
 
 }

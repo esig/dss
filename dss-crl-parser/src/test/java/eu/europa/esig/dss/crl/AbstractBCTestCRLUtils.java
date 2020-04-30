@@ -69,7 +69,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLBinary crlBinary = CRLUtils.buildCRLBinary(toByteArray(is));
 			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, validity.getSignatureAlgorithm());
@@ -89,7 +89,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLBinary crlBinary = CRLUtils.buildCRLBinary(toByteArray(crlIS));
 			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
@@ -106,7 +106,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLBinary crlBinary = CRLUtils.buildCRLBinary(toByteArray(crlIS));
 			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
@@ -123,7 +123,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLBinary crlBinary = CRLUtils.buildCRLBinary(toByteArray(crlIS));
 			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());

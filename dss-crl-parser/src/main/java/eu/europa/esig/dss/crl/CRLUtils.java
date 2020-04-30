@@ -46,6 +46,18 @@ public class CRLUtils {
 	}
 
 	/**
+	 * Takes binaries and returns DER encoded {@code CRLBinary}
+	 * 
+	 * @param binaries byte array representing an encoded CRL
+	 * @return DER encoded {@link CRLBinary}
+	 * @throws IOException
+	 *             if an IO error occurred
+	 */
+	public static CRLBinary buildCRLBinary(final byte[] binaries) throws IOException {
+		return impl.buildCRLBinary(binaries);
+	}
+
+	/**
 	 * This method verifies and creates: the signature of the CRL, the key usage of its signing certificate and the coherence
 	 * between the subject names of the CRL signing certificate and the issuer name of the certificate for which the
 	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
