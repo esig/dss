@@ -1231,12 +1231,17 @@ image::visual-sig-text-parameters.jpg[]
 ==== Fonts usage
 
 Since version 5.5, DSS supports two types of fonts. The custom font must be added as an instance of `DSSFont` interface to a `SignatureImageTextParameters` object.
-`DSSFont` interface has two implementations:
+`DSSFont` interface has following common implementations:
 
  * `DSSFileFont` for using of physical fonts, which must be embedded to the produced PDF document. To create an instance of the class, you must pass to a `DSSFileFont` constructor an object of `DSSDocument` type or InputStream of the font file;
  * `DSSJavaFont` for using of logical fonts (default Java fonts). The logical Java fonts allow you to significantly reduce the document size, because these fonts cannot be embedded to the final PDF document. Be aware, because of the fact, using of logical fonts does not allow producing PDF documents satisfying the PDF/A standard. To create an instance of this class, you should pass as an input a `java.awt.Font` object or target font parameters (name, style, size).
 
 WARNING: Logical fonts may have different implementations depending on a used PAdES Visible signature service or Operating System (OS). Keep this in mind when switching an implementation or system environment.
+
+As well as classes allowing to define native fonts for used implementations (available since DSS 5.7):
+
+ * `ITextNativeFont` to be used with `ITextSignatureDrawerFactory`;
+ * `PdfBoxNativeFont` to be used with `PdfBoxNativeObjectFactory`.
 
 You can create a custom font as following (for a physical font):
 
@@ -1246,12 +1251,20 @@ You can create a custom font as following (for a physical font):
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=font]
 ----
 
-or for a logical font:
+For a logical font:
 
 [source,java,indent=0]
 .Java font usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleExistingTest.java[tags=font]
+----
+
+For a native font:
+
+[source,java,indent=0]
+.Native font usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=nativeFont]
 ----
 
 By default, DSS uses a Google font : 'PT Serif Regular' (its physical implementation).

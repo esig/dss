@@ -2,11 +2,15 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 
 import java.awt.Color;
 
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 
 public class PAdESVisibleSignatureSnippet {
 	
@@ -76,7 +80,12 @@ public class PAdESVisibleSignatureSnippet {
 		signatureImageParameters.setBackgroundColor(Color.GREEN);
 		
 		// end::dimensions[]
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		// tag::nativeFont[]
 		
+		textParameters.setFont(new PdfBoxNativeFont(PDType1Font.HELVETICA));
+		
+		// end::nativeFont[]
 		// end::visibleSigParams[]
 		
 	}
