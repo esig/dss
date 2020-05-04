@@ -52,11 +52,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -82,12 +84,16 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 */
 	private PDFont initFont() throws IOException {
 		DSSFont dssFont = parameters.getTextParameters().getFont();
-		if (dssFont.isLogicalFont()) {
-			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
-		} else {
-			try (InputStream is = dssFont.getInputStream()) {
+		if (dssFont instanceof PdfBoxNativeFont) {
+			PdfBoxNativeFont nativeFont = (PdfBoxNativeFont) dssFont;
+			return nativeFont.getFont();
+		} else if (dssFont instanceof DSSFileFont) {
+			DSSFileFont fileFont = (DSSFileFont) dssFont;
+			try (InputStream is = fileFont.getInputStream()) {
 				return PDType0Font.load(document, is);
 			}
+		} else {
+			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
 		}
 	}
 	

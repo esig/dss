@@ -25,8 +25,8 @@ import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -40,6 +40,7 @@ public class DSSFileFont extends AbstractDSSFont {
 	private static final String DEFAULT_FONT_EXTENSION = ".ttf";
 	
 	private DSSDocument fileFont;
+	private Font javaFont;
 	
 	public static DSSFileFont initializeDefault() {
 		return new DSSFileFont(DEFAULT_FONT);
@@ -57,7 +58,6 @@ public class DSSFileFont extends AbstractDSSFont {
 		this.fileFont = dssDocument;
 		this.size = size;
 		initFontName(dssDocument);
-		initJavaFont(dssDocument);
 	}
 	
 	private void initFontName(DSSDocument fileFont) {
@@ -66,33 +66,29 @@ public class DSSFileFont extends AbstractDSSFont {
 		}
 	}
 	
-	private void initJavaFont(DSSDocument fileFont) {
+	@Override
+	public Font getJavaFont() {
+		if (javaFont == null) {
+			javaFont = deriveJavaFont();
+		}
+		return javaFont;
+	}
+	
+	private Font deriveJavaFont() {
 		try (InputStream is = fileFont.openStream()) {
 			Font javaFont = Font.createFont(Font.TRUETYPE_FONT, is);
-			this.javaFont = javaFont.deriveFont(size);
+			return javaFont.deriveFont(size);
 		} catch (IOException | FontFormatException e) {
-			throw new DSSException("The assigned font cannot be initialized", e);
+			throw new DSSException(String.format("The Java font cannot be instantiated. Reason : %s", e.getMessage()), e);
 		}
 	}
 
-	@Override
 	public InputStream getInputStream() {
 		return fileFont.openStream();
 	}
 
-	@Override
 	public String getName() {
 		return fileFont.getName();
-	}
-
-	@Override
-	public void setSize(float size) {
-		this.size = size;
-	}
-
-	@Override
-	public boolean isLogicalFont() {
-		return false;
 	}
 
 }

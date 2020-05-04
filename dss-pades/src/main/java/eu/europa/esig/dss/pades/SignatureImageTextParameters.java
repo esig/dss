@@ -64,7 +64,7 @@ public class SignatureImageTextParameters {
 	 * This variable defines the font to use
 	 * (default is PTSerifRegular)
 	 */
-	private DSSFont dssFont = DSSFileFont.initializeDefault();
+	private DSSFont dssFont;
 	
 	/**
 	 * This variable defines a padding in pixels to bound text around
@@ -134,9 +134,14 @@ public class SignatureImageTextParameters {
 
     /**
      * Returns specified text font
+     * If not defined, returns a Default Font instance (PTSerifRegular)
+     * 
      * @return {@link DSSFont}
      */
 	public DSSFont getFont() {
+		if (dssFont == null) {
+			dssFont = DSSFileFont.initializeDefault();
+		}
 		return dssFont;
 	}
 	
