@@ -602,10 +602,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		String signedAssertionPath = xadesPaths.getSignedAssertionPath();
 
 		if (signedAssertionPath != null) {
-		    NodeList nodeList = DomUtils.getNodeList(signatureElement, signedAssertionPath);
-		    for (int ii = 0; ii < nodeList.getLength(); ii++) {
-			result.add(nodeList.item(ii).getTextContent());
-		    }
+			NodeList nodeList = DomUtils.getNodeList(signatureElement, signedAssertionPath);
+			for (int ii = 0; ii < nodeList.getLength(); ii++) {
+				result.add(DomUtils.xmlToString(nodeList.item(ii).getFirstChild()));
+			}
 		}
 		return result;
 	}
