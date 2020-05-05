@@ -198,22 +198,9 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	private Dimension computeTextDimension(SignatureImageTextParameters textParameters) throws IOException {
 		float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), imageParameters.getDpi());
 		properSize *= ImageUtils.getScaleFactor(imageParameters.getZoom()); // scale text block
-		String[] lines = textParameters.getText().split("\\r?\\n");
-		float width = 0;
-		for (String line : lines) {
-			float lineWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, properSize, line);
-			if (lineWidth > width) {
-				width = lineWidth;
-			}
-		}
-		float doubleMargin = textParameters.getPadding()*2;
-		width += doubleMargin;
-		float strHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize);
-		float height = (strHeight * lines.length) + doubleMargin;
 		
-		Dimension dimension = new Dimension();
-		dimension.setSize(width, height);
-		return dimension;
+		PdfBoxFontMetrics pdfBoxFontMetrics = new PdfBoxFontMetrics(pdFont);
+		return pdfBoxFontMetrics.computeDimension(textParameters.getText(), properSize, textParameters.getPadding());
 	}
 
 	private void textImageVerticalAlignment(double height, double imageHeight, float textHeight) {

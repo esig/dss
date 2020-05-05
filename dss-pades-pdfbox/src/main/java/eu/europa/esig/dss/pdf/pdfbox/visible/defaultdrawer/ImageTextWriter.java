@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -34,7 +35,6 @@ import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.FontUtils;
 
 /**
  * This class allows to generate image with text
@@ -55,10 +55,27 @@ public final class ImageTextWriter {
 	public static BufferedImage createTextImage(final SignatureImageParameters imageParameters) {
 		// Computing image size depending on the font
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
+		
 		DSSFont dssFont = textParameters.getFont();
-		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
-		Dimension dimension = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
+		float fontSize = CommonDrawerUtils.computeProperSize(dssFont.getSize(), imageParameters.getDpi());
+		
+		Font javaFont = dssFont.getJavaFont();
+		Font properFont = javaFont.deriveFont(fontSize);
+		
+		FontMetrics fontMetrics = getFontMetrics(properFont);
+		JavaFontMetrics javaFontMetrics = new JavaFontMetrics(fontMetrics);
+		
+		Dimension dimension = javaFontMetrics.computeDimension(textParameters.getText(), fontSize, textParameters.getPadding());
 		return createTextImage(textParameters, properFont, dimension);
+	}
+	
+	private static FontMetrics getFontMetrics(Font font) {
+		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		Graphics g = img.getGraphics();
+		g.setFont(font);
+		FontMetrics fontMetrics = g.getFontMetrics(font);
+		g.dispose();
+		return fontMetrics;
 	}
 
 	private static BufferedImage createTextImage(final SignatureImageTextParameters textParameters, final Font font, final Dimension dimension) {

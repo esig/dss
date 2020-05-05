@@ -493,7 +493,6 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		
 		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign(testName + "_native");
-		// nativeDrawerPdf.save("target/native.pdf");
 		assertNotNull(nativeDrawerPdf);
 	}
 	

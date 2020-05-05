@@ -281,10 +281,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             cs.setNonStrokingColor(textParameters.getTextColor());
             setAlphaChannel(cs, textParameters.getTextColor());
             
-            String[] strings = textParameters.getText().split("\\r?\\n");
+            PdfBoxFontMetrics pdfBoxFontMetrics = new PdfBoxFontMetrics(pdFont);
+            
+            String[] strings = pdfBoxFontMetrics.getLines(textParameters.getText());
             
             float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), parameters.getDpi());
-            float fontHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize);
+            
+            float fontHeight = pdfBoxFontMetrics.getHeight(textParameters.getText(), properSize);
             cs.setLeading(textSizeWithDpi(fontHeight, dimensionAndPosition.getyDpi()));
             
             cs.newLineAtOffset(dimensionAndPosition.getTextX(),
@@ -293,7 +296,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
             float previousOffset = 0;
             for (String str : strings) {
-                float stringWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, fontSize, str);
+                float stringWidth = pdfBoxFontMetrics.getWidth(str, fontSize);
                 float offsetX = 0;
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:

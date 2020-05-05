@@ -66,11 +66,13 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		} else {
 			Rectangle pageSize = appearance.getStamper().getReader().getPageSize(parameters.getPage());
 			float originY = pageSize.getHeight();
+			
+			ITextFontMetrics iTextFontMetrics = new ITextFontMetrics(iTextFont.getBaseFont());
 
 			int width = parameters.getWidth();
 			int height = parameters.getHeight();
 			if (width == 0 || height == 0) {
-				Dimension dimension = computeDimensions();
+				Dimension dimension = computeDimensions(iTextFontMetrics);
 				width = dimension.width;
 				height = dimension.height;
 			}
@@ -79,7 +81,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 					originY - parameters.getyAxis());
 			appearance.setVisibleSignature(rect, parameters.getPage()); // defines signature field borders
 			
-			showText(rect);
+			showText(iTextFontMetrics, rect);
 		}
 
 	}
@@ -113,48 +115,24 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 	}
 	
-	private Dimension computeDimensions() {
+	private Dimension computeDimensions(ITextFontMetrics iTextFontMetrics) {
+		SignatureImageTextParameters textParameters = parameters.getTextParameters();
+		float size = getProperSize();
+		return iTextFontMetrics.computeDimension(textParameters.getText(), size, textParameters.getPadding());
+	}
+	
+	private float getProperSize() {
 		float size = parameters.getTextParameters().getFont().getSize();
 		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
-		
-		String text = parameters.getTextParameters().getText();
-		float padding = parameters.getTextParameters().getPadding();
-		
-		String[] lines = text.split("\\r?\\n");
-		float width = 0;
-		for (String line : lines) {
-			float lineWidth = getWidth(line, size);
-			if (lineWidth > width) {
-				width = lineWidth;
-			}
-		}
-		float doublePadding = padding*2;
-		width += doublePadding;
-		float strHeight = getHeight(text, size);
-		float height = (strHeight * lines.length) + doublePadding;
-		
-		Dimension dimension = new Dimension();
-		dimension.setSize(width, height);
-		return dimension;
+		return size;
 	}
 	
-	private float getWidth(String str, float size) {
-		return iTextFont.getBaseFont().getWidthPoint(str, size);
-	}
-	
-	private float getHeight(String str, float size) {
-		float ascent = iTextFont.getBaseFont().getAscentPoint(str, size);
-		float descent = iTextFont.getBaseFont().getDescentPoint(str, size);
-		return ascent - descent;
-	}
-	
-	private void showText(Rectangle sigFieldRect) {
+	private void showText(ITextFontMetrics iTextFontMetrics, Rectangle sigFieldRect) {
 		
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
 		String text = textParameters.getText();
 
-		float size = parameters.getTextParameters().getFont().getSize();
-		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
+		float size = getProperSize();
 		
 		PdfTemplate layer = appearance.getLayer(2);
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
@@ -166,10 +144,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		layer.setBoundingBox(boundingRectangle);
 		layer.setColorStroke(textParameters.getTextColor());
 		
-		String[] lines = text.split("\\r?\\n");
+		String[] lines = iTextFontMetrics.getLines(text);
 		
 		layer.beginText();
-		float strHeight = getHeight(lines[0], size);
+		
+		float strHeight = iTextFontMetrics.getHeight(lines[0], size);
 		float y = boundingRectangle.getHeight() - textParameters.getPadding();
 		float x = textParameters.getPadding();
 		
@@ -181,7 +160,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
         float previousOffset = 0;
 		for (String line : lines) {
             float offsetX = 0;
-			float lineWidth = getWidth(line, size);
+			float lineWidth = iTextFontMetrics.getWidth(line, size);
 			switch (textParameters.getSignerTextHorizontalAlignment()) {
 				case RIGHT:
 					offsetX = boundingRectangle.getWidth() - lineWidth - textParameters.getPadding() * 2 - previousOffset;
