@@ -316,6 +316,16 @@
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="OCSPCertHashPresent" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if an OCSP response has certHash attribute</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OCSPCertHashMatch" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if a value of certHash attribute matches the signing certificate</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of common checks on this token signature</xsd:documentation>
@@ -442,11 +452,6 @@
 			<xsd:element name="RevocationDataFreshness" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the revocation data freshness is concluant</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="RevocationCertHashMatch" type="LevelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks the certHash presence (OCSP only) and if the hash match the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">

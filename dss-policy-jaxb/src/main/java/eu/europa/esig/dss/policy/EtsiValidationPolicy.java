@@ -459,6 +459,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getOCSPResponseCertHashPresentConstraint() {
+		RevocationConstraints revocationConstraints = policy.getRevocation();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getOCSPCertHashPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getOCSPResponseCertHashMatchConstraint() {
+		RevocationConstraints revocationConstraints = policy.getRevocation();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getOCSPCertHashMatch();
+		}
+		return null;
+	}
 
 	@Override
 	public LevelConstraint getRevocationDataAvailableConstraint(final Context context, final SubContext subContext) {
@@ -483,15 +501,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getRevocationDataFreshness();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getRevocationCertHashMatchConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationCertHashMatch();
 		}
 		return null;
 	}
@@ -983,6 +992,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	@Override
 	public TimestampConstraints getTimestampConstraints() {
 		return policy.getTimestamp();
+	}
+	
+	@Override
+	public RevocationConstraints getRevocationConstraints() {
+		return policy.getRevocation();
 	}
 
 	@Override

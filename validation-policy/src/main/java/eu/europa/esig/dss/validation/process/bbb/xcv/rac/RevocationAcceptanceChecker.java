@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
@@ -42,6 +43,8 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashMatchCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
@@ -83,6 +86,18 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	protected void initChain() {
 
 		ChainItem<XmlRAC> item = firstItem = revocationDataKnown();
+
+		/*
+		 * certHash extension can be present in an OCSP Response. If present, a digest match indicates the OCSP
+		 * responder knows the certificate as we have it, and so also its revocation state
+		 */
+		if (RevocationType.OCSP.equals(revocationData.getRevocationType())) {
+			item = item.setNextItem(revocationCertHashPresent());
+			
+			if (revocationData.isCertHashExtensionPresent()) {
+				item = item.setNextItem(revocationCertHashMatch());
+			}
+		}
 
 		item = item.setNextItem(revocationDataConsistent());
 		
@@ -152,6 +167,16 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
 	private ChainItem<XmlRAC> revocationDataKnown() {
 		return new RevocationDataKnownCheck(i18nProvider, result, revocationData, policy.getUnknownStatusConstraint());
+	}
+
+	private ChainItem<XmlRAC> revocationCertHashPresent() {
+		LevelConstraint constraint = policy.getOCSPResponseCertHashPresentConstraint();
+		return new RevocationCertHashPresenceCheck(i18nProvider, result, revocationData, constraint);
+	}
+
+	private ChainItem<XmlRAC> revocationCertHashMatch() {
+		LevelConstraint constraint = policy.getOCSPResponseCertHashMatchConstraint();
+		return new RevocationCertHashMatchCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationDataConsistent() {

@@ -70,7 +70,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationName
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationCertHashMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SerialNumberCheck;
@@ -199,8 +198,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			item = item.setNextItem(certificateRevoked(latestCertificateRevocation, subContext));
 
 			item = item.setNextItem(certificateOnHold(latestCertificateRevocation, subContext));
-
-			item = item.setNextItem(revocationCertHashCheck());
 			
 		}
 
@@ -384,11 +381,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
 		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, currentTime, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlSubXCV> revocationCertHashCheck() {
-		LevelConstraint constraint = validationPolicy.getRevocationCertHashMatchConstraint(context, subContext);
-		return new RevocationCertHashMatchCheck(i18nProvider, result, currentCertificate.getCertificateRevocationData(), constraint);
 	}
 
 }

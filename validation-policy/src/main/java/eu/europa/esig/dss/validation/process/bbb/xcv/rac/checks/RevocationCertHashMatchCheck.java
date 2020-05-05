@@ -18,55 +18,40 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
-import java.util.List;
-
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
-import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class RevocationCertHashMatchCheck extends ChainItem<XmlSubXCV> {
+public class RevocationCertHashMatchCheck extends ChainItem<XmlRAC> {
 
-	private final List<CertificateRevocationWrapper> certificateRevocations;
+	private final RevocationWrapper revocationData;
 
-	public RevocationCertHashMatchCheck(I18nProvider i18nProvider, XmlSubXCV result, List<CertificateRevocationWrapper> certificateRevocations, 
+	public RevocationCertHashMatchCheck(I18nProvider i18nProvider, XmlRAC result, RevocationWrapper revocationData, 
 			LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-		this.certificateRevocations = certificateRevocations;
+		this.revocationData = revocationData;
 	}
 
 	@Override
 	protected boolean process() {
-		if (Utils.isCollectionNotEmpty(certificateRevocations)) {
-			for (RevocationWrapper revocation : certificateRevocations) {
-				/*
-				 * certHash extension can be present in an OCSP Response. If present, a digest match indicates the OCSP
-				 * responder knows the certificate as we have it, and so also its revocation state
-				 */
-				if (revocation.isCertHashExtensionPresent() && !revocation.isCertHashExtensionMatch()) {
-					return false;
-				}
-			}
-		}
-		return true;
+		return revocationData.isCertHashExtensionMatch();
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_REVOC_CERT_HASH;
+		return MessageTag.BBB_XCV_REVOC_CERT_HASH_MATCH;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_REVOC_CERT_HASH_ANS;
+		return MessageTag.BBB_XCV_REVOC_CERT_HASH_MATCH_ANS;
 	}
 
 	@Override
@@ -76,7 +61,7 @@ public class RevocationCertHashMatchCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.CHAIN_CONSTRAINTS_FAILURE;
+		return SubIndication.TRY_LATER;
 	}
 
 }

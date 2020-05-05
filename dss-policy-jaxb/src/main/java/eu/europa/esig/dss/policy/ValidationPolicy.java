@@ -28,6 +28,7 @@ import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
@@ -236,6 +237,10 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateSignatureConstraint(Context context, SubContext subContext);
 
 	LevelConstraint getUnknownStatusConstraint();
+	
+	LevelConstraint getOCSPResponseCertHashPresentConstraint();
+	
+	LevelConstraint getOCSPResponseCertHashMatchConstraint();
 
 	/**
 	 * @param context
@@ -401,8 +406,6 @@ public interface ValidationPolicy {
 
 	LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext);
 
-	LevelConstraint getRevocationCertHashMatchConstraint(Context context, SubContext subContext);
-
 	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
 
 	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
@@ -448,6 +451,8 @@ public interface ValidationPolicy {
 	SignatureConstraints getSignatureConstraints();
 
 	TimestampConstraints getTimestampConstraints();
+
+	RevocationConstraints getRevocationConstraints();
 
 	EIDAS getEIDASConstraints();
 
