@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Font;
-import java.io.InputStream;
 
 public interface DSSFont {
 	
@@ -30,11 +29,5 @@ public interface DSSFont {
 	float getSize();
 	
 	void setSize(float size);
-	
-	boolean isLogicalFont();
-	
-	InputStream getInputStream();
-	
-	String getName();
 
 }

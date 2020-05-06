@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
@@ -32,6 +34,7 @@ import java.util.Date;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -45,6 +48,7 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -58,6 +62,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 @Tag("slow")
@@ -463,6 +468,32 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);
 		drawAndCompareVisually();
+	}
+	
+	@Test
+	public void nativeFontTest() throws IOException {
+		initVisibleCombinationTest();
+		
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature\nOne more line\nAnd the last line");
+		textParameters.setTextColor(Color.BLUE);
+		textParameters.setBackgroundColor(Color.YELLOW);
+		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
+		
+		textParameters.setFont(new PdfBoxNativeFont(PDType1Font.HELVETICA));
+		
+		signatureImageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(signatureImageParameters);
+
+		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
+		Exception exception = assertThrows(DSSException.class , () -> sign(testName + "_default"));
+		assertEquals("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!", exception.getMessage());
+		
+		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
+		DSSDocument nativeDrawerPdf = sign(testName + "_native");
+		assertNotNull(nativeDrawerPdf);
 	}
 	
 	@Test

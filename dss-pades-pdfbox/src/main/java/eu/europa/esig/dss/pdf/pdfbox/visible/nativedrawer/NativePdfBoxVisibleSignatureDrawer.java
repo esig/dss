@@ -52,11 +52,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -82,12 +84,16 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 */
 	private PDFont initFont() throws IOException {
 		DSSFont dssFont = parameters.getTextParameters().getFont();
-		if (dssFont.isLogicalFont()) {
-			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
-		} else {
-			try (InputStream is = dssFont.getInputStream()) {
+		if (dssFont instanceof PdfBoxNativeFont) {
+			PdfBoxNativeFont nativeFont = (PdfBoxNativeFont) dssFont;
+			return nativeFont.getFont();
+		} else if (dssFont instanceof DSSFileFont) {
+			DSSFileFont fileFont = (DSSFileFont) dssFont;
+			try (InputStream is = fileFont.getInputStream()) {
 				return PDType0Font.load(document, is);
 			}
+		} else {
+			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
 		}
 	}
 	
@@ -275,10 +281,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             cs.setNonStrokingColor(textParameters.getTextColor());
             setAlphaChannel(cs, textParameters.getTextColor());
             
-            String[] strings = textParameters.getText().split("\\r?\\n");
+            PdfBoxFontMetrics pdfBoxFontMetrics = new PdfBoxFontMetrics(pdFont);
+            
+            String[] strings = pdfBoxFontMetrics.getLines(textParameters.getText());
             
             float properSize = CommonDrawerUtils.computeProperSize(textParameters.getFont().getSize(), parameters.getDpi());
-            float fontHeight = NativePdfBoxDrawerUtils.getTextHeight(pdFont, properSize);
+            
+            float fontHeight = pdfBoxFontMetrics.getHeight(textParameters.getText(), properSize);
             cs.setLeading(textSizeWithDpi(fontHeight, dimensionAndPosition.getyDpi()));
             
             cs.newLineAtOffset(dimensionAndPosition.getTextX(),
@@ -287,7 +296,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
             float previousOffset = 0;
             for (String str : strings) {
-                float stringWidth = NativePdfBoxDrawerUtils.getTextWidth(pdFont, fontSize, str);
+                float stringWidth = pdfBoxFontMetrics.getWidth(str, fontSize);
                 float offsetX = 0;
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:
