@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -81,6 +82,9 @@ public final class DSSXMLUtils {
 	private static final Set<String> transforms;
 
 	private static final Set<String> canonicalizers;
+	
+	// see XMLDSIG 4.4.3.2
+	private static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
@@ -443,7 +447,7 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
 		try {
-			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
+			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
 			return c14n.canonicalize(toCanonicalizeBytes);
 		} catch (Exception e) {
 			throw new DSSException("Cannot canonicalize the binaries", e);
@@ -452,37 +456,35 @@ public final class DSSXMLUtils {
 
 	/**
 	 * This method canonicalizes the given {@code Node}.
+	 * If canonicalization method is not provided, the {@code DEFAULT_CANONICALIZATION_METHOD} is being used
 	 *
 	 * @param canonicalizationMethod
-	 *            canonicalization method
+	 *            canonicalization method (can be null)
 	 * @param node
 	 *            {@code Node} to canonicalize
 	 * @return array of canonicalized bytes
 	 */
-	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
+	public static byte[] canonicalizeSubtree(String canonicalizationMethod, final Node node) {
 		try {
-			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
+			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
 			return c14n.canonicalizeSubtree(node);
 		} catch (Exception e) {
 			throw new DSSException("Cannot canonicalize the subtree", e);
 		}
 	}
-
+	
 	/**
-	 * This methods canonicalizes or serializes the given node depending on the canonicalization method (can be null)
+	 * Returns the {@code canonicalizationMethod} if provided, otherwise returns the DEFAULT_CANONICALIZATION_METHOD
 	 * 
-	 * @param canonicalizationMethod
-	 *            the canonicalization method or null
-	 * @param node
-	 *            the node to be canonicalized/serialized
-	 * @return array of bytes
+	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
+	 * @return canonicalizationMethod to be used
 	 */
-	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
+	private static String getCanonicalizationMethod(String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			return serializeNode(node);
-		} else {
-			return canonicalizeSubtree(canonicalizationMethod, node);
+			LOG.warn("Canonicalization method is not defined. A default canonicalization '{}' will be used.", DEFAULT_CANONICALIZATION_METHOD);
+			return DEFAULT_CANONICALIZATION_METHOD;
 		}
+		return canonicalizationMethod;
 	}
 
 	/**

@@ -25,9 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +44,7 @@ import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -50,6 +53,7 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
@@ -187,6 +191,40 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         extendAndValidate(signedDocument, extensionParameters);
+	}
+	
+	@Test
+	public void contentTstTest() throws Exception {
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
+		
+		signatureParameters.setContentTimestampParameters(null);
+		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
+		
+		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));
+		assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.", exception.getMessage());
+		
+		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(""));
+		assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.", exception.getMessage());
+		
+		InMemoryDocument document = new InMemoryDocument("Hello World!".getBytes());
+		
+		timestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+		signatureParameters.setContentTimestampParameters(timestampParameters);
+		TimestampToken contentTimestamp = service.getContentTimestamp(document, signatureParameters);
+		
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		contentTimestamp.setCanonicalizationMethod(null);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+
+		exception = assertThrows(DSSException.class, () -> service.getDataToSign(document, signatureParameters));
+		assertEquals("Unable to create a timestamp with empty canonicalization method. "
+				+ "See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.", exception.getMessage());
 	}
 	
 	private void extendAndValidate(DSSDocument documentToExtend, XAdESSignatureParameters signatureParameters) {

@@ -59,7 +59,6 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	public InternallyDetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
-		setCanonicalizationMethods(params, DEFAULT_CANONICALIZATION_METHOD);
 	}
 
 	@Override

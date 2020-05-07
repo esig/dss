@@ -24,6 +24,7 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
 public class XAdESTimestampParameters extends TimestampParameters {
@@ -56,6 +57,9 @@ public class XAdESTimestampParameters extends TimestampParameters {
 	}
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
+			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");
+		}
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
