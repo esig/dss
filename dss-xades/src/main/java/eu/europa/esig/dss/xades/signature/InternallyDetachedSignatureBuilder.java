@@ -96,7 +96,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		List<DSSTransform> dssTransformList = new ArrayList<>();
-		CanonicalizationTransform canonicalization = new CanonicalizationTransform(getXmldsigNamespace(), DEFAULT_CANONICALIZATION_METHOD);
+		CanonicalizationTransform canonicalization = new CanonicalizationTransform(getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;

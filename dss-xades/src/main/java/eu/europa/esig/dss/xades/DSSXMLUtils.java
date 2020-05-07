@@ -83,11 +83,19 @@ public final class DSSXMLUtils {
 
 	private static final Set<String> canonicalizers;
 	
-	// see XMLDSIG 4.4.3.2
-	private static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
-	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
+	
+	/**
+	 * This is the default canonicalization method for XMLDSIG used for signatures and timestamps (see XMLDSIG 4.4.3.2). 
+	 * 
+	 * Another complication arises because of the way that the default canonicalization algorithm handles namespace declarations; 
+	 * frequently a signed XML document needs to be embedded in another document; 
+	 * in this case the original canonicalization algorithm will not yield the same result 
+	 * as if the document is treated alone. For this reason, the so-called Exclusive Canonicalization,
+	 * which serializes XML namespace declarations independently of the surrounding XML, was created.
+	 */
+	public static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 	
 	static {
 		SantuarioInitializer.init();
@@ -479,7 +487,7 @@ public final class DSSXMLUtils {
 	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
 	 * @return canonicalizationMethod to be used
 	 */
-	private static String getCanonicalizationMethod(String canonicalizationMethod) {
+	public static String getCanonicalizationMethod(String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			LOG.warn("Canonicalization method is not defined. A default canonicalization '{}' will be used.", DEFAULT_CANONICALIZATION_METHOD);
 			return DEFAULT_CANONICALIZATION_METHOD;

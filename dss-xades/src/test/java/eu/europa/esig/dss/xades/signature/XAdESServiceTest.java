@@ -152,6 +152,15 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         
         exception = assertThrows(NullPointerException.class, () -> signatureParameters.setDigestAlgorithm(null));
         assertEquals("DigestAlgorithm cannot be null!", exception.getMessage());
+        
+        exception = assertThrows(IllegalArgumentException.class, () -> signatureParameters.setKeyInfoCanonicalizationMethod(null));
+        assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.", exception.getMessage());
+        
+        exception = assertThrows(IllegalArgumentException.class, () -> signatureParameters.setSignedInfoCanonicalizationMethod(""));
+        assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.", exception.getMessage());
+        
+        exception = assertThrows(IllegalArgumentException.class, () -> signatureParameters.setSignedPropertiesCanonicalizationMethod(null));
+        assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.", exception.getMessage());
 	}
 	
 	private DSSDocument signAndValidate(DSSDocument documentToSign, XAdESSignatureParameters signatureParameters) {

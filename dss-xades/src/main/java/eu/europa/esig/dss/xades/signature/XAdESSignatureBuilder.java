@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.xml.security.transforms.Transforms;
@@ -87,12 +86,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * This is the reference to the original document to sign
 	 */
 	protected DSSDocument detachedDocument;
-	
-	/**
-	 * The default Canonicalization method.
-	 * Will be used if another is not specified.
-	 */
-	protected static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 
 	protected String keyInfoCanonicalizationMethod;
 	protected String signedInfoCanonicalizationMethod;
@@ -174,25 +167,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		
 		setCanonicalizationMethods(params);
 	}
-
-	private void setCanonicalizationMethods(final XAdESSignatureParameters params) {
-		keyInfoCanonicalizationMethod = getCanonicalizationMethod(params.getKeyInfoCanonicalizationMethod());
-		signedInfoCanonicalizationMethod = getCanonicalizationMethod(params.getSignedInfoCanonicalizationMethod());
-		signedPropertiesCanonicalizationMethod = getCanonicalizationMethod(params.getSignedPropertiesCanonicalizationMethod());
-	}
 	
-	/**
-	 * Returns {@value signatureParameterCanonicalizationMethod} if exist, {@value defaultCanonicalizationMethod} otherwise
-	 * 
-	 * @param signatureParameterCanonicalizationMethod - Canonicalization method parameter defined in {@link XAdESSignatureParameters}
-	 * @return - canonicalization method String
-	 */
-	private String getCanonicalizationMethod(final String signatureParameterCanonicalizationMethod) {
-		if (Utils.isStringNotBlank(signatureParameterCanonicalizationMethod)) {
-			return signatureParameterCanonicalizationMethod;
-		} else {
-			return DEFAULT_CANONICALIZATION_METHOD;
-		}
+	private void setCanonicalizationMethods(final XAdESSignatureParameters params) {
+		this.keyInfoCanonicalizationMethod = params.getKeyInfoCanonicalizationMethod();
+		this.signedInfoCanonicalizationMethod = params.getSignedInfoCanonicalizationMethod();
+		this.signedPropertiesCanonicalizationMethod = params.getSignedPropertiesCanonicalizationMethod();
 	}
 
 	/**
