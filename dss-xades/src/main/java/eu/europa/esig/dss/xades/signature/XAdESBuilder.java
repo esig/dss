@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
@@ -45,7 +44,6 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -147,35 +145,8 @@ public abstract class XAdESBuilder {
 
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
 
-		String base64EncodedDigestBytes = null;
-		if (params.isManifestSignature()) {
-			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
-			Document doc = DomUtils.buildDOM(originalDocument);
-			
-			byte[] bytes = dssTransform.getBytesAfterTranformation(doc, dssReference.getUri());
-			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
-		} else if (params.isEmbedXML()) {
-			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
-
-			Document doc = DomUtils.buildDOM(originalDocument);
-			Element root = doc.getDocumentElement();
-
-			Document doc2 = DomUtils.buildDOM();
-			final Element dom = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
-			final Element dom2 = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
-			doc2.appendChild(dom2);
-			dom2.appendChild(dom);
-			dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), dssReference.getUri().substring(1));
-
-			Node adopted = doc2.adoptNode(root);
-			dom.appendChild(adopted);
-
-			byte[] bytes = dssTransform.getBytesAfterTranformation(dom, dssReference.getUri());
-			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
-		} else {
-			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-		}
-
+		String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
+		
 		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
@@ -346,44 +317,25 @@ public abstract class XAdESBuilder {
 	
 	protected abstract void alignNodes();
 	
-
 	/**
-	 * This method returns the current used XMLDSig namespace. Try to determine from the signature, from the parameters or the default value
+	 * This method returns the current used XMLDSig namespace
 	 */
 	protected DSSNamespace getXmldsigNamespace() {
-		DSSNamespace xmldsigNamespace = params.getXmldsigNamespace();
-		if (xmldsigNamespace == null) {
-			LOG.warn("Current XMLDSig namespace not found in the parameters (use the default XMLDSig)");
-			xmldsigNamespace = XAdESNamespaces.XMLDSIG;
-
-		}
-		return xmldsigNamespace;
+		return params.getXmldsigNamespace();
 	}
 
 	/**
-	 * This method returns the current used XAdES namespace. Try to determine from the signature, from the parameters or the default value
+	 * This method returns the current used XAdES namespace
 	 */
 	protected DSSNamespace getXadesNamespace() {
-		DSSNamespace xadesNamespace = params.getXadesNamespace();
-		if (xadesNamespace == null) {
-			LOG.warn("Current XAdES namespace not found in the parameters (use the default XAdES 1.3.2)");
-			xadesNamespace = XAdESNamespaces.XADES_132;
-
-		}
-		return xadesNamespace;
+		return params.getXadesNamespace();
 	}
 
 	/**
-	 * This method returns the current used XAdES 1.4.1 namespace. Try to determine from the signature, from the parameters or the default value
+	 * This method returns the current used XAdES 1.4.1 namespace
 	 */
 	protected DSSNamespace getXades141Namespace() {
-		DSSNamespace xades141Namespace = params.getXades141Namespace();
-		if (xades141Namespace == null) {
-			LOG.warn("Current XAdES 1.4.1 namespace not found in the parameters (use the default XAdES 1.4.1)");
-			xades141Namespace = XAdESNamespaces.XADES_141;
-
-		}
-		return xades141Namespace;
+		return params.getXades141Namespace();
 	}
 	
 	protected XAdESElement getCurrentXAdESElements() {

@@ -29,15 +29,20 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.ReferenceFactory;
 
 /**
  * This class allows to create a XAdES content-timestamp which covers all documents (AllDataObjectsTimeStamp).
@@ -46,11 +51,11 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 public class AllDataObjectsTimeStampBuilder {
 
 	private final TSPSource tspSource;
-	private final XAdESTimestampParameters timestampParameters;
+	private final XAdESSignatureParameters signatureParameters;
 
-	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, XAdESTimestampParameters timestampParameters) {
+	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, XAdESSignatureParameters signatureParameters) {
 		this.tspSource = tspSource;
-		this.timestampParameters = timestampParameters;
+		this.signatureParameters = signatureParameters;
 	}
 
 	public TimestampToken build(DSSDocument document) {
@@ -58,8 +63,18 @@ public class AllDataObjectsTimeStampBuilder {
 	}
 
 	public TimestampToken build(List<DSSDocument> documents) {
-		byte[] dataToBeDigested = null;
+		ReferenceFactory referenceFactory = new ReferenceFactory(signatureParameters);
+		
+		// Prepare references
+		List<DSSReference> references = signatureParameters.getReferences();
+		if (Utils.isCollectionEmpty(references)) {
+			references = referenceFactory.createReferencesForDocuments(documents);
+			signatureParameters.setReferences(references);
+		} else {
+			referenceFactory.checkReferencesValidity();
+		}
 
+		byte[] dataToBeDigested = null;
 		/*
 		 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
 		 * clause 4.4.3.2;
@@ -73,11 +88,15 @@ public class AllDataObjectsTimeStampBuilder {
 		 * If the data object is a node-set and the next transform requires octets, the signature application must 
 		 * attempt to convert the node-set to an octet stream using Canonical XML [XML-C14N].
 		 */
+		XAdESTimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
+		String canonicalizationMethod = contentTimestampParameters.getCanonicalizationMethod();
+		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			for (DSSDocument document : documents) {
-				byte[] binaries = DSSUtils.toByteArray(document);
+			for (DSSReference reference : references) {
+				DSSDocument referenceContent = referenceFactory.getTransformedReferenceContent(reference);
+				byte[] binaries = DSSUtils.toByteArray(referenceContent);
 				if (DomUtils.isDOM(binaries)) {
-					binaries = DSSXMLUtils.canonicalize(timestampParameters.getCanonicalizationMethod(), binaries);
+					binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
 				}
 				baos.write(binaries);
 			}
@@ -85,12 +104,14 @@ public class AllDataObjectsTimeStampBuilder {
 		} catch (IOException e) {
 			throw new DSSException("Unable to compute the data to be digested", e);
 		}
+		
+		DigestAlgorithm digestAlgorithm = contentTimestampParameters.getDigestAlgorithm();
 
-		byte[] digestToTimestamp = DSSUtils.digest(timestampParameters.getDigestAlgorithm(), dataToBeDigested);
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(timestampParameters.getDigestAlgorithm(), digestToTimestamp);
+		byte[] digestToTimestamp = DSSUtils.digest(digestAlgorithm, dataToBeDigested);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digestToTimestamp);
 		try {
 			TimestampToken token = new TimestampToken(timeStampResponse.getBytes(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-			token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
+			token.setCanonicalizationMethod(canonicalizationMethod);
 			return token;
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot build an AllDataObjectsTimestamp", e);

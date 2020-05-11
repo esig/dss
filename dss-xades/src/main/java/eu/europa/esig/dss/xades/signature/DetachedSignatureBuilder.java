@@ -25,10 +25,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -68,19 +66,6 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 			return documentDom.getDocumentElement();
 		}
 		return documentDom;
-	}
-
-	@Override
-	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
-		final DSSReference reference = new DSSReference();
-		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
-		if (Utils.isStringNotEmpty(document.getName())) {
-			reference.setUri(DSSUtils.encodeURI(document.getName()));
-		}
-		reference.setContents(document);
-		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
-		reference.setDigestMethodAlgorithm(digestAlgorithm);
-		return reference;
 	}
 	
 	@Override

@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,17 +27,13 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
-import eu.europa.esig.dss.xades.reference.XPathEnvelopedSignatureTransform;
 
 /**
  * This class handles the specifics of the enveloped XML signature
@@ -110,36 +103,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 			    parentNodeOfSignature.appendChild(signatureDom);
 			    break;
 	    }
-	}
-
-	@Override
-	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
-
-		DSSReference dssReference = new DSSReference();
-		dssReference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
-		// XMLDSIG : 4.4.3.2
-		// URI=""
-		// Identifies the node-set (minus any comment nodes) of the XML resource
-		// containing the signature
-		dssReference.setUri("");
-		dssReference.setContents(document);
-		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
-		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
-
-		final List<DSSTransform> dssTransformList = new ArrayList<>();
-
-		// For parallel signatures
-		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform(getXmldsigNamespace());
-		dssTransformList.add(xPathTransform);
-
-		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
-		CanonicalizationTransform canonicalizationTransform = 
-				new CanonicalizationTransform(getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
-		dssTransformList.add(canonicalizationTransform);
-
-		dssReference.setTransforms(dssTransformList);
-
-		return dssReference;
 	}
 
 	/**

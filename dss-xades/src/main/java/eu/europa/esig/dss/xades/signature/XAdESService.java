@@ -86,7 +86,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		if (tspSource == null) {
 			throw new DSSException("A TSPSource is required !");
 		}
-		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters.getContentTimestampParameters());
+		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters);
 		return builder.build(toSignDocuments);
 	}
 
@@ -111,6 +111,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		assertMultiDocumentsAllowed(parameters);
 		DSSDocument firstDoc = toSignDocuments.get(0);
 		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
+		// TODO : overwrite refs only if not defined ?
 		List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
 		parameters.setReferences(references);
 		return getDataToSign(firstDoc, parameters);
