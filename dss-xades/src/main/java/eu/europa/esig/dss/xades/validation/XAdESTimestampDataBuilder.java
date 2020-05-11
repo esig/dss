@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -42,6 +44,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
@@ -317,7 +320,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			final Set<String> referenceURIs = new HashSet<>();
 			for (final Reference reference : references) {
 				referenceURIs.add(DomUtils.getId(reference.getURI()));
-				writeReferenceBytes(reference, buffer);
+				writeReferenceBytes(reference, buffer, canonicalizationMethod);
 			}
 
 			/**
@@ -366,10 +369,14 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		}
 	}
 	
-	private void writeReferenceBytes(final Reference reference, ByteArrayOutputStream buffer) throws IOException {
+	private void writeReferenceBytes(final Reference reference, ByteArrayOutputStream buffer, String canonicalizationMethod) throws IOException {
 		try {
-			final byte[] referencedBytes = reference.getReferencedBytes();
+			byte[] referencedBytes = reference.getReferencedBytes();
 			if (referencedBytes != null) {
+				// TODO : canonicalize ?
+//				if (DomUtils.isDOM(referencedBytes)) {
+//					referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
+//				}
 				buffer.write(referencedBytes);
 			} else {
 				throw new DSSException(String.format("No binaries found for URI '%s'", reference.getURI()));
@@ -387,7 +394,16 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	private Element getUnsignedSignaturePropertiesDom() {
-		return DomUtils.getElement(signature, xadesPaths.getUnsignedSignaturePropertiesPath());
+		/**
+		 * This is the work around. The issue was reported on:
+		 * https://issues.apache.org/jira/browse/SANTUARIO-139.
+		 * Namespaces are not added to canonicalizer for new created elements.
+		 * The binaries need to be parsed at a new instance of Document
+		 */
+		final byte[] canonicalizedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
+		Document recreatedDocument = DomUtils.buildDOM(canonicalizedDoc);
+		Element recreatedSignature = DomUtils.getElement(recreatedDocument, ".//*" + DomUtils.getXPathByIdAttribute(DSSXMLUtils.getIDIdentifier(signature)));
+		return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	
 	private void writeTimestampedUnsignedProperties(final Element unsignedSignaturePropertiesDom, TimestampToken timestampToken, 
@@ -435,8 +451,11 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 */
 			// } else
 			if (XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(localName)) {
-				// TODO: compare encoded base64
-				if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
+				Element encapsulatedTimestamp = DomUtils.getElement(node, xadesPaths.getCurrentEncapsulatedTimestamp());
+				String encapsulatedBase64 = encapsulatedTimestamp.getTextContent();
+				// convert to DER to ensure the same encoding used to compare
+				byte[] derEncoded = DSSASN1Utils.getDEREncoded(Utils.fromBase64(encapsulatedBase64));
+				if ((timestampToken != null) && (Arrays.equals(timestampToken.getEncoded(), derEncoded))) {
 					break;
 				}
 				
@@ -455,18 +474,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				 */
 			}
 			
-			byte[] canonicalizedValue;
-			if (timestampToken == null) { // Creation of the timestamp
-				/**
-				 * This is the work around for the name space problem: The issue was reported on:
-				 * https://issues.apache.org/jira/browse/SANTUARIO-139 and
-				 * considered as close. But for me (Bob) it still does not work!
-				 */
-				final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
-				canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
-			} else {
-				canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
-			}
+			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+			
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
 						new String(canonicalizedValue));

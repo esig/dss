@@ -135,13 +135,6 @@ public class TimestampToken extends Token {
 	
 	private PdfRevision pdfRevision;
 
-	/**
-	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the
-	 * timestamp. It's an internal attribute which allows to
-	 * unambiguously identify a timestamp.
-	 */
-	private int hashCode;
-
 	/* cached */
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 	
@@ -616,25 +609,6 @@ public class TimestampToken extends Token {
 
 	public TimeStampToken getTimeStamp() {
 		return timeStamp;
-	}
-	
-	/**
-	 * Used only with XAdES timestamps.
-	 *
-	 * @param hashCode
-	 *            the hash code of the DOM element containing the timestamp
-	 */
-	public void setHashCode(final int hashCode) {
-		this.hashCode = hashCode;
-	}
-
-	/**
-	 * Used only with XAdES timestamps.
-	 *
-	 * @return the hash code of the DOM element containing the timestamp
-	 */
-	public int getHashCode() {
-		return hashCode;
 	}
 
 	@Override

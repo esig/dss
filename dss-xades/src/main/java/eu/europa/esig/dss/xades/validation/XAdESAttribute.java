@@ -128,10 +128,6 @@ public class XAdESAttribute implements ISignatureAttribute {
 		return null;
 	}
 	
-	public int getElementHashCode() {
-		return element.hashCode();
-	}
-	
 	@Override
 	public String toString() {
 		return getName();
