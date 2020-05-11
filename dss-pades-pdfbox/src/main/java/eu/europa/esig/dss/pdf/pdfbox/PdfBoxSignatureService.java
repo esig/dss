@@ -91,6 +91,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	 * 
 	 * @param serviceMode current instance is used to generate DocumentTypestamp or
 	 *                    Signature signature layer
+	 * @param signatureDrawerFactory
+	 *                               drawer factory implementation to be used
 	 * 
 	 */
 	public PdfBoxSignatureService(PDFServiceMode serviceMode, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
