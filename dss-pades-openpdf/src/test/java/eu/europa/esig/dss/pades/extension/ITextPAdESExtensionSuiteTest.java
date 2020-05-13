@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 import eu.europa.esig.dss.pades.extension.suite.DSS1443Test;
 import eu.europa.esig.dss.pades.extension.suite.DSS1469ExtensionTest;
 import eu.europa.esig.dss.pades.extension.suite.DSS1523Test;
+import eu.europa.esig.dss.pades.extension.suite.DSS2058LTATest;
+import eu.europa.esig.dss.pades.extension.suite.DSS2058QCLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTATest;
@@ -58,7 +60,7 @@ import eu.europa.esig.dss.pades.extension.suite.PDFTimestampingTest;
 		PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class, PAdESExtensionBToLTASelfSignedTSATest.class, 
 		PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class, PAdESExtensionLTToLTASelfSignedTSATest.class, 
 		PAdESExtensionAllSelfSignedCertsTest.class, PDFTimestampingTest.class, PDFArchiveTimestampingTest.class, DSS1443Test.class, 
-		DSS1469ExtensionTest.class })
+		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }
