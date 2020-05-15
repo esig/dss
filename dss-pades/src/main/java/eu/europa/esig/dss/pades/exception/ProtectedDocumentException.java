@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pades;
+package eu.europa.esig.dss.pades.exception;
 
 import eu.europa.esig.dss.model.DSSException;
 

@@ -23,12 +23,13 @@ package eu.europa.esig.dss.pades;
 import java.util.Date;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.SerializableParameters;
 
 /**
  * Defines a list of common PAdES parameters between signature and timestamps
  *
  */
-public interface PAdESCommonParameters {
+public interface PAdESCommonParameters extends SerializableParameters {
 	
 	/**
 	 * Returns a claimed signing time
@@ -71,5 +72,12 @@ public interface PAdESCommonParameters {
 	 * @return {@link DigestAlgorithm}
 	 */
 	DigestAlgorithm getDigestAlgorithm();
+	
+	/**
+	 * Returns a password string used to encrypt a document
+	 * 
+	 * @return {@link String} password
+	 */
+	String getPasswordProtection();
 
 }

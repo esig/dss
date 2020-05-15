@@ -42,8 +42,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.pades.InvalidPasswordException;
 import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -59,7 +60,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected final PDFServiceMode serviceMode;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
 	
-	protected String passwordProtection;
+	protected SecureRandomProvider secureRandomProvider;
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -73,16 +74,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
 		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
-	}
-	
-
-	/**
-	 * Specify the used password for the encrypted document
-	 * @param pwd the used password
-	 */
-	@Override
-	public void setPasswordProtection(String pwd) {
-		this.passwordProtection = pwd;		
 	}
 
 	protected boolean isDocumentTimestampLayer() {
@@ -100,7 +91,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public List<PdfRevision> validateSignatures(DSSDocument document) {
-		return getRevisions(document);
+		return validateSignatures(document, null);
+	}
+	
+	@Override
+	public List<PdfRevision> validateSignatures(DSSDocument document, String pwd) {
+		return getRevisions(document, pwd);
 	}
 
 	/**
@@ -108,12 +104,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * rights
 	 * 
 	 * @param toSignDocument the document which will be modified
+	 * @param pwd {@link String} password protection phrase used to encrypt the document
 	 */
-	protected abstract void checkDocumentPermissions(DSSDocument toSignDocument);
+	protected abstract void checkDocumentPermissions(final DSSDocument toSignDocument, final String pwd);
 
-	private List<PdfRevision> getRevisions(DSSDocument document) {
+	private List<PdfRevision> getRevisions(final DSSDocument document, final String pwd) {
 		List<PdfRevision> result = new ArrayList<>();
-		try (PdfDocumentReader reader = loadPdfDocumentReader(document, passwordProtection)) {
+		try (PdfDocumentReader reader = loadPdfDocumentReader(document, pwd)) {
 
 			final PdfDssDict dssDictionary = reader.getDSSDictionary();
 			boolean mainDssDictionaryAdded = false;
@@ -145,7 +142,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					// LT or LTA
 					if (dssDictionary != null) {
 						// obtain covered DSS dictionary if already exist
-						previousRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
+						previousRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent), pwd);
 					}
 					
 					PdfRevision newRevision = null;
@@ -208,6 +205,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return result;
 	}
 	
+	@Override
+	public List<String> getAvailableSignatureFields(final DSSDocument document) {
+		return getAvailableSignatureFields(document, null);
+	}
+	
+	@Override
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+		return addNewSignatureField(document, parameters, null);
+	}
+	
 	/**
 	 * Loads {@code PdfDocumentReader} instance
 	 * 
@@ -240,8 +247,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 	
-	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
-		try (PdfDocumentReader reader = loadPdfDocumentReader(originalBytes, passwordProtection)) {
+	private PdfDssDict getDSSDictionaryPresentInRevision(final byte[] originalBytes, final String pwd) {
+		try (PdfDocumentReader reader = loadPdfDocumentReader(originalBytes, pwd)) {
 			return reader.getDSSDictionary();
 		} catch (Exception e) {
 			LOG.debug("Cannot extract DSS dictionary from the previous revision : " + e.getMessage(), e);
@@ -369,6 +376,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	protected String getTokenDigest(Token token) {
 		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
+	}
+	
+	@Override
+	public void setSecureRandomProvider(SecureRandomProvider secureRandomProvider) {
+		this.secureRandomProvider = secureRandomProvider;
 	}
 
 }

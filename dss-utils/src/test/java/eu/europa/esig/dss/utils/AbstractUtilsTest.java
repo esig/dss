@@ -40,7 +40,10 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -477,6 +480,33 @@ public abstract class AbstractUtilsTest {
 		assertThrows(FileNotFoundException.class, () -> {
 			Utils.cleanDirectory(new File("wrong"));	
 		});
+	}
+	
+	@Test
+	public void serializationTest() throws IOException {
+		Date date = new Date();
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		byte[] serialized = Utils.serialize(calendar);
+		
+		Calendar calendarTwo = Calendar.getInstance();
+		calendarTwo.setTime(date);
+		byte[] serializedTwo = Utils.serialize(calendarTwo);
+		
+		assertArrayEquals(serialized, serializedTwo);
+
+		calendarTwo.setTime(new Date());
+		serializedTwo = Utils.serialize(calendarTwo);
+		
+		assertFalse(Arrays.equals(serialized, serializedTwo));
+		
+		byte[] nullSerialized = Utils.serialize(null);
+		byte[] nullSerializedTwo = Utils.serialize(null);
+		
+		assertArrayEquals(nullSerialized, nullSerializedTwo);
+		
+		assertFalse(Arrays.equals(serialized, nullSerialized));
 	}
 
 }

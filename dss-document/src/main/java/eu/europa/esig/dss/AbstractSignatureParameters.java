@@ -20,6 +20,11 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +53,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	/**
 	 * This field contains the signing certificate.
 	 */
-	private CertificateToken signingCertificate;
+	private transient CertificateToken signingCertificate;
 
 	/**
 	 * Optional parameter that contains the actual canonicalized data that was used when creating the
@@ -61,7 +66,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private List<CertificateToken> certificateChain = new LinkedList<>();
+	private transient List<CertificateToken> certificateChain = new LinkedList<>();
 
 	/*
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
@@ -205,6 +210,42 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 */
 	public void reinitDeterministicId() {
 		deterministicId = null;
+	}
+
+	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+	    ois.defaultReadObject();
+	    X509Certificate x509SignCert = (X509Certificate) ois.readObject();
+	    if (x509SignCert != null) {
+		    setSigningCertificate(new CertificateToken(x509SignCert));
+	    }
+	    boolean certChainPresent = ois.readBoolean();
+	    if (certChainPresent) {
+	    	ArrayList<CertificateToken> certChain = new ArrayList<>();
+	    	while (ois.readInt() != -1) {
+	    		X509Certificate x509Cert = (X509Certificate) ois.readObject();
+	    	    if (x509Cert != null) {
+	    	    	certChain.add(new CertificateToken(x509Cert));
+	    	    }
+	    	}
+	    	setCertificateChain(certChain);
+	    }
+
+	}
+	
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+	    oos.defaultWriteObject();
+	    X509Certificate x509SignCert = getSigningCertificate() != null ? getSigningCertificate().getCertificate() : null;
+	    oos.writeObject(x509SignCert);
+	    boolean certChainPresent = getCertificateChain() != null;
+	    oos.writeBoolean(certChainPresent);
+	    if (certChainPresent) {
+	    	for (CertificateToken certificateToken : getCertificateChain()) {
+	    	    X509Certificate x509Cert = certificateToken != null ? certificateToken.getCertificate() : null;
+	    	    oos.writeObject(x509Cert);
+	    	}
+	    }
+	    oos.writeInt(-1);
+	    oos.flush();
 	}
 
 }

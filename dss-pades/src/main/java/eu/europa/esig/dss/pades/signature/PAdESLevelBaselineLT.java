@@ -34,7 +34,6 @@ import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -46,16 +45,13 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 /**
  * PAdES Baseline LT signature
  */
-class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameters> {
+class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 
 	private final CertificateVerifier certificateVerifier;
-	private final TSPSource tspSource;
-	private final IPdfObjFactory pdfObjectFactory;
 
 	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier, final IPdfObjFactory pdfObjectFactory) {
+		super(tspSource, pdfObjectFactory);
 		this.certificateVerifier = certificateVerifier;
-		this.tspSource = tspSource;
-		this.pdfObjectFactory = pdfObjectFactory;
 	}
 
 	/**
@@ -68,8 +64,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
 
 		// check if needed to extends with PAdESLevelBaselineT
-		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
-		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
@@ -78,11 +73,9 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		for (final AdvancedSignature signature : signatures) {
 			if (isRequireDocumentTimestamp(signature)) {
-				final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource, pdfObjectFactory);
-				document = padesLevelBaselineT.extendSignatures(document, parameters);
-
-				pdfDocumentValidator = new PDFDocumentValidator(document);
-				pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+				// extend to T-level
+				document = super.extendSignatures(document, parameters);
+				pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
 				break;
 			}
 		}
@@ -100,9 +93,16 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 			}
 		}
 
-		final PDFSignatureService signatureService = pdfObjectFactory.newPAdESSignatureService();
-		return signatureService.addDssDictionary(document, callbacks);
+		final PDFSignatureService signatureService = newPdfSignatureService();
+		return signatureService.addDssDictionary(document, callbacks, parameters);
 
+	}
+	
+	private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
+		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
+		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
+		return pdfDocumentValidator;
 	}
 
 	private boolean isRequireDocumentTimestamp(AdvancedSignature signature) {

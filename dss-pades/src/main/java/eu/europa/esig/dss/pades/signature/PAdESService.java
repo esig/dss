@@ -49,8 +49,10 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
+import eu.europa.esig.dss.pdf.FixedSecureRandomProvider;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.SecureRandomProvider;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
@@ -69,6 +71,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private final PadesCMSSignedDataBuilder padesCMSSignedDataBuilder;
 
 	private IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+	
+	private SecureRandomProvider secureRandomProvider = new FixedSecureRandomProvider();
 
 	/**
 	 * This is the constructor to create an instance of the {@code PAdESService}. A certificate verifier must be
@@ -95,25 +99,42 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		this.pdfObjFactory = pdfObjFactory;
 	}
 
+	/**
+	 * Set the {@code SecureRandomProvider}. Allows to modify a custom behavior for signing of encrypted documents.
+	 * 
+	 * @param secureRandomProvider {@link SecureRandomProvider}
+	 */
+	public void setSecureRandomProvider(SecureRandomProvider secureRandomProvider) {
+		Objects.requireNonNull(secureRandomProvider, "SecureRandomProvider cannot be null");
+		this.secureRandomProvider = secureRandomProvider;
+	}
+
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
+		PAdESLevelBaselineT signatureExtension;
 		switch (signatureLevel) {
 			case PAdES_BASELINE_B:
 				return null;
 			case PAdES_BASELINE_T:
-				return new PAdESLevelBaselineT(tspSource, pdfObjFactory);
+				signatureExtension = new PAdESLevelBaselineT(tspSource, pdfObjFactory);
+				break;
 			case PAdES_BASELINE_LT:
-				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
+				signatureExtension = new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
+				break;
 			case PAdES_BASELINE_LTA:
-				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
+				signatureExtension = new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
+				break;
 			default:
 				throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
 		}
+		signatureExtension.setSecureRandomProvider(secureRandomProvider);
+		return signatureExtension;
 	}
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newContentTimestampService();
+		pdfSignatureService.setSecureRandomProvider(secureRandomProvider);
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
@@ -150,7 +171,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.digest(toSignDocument, parameters);
 	}
 
@@ -165,7 +186,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);
 
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters);
 
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
@@ -229,8 +250,21 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the list of empty signature fields
 	 */
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		return pdfSignatureService.getAvailableSignatureFields(document);
+		return getAvailableSignatureFields(document, null);
+	}
+
+	/**
+	 * This method returns not signed signature-fields from an encrypted document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param passwordProtection
+	 *            the password protection used to create the encrypted document
+	 * @return the list of empty signature fields
+	 */
+	public List<String> getAvailableSignatureFields(DSSDocument document, String passwordProtection) {
+		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
+		return pdfSignatureService.getAvailableSignatureFields(document, passwordProtection);
 	}
 
 	/**
@@ -243,16 +277,39 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		return pdfSignatureService.addNewSignatureField(document, parameters);
+		return addNewSignatureField(document, parameters, null);
+	}
+
+	/**
+	 * This method allows to add a new signature field to an encrypted pdf document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param parameters
+	 *            the parameters with the coordinates,... of the signature field
+	 * @param passwordProtection
+	 *            the password protection used to create the encrypted document
+	 * @return the pdf document with the new added signature field
+	 */
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String passwordProtection) {
+		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
+		return pdfSignatureService.addNewSignatureField(document, parameters, passwordProtection);
 	}
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
-		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, pdfObjFactory.newSignatureTimestampService());
+		PDFSignatureService signatureTimestampService = pdfObjFactory.newSignatureTimestampService();
+		signatureTimestampService.setSecureRandomProvider(secureRandomProvider);
+		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, signatureTimestampService);
 		DSSDocument timestampedDocument = timestampService.timestampDocument(toTimestampDocument, parameters);
 		timestampedDocument.setName(getFinalFileName(toTimestampDocument, SigningOperation.TIMESTAMP, null));
 		return timestampedDocument;
+	}
+	
+	protected PDFSignatureService getPAdESSignatureService() {
+		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		pdfSignatureService.setSecureRandomProvider(secureRandomProvider);
+		return pdfSignatureService;
 	}
 
 }

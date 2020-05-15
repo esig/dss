@@ -26,7 +26,7 @@ public interface PdfDocumentReader extends Closeable {
 	Map<PdfSignatureDictionary, List<String>> extractSigDictionaries() throws IOException;
 	
 	/**
-	 * Checks if a signature for the given PDF Signature Sictionary covers the whole document
+	 * Checks if a signature for the given PDF Signature Dictionary covers the whole document
 	 * 
 	 * @param signatureDictionary {@link PdfSignatureDictionary} to check the result for
 	 * @return TRUE if the signature covers the whole document, false otherwise

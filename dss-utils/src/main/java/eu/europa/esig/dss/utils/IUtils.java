@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -104,5 +105,7 @@ public interface IUtils {
 	void cleanDirectory(File directory) throws IOException;
 
 	Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
+	
+	byte[] serialize(Serializable serializable) throws IOException;
 
 }

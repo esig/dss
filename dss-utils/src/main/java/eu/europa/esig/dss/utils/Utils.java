@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -208,6 +209,10 @@ public final class Utils {
 
 	public static Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
 		return impl.listFiles(folder, extensions, recursive);
+	}
+	
+	public static byte[] serialize(Serializable serializable) throws IOException {
+		return impl.serialize(serializable);
 	}
 
 }

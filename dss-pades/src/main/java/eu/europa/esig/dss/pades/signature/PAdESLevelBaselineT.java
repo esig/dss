@@ -23,8 +23,11 @@ package eu.europa.esig.dss.pades.signature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.SecureRandomProvider;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
@@ -35,8 +38,10 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 
 	private final TSPSource tspSource;
 	private final IPdfObjFactory pdfObjectFactory;
+	
+	private SecureRandomProvider secureRandomProvider;
 
-	public PAdESLevelBaselineT(TSPSource tspSource, IPdfObjFactory pdfObjectFactory) {
+	protected PAdESLevelBaselineT(TSPSource tspSource, IPdfObjFactory pdfObjectFactory) {
 		this.tspSource = tspSource;
 		this.pdfObjectFactory = pdfObjectFactory;
 	}
@@ -44,8 +49,27 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
-		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, pdfObjectFactory.newSignatureTimestampService());
-		return padesTimestampService.timestampDocument(document, params.getSignatureTimestampParameters());
+		return timestampDocument(document, params.getSignatureTimestampParameters(), params.getPasswordProtection());
+	}
+	
+	protected DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters timestampParameters, final String pwd) {
+		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, newPdfSignatureService());
+		timestampParameters.setPasswordProtection(pwd);
+		return padesTimestampService.timestampDocument(document, timestampParameters);
+	}
+	
+	protected PDFSignatureService newPdfSignatureService() {
+		PDFSignatureService signatureTimestampService = pdfObjectFactory.newSignatureTimestampService();
+		signatureTimestampService.setSecureRandomProvider(secureRandomProvider);
+		return signatureTimestampService;
+	}
+
+	/**
+	 * Allows to set a {@code SecureRandomProvider} to generate SecureRandom for encrypted documents
+	 * @param secureRandomProvider
+	 */
+	public void setSecureRandomProvider(SecureRandomProvider secureRandomProvider) {
+		this.secureRandomProvider = secureRandomProvider;
 	}
 
 }

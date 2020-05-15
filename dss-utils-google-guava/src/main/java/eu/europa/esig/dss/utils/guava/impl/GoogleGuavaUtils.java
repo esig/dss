@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.utils.guava.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -297,6 +300,14 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
 		return Lists.newArrayList(Iterables.filter(Files.fileTraverser().depthFirstPostOrder(folder), new FilterByExtensions(extensions)));
+	}
+
+	@Override
+	public byte[] serialize(Serializable serializable) throws IOException {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+			oos.writeObject(serializable);
+			return baos.toByteArray();
+		}
 	}
 
 }

@@ -20,7 +20,7 @@ import com.lowagie.text.pdf.PdfReader;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.InvalidPasswordException;
+import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -71,7 +71,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @param binaries a byte array of a PDF to read
 	 * @param passwordProtection binaries of a password to open a protected document
 	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
 	public ITextDocumentReader(byte[] binaries, byte[] passwordProtection) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");

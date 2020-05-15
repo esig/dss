@@ -67,10 +67,19 @@ public interface PDFSignatureService {
 	 * @param document
 	 *            the document to be validated
 	 * @return list of extracted {@link PdfRevision}s
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	List<PdfRevision> validateSignatures(final DSSDocument document);
+	
+	/**
+	 * Validates signatures from an encrypted PDF document
+	 * 
+	 * @param document
+	 *            the document to be validated
+	 * @param pwd
+	 *            the password protection phrase used to encrypt the PDF document
+	 * @return list of extracted {@link PdfRevision}s
+	 */
+	List<PdfRevision> validateSignatures(final DSSDocument document, final String pwd);
 
 	/**
 	 * This method adds the DSS dictionary (Baseline-LT)
@@ -79,12 +88,14 @@ public interface PDFSignatureService {
 	 *            the document to be extended
 	 * @param callbacks
 	 *            the callbacks to retrieve the revocation data,...
+	 * @param parameters
+	 *            the signature/timestamp parameters
 	 * @return the pdf document with the added dss dictionary
 	 * 
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks);
+	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, final PAdESCommonParameters parameters);
 
 	/**
 	 * This method returns not signed signature-fields
@@ -93,7 +104,18 @@ public interface PDFSignatureService {
 	 *            the pdf document
 	 * @return the list of empty signature fields
 	 */
-	List<String> getAvailableSignatureFields(DSSDocument document);
+	List<String> getAvailableSignatureFields(final DSSDocument document);
+	
+	/**
+	 * Returns not-signed signature fields from an encrypted document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param pwd
+	 *            the password protection phrase used to encrypt the document
+	 * @return the list of not signed signature field names
+	 */
+	List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd);
 
 	/**
 	 * This method allows to add a new signature field to an existing pdf document
@@ -107,9 +129,23 @@ public interface PDFSignatureService {
 	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters);
 
 	/**
-	 * Specify the used password for the encrypted document
-	 * @param pwd the used password
+	 * This method allows to add a new signature field to an existing encrypted pdf document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param parameters
+	 *            the parameters with the coordinates,... of the signature field
+	 * @param pwd
+	 *            the password protection used to create the encrypted document
+	 * @return the pdf document with the new added signature field
 	 */
-	 void setPasswordProtection(String pwd);
+	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, final String pwd);
+	
+	/**
+	 * Sets {@code SecureRandomProvider} to generate SecureRandom for encrypted document signing/extension
+	 * 
+	 * @param secureRandomProvider {@link SecureRandomProvider}
+	 */
+	void setSecureRandomProvider(SecureRandomProvider secureRandomProvider);
 
 }

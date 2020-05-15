@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +40,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -250,6 +252,11 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
 		return FileUtils.listFiles(folder, extensions, recursive);
+	}
+
+	@Override
+	public byte[] serialize(Serializable serializable) {
+		return SerializationUtils.serialize(serializable);
 	}
 
 }

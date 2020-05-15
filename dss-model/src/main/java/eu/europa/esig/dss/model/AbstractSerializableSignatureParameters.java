@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -89,17 +92,17 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
 	 */
-	protected TP contentTimestampParameters;
+	protected transient TP contentTimestampParameters;
 
 	/**
 	 * The object representing the parameters related to the signature timestamp (Baseline-T)
 	 */
-	protected TP signatureTimestampParameters;
+	protected transient TP signatureTimestampParameters;
 
 	/**
 	 * The object representing the parameters related to the archive timestamp (Baseline-LTA)
 	 */
-	protected TP archiveTimestampParameters;
+	protected transient TP archiveTimestampParameters;
 
 	/**
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
@@ -439,6 +442,21 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 			return false;
 		}
 		return true;
+	}
+	
+	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+	    ois.defaultReadObject();
+	    setContentTimestampParameters((TP)ois.readObject());
+	    setSignatureTimestampParameters((TP)ois.readObject());
+	    setArchiveTimestampParameters((TP)ois.readObject());
+	}
+	
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+	    oos.defaultWriteObject();
+	    oos.writeObject(getContentTimestampParameters());
+	    oos.writeObject(getSignatureTimestampParameters());
+	    oos.writeObject(getArchiveTimestampParameters());
+	    oos.flush();
 	}
 
 }
