@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.math.BigInteger;
 import java.security.PublicKey;
+import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1817,6 +1818,19 @@ public class DiagnosticDataBuilder {
 		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
 		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, x500Principal));
+
+		try {
+			if (xmlCert.getEmail() == null && certToken.getCertificate().getSubjectAlternativeNames() != null) {
+				certToken.getCertificate().getSubjectAlternativeNames().forEach(an -> {
+					Integer nameType = (Integer) an.get(0);
+					if (nameType == 1) { // rfc822Name
+						xmlCert.setEmail((String) an.get(1));
+					}
+				});
+			}
+		} catch (CertificateParsingException e) {
+			LOG.warn("Failed to parse subject alternative names", e);
+		}
 
 		xmlCert.setAuthorityInformationAccessUrls(getCleanedUrls(DSSASN1Utils.getCAAccessLocations(certToken)));
 		xmlCert.setOCSPAccessUrls(getCleanedUrls(DSSASN1Utils.getOCSPAccessLocations(certToken)));
