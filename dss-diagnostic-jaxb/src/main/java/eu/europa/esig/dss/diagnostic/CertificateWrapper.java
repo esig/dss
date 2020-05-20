@@ -332,6 +332,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getExtendedKeyUsages();
 	}
 
+	public PSD2InfoWrapper getPSD2Info() {
+		if (certificate.getPSD2Info() != null) {
+			return new PSD2InfoWrapper(certificate.getPSD2Info());
+		}
+		return null;
+	}
+
 	public String getReadableCertificateName() {
 		if (certificate.getCommonName() != null) {
 			return certificate.getCommonName();

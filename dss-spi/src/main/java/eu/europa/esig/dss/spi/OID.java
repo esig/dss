@@ -101,4 +101,15 @@ public class OID {
 	public static final ASN1ObjectIdentifier adbe_revocationInfoArchival = new ASN1ObjectIdentifier(
 			"1.2.840.113583.1.1.8");
 
+	// --- ETSI TS 119 495 V1.4.1
+
+	/**
+	 * etsi-psd2-qcStatement QC-STATEMENT ::= {SYNTAX PSD2QcType IDENTIFIED BY
+	 * id-etsi-psd2-qcStatement }
+	 * 
+	 * id-etsi-psd2-qcStatement OBJECT IDENTIFIER ::={itu-t(0)
+	 * identified-organization(4) etsi(0) psd2(19495) qcstatement(2) }
+	 */
+	public static final ASN1ObjectIdentifier psd2_qcStatement = new ASN1ObjectIdentifier("0.4.0.19495.2");
+
 }

@@ -114,6 +114,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -122,6 +123,8 @@ import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.PSD2QcType;
+import eu.europa.esig.dss.spi.x509.RoleOfPSP;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -1451,6 +1454,46 @@ public final class DSSASN1Utils {
 		certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
 		certRef.setCertificateIdentifier(toCertificateIdentifier(otherCertId.getIssuerSerial()));
 		return certRef;
+	}
+
+	/**
+	 * This method extract the PSD2 QcStatement informations for a given certificate
+	 * 
+	 * @param certToken the certificate
+	 * @return an instance of {@code PSD2QcType} or null
+	 */
+	public static PSD2QcType getPSD2QcStatement(CertificateToken certToken) {
+		PSD2QcType result = null;
+		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
+		if (Utils.isArrayNotEmpty(qcStatement)) {
+			try {
+				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
+				for (int i = 0; i < seq.size(); i++) {
+					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
+					if (OID.psd2_qcStatement.equals(statement.getStatementId())) {
+						result = new PSD2QcType();
+						ASN1Sequence psd2Seq = ASN1Sequence.getInstance(statement.getStatementInfo());
+						ASN1Sequence rolesSeq = ASN1Sequence.getInstance(psd2Seq.getObjectAt(0));
+
+						List<RoleOfPSP> rolesOfPSP = new ArrayList<>();
+						for (int ii = 0; ii < rolesSeq.size(); ii++) {
+							ASN1Sequence oneRoleSeq = ASN1Sequence.getInstance(rolesSeq.getObjectAt(ii));
+							RoleOfPSP roleOfPSP = new RoleOfPSP();
+							ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) oneRoleSeq.getObjectAt(0);
+							roleOfPSP.setPspOid(RoleOfPspOid.fromOid(oid.getId()));
+							roleOfPSP.setPspName(getString(oneRoleSeq.getObjectAt(1)));
+							rolesOfPSP.add(roleOfPSP);
+						}
+						result.setRolesOfPSP(rolesOfPSP);
+						result.setNcaName(getString(psd2Seq.getObjectAt(1)));
+						result.setNcaId(getString(psd2Seq.getObjectAt(2)));
+					}
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to read QCStatement", e);
+			}
+		}
+		return result;
 	}
 
 }

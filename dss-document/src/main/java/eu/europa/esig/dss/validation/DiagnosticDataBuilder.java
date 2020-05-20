@@ -68,6 +68,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
@@ -97,6 +99,7 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -131,7 +134,9 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.PSD2QcType;
 import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.RoleOfPSP;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.Revocation;
@@ -1990,6 +1995,8 @@ public class DiagnosticDataBuilder {
 
 		xmlCert.setIdPkixOcspNoCheck(DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken));
 
+		xmlCert.setPSD2Info(getPSD2Info(certToken));
+
 		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
 
 		xmlCert.setQCStatementIds(getXmlOids(DSSASN1Utils.getQCStatementsIdList(certToken)));
@@ -2007,6 +2014,32 @@ public class DiagnosticDataBuilder {
 		}
 
 		return xmlCert;
+	}
+
+	private XmlPSD2Info getPSD2Info(CertificateToken certToken) {
+		PSD2QcType psd2QcStatement = DSSASN1Utils.getPSD2QcStatement(certToken);
+		if (psd2QcStatement != null) {
+			XmlPSD2Info xmlInfo = new XmlPSD2Info();
+			xmlInfo.setNcaId(psd2QcStatement.getNcaId());
+			xmlInfo.setNcaName(psd2QcStatement.getNcaName());
+			List<RoleOfPSP> rolesOfPSP = psd2QcStatement.getRolesOfPSP();
+			List<XmlPSD2Role> psd2Roles = new ArrayList<>();
+			for (RoleOfPSP roleOfPSP : rolesOfPSP) {
+				XmlPSD2Role xmlRole = new XmlPSD2Role();
+				XmlOID xmlOID = new XmlOID();
+				RoleOfPspOid role = roleOfPSP.getPspOid();
+				if (role != null) { // unsupported oid
+					xmlOID.setValue(role.getOid());
+					xmlOID.setDescription(role.getDescription());
+					xmlRole.setPspOid(xmlOID);
+				}
+				xmlRole.setPspName(roleOfPSP.getPspName());
+				psd2Roles.add(xmlRole);
+			}
+			xmlInfo.setPSD2Roles(psd2Roles);
+			return xmlInfo;
+		}
+		return null;
 	}
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {

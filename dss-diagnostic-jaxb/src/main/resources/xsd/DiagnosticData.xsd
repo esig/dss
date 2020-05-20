@@ -299,6 +299,8 @@
 						</xs:complexType>
 					</xs:element>
 					
+					<xs:element name="PSD2Info" type="PSD2Info" minOccurs="0" />
+					
 					<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
 		
 					<xs:element name="BasicSignature" type="BasicSignature" />
@@ -361,6 +363,27 @@
 				<xs:attribute name="Description" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="PSD2Info">
+		<xs:sequence>
+			<xs:element name="PSD2Roles">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PSD2Role" type="PSD2Role" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ncaName" type="xs:string" />
+			<xs:element name="ncaId" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="PSD2Role">
+		<xs:sequence>
+			<xs:element name="pspOid" type="OID" minOccurs="0" />
+			<xs:element name="pspName" type="xs:string" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="CertificatePolicy">
