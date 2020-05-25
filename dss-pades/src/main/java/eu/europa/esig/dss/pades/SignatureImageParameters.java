@@ -27,12 +27,13 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import java.io.Serializable;
 
 /**
  * Parameters for a visible signature creation
  *
  */
-public class SignatureImageParameters {
+public class SignatureImageParameters implements Serializable {
 
 	public static final int DEFAULT_PAGE = 1;
 
