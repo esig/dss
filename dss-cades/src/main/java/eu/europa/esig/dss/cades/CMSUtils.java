@@ -33,7 +33,6 @@ import java.util.Objects;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -218,32 +217,14 @@ public final class CMSUtils {
 	}
 	
 	/**
-	 * Returns a new {@code AttributeTable} with replaced {@code attributeToReplace} by {@code attributeToAdd} 
+	 * Compares two CMSSignedData objects by their encoded binaries
 	 * 
-	 * @param attributeTable {@link AttributeTable} to replace value in
-	 * @param attributeToReplace {@link CMSSignedData} to be replaced
-	 * @param attributeToAdd {@link CMSSignedData} to replace by
-	 * @return a new {@link AttributeTable}
-	 * @throws IOException in case of encoding error
-	 * @throws CMSException in case of CMSException
+	 * @param signedData {@link CMSSignedData} object to compare
+	 * @param signedDataToCompare {@link CMSSignedData} object to compare with
+	 * @return true if binaries of two CMSSignedData are equal, false otherwise
+	 * @throws IOException if an exception occurs
 	 */
-	public static AttributeTable replaceAttribute(AttributeTable attributeTable, 
-			CMSSignedData attributeToReplace, CMSSignedData attributeToAdd) throws IOException, CMSException {
-		ASN1EncodableVector newAsn1EncodableVector = new ASN1EncodableVector();
-		ASN1EncodableVector oldAsn1EncodableVector = attributeTable.toASN1EncodableVector();
-		for (int ii = 0; ii < oldAsn1EncodableVector.size(); ii++) {
-			Attribute attribute = (Attribute) oldAsn1EncodableVector.get(ii);
-			if (equals(DSSASN1Utils.getCMSSignedData(attribute), attributeToReplace)) {
-				ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
-				newAsn1EncodableVector.add(new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive)));
-			} else {
-				newAsn1EncodableVector.add(attribute);
-			}
-		}
-		return new AttributeTable(newAsn1EncodableVector);		
-	}
-	
-	private static boolean equals(CMSSignedData signedData, CMSSignedData signedDataToCompare) throws IOException {
+	public static boolean isCMSSignedDataEqual(CMSSignedData signedData, CMSSignedData signedDataToCompare) throws IOException {
 		return Arrays.equals(signedData.getEncoded(), signedDataToCompare.getEncoded());
 	}
 

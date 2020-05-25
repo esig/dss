@@ -114,7 +114,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 	protected void compare(DSSDocument signedDocument, DSSDocument extendedDocument) {
 	}
 
-	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
+	protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
 		SP extensionParameters = getExtensionParameters();
 		DocumentSignatureService<SP, TP> service = getSignatureServiceToExtend();
 

@@ -1357,15 +1357,14 @@ public final class DSSASN1Utils {
 	}
 	
 	/**
-	 * Finds {@link TimeStampToken}s with a given {@code oid}
+	 * Finds archive {@link TimeStampToken}s
 	 * @param unsignedAttributes {@link AttributeTable} to obtain timestamps from
-	 * @param oid {@link ASN1ObjectIdentifier} to collect
 	 */
-	public static List<TimeStampToken> findTimeStampTokens(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+	public static List<TimeStampToken> findArchiveTimeStampTokens(AttributeTable unsignedAttributes) {
 		List<TimeStampToken> timeStamps = new ArrayList<>();
-		Attribute[] signatureTimeStamps = getAsn1Attributes(unsignedAttributes, oid);
-		if (signatureTimeStamps != null) {
-			for (final Attribute attribute : signatureTimeStamps) {
+		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
+		for (final Attribute attribute : attributes) {
+			if (isArchiveTimeStampToken(attribute)) {
 				TimeStampToken timeStampToken = getTimeStampToken(attribute);
 				if (timeStampToken != null) {
 					timeStamps.add(timeStampToken);
@@ -1373,6 +1372,20 @@ public final class DSSASN1Utils {
 			}
 		}
 		return timeStamps;
+	}
+	
+	/**
+	 * Checks if the attribute is of an allowed archive timestamp type
+	 * 
+	 * @param attribute {@link Attribute} to check
+	 * @return true if the attribute represents an archive timestamp element, false otherwise
+	 */
+	public static boolean isArchiveTimeStampToken(Attribute attribute) {
+		if (attribute == null) {
+			return false;
+		}
+		ASN1ObjectIdentifier objectIdentifier = attribute.getAttrType();
+		return OID.id_aa_ets_archiveTimestampV2.equals(objectIdentifier) || OID.id_aa_ets_archiveTimestampV3.equals(objectIdentifier);
 	}
 	
 	/**

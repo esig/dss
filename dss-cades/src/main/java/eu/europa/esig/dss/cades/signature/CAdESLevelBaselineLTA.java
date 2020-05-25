@@ -24,11 +24,12 @@ import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSException;
@@ -65,14 +66,6 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
 
 	private final CAdESLevelBaselineLT cadesProfileLT;
-	
-	private static final List<ASN1ObjectIdentifier> archiveTimestampOIDs;
-	
-	static {
-		archiveTimestampOIDs = new ArrayList<>();
-		archiveTimestampOIDs.add(OID.id_aa_ets_archiveTimestampV2);
-		archiveTimestampOIDs.add(OID.id_aa_ets_archiveTimestampV3);
-	}
 
 	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
 		super(tspSource, onlyLastSigner);
@@ -126,27 +119,55 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.postExtendCMSSignedData(
 					timestampCMSSignedData, getFirstSigner(timestampCMSSignedData), parameters.getDetachedContents());
 					
-			unsignedAttributes = CMSUtils.replaceAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
+			unsignedAttributes = replaceTimeStampAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
 		}
 		return unsignedAttributes;
 	}
 	
 	private TimeStampToken getLastArchiveTimestamp(AttributeTable unsignedAttributes) {
 		TimeStampToken lastTimeStampToken = null;
-		for (ASN1ObjectIdentifier identifier : archiveTimestampOIDs) {
-			lastTimeStampToken = getLastTimeStampTokenWithOid(lastTimeStampToken, unsignedAttributes, identifier);
-		}
-		return lastTimeStampToken;
-	}
-	
-	private TimeStampToken getLastTimeStampTokenWithOid(TimeStampToken lastTimeStampToken, AttributeTable unsignedAttributes, ASN1ObjectIdentifier asn1ObjectIdentifier) {
 		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
-		for (TimeStampToken timeStampToken : DSSASN1Utils.findTimeStampTokens(unsignedAttributes, asn1ObjectIdentifier)) {
+		for (TimeStampToken timeStampToken : DSSASN1Utils.findArchiveTimeStampTokens(unsignedAttributes)) {
 			if (lastTimeStampToken == null || comparator.after(timeStampToken, lastTimeStampToken)) {
 				lastTimeStampToken = timeStampToken; 
 			}
 		}
 		return lastTimeStampToken;
+	}
+	
+	/**
+	 * Returns a new {@code AttributeTable} with a replaced {@code attributeToReplace} by {@code attributeToAdd} 
+	 * 
+	 * @param attributeTable {@link AttributeTable} to replace value in
+	 * @param attributeToReplace {@link CMSSignedData} to be replaced
+	 * @param attributeToAdd {@link CMSSignedData} to replace by
+	 * @return a new {@link AttributeTable}
+	 * @throws IOException in case of encoding error
+	 * @throws CMSException in case of CMSException
+	 */
+	private AttributeTable replaceTimeStampAttribute(AttributeTable attributeTable, CMSSignedData attributeToReplace, 
+			CMSSignedData attributeToAdd) throws IOException, CMSException {
+		ASN1EncodableVector newAsn1EncodableVector = new ASN1EncodableVector();
+		Attribute[] attributes = attributeTable.toASN1Structure().getAttributes();
+		for (Attribute attribute : attributes) {
+			Attribute attibuteToAdd = attribute;
+			if (DSSASN1Utils.isArchiveTimeStampToken(attribute)) {
+				try {
+					// ContentInfo binaries have to be compared, therefore CMSSignedData creation is required
+					CMSSignedData cmsSignedData = DSSASN1Utils.getCMSSignedData(attribute);
+					if (CMSUtils.isCMSSignedDataEqual(attributeToReplace, cmsSignedData)) {
+						ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
+						attibuteToAdd = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
+					}
+				} catch (Exception e) {
+					LOG.warn("Unable to build a CMSSignedData object from an unsigned attribute. Reason : {}", e);
+					// we free to continue with the original object, 
+					// because it would not be possible to extend the attribute anyway
+				}
+			}
+			newAsn1EncodableVector.add(attibuteToAdd);
+		}
+		return new AttributeTable(newAsn1EncodableVector);		
 	}
 
 	/**
