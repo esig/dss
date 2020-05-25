@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
@@ -30,7 +31,7 @@ import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
  * This class allows to custom text generation in the PAdES visible signature
  *
  */
-public class SignatureImageTextParameters {
+public class SignatureImageTextParameters implements Serializable {
 
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 	private static final float DEFAULT_PADDING = 5f;
@@ -42,11 +43,12 @@ public class SignatureImageTextParameters {
 	private SignerTextPosition signerTextPosition = SignerTextPosition.LEFT;
 
 	/**
-	 * This variable is define the image from text vertical alignment in connection with the image<br>
+	 * This variable is define the image from text vertical alignment in connection
+	 * with the image<br>
 	 * <br>
-	 * It has effect when the {@link SignatureImageTextParameters.SignerTextPosition SignerPosition} is
-	 * {@link SignatureImageTextParameters.SignerTextPosition#LEFT LEFT} or
-	 * {@link SignatureImageTextParameters.SignerTextPosition#RIGHT RIGHT}
+	 * It has effect when the {@link SignerTextPosition SignerPosition} is
+	 * {@link SignerTextPosition#LEFT LEFT} or {@link SignerTextPosition#RIGHT
+	 * RIGHT}
 	 */
 	private SignerTextVerticalAlignment signerTextVerticalAlignment = SignerTextVerticalAlignment.MIDDLE;
 
