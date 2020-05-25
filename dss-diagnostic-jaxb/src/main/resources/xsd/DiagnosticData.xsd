@@ -249,6 +249,13 @@
 					<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
 					<xs:element name="Email" type="xs:string" minOccurs="0"/>
 					
+					<xs:element name="SubjectAlternativeNames" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="subjectAlternativeName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 					<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>

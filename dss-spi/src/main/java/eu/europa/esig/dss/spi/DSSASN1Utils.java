@@ -1496,4 +1496,27 @@ public final class DSSASN1Utils {
 		return result;
 	}
 
+	public static List<String> getSubjectAlternativeNames(CertificateToken certToken) {
+		List<String> result = new ArrayList<>();
+		try {
+			Collection<List<?>> subjectAlternativeNames = certToken.getCertificate().getSubjectAlternativeNames();
+			if (Utils.isCollectionNotEmpty(subjectAlternativeNames)) {
+				for (List<?> list : subjectAlternativeNames) {
+					// type + value
+					if (Utils.collectionSize(list) == 2) {
+						Object value = list.get(1);
+						if (value instanceof String) {
+							result.add((String) value);
+						} else {
+							LOG.warn("Ignored value : {}", value);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract SubjectAlternativeNames", e);
+		}
+		return result;
+	}
+
 }

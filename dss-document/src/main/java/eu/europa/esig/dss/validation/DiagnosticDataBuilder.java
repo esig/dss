@@ -1978,6 +1978,11 @@ public class DiagnosticDataBuilder {
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, subject));
 		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, subject));
 
+		List<String> subjectAlternativeNames = DSSASN1Utils.getSubjectAlternativeNames(certToken);
+		if (Utils.isCollectionNotEmpty(subjectAlternativeNames)) {
+			xmlCert.setSubjectAlternativeNames(subjectAlternativeNames);
+		}
+
 		xmlCert.setAuthorityInformationAccessUrls(getCleanedUrls(DSSASN1Utils.getCAAccessLocations(certToken)));
 		xmlCert.setOCSPAccessUrls(getCleanedUrls(DSSASN1Utils.getOCSPAccessLocations(certToken)));
 		xmlCert.setCRLDistributionPoints(getCleanedUrls(DSSASN1Utils.getCrlUrls(certToken)));

@@ -339,6 +339,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	public List<String> getSubjectAlternativeNames() {
+		return certificate.getSubjectAlternativeNames();
+	}
+
 	public String getReadableCertificateName() {
 		if (certificate.getCommonName() != null) {
 			return certificate.getCommonName();
