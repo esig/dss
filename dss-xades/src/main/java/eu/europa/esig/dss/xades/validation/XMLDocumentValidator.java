@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
+import eu.europa.esig.dss.xades.definition.SAMLAssertionNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
@@ -67,6 +69,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	static {
 		XAdESNamespaces.registerNamespaces();
+
+		DomUtils.registerNamespace(SAMLAssertionNamespace.NS);
 	}
 
 	XMLDocumentValidator() {
@@ -119,6 +123,14 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
+			final Node parent = signatureEl.getParentNode();
+			final String nodeName = parent.getNodeName();
+			final String ns = parent.getNamespaceURI();
+			
+			if ("saml2:Assertion".equals(nodeName) && SAMLAssertionNamespace.NS.isSameUri(ns)) {
+				continue; // skip signed assertions
+			}
+
 			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xadesPathsHolders);
 			xadesSignature.setSignatureFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);

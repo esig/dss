@@ -49,6 +49,8 @@ public class BLevelParameters implements Serializable {
 
 	private List<String> claimedSignerRoles;
 
+	private List<String> signedAssertions;
+
 	private Policy signaturePolicy;
 
 	private List<CommitmentType> commitmentTypeIndications;
@@ -132,6 +134,14 @@ public class BLevelParameters implements Serializable {
 		return claimedSignerRoles;
 	}
 
+	public List<String> getSignedAssertions() {
+                return signedAssertions;
+        }
+
+        public void setSignedAssertions(List<String> signedAssertions) {
+                this.signedAssertions = signedAssertions;
+        }
+
 	/**
 	 * Get the commitment type indications
 	 * 
@@ -175,6 +185,7 @@ public class BLevelParameters implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((claimedSignerRoles == null) ? 0 : claimedSignerRoles.hashCode());
+		result = (prime * result) + ((signedAssertions == null) ? 0 : signedAssertions.hashCode());
 		result = (prime * result) + ((commitmentTypeIndications == null) ? 0 : commitmentTypeIndications.hashCode());
 		result = (prime * result) + ((signaturePolicy == null) ? 0 : signaturePolicy.hashCode());
 		result = (prime * result) + ((signerLocation == null) ? 0 : signerLocation.hashCode());
@@ -200,6 +211,13 @@ public class BLevelParameters implements Serializable {
 				return false;
 			}
 		} else if (!claimedSignerRoles.equals(other.claimedSignerRoles)) {
+			return false;
+		}
+		if (signedAssertions == null) {
+			if (other.signedAssertions != null) {
+				return false;
+			}
+		} else if (!signedAssertions.equals(other.signedAssertions)) {
 			return false;
 		}
 		if (commitmentTypeIndications == null) {
@@ -239,7 +257,7 @@ public class BLevelParameters implements Serializable {
 	@Override
 	public String toString() {
 		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", claimedSignerRoles=" + claimedSignerRoles
-				+ ", signaturePolicy=" + signaturePolicy + ", commitmentTypeIndication=" + commitmentTypeIndications + ", signerLocation=" + signerLocation
+				+ ", signedAssertions=" + signedAssertions + ", signaturePolicy=" + signaturePolicy + ", commitmentTypeIndication=" + commitmentTypeIndications + ", signerLocation=" + signerLocation
 				+ "]";
 	}
 

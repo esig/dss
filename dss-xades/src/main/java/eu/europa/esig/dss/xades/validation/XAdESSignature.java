@@ -476,6 +476,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	public List<String> getSignedAssertions() {
+		List<String> result = new ArrayList<>();
+		String signedAssertionPath = xadesPaths.getSignedAssertionPath();
+
+		if (signedAssertionPath != null) {
+			NodeList nodeList = DomUtils.getNodeList(signatureElement, signedAssertionPath);
+			for (int ii = 0; ii < nodeList.getLength(); ii++) {
+				result.add(DomUtils.xmlToString(nodeList.item(ii).getFirstChild()));
+			}
+		}
+		return result;
+	}
+
+	@Override
 	public List<SignerRole> getClaimedSignerRoles() {
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getClaimedRolePath());
 		if (nodeList.getLength() == 0) {

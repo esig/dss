@@ -34,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
@@ -137,6 +138,28 @@ public class DiagnosticData {
 		return signature.getSignatureFormat();
 	}
 
+	/**
+	 * This method returns the signed assertions for the first signature.
+	 *
+	 * @return list of {@link XmlSignedAssertion}s 
+	 */
+	public List<XmlSignedAssertion> getSignedAssertionsInFirstSignature() {
+		SignatureWrapper signature = getFirstSignatureNullSafe();
+		return signature.getSignedAssertions();
+	}
+
+	/**
+	 * This method returns the signed assertions for the given signature.
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature, for which the signed assertions are sought.
+	 * @return list of {@link XmlSignedAssertion}s 
+	 */
+	public List<XmlSignedAssertion> getSignedAssertions(final String signatureId) {
+		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
+		return signature.getSignedAssertions();
+	}
+	
 	/**
 	 * This method returns the {@code DigestAlgorithm} of the first signature.
 	 *

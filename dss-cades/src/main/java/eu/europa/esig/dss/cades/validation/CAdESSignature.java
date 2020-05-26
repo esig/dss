@@ -82,6 +82,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.SignedAssertion;
+import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -406,6 +408,23 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		} catch (Exception e) {
 			throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
 		}
+	}
+
+	@Override
+	public List<String> getSignedAssertions() {
+		List<String> result = new ArrayList<>();
+		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
+		if (signerAttrV2 != null) {
+		    for (final Object signerAttrValue : signerAttrV2.getValues()) {
+			    if (signerAttrValue instanceof SignedAssertions) {
+				    List<SignedAssertion> assertions = ((SignedAssertions) signerAttrValue).getAssertions();
+				    for (SignedAssertion sa: assertions) {
+					    result.add(sa.toString());
+				    }
+			    }
+		    }
+		}
+		return result;
 	}
 
 	@Override

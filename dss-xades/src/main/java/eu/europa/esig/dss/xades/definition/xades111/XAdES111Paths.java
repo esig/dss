@@ -451,4 +451,9 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 		return XAdES111Utils.getInstance();
 	}
 
+	@Override
+	public String getSignedAssertionPath() {
+		return null;
+	}
+
 }

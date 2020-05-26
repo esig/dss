@@ -107,6 +107,8 @@ public interface XAdESPaths {
 
 	String getClaimedRolePath();
 
+	String getSignedAssertionPath();
+
 	String getClaimedRoleV2Path();
 
 	String getCertifiedRolePath();

@@ -1054,9 +1054,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateSignerRole() {
 
 		final List<String> claimedSignerRoles = params.bLevel().getClaimedSignerRoles();
-		if (claimedSignerRoles != null) {
+		final List<String> signedAssertions = params.bLevel().getSignedAssertions();
 
-			final Element signerRoleDom;
+		Element signerRoleDom = null;
+		if (claimedSignerRoles != null) {
 
 			if (params.isEn319132()) {
 				signerRoleDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignerRoleV2());
@@ -1069,6 +1070,17 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				addRoles(claimedSignerRoles, claimedRolesDom, getCurrentXAdESElements().getElementClaimedRole());
 			}
 
+		}
+		if (signedAssertions != null && params.isEn319132()) {
+
+			if (signerRoleDom == null){
+				signerRoleDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignerRoleV2());
+			}
+ 
+			if (Utils.isCollectionNotEmpty(signedAssertions)) {
+				final Element signedAssertionsDom = DomUtils.addElement(documentDom, signerRoleDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignedAssertions());
+				addAssertions(signedAssertions, signedAssertionsDom);
+			}
 		}
 
 	}
@@ -1310,6 +1322,17 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 		if (qualifyingPropertiesDom != null) {
 			DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
+		}
+	}
+	
+	private void addAssertions(final List<String> signedAssertions, final Element rolesDom) {
+
+		for (final String signedAssertion : signedAssertions) {
+			final Element roleDom = DomUtils.addElement(documentDom, rolesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignedAssertion());			
+			Document samlAssertion = DomUtils.buildDOM(signedAssertion);
+			Element docEl = samlAssertion.getDocumentElement();
+			Node node = documentDom.importNode(docEl, true);
+			roleDom.appendChild(node);
 		}
 	}
 

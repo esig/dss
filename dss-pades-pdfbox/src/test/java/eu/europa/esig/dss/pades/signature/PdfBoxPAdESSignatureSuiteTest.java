@@ -52,6 +52,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprin
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignatureParametersSerializationTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignedAssertionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSpaceEOFTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESTwoSignersLTALevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPSSTest;
@@ -71,7 +72,7 @@ import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDiffer
 		PAdESSpaceEOFTest.class, PAdESDoubleLTAValidationDataTest.class, PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, 
 		PAdESWithSHA3Test.class, PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, 
 		CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class, PAdESTwoSignersLTALevelTest.class, PAdESWithPemEncodedCrlTest.class,
-		PAdESSignatureParametersSerializationTest.class })
+		PAdESSignatureParametersSerializationTest.class, PAdESSignedAssertionTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

@@ -37,6 +37,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
@@ -365,6 +366,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public List<XmlSignerRole> getSignerRoles() {
 		return signature.getSignerRole();
+	}
+
+	/**
+	 * Returns list of all found SignedAssertions
+	 * @return list of {@link XmlSignedAssertion}s
+	 */
+
+	public List<XmlSignedAssertion> getSignedAssertions() {
+		return signature.getSignedAssertions();
 	}
 
 	/**

@@ -314,6 +314,13 @@ public interface AdvancedSignature extends Serializable {
 	List<SignerRole> getSignerRoles();
 
 	/**
+	 * Returns the list of embeded signed assertions.
+	 *
+	 * @return list of the assertions s
+	 */
+	List<String> getSignedAssertions();
+
+	/**
 	 * Returns the claimed roles of the signer.
 	 *
 	 * @return list of the {@link SignerRole}s
