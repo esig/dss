@@ -1,7 +1,11 @@
 package eu.europa.esig.dss.cades.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
@@ -10,7 +14,11 @@ import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -23,6 +31,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
+// See DSS-2060/DSS-2061
 public class DSS2059Test extends AbstractCAdESTestExtension {
 	
 	@Test
@@ -38,6 +47,8 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnInvalidTimestamp(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
 		
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		CertificateToken tstV2CA = DSSUtils.loadCertificateFromBase64EncodedString("MIID/zCCAuegAwIBAgIQP8umE0YUpE/yhLiMgaeopDANBgkqhkiG9w0BAQsFADB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwHhcNMTUwMTI5MTQwMzE1WhcNMjUwMTI5MTQwMzE1WjB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYc1VJ69W70ojewtKbCLZ+P8bDAVJ1qujzgIZEvm15GYX7Jp+Hl9rwxBdswSZ8S5A/x+0j6YMOHH0Z+iGl649+0GGX1gdAuovQKShsvLSzD/waINxkXXTVXpAW3V4dnCgcb3qaV/pO9NTk/sdRJxM8lUtWuD7TEAfLzz7Ucl6gBjDTA0Gz+AtUkNWPcofCWuDfiSDOOpyKwSxovde6SRwHdTXXIiC2Dphffjrr74MvLb0La5JAUwmJLIH42j/frgZeWk148wLMwBW+lvrIJtPz7eHNtTlNfQLrmmJHW4l+yvTsdJJDs7QYtfzBTNg1zqV8eo/hHxFTFJ8/T9wTmENJAgMBAAGjgYYwgYMwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwQQYDVR0gBDowODA2BgorBgEEAftLBQEBMCgwJgYIKwYBBQUHAgEWGmh0dHA6Ly9kb2NzLnVuaXZlcnNpZ24uZXUvMB0GA1UdDgQWBBT6Te1XO70/85Ezmgs5pH9dEt0HRjANBgkqhkiG9w0BAQsFAAOCAQEAc7ud6793wgdjR8Xc1L47ufdVTamI5SHfOThtROfn8JL0HuNHKdRgv6COpdjtt6RwQEUUX/km7Q+Pn+A2gA/XoPfqD0iMfP63kMMyqgalEPRv+lXbFw3GSC9BQ9s2FL7ScvSuPm7VDZhpYN5xN6H72y4z7BgsDVNhkMu5AiWwbaWF+BHzZeiuvYHX0z/OgY2oH0hluovuRAanQd4dOa73bbZhTJPFUzkgeIzOiuYS421IiAqsjkFwu3+k4dMDqYfDKUSITbMymkRDszR0WGNzIIy2NsTBcKYCHmbIV9S+165i8YjekraBjTTSbpfbty87A1S53CzA2EN1qnmQPwqFfg==");
@@ -51,17 +62,37 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	@Override
 	protected void checkRevocationData(DiagnosticData diagnosticData) {
 		super.checkRevocationData(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		// a new revocation data should be added
+		List<CertificateRevocationWrapper> certificateRevocationData = signingCertificate.getCertificateRevocationData();
+		assertEquals(2, certificateRevocationData.size());
+		boolean revoked = false;
+		for (CertificateRevocationWrapper revocationData : certificateRevocationData) {
+			revoked = revoked || revocationData.isRevoked();
+		}
+		assertTrue(revoked);
+		
+		List<String> signatureRevocationIds = signature.foundRevocations().getRelatedRevocationData()
+				.stream().map(r -> r.getId()).collect(Collectors.toList());
+		signatureRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData()
+				.stream().map(r -> r.getId()).collect(Collectors.toList()));
+		
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			if (ArchiveTimestampType.CAdES_V2.equals(timestampWrapper.getArchiveTimestampType())) {
 				// the last ATSTv2 must be extended
-				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.foundRevocations().getRelatedRevocationData()));
+				List<RelatedRevocationWrapper> timestampRevocationData = timestampWrapper.foundRevocations().getRelatedRevocationData();
+				assertTrue(Utils.isCollectionNotEmpty(timestampRevocationData));
+				for (RelatedRevocationWrapper revocationWrapper : timestampRevocationData) {
+					assertFalse(signatureRevocationIds.contains(revocationWrapper.getId()));
+				}
 			}
 		}
 	}
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.CAdES_101733_C, diagnosticData.getFirstSignatureFormat()); 
+		assertEquals(getFinalSignatureLevel(), diagnosticData.getFirstSignatureFormat()); 
 	}
 
 	@Override

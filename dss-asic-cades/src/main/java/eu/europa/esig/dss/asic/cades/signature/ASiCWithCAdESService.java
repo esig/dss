@@ -43,6 +43,7 @@ import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -61,6 +62,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 @SuppressWarnings("serial")
@@ -392,7 +396,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private DSSDocument extendArchiveTimestamp(DSSDocument archiveTimestamp, List<DSSDocument> detachedContents) {
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
 		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, cmsSignedData.getSignerInfos().iterator().next(),
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, cmsSignedData.getSignerInfos().iterator().next());
+		ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+		// TODO: obtain validation data from the complete signature
+		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = 
+				new ValidationDataForInclusionBuilder(validationContext, cadesSignature.getCompleteCertificateSource());
+		ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
+		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion,
 				detachedContents);
 		return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeType.TST);
 	}
