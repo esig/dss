@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
@@ -35,6 +37,9 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -141,6 +146,26 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
 			ManifestFile archiveManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifests.get(ii));
 			Digest archManifestSigDigest = getSignatureDigest(archiveManifestFile);
 			assertEquals(signatureDigest, Utils.toBase64(archManifestSigDigest.getValue()));
+		}
+	}
+	
+	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		super.checkRevocationData(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<String> sigRevocationIds = signature.foundRevocations().getRelatedRevocationData()
+				.stream().map(r -> r.getId()).collect(Collectors.toList());
+		sigRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData()
+				.stream().map(r -> r.getId()).collect(Collectors.toList()));
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		if (timestampList.size() == 3) {
+			TimestampWrapper firstArchiveTst = timestampList.get(1);
+			assertTrue(Utils.isCollectionNotEmpty(firstArchiveTst.foundRevocations().getRelatedRevocationData()));
+			for (RelatedRevocationWrapper revocation : firstArchiveTst.foundRevocations().getRelatedRevocationData()) {
+				assertFalse(sigRevocationIds.contains(revocation.getId()));
+			}
 		}
 	}
 	
