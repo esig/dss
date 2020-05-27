@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<jaxb:bindings version="1.0"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
+
+	<jaxb:globalBindings>
+		<jaxb:serializable uid="1" />
+	</jaxb:globalBindings>
+
+	<jaxb:bindings schemaLocation="saml-schema-assertion-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.assertion" />
+		</jaxb:schemaBindings>
+		<jaxb:bindings
+			schemaLocation="http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/xenc-schema.xsd"	node="/xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.xmlenc.jaxb" />
+			</jaxb:schemaBindings>
+		</jaxb:bindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="saml-schema-protocol-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.protocol" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="saml-schema-ecp-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.ecp" />
+		</jaxb:schemaBindings>
+		
+		<jaxb:bindings
+			schemaLocation="http://schemas.xmlsoap.org/soap/envelope/"	node="/xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.soap.jaxb.envelope" />
+			</jaxb:schemaBindings>
+		</jaxb:bindings>
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="saml-schema-dce-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.dce" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="saml-schema-x500-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.x500" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="saml-schema-xacml-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.xacml" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="saml-schema-authn-context-2.0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.saml.jaxb.authn.context" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+</jaxb:bindings>

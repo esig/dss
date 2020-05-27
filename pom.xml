@@ -95,6 +95,7 @@
 		<module>specs-trusted-list</module>
 		<module>specs-validation-report</module>
 		<module>specs-asic-manifest</module>
+		<module>specs-saml-assertion</module>
 		
 		<module>dss-policy-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
@@ -498,6 +499,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-asic-manifest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-saml-assertion</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
