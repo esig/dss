@@ -97,6 +97,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -1979,13 +1980,15 @@ public class DiagnosticDataBuilder {
 
 		xmlCert.setSerialNumber(certToken.getSerialNumber());
 
+		xmlCert.setSubjectSerialNumber(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SERIALNUMBER, subject));
 		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, subject));
 		xmlCert.setLocality(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.L, subject));
 		xmlCert.setState(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ST, subject));
 		xmlCert.setCountryName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, subject));
+		xmlCert.setOrganizationIdentifier(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ORGANIZATION_IDENTIFIER, subject));
 		xmlCert.setOrganizationName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, subject));
-		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, subject));
 		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, subject));
+		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, subject));
 		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, subject));
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, subject));
 		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, subject));
@@ -2019,6 +2022,7 @@ public class DiagnosticDataBuilder {
 		xmlCert.setQCStatementIds(getXmlOids(DSSASN1Utils.getQCStatementsIdList(certToken)));
 		xmlCert.setQCTypes(getXmlOids(DSSASN1Utils.getQCTypesIdList(certToken)));
 		xmlCert.setCertificatePolicies(getXmlCertificatePolicies(DSSASN1Utils.getCertificatePolicies(certToken)));
+		xmlCert.setSemanticsIdentifier(getXmlOid(DSSASN1Utils.getSemanticsIdentifier(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(trustedCertSources.isTrusted(certToken));
@@ -2033,6 +2037,16 @@ public class DiagnosticDataBuilder {
 		return xmlCert;
 	}
 
+	private XmlOID getXmlOid(OidDescription oidDescription) {
+		if (oidDescription == null) {
+			return null;
+		}
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setValue(oidDescription.getOid());
+		xmlOID.setDescription(oidDescription.getDescription());
+		return xmlOID;
+	}
+
 	private XmlPSD2Info getPSD2Info(CertificateToken certToken) {
 		PSD2QcType psd2QcStatement = DSSASN1Utils.getPSD2QcStatement(certToken);
 		if (psd2QcStatement != null) {
@@ -2043,13 +2057,8 @@ public class DiagnosticDataBuilder {
 			List<XmlPSD2Role> psd2Roles = new ArrayList<>();
 			for (RoleOfPSP roleOfPSP : rolesOfPSP) {
 				XmlPSD2Role xmlRole = new XmlPSD2Role();
-				XmlOID xmlOID = new XmlOID();
 				RoleOfPspOid role = roleOfPSP.getPspOid();
-				if (role != null) { // unsupported oid
-					xmlOID.setValue(role.getOid());
-					xmlOID.setDescription(role.getDescription());
-					xmlRole.setPspOid(xmlOID);
-				}
+				xmlRole.setPspOid(getXmlOid(role));
 				xmlRole.setPspName(roleOfPSP.getPspName());
 				psd2Roles.add(xmlRole);
 			}

@@ -239,10 +239,12 @@
 					<xs:element name="SubjectDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
 					<xs:element name="IssuerDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
 					<xs:element name="SerialNumber" type="xs:integer" />
+					<xs:element name="SubjectSerialNumber" type="xs:string" minOccurs="0"/>
 					<xs:element name="CommonName" type="xs:string" minOccurs="0"/>
 					<xs:element name="Locality" type="xs:string" minOccurs="0"/>
 					<xs:element name="State" type="xs:string" minOccurs="0"/>
 					<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
+					<xs:element name="OrganizationIdentifier" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
 					<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
@@ -339,6 +341,7 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+					<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
 								
 					<xs:element name="TrustedServiceProviders" minOccurs="0">
 						<xs:complexType>

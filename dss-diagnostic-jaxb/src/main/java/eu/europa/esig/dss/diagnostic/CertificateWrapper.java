@@ -43,6 +43,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -165,6 +166,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return serialNumber == null ? "" : serialNumber.toString();
 	}
 
+	public String getSubjectSerialNumber() {
+		return certificate.getSubjectSerialNumber();
+	}
+
 	public String getCommonName() {
 		return certificate.getCommonName();
 	}
@@ -175,6 +180,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public String getGivenName() {
 		return certificate.getGivenName();
+	}
+
+	public String getOrganizationIdentifier() {
+		return certificate.getOrganizationIdentifier();
 	}
 
 	public String getOrganizationName() {
@@ -341,6 +350,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public List<String> getSubjectAlternativeNames() {
 		return certificate.getSubjectAlternativeNames();
+	}
+
+	public SemanticsIdentifier getSemanticsIdentifier() {
+		XmlOID xmlOID = certificate.getSemanticsIdentifier();
+		if (xmlOID != null) {
+			return SemanticsIdentifier.fromOid(xmlOID.getValue());
+		}
+		return null;
 	}
 
 	public String getReadableCertificateName() {

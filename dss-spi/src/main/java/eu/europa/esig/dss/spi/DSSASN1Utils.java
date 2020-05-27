@@ -100,6 +100,8 @@ import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
+import org.bouncycastle.asn1.x509.qualified.RFC3739QCObjectIdentifiers;
+import org.bouncycastle.asn1.x509.qualified.SemanticsInformation;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
@@ -115,6 +117,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
+import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -1530,6 +1533,25 @@ public final class DSSASN1Utils {
 			LOG.warn("Unable to extract SubjectAlternativeNames", e);
 		}
 		return result;
+	}
+
+	public static SemanticsIdentifier getSemanticsIdentifier(CertificateToken certToken) {
+		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
+		if (Utils.isArrayNotEmpty(qcStatement)) {
+			try {
+				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
+				for (int i = 0; i < seq.size(); i++) {
+					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
+					if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.equals(statement.getStatementId())) {
+						SemanticsInformation semanticsInfo = SemanticsInformation.getInstance(statement.getStatementInfo());
+						return SemanticsIdentifier.fromOid(semanticsInfo.getSemanticsIdentifier().getId());
+					}
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to extract the SemanticsIdentifier", e);
+			}
+		}
+		return null;
 	}
 
 }
