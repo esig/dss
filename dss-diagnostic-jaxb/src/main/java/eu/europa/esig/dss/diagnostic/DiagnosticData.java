@@ -793,6 +793,39 @@ public class DiagnosticData {
 		}
 		return orphanRevocationRefs;
 	}
+	
+	/**
+	 * Returns a list of cross-certificates
+	 * 
+	 * @param certificate {@link CertificateWrapper} to find cross certificates for
+	 * @return a list of cross certificate {@link CertificateWrapper}s
+	 */
+	public List<CertificateWrapper> getCrossCertificates(CertificateWrapper certificate) {
+		List<CertificateWrapper> crossCertificates = new ArrayList<>();
+		for (CertificateWrapper candidate : getEquivalentCertificates(certificate)) {
+			if (!certificate.getCertificateDN().equals(candidate.getCertificateDN()) || 
+					!certificate.getCertificateIssuerDN().equals(candidate.getCertificateIssuerDN())) {
+				crossCertificates.add(candidate);
+			}
+		}
+		return crossCertificates;
+	}
+
+	/**
+	 * Returns a list of equivalent certificates (certificates with the same public key)
+	 * 
+	 * @param certificate {@link CertificateWrapper} to find equivalent certificates for
+	 * @return a list of equivalent certificates
+	 */
+	public List<CertificateWrapper> getEquivalentCertificates(CertificateWrapper certificate) {
+		List<CertificateWrapper> equivalentCertificates = new ArrayList<>();
+		for (CertificateWrapper candidate : getUsedCertificates()) {
+			if (!certificate.equals(candidate) && certificate.getEntityKey().equals(candidate.getEntityKey())) {
+				equivalentCertificates.add(candidate);
+			}
+		}
+		return equivalentCertificates;
+	}
 
 	/**
 	 * This method retrieves a list of signature wrappers.

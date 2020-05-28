@@ -20,8 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.bbb;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
@@ -32,6 +34,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -117,6 +120,7 @@ public class BasicBuildingBlocks {
 		XmlXCV xcv = executeX509CertificateValidation();
 		if (xcv != null) {
 			result.setXCV(xcv);
+			addAdditionalInfo(xcv);
 			updateFinalConclusion(result, xcv);
 		}
 
@@ -207,29 +211,60 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlXCV executeX509CertificateValidation() {
+		X509CertificateValidation x509CertificateValidation = getX509CertificateValidation();
+		if (x509CertificateValidation != null) {
+			XmlXCV xcv = x509CertificateValidation.execute();
+			return xcv;
+		}
+		return null;
+	}
+	
+	private X509CertificateValidation getX509CertificateValidation() {
 		if (Context.CERTIFICATE.equals(context)) {
 			CertificateWrapper certificate = (CertificateWrapper) token;
-			X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context, policy);
-			return xcv.execute();
+			return new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context, policy);
 		} else {
 			CertificateWrapper certificate = token.getSigningCertificate();
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context,
-							policy);
-					return xcv.execute();
+					return new X509CertificateValidation(i18nProvider, certificate, currentTime, certificate.getNotBefore(), context, policy);
 				} else if (Context.TIMESTAMP.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime,
+					return new X509CertificateValidation(i18nProvider, certificate, currentTime, 
 							((TimestampWrapper) token).getProductionTime(), context, policy);
-					return xcv.execute();
 				} else if (Context.REVOCATION.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(i18nProvider, certificate, currentTime,
+					return new X509CertificateValidation(i18nProvider, certificate, currentTime, 
 							((RevocationWrapper) token).getProductionDate(), context, policy);
-					return xcv.execute();
 				}
 			}
 		}
 		return null;
+	}
+	
+	private void addAdditionalInfo(XmlXCV xcv) {
+		for (XmlSubXCV subXCV : xcv.getSubXCV()) {
+			List<CertificateWrapper> crossCertificates = diagnosticData.getCrossCertificates(
+					diagnosticData.getUsedCertificateById(subXCV.getId()));
+			if (Utils.isCollectionNotEmpty(crossCertificates)) {
+				subXCV.getCrossCertificates().addAll(getCertificateWrapperIds(crossCertificates));
+			}
+			
+			List<CertificateWrapper> equivalentCertificates = diagnosticData.getEquivalentCertificates(
+					diagnosticData.getUsedCertificateById(subXCV.getId()));
+			equivalentCertificates.removeAll(crossCertificates);
+			if (Utils.isCollectionNotEmpty(equivalentCertificates)) {
+				subXCV.getEquivalentCertificates().addAll(getCertificateWrapperIds(equivalentCertificates));
+			}
+		}
+	}
+	
+	/**
+	 * Returns a list of token ids
+	 * 
+	 * @param tokens a collection of tokens to get ids from
+	 * @return a list of {@link String} ids
+	 */
+	private static List<String> getCertificateWrapperIds(Collection<CertificateWrapper> tokens) {
+		return tokens.stream().map(TokenProxy::getId).collect(Collectors.toList());
 	}
 
 	private XmlSAV executeSignatureAcceptanceValidation() {

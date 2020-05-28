@@ -314,6 +314,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkCertificateChain(diagnosticData);
 		checkSignatureLevel(diagnosticData);
 		checkSigningDate(diagnosticData);
+		checkCertificates(diagnosticData);
 		checkRevocationData(diagnosticData);
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
@@ -470,6 +471,19 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertNotNull(signatureWrapper.getClaimedSigningTime());
+		}
+	}
+
+	private void checkCertificates(DiagnosticData diagnosticData) {
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getId());
+			assertNotNull(certificateWrapper.getCertificateDN());
+			assertNotNull(certificateWrapper.getCertificateIssuerDN());
+			assertNotNull(certificateWrapper.getNotAfter());
+			assertNotNull(certificateWrapper.getNotBefore());
+			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
+			assertNotNull(certificateWrapper.getEntityKey());
 		}
 	}
 	
