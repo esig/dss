@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithCompositeTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithFailTimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTAWithDifferentTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTATest;
@@ -60,7 +61,7 @@ import eu.europa.esig.dss.pades.extension.suite.PDFTimestampingTest;
 		PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class, PAdESExtensionBToLTASelfSignedTSATest.class, 
 		PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class, PAdESExtensionLTToLTASelfSignedTSATest.class, 
 		PAdESExtensionAllSelfSignedCertsTest.class, PDFTimestampingTest.class, PDFArchiveTimestampingTest.class, DSS1443Test.class, 
-		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class })
+		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class, PAdESExtensionLTAToLTAWithDifferentTSATest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

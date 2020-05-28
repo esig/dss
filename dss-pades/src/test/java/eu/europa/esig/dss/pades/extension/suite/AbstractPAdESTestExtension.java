@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,8 +30,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -38,13 +45,17 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
@@ -113,6 +124,47 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 		return extensionParameters;
 	}
 	
+	@Override
+	protected void checkValidationContext(SignedDocumentValidator validator) {
+		super.checkValidationContext(validator);
+		
+		PDFDocumentValidator pdfValidator = (PDFDocumentValidator) validator;
+		List<PdfDssDict> dssDictionaries = pdfValidator.getDssDictionaries();
+		if (Utils.isCollectionNotEmpty(dssDictionaries) && dssDictionaries.size() > 1) {
+			Map<Long, CertificateToken> previousCertificateMap = null;
+			Map<Long, CRLBinary> previousCrlMap = null;
+			Map<Long, BasicOCSPResp> previousOcspMap = null;
+			
+			for (PdfDssDict dssDict : dssDictionaries) {
+				if (previousCertificateMap != null) {
+					Map<Long, CertificateToken> currentMap = dssDict.getCERTs();
+					assertFalse(currentMap.size() < previousCertificateMap.size());
+					for (Long key : previousCertificateMap.keySet()) {
+						assertEquals(previousCertificateMap.get(key), currentMap.get(key));
+					}
+				}
+				previousCertificateMap = dssDict.getCERTs();
+				
+				if (previousCrlMap != null) {
+					Map<Long, CRLBinary> currentMap = dssDict.getCRLs();
+					assertFalse(currentMap.size() < previousCrlMap.size());
+					for (Long key : previousCrlMap.keySet()) {
+						assertEquals(previousCrlMap.get(key), currentMap.get(key));
+					}
+				}
+				previousCrlMap = dssDict.getCRLs();
+				
+				if (previousOcspMap != null) {
+					Map<Long, BasicOCSPResp> currentMap = dssDict.getOCSPs();
+					assertFalse(currentMap.size() < previousOcspMap.size());
+					for (Long key : previousOcspMap.keySet()) {
+						assertEquals(previousOcspMap.get(key), currentMap.get(key));
+					}
+				}
+				previousOcspMap = dssDict.getOCSPs();
+			}
+		}
+	}
 
 	@Override
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
