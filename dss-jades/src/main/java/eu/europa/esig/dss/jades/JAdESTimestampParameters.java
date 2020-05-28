@@ -18,13 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.enumerations;
+package eu.europa.esig.dss.jades;
 
-/**
- * Different signature forms.<br>
- */
-public enum SignatureForm {
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.TimestampParameters;
 
-	XAdES, CAdES, JAdES, PAdES, PKCS7;
+@SuppressWarnings("serial")
+public class JAdESTimestampParameters extends TimestampParameters {
+	
+	public JAdESTimestampParameters() {
+	}
+	
+	public JAdESTimestampParameters(DigestAlgorithm digestAlgorithm) {
+		super(digestAlgorithm);
+	}
 
 }

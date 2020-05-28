@@ -280,6 +280,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 *            the baseline B properties
 	 */
 	public void setBLevelParams(BLevelParameters bLevelParams) {
+		Objects.requireNonNull(bLevelParams, "bLevelParams cannot be null!");
 		this.bLevelParams = bLevelParams;
 	}
 

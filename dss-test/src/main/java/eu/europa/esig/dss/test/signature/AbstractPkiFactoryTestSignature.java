@@ -280,6 +280,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 							break;
 						case CAdES:
 						case PAdES:
+						case JAdES:
 							uriMatch = indication.equals(commitmentTypeIndication.getOid());
 							break;
 						default:

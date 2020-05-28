@@ -383,4 +383,36 @@ public class DSSUtilsTest {
 		assertTrue(token.isSignedBy(token));
 	}
 
+	@Test
+	public void isUrnOidTest() {
+		assertFalse(DSSUtils.isUrnOid(null));
+		assertFalse(DSSUtils.isUrnOid(""));
+		assertFalse(DSSUtils.isUrnOid("aurn:oid:1.2.3.4"));
+		assertTrue(DSSUtils.isUrnOid("urn:oid:1.2.3.4"));
+		assertTrue(DSSUtils.isUrnOid("URN:OID:1.2.3.4"));
+	}
+	
+	@Test
+	public void getOidCodeTest() {
+		assertEquals(null, DSSUtils.getOidCode(null));
+		assertEquals("", DSSUtils.getOidCode(""));
+		assertEquals("1.2.3.4", DSSUtils.getOidCode("aurn:oid:1.2.3.4"));
+		assertEquals("1.2.3.4", DSSUtils.getOidCode("urn:oid:1.2.3.4"));
+		assertEquals("1.2.3.4", DSSUtils.getOidCode("URN:OID:1.2.3.4"));
+		assertEquals("urn.oid.1.2.3.4", DSSUtils.getOidCode("urn.oid.1.2.3.4"));
+	}
+	
+	@Test
+	public void stripFirstLeadingOccuranceTest() {
+		assertEquals(null, DSSUtils.stripFirstLeadingOccurance(null, null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", ""));
+		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "a"));
+		assertEquals("bbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaa"));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaaa"));
+		assertEquals("", DSSUtils.stripFirstLeadingOccurance("application/", "application/"));
+		assertEquals("json", DSSUtils.stripFirstLeadingOccurance("application/json", "application/"));
+		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurance("application/application/json", "application/"));
+	}
+
 }
