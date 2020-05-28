@@ -1544,7 +1544,9 @@ public final class DSSASN1Utils {
 					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
 					if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.equals(statement.getStatementId())) {
 						SemanticsInformation semanticsInfo = SemanticsInformation.getInstance(statement.getStatementInfo());
-						return SemanticsIdentifier.fromOid(semanticsInfo.getSemanticsIdentifier().getId());
+						if (semanticsInfo != null && semanticsInfo.getSemanticsIdentifier() != null) {
+							return SemanticsIdentifier.fromOid(semanticsInfo.getSemanticsIdentifier().getId());
+						}
 					}
 				}
 			} catch (Exception e) {
