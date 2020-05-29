@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -310,14 +311,18 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<SignerRole> getClaimedSignerRoles() {
 		List<SignerRole> claimeds = new ArrayList<>();
 		Map<?, ?> jsonMap = getSignerAttributes();
 		if (jsonMap != null) {
-			List<?> claimed = (List<?>) jsonMap.get(JAdESHeaderParameterNames.CLAIMED);
-			if (Utils.isCollectionNotEmpty(claimed)) {
-				// TODO unclear standard
-				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.CLAIMED);
+			List<String> claimedList = (List<String>) jsonMap.get(JAdESHeaderParameterNames.CLAIMED);
+			if (Utils.isCollectionNotEmpty(claimedList)) {
+				for (String claimedBase64 : claimedList) {
+					// TODO unclear standard
+					String claimed = new String(Utils.fromBase64(claimedBase64));
+					claimeds.add(new SignerRole(claimed, EndorsementType.CLAIMED));
+				}
 			}
 		}
 		return claimeds;
@@ -335,6 +340,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return certifieds;
+	}
+
+	@Override
+	public List<SignerRole> getSignedAssertions() {
+		List<SignerRole> signedAssertions = new ArrayList<>();
+		Map<?, ?> jsonMap = getSignerAttributes();
+		if (jsonMap != null) {
+			List<?> certified = (List<?>) jsonMap.get(JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
+			if (Utils.isCollectionNotEmpty(certified)) {
+				// TODO unclear standard
+				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
+			}
+		}
+		return signedAssertions;
 	}
 
 	private Map<?, ?> getSignerAttributes() {
@@ -400,12 +419,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private boolean hasBProfile() {
 		return getSigningTime() != null && getSignatureAlgorithm() != null;
-	}
-
-	@Override
-	public List<String> getSignedAssertions() {
-		// not supported
-		return Collections.emptyList();
 	}
 
 }
