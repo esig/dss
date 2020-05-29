@@ -320,6 +320,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
+		checkSignedAssertions(diagnosticData);
 		checkSignatureIdentifier(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
 		checkSignatureDigestReference(diagnosticData);
@@ -701,6 +702,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected void checkClaimedRoles(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
+
+	protected void checkSignedAssertions(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
 	

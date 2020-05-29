@@ -730,7 +730,6 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setSignatureProductionPlace(getXmlSignatureProductionPlace(signature.getSignatureProductionPlace()));
 		xmlSignature.getCommitmentTypeIndications().addAll(getXmlCommitmentTypeIndications(signature.getCommitmentTypeIndications()));
 		xmlSignature.getSignerRole().addAll(getXmlSignerRoles(signature.getSignerRoles()));
-		xmlSignature.getSignedAssertions().addAll(getXmlSignedAssertion(signature.getSignedAssertions()));
 
 		xmlSignature.setContentType(signature.getContentType());
 		xmlSignature.setMimeType(signature.getMimeType());

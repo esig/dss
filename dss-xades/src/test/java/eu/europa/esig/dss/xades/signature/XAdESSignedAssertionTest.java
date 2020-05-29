@@ -99,7 +99,7 @@ public class XAdESSignedAssertionTest extends AbstractXAdESTestSignature {
 		List<String> signedAssertions = getSignatureParameters().bLevel().getSignedAssertions();
 		for (int i = 0; i < signedAssertions.size(); i++) {
 			Document expected = DomUtils.buildDOM(signedAssertions.get(i));
-			Document extracted = DomUtils.buildDOM(signature.getSignedAssertions().get(i).getAssertion());
+			Document extracted = DomUtils.buildDOM(signature.getSignedAssertions().get(i).getRole());
 			assertTrue(expected.isEqualNode(extracted));
 		}
 	}

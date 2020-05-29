@@ -45,9 +45,11 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -316,6 +318,22 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 	
 	@Override
+	protected void checkSignedAssertions(DiagnosticData diagnosticData) {
+		super.checkSignedAssertions(diagnosticData);
+
+		List<String> signedAssertions = getSignatureParameters().bLevel().getSignedAssertions();
+		if (Utils.isCollectionNotEmpty(signedAssertions)) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+			List<String> foundSignedAssertionRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getSignedAssertions());
+			for (int i = 0; i < signedAssertions.size(); i++) {
+				Document expected = DomUtils.buildDOM(signedAssertions.get(i));
+				Document extracted = DomUtils.buildDOM(foundSignedAssertionRoles.get(i));
+				assertTrue(expected.isEqualNode(extracted));
+			}
+		}
+	}
+
+	@Override
 	@SuppressWarnings({ "unchecked" })
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
 		super.checkMessageDigestAlgorithm(diagnosticData);
@@ -466,25 +484,48 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
 				} else if (value instanceof SASignerRoleType) {
 					SASignerRoleType signerRoles = (SASignerRoleType) value;
-
-					List<String> claimedSignerRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
-					List<SAOneSignerRoleType> roleDetails = signerRoles.getRoleDetails();
-					for (String claimedToBeFound : claimedSignerRoles) {
-						boolean found = false;
-						for (SAOneSignerRoleType saOneSignerRoleType : roleDetails) {
-							if (EndorsementType.CLAIMED.equals(saOneSignerRoleType.getEndorsementType())
-									&& claimedToBeFound.equals(saOneSignerRoleType.getRole())) {
-								found = true;
-								break;
-							}
-						}
-						assertTrue(found);
-					}
+					validateETSISASignerRoleType(signerRoles);
 				} else if (value instanceof SASignatureProductionPlaceType) {
 					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
 					validateETSISASignatureProductionPlaceType(productionPlace);
-
 				}
+			}
+		}
+	}
+
+	protected void validateETSISASignerRoleType(SASignerRoleType signerRoles) {
+		List<SAOneSignerRoleType> roleDetails = signerRoles.getRoleDetails();
+
+		List<String> claimedSignerRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
+		if (Utils.isCollectionNotEmpty(claimedSignerRoles)) {
+			for (String claimedToBeFound : claimedSignerRoles) {
+				boolean found = false;
+				for (SAOneSignerRoleType saOneSignerRoleType : roleDetails) {
+					if (EndorsementType.CLAIMED.equals(saOneSignerRoleType.getEndorsementType())
+							&& claimedToBeFound.equals(saOneSignerRoleType.getRole())) {
+						found = true;
+						break;
+					}
+				}
+				assertTrue(found);
+			}
+		}
+
+		List<String> signedAssertions = getSignatureParameters().bLevel().getSignedAssertions();
+		if (Utils.isCollectionNotEmpty(signedAssertions)) {
+			for (String signedAssertionToBeFound : signedAssertions) {
+				Document expected = DomUtils.buildDOM(signedAssertionToBeFound);
+				boolean found = false;
+				for (SAOneSignerRoleType saOneSignerRoleType : roleDetails) {
+					if (EndorsementType.SIGNED.equals(saOneSignerRoleType.getEndorsementType())) {
+						Document extracted = DomUtils.buildDOM(saOneSignerRoleType.getRole());
+						if (expected.isEqualNode(extracted)) {
+							found = true;
+							break;
+						}
+					}
+				}
+				assertTrue(found);
 			}
 		}
 	}
