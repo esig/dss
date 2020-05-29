@@ -300,25 +300,44 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.2.5 The srAts (signer attributes) header parameter
 	 */
 	private void incorporateSignerRoles() {
-		if (Utils.isCollectionEmpty(parameters.bLevel().getClaimedSignerRoles())) {
-			return;
-		}
-		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
-		// TODO : is base64 required ?
-		List<String> base64Values = toBase64Strings(claimedSignerRoles);
-		
-		JSONArray claimed = new JSONArray(base64Values);
-		
 		Map<String, Object> srAtsParams = new HashMap<>();
-		srAtsParams.put(JAdESHeaderParameterNames.CLAIMED, claimed);
+
+		JSONArray claimed = getEncodedClaimedSignerRoles();
+		if (claimed != null) {
+			srAtsParams.put(JAdESHeaderParameterNames.CLAIMED, claimed);
+		}
+
 		// TODO : certified and signedAssertions are not supported
 		// srAtsParams.put(JAdESHeaderParameterNames.CERTIFIED, certified);
-		// srAtsParams.put(JAdESHeaderParameterNames.SIGNED_ASSERTIONS, signedAssertions);
-		JSONObject srAtsParamsObject = new JSONObject(srAtsParams);
-		
-		addCriticalHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
+
+		JSONArray signedAssertions = getEncodedSignedAssertions();
+		if (signedAssertions != null) {
+			srAtsParams.put(JAdESHeaderParameterNames.SIGNED_ASSERTIONS, signedAssertions);
+		}
+
+		if (!srAtsParams.isEmpty()) {
+			JSONObject srAtsParamsObject = new JSONObject(srAtsParams);
+			addCriticalHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
+		}
+	}
+
+	private JSONArray getEncodedClaimedSignerRoles() {
+		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
+		if (Utils.isCollectionEmpty(claimedSignerRoles)) {
+			return null;
+		}
+		// TODO : is base64 required ?
+		return new JSONArray(toBase64Strings(claimedSignerRoles));
 	}
 	
+	private JSONArray getEncodedSignedAssertions() {
+		List<String> signedAssertions = parameters.bLevel().getSignedAssertions();
+		if (Utils.isCollectionEmpty(signedAssertions)) {
+			return null;
+		}
+		return new JSONArray(toBase64Strings(signedAssertions));
+	}
+
 	private List<String> toBase64Strings(List<String> strings) {
 		List<String> base64Strings = new ArrayList<>();
 		for (String str : strings) {

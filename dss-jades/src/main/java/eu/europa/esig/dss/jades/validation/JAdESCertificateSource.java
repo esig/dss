@@ -1,10 +1,12 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.base64url.Base64Url;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
@@ -151,7 +154,72 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
 		}
 
+		checkSigningCertificateRef(candidatesForSigningCertificate);
+
 		return candidatesForSigningCertificate;
+	}
+
+	public void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {
+
+		List<CertificateRef> signingCertificateRefs = getSigningCertificateRefs();
+
+		IssuerSerial issuerSerial = getCurrentIssuerSerial();
+
+		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
+			// must contain only one reference
+			final CertificateRef signingCert = signingCertificateRefs.get(0);
+
+			Digest signingCertificateDigest = signingCert.getCertDigest();
+
+			CertificateValidity bestCertificateValidity = null;
+			for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
+				CertificateToken candidate = certificateValidity.getCertificateToken();
+
+				if (signingCertificateDigest != null) {
+					certificateValidity.setDigestPresent(true);
+
+					byte[] candidateDigest = candidate.getDigest(signingCertificateDigest.getAlgorithm());
+					if (Arrays.equals(signingCertificateDigest.getValue(), candidateDigest)) {
+						certificateValidity.setDigestEqual(true);
+					}
+				}
+
+				if (issuerSerial != null) {
+					certificateValidity.setIssuerSerialPresent(true);
+
+					IssuerSerial candidateIssuerSerial = DSSASN1Utils.getIssuerSerial(candidate);
+					if (Objects.equals(issuerSerial.getIssuer(), candidateIssuerSerial.getIssuer())) {
+						certificateValidity.setDistinguishedNameEqual(true);
+					}
+
+					if (Objects.equals(issuerSerial.getSerial(), candidateIssuerSerial.getSerial())) {
+						certificateValidity.setSerialNumberEqual(true);
+					}
+				}
+
+				if (certificateValidity.isValid()) {
+					bestCertificateValidity = certificateValidity;
+				}
+			}
+
+			// none of them match
+			if (bestCertificateValidity == null && !candidates.isEmpty()) {
+				bestCertificateValidity = candidates.getCertificateValidityList().iterator().next();
+			}
+
+			if (bestCertificateValidity != null) {
+				candidates.setTheCertificateValidity(bestCertificateValidity);
+			}
+		}
+	}
+
+	private IssuerSerial getCurrentIssuerSerial() {
+		String kid = jws.getKeyIdHeaderValue();
+		if (Utils.isStringNotEmpty(kid) && Utils.isBase64Encoded(kid)) {
+			byte[] binary = Utils.fromBase64(kid);
+			return DSSASN1Utils.getIssuerSerial(binary);
+		}
+		return null;
 	}
 
 }

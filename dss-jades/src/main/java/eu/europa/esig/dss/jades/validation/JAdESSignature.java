@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
@@ -27,8 +26,6 @@ import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -191,59 +188,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	}
 
-	/*
-	 * @Override public void checkSigningCertificate() {
-	 * 
-	 * getCandidatesForSigningCertificate();
-	 * 
-	 * Digest signingCertificateDigest = getSigningCertificateDigest(); IssuerSerial
-	 * issuerSerial = getCurrentIssuerSerial();
-	 * 
-	 * for (CertificateValidity certificateValidity :
-	 * candidatesForSigningCertificate.getCertificateValidityList()) {
-	 * CertificateToken candidate = certificateValidity.getCertificateToken();
-	 * 
-	 * if (signingCertificateDigest != null) {
-	 * certificateValidity.setAttributePresent(true);
-	 * certificateValidity.setDigestPresent(true);
-	 * 
-	 * byte[] candidateDigest =
-	 * candidate.getDigest(signingCertificateDigest.getAlgorithm()); if
-	 * (Arrays.equals(signingCertificateDigest.getValue(), candidateDigest)) {
-	 * certificateValidity.setDigestEqual(true);
-	 * candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity
-	 * ); } }
-	 * 
-	 * if (issuerSerial != null) { IssuerSerial candidateIssuerSerial =
-	 * DSSASN1Utils.getIssuerSerial(candidate);
-	 * 
-	 * if (issuerSerial.getIssuer().equals(candidateIssuerSerial.getIssuer())) {
-	 * certificateValidity.setDistinguishedNameEqual(true); }
-	 * 
-	 * if (issuerSerial.getSerial().equals(candidateIssuerSerial.getSerial())) {
-	 * certificateValidity.setSerialNumberEqual(true); } } } }
-	 */
-
-	private Digest getSigningCertificateDigest() {
-		List<CertificateRef> signingCertificates = getCertificateSource().getSigningCertificateRefs();
-		if (Utils.isCollectionNotEmpty(signingCertificates)) {
-
-			// first is the signing certificate
-			CertificateRef designatedSigningCertificate = signingCertificates.iterator().next();
-			return designatedSigningCertificate.getCertDigest();
-		}
-		return null;
-	}
-
-	private IssuerSerial getCurrentIssuerSerial() {
-		String kid = jws.getKeyIdHeaderValue();
-		if (Utils.isStringNotEmpty(kid) && Utils.isBase64Encoded(kid)) {
-			byte[] binary = Utils.fromBase64(kid);
-			return DSSASN1Utils.getIssuerSerial(binary);
-		}
-		return null;
-	}
-
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
 		Map<?, ?> signaturePlace = (Map<?, ?>) jws.getHeaders()
@@ -313,7 +257,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<SignerRole> getClaimedSignerRoles() {
-		List<SignerRole> claimeds = new ArrayList<>();
+		List<SignerRole> result = new ArrayList<>();
 		Map<?, ?> jsonMap = getSignerAttributes();
 		if (jsonMap != null) {
 			List<String> claimedList = (List<String>) jsonMap.get(JAdESHeaderParameterNames.CLAIMED);
@@ -321,11 +265,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				for (String claimedBase64 : claimedList) {
 					// TODO unclear standard
 					String claimed = new String(Utils.fromBase64(claimedBase64));
-					claimeds.add(new SignerRole(claimed, EndorsementType.CLAIMED));
+					result.add(new SignerRole(claimed, EndorsementType.CLAIMED));
 				}
 			}
 		}
-		return claimeds;
+		return result;
 	}
 
 	@Override
@@ -343,17 +287,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<SignerRole> getSignedAssertions() {
-		List<SignerRole> signedAssertions = new ArrayList<>();
+		List<SignerRole> result = new ArrayList<>();
 		Map<?, ?> jsonMap = getSignerAttributes();
 		if (jsonMap != null) {
-			List<?> certified = (List<?>) jsonMap.get(JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
-			if (Utils.isCollectionNotEmpty(certified)) {
-				// TODO unclear standard
-				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
+			List<String> signedAssertionsList = (List<String>) jsonMap.get(JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
+			if (Utils.isCollectionNotEmpty(signedAssertionsList)) {
+				for (String signedAssertionBase64 : signedAssertionsList) {
+					String signedAssertion = new String(Utils.fromBase64(signedAssertionBase64));
+					result.add(new SignerRole(signedAssertion, EndorsementType.SIGNED));
+				}
 			}
 		}
-		return signedAssertions;
+		return result;
 	}
 
 	private Map<?, ?> getSignerAttributes() {
