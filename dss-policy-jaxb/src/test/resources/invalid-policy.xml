@@ -131,7 +131,7 @@
 		<MessageImprintDataFound Level="FAIL" />
 		<MessageImprintDataIntact Level="FAIL" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
-		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL" />
+		<BestSignatureTimeBeforeExpirationDateOfSigningCertificate Level="FAIL" />
 		<Coherence Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />

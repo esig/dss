@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,6 +57,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -852,8 +854,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(tspId));
 		}
 
-		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		
@@ -1995,8 +1996,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
-		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 
 		checkReports(reports);
@@ -2813,6 +2815,54 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+	
+	//see DSS-2070
+	@Test
+	public void tLevelSigWithSignCertExpiredTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/dss-2070.xml"));
+		assertNotNull(diagnosticData);
+		
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+		
+		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		
+		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+		assertEquals(Indication.PASSED, validationProcessLongTermData.getConclusion().getIndication());
+		
+		boolean sigTimeNotBeforeCertIssuanceExecuted = false;
+		boolean sigTimeBeforeCertExpirationExecuted = false;
+		boolean nextStepsExecuted = false;
+		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
+			if (MessageTag.TSV_IBSTAIDOSC.name().equals(constraint.getName().getNameId())) {
+				sigTimeNotBeforeCertIssuanceExecuted = true;
+			} else if (MessageTag.TSV_IBSTBCEC.name().equals(constraint.getName().getNameId())) {
+				sigTimeBeforeCertExpirationExecuted = true;
+			} else if (sigTimeNotBeforeCertIssuanceExecuted || sigTimeBeforeCertExpirationExecuted) {
+				nextStepsExecuted = true;
+			}
+			assertNotEquals(XmlStatus.NOT_OK, constraint.getStatus());
+		}
+		assertTrue(sigTimeNotBeforeCertIssuanceExecuted);
+		assertTrue(sigTimeBeforeCertExpirationExecuted);
+		assertTrue(nextStepsExecuted);
+		
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 	}
 
 	@Test

@@ -69,6 +69,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
@@ -205,9 +206,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		/*
 		 * 4) Comparing times:
-		 * a) If step 2 returned the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or REVOKED_CA_NO_POE:
-		 * If the returned revocation time is posterior to best-signature-time, the process shall perform step 4d.
-		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or REVOKED_CA_NO_POE respectively.
+		 * a) If step 2) returned the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or REVOKED_CA_NO_POE:
+		 * If the returned revocation time is posterior to best-signature-time, the process shall perform step 4-e).
+		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or 
+		 * REVOKED_CA_NO_POE, respectively.
 		 */
 		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && 
@@ -216,20 +218,20 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		}
 
 		/*
-		 * b) If step 2 returned the indication INDETERMINATE with the sub-indication
+		 * b) If step 2) returned the indication INDETERMINATE with the sub-indication
 		 * OUT_OF_BOUNDS_NO_POE: If best-signature-time is before the issuance date of the signing
 		 * certificate, the process shall return the indication FAILED with the sub-indication NOT_YET_VALID.
-		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
-		 * OUT_OF_BOUNDS_NO_POE.
+		 * Otherwise, the process shall return the indication and sub-indication which was returned by step 2).
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime(), bsConclusion.getSubIndication()));
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(
+					bestSignatureTime.getTime(), bsConclusion.getIndication(), bsConclusion.getSubIndication()));
 		}
 
 		/*
-		 * c) If step 2 returned INDETERMINATE with the sub-indication CRYPTO_CONSTRAINTS_FAILURE_NO_POE and the
+		 * c) If step 2) returned INDETERMINATE with the sub-indication CRYPTO_CONSTRAINTS_FAILURE_NO_POE and the
 		 * material concerned by this failure is the signature value or a signed attribute: If the algorithm(s)
-		 * concerned were still considered reliable at best-signature-time, the process shall continue with step d.
+		 * concerned were still considered reliable at best-signature-time, the process shall continue with step 4-e).
 		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
 		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE.
 		 */
@@ -254,12 +256,16 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime(), bsConclusion.getSubIndication()));
+			
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime()));
+			
+			item = item.setNextItem(bestSignatureTimeBeforeCertificateExpiration(bestSignatureTime.getTime()));
+			
 		}
 
 		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
 			/*
-			 * d) For each time-stamp token remaining in the set of signature time-stamp tokens, the process shall check
+			 * e) For each time-stamp token remaining in the set of signature time-stamp tokens, the process shall check
 			 * the coherence in the values of the times indicated in the time-stamp tokens. They shall be posterior to
 			 * the times indicated in any time-stamp token computed on the signed data (content-time-stamp). The process shall apply the
 			 * rules specified in IETF RFC 3161 [3], clause 2.4.2 regarding the order of time-stamp tokens generated by the
@@ -468,10 +474,22 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime,
-			SubIndication currentSubIndication) {
+			Indication currentIndication, SubIndication currentSubIndication) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(i18nProvider, result, bestSignatureTime, signingCertificate, currentSubIndication,
-				policy.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint());
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlValidationProcessLongTermData>(i18nProvider, result, 
+				bestSignatureTime, signingCertificate, currentIndication, currentSubIndication, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlValidationProcessLongTermData>(i18nProvider, result, 
+				bestSignatureTime, signingCertificate, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeCertificateExpiration(Date bestSignatureTime) {
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		return new BestSignatureTimeBeforeCertificateExpirationCheck(i18nProvider, result, bestSignatureTime, signingCertificate,
+				policy.getBestSignatureTimeBeforeExpirationDateOfSigningCertificateConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampCoherenceOrder(List<TimestampWrapper> timestamps) {
