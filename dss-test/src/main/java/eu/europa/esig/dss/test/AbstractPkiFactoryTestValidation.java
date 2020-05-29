@@ -26,7 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -474,7 +477,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	private void checkCertificates(DiagnosticData diagnosticData) {
+	protected void checkCertificates(DiagnosticData diagnosticData) {
 		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
 			assertNotNull(certificateWrapper);
 			assertNotNull(certificateWrapper.getId());
@@ -1173,6 +1176,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkReportsTokens(reports);
 		checkReportsSignatureIdentifier(reports);
 		checkReportsSignaturePolicyIdentifier(reports);
+		checkBBBs(reports);
 	}
 
 	protected void checkSignatureReports(Reports reports) {
@@ -1324,6 +1328,55 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					assertTrue(signaturePolicyIdPresent);
 				}
 				
+			}
+		}
+	}
+	
+	protected void checkBBBs(Reports reports) {
+		DetailedReport detailedReport = reports.getDetailedReport();
+		for (String signatureId : detailedReport.getSignatureIds()) {
+			checkBBB(reports, detailedReport.getBasicBuildingBlockById(signatureId));
+		}
+		for (String timestampId : detailedReport.getTimestampIds()) {
+			checkBBB(reports, detailedReport.getBasicBuildingBlockById(timestampId));
+		}
+		for (String revocationId : detailedReport.getRevocationIds()) {
+			checkBBB(reports, detailedReport.getBasicBuildingBlockById(revocationId));
+		}
+	}
+	
+	protected void checkBBB(Reports reports, XmlBasicBuildingBlocks bbb) {
+		checkEquivalentCertificates(reports, bbb);
+	}
+	
+	protected void checkEquivalentCertificates(Reports reports, XmlBasicBuildingBlocks bbb) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		XmlXCV xcv = bbb.getXCV();
+		if (xcv != null) {
+			for (XmlSubXCV subXCV : xcv.getSubXCV()) {
+				String certId = subXCV.getId();
+				CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateById(certId);
+				assertNotNull(certificateWrapper);
+				boolean equivalentCertsFound = false;
+				if (Utils.isCollectionNotEmpty(subXCV.getCrossCertificates())) {
+					equivalentCertsFound = true;
+					for (String crossCertId : subXCV.getCrossCertificates()) {
+						assertNotEquals(certId, crossCertId);
+						CertificateWrapper crossCert = diagnosticData.getUsedCertificateById(crossCertId);
+						assertEquals(certificateWrapper.getEntityKey(), crossCert.getEntityKey());
+					}
+				}
+				if (Utils.isCollectionNotEmpty(subXCV.getEquivalentCertificates())) {
+					equivalentCertsFound = true;
+					for (String equivalentCertId : subXCV.getEquivalentCertificates()) {
+						assertNotEquals(certId, equivalentCertId);
+						CertificateWrapper equivalentCert = diagnosticData.getUsedCertificateById(equivalentCertId);
+						assertEquals(certificateWrapper.getEntityKey(), equivalentCert.getEntityKey());
+					}
+				}
+				if (!equivalentCertsFound) {
+					assertTrue(Utils.isCollectionEmpty(diagnosticData.getEquivalentCertificates(certificateWrapper)));
+				}
 			}
 		}
 	}

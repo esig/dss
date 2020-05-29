@@ -27,6 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -39,9 +43,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XAdESLTATest extends AbstractXAdESTestValidation {
 
@@ -110,6 +116,21 @@ public class XAdESLTATest extends AbstractXAdESTestValidation {
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		// do nothing
+	}
+	
+	@Override
+	protected void checkBBBs(Reports reports) {
+		super.checkBBBs(reports);
+		
+		boolean crossCertFound = false;
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+		for (XmlSubXCV subXCV : xcv.getSubXCV()) {
+			crossCertFound = crossCertFound || Utils.isCollectionNotEmpty(subXCV.getCrossCertificates());
+		}
+		assertTrue(crossCertFound);
 	}
 
 }
