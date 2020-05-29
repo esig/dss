@@ -140,7 +140,6 @@
 					<xs:element name="SignatureProductionPlace" type="SignatureProductionPlace" minOccurs="0" />
 					<xs:element name="CommitmentTypeIndications" type="CommitmentTypeIndications" minOccurs="0" />
 					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
-					<xs:element name="SignedAssertions" type="SignedAssertion" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
 					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" /> <!-- CAdES -->
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES -->

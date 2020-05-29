@@ -37,7 +37,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
@@ -369,15 +368,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	/**
-	 * Returns list of all found SignedAssertions
-	 * @return list of {@link XmlSignedAssertion}s
-	 */
-
-	public List<XmlSignedAssertion> getSignedAssertions() {
-		return signature.getSignedAssertions();
-	}
-
-	/**
 	 * Returns list of found ClaimedRoles
 	 * @return list of {@link XmlSignerRole}s
 	 */
@@ -394,9 +384,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	/**
-	 * Returns a list of {@code String}s describing the role for the given {@code listOfSignerRoles}
+	 * Returns list of all found SignedAssertions
 	 * 
-	 * @param listOfSignerRoles - list of {@link XmlSignerRole} to get string role details from
+	 * @return list of {@link XmlSignerRole}s
+	 */
+	public List<XmlSignerRole> getSignedAssertions() {
+		return getSignerRolesByCategory(EndorsementType.SIGNED);
+	}
+
+	/**
+	 * Returns a list of {@code String}s describing the role for the given
+	 * {@code listOfSignerRoles}
+	 * 
+	 * @param listOfSignerRoles - list of {@link XmlSignerRole} to get string role
+	 *                          details from
 	 * @return list of role details
 	 */
 	public List<String> getSignerRoleDetails(List<XmlSignerRole> listOfSignerRoles) {

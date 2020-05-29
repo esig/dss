@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.signature.suite;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -41,7 +42,7 @@ public class PAdESSignedAssertionTest extends AbstractPAdESTestSignature {
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private final String signedAssertionString = "<saml2:Assertion>test</saml2:Assertion>"; // format does not matter here
+	private final String signedAssertionString = "<saml2:Assertion xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">test</saml2:Assertion>"; // format does not matter here
 
 	@BeforeEach
 	public void init() throws Exception {
@@ -62,8 +63,8 @@ public class PAdESSignedAssertionTest extends AbstractPAdESTestSignature {
 
 		// verify that SAML assertions were included successfully in signature
 		List<String> signedAssertions = new ArrayList<>();
-		for (XmlSignedAssertion xmlSignedAssertion : signature.getSignedAssertions()) {
-			signedAssertions.add(xmlSignedAssertion.getAssertion());
+		for (XmlSignerRole xmlSignedAssertion : signature.getSignedAssertions()) {
+			signedAssertions.add(xmlSignedAssertion.getRole());
 		}
 		assertEquals(getSignatureParameters().bLevel().getSignedAssertions(), signedAssertions);
 	}

@@ -20,28 +20,30 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import java.util.Arrays;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeEach;
 
 public class CAdESSignedAssertionTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private final String signedAssertionString = "<saml2:Assertion>test</saml2:Assertion>"; // format does not matter here
+	private final String signedAssertionString = "<saml2:Assertion xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">test</saml2:Assertion>"; // format does not matter here
 
 	@BeforeEach
 	public void init() throws Exception {
@@ -65,8 +67,8 @@ public class CAdESSignedAssertionTest extends AbstractCAdESTestSignature {
 
 		// verify that SAML assertions were included successfully in signature
 		List<String> signedAssertions = new ArrayList<>();
-		for (XmlSignedAssertion xmlSignedAssertion : signature.getSignedAssertions()) {
-			signedAssertions.add(xmlSignedAssertion.getAssertion());
+		for (XmlSignerRole xmlSignedAssertion : signature.getSignedAssertions()) {
+			signedAssertions.add(xmlSignedAssertion.getRole());
 		}
 		assertEquals(getSignatureParameters().bLevel().getSignedAssertions(), signedAssertions);
 	}

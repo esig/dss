@@ -411,15 +411,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<String> getSignedAssertions() {
-		List<String> result = new ArrayList<>();
+	public List<SignerRole> getSignedAssertions() {
+		List<SignerRole> result = new ArrayList<>();
 		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
 		if (signerAttrV2 != null) {
 		    for (final Object signerAttrValue : signerAttrV2.getValues()) {
 			    if (signerAttrValue instanceof SignedAssertions) {
 				    List<SignedAssertion> assertions = ((SignedAssertions) signerAttrValue).getAssertions();
 				    for (SignedAssertion sa: assertions) {
-					    result.add(sa.toString());
+						result.add(new SignerRole(sa.toString(), EndorsementType.SIGNED));
 				    }
 			    }
 		    }

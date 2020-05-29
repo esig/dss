@@ -456,6 +456,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (Utils.isCollectionNotEmpty(certifiedSignerRoles)) {
 			signerRoles.addAll(certifiedSignerRoles);
 		}
+		List<SignerRole> signedAssertionSignerRoles = getSignedAssertions();
+		if (Utils.isCollectionNotEmpty(signedAssertionSignerRoles)) {
+			signerRoles.addAll(signedAssertionSignerRoles);
+		}
 		return signerRoles;
 	}
 
@@ -654,9 +658,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean hasLTAProfile() {
 		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
 	}
-	
-	@Override
-	public abstract List<String> getSignedAssertions();
 	
 	@Override
 	public boolean isDocHashOnlyValidation() {

@@ -34,8 +34,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -141,9 +141,9 @@ public class DiagnosticData {
 	/**
 	 * This method returns the signed assertions for the first signature.
 	 *
-	 * @return list of {@link XmlSignedAssertion}s 
+	 * @return list of {@link XmlSignerRole}s
 	 */
-	public List<XmlSignedAssertion> getSignedAssertionsInFirstSignature() {
+	public List<XmlSignerRole> getSignedAssertionsInFirstSignature() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getSignedAssertions();
 	}
@@ -151,11 +151,11 @@ public class DiagnosticData {
 	/**
 	 * This method returns the signed assertions for the given signature.
 	 *
-	 * @param signatureId
-	 *            The identifier of the signature, for which the signed assertions are sought.
-	 * @return list of {@link XmlSignedAssertion}s 
+	 * @param signatureId The identifier of the signature, for which the signed
+	 *                    assertions are sought.
+	 * @return list of {@link XmlSignerRole}s
 	 */
-	public List<XmlSignedAssertion> getSignedAssertions(final String signatureId) {
+	public List<XmlSignerRole> getSignedAssertions(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getSignedAssertions();
 	}
