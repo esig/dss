@@ -2,14 +2,20 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
@@ -17,6 +23,8 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampSource.class);
 
 	private final JAdESSignature signature;
 
@@ -121,9 +129,25 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	}
 
 	@Override
-	protected TimestampToken makeTimestampToken(JAdESAttribute signatureAttribute, TimestampType timestampType,
-			List<TimestampedReference> references) {
-		// TODO implementation
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected TimestampToken makeTimestampToken(JAdESAttribute signatureAttribute, TimestampType timestampType, List<TimestampedReference> references) {
+
+		Map<String, Object> array = (Map<String, Object>) signatureAttribute.getValue();
+		List<Map> tokens = (List<Map>) array.get(JAdESHeaderParameterNames.TST_TOKENS);
+
+		// TODO handle all tokens
+		if (Utils.collectionSize(tokens) > 1) {
+			LOG.warn("More than one timestamp tokens ({})", Utils.collectionSize(tokens));
+		}
+
+		for (Map jsonToken : tokens) {
+			String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
+			try {
+				return new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES);
+			} catch (Exception e) {
+				LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+			}
+		}
 		return null;
 	}
 

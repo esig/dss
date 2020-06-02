@@ -26,6 +26,7 @@ import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -39,6 +40,7 @@ import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifier;
+import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
@@ -325,9 +327,34 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector) {
-		// TODO Auto-generated method stub
+		Map<String, Object> sigPolicy = (Map<String, Object>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PID);
+		if (Utils.isMapNotEmpty(sigPolicy)) {
+			Map<String, Object> policyId = (Map<String, Object>) sigPolicy.get(JAdESHeaderParameterNames.ID);
+			String id = (String) policyId.get(JAdESHeaderParameterNames.ID);
 
+			signaturePolicy = new SignaturePolicy(DSSUtils.getOidCode(id));
+			signaturePolicy.setDescription((String) policyId.get(JAdESHeaderParameterNames.DESC));
+			signaturePolicy.setDigest(JAdESUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
+
+			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
+			if (Utils.isCollectionNotEmpty(qualifiers)) {
+				signaturePolicy.setUrl(getSPUri(qualifiers));
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private String getSPUri(List<Object> qualifiers) {
+		for (Object qualifier : qualifiers) {
+			Map<String, Object> qualiferMap = (Map<String, Object>) qualifier;
+			String spUri = (String)qualiferMap.get(JAdESHeaderParameterNames.SP_URI);
+			if (Utils.isStringNotEmpty(spUri)) {
+				return spUri;
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -24,6 +24,7 @@ public enum TimestampLocation {
 	
 	XAdES,
 	CAdES,
+	JAdES,
 	DOC_TIMESTAMP; // PAdES only, 'DocTimeStamp' dictionary type
 
 }

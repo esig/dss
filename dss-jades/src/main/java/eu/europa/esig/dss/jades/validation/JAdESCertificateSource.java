@@ -16,6 +16,7 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -78,7 +79,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 					CertificateRef certRef = new CertificateRef();
 					certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-					certRef.setCertDigest(getDigest(digestValueAndAlgo));
+					certRef.setCertDigest(JAdESUtils.getDigest(digestValueAndAlgo));
 
 					addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 				} else {
@@ -102,12 +103,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 				}
 			}
 		}
-	}
-
-	private Digest getDigest(Map<?,?> digestValueAndAlgo) {
-		String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
-		String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
-		return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));
 	}
 
 	// ------------- Not supported

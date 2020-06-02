@@ -27,6 +27,7 @@ import org.jose4j.lang.StringUtil;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -113,6 +114,22 @@ public class JAdESUtils {
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, Utils.toBase64(digestValue));
 		
 		return new JSONObject(digAlgValParams);
+	}
+
+	/**
+	 * Creates a {@link Digest} object from a JSON structure
+	 * 
+	 * @param digestValueAndAlgo a Map with digAlg and digVal values
+	 * @return an instance of Digest or null
+	 */
+	public static Digest getDigest(Map<?, ?> digestValueAndAlgo) {
+		String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
+		String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
+		if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
+			return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));
+		} else {
+			return null;
+		}
 	}
 
 	/**

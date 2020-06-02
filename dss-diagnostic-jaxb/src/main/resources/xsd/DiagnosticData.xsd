@@ -771,6 +771,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="XAdES" />
 			<xs:enumeration value="CAdES" />
+			<xs:enumeration value="JAdES" />
 			<xs:enumeration value="DOC_TIMESTAMP" />
 		</xs:restriction>
 	</xs:simpleType>
