@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.util.Map;
 import java.util.Objects;
 
 import org.jose4j.jws.JsonWebSignature;
@@ -7,13 +8,14 @@ import org.jose4j.lang.JoseException;
 
 import eu.europa.esig.dss.model.DSSException;
 
-public class JWSCompactSerialization extends JsonWebSignature {
+public class JWS extends JsonWebSignature {
+
+	private Map<String, Object> unprotected;
 
 	/**
-	 * The default constructor creating an empty JWS Compact Serialization object
-	 * according to RFC 7515
+	 * The default constructor creating an empty JsonWebSignature
 	 */
-	public JWSCompactSerialization() {
+	public JWS() {
 	}
 
 	/**
@@ -22,7 +24,7 @@ public class JWSCompactSerialization extends JsonWebSignature {
 	 * @param parts an array of String with the header, optional payload and
 	 * 				the signature
 	 */
-	public JWSCompactSerialization(String[] parts) {
+	public JWS(String[] parts) {
 		Objects.requireNonNull(parts, "Parts part cannot be null");
 
 		try {
@@ -44,6 +46,23 @@ public class JWSCompactSerialization extends JsonWebSignature {
 	 */
 	public byte[] getSignatureValue() {
 		return super.getSignature();
+	}
+
+	@Override
+	public void setSignature(byte[] signature) {
+		super.setSignature(signature);
+	}
+
+	public void setProtected(String protectedBase64Url) throws JoseException {
+		super.setEncodedHeader(protectedBase64Url);
+	}
+
+	public void setUnprotected(Map<String, Object> unprotected) {
+		this.unprotected = unprotected;
+	}
+
+	public Map<String, Object> getUnprotected() {
+		return unprotected;
 	}
 
 }

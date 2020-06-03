@@ -6,7 +6,7 @@ import java.util.Objects;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
-import eu.europa.esig.dss.jades.validation.JWSCompactSerialization;
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -36,7 +36,7 @@ public class JAdESCompactBuilder {
 	public String build() {
 		assertSignaturePackaging(parameters.getSignaturePackaging());
 		
-		JWSCompactSerialization jws = new JWSCompactSerialization();
+		JWS jws = new JWS();
 		incorporateHeader(jws);
 		incorporatePayload(jws);
 		return JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
@@ -45,9 +45,9 @@ public class JAdESCompactBuilder {
 	/**
 	 * Incorporates Signed Header
 	 * 
-	 * @param jws {@link JWSCompactSerialization} to populate
+	 * @param jws {@link JWS} to populate
 	 */
-	protected void incorporateHeader(final JWSCompactSerialization jws) {
+	protected void incorporateHeader(final JWS jws) {
 		JAdESLevelBaselineB jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier, parameters, signingDocument);
 		Map<String, Object> signedProperties = jadesLevelBaselineB.getSignedProperties();
 		for (Map.Entry<String, Object> signedHeader : signedProperties.entrySet()) {
@@ -58,9 +58,9 @@ public class JAdESCompactBuilder {
 	/**
 	 * Incorporates Payload
 	 * 
-	 * @param jws {@link JWSCompactSerialization} to populate
+	 * @param jws {@link JWS} to populate
 	 */
-	protected void incorporatePayload(final JWSCompactSerialization jws) {
+	protected void incorporatePayload(final JWS jws) {
 		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
 			jws.setPayloadBytes(DSSUtils.toByteArray(signingDocument));
 		}

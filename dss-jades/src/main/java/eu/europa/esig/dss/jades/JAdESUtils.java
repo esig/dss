@@ -79,8 +79,19 @@ public class JAdESUtils {
 	}
 	
 	/**
+	 * Returns the decoded binary for a base64url encoded string
+	 * 
+	 * @param base64UrlEncoded the tring to decoded
+	 * @return the decoded binary
+	 */
+	public static byte[] fromBase64Url(String base64UrlEncoded) {
+		return Base64Url.decode(base64UrlEncoded);
+	}
+
+	/**
 	 * Concatenates the given strings with a '.' (dot) between.
-	 * Example: "xxx", "yyy", "zzz" -> "xxx.yyy.zzz"
+	 * 
+	 * Example: "xxx", "yyy", "zzz" to "xxx.yyy.zzz"
 	 * 
 	 * @param strings a list of {@link String}s to concatenate
 	 * @return a concatenation string result
