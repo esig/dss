@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 
 public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdESTimestampParameters> {
 	
@@ -42,6 +43,13 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
 	 */
 	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA256;
+	
+	/**
+	 * Defines a JWS signature type according to RFC 7515, 3. JSON Web Signature (JWS) Overview
+	 * 
+	 * Default: JWSSerializationType.COMPACT_SERIALIZATION
+	 */
+	private JWSSerializationType jwsSerializationType = JWSSerializationType.COMPACT_SERIALIZATION;
 
 	@Override
 	public JAdESTimestampParameters getContentTimestampParameters() {
@@ -108,6 +116,26 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
 		Objects.requireNonNull(signingCertificateDigestMethod, "SigningCertificateDigestMethod cannot be null!");
 		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
+	}
+
+	/**
+	 * Gets JWSSerializationType
+	 * 
+	 * @return {@link JWSSerializationType}
+	 */
+	public JWSSerializationType getJwsSerializationType() {
+		return jwsSerializationType;
+	}
+
+	/**
+	 * Sets the JWSSerializationType
+	 * Default: JWSSerializationType.COMPACT_SERIALIZATION
+	 * 
+	 * @param jwsSerializationType {@link JWSSerializationType}
+	 */
+	public void setJwsSerializationType(JWSSerializationType jwsSerializationType) {
+		Objects.requireNonNull(jwsSerializationType, "JWSSerializationType cannot be null!");
+		this.jwsSerializationType = jwsSerializationType;
 	}
 
 }
