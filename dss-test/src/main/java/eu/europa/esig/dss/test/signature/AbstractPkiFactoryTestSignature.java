@@ -278,11 +278,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					SignatureForm signatureForm = signatureWrapper.getSignatureFormat().getSignatureForm();
 					switch (signatureForm) {
 						case XAdES:
+						case JAdES:
 							uriMatch = indication.equals(commitmentTypeIndication.getUri()) || indication.equals("urn:oid:" + commitmentTypeIndication.getOid());
 							break;
 						case CAdES:
 						case PAdES:
-						case JAdES:
 							uriMatch = indication.equals(commitmentTypeIndication.getOid());
 							break;
 						default:

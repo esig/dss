@@ -154,7 +154,6 @@ public class JAdESLevelBaselineB {
 		DigestAlgorithm signingCertificateDigestMethod = parameters.getSigningCertificateDigestMethod();
 		if (DigestAlgorithm.SHA256.equals(signingCertificateDigestMethod)) {
 			incorporateSiginingCertificateSha256Thumbprint(parameters.getSigningCertificate());
-			
 		} else {
 			List<CertificateToken> certificates = Arrays.asList(parameters.getSigningCertificate());
 			incorporateSigningCertificateOtherDigestReferences(certificates, signingCertificateDigestMethod);
@@ -259,17 +258,19 @@ public class JAdESLevelBaselineB {
 		if (Utils.isCollectionEmpty(parameters.bLevel().getCommitmentTypeIndications())) {
 			return;
 		}
-		// TODO : is only one allowed ?
+		// TODO : ETSI TS 119 182-1 V0.0.3 allows only one Commitment Type,
+		// however it is under review to be changed to array in further versions
 		if (parameters.bLevel().getCommitmentTypeIndications().size() > 1) {
 			LOG.warn("The current version supports only one CommitmentType indication. "
 					+ "All indications except the first one are omitted.");
 		}
 		CommitmentType commitmentType = parameters.bLevel().getCommitmentTypeIndications().iterator().next();
-		JSONObject oidObject = JAdESUtils.getOidObject(commitmentType.getOid()); // Only simple Oid form is supported
+		JSONObject oidObject = JAdESUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
 		
 		Map<String, Object> srCmParams = new HashMap<>();
 		srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
-		// TODO : Qualifiers are not supported
+		
+		// Qualifiers are not supported
 		// srCmParams.put(JAdESHeaderParameterNames.COMM_QUALS, quals);
 		
 		JSONObject srCmParamsObject = new JSONObject(srCmParams);

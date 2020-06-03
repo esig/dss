@@ -1,11 +1,17 @@
 package eu.europa.esig.dss.jades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -44,6 +50,20 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfCreation));
 		return signatureParameters;
+	}
+	
+	@Override
+	protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
+		super.checkCommitmentTypeIndications(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlCommitmentTypeIndication> commitmentTypeIndications = signature.getCommitmentTypeIndications();
+		assertEquals(1, commitmentTypeIndications.size());
+		XmlCommitmentTypeIndication commitmentTypeIndication = commitmentTypeIndications.get(0);
+		assertEquals(CommitmentTypeEnum.ProofOfCreation.getUri(), commitmentTypeIndication.getIdentifier());
+		assertEquals(CommitmentTypeEnum.ProofOfCreation.getDescription(), commitmentTypeIndication.getDescription());
+		assertEquals(CommitmentTypeEnum.ProofOfCreation.getDocumentationReferences().length, 
+				commitmentTypeIndication.getDocumentationReferences().size());
 	}
 
 	@Override

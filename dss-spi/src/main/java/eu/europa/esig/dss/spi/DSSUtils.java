@@ -102,6 +102,9 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+	
+	/* RFC 3061 */
+	private static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -1023,6 +1026,20 @@ public final class DSSUtils {
 	 */
 	public static boolean isUrnOid(String id) {
 		return id != null && id.matches("^(?i)urn:oid:.*$");
+	}
+
+	/**
+	 * Returns a URN URI generated from the given OID:
+	 * 
+	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
+	 * 
+	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
+	 *
+	 * @param oid {@link String} to be converted to URN URI
+	 * @return URI based on the algorithm's OID
+	 */
+	public static String toUrnOid(String oid) {
+		return OID_NAMESPACE_PREFIX + oid;
 	}
 	
 	/**
