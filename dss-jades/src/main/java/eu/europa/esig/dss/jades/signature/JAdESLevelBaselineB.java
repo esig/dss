@@ -23,6 +23,7 @@ import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -212,8 +213,30 @@ public class JAdESLevelBaselineB {
 	 */
 	private void incorporateType() {
 		if (parameters.isIncludeSignatureType()) {
-			// TODO : add a support for JSON Serialization signature type
-			MimeType signatureMimeType = MimeType.JOSE;
+			
+			/*
+			 * RFC 7515 : 4.1.9. "typ" (Type) Header Parameter
+			 * 
+			 * The "typ" value "JOSE" can be used by applications to indicate that
+			 * this object is a JWS or JWE using the JWS Compact Serialization or
+			 * the JWE Compact Serialization.  The "typ" value "JOSE+JSON" can be
+			 * used by applications to indicate that this object is a JWS or JWE
+			 * using the JWS JSON Serialization or the JWE JSON Serialization.
+			 */
+			
+			MimeType signatureMimeType;
+			switch (parameters.getJwsSerializationType()) {
+				case COMPACT_SERIALIZATION:
+					signatureMimeType = MimeType.JOSE;
+					break;
+				case JSON_SERIALIZATION:
+					signatureMimeType = MimeType.JOSE_JSON;
+					break;
+				default:
+					throw new DSSException(String.format("The given JWS serialization type '%s' is not supported!", 
+							parameters.getJwsSerializationType()));
+			}
+			
 			String type = getRFC7515ConformantMimeTypeString(signatureMimeType);
 			addHeader(HeaderParameterNames.TYPE, type);
 		}
