@@ -16,9 +16,9 @@ public class JWSSerializationDocumentValidatorTest {
 
 		assertFalse(validator.isSupported(new InMemoryDocument(new byte[] {})));
 		assertFalse(validator.isSupported(new InMemoryDocument("{".getBytes())));
-		assertFalse(validator.isSupported(new InMemoryDocument("{}".getBytes())));
+		assertTrue(validator.isSupported(new InMemoryDocument("{}".getBytes())));
 		assertFalse(validator.isSupported(new InMemoryDocument("{hello:\"world\"}".getBytes())));
-		assertFalse(validator.isSupported(new InMemoryDocument("{\"hello\":\"world\"}".getBytes())));
+		assertTrue(validator.isSupported(new InMemoryDocument("{\"hello\":\"world\"}".getBytes())));
 
 		assertTrue(
 				validator

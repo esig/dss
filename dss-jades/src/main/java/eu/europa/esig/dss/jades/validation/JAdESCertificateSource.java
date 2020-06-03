@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.base64url.Base64Url;
+import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,9 +151,27 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
 		}
 
+		// From JWK (not JAdES)
+		PublicKey publicKey = extractPublicKey();
+		if (publicKey != null) {
+			candidatesForSigningCertificate.add(new CertificateValidity(publicKey));
+		}
+
 		checkSigningCertificateRef(candidatesForSigningCertificate);
 
 		return candidatesForSigningCertificate;
+	}
+
+	private PublicKey extractPublicKey() {
+		try {
+			PublicJsonWebKey jwkHeader = jws.getJwkHeader();
+			if (jwkHeader != null) {
+				return jwkHeader.getPublicKey();
+			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract the public key", e);
+		}
+		return null;
 	}
 
 	public void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {

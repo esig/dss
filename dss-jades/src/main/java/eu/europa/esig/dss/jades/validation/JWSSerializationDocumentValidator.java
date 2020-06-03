@@ -26,19 +26,21 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 /**
  * {
  * 
- * "payload":"<payload contents>",
+ * "payload":"payload contents",
  * 
  * "signatures":[
  * 
- * {"protected":"<integrity-protected header 1 contents>",
- * "header":<non-integrity-protected header 1 contents>, "signature":"<signature
- * 1 contents>"},
+ * {"protected":"integrity-protected header 1 contents",
+ * "header":non-integrity-protected header 1 contents, 
+ * "signature":"signature 1 contents"},
  * 
  * ...
  * 
- * {"protected":"<integrity-protected header N contents>",
- * "header":<non-integrity-protected header N contents>, "signature":"<signature
- * N contents>"}]
+ * {"protected":"integrity-protected header N contents",
+ * "header":non-integrity-protected header N contents, 
+ * "signature":"signature N contents"}
+ * 
+ * ]
  * 
  * }
  */
@@ -50,10 +52,10 @@ public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
 	private Map<String, Object> rootStructure;
 
 	public JWSSerializationDocumentValidator() {
-		super(new JAdESSignatureScopeFinder());
 	}
 
 	public JWSSerializationDocumentValidator(DSSDocument document) {
+		super(new JAdESSignatureScopeFinder());
 		this.document = document;
 
 		try {
@@ -74,13 +76,7 @@ public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
 					return false;
 				}
 				Map<String, Object> json = JsonUtil.parseJson(baos.toString());
-				if (Utils.isMapNotEmpty(json)) {
-					Object payload = json.get(JWSConstants.PAYLOAD);
-					Object signatures = json.get(JWSConstants.SIGNATURES);
-					if (payload != null && signatures != null) {
-						return true;
-					}
-				}
+				return json != null;
 			}
 		} catch (JoseException e) {
 			LOG.warn("Unable to parse content as JSON : {}", e.getMessage());

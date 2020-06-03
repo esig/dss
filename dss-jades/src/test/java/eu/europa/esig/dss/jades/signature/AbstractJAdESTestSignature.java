@@ -15,7 +15,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -86,11 +85,6 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 //				assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
 			}
 		}
-	}
-
-//	// TODO : temporary fix!!! not implemented yet
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 	}
 
 	// TODO : temporary fix!!! not implemented yet

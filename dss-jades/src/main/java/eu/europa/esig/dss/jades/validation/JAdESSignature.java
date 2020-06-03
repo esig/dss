@@ -161,7 +161,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
 			String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
 
-			jws.setKey(certificateValidity.getCertificateToken().getPublicKey());
+			jws.setKey(certificateValidity.getPublicKey());
 
 			try {
 				coreValidity = jws.verifySignature();

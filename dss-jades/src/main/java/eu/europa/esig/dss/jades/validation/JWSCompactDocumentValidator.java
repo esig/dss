@@ -5,10 +5,14 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 import org.jose4j.jwx.CompactSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
@@ -19,15 +23,16 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class JWSCompactDocumentValidator extends SignedDocumentValidator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(JWSCompactDocumentValidator.class);
+
 	private final static List<Byte> BASE64_URL_BINARIES = Arrays.asList(JAdESUtils.BASE64_URL_SAFE_ENCODE_TABLE);
 	private final static int NUMBER_DOTS = 2;
 
 	public JWSCompactDocumentValidator() {
-		super(new JAdESSignatureScopeFinder());
 	}
 
 	public JWSCompactDocumentValidator(DSSDocument document) {
-		this();
+		super(new JAdESSignatureScopeFinder());
 		this.document = document;
 	}
 
@@ -82,14 +87,25 @@ public class JWSCompactDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) {
-		// TODO Auto-generated method stub
-		return null;
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
+		for (AdvancedSignature signature : getSignatures()) {
+			final JAdESSignature jadesSignature = (JAdESSignature) signature;
+			if (signatureId.equals(jadesSignature.getId())) {
+				return Arrays.asList(jadesSignature.getOriginalDocument());
+			}
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
-		// TODO Auto-generated method stub
-		return null;
+		final JAdESSignature jadesSignature = (JAdESSignature) advancedSignature;
+		try {
+			return Arrays.asList(jadesSignature.getOriginalDocument());
+		} catch (DSSException e) {
+			LOG.error("Cannot retrieve a list of original documents");
+			return Collections.emptyList();
+		}
 	}
 
 }
