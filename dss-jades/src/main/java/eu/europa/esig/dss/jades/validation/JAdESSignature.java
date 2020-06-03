@@ -206,6 +206,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommitmentTypeIndication> getCommitmentTypeIndications() {
 		List<CommitmentTypeIndication> result = new ArrayList<>();
@@ -213,24 +214,17 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CM);
 		if (signedCommitment != null) {
 			Map<? ,?> commIdMap = (Map<? ,?>) signedCommitment.get(JAdESHeaderParameterNames.COMM_ID);
-			String id = getIdFromOidMap(commIdMap);
-			if (Utils.isStringNotEmpty(id)) {
-				result.add(new CommitmentTypeIndication(id));
+			String uri = (String) commIdMap.get(JAdESHeaderParameterNames.ID);
+			if (Utils.isStringNotBlank(uri)) {
+				CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
+				commitmentTypeIndication.setDescription((String) commIdMap.get(JAdESHeaderParameterNames.DESC));
+				commitmentTypeIndication.setDocumentReferences((List<String>) commIdMap.get(JAdESHeaderParameterNames.DOC_REFS));
+				result.add(commitmentTypeIndication);
+			} else {
+				LOG.warn("Id parameter in the OID with the value '{}' is not conformant! The entry is skipped.", uri);
 			}
 		}
 		return result;
-	}
-	
-	private String getIdFromOidMap(Map<? ,?> oidMap) {
-		if (Utils.isMapNotEmpty(oidMap)) {
-			Object idObject = oidMap.get(JAdESHeaderParameterNames.ID);
-			if (idObject instanceof String) {
-				return (String) idObject;
-			} else {
-				LOG.warn("Id paramater in the OID is not an instance of String! The value is skipped.");
-			}
-		}
-		return null;
 	}
 
 	@Override

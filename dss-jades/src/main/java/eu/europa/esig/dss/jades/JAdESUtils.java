@@ -10,6 +10,7 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CM;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,10 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.StringUtil;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -151,6 +154,36 @@ public class JAdESUtils {
 	 */
 	public static JSONObject getOidObject(String uri) {
 		return getOidObject(uri, null, null);
+	}
+	
+	/**
+	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
+	 * Returns NULL if non of them is present
+	 * 
+	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
+	 * @return {@link String} URI
+	 */
+	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
+		/*
+		 * TS 119 182-1 : 5.4.1 The oId data type
+		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
+		 */
+		String uri = objectIdentifier.getUri();
+		if (uri == null && objectIdentifier.getOid() != null) {
+			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
+		}
+		return uri;
+	}
+
+	/**
+	 * Creates an 'oid' JSONObject according to EN 119-182 ch. 5.4.1 The oId data type
+	 * 
+	 * @param objectIdentifier {@link ObjectIdentifier} to create an 'oid' from
+	 * @return 'oid' {@link JSONObject}
+	 */
+	public static JSONObject getOidObject(ObjectIdentifier objectIdentifier) {
+		return getOidObject(getUriOrUrnOid(objectIdentifier), objectIdentifier.getDescription(), 
+				Arrays.asList(objectIdentifier.getDocumentationReferences()));
 	}
 
 	/**
