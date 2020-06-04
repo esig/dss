@@ -6,6 +6,7 @@ module jpms_dss_specs_trusted_list {
 	exports eu.europa.esig.trustedlist;
 	exports eu.europa.esig.trustedlist.enums;
 	exports eu.europa.esig.trustedlist.jaxb.ecc;
+	exports eu.europa.esig.trustedlist.jaxb.mra;
 	exports eu.europa.esig.trustedlist.jaxb.tsl;
 	exports eu.europa.esig.trustedlist.jaxb.tslx;
 }

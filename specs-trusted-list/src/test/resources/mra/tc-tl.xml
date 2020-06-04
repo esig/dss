@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="JP-TL-MIC-001" TSLTag="http://uri.etsi.org/19612/TSLTag">
+    <SchemeInformation>
+        <TSLVersionIdentifier>5</TSLVersionIdentifier>
+        <TSLSequenceNumber>1</TSLSequenceNumber>
+        <TSLType>http://example/TSLType/CCgeneric</TSLType>
+        <SchemeOperatorName>
+            <Name xml:lang="en">TC TLSO</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>Central avenue n°1</StreetAddress>
+                    <Locality>Metropolis</Locality>
+                    <StateOrProvince>Midlands</StateOrProvince>
+                    <PostalCode>2718</PostalCode>
+                    <CountryName>TC</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto:tlso@mail.tc</URI>
+                <URI xml:lang="en">https://www.tlso.tc/contact</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="en">TC: Third Country supervision systems for Third Country QTSP and the QTS they provide in accordance with the Third Country laws.</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://www.tlso.tc/schemeinfo</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/StatusDetn/TCdetermination</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/TC</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>TC</SchemeTerritory>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <ListIssueDateTime>2020-05-17T01:00:00Z</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2020-11-15T00:00:00Z</dateTime>
+        </NextUpdate>
+    </SchemeInformation>
+    <TrustServiceProviderList>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Third Country QTSP Company</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">Third Country eTrust</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Central avenue n°2</StreetAddress>
+                            <Locality>Metropolis</Locality>
+                            <StateOrProvince>Midlands</StateOrProvince>
+                            <PostalCode>2718</PostalCode>
+                            <CountryName>TC</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:contact@etrust.tc</URI>
+                        <URI xml:lang="en">https://www.etrust.tc/contact</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://www.etrust.tc/en/documentation</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://tc-trusted-list.go.tc/TrstSvc/Svctype/CA/QC/for-eSig</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">TC eTrust QC for eSignatures CA</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=TC eTrust QC for eSignatures CA, O=Third Country QTSP Company, C=TC</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>EtAwlCrrc8nenVEfdgYGQYbZ5uw=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://tc-trusted-list.go.tc/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2020-05-18T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+    </TrustServiceProviderList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-97a3803e163af8572ac76bebf4df6c27"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="tl_signing_tool" Type="" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>XyJLML3CmJnId3ulpxWWkJGc9JhFxyXaiseTdb1GsRc=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-97a3803e163af8572ac76bebf4df6c27"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>Jnj7ctzvCz/yo17q34GGGDz5kbNznKQMN2nwwQPdqOY=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-97a3803e163af8572ac76bebf4df6c27">g5AuerDcf01U8fZMTY4xbFbSejcd/RjXOqKqAROlwcmTOtIo35NVlCfo3toB5ydHg5elDjvm4Kqw2lElsIaU4VYhCDpRNEr2xfGS8MqTugsak6jDGyM1C7rA2zXhnWAVldRkwSEBw6BP/2h/Y11c34SSQRukyJz+8cp5GM7C1mVG0+dUDsNuTxUcSW1oLAsKaezhSllw4aQaZL7g6FFWC+qzHoXggUPd1C2t2zkn7wKdMM9LIxREgE+LOgbg+dydvRRKxhl92DiRdFDZ54cwKu6l+2wfNRhLB1DsW1A08JRQ3MWI+KfRSAEF2qUoxsluP+x8lqrrtOZZ4rST/dzdFg==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDwjCCAqqgAwIBAgIUQbYJxrEp3QiU9NXW1uHSwTg35gQwDQYJKoZIhvcNAQELBQAwdDELMAkGA1UEBhMCVEMxETAPBgNVBAgMCE1pZGxhbmRzMRMwEQYDVQQHDApNZXRyb3BvbGlzMRAwDgYDVQQKDAdUQyBUTFNPMRIwEAYDVQQLDAlURVNUIFRMU08xFzAVBgNVBAMMDlRDIFRMIHNpZ25lciAxMB4XDTIwMDUxODE4MTUxOFoXDTMwMDUxNjE4MTUxOFowdDELMAkGA1UEBhMCVEMxETAPBgNVBAgMCE1pZGxhbmRzMRMwEQYDVQQHDApNZXRyb3BvbGlzMRAwDgYDVQQKDAdUQyBUTFNPMRIwEAYDVQQLDAlURVNUIFRMU08xFzAVBgNVBAMMDlRDIFRMIHNpZ25lciAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5PPGgmRixZt6q81YdKs9uV/xFJckmvyN+8hrCdM3XAdjhVjbouh23uQtPxv5sFTlUKUJyF6XAyfJ9RIdOKCIbLg6mDsuYen0+0hq+Oz0U8MQgwl7GZXMzYW8QM3i3QnpyOS6GEBeeS7NtCqZvO+9dktYzGqtzHdgaFwFhD7TCkeXen+rA801uVmJAu6RQ0Q/fdl/8P9EEsFihs6DzpVg2GZp/lrBWequuteeTPbHJ7qRqc/mDEuAb6j66HSlN/+EhyMXL1mYfauGfKo1bKFEJYufqucLwqmqS3or1qprl3Lvzs4R8Wi9UZ2/rt1kOmIVZLYNRPBowk2etcSLV5Mn8wIDAQABo0wwSjAJBgNVHRMEAjAAMAsGA1UdDwQEAwIHgDARBgNVHSUECjAIBgYEAJE3AwAwHQYDVR0OBBYEFJ2mF5Y0XRULEdlER3IfBPspkVLFMA0GCSqGSIb3DQEBCwUAA4IBAQCSj2gXqNViO0n6c0O20tRTAICYP8k4kfuvy6U1OZjMvdlN3RqHkCigf1XldB78gqrpsd85810aR/4quyjZCWYUMMP0h8GBu7uYlj4nUklGo8swmZGhR5tGe1Zgmbv6N6dWTRI9I4PW6FcoIaGr5gZYG1wrdJIUZ7R6omGtzzDN8Psva4M/LR8JVdjbfkJoSbk5SDij4IlJXfiMk1JruYenkHaGleUwwhy+ZrYL2Wdx6dQ3n/O49mhwhDAadJmeJDVDZ7xBhgG4fCfCKaRf9zDLNSeqCt3ZzPGffgBcQ5u4FRUwB0pGO2xag7K8mgfOzsm1FrY9QFvSlqOr8D8pbqy4</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-97a3803e163af8572ac76bebf4df6c27"><xades:SignedProperties Id="xades-id-97a3803e163af8572ac76bebf4df6c27"><xades:SignedSignatureProperties><xades:SigningTime>2020-05-18T18:53:01Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>CRMZ2hHKns7MJ25ojxrUHycG3sM=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=TC TL signer 1,OU=TEST TLSO,O=TC TLSO,L=Metropolis,ST=Midlands,C=TC</ds:X509IssuerName><ds:X509SerialNumber>375143987351654901192526951896473536067033097732</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#tl_signing_tool"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
