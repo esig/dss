@@ -13,12 +13,14 @@ import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
+import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.enums.Assert;
 import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
 import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
 import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
 import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.trustedlist.jaxb.mra.QcStatementListType;
 import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
 import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
@@ -95,6 +97,9 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 						ExtendedKeyUsageType extendedKeyUsage = (ExtendedKeyUsageType) objectValue;
 						condition.addChild(
 								new ExtendedKeyUsageCondition(extractOids(extendedKeyUsage.getKeyPurposeId())));
+					} else if (objectValue instanceof QcStatementListType) {
+						QcStatementListType qcStatementList = (QcStatementListType) objectValue;
+						condition.addChild(new QCStatementCondition(extractOids(qcStatementList.getQcStatement())));
 					} else {
 						throw new DSSException("Unsupported OtherCriteriaList");
 					}
