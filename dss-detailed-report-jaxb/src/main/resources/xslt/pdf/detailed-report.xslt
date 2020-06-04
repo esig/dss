@@ -376,9 +376,23 @@
 		    				<xsl:choose>
 								<xsl:when test="name(.) = 'SubXCV'">
 									<xsl:choose>
-										<xsl:when test="@TrustAnchor ='true'">Trust Anchor</xsl:when>
-										<xsl:otherwise>Certificate <xsl:value-of select="@Id"/> : </xsl:otherwise>
+										<xsl:when test="@TrustAnchor ='true'">Trust Anchor (<xsl:value-of select="@Id"/>)</xsl:when>
+										<xsl:otherwise>Certificate <xsl:value-of select="@Id"/> :</xsl:otherwise>
 									</xsl:choose>
+									
+									<xsl:if test="@SelfSigned ='true'"> (Self Signed)</xsl:if>
+									<xsl:if test="dss:CrossCertificate">
+										<fo:block>
+			    							<xsl:attribute name="font-weight">normal</xsl:attribute>
+											<xsl:text>&#xa;Cross certification: <xsl:value-of select="dss:CrossCertificate"/></xsl:text>
+										</fo:block>
+									</xsl:if>
+									<xsl:if test="dss:EquivalentCertificate">
+										<fo:block>
+			    							<xsl:attribute name="font-weight">normal</xsl:attribute>
+											<xsl:text>&#xa;Equivalent certification: <xsl:value-of select="dss:EquivalentCertificate"/></xsl:text>
+										</fo:block>
+									</xsl:if>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="@Title"/> :
@@ -508,6 +522,8 @@
     <xsl:template match="dss:CertificateChain" />
     <xsl:template match="dss:RevocationProductionDate" />
     <xsl:template match="dss:RevocationInfo" />
+    <xsl:template match="dss:CrossCertificate" />
+    <xsl:template match="dss:EquivalentCertificate" />
     
 </xsl:stylesheet>
 

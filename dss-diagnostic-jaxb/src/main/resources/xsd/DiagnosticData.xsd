@@ -292,6 +292,7 @@
 					<xs:element name="NotBefore" type="xs:dateTime" />
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
+					<xs:element name="EntityKey" type="xs:string" />
 		
 					<xs:element name="KeyUsageBits" minOccurs="0">
 						<xs:complexType>

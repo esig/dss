@@ -2008,6 +2008,7 @@ public class DiagnosticDataBuilder {
 		final PublicKey publicKey = certToken.getPublicKey();
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
+		xmlCert.setEntityKey(certToken.getEntityKey().asXmlId());
 
 		xmlCert.setKeyUsageBits(certToken.getKeyUsageBits());
 		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));
