@@ -39,8 +39,9 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -120,18 +121,20 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 	protected DSSDictionaryCallback validate(PAdESSignature signature) {
 
 		final ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
-		final ValidationDataForInclusion validationDataForInclusion = signature.getValidationDataForInclusion(validationContext);
+		
+		final ValidationDataForInclusionBuilder validationDataForInclusionBuilder = 
+				new ValidationDataForInclusionBuilder(validationContext, signature.getCompleteCertificateSource());
+		final ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
 		
 		DSSDictionaryCallback validationCallback = new DSSDictionaryCallback();
 		validationCallback.setSignature(signature);
 
-		Set<CertificateToken> certificatesForInclusion = validationDataForInclusion.certificateTokens;
-		certificatesForInclusion.addAll(signature.getCompleteCertificateSource().getAllCertificateTokens());
+		Set<CertificateToken> certificatesForInclusion = validationDataForInclusion.getCertificateTokens();
 		// DSS dictionary includes current certs + discovered with AIA,...
 		validationCallback.setCertificates(certificatesForInclusion);
 
-		validationCallback.setCrls(validationDataForInclusion.crlTokens);
-		validationCallback.setOcsps(validationDataForInclusion.ocspTokens);
+		validationCallback.setCrls(validationDataForInclusion.getCrlTokens());
+		validationCallback.setOcsps(validationDataForInclusion.getOcspTokens());
 
 		return validationCallback;
 	}

@@ -32,6 +32,9 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 
 /**
  * This class holds the CAdES-LT signature profiles
@@ -54,14 +57,12 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException {
 		// add a LT level or replace an existing LT level
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-		cadesSignature.setDetachedContents(parameters.getDetachedContents());
+		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 
 		// add T level if needed
 		if (Utils.isCollectionEmpty(cadesSignature.getSignatureTimestamps())) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
-			cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-			cadesSignature.setDetachedContents(parameters.getDetachedContents());
+			cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		}
 		// check if the resulted signature can be extended
 		assertExtendSignaturePossible(cadesSignature);
@@ -71,8 +72,27 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
 	@Override
 	public CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, detachedContents);
+		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature);
+		ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
+		return extendWithValidationData(cmsSignedData, validationDataForInclusion, detachedContents);
+	}
+	
+	/**
+	 * Returns a validation data for inclusion builder
+	 * 
+	 * @param cadesSignature {@link CAdESSignature} to get inclusion data for
+	 * @return {@link ValidationDataForInclusionBuilder}
+	 */
+	protected ValidationDataForInclusionBuilder getValidationDataForInclusionBuilder(final CAdESSignature cadesSignature) {
+		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+		return new ValidationDataForInclusionBuilder(validationContext, cadesSignature.getCompleteCertificateSource());
+	}
+	
+	protected CMSSignedData extendWithValidationData(CMSSignedData cmsSignedData, ValidationDataForInclusion validationDataForInclusion, 
+			List<DSSDocument> detachedContents) {
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		cmsSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, signerInformation, detachedContents);
+		cmsSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion, detachedContents);
 		return cmsSignedData;
 	}
 	

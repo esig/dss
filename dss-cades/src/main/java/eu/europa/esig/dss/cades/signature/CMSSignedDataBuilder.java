@@ -50,7 +50,6 @@ import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SimpleAttributeTableGenerator;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
@@ -60,7 +59,6 @@ import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -70,8 +68,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 
 public class CMSSignedDataBuilder {
 
@@ -283,20 +280,16 @@ public class CMSSignedDataBuilder {
 	/**
 	 * Extends the provided {@code cmsSignedData} with the required validation data
 	 * @param cmsSignedData {@link CMSSignedData} to be extended
-	 * @param signerInformation the related {@link SignerInformation} to use
+	 * @param validationDataForInclusion the {@link ValidationDataForInclusion} to be included into the cmsSignedData
 	 * @param detachedContents list of detached {@link DSSDocument}s
 	 * @return extended {@link CMSSignedData}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-		cadesSignature.setDetachedContents(detachedContents);
-		
-		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
-		final ValidationDataForInclusion validationDataForInclusion = cadesSignature.getValidationDataForInclusion(validationContext);
+	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, ValidationDataForInclusion validationDataForInclusion, 
+			List<DSSDocument> detachedContents) {
 
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
-		final Set<CertificateToken> certificates = validationDataForInclusion.certificateTokens;
+		final Set<CertificateToken> certificates = validationDataForInclusion.getCertificateTokens();
 		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificates) {
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
@@ -306,7 +299,7 @@ public class CMSSignedDataBuilder {
 
 		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> newCrlsStore = new HashSet<>(crlsStore.getMatches(null));
-		final List<CRLToken> crlTokens = validationDataForInclusion.crlTokens;
+		final List<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
 		for (final CRLToken crlToken : crlTokens) {
 			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
 			newCrlsStore.add(x509CRLHolder);
@@ -315,7 +308,7 @@ public class CMSSignedDataBuilder {
 
 		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<>(otherRevocationInfoFormatStoreBasic.getMatches(null));
-		final List<OCSPToken> ocspTokens = validationDataForInclusion.ocspTokens;
+		final List<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 		for (final OCSPToken ocspToken : ocspTokens) {
 			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
 			if (basicOCSPResp != null) {
