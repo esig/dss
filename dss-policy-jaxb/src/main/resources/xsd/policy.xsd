@@ -276,9 +276,9 @@
 					<xsd:documentation>Checks if the revocation date is after the best-signature-time</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="BestSignatureTimeBeforeExpirationDateOfSigningCertificate" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the best-signature-time is not before the creation of the signing certificate</xsd:documentation>
+					<xsd:documentation>Checks if the best-signature-time is before the expiration of the signing certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Coherence" type="LevelConstraint" minOccurs="0">

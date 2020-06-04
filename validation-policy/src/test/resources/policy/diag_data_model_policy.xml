@@ -313,7 +313,7 @@
 	<Timestamp>
 		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
-		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL" />
+		<BestSignatureTimeBeforeExpirationDateOfSigningCertificate Level="FAIL" />
 		<Coherence Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />

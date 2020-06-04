@@ -370,7 +370,10 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getSignerInformationStoreConstraint(Context context);
 
-	LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
+	/**
+	 * This constraint checks if the certificate is not expired on best-signature-time
+	 */
+	LevelConstraint getBestSignatureTimeBeforeExpirationDateOfSigningCertificateConstraint();
 
 	LevelConstraint getTimestampCoherenceConstraint();
 

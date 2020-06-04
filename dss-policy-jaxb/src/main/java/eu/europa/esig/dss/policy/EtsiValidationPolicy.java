@@ -713,10 +713,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
+	public LevelConstraint getBestSignatureTimeBeforeExpirationDateOfSigningCertificateConstraint() {
 		TimestampConstraints timestamp = policy.getTimestamp();
 		if (timestamp != null) {
-			return timestamp.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificate();
+			return timestamp.getBestSignatureTimeBeforeExpirationDateOfSigningCertificate();
 		}
 		return null;
 	}
