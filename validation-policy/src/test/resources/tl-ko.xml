@@ -95,6 +95,7 @@
             <NotBefore>2016-09-15T09:00:12</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630</EntityKey>
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
