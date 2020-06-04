@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -331,7 +332,7 @@ public class JAdESLevelBaselineB {
 			srAtsParams.put(JAdESHeaderParameterNames.CLAIMED, claimed);
 		}
 
-		// TODO : certified and signedAssertions are not supported
+		// TODO : certified are not supported
 		// srAtsParams.put(JAdESHeaderParameterNames.CERTIFIED, certified);
 
 		JSONArray signedAssertions = getEncodedSignedAssertions();
@@ -350,7 +351,6 @@ public class JAdESLevelBaselineB {
 		if (Utils.isCollectionEmpty(claimedSignerRoles)) {
 			return null;
 		}
-		// TODO : is base64 required ?
 		return new JSONArray(toBase64Strings(claimedSignerRoles));
 	}
 	
@@ -394,8 +394,7 @@ public class JAdESLevelBaselineB {
 			String signaturePolicyId = signaturePolicy.getId();
 			if (Utils.isStringEmpty(signaturePolicyId)) {
 				// see EN 119-182 ch. 5.2.7.1 Semantics and syntax ('id' is required)
-				LOG.warn("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
-				return;
+				throw new DSSException("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
 			}
 			
 			Map<String, Object> sigPIdParams = new HashMap<>();
@@ -408,7 +407,8 @@ public class JAdESLevelBaselineB {
 				sigPIdParams.put(JAdESHeaderParameterNames.HASH_AV, digAlgVal);
 			}
 
-			// TODO : sigPIdParams.put(JAdESHeaderParameterNames.HASH_PSP, value) // 'hashPSp' the specification is not clear
+			// hashPSp is not added and treated as FALSE, because qualifier 'spDSpec' is not supported
+			// sigPIdParams.put(JAdESHeaderParameterNames.HASH_PSP, value)
 			
 			List<JSONObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
 			if (Utils.isCollectionNotEmpty(signaturePolicyQualifiers)) {
@@ -421,7 +421,6 @@ public class JAdESLevelBaselineB {
 
 	// TODO : refactor Qualifiers to follow the schema (as well as in XAdES)
 	private List<JSONObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
-		// TODO : 'sigPQuals' specification is not clear
 		List<JSONObject> sigPQualifiers = new ArrayList<>();
 
 		String spuri = signaturePolicy.getSpuri();
@@ -437,7 +436,7 @@ public class JAdESLevelBaselineB {
 			sigPQualifiers.add(new JSONObject(spURI));
 		}
 		
-		// TODO : other policy qualifiers are not supported
+		// other policy qualifiers are not supported
 		
 		return sigPQualifiers;
 	}
@@ -446,7 +445,66 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.2.8 The sigD header parameter
 	 */
 	private void incorporateDetachedContents() {
-		// TODO : the standard is not clear
+		if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			List<DSSDocument> detachedContents = Arrays.asList(signingDocument);
+			
+			// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
+			Map<String, Object> sigDParams = new HashMap<>();
+			sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI_HASH.getUri());
+			sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
+			
+			DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault();
+			sigDParams.put(JAdESHeaderParameterNames.HASH_M, digestAlgorithm.getUri());
+			sigDParams.put(JAdESHeaderParameterNames.HASH_V, getSignedDataDigests(detachedContents, digestAlgorithm));
+			
+			JSONArray ctysArray = getSignedDataMimeTypesIfPresent(detachedContents);
+			if (ctysArray != null) {
+				sigDParams.put(JAdESHeaderParameterNames.CTYS, ctysArray);
+			}
+
+			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JSONObject(sigDParams));
+		}
+	}
+	
+	private JSONArray getSignedDataReferences(List<DSSDocument> detachedContents) {
+		List<String> references = new ArrayList<>();
+		for (DSSDocument document : detachedContents) {
+			references.add(DSSUtils.encodeURI(document.getName()));
+		}
+		return new JSONArray(references);
+	}
+	
+	private DigestAlgorithm getReferenceDigestAlgorithmOrDefault() {
+		return parameters.getReferenceDigestAlgorithm() != null ? parameters.getReferenceDigestAlgorithm() : parameters.getDigestAlgorithm();
+	}
+	
+	private JSONArray getSignedDataDigests(List<DSSDocument> detachedContents, DigestAlgorithm digestAlgorithm) {
+		List<String> digests = new ArrayList<>();
+		for (DSSDocument document : detachedContents) {
+			digests.add(document.getDigest(digestAlgorithm)); // base64 digest
+		}
+		return new JSONArray(digests);
+	}
+	
+	/**
+	 * Returns a 'ctys' array only if mimeTypes are present for all documents
+	 * The behavior is based on 'http://uri.etsi.org/19182/ObjectIdByURI' Mechanism
+	 * 
+	 * @param detachedContents a list of {@link DSSDocument} to be signed
+	 * @return 'ctys' {@link JSONArray}
+	 */
+	private JSONArray getSignedDataMimeTypesIfPresent(List<DSSDocument> detachedContents) {
+		List<String> mimeTypes = new ArrayList<>();
+		for (DSSDocument document : detachedContents) {
+			MimeType mimeType = document.getMimeType();
+			if (mimeType == null) {
+				// if at least one document has no specified MimeType, return null
+				return null;
+			}
+			String rfc7515MimeType = getRFC7515ConformantMimeTypeString(mimeType);
+			mimeTypes.add(rfc7515MimeType);
+		}
+		return new JSONArray(mimeTypes);
 	}
 	
 	/**

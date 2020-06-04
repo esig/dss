@@ -75,8 +75,7 @@ public class JAdESCompactBuilder {
 	 *             if the packaging is not supported for this kind of signature
 	 */
 	protected void assertSignaturePackaging(final SignaturePackaging packaging) throws DSSException {
-		// TODO : support DETACHED SignaturePackaging
-		if ((packaging != SignaturePackaging.ENVELOPING) /* && (packaging != SignaturePackaging.DETACHED) */ ) {
+		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging: " + packaging);
 		}
 	}

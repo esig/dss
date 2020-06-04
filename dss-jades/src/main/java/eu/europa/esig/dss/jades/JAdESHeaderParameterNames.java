@@ -165,6 +165,31 @@ public final class JAdESHeaderParameterNames {
 	public static final String SIG_D = "sigD";
 	
 	/**
+	 * Signed data referencing mechanism URI
+	 */
+	public static final String M_ID = "mId";
+	
+	/**
+	 * Signed data references
+	 */
+	public static final String PARS = "pars";
+
+	/**
+	 * Signed data digest algorithm identifier
+	 */
+	public static final String HASH_M = "hashM";
+
+	/**
+	 * Array of signed data digest algorithm values (hashes)
+	 */
+	public static final String HASH_V = "hashV";
+
+	/**
+	 * Array of signed data types (see 'cty')
+	 */
+	public static final String CTYS = "ctys";
+	
+	/**
 	 * Description
 	 */
 	public static final String DESC = "desc";

@@ -951,7 +951,7 @@ public final class DSSUtils {
 		String uriDelimiter = "";
 		final String[] uriParts = fileURI.split("/");
 		for (String part : uriParts) {
-			sb.append(uriDelimiter );
+			sb.append(uriDelimiter);
 			sb.append(encodePartURI(part));
 			uriDelimiter = "/";
 		}

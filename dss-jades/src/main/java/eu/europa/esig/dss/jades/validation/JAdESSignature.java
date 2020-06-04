@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -18,6 +19,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -373,8 +375,143 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return new JAdESSignatureIdentifier(this);
 	}
 
-	public DSSDocument getOriginalDocument() {
-		return new InMemoryDocument(jws.getUnverifiedPayloadBytes());
+	public List<DSSDocument> getOriginalDocuments() {
+		if (isDetachedSignature()) {
+			
+			if (Utils.isCollectionNotEmpty(detachedContents)) {
+				SigDMechanism sigDMechanism = getSigDMechanism();
+				if (sigDMechanism != null) {
+					switch (sigDMechanism) {
+						case OBJECT_ID_BY_URI_HASH:
+							return extractOriginalDocumentsByUriHash();
+						case HTTP_HEADERS:
+						case OBJECT_ID_BY_URI:
+						default:
+							LOG.warn("The SigDMechanism '{}' is not supported!", sigDMechanism);
+							break;
+					}
+				}
+				
+			} else {
+				LOG.warn("The detached content is not provided to a detached signature!");
+			}
+			
+			LOG.warn("The extraction of original documents has been not proceeded. Return an empty list.");
+			return Collections.emptyList();
+			
+		} else {
+			return Collections.singletonList(new InMemoryDocument(jws.getUnverifiedPayloadBytes()));
+		}
+	}
+	
+	private boolean isDetachedSignature() {
+		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
+			.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
+		return signatureDetached != null;
+	}
+	
+	private SigDMechanism getSigDMechanism() {
+		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
+		if (signatureDetached != null) {
+			String mechanismUri = (String) signatureDetached.get(JAdESHeaderParameterNames.M_ID);
+			SigDMechanism sigDMechanism = SigDMechanism.forUri(mechanismUri);
+			if (sigDMechanism == null) {
+				LOG.error("The sigDMechanism with uri '{}' is not supported!", mechanismUri);
+			}
+			return sigDMechanism;
+		}
+		return null;
+	}
+	
+	private List<DSSDocument> extractOriginalDocumentsByUriHash() {
+		
+		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForDetachedContent();
+		if (digestAlgorithm == null) {
+			LOG.warn("The DigestAlgorithm has not been found. Return an empty list of original documents");
+			return Collections.emptyList();
+		}
+		
+		Map<String, String> signedDataHashMap = getSignedDataHashMap();
+		if (Utils.isMapEmpty(signedDataHashMap)) {
+			LOG.warn("The SignedData has not been found or incorrect. Return an empty list of original documents");
+			return Collections.emptyList();
+		}
+		
+		if (signedDataHashMap.size() == 1 && detachedContents.size() == 1) {
+			DSSDocument detachedDocument = detachedContents.get(0);
+			Map.Entry<String, String> signedDataEntry = signedDataHashMap.entrySet().iterator().next();
+			String expectedDigest = signedDataEntry.getKey();
+			
+			DSSDocument originalDocument = getDocumentIfMatch(detachedDocument, digestAlgorithm, expectedDigest);
+			if (originalDocument != null) {
+				return Collections.singletonList(originalDocument);
+			}
+			LOG.warn("The valid original document has not been found. Return an empty list.");
+			return Collections.emptyList();
+		}
+
+		List<DSSDocument> originalDocuments = new ArrayList<>();
+		for (Map.Entry<String, String> signedDataEntry : signedDataHashMap.entrySet()) {
+			String signedDataName = signedDataEntry.getKey();
+			String signedDataDigest = signedDataEntry.getValue();
+			
+			boolean found = false;
+			for (DSSDocument detachedDocument : detachedContents) {
+				if (signedDataName.equals(detachedDocument.getName())) {
+					DSSDocument dssDocument = getDocumentIfMatch(detachedDocument, digestAlgorithm, signedDataDigest);
+					if (dssDocument != null) {
+						originalDocuments.add(dssDocument);
+					}
+				}
+			}
+			if (!found) {
+				LOG.warn("A valid detached document for a 'sigD' entry with name '{}' has not been found!", signedDataName);
+			}
+		}
+		
+		return originalDocuments;
+	}
+	
+	private DigestAlgorithm getDigestAlgorithmForDetachedContent() {
+		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
+		if (signatureDetached != null) {
+			String digestAlgoUri = (String) signatureDetached.get(JAdESHeaderParameterNames.HASH_M);
+			return DigestAlgorithm.forXML(digestAlgoUri);
+		}
+		return null;
+	}
+	
+	private Map<String, String> getSignedDataHashMap() {
+		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
+		if (signatureDetached != null) {
+			Map<String, String> signedDataHashMap = new LinkedHashMap<String, String>(); // LinkedHashMap is used to keep the original order
+			
+			List<String> signedDataUriList = (List<String>) signatureDetached.get(JAdESHeaderParameterNames.PARS);
+			List<String> signedDataHashList = (List<String>) signatureDetached.get(JAdESHeaderParameterNames.HASH_V);
+			if (signedDataUriList.size() != signedDataHashList.size()) {
+				LOG.warn("The size of 'pars' and 'hashV' dictionaries does not match! See '5.2.8 The sigD header parameter'.");
+				return null;
+			}
+			
+			for (int ii = 0; ii < signedDataUriList.size(); ii++) {
+				signedDataHashMap.put(signedDataUriList.get(ii), signedDataHashList.get(ii));
+			}
+			return signedDataHashMap;
+		}
+		return null;
+	}
+	
+	private DSSDocument getDocumentIfMatch(DSSDocument document, DigestAlgorithm digestAlgorithm, String expectedDigest) {
+		String computedDigest = document.getDigest(digestAlgorithm);
+		if (expectedDigest.equals(computedDigest)) {
+			return document;
+		}
+		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
+				computedDigest, document.getName(), expectedDigest);
+		return null;
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public class JWSCompactDocumentValidator extends SignedDocumentValidator {
 		for (AdvancedSignature signature : getSignatures()) {
 			final JAdESSignature jadesSignature = (JAdESSignature) signature;
 			if (signatureId.equals(jadesSignature.getId())) {
-				return Arrays.asList(jadesSignature.getOriginalDocument());
+				return jadesSignature.getOriginalDocuments();
 			}
 		}
 		return Collections.emptyList();
@@ -101,7 +101,7 @@ public class JWSCompactDocumentValidator extends SignedDocumentValidator {
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		final JAdESSignature jadesSignature = (JAdESSignature) advancedSignature;
 		try {
-			return Arrays.asList(jadesSignature.getOriginalDocument());
+			return jadesSignature.getOriginalDocuments();
 		} catch (DSSException e) {
 			LOG.error("Cannot retrieve a list of original documents");
 			return Collections.emptyList();
