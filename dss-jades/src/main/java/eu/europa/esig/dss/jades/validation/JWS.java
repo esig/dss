@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 
+import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSException;
 
 public class JWS extends JsonWebSignature {
@@ -37,6 +38,19 @@ public class JWS extends JsonWebSignature {
 	@Override
 	public String getEncodedHeader() {
 		return super.getEncodedHeader();
+	}
+	
+	/**
+	 * Sets a detached payload binaries
+	 * 
+	 * @param payload a byte array representing a payload
+	 */
+	public void setDSSDocumentPayload(byte[] payload) {
+		if (isRfc7797UnencodedPayload()) {
+            setPayloadBytes(payload);
+        } else {
+            setEncodedPayload(JAdESUtils.toBase64Url(payload));
+        }
 	}
 
 	/**

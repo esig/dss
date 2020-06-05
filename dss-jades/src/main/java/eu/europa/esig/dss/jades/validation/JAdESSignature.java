@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -112,6 +115,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		return null;
 	}
+	
+	/**
+	 * Checks if the JAdES Signature is a detached (contains 'sigD' dictionary)
+	 * 
+	 * @return TRUE if the signature is detached, FALSE otherwise
+	 */
+	public boolean isDetachedSignature() {
+		return isDetached;
+	}
 
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
@@ -143,43 +155,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			signatureTimestampSource = new JAdESTimestampSource(this);
 		}
 		return (JAdESTimestampSource) signatureTimestampSource;
-	}
-
-	@Override
-	public void checkSignatureIntegrity() {
-
-		if (signatureCryptographicVerification != null) {
-			return;
-		}
-		
-		signatureCryptographicVerification = new SignatureCryptographicVerification();
-
-		boolean refsFound = false;
-		boolean refsIntact = false;
-		
-		List<ReferenceValidation> referenceValidations = getReferenceValidations();
-		
-		if (Utils.isCollectionNotEmpty(referenceValidations)) {
-			refsFound = true;
-			refsIntact = true;
-			
-			for (ReferenceValidation referenceValidation : referenceValidations) {
-				if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(referenceValidation.getType())) {
-					JAdESReferenceValidation signingInputReferenceValidation = (JAdESReferenceValidation) referenceValidation;
-					signatureCryptographicVerification.setSignatureIntact(signingInputReferenceValidation.isIntact());
-					
-					for (String errorMessage : signingInputReferenceValidation.getErrorMessages()) {
-						signatureCryptographicVerification.setErrorMessage(errorMessage);
-					}
-				}
-				refsFound = refsFound && referenceValidation.isFound();
-				refsIntact = refsIntact && referenceValidation.isIntact();
-			}
-		}
-		
-		signatureCryptographicVerification.setReferenceDataFound(refsFound);
-		signatureCryptographicVerification.setReferenceDataIntact(refsIntact);
-
 	}
 
 	@Override
@@ -361,6 +336,43 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	public void checkSignatureIntegrity() {
+
+		if (signatureCryptographicVerification != null) {
+			return;
+		}
+		
+		signatureCryptographicVerification = new SignatureCryptographicVerification();
+
+		boolean refsFound = false;
+		boolean refsIntact = false;
+		
+		List<ReferenceValidation> referenceValidations = getReferenceValidations();
+		
+		if (Utils.isCollectionNotEmpty(referenceValidations)) {
+			refsFound = true;
+			refsIntact = true;
+			
+			for (ReferenceValidation referenceValidation : referenceValidations) {
+				if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(referenceValidation.getType())) {
+					JAdESReferenceValidation signingInputReferenceValidation = (JAdESReferenceValidation) referenceValidation;
+					signatureCryptographicVerification.setSignatureIntact(signingInputReferenceValidation.isIntact());
+					
+					for (String errorMessage : signingInputReferenceValidation.getErrorMessages()) {
+						signatureCryptographicVerification.setErrorMessage(errorMessage);
+					}
+				}
+				refsFound = refsFound && referenceValidation.isFound();
+				refsIntact = refsIntact && referenceValidation.isIntact();
+			}
+		}
+		
+		signatureCryptographicVerification.setReferenceDataFound(refsFound);
+		signatureCryptographicVerification.setReferenceDataIntact(refsIntact);
+
+	}
+
+	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<>();
@@ -379,71 +391,98 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	private JAdESReferenceValidation getSigningInputReferenceValidation() {
 		JAdESReferenceValidation signatureValueReferenceValidation = new JAdESReferenceValidation();
 		signatureValueReferenceValidation.setType(DigestMatcherType.JWS_SIGNING_INPUT_DIGEST);
-		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
-		if (signatureAlgorithm != null) {
-			String encodedHeader = jws.getEncodedHeader();
-			String encodedPayload = jws.getEncodedPayload();
-			if (Utils.isStringNotEmpty(encodedHeader)) {
-				SigDMechanism sigDMechanism = getSigDMechanism();
-				if (!isDetachedSignature() || (sigDMechanism != null && !SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism()) || detachedContents.size() == 1)) {
-					signatureValueReferenceValidation.setFound(true);
-				} else {
-					LOG.warn("The payload is not found! The detached contents must be provided!");
-				}
+		
+		try {
+			SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+			if (signatureAlgorithm != null) {
 				
-				String headerAndPayloadResult = JAdESUtils.concatenate(encodedHeader, encodedPayload);
-				// The data to sign by RFC 7515 shall be ASCII-encoded
-				byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadResult);
-				DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
-				Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
-				signatureValueReferenceValidation.setDigest(digest);
-				
-				boolean coreValidity = false;
-
-				CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-				if (candidates.isEmpty()) {
-					signatureValueReferenceValidation
-							.addErrorMessage("There is no signing certificate within the signature or certificate pool.");
-				}
-
-				jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
-				jws.setDoKeyValidation(false); // restrict on key size,...
-
-				LOG.debug("Determining signing certificate from certificate candidates list...");
-				final List<String> preliminaryErrorMessages = new ArrayList<>();
-				int certificateNumber = 0;
-				for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
-					String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
-
-					jws.setKey(certificateValidity.getPublicKey());
-
-					try {
-						coreValidity = jws.verifySignature();
-						if (coreValidity) {
-							LOG.info("Determining signing certificate from certificate candidates list succeeded");
-							candidates.setTheCertificateValidity(certificateValidity);
-							break;
+				String encodedHeader = jws.getEncodedHeader();
+				if (Utils.isStringNotEmpty(encodedHeader)) {
+					
+					SigDMechanism sigDMechanism = getSigDMechanism();
+					boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
+					if (!isDetachedSignature()) {
+						// not detached
+						signatureValueReferenceValidation.setFound(true);
+						
+					} else if (sigDMechanism == null && detachedContentPresent) {
+						// simple detached signature
+						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
+						jws.setDSSDocumentPayload(DSSUtils.toByteArray(detachedContents.get(0)));
+						
+					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+						// detached with OBJECT_ID_BY_URI mechanism
+						signatureValueReferenceValidation.setFound(detachedContentPresent);
+						jws.setDSSDocumentPayload(getPayloadForObjectIdByUriMechanism());
+						
+					} else if (detachedContentPresent) {
+						// other mechanisms
+						signatureValueReferenceValidation.setFound(true);
+						
+					} else {
+						// otherwise original content is not found
+						LOG.warn("The payload is not found! The detached content must be provided!");
+						
+					}
+					
+					String encodedPayload = jws.getEncodedPayload();
+					String headerAndPayloadResult = JAdESUtils.concatenate(encodedHeader, encodedPayload);
+					// The data to sign by RFC 7515 shall be ASCII-encoded
+					byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadResult);
+					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
+					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
+					signatureValueReferenceValidation.setDigest(digest);
+					
+					boolean coreValidity = false;
+	
+					CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
+					if (candidates.isEmpty()) {
+						signatureValueReferenceValidation
+								.addErrorMessage("There is no signing certificate within the signature or certificate pool.");
+					}
+	
+					jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
+					jws.setDoKeyValidation(false); // restrict on key size,...
+	
+					LOG.debug("Determining signing certificate from certificate candidates list...");
+					final List<String> preliminaryErrorMessages = new ArrayList<>();
+					int certificateNumber = 0;
+					for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
+						String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
+	
+						jws.setKey(certificateValidity.getPublicKey());
+	
+						try {
+							coreValidity = jws.verifySignature();
+							if (coreValidity) {
+								LOG.info("Determining signing certificate from certificate candidates list succeeded");
+								candidates.setTheCertificateValidity(certificateValidity);
+								break;
+							}
+						} catch (JoseException e) {
+							LOG.debug("Exception while probing candidate certificate as signing certificate: {}", e.getMessage());
+							preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
 						}
-					} catch (JoseException e) {
-						LOG.debug("Exception while probing candidate certificate as signing certificate: {}", e.getMessage());
-						preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
+	
+						certificateNumber++;
 					}
-
-					certificateNumber++;
-				}
-
-				if (!coreValidity) {
-					LOG.warn("Determining signing certificate from certificate candidates list failed: {}",
-							preliminaryErrorMessages);
-					for (String preliminaryErrorMessage : preliminaryErrorMessages) {
-						signatureValueReferenceValidation.addErrorMessage(preliminaryErrorMessage);
+	
+					if (!coreValidity) {
+						LOG.warn("Determining signing certificate from certificate candidates list failed: {}",
+								preliminaryErrorMessages);
+						for (String preliminaryErrorMessage : preliminaryErrorMessages) {
+							signatureValueReferenceValidation.addErrorMessage(preliminaryErrorMessage);
+						}
 					}
+	
+					signatureValueReferenceValidation.setIntact(coreValidity);
+					
 				}
-
-				signatureValueReferenceValidation.setIntact(coreValidity);
-				
 			}
+		} catch (DSSException e) {
+			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage(), e);
 		}
+		
 		return signatureValueReferenceValidation;
 	}
 	
@@ -452,10 +491,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			SigDMechanism sigDMechanism = getSigDMechanism();
 			if (sigDMechanism != null) {
 				switch (sigDMechanism) {
+					case OBJECT_ID_BY_URI:
+						// the documents are added to the payload, not possible to extract separate reference validations
+						break;
 					case OBJECT_ID_BY_URI_HASH:
 						return getReferenceValidationsByUriHashMechanism();
 					case HTTP_HEADERS:
-					case OBJECT_ID_BY_URI:
 					default:
 						LOG.warn("The SigDMechanism '{}' is not supported!", sigDMechanism);
 						break;
@@ -463,52 +504,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return Collections.emptyList();
-	}
-
-	public List<DSSDocument> getOriginalDocuments() {
-		if (isDetachedSignature()) {
-			
-			List<DSSDocument> originalDocuments = new ArrayList<>();
-			
-			List<ReferenceValidation> referenceValidations = getReferenceValidations();
-			for (ReferenceValidation referenceValidation : referenceValidations) {
-				if (DigestMatcherType.SIG_D_ENTRY.equals(referenceValidation.getType()) && referenceValidation.isIntact()) {
-					for (DSSDocument detachedDocument : detachedContents) {
-						if (referenceValidation.getName().equals(detachedDocument.getName())) {
-							originalDocuments.add(detachedDocument);
-						}
-					} 
-				}
-			}
-			
-			if (Utils.isCollectionEmpty(originalDocuments)) {
-				// check if the signature of an old detached format
-				SignatureCryptographicVerification signatureCryptographicVerification = getSignatureCryptographicVerification();
-				if (signatureCryptographicVerification.isSignatureIntact() && detachedContents.size() == 1) {
-					return Collections.singletonList(detachedContents.get(0));
-				}
-			}
-			
-			return originalDocuments;
-			
-		} else {
-			return Collections.singletonList(new InMemoryDocument(jws.getUnverifiedPayloadBytes()));
-		}
-	}
-	
-	/**
-	 * Checks if the JAdES Signature is a detached (contains 'sigD' dictionary)
-	 * 
-	 * @return TRUE if the signature is detached, FALSE otherwise
-	 */
-	public boolean isDetachedSignature() {
-		return isDetached;
-	}
-	
-	private boolean isSigDHeaderPresent() {
-		Map<?, ?> sigD = (Map<?, ?>) jws.getHeaders()
-				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
-		return sigD != null;
 	}
 	
 	/**
@@ -530,6 +525,40 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 	
+	private byte[] getPayloadForObjectIdByUriMechanism() {
+		if (Utils.isCollectionEmpty(detachedContents)) {
+			throw new DSSException("The detached contents shall be provided for validating a detached signature!");
+		}
+		
+		List<String> signedDataUriList = getSignedDataUriList();
+		
+		if (signedDataUriList.size() == 1 && detachedContents.size() == 1) {
+			return DSSUtils.toByteArray(detachedContents.get(0));
+		}
+		
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
+			for (String signedDataName : signedDataUriList) {
+				boolean found = false;
+				for (DSSDocument document : detachedContents) {
+					if (signedDataName.equals(document.getName())) {
+						found = true;
+						baos.write(DSSUtils.toByteArray(document));
+					}
+				}
+				if (!found) {
+					LOG.warn("The detached content for a signed data with name '{}' has not been found!", signedDataName);
+				}
+			}
+			
+			return baos.toByteArray();
+			
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to build a payload for detached signature with ObjectIdByURI mechanism. "
+					+ "Reason : %s", e.getMessage()), e); 
+		}
+	}
+	
 	private List<JAdESReferenceValidation> getReferenceValidationsByUriHashMechanism() {
 		
 		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForDetachedContent();
@@ -538,7 +567,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			return Collections.emptyList();
 		}
 		
-		Map<String, String> signedDataHashMap = getSignedDataHashMap();
+		Map<String, String> signedDataHashMap = getSignedDataUriHashMap();
 		if (Utils.isMapEmpty(signedDataHashMap)) {
 			LOG.warn("The SignedData has not been found or incorrect for detached content.");
 			return Collections.emptyList();
@@ -607,25 +636,38 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 	
-	private Map<String, String> getSignedDataHashMap() {
+	private Map<String, String> getSignedDataUriHashMap() {
+		Map<String, String> signedDataHashMap = new LinkedHashMap<String, String>(); // LinkedHashMap is used to keep the original order
+		
+		List<String> signedDataUriList = getSignedDataUriList();
+		List<String> signedDataHashList = getSignedDataHashList();
+		if (signedDataUriList.size() != signedDataHashList.size()) {
+			LOG.warn("The size of 'pars' and 'hashV' dictionaries does not match! See '5.2.8 The sigD header parameter'.");
+			return signedDataHashMap;
+		}
+		
+		for (int ii = 0; ii < signedDataUriList.size(); ii++) {
+			signedDataHashMap.put(signedDataUriList.get(ii), signedDataHashList.get(ii));
+		}
+		return signedDataHashMap;
+	}
+	
+	private List<String> getSignedDataUriList() {
 		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
 		if (signatureDetached != null) {
-			Map<String, String> signedDataHashMap = new LinkedHashMap<String, String>(); // LinkedHashMap is used to keep the original order
-			
-			List<String> signedDataUriList = (List<String>) signatureDetached.get(JAdESHeaderParameterNames.PARS);
-			List<String> signedDataHashList = (List<String>) signatureDetached.get(JAdESHeaderParameterNames.HASH_V);
-			if (signedDataUriList.size() != signedDataHashList.size()) {
-				LOG.warn("The size of 'pars' and 'hashV' dictionaries does not match! See '5.2.8 The sigD header parameter'.");
-				return null;
-			}
-			
-			for (int ii = 0; ii < signedDataUriList.size(); ii++) {
-				signedDataHashMap.put(signedDataUriList.get(ii), signedDataHashList.get(ii));
-			}
-			return signedDataHashMap;
+			return (List<String>) signatureDetached.get(JAdESHeaderParameterNames.PARS);
 		}
-		return null;
+		return Collections.emptyList();
+	}
+	
+	private List<String> getSignedDataHashList() {
+		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
+		if (signatureDetached != null) {
+			return (List<String>) signatureDetached.get(JAdESHeaderParameterNames.HASH_V);
+		}
+		return Collections.emptyList();
 	}
 	
 	private boolean isDocumentDigestMatch(DSSDocument document, DigestAlgorithm digestAlgorithm, String expectedDigest) {
@@ -636,6 +678,37 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
 				computedDigest, document.getName(), expectedDigest);
 		return false;
+	}
+
+	public List<DSSDocument> getOriginalDocuments() {
+		if (isDetachedSignature()) {
+			
+			List<DSSDocument> originalDocuments = new ArrayList<>();
+			
+			List<ReferenceValidation> referenceValidations = getReferenceValidations();
+			for (ReferenceValidation referenceValidation : referenceValidations) {
+				if (DigestMatcherType.SIG_D_ENTRY.equals(referenceValidation.getType()) && referenceValidation.isIntact()) {
+					for (DSSDocument detachedDocument : detachedContents) {
+						if (referenceValidation.getName().equals(detachedDocument.getName())) {
+							originalDocuments.add(detachedDocument);
+						}
+					} 
+				}
+			}
+			
+			if (Utils.isCollectionEmpty(originalDocuments)) {
+				// check if the signature of an old detached format
+				SignatureCryptographicVerification signatureCryptographicVerification = getSignatureCryptographicVerification();
+				if (signatureCryptographicVerification.isSignatureIntact() && detachedContents.size() == 1) {
+					return Collections.singletonList(detachedContents.get(0));
+				}
+			}
+			
+			return originalDocuments;
+			
+		} else {
+			return Collections.singletonList(new InMemoryDocument(jws.getUnverifiedPayloadBytes()));
+		}
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import java.util.Objects;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 
 public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdESTimestampParameters> {
 	
@@ -50,6 +51,11 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * Default: JWSSerializationType.COMPACT_SERIALIZATION
 	 */
 	private JWSSerializationType jwsSerializationType = JWSSerializationType.COMPACT_SERIALIZATION;
+	
+	/**
+	 * Defines a used 'sigD' mechanism for a detached signature
+	 */
+	private SigDMechanism sigDMechanism = SigDMechanism.OBJECT_ID_BY_URI_HASH;
 
 	@Override
 	public JAdESTimestampParameters getContentTimestampParameters() {
@@ -136,6 +142,25 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	public void setJwsSerializationType(JWSSerializationType jwsSerializationType) {
 		Objects.requireNonNull(jwsSerializationType, "JWSSerializationType cannot be null!");
 		this.jwsSerializationType = jwsSerializationType;
+	}
+
+	/**
+	 * Returns a SigDMechanism to use
+	 * 
+	 * @return {@link SigDMechanism}
+	 */
+	public SigDMechanism getSigDMechanism() {
+		return sigDMechanism;
+	}
+
+	/**
+	 * Sets SigDMechanism to use for a Detached signature
+	 * 
+	 * @param sigDMechanism {@link SigDMechanism}
+	 */
+	public void setSigDMechanism(SigDMechanism sigDMechanism) {
+		Objects.requireNonNull(sigDMechanism, "sigDMechanism cannot be null!");
+		this.sigDMechanism = sigDMechanism;
 	}
 
 }

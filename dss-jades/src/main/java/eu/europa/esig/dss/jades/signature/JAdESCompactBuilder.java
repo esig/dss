@@ -3,6 +3,7 @@ package eu.europa.esig.dss.jades.signature;
 import java.util.Map;
 import java.util.Objects;
 
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -38,7 +39,26 @@ public class JAdESCompactBuilder {
 		
 		JWS jws = new JWS();
 		incorporateHeader(jws);
-		incorporatePayload(jws);
+		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			incorporatePayload(jws);
+		}
+		return JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
+	}
+	
+	/**
+	 * Builds data to be signed by incorporating a detached payload when required (see 5.2.8.3 Mechanism ObjectIdByURI)
+	 * 
+	 * @return {@link String} representing the signature data to be signed result
+	 */
+	public String buildDataToBeSigned() {
+		assertSignaturePackaging(parameters.getSignaturePackaging());
+		
+		JWS jws = new JWS();
+		incorporateHeader(jws);
+		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) 
+				|| SigDMechanism.OBJECT_ID_BY_URI.equals(parameters.getSigDMechanism())) {
+			incorporatePayload(jws);
+		}
 		return JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
 	}
 	
@@ -61,9 +81,7 @@ public class JAdESCompactBuilder {
 	 * @param jws {@link JWS} to populate
 	 */
 	protected void incorporatePayload(final JWS jws) {
-		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
-			jws.setPayloadBytes(DSSUtils.toByteArray(signingDocument));
-		}
+		jws.setPayloadBytes(DSSUtils.toByteArray(signingDocument));
 	}
 
 	/**

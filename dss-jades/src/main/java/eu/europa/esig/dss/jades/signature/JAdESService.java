@@ -90,10 +90,10 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		assertSigningDateInCertificateValidityRange(parameters);
 		
 		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocument);
-		String headerAndPayloadString = jadesCompactBuilder.build();
+		String dataToBeSignedString = jadesCompactBuilder.buildDataToBeSigned();
 		
 		// The data to sign by RFC 7515 shall be ASCII-encoded
-		byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadString);
+		byte[] dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
 		
 		return new ToBeSigned(dataToSign);
 	}

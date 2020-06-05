@@ -446,24 +446,52 @@ public class JAdESLevelBaselineB {
 	 */
 	private void incorporateDetachedContents() {
 		if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			
 			List<DSSDocument> detachedContents = Arrays.asList(signingDocument);
 			
-			// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
-			Map<String, Object> sigDParams = new HashMap<>();
-			sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI_HASH.getUri());
-			sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
-			
-			DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault();
-			sigDParams.put(JAdESHeaderParameterNames.HASH_M, digestAlgorithm.getUri());
-			sigDParams.put(JAdESHeaderParameterNames.HASH_V, getSignedDataDigests(detachedContents, digestAlgorithm));
-			
-			JSONArray ctysArray = getSignedDataMimeTypesIfPresent(detachedContents);
-			if (ctysArray != null) {
-				sigDParams.put(JAdESHeaderParameterNames.CTYS, ctysArray);
+			Map<String, Object> sigDParams;
+			switch (parameters.getSigDMechanism()) {
+				case OBJECT_ID_BY_URI:
+					// The 5.2.8.3 Mechanism ObjectIdByURI implementation
+					sigDParams = getSigDForObjectIdByUriMechanism(detachedContents);
+					break;
+				case OBJECT_ID_BY_URI_HASH:
+					// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
+					sigDParams = getSigDForObjectIdByUriHashMechanism(detachedContents);
+					break;
+				case HTTP_HEADERS:
+				default:
+					throw new DSSException(String.format("The 'sigD' mechanism '%s' is not supported!", parameters.getSigDMechanism()));
 			}
-
+			
 			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JSONObject(sigDParams));
 		}
+	}
+	
+	private Map<String, Object> getSigDForObjectIdByUriHashMechanism(List<DSSDocument> detachedContents) {
+		Map<String, Object> sigDParams = new HashMap<>();
+		
+		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI_HASH.getUri());
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
+		
+		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault();
+		sigDParams.put(JAdESHeaderParameterNames.HASH_M, digestAlgorithm.getUri());
+		sigDParams.put(JAdESHeaderParameterNames.HASH_V, getSignedDataDigests(detachedContents, digestAlgorithm));
+		
+		sigDParams.put(JAdESHeaderParameterNames.CTYS, getSignedDataMimeTypesIfPresent(detachedContents));
+		
+		return sigDParams;
+	}
+	
+	private Map<String, Object> getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
+		Map<String, Object> sigDParams = new HashMap<>();
+		
+		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI.getUri());
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
+
+		sigDParams.put(JAdESHeaderParameterNames.CTYS, getSignedDataMimeTypesIfPresent(detachedContents));
+		
+		return sigDParams;
 	}
 	
 	private JSONArray getSignedDataReferences(List<DSSDocument> detachedContents) {
@@ -487,8 +515,7 @@ public class JAdESLevelBaselineB {
 	}
 	
 	/**
-	 * Returns a 'ctys' array only if mimeTypes are present for all documents
-	 * The behavior is based on 'http://uri.etsi.org/19182/ObjectIdByURI' Mechanism
+	 * Returns a 'ctys' array for given documents
 	 * 
 	 * @param detachedContents a list of {@link DSSDocument} to be signed
 	 * @return 'ctys' {@link JSONArray}
@@ -498,8 +525,7 @@ public class JAdESLevelBaselineB {
 		for (DSSDocument document : detachedContents) {
 			MimeType mimeType = document.getMimeType();
 			if (mimeType == null) {
-				// if at least one document has no specified MimeType, return null
-				return null;
+				mimeType = MimeType.BINARY;
 			}
 			String rfc7515MimeType = getRFC7515ConformantMimeTypeString(mimeType);
 			mimeTypes.add(rfc7515MimeType);
