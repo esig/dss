@@ -55,7 +55,7 @@ public class TrustedListFacadeTest {
 
 	@Test
 	public void testMRA_LOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
-		marshallUnmarshall(new File("src/test/resources/mra/lotl_be_and_tc-v0.02.xml"));
+		marshallUnmarshall(new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"));
 	}
 
 	@Test
@@ -63,11 +63,11 @@ public class TrustedListFacadeTest {
 		TrustedListFacade facade = TrustedListFacade.newFacade();
 
 		TrustStatusListType trustStatusListType = facade
-				.unmarshall(new File("src/test/resources/mra/lotl_be_and_tc-v0.02.xml"));
+				.unmarshall(new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"));
 		assertNotNull(trustStatusListType);
 
 		OtherTSLPointersType pointersToOtherTSL = trustStatusListType.getSchemeInformation().getPointersToOtherTSL();
-		OtherTSLPointerType tcTL = pointersToOtherTSL.getOtherTSLPointer().get(2);
+		OtherTSLPointerType tcTL = pointersToOtherTSL.getOtherTSLPointer().get(44);
 
 		AdditionalInformationType additionalInformation = tcTL.getAdditionalInformation();
 		List<Serializable> textualInformationOrOtherInformation = additionalInformation
