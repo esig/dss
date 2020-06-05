@@ -35,7 +35,7 @@ public class XSDConformanceTest {
             xsdSources.add(new StreamSource(new FileInputStream( new File("src/test/resources/xsd/xades.xsd"))));
             xsdSources.add(new StreamSource(new FileInputStream( new File("src/test/resources/xsd/ts_xsd.xsd"))));
             xsdSources.add(new StreamSource(new FileInputStream( new File("src/test/resources/xsd/ts_additionaltypes_xsd.xsd"))));
-            xsdSources.add(new StreamSource(new FileInputStream( new File("src/main/resources/xsd/MRA-info_qc_esig-v0.02.xsd"))));
+            xsdSources.add(new StreamSource(new FileInputStream( new File("src/main/resources/xsd/MRA-info_qc_esig-v0.03.xsd"))));
             
 
 			Schema schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
@@ -43,7 +43,7 @@ public class XSDConformanceTest {
 			
 			Validator validator = schema.newValidator();
 		
-			validator.validate(new StreamSource(new FileInputStream( new File("src/test/resources/mra/lotl_be_and_tc-v0.02.xml"))));
+			validator.validate(new StreamSource(new FileInputStream( new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"))));
 			System.out.println("XML validated");
 		} catch (SAXException | IOException e) {
 			e.printStackTrace();
