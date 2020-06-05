@@ -33,8 +33,8 @@
 	<!-- Definition of ServiceTSLTypeEquivalenceList-->
 	<xsd:complexType name= "ServiceTSLTypeEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLTypeListEU" type="mra:ServiceTSLTypeListType"/>
-			<xsd:element name= "ServiceTSLTypeListCC" type="mra:ServiceTSLTypeListType"/>
+			<xsd:element name= "ServiceTSLTypeListSubstitute" type="mra:ServiceTSLTypeListType"/>
+			<xsd:element name= "ServiceTSLTypeListExpected" type="mra:ServiceTSLTypeListType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -61,8 +61,8 @@
 
 	<xsd:complexType name= "ServiceTSLStatusEquivalenceType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLStatusListEU" type="mra:ServiceTSLStatusList"/>
-			<xsd:element name= "ServiceTSLStatusListCC" type="mra:ServiceTSLStatusList"/>
+			<xsd:element name= "ServiceTSLStatusListSubstitute" type="mra:ServiceTSLStatusList"/>
+			<xsd:element name= "ServiceTSLStatusListExpected" type="mra:ServiceTSLStatusList"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -82,8 +82,8 @@
 
 	<xsd:complexType name= "CertificateContentEquivalenceType">
 		<xsd:sequence>
-			<xsd:element name= "CertificateContentEU" type="tns:CriteriaListType"/>
-			<xsd:element name= "CertificateContentCC" type="tns:CriteriaListType"/>
+			<xsd:element name= "CertificateContentSubstitute" type="tns:CriteriaListType"/>
+			<xsd:element name= "CertificateContentExpected" type="tns:CriteriaListType"/>
 		</xsd:sequence>
 	</xsd:complexType>	<xsd:element name="QcStatementSet" type="mra:QcStatementListType"/>
 	<xsd:complexType name="QcStatementListType">
@@ -108,7 +108,7 @@
 	<!-- Definition of ServiceTSLQualificationExtensionEquivalenceList -->
 	<xsd:complexType name= "ServiceTSLQualificationExtensionEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLQualificationExtensionNameCC" type="xsd:string" minOccurs="0"/>
+			<xsd:element name= "ServiceTSLQualificationExtensionNameExpected" type="xsd:string" minOccurs="0"/>
 			<xsd:element name= "QualifierEquivalenceList" type="mra:QualifierEquivalenceListType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -121,8 +121,8 @@
 
 	<xsd:complexType name= "QualifierEquivalenceType">
 		<xsd:sequence>
-			<xsd:element name= "QualifierEU" type="tns:QualifierType"/>
-			<xsd:element name= "QualifierCC" type="tns:QualifierType"/>
+			<xsd:element name= "QualifierSubstitute" type="tns:QualifierType"/>
+			<xsd:element name= "QualifierExpected" type="tns:QualifierType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

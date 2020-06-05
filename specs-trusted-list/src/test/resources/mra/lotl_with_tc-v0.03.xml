@@ -2050,44 +2050,43 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
     <mra:ServiceEquivalenceInformation>
         <mra:ServiceLegalInformation>QCForESig</mra:ServiceLegalInformation>
         <mra:ServiceTSLTypeEquivalenceList>
-            <mra:ServiceTSLTypeListEU>
+            <mra:ServiceTSLTypeListSubstitute>
                 <mra:ServiceTSLType>
                     <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
                     <AdditionalServiceInformation>
                         <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
                     </AdditionalServiceInformation>
                 </mra:ServiceTSLType>
-            </mra:ServiceTSLTypeListEU>
-            <mra:ServiceTSLTypeListCC>
+            </mra:ServiceTSLTypeListSubstitute>
+            <mra:ServiceTSLTypeListExpected>
                 <mra:ServiceTSLType>
                     <ServiceTypeIdentifier>http://tc-trusted-list.go.tc/TrstSvc/Svctype/CA/QC/for-eSig</ServiceTypeIdentifier>
                 </mra:ServiceTSLType>
-            </mra:ServiceTSLTypeListCC>
+            </mra:ServiceTSLTypeListExpected>
         </mra:ServiceTSLTypeEquivalenceList>
         <mra:ServiceEquivalenceStatus>Active</mra:ServiceEquivalenceStatus>
         <mra:ServiceEquivalenceStatusStartingTime>2020-05-16T23:59:59Z</mra:ServiceEquivalenceStatusStartingTime>
         <mra:ServiceTSLStatusEquivalenceList>
             <mra:ServiceTSLStatusEquivalence>
-                <mra:ServiceTSLStatusListEU>
+                <mra:ServiceTSLStatusListSubstitute>
                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                </mra:ServiceTSLStatusListEU>
-                <mra:ServiceTSLStatusListCC>
+                </mra:ServiceTSLStatusListSubstitute>
+                <mra:ServiceTSLStatusListExpected>
                     <ServiceStatus>http://tc-trusted-list.go.tc/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                </mra:ServiceTSLStatusListCC>
+                </mra:ServiceTSLStatusListExpected>
             </mra:ServiceTSLStatusEquivalence>
             <mra:ServiceTSLStatusEquivalence>
-                <mra:ServiceTSLStatusListEU>
+                <mra:ServiceTSLStatusListSubstitute>
                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
-                </mra:ServiceTSLStatusListEU>
-                <mra:ServiceTSLStatusListCC>
+                </mra:ServiceTSLStatusListSubstitute>
+                <mra:ServiceTSLStatusListExpected>
                     <ServiceStatus>http://tc-trusted-list.go.tc/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
-                </mra:ServiceTSLStatusListCC>
+                </mra:ServiceTSLStatusListExpected>
             </mra:ServiceTSLStatusEquivalence>
         </mra:ServiceTSLStatusEquivalenceList>
         <mra:CertificateContentEquivalenceList>
             <mra:CertificateContentEquivalence>
-                <mra:CertificateContentEU assert="all">
-                        <ns5:CriteriaList assert="atLeastOne">
+                <mra:CertificateContentSubstitute assert="all">
                             <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
                                     <mra:QcStatement>
@@ -2095,123 +2094,171 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                             <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
                                         </mra:QcStatementId>
                                     </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
                                 </mra:QcStatementSet>
                             </ns5:otherCriteriaList>
-                        </ns5:CriteriaList>
-                        <ns5:CriteriaList assert="none">
+                </mra:CertificateContentSubstitute>
+                <mra:CertificateContentExpected assert="all">
                             <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
                                     <mra:QcStatement>
                                         <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
                                         </mra:QcStatementId>
-                                        <mra:QcStatementInfo>
-                                            <mra:QcType>
-                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.2</ns3:Identifier>
-                                            </mra:QcType>
-                                        </mra:QcStatementInfo>
                                     </mra:QcStatement>
-                                </mra:QcStatementSet>
-                                <mra:QcStatementSet>
                                     <mra:QcStatement>
                                         <mra:QcStatementId>
                                             <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
                                         </mra:QcStatementId>
                                         <mra:QcStatementInfo>
                                             <mra:QcType>
-                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.3</ns3:Identifier>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
                                             </mra:QcType>
                                         </mra:QcStatementInfo>
                                     </mra:QcStatement>
-                                </mra:QcStatementSet>
-                                <mra:QcStatementSet>
                                     <mra:QcStatement>
                                         <mra:QcStatementId>
                                             <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
                                         </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcCClegislation>TC</mra:QcCClegislation>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
+                                        </mra:QcStatementId>
                                     </mra:QcStatement>
                                 </mra:QcStatementSet>
                             </ns5:otherCriteriaList>
-                        </ns5:CriteriaList>
-                </mra:CertificateContentEU>
-                <mra:CertificateContentCC assert="atLeastOne">
-                        <ns5:otherCriteriaList>
-                            <mra:QcStatementSet>
-                                <mra:QcStatement>
-                                    <mra:QcStatementId>
-                                        <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
-                                    </mra:QcStatementId>
-                                </mra:QcStatement>
-                                <mra:QcStatement>
-                                    <mra:QcStatementId>
-                                        <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
-                                    </mra:QcStatementId>
-                                    <mra:QcStatementInfo>
-                                        <mra:QcCClegislation>TC</mra:QcCClegislation>
-                                    </mra:QcStatementInfo>
-                                </mra:QcStatement>
-                            </mra:QcStatementSet>
-                        </ns5:otherCriteriaList>
-                </mra:CertificateContentCC>
+                </mra:CertificateContentExpected>
             </mra:CertificateContentEquivalence>
             <mra:CertificateContentEquivalence>
-                <mra:CertificateContentEU assert="all">
-                        <ns5:otherCriteriaList>
-                            <mra:QcStatementSet>
-                                <mra:QcStatement>
-                                    <mra:QcStatementId>
-                                        <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
-                                    </mra:QcStatementId>
-                                </mra:QcStatement>
-                            </mra:QcStatementSet>
-                        </ns5:otherCriteriaList>
-                </mra:CertificateContentEU>
-                <mra:CertificateContentCC assert="all">
-                        <ns5:otherCriteriaList>
-                            <mra:QcStatementSet>
-                                <mra:QcStatement>
-                                    <mra:QcStatementId>
-                                        <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
-                                    </mra:QcStatementId>
-                                </mra:QcStatement>
-                            </mra:QcStatementSet>
-                        </ns5:otherCriteriaList>
-                </mra:CertificateContentCC>
+                <mra:CertificateContentSubstitute assert="all">
+                    <ns5:CriteriaList assert="all">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>
+                            </ns5:otherCriteriaList>
+                    </ns5:CriteriaList>
+                    <ns5:CriteriaList assert="none">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>
+                            </ns5:otherCriteriaList>
+                    </ns5:CriteriaList>
+                </mra:CertificateContentSubstitute>
+                <mra:CertificateContentExpected assert="all">
+                    <ns5:CriteriaList assert="all">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcCClegislation>TC</mra:QcCClegislation>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>
+                            </ns5:otherCriteriaList>
+                    </ns5:CriteriaList>
+                    <ns5:CriteriaList assert="none">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>
+                            </ns5:otherCriteriaList>
+                    </ns5:CriteriaList>
+                </mra:CertificateContentExpected>
             </mra:CertificateContentEquivalence>
         </mra:CertificateContentEquivalenceList>
         <mra:ServiceTSLQualificationExtensionEquivalenceList>
             <mra:QualifierEquivalenceList>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/NotQualified"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/NotQualified"/>
                 </mra:QualifierEquivalence>
                 <mra:QualifierEquivalence>
-                    <mra:QualifierEU uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/mra:QcStatement"/>
-                    <mra:QualifierCC uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/mra:QcStatement"/>
+                    <mra:QualifierSubstitute uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/mra:QcStatement"/>
+                    <mra:QualifierExpected uri="http://tc-trusted-list.go.tc/TrstSvc/TrustedList/SvcInfoExt/mra:QcStatement"/>
                 </mra:QualifierEquivalence>
             </mra:QualifierEquivalenceList>
         </mra:ServiceTSLQualificationExtensionEquivalenceList>
