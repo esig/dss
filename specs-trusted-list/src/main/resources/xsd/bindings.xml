@@ -10,11 +10,11 @@
 	</jaxb:globalBindings>
 
 
-	<jaxb:bindings schemaLocation="MRA-info_qc_esig-v0.02.xsd" node="/xs:schema">
+	<jaxb:bindings schemaLocation="MRA-info_qc_esig-v0.03.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
 			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.mra" />
 		</jaxb:schemaBindings>
-		<jaxb:bindings schemaLocation="https://uri.etsi.org/19612/v1.2.1/ts_119612v010201_sie_xsd.xsd" node="/xs:schema">
+		<jaxb:bindings schemaLocation="https://uri.etsi.org/19612/v2.2.1/ts_119612v020101_sie_xsd.xsd" node="/xs:schema">
 			<jaxb:schemaBindings>
 				<jaxb:package name="eu.europa.esig.trustedlist.jaxb.ecc" />
 			</jaxb:schemaBindings>
