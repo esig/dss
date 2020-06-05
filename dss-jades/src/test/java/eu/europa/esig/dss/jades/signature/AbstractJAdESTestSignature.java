@@ -14,7 +14,6 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -43,54 +42,27 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	// TODO : temporary fix!!! not implemented yet
-	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isSignatureIntact());
-	}
-
-	// TODO : temporary fix!!! not implemented yet
-	@Override
-	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
-		// do nothing
-	}
-
-//	// TODO : temporary fix!!! not implemented yet
+	
 	@Override
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertNotNull(signatureWrapper.getSignatureValue());
-//			assertNotNull(signatureWrapper.getDAIdentifier());
 		}
 	}
-
-//	// TODO : temporary fix!!! not implemented yet
+	
 	@Override
 	protected void checkReportsSignatureIdentifier(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
-
-		if (Utils.isCollectionNotEmpty(diagnosticData.getSignatures())) {
-			for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
-				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
-
-				SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
-				assertNotNull(signatureIdentifier);
-
-				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
-//				assertNotNull(signatureIdentifier.getDAIdentifier());
-//				assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
-			}
+		for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+			SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+			
+			SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+			assertNotNull(signatureIdentifier);
+			
+			assertNotNull(signatureIdentifier.getSignatureValue());
+			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
 		}
-	}
-
-	// TODO : temporary fix!!! not implemented yet
-	@Override
-	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
-		// do nothing
 	}
 
 }

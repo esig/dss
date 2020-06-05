@@ -111,8 +111,10 @@ public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
 					jws.setSignature(signatureBinaries);
 					jws.setProtected(protectedBase64Url);
 					jws.setUnprotected(header);
-
-					signatures.add(new JAdESSignature(jws));
+					
+					JAdESSignature jadesSignature = new JAdESSignature(jws);
+					jadesSignature.setDetachedContents(detachedContents);
+					signatures.add(jadesSignature);
 				} catch (Exception e) {
 					throw new DSSException(String.format("Unable to build a signature. Reason : [%s]", e.getMessage()), e);
 				}

@@ -625,6 +625,10 @@
 			<!-- Digest from decrypted content SignatureValue (CAdES/PAdES) -->
 			<xs:enumeration value="CONTENT_DIGEST" />
 			
+			<!-- JAdES -->
+			<xs:enumeration value="JWS_SIGNING_INPUT_DIGEST" />
+			<xs:enumeration value="SIG_D_ENTRY" />
+			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
 		</xs:restriction>

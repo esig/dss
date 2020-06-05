@@ -22,19 +22,43 @@ package eu.europa.esig.dss.enumerations;
 
 public enum DigestMatcherType {
 
-	/* XAdES */
-	REFERENCE, OBJECT, MANIFEST, SIGNED_PROPERTIES, KEY_INFO, XPOINTER,
+	/** XAdES signed reference */
+	REFERENCE, 
+
+	/** XAdES signed reference of Object type */
+	OBJECT, 
+
+	/** XAdES signed manifest */
+	MANIFEST, 
+
+	/** XAdES SignedProperties element */
+	SIGNED_PROPERTIES, 
 	
-	/* XAdES and ASiC CAdES*/
+	/** XAdES KeyInfo element */
+	KEY_INFO, 
+
+	/** XAdES XPointer reference */
+	XPOINTER,
+	
+	/** XAdES and ASiC CAdES*/
 	MANIFEST_ENTRY,
 
-	/* CAdES */
+	/** CAdES */
 	MESSAGE_DIGEST, 
 	
-	// Digest from decrypted content SignatureValue (CAdES/PAdES)
+	/** Digest from decrypted content SignatureValue (CAdES/PAdES/JAdES) */
 	CONTENT_DIGEST,
+	
+	/** 
+	 * JAdES Digest on result of concatenation 
+	 * ASCII(BASE64URL(UTF8(JWSProtected Header)) || '.' || BASE64URL(JWS Payload)) 
+	 */
+	JWS_SIGNING_INPUT_DIGEST,
+	
+	/** JAdES Detached entry */
+	SIG_D_ENTRY,
 
-	/* Timestamp */
+	/** Timestamp */
 	MESSAGE_IMPRINT
 
 }

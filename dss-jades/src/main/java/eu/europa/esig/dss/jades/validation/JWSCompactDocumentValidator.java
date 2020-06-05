@@ -79,6 +79,7 @@ public class JWSCompactDocumentValidator extends SignedDocumentValidator {
 
 			JAdESSignature jadesSignature = new JAdESSignature(jws);
 			jadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+			jadesSignature.setDetachedContents(detachedContents);
 			signatures.add(jadesSignature);
 		}
 

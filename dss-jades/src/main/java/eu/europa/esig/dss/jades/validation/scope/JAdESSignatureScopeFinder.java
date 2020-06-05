@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
@@ -42,37 +43,39 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 
 	@Override
 	public List<SignatureScope> findSignatureScope(final JAdESSignature jadesSignature) {
-		DSSDocument originalDocument = getOriginalDocument(jadesSignature);
-		return getSignatureScopeFromOriginalDocument(originalDocument);
+		List<DSSDocument> originalDocuments = getOriginalDocuments(jadesSignature);
+		return getSignatureScopeFromOriginalDocuments(originalDocuments);
 	}
 
-	protected List<SignatureScope> getSignatureScopeFromOriginalDocument(DSSDocument originalDocument) {
+	protected List<SignatureScope> getSignatureScopeFromOriginalDocuments(List<DSSDocument> originalDocuments) {
 		List<SignatureScope> result = new ArrayList<>();
-		if (originalDocument == null) {
+		if (Utils.isCollectionEmpty(originalDocuments)) {
 			return result;
 		}
-
-		if (originalDocument instanceof DigestDocument) {
-			DigestDocument digestDocument = (DigestDocument) originalDocument;
-			result.add(new DigestSignatureScope("Digest document", digestDocument.getExistingDigest()));
-
-		} else {
-			result.add(new FullSignatureScope("Full document",
-					DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
+		
+		for (DSSDocument originalDocument : originalDocuments) {
+			if (originalDocument instanceof DigestDocument) {
+				DigestDocument digestDocument = (DigestDocument) originalDocument;
+				result.add(new DigestSignatureScope("Digest document", digestDocument.getExistingDigest()));
+	
+			} else {
+				result.add(new FullSignatureScope("Full document",
+						DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
+			}
 		}
 
 		return result;
 	}
 
 	/**
-	 * Returns original document for the given JAdES signature
+	 * Returns original documents for the given JAdES signature
 	 * 
 	 * @param jadesSignature {@link JAdESSignature} to get original document for
-	 * @return {@link DSSDocument} original document
+	 * @return a list of {@link DSSDocument}s original document
 	 */
-	protected DSSDocument getOriginalDocument(final JAdESSignature jadesSignature) {
+	protected List<DSSDocument> getOriginalDocuments(final JAdESSignature jadesSignature) {
 		try {
-			return jadesSignature.getOriginalDocument();
+			return jadesSignature.getOriginalDocuments();
 		} catch (DSSException e) {
 			LOG.warn("A JAdES signer's original document is not found [{}].", e.getMessage());
 			return null;
