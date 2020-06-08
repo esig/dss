@@ -74,7 +74,7 @@ public class DTOTest {
 	
 	@Test
 	public void otherTSLPointerDTOTest() {
-		OtherTSLPointer otherTSLPointerDTO = new OtherTSLPointer("CZ", Arrays.asList(cert));
+		OtherTSLPointer otherTSLPointerDTO = new OtherTSLPointer("CZ", Arrays.asList(cert), null);
 		assertEquals("CZ", otherTSLPointerDTO.getLocation());
 		assertEquals(1, otherTSLPointerDTO.getCertificates().size());
 		assertEquals(cert, otherTSLPointerDTO.getCertificates().get(0));

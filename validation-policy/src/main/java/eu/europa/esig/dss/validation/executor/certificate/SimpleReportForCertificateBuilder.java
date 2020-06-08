@@ -112,7 +112,10 @@ public class SimpleReportForCertificateBuilder {
 					XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
 					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getTL().getCountryCode());
 					trustAnchor.setTrustServiceProvider(getFirst(xmlTrustedServiceProvider.getTSPNames()));
-					trustAnchor.setTrustServiceProviderRegistrationId(xmlTrustedServiceProvider.getTSPRegistrationIdentifiers().get(0));
+					List<String> tspRegistrationIdentifiers = xmlTrustedServiceProvider.getTSPRegistrationIdentifiers();
+					if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
+						trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
+					}
 					trustAnchor.setTrustServiceName(serviceName);
 					trustAnchors.add(trustAnchor);
 				}

@@ -30,6 +30,8 @@ public class TrustProperties {
 	private final TrustServiceProvider trustServiceProvider;
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService;
 
+	private final MRA mra;
+
 	/**
 	 * Constructor for extracted information from an "independent" trusted list
 	 * 
@@ -43,6 +45,7 @@ public class TrustProperties {
 	public TrustProperties(Identifier tlId, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
 		this.lotlId = null;
+		this.mra = null;
 		this.tlId = tlId;
 		this.trustServiceProvider = trustServiceProvider;
 		this.trustService = trustService;
@@ -52,21 +55,19 @@ public class TrustProperties {
 	 * Constructor for extracted information from trusted list which is linked to a
 	 * LOTL
 	 * 
-	 * @param lotlId
-	 *                             the LOTL identifier
-	 * @param tlId
-	 *                             the TL identifier
-	 * @param trustServiceProvider
-	 *                             the trust service provider information
-	 * @param trustService
-	 *                             the current trust service
+	 * @param lotlId               the LOTL identifier
+	 * @param tlId                 the TL identifier
+	 * @param trustServiceProvider the trust service provider information
+	 * @param trustService         the current trust service
+	 * @param mra                  the mutual recognition agreement
 	 */
 	public TrustProperties(Identifier lotlId, Identifier tlId, TrustServiceProvider trustServiceProvider,
-			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
+			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService, MRA mra) {
 		this.lotlId = lotlId;
 		this.tlId = tlId;
 		this.trustServiceProvider = trustServiceProvider;
 		this.trustService = trustService;
+		this.mra = mra;
 	}
 
 	public Identifier getLOTLIdentifier() {
@@ -83,6 +84,10 @@ public class TrustProperties {
 
 	public TimeDependentValues<TrustServiceStatusAndInformationExtensions> getTrustService() {
 		return trustService;
+	}
+
+	public MRA getMra() {
+		return mra;
 	}
 
 }
