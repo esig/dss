@@ -3,12 +3,15 @@ package eu.europa.esig.dss.jades.signature;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -22,6 +25,7 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.HTTPHeaderDocument;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -456,6 +460,9 @@ public class JAdESLevelBaselineB {
 			
 			Map<String, Object> sigDParams;
 			switch (parameters.getSigDMechanism()) {
+				case HTTP_HEADERS:
+					sigDParams = getSigDForHttpHeadersMechanism(documentsToSign);
+					break;
 				case OBJECT_ID_BY_URI:
 					// The 5.2.8.3 Mechanism ObjectIdByURI implementation
 					sigDParams = getSigDForObjectIdByUriMechanism(documentsToSign);
@@ -464,13 +471,23 @@ public class JAdESLevelBaselineB {
 					// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
 					sigDParams = getSigDForObjectIdByUriHashMechanism(documentsToSign);
 					break;
-				case HTTP_HEADERS:
 				default:
 					throw new DSSException(String.format("The 'sigD' mechanism '%s' is not supported!", parameters.getSigDMechanism()));
 			}
 			
 			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JSONObject(sigDParams));
 		}
+	}
+	
+	private Map<String, Object> getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
+		Map<String, Object> sigDParams = new HashMap<>();
+		
+		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI.getUri());
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
+
+		sigDParams.put(JAdESHeaderParameterNames.CTYS, getSignedDataMimeTypesIfPresent(detachedContents));
+		
+		return sigDParams;
 	}
 	
 	private Map<String, Object> getSigDForObjectIdByUriHashMechanism(List<DSSDocument> detachedContents) {
@@ -488,13 +505,16 @@ public class JAdESLevelBaselineB {
 		return sigDParams;
 	}
 	
-	private Map<String, Object> getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
-		Map<String, Object> sigDParams = new HashMap<>();
+	private Map<String, Object> getSigDForHttpHeadersMechanism(List<DSSDocument> detachedContents) {
+		assertHttpHeadersConfigurationIsValid();
 		
-		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI.getUri());
-		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
+		Map<String, Object> sigDParams = new HashMap<>();
 
-		sigDParams.put(JAdESHeaderParameterNames.CTYS, getSignedDataMimeTypesIfPresent(detachedContents));
+		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
+		
+		HTTPHeaderDocument httpMessageDocument = (HTTPHeaderDocument) detachedContents.get(0);
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames(httpMessageDocument));
+		
 		
 		return sigDParams;
 	}
@@ -539,6 +559,32 @@ public class JAdESLevelBaselineB {
 	}
 	
 	/**
+	 * Returns a list of HTTP message field names being included into 'sigD' for HttpHeaders mechanism
+	 * 
+	 * @param httpMessage {@link HTTPHeaderDocument} to extract field names from
+	 * @return a set of HTTP message field names
+	 */
+	private Collection<String> getHttpHeaderNames(HTTPHeaderDocument httpMessageDocument) {
+		/*
+		 * TS 119 182-1 "5.2.8.2 Mechanism HttpHeaders" : 
+		 * 
+		 * For this referencing mechanism, the contents of the pars member 
+		 * shall be an array of lowercased names of HTTP header fields, each one 
+		 * with the semantics and syntax specified in clause 
+		 * 2.1.3 of draft-cavage-http-signatures-10: "Signing HTTP Messages" [17].
+		 */
+		
+		// The set is used in order to not repeat the fields
+		Set<String> httpHeaderNames = new LinkedHashSet<>();
+		
+		for (DSSDocument document : documentsToSign) {
+			httpHeaderNames.add(Utils.lowerCase(document.getName()));
+		}
+		
+		return httpHeaderNames;
+	}
+	
+	/**
 	 * Adds a new critical header property
 	 * 
 	 * @param headerName {@link String} name of a header to incorporate
@@ -559,17 +605,45 @@ public class JAdESLevelBaselineB {
 		signedProperties.put(headerName, value);
 	}
 	
+	/**
+	 * Returns JWS payload for the given signature parameters
+	 * 
+	 * @return payload byte array
+	 */
 	public byte[] getPayloadBytes() {
 		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
 			return DSSUtils.toByteArray(documentsToSign.get(0));
+		} else if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
+			return getPayloadForHttpHeadersMechanism();
 		} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(parameters.getSigDMechanism())) {
 			return getPayloadForObjectIdByUriMechanism();
-		} else {
+		} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(parameters.getSigDMechanism())) {
 			return null;
+		}
+		throw new DSSException("The configured signature format is not supported!");
+	}
+	
+	private byte[] getPayloadForHttpHeadersMechanism() {
+		assertHttpHeadersConfigurationIsValid();
+		
+		List<HTTPHeaderDocument> httpHeaderDocuments = JAdESUtils.toHTTPHeaderDocuments(documentsToSign);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaderDocuments);
+		
+		return httpHeadersPayloadBuilder.build();
+	}
+	
+	private void assertHttpHeadersConfigurationIsValid() {
+		if (Utils.isCollectionNotEmpty(documentsToSign)) {
+			for (DSSDocument document : documentsToSign) {
+				if (!(document instanceof HTTPHeaderDocument)) {
+					throw new DSSException("The documents to sign must have "
+							+ "a type of HTTPHeaderDocument for 'sigD' HttpHeaders mechanism!");
+				}
+			}
 		}
 	}
 	
-	public byte[] getPayloadForObjectIdByUriMechanism() {
+	private byte[] getPayloadForObjectIdByUriMechanism() {
 		try {
 			return JAdESUtils.concatenateDSSDocuments(documentsToSign);
 		} catch (IOException e) {

@@ -21,14 +21,19 @@
 package eu.europa.esig.dss.jades.validation.scope;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeaderSignatureScope;
+import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -47,27 +52,6 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		return getSignatureScopeFromOriginalDocuments(originalDocuments);
 	}
 
-	protected List<SignatureScope> getSignatureScopeFromOriginalDocuments(List<DSSDocument> originalDocuments) {
-		List<SignatureScope> result = new ArrayList<>();
-		if (Utils.isCollectionEmpty(originalDocuments)) {
-			return result;
-		}
-		
-		for (DSSDocument originalDocument : originalDocuments) {
-			String documentName = originalDocument.getName() != null ? originalDocument.getName() : "Detached Document";
-			if (originalDocument instanceof DigestDocument) {
-				DigestDocument digestDocument = (DigestDocument) originalDocument;
-				result.add(new DigestSignatureScope(documentName, digestDocument.getExistingDigest()));
-	
-			} else {
-				result.add(new FullSignatureScope(documentName,
-						DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
-			}
-		}
-
-		return result;
-	}
-
 	/**
 	 * Returns original documents for the given JAdES signature
 	 * 
@@ -81,6 +65,45 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 			LOG.warn("A JAdES signer's original document is not found [{}].", e.getMessage());
 			return null;
 		}
+	}
+
+	protected List<SignatureScope> getSignatureScopeFromOriginalDocuments(List<DSSDocument> originalDocuments) {
+		List<SignatureScope> result = new ArrayList<>();
+		if (Utils.isCollectionEmpty(originalDocuments)) {
+			return result;
+		}
+		
+		for (DSSDocument originalDocument : originalDocuments) {
+			String documentName = originalDocument.getName() != null ? originalDocument.getName() : "Detached content";
+			if (originalDocument instanceof HTTPHeaderDocument) {
+				// only http header documents shall be present
+				return Collections.singletonList(getHttpHeaderSignatureScope(originalDocuments));
+				
+			}
+			else if (originalDocument instanceof DigestDocument) {
+				DigestDocument digestDocument = (DigestDocument) originalDocument;
+				result.add(new DigestSignatureScope(documentName, digestDocument.getExistingDigest()));
+	
+			} else {
+				result.add(new FullSignatureScope(documentName,
+						DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
+			}
+		}
+
+		return result;
+	}
+	
+	private SignatureScope getHttpHeaderSignatureScope(List<DSSDocument> originalDocuments) {
+		List<HTTPHeaderDocument> httpHeaderDocuments = new ArrayList<>();
+		for (DSSDocument document : originalDocuments) {
+			if (document instanceof HTTPHeaderDocument) {
+				httpHeaderDocuments.add((HTTPHeaderDocument) document);
+			}
+		}
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaderDocuments);
+		byte[] payload = httpHeadersPayloadBuilder.build();
+		byte[] digest = DSSUtils.digest(getDefaultDigestAlgorithm(), payload);
+		return new HTTPHeaderSignatureScope(new Digest(getDefaultDigestAlgorithm(), digest));
 	}
 
 }

@@ -272,5 +272,25 @@ public class JAdESUtils {
 			return baos.toByteArray();
 		}
 	}
+	
+	/**
+	 * Casts a list of {@link DSSDocument}s to a list of {@code HTTPHeaderDocument}s
+	 * 
+	 * @param dssDocuments a list of {@link DSSDocument}s to be casted to {@link HTTPHeaderDocument}s
+	 * @return a list of {@link HTTPHeaderDocument}s
+	 * @throws IllegalArgumentException if a document of not {@link HTTPHeaderDocument} class found
+	 */
+	public static List<HTTPHeaderDocument> toHTTPHeaderDocuments(List<DSSDocument> dssDocuments) throws IllegalArgumentException {
+		List<HTTPHeaderDocument> httpHeaderDocuments = new ArrayList<>();
+		for (DSSDocument document : dssDocuments) {
+			if (document instanceof HTTPHeaderDocument) {
+				HTTPHeaderDocument httpHeaderDocument = (HTTPHeaderDocument) document;
+				httpHeaderDocuments.add(httpHeaderDocument);
+			} else {
+				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeaderDocument!"));
+			}
+		}
+		return httpHeaderDocuments;
+	}
 
 }

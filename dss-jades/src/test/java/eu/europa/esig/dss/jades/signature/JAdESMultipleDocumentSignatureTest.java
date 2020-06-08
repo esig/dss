@@ -19,7 +19,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 
-public class JAdESMultipleDocumentSignatureTest extends AbstractMultipleDocumentSignatureTest {
+public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;

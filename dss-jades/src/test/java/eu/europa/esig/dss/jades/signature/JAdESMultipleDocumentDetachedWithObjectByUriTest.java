@@ -15,7 +15,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 
-public class JAdESMultipleDocumentDetachedWithObjectByUriTest extends AbstractMultipleDocumentSignatureTest {
+public class JAdESMultipleDocumentDetachedWithObjectByUriTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
