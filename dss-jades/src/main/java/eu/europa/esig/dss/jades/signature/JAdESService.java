@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
@@ -23,13 +24,15 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public class JAdESService extends AbstractSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
+public class JAdESService extends AbstractSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> implements 
+					MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESService.class);
 
@@ -59,6 +62,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	 * @param parameters {@link JAdESSignatureParameters}
 	 * @return content {@link TimestampToken}
 	 */
+	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
 		if (tspSource == null) {
 			throw new DSSException("A TSPSource is required !");
@@ -89,20 +93,59 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		assertSigningDateInCertificateValidityRange(parameters);
 		
-		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocument);
+		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, Arrays.asList(toSignDocument));
 		String dataToBeSignedString = jadesCompactBuilder.buildDataToBeSigned();
 		
 		// The data to sign by RFC 7515 shall be ASCII-encoded
 		byte[] dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Data to sign: ");
+			LOG.trace(new String(dataToSign));
+		}
 		
 		return new ToBeSigned(dataToSign);
+	}
+
+	@Override
+	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
+		assertMultiDocumentsAllowed(toSignDocuments, parameters);
+		assertSigningDateInCertificateValidityRange(parameters);
+		
+		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocuments);
+		String dataToBeSignedString = jadesCompactBuilder.buildDataToBeSigned();
+		
+		// The data to sign by RFC 7515 shall be ASCII-encoded
+		byte[] dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Data to sign: ");
+			LOG.trace(new String(dataToSign));
+		}
+		
+		return new ToBeSigned(dataToSign);
+	}
+
+	/**
+	 * Only DETACHED signatures are allowed
+	 * 
+	 * @param parameters
+	 */
+	private void assertMultiDocumentsAllowed(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		if (Utils.isCollectionEmpty(toSignDocuments)) {
+			throw new DSSException("The documents to sign must be provided!");
+		}
+		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
+		if (!SignaturePackaging.DETACHED.equals(signaturePackaging) && toSignDocuments.size() > 1) {
+			throw new DSSException("Not supported operation (only DETACHED are allowed for multiple document signing)!");
+		}
 	}
 
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
 		
-		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocument);
+		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, Arrays.asList(toSignDocument));
 		String headerAndPayloadString = jadesCompactBuilder.build();
 		
 		String signatureString = JAdESUtils.concatenate(headerAndPayloadString, JAdESUtils.toBase64Url(signatureValue.getValue()));
@@ -111,8 +154,25 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	}
 
 	@Override
+	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocuments);
+		String headerAndPayloadString = jadesCompactBuilder.build();
+		
+		String signatureString = JAdESUtils.concatenate(headerAndPayloadString, JAdESUtils.toBase64Url(signatureValue.getValue()));
+		return new InMemoryDocument(signatureString.getBytes(),
+				getFinalFileName(toSignDocuments.get(0), SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JOSE);
+	}
+
+	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, JAdESSignatureParameters parameters) {
 		throw new UnsupportedOperationException("Extension is not supported with JAdES");
+	}
+
+	@Override
+	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, JAdESTimestampParameters parameters) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

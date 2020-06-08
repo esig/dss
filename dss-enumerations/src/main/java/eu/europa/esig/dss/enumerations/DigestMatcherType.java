@@ -46,7 +46,7 @@ public enum DigestMatcherType {
 	/** CAdES */
 	MESSAGE_DIGEST, 
 	
-	/** Digest from decrypted content SignatureValue (CAdES/PAdES/JAdES) */
+	/** Digest from decrypted content SignatureValue (CAdES/PAdES) */
 	CONTENT_DIGEST,
 	
 	/** 

@@ -1,31 +1,37 @@
 package eu.europa.esig.dss.jades.signature;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import eu.europa.esig.dss.enumerations.SigDMechanism;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class JAdESCompactBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESCompactBuilder.class);
 	
-	private final CertificateVerifier certificateVerifier;
 	private final JAdESSignatureParameters parameters;
-	private final DSSDocument signingDocument;
+	private final JAdESLevelBaselineB jadesLevelBaselineB;
 	
 	public JAdESCompactBuilder(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, 
-			final DSSDocument signingDocument) {
+			final List<DSSDocument> documentsToSign) {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier must be defined!");
 		Objects.requireNonNull(parameters, "SignatureParameters must be defined!");
-		this.certificateVerifier = certificateVerifier;
+		if (Utils.isCollectionEmpty(documentsToSign)) {
+			throw new DSSException("Documents to sign must be provided!");
+		}
 		this.parameters = parameters;
-		this.signingDocument = signingDocument;
+		this.jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier, parameters, documentsToSign);
 	}
 	
 	/**
@@ -55,10 +61,7 @@ public class JAdESCompactBuilder {
 		
 		JWS jws = new JWS();
 		incorporateHeader(jws);
-		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) 
-				|| SigDMechanism.OBJECT_ID_BY_URI.equals(parameters.getSigDMechanism())) {
-			incorporatePayload(jws);
-		}
+		incorporatePayload(jws);
 		return JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
 	}
 	
@@ -68,7 +71,6 @@ public class JAdESCompactBuilder {
 	 * @param jws {@link JWS} to populate
 	 */
 	protected void incorporateHeader(final JWS jws) {
-		JAdESLevelBaselineB jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier, parameters, signingDocument);
 		Map<String, Object> signedProperties = jadesLevelBaselineB.getSignedProperties();
 		for (Map.Entry<String, Object> signedHeader : signedProperties.entrySet()) {
 			jws.setHeader(signedHeader.getKey(), signedHeader.getValue());
@@ -81,7 +83,14 @@ public class JAdESCompactBuilder {
 	 * @param jws {@link JWS} to populate
 	 */
 	protected void incorporatePayload(final JWS jws) {
-		jws.setPayloadBytes(DSSUtils.toByteArray(signingDocument));
+		byte[] payloadBytes = jadesLevelBaselineB.getPayloadBytes();
+		if (payloadBytes != null) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("The payload of created signature -> {}", new String(payloadBytes));
+				LOG.trace("The base64 payload of created signature -> {}", Utils.toBase64(payloadBytes));
+			}
+			jws.setPayloadBytes(payloadBytes);
+		}
 	}
 
 	/**

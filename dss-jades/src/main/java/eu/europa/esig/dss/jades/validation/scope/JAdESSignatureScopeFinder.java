@@ -54,12 +54,13 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		}
 		
 		for (DSSDocument originalDocument : originalDocuments) {
+			String documentName = originalDocument.getName() != null ? originalDocument.getName() : "Detached Document";
 			if (originalDocument instanceof DigestDocument) {
 				DigestDocument digestDocument = (DigestDocument) originalDocument;
-				result.add(new DigestSignatureScope("Digest document", digestDocument.getExistingDigest()));
+				result.add(new DigestSignatureScope(documentName, digestDocument.getExistingDigest()));
 	
 			} else {
-				result.add(new FullSignatureScope("Full document",
+				result.add(new FullSignatureScope(documentName,
 						DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
 			}
 		}

@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -45,7 +47,7 @@ public class JAdESLevelBaselineB {
 	
 	private final CertificateVerifier certificateVerifier;
 	private final JAdESSignatureParameters parameters;
-	private final DSSDocument signingDocument;
+	private final List<DSSDocument> documentsToSign;
 	
 	/* JOSE Header map representation */
 	private Map<String, Object> signedProperties = new LinkedHashMap<>();
@@ -53,10 +55,15 @@ public class JAdESLevelBaselineB {
 	/* Contains all critical header names that will be incorporated into the signature */
 	private List<String> criticalHeaderNames = new ArrayList<>();
 	
-	public JAdESLevelBaselineB(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, final DSSDocument signingDocument) {
+	public JAdESLevelBaselineB(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, final List<DSSDocument> documentsToSign) {
+		Objects.requireNonNull(certificateVerifier, "certificateVerifier must not be null!");
+		Objects.requireNonNull(certificateVerifier, "signatureParameters must be defined!");
+		if (Utils.isCollectionEmpty(documentsToSign)) {
+			throw new DSSException("Documents to sign must be provided!");
+		}
 		this.certificateVerifier = certificateVerifier;
 		this.parameters = parameters;
-		this.signingDocument = signingDocument;
+		this.documentsToSign = documentsToSign;
 	}
 	
 	public Map<String, Object> getSignedProperties() {
@@ -99,7 +106,7 @@ public class JAdESLevelBaselineB {
 			// not applicable for detached signatures (see EN 119-182 ch.5.1.3)
 			return;
 		}
-		MimeType mimeType = signingDocument.getMimeType();
+		MimeType mimeType = documentsToSign.get(0).getMimeType();
 		if (mimeType != null) {
 			String mimeTypeString = getRFC7515ConformantMimeTypeString(mimeType);
 			addHeader(HeaderParameterNames.CONTENT_TYPE, mimeTypeString);
@@ -447,17 +454,15 @@ public class JAdESLevelBaselineB {
 	private void incorporateDetachedContents() {
 		if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
 			
-			List<DSSDocument> detachedContents = Arrays.asList(signingDocument);
-			
 			Map<String, Object> sigDParams;
 			switch (parameters.getSigDMechanism()) {
 				case OBJECT_ID_BY_URI:
 					// The 5.2.8.3 Mechanism ObjectIdByURI implementation
-					sigDParams = getSigDForObjectIdByUriMechanism(detachedContents);
+					sigDParams = getSigDForObjectIdByUriMechanism(documentsToSign);
 					break;
 				case OBJECT_ID_BY_URI_HASH:
 					// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
-					sigDParams = getSigDForObjectIdByUriHashMechanism(detachedContents);
+					sigDParams = getSigDForObjectIdByUriHashMechanism(documentsToSign);
 					break;
 				case HTTP_HEADERS:
 				default:
@@ -552,6 +557,24 @@ public class JAdESLevelBaselineB {
 	 */
 	protected void addHeader(String headerName, Object value) {
 		signedProperties.put(headerName, value);
+	}
+	
+	public byte[] getPayloadBytes() {
+		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			return DSSUtils.toByteArray(documentsToSign.get(0));
+		} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(parameters.getSigDMechanism())) {
+			return getPayloadForObjectIdByUriMechanism();
+		} else {
+			return null;
+		}
+	}
+	
+	public byte[] getPayloadForObjectIdByUriMechanism() {
+		try {
+			return JAdESUtils.concatenateDSSDocuments(documentsToSign);
+		} catch (IOException e) {
+			throw new DSSException(String.format("An exception occurred during building a payload! Reason : %s", e.getMessage()), e);
+		}
 	}
 
 }

@@ -9,6 +9,8 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_ATS;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CM;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import org.jose4j.lang.StringUtil;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -252,6 +255,22 @@ public class JAdESUtils {
 		tstTokenParams.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timestampToken.getEncoded())); // DER-encoded value
 		
 		return new JSONObject(tstTokenParams);
+	}
+	
+	/**
+	 * Concatenates document octets to a single byte array
+	 * 
+	 * @param documents a list of {@link DSSDocument}s to concatenate
+	 * @return a byte array of document octets
+	 * @throws IOException if an exception occurs
+	 */
+	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) throws IOException {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			for (DSSDocument document : documents) {
+				baos.write(DSSUtils.toByteArray(document));
+			}
+			return baos.toByteArray();
+		}
 	}
 
 }

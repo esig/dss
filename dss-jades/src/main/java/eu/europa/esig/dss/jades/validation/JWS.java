@@ -45,7 +45,8 @@ public class JWS extends JsonWebSignature {
 	 * 
 	 * @param payload a byte array representing a payload
 	 */
-	public void setDSSDocumentPayload(byte[] payload) {
+	public void setDetachedPayload(byte[] payload) {
+		// see JsonWebSignature.setCompactSerializationParts(parts)
 		if (isRfc7797UnencodedPayload()) {
             setPayloadBytes(payload);
         } else {

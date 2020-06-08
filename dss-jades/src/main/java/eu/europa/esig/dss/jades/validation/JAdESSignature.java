@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -408,12 +407,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					} else if (sigDMechanism == null && detachedContentPresent) {
 						// simple detached signature
 						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
-						jws.setDSSDocumentPayload(DSSUtils.toByteArray(detachedContents.get(0)));
+						jws.setDetachedPayload(DSSUtils.toByteArray(detachedContents.get(0)));
 						
 					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
 						// detached with OBJECT_ID_BY_URI mechanism
 						signatureValueReferenceValidation.setFound(detachedContentPresent);
-						jws.setDSSDocumentPayload(getPayloadForObjectIdByUriMechanism());
+						jws.setDetachedPayload(getPayloadForObjectIdByUriMechanism());
 						
 					} else if (detachedContentPresent) {
 						// other mechanisms
@@ -530,36 +529,59 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			throw new DSSException("The detached contents shall be provided for validating a detached signature!");
 		}
 		
-		List<String> signedDataUriList = getSignedDataUriList();
+		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsByUri();
 		
-		if (signedDataUriList.size() == 1 && detachedContents.size() == 1) {
-			return DSSUtils.toByteArray(detachedContents.get(0));
-		}
-		
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			
-			for (String signedDataName : signedDataUriList) {
-				boolean found = false;
-				for (DSSDocument document : detachedContents) {
-					if (signedDataName.equals(document.getName())) {
-						found = true;
-						baos.write(DSSUtils.toByteArray(document));
-					}
-				}
-				if (!found) {
-					LOG.warn("The detached content for a signed data with name '{}' has not been found!", signedDataName);
-				}
+		if (Utils.isCollectionEmpty(signedDocumentsByUri)) {
+			throw new DSSException("The matching detached content has not been found!");
+		} else if (signedDocumentsByUri.size() == 1) {
+			return DSSUtils.toByteArray(signedDocumentsByUri.get(0));
+		} else {
+			try {
+				return JAdESUtils.concatenateDSSDocuments(signedDocumentsByUri);
+			} catch (IOException e) {
+				throw new DSSException(String.format("Unable to build a payload for detached signature with ObjectIdByURI mechanism. "
+						+ "Reason : %s", e.getMessage()), e); 
 			}
-			
-			return baos.toByteArray();
-			
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to build a payload for detached signature with ObjectIdByURI mechanism. "
-					+ "Reason : %s", e.getMessage()), e); 
 		}
 	}
 	
+	/**
+	 * Returns a list of signed documents by the list of URIs present in 'sigD'
+	 * Used in ObjectByUri detached signature mechanism
+	 * 
+	 * @return a list of {@link DSSDocument}s
+	 */
+	private List<DSSDocument> getSignedDocumentsByUri() {
+		List<String> signedDataUriList = getSignedDataUriList();
+		
+		if (signedDataUriList.size() == 1 && detachedContents.size() == 1) {
+			return detachedContents;
+		}
+		
+		List<DSSDocument> signedDocuments = new ArrayList<>();
+		for (String signedDataName : signedDataUriList) {
+			boolean found = false;
+			for (DSSDocument document : detachedContents) {
+				if (signedDataName.equals(document.getName())) {
+					found = true;
+					signedDocuments.add(document);
+					continue;
+				}
+			}
+			if (!found) {
+				LOG.warn("The detached content for a signed data with name '{}' has not been found!", signedDataName);
+			}
+		}
+		
+		return signedDocuments;
+	}
+	
 	private List<JAdESReferenceValidation> getReferenceValidationsByUriHashMechanism() {
+		
+		if (Utils.isCollectionEmpty(detachedContents)) {
+			LOG.warn("The detached content is not provided! Validation of 'sigD' is not possible.");
+			return Collections.emptyList();
+		}
 		
 		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForDetachedContent();
 		if (digestAlgorithm == null) {
@@ -699,9 +721,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			if (Utils.isCollectionEmpty(originalDocuments)) {
 				// check if the signature of an old detached format
 				SignatureCryptographicVerification signatureCryptographicVerification = getSignatureCryptographicVerification();
-				if (signatureCryptographicVerification.isSignatureIntact() && detachedContents.size() == 1) {
-					return Collections.singletonList(detachedContents.get(0));
-				}
+				if (signatureCryptographicVerification.isSignatureIntact()) {
+					if (Utils.isCollectionNotEmpty(detachedContents) && detachedContents.size() == 1) {
+						return Collections.singletonList(detachedContents.get(0));
+						
+					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+						return getSignedDocumentsByUri();
+								
+					}
+				} 
 			}
 			
 			return originalDocuments;
