@@ -95,8 +95,15 @@
 	<xsd:complexType name="QcStatementType">
 		<xsd:sequence>
 			<xsd:element name="QcStatementId" type="xades:ObjectIdentifierType"/>
-			<xsd:element name="QcStatementInfo" type="xades:AnyType" minOccurs="0"/>
+			<xsd:element name="QcStatementInfo" type="mra:QcStatementInfoType" minOccurs="0"/>
 		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="QcStatementInfoType">
+		<xsd:choice>
+			<xsd:element ref="mra:QcType"/>
+			<xsd:element ref="mra:QcCClegislation"/>
+		</xsd:choice>
 	</xsd:complexType>
 
 	<xsd:element name="QcType" type="xades:ObjectIdentifierType"/>
