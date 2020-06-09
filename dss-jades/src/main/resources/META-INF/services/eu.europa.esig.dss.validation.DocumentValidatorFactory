@@ -1,2 +1,1 @@
-eu.europa.esig.dss.jades.validation.JWSCompactDocumentValidatorFactory
-eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidatorFactory
+eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory
