@@ -2,7 +2,7 @@
 <TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:mra="http://mra.europa.eu/v1#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="EU_LOTL_TEST" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>267</TSLSequenceNumber>
+        <TSLSequenceNumber>1</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">European Commission</Name>
@@ -2149,7 +2149,6 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
             </mra:CertificateContentEquivalence>
             <mra:CertificateContentEquivalence>
                 <mra:CertificateContentSubstitute assert="all">
-                    <ns5:CriteriaList assert="all">
                             <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
                                     <mra:QcStatement>
@@ -2169,18 +2168,6 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                     </mra:QcStatement>
                                 </mra:QcStatementSet>
                             </ns5:otherCriteriaList>
-                    </ns5:CriteriaList>
-                    <ns5:CriteriaList assert="none">
-                            <ns5:otherCriteriaList>
-                                <mra:QcStatementSet>
-                                    <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                    </mra:QcStatement>
-                                </mra:QcStatementSet>
-                            </ns5:otherCriteriaList>
-                    </ns5:CriteriaList>
                 </mra:CertificateContentSubstitute>
                 <mra:CertificateContentExpected assert="all">
                     <ns5:CriteriaList assert="all">
