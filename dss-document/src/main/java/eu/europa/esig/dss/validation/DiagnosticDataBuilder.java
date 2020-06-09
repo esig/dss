@@ -2259,7 +2259,7 @@ public class DiagnosticDataBuilder {
 
 		Date startDate = serviceInfoStatus.getStartDate();
 		for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
-			if ("Active".equals(serviceEquivalence.getStatus())
+			if ("enacted".equals(serviceEquivalence.getStatus())
 					&& startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
 				
 				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus,

@@ -2046,7 +2046,7 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                         </SchemeTypeCommunityRules>
                     </OtherInformation>
                     <OtherInformation>
-<mra:MutualRecognitionAgreementInformation technicalType="1" firstContractingPartyLegislation="uri/.../" secondContractingPartyLegislation="uri/.../">
+<mra:MutualRecognitionAgreementInformation technicalType="1" pointingContractingPartyLegislation="uri/.../" pointedContractingPartyLegislation="uri/.../">
     <mra:ServiceEquivalenceInformation>
         <mra:ServiceLegalInformation>QCForESig</mra:ServiceLegalInformation>
         <mra:ServiceTSLTypeEquivalenceList>
@@ -2064,7 +2064,7 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                 </mra:ServiceTSLType>
             </mra:ServiceTSLTypeListExpected>
         </mra:ServiceTSLTypeEquivalenceList>
-        <mra:ServiceEquivalenceStatus>Active</mra:ServiceEquivalenceStatus>
+        <mra:ServiceEquivalenceStatus>enacted</mra:ServiceEquivalenceStatus>
         <mra:ServiceEquivalenceStatusStartingTime>2020-05-16T23:59:59Z</mra:ServiceEquivalenceStatusStartingTime>
         <mra:ServiceTSLStatusEquivalenceList>
             <mra:ServiceTSLStatusEquivalence>
