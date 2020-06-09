@@ -9,6 +9,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -28,7 +29,11 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.JOSE;
+		if (JWSSerializationType.COMPACT_SERIALIZATION.equals(getSignatureParameters().getJwsSerializationType())) {
+			return MimeType.JOSE;
+		} else {
+			return MimeType.JOSE_JSON;
+		}
 	}
 
 	@Override

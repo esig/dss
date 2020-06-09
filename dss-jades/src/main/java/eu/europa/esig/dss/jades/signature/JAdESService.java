@@ -2,6 +2,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,7 +20,6 @@ import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -93,17 +93,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		assertSigningDateInCertificateValidityRange(parameters);
 		
-		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, Arrays.asList(toSignDocument));
-		String dataToBeSignedString = jadesCompactBuilder.buildDataToBeSigned();
-		
-		// The data to sign by RFC 7515 shall be ASCII-encoded
-		byte[] dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Data to sign: ");
-			LOG.trace(new String(dataToSign));
-		}
-		
-		return new ToBeSigned(dataToSign);
+		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, Collections.singletonList(toSignDocument));
+		return jadesBuilder.buildDataToBeSigned();
 	}
 
 	@Override
@@ -112,18 +103,9 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		assertMultiDocumentsAllowed(toSignDocuments, parameters);
 		assertSigningDateInCertificateValidityRange(parameters);
-		
-		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocuments);
-		String dataToBeSignedString = jadesCompactBuilder.buildDataToBeSigned();
-		
-		// The data to sign by RFC 7515 shall be ASCII-encoded
-		byte[] dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Data to sign: ");
-			LOG.trace(new String(dataToSign));
-		}
-		
-		return new ToBeSigned(dataToSign);
+
+		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
+		return jadesBuilder.buildDataToBeSigned();
 	}
 
 	/**
@@ -144,24 +126,33 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
+
+		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, Collections.singletonList(toSignDocument));
+		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
 		
-		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, Arrays.asList(toSignDocument));
-		String headerAndPayloadString = jadesCompactBuilder.build();
-		
-		String signatureString = JAdESUtils.concatenate(headerAndPayloadString, JAdESUtils.toBase64Url(signatureValue.getValue()));
-		return new InMemoryDocument(signatureString.getBytes(),
-				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JOSE);
+		return new InMemoryDocument(signatureBinaries,
+				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), jadesBuilder.getMimeType());
 	}
 
 	@Override
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
-		JAdESCompactBuilder jadesCompactBuilder = new JAdESCompactBuilder(certificateVerifier, parameters, toSignDocuments);
-		String headerAndPayloadString = jadesCompactBuilder.build();
+		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters,toSignDocuments);
+		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
 		
-		String signatureString = JAdESUtils.concatenate(headerAndPayloadString, JAdESUtils.toBase64Url(signatureValue.getValue()));
-		return new InMemoryDocument(signatureString.getBytes(),
-				getFinalFileName(toSignDocuments.get(0), SigningOperation.SIGN, parameters.getSignatureLevel()), MimeType.JOSE);
+		return new InMemoryDocument(signatureBinaries,
+				getFinalFileName(toSignDocuments.get(0), SigningOperation.SIGN, parameters.getSignatureLevel()), jadesBuilder.getMimeType());
+	}
+	
+	protected JAdESBuilder getJAdESBuilder(JAdESSignatureParameters parameters, List<DSSDocument> documentsToSign) {
+		switch (parameters.getJwsSerializationType()) {
+			case COMPACT_SERIALIZATION:
+				return new JAdESCompactBuilder(certificateVerifier, parameters, documentsToSign);
+			case JSON_SERIALIZATION:
+				return new JAdESSerializationBuilder(certificateVerifier, parameters, documentsToSign);
+			default:
+				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!"));
+		}
 	}
 
 	@Override

@@ -14,13 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
-import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 //@formatter:off
 /**
@@ -45,7 +43,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  * }
  */
 //@formatter:on
-public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
+public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JWSSerializationDocumentValidator.class);
 
@@ -55,9 +53,8 @@ public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
 	}
 
 	public JWSSerializationDocumentValidator(DSSDocument document) {
-		super(new JAdESSignatureScopeFinder());
-		this.document = document;
-
+		super(document);
+		
 		try {
 			rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(document)));
 		} catch (JoseException e) {
@@ -113,7 +110,6 @@ public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
 					jws.setUnprotected(header);
 					
 					JAdESSignature jadesSignature = new JAdESSignature(jws);
-					jadesSignature.setDetachedContents(detachedContents);
 					signatures.add(jadesSignature);
 				} catch (Exception e) {
 					throw new DSSException(String.format("Unable to build a signature. Reason : [%s]", e.getMessage()), e);
@@ -122,18 +118,6 @@ public class JWSSerializationDocumentValidator extends SignedDocumentValidator {
 		}
 
 		return signatures;
-	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
