@@ -5,8 +5,8 @@ import java.util.List;
 public class MRA {
 
 	private String technicalType;
-	private String firstContractingPartyLegislation;
-	private String secondContractingPartyLegislation;
+	private String pointingContractingPartyLegislation;
+	private String pointedContractingPartyLegislation;
 	private List<ServiceEquivalence> serviceEquivalence;
 
 	public String getTechnicalType() {
@@ -17,20 +17,20 @@ public class MRA {
 		this.technicalType = technicalType;
 	}
 
-	public String getFirstContractingPartyLegislation() {
-		return firstContractingPartyLegislation;
+	public String getPointingContractingPartyLegislation() {
+		return pointingContractingPartyLegislation;
 	}
 
-	public void setFirstContractingPartyLegislation(String firstContractingPartyLegislation) {
-		this.firstContractingPartyLegislation = firstContractingPartyLegislation;
+	public void setPointingContractingPartyLegislation(String pointingContractingPartyLegislation) {
+		this.pointingContractingPartyLegislation = pointingContractingPartyLegislation;
 	}
 
-	public String getSecondContractingPartyLegislation() {
-		return secondContractingPartyLegislation;
+	public String getPointedContractingPartyLegislation() {
+		return pointedContractingPartyLegislation;
 	}
 
-	public void setSecondContractingPartyLegislation(String secondContractingPartyLegislation) {
-		this.secondContractingPartyLegislation = secondContractingPartyLegislation;
+	public void setPointedContractingPartyLegislation(String pointedContractingPartyLegislation) {
+		this.pointedContractingPartyLegislation = pointedContractingPartyLegislation;
 	}
 
 	public List<ServiceEquivalence> getServiceEquivalence() {

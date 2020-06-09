@@ -17,8 +17,8 @@ public class MRAConverter implements Function<MutualRecognitionAgreementInformat
 	public MRA apply(MutualRecognitionAgreementInformationType t) {
 		MRA result = new MRA();
 		result.setTechnicalType(t.getTechnicalType().toString());
-		result.setFirstContractingPartyLegislation(t.getFirstContractingPartyLegislation());
-		result.setSecondContractingPartyLegislation(t.getSecondContractingPartyLegislation());
+		result.setPointingContractingPartyLegislation(t.getPointingContractingPartyLegislation());
+		result.setPointedContractingPartyLegislation(t.getPointedContractingPartyLegislation());
 		List<ServiceEquivalence> serviceEquivalences = new ArrayList<>();
 
 		List<ServiceEquivalenceInformationType> serviceEquivalenceInformation = t.getServiceEquivalenceInformation();
