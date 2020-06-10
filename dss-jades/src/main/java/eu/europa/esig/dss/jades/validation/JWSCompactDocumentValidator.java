@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.jose4j.jwx.CompactSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -19,10 +17,10 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JWSCompactDocumentValidator.class);
-
 	private final static List<Byte> BASE64_URL_BINARIES = Arrays.asList(JAdESUtils.BASE64_URL_SAFE_ENCODE_TABLE);
 	private final static int NUMBER_DOTS = 2;
+	
+	private List<AdvancedSignature> signatures;
 
 	public JWSCompactDocumentValidator() {
 	}
@@ -64,20 +62,21 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
-		List<AdvancedSignature> signatures = new ArrayList<>();
-
-		try (Scanner scanner = new Scanner(document.openStream(), StandardCharsets.UTF_8.name())) {
-			String compactSerialization = scanner.next();
-			String[] parts = CompactSerializer.deserialize(compactSerialization);
-
-			JWS jws = new JWS(parts);
-
-			JAdESSignature jadesSignature = new JAdESSignature(jws);
-			jadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
-			jadesSignature.setDetachedContents(detachedContents);
-			signatures.add(jadesSignature);
+		if (signatures == null) {
+			signatures = new ArrayList<>();
+	
+			try (Scanner scanner = new Scanner(document.openStream(), StandardCharsets.UTF_8.name())) {
+				String compactSerialization = scanner.next();
+				String[] parts = CompactSerializer.deserialize(compactSerialization);
+	
+				JWS jws = new JWS(parts);
+	
+				JAdESSignature jadesSignature = new JAdESSignature(jws);
+				jadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+				jadesSignature.setDetachedContents(detachedContents);
+				signatures.add(jadesSignature);
+			}
 		}
-
 		return signatures;
 	}
 

@@ -11,6 +11,7 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,11 +23,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jose4j.base64url.Base64Url;
+import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.CompactSerializer;
 import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.lang.JoseException;
 import org.jose4j.lang.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
@@ -38,6 +43,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class JAdESUtils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESUtils.class);
 	
     /**
      * This is a copy of the STANDARD_ENCODE_TABLE above, but with + and / changed
@@ -291,6 +298,32 @@ public class JAdESUtils {
 			}
 		}
 		return httpHeaderDocuments;
+	}
+	
+	/**
+	 * Checks if the provided document is of type JWS JSON Serialization
+	 * 
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE of the document is of JWS JSON Serialization type, FALSE otherwise
+	 */
+	public static boolean isJWSJsonSerializationDocument(DSSDocument document) {
+		try (InputStream is = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			int firstChar = is.read();
+			if (firstChar == '{') {
+				baos.write(firstChar);
+				Utils.copy(is, baos);
+				if (baos.size() < 2) {
+					return false;
+				}
+				Map<String, Object> json = JsonUtil.parseJson(baos.toString());
+				return json != null;
+			}
+		} catch (JoseException e) {
+			LOG.warn("Unable to parse content as JSON : {}", e.getMessage());
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot read the document. Reason : %s", e.getMessage()), e);
+		}
+		return false;
 	}
 
 }

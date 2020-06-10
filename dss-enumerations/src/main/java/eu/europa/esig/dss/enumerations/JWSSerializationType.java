@@ -22,28 +22,83 @@ public enum JWSSerializationType {
 	COMPACT_SERIALIZATION,
 	
 	/**
-	 * 3.2.  JWS JSON Serialization Overview
+	 * 7.2.1.  General JWS JSON Serialization Syntax
 	 * 
-	 * In the JWS JSON Serialization, one or both of the JWS Protected
-	 * Header and JWS Unprotected Header MUST be present.  In this case, the
-	 * members of the JOSE Header are the union of the members of the JWS
-	 * Protected Header and the JWS Unprotected Header values that are
-	 * present.
+	 * The following members are defined for use in top-level JSON objects
+	 * used for the fully general JWS JSON Serialization syntax:
 	 * 
-	 * In the JWS JSON Serialization, a JWS is represented as a JSON object
-	 * containing some or all of these four members:
+	 * payload
+	 *     The "payload" member MUST be present and contain the value
+	 *     BASE64URL(JWS Payload).
 	 * 
-	 * - "protected", with the value BASE64URL(UTF8(JWS Protected Header))
-	 * - "header", with the value JWS Unprotected Header
-	 * - "payload", with the value BASE64URL(JWS Payload)
-	 * - "signature", with the value BASE64URL(JWS Signature)
+	 * signatures
+	 *     The "signatures" member value MUST be an array of JSON objects.
+	 *     Each object represents a signature or MAC over the JWS Payload and
+	 *     the JWS Protected Header.
 	 * 
-	 * The three base64url-encoded result strings and the JWS Unprotected
-	 * Header value are represented as members within a JSON object.
+	 * The following members are defined for use in the JSON objects that
+	 * are elements of the "signatures" array:
 	 * 
-	 * The JWS JSON Serialization can also represent multiple signature and/or MAC
-	 * values, rather than just one.
+	 * protected
+	 *     The "protected" member MUST be present and contain the value
+	 *     BASE64URL(UTF8(JWS Protected Header)) when the JWS Protected
+	 *     Header value is non-empty; otherwise, it MUST be absent.  These
+	 *     Header Parameter values are integrity protected.
+	 * 
+	 * header
+	 *     The "header" member MUST be present and contain the value JWS
+	 *     Unprotected Header when the JWS Unprotected Header value is non-
+	 *     empty; otherwise, it MUST be absent.  This value is represented as
+	 *     an unencoded JSON object, rather than as a string.  These Header
+	 *     Parameter values are not integrity protected.
+	 * 
+	 * signature
+	 *     The "signature" member MUST be present and contain the value
+	 *     BASE64URL(JWS Signature).
+	 * 
+	 * In summary, the syntax of a JWS using the general JWS JSON
+	 * Serialization is as follows:
+	 * 
+	 * {
+	 *  "payload":"<payload contents>",
+	 *   "signatures":[
+	 *    {"protected":"<integrity-protected header 1 contents>",
+	 *    "header":<non-integrity-protected header 1 contents>,
+	 *    "signature":"<signature 1 contents>"},
+	 *   ...
+	 *   {"protected":"<integrity-protected header N contents>",
+	 *    "header":<non-integrity-protected header N contents>,
+	 *    "signature":"<signature N contents>"}]
+	 * }
 	 */
-	JSON_SERIALIZATION;
+	JSON_SERIALIZATION,
+	
+	/**
+	 * 7.2.2.  Flattened JWS JSON Serialization Syntax
+	 * 
+	 * The flattened JWS JSON Serialization syntax is based upon the general
+	 * syntax but flattens it, optimizing it for the single digital
+	 * signature/MAC case.  It flattens it by removing the "signatures"
+	 * member and instead placing those members defined for use in the
+	 * "signatures" array (the "protected", "header", and "signature"
+	 * members) in the top-level JSON object (at the same level as the
+	 * "payload" member).
+	 * 
+	 * The "signatures" member MUST NOT be present when using this syntax.
+	 * Other than this syntax difference, JWS JSON Serialization objects
+	 * using the flattened syntax are processed identically to those using
+	 * the general syntax.
+	 * 
+	 * In summary, the syntax of a JWS using the flattened JWS JSON
+	 * Serialization is as follows:
+	 * 
+	 * {
+	 *  "payload":"<payload contents>",
+	 *  "protected":"<integrity-protected header contents>",
+	 *  "header":<non-integrity-protected header contents>,
+	 *  "signature":"<signature contents>"
+	 * }
+	 */
+	FLATTENED_JSON_SERIALIZATION;
 
 }

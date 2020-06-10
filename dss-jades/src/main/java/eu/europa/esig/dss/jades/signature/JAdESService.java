@@ -17,6 +17,8 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
+import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -149,6 +151,19 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			case COMPACT_SERIALIZATION:
 				return new JAdESCompactBuilder(certificateVerifier, parameters, documentsToSign);
 			case JSON_SERIALIZATION:
+			case FLATTENED_JSON_SERIALIZATION:
+				// check if the document contains JWS signature(s)
+				if (documentsToSign.size() == 1) {
+					DSSDocument documentToSign = documentsToSign.get(0);
+					if (JAdESUtils.isJWSJsonSerializationDocument(documentToSign)) {
+						JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(documentsToSign.get(0));
+						JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
+						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {
+							return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);
+						}
+						// continue otherwise
+					}
+				}
 				return new JAdESSerializationBuilder(certificateVerifier, parameters, documentsToSign);
 			default:
 				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!"));
