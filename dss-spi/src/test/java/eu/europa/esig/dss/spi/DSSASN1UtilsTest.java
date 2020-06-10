@@ -446,4 +446,12 @@ public class DSSASN1UtilsTest {
 		assertEquals(SemanticsIdentifier.qcsSemanticsIdLegal, semanticsIdentifier);
 	}
 
+	@Test
+	public void getLegislations() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/john_doe_tc.crt"));
+		List<String> qcLegislations = DSSASN1Utils.getQCLegislations(certificate);
+		assertTrue(Utils.isCollectionNotEmpty(qcLegislations));
+		assertTrue(qcLegislations.contains("TC"));
+	}
+
 }
