@@ -2,11 +2,17 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -14,11 +20,15 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation {
 
@@ -50,6 +60,32 @@ public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestVali
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");
+		
+		assertTrue(JAdESUtils.isJWSJsonSerializationDocument(doubleSignedDocument));
+		try {
+			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(doubleSignedDocument)));
+			
+			String payload = (String) rootStructure.get(JWSConstants.PAYLOAD);
+			assertNotNull(payload);
+			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(payload)));
+
+			List<Map<String, Object>> signaturesList = (List<Map<String, Object>>) rootStructure.get(JWSConstants.SIGNATURES);
+			assertTrue(Utils.isCollectionNotEmpty(signaturesList));
+			assertEquals(2, signaturesList.size());
+			
+			for (Map<String, Object> signature : signaturesList) {
+				String header = (String) signature.get(JWSConstants.PROTECTED);
+				assertNotNull(header);
+				assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(header)));
+				
+				String signatureValueBase64Url = (String) signature.get(JWSConstants.SIGNATURE);
+				assertNotNull(signatureValueBase64Url);
+				assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(signatureValueBase64Url)));
+			}
+			
+		} catch (JoseException e) {
+			fail("Unable to parse the signed file : " + e.getMessage());
+		}
 		 
 		return doubleSignedDocument;
 	}

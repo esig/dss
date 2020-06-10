@@ -4,18 +4,18 @@ import java.util.Map;
 
 public class JsonSerializationSignature {
 	
-	private String encodedProtected;
+	private String base64UrlProtectedHeader;
 	
 	private Map<String, Object> unprotected;
 	
-	private String encodedSignature;
+	private String base64UrlSignature;
 
-	public String getEncodedProtected() {
-		return encodedProtected;
+	public String getBase64UrlProtectedHeader() {
+		return base64UrlProtectedHeader;
 	}
 
-	public void setEncodedProtected(String encodedProtected) {
-		this.encodedProtected = encodedProtected;
+	public void setBase64UrlProtectedHeader(String encodedProtected) {
+		this.base64UrlProtectedHeader = encodedProtected;
 	}
 
 	public Map<String, Object> getUnprotected() {
@@ -26,12 +26,12 @@ public class JsonSerializationSignature {
 		this.unprotected = unprotected;
 	}
 
-	public String getEncodedSignature() {
-		return encodedSignature;
+	public String getBase64UrlSignature() {
+		return base64UrlSignature;
 	}
 
-	public void setEncodedSignature(String encodedSignature) {
-		this.encodedSignature = encodedSignature;
+	public void setBase64UrlSignature(String encodedSignature) {
+		this.base64UrlSignature = encodedSignature;
 	}
 
 }

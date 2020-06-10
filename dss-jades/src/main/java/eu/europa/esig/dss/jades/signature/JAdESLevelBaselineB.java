@@ -241,6 +241,7 @@ public class JAdESLevelBaselineB {
 					signatureMimeType = MimeType.JOSE;
 					break;
 				case JSON_SERIALIZATION:
+				case FLATTENED_JSON_SERIALIZATION:
 					signatureMimeType = MimeType.JOSE_JSON;
 					break;
 				default:

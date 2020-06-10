@@ -67,16 +67,16 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			List<JsonSerializationSignature> foundSignatures = jwsJsonSerializationObject.getSignatures();
 			LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
 			for (JsonSerializationSignature signature : foundSignatures) {
-				if (Utils.isStringBlank(signature.getEncodedProtected())) {
+				if (Utils.isStringBlank(signature.getBase64UrlProtectedHeader())) {
 					LOG.warn("The protected header is not present in a signature! The entry is skipped.");
 					continue;
 				}
-				if (Utils.isStringBlank(signature.getEncodedSignature())) {
+				if (Utils.isStringBlank(signature.getBase64UrlSignature())) {
 					LOG.warn("The signature binaries are not present in a signature! The entry is skipped.");
 					continue;
 				}
 				
-				String[] parts = new String[] { signature.getEncodedProtected(), encodedPayload, signature.getEncodedSignature() };
+				String[] parts = new String[] { signature.getBase64UrlProtectedHeader(), encodedPayload, signature.getBase64UrlSignature() };
 				JWS jws = new JWS(parts);
 				jws.setUnprotected(signature.getUnprotected());
 				

@@ -80,10 +80,10 @@ public class JWSJsonSerializationParser {
 				// the signature is not found
 				return null;
 			}
-			signature.setEncodedSignature(signatureBase64Url);
+			signature.setBase64UrlSignature(signatureBase64Url);
 			
 			String protectedBase64Url = (String) signatureObject.get(JWSConstants.PROTECTED);
-			signature.setEncodedProtected(protectedBase64Url);
+			signature.setBase64UrlProtectedHeader(protectedBase64Url);
 			
 			Map<String, Object> header = (Map<String, Object>) signatureObject.get(JWSConstants.HEADER);
 			signature.setUnprotected(header);

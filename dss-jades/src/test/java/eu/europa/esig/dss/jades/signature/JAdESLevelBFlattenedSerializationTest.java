@@ -1,13 +1,11 @@
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.jose4j.json.JsonUtil;
@@ -27,7 +25,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
+public class JAdESLevelBFlattenedSerializationTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
@@ -44,7 +42,7 @@ public class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		
-		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 	}
 	
 	@Override
@@ -58,17 +56,12 @@ public class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
 			String payload = (String) rootStructure.get(JWSConstants.PAYLOAD);
 			assertNotNull(payload);
 			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(payload)));
-
-			List<Map<String, Object>> signaturesList = (List<Map<String, Object>>) rootStructure.get(JWSConstants.SIGNATURES);
-			assertTrue(Utils.isCollectionNotEmpty(signaturesList));
-			assertEquals(1, signaturesList.size());
 			
-			Map<String, Object> signature = signaturesList.get(0);
-			String header = (String) signature.get(JWSConstants.PROTECTED);
+			String header = (String) rootStructure.get(JWSConstants.PROTECTED);
 			assertNotNull(header);
 			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(header)));
 			
-			String signatureValue = (String) signature.get(JWSConstants.SIGNATURE);
+			String signatureValue = (String) rootStructure.get(JWSConstants.SIGNATURE);
 			assertNotNull(signatureValue);
 			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(signatureValue)));
 			

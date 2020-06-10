@@ -76,9 +76,9 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		}
 		
 		JsonSerializationSignature jsonSerializationSignature = new JsonSerializationSignature();
-		jsonSerializationSignature.setEncodedProtected(jws.getEncodedHeader());
+		jsonSerializationSignature.setBase64UrlProtectedHeader(jws.getEncodedHeader());
 		// jsonSerializationSignature.setUnprotected(getUnprotectedParameters());
-		jsonSerializationSignature.setEncodedSignature(JAdESUtils.toBase64Url(signatureValue.getValue()));
+		jsonSerializationSignature.setBase64UrlSignature(JAdESUtils.toBase64Url(signatureValue.getValue()));
 		
 		jwsJsonSerializationObject.getSignatures().add(jsonSerializationSignature);
 		
@@ -144,7 +144,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 	private Map<String, Object> getSignatureJsonMap(JsonSerializationSignature signature) {
 		Map<String, Object> signatureMap = new LinkedHashMap<>();
 		
-		String encodedProtected = signature.getEncodedProtected();
+		String encodedProtected = signature.getBase64UrlProtectedHeader();
 		if (Utils.isStringNotBlank(encodedProtected)) {
 			signatureMap.put(JWSConstants.PROTECTED, encodedProtected);
 		}
@@ -154,7 +154,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			signatureMap.put(JWSConstants.HEADER, unprotected);
 		}
 		
-		String encodedSignature = signature.getEncodedSignature();
+		String encodedSignature = signature.getBase64UrlSignature();
 		signatureMap.put(JWSConstants.SIGNATURE, encodedSignature);
 		
 		return signatureMap;
