@@ -431,8 +431,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						
 					}
 					
-					String encodedPayload = jws.getEncodedPayload();
-					String headerAndPayloadResult = JAdESUtils.concatenate(encodedHeader, encodedPayload);
+					String payload = jws.getSignedPayload();
+					String headerAndPayloadResult = JAdESUtils.concatenate(encodedHeader, payload);
 					// The data to sign by RFC 7515 shall be ASCII-encoded
 					byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadResult);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
@@ -768,7 +768,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			return originalDocuments;
 			
 		} else {
-			return Collections.singletonList(new InMemoryDocument(jws.getUnverifiedPayloadBytes()));
+			byte[] payloadBytes = jws.getUnverifiedPayloadBytes();
+			return Collections.singletonList(new InMemoryDocument(payloadBytes));
 		}
 	}
 

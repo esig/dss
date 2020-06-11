@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.HTTPHeaderDocument;
@@ -79,6 +80,9 @@ public class JAdESLevelBaselineB {
 		incorporateSigningCertificate();
 		incorporateCertificateChain();
 		incorporateType();
+		
+		// RFC 7797
+		incorporateB64();
 		
 		// EN 119-182 headers
 		incorporateSigningTime();
@@ -251,6 +255,24 @@ public class JAdESLevelBaselineB {
 			
 			String type = getRFC7515ConformantMimeTypeString(signatureMimeType);
 			addHeader(HeaderParameterNames.TYPE, type);
+		}
+	}
+	
+	/**
+	 * Incorporates RFC 7797 Unencoded Payload Option
+	 */
+	protected void incorporateB64() {
+		// incorporate only with FALSE value
+		if (!parameters.isBase64UrlEncodedPayload()) {
+			byte[] payloadBytes = getPayloadBytes();
+			// see RFC 7797 (only for compact format not detached payload shall be uri-safe)
+			if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
+					JWSSerializationType.COMPACT_SERIALIZATION.equals(parameters.getJwsSerializationType()) &&
+					Utils.isArrayNotEmpty(payloadBytes) && !JAdESUtils.isUrlSafePayload(new String(payloadBytes))) {
+				throw new DSSException("The payload contains not URL-safe characters! "
+						+ "With Unencoded Payload ('b64' = false) only ASCII characters in ranges %x20-2D and %x2F-7E are allowed!");
+			}
+			addCriticalHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
 		}
 	}
 	
@@ -458,6 +480,7 @@ public class JAdESLevelBaselineB {
 	 */
 	private void incorporateDetachedContents() {
 		if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			assertDetachedContentValid();
 			
 			Map<String, Object> sigDParams;
 			switch (parameters.getSigDMechanism()) {
@@ -477,6 +500,14 @@ public class JAdESLevelBaselineB {
 			}
 			
 			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JSONObject(sigDParams));
+		}
+	}
+	
+	private void assertDetachedContentValid() {
+		for (DSSDocument document : documentsToSign) {
+			if (Utils.isStringEmpty(document.getName())) {
+				throw new DSSException("The signed document must have names for a detached signature!");
+			}
 		}
 	}
 	

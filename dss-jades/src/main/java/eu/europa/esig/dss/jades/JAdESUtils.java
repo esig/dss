@@ -56,6 +56,7 @@ public class JAdESUtils {
             'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_' };
     
+    public final static List<Byte> BASE64_URL_BINARIES = Arrays.asList(BASE64_URL_SAFE_ENCODE_TABLE);
 	
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
 	
@@ -99,6 +100,39 @@ public class JAdESUtils {
 	 */
 	public static byte[] fromBase64Url(String base64UrlEncoded) {
 		return Base64Url.decode(base64UrlEncoded);
+	}
+	
+	/**
+	 * Checks if the payload is JWS URL safe
+	 * See RFC 7797 : 5.2. Unencoded JWS Compact Serialization Payload
+	 * 
+	 * @param payloadString {@link String} representing a payload
+	 * @return TRUE if the payload is URL safe, FALSE otherwise
+	 */
+	public static boolean isUrlSafePayload(String payloadString) {
+		/*
+		 * When using the JWS Compact Serialization, unencoded non-detached
+		 * payloads using period ('.') characters would cause parsing errors;
+		 * such payloads MUST NOT be used with the JWS Compact Serialization.
+		 * ...
+		 * The ASCII space character and all printable ASCII characters
+		 * other than period ('.') (those characters in the ranges %x20-2D and
+		 * %x2F-7E) MAY be included in a non-detached payload using the JWS
+		 * Compact Serialization, provided that the application can transmit the
+		 * resulting JWS without modification.
+		 */
+		return payloadString.matches("[^\\P{Print}.]*");
+	}
+	
+	/**
+	 * Checks if the given byte is url safe
+	 * See RFC 7797 : 5.2. Unencoded JWS Compact Serialization Payload
+	 * 
+	 * @param b a byte to check
+	 * @return TRUE if the byte is url-safe, FALSE otherwise
+	 */
+	public static boolean isUrlSafe(byte b) {
+		return 0x1f < b && b < 0x2e || 0x2e < b && b < 0x7f;
 	}
 
 	/**
@@ -301,12 +335,12 @@ public class JAdESUtils {
 	}
 	
 	/**
-	 * Checks if the provided document is of type JWS JSON Serialization
+	 * Checks if the provided document is JSON document
 	 * 
 	 * @param document {@link DSSDocument} to check
-	 * @return TRUE of the document is of JWS JSON Serialization type, FALSE otherwise
+	 * @return TRUE of the document is JSON, FALSE otherwise
 	 */
-	public static boolean isJWSJsonSerializationDocument(DSSDocument document) {
+	public static boolean isJsonDocument(DSSDocument document) {
 		try (InputStream is = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			int firstChar = is.read();
 			if (firstChar == '{') {

@@ -52,7 +52,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 
 	@Override
 	public boolean isSupported(DSSDocument document) {
-		return JAdESUtils.isJWSJsonSerializationDocument(document);
+		return JAdESUtils.isJsonDocument(document);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			
 			JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(document);
 			JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-			String encodedPayload = jwsJsonSerializationObject.getPayload();
+			String payload = jwsJsonSerializationObject.getPayload();
 			
 			List<JsonSerializationSignature> foundSignatures = jwsJsonSerializationObject.getSignatures();
 			LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
@@ -76,7 +76,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 					continue;
 				}
 				
-				String[] parts = new String[] { signature.getBase64UrlProtectedHeader(), encodedPayload, signature.getBase64UrlSignature() };
+				String[] parts = new String[] { signature.getBase64UrlProtectedHeader(), payload, signature.getBase64UrlSignature() };
 				JWS jws = new JWS(parts);
 				jws.setUnprotected(signature.getUnprotected());
 				

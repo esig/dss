@@ -34,8 +34,8 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
 			incorporatePayload(jws);
 		}
-		String signatureString = JAdESUtils.concatenate(jws.getEncodedHeader(), 
-				jws.getEncodedPayload(), JAdESUtils.toBase64Url(signatureValue.getValue()));
+		String payload = parameters.isBase64UrlEncodedPayload() ? jws.getEncodedPayload() : jws.getUnverifiedPayload();
+		String signatureString = JAdESUtils.concatenate(jws.getEncodedHeader(), payload, JAdESUtils.toBase64Url(signatureValue.getValue()));
 		return signatureString.getBytes();
 	}
 

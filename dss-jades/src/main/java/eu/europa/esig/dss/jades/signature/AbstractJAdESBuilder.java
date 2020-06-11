@@ -18,7 +18,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JAdESCompactBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractJAdESBuilder.class);
 	
 	protected final JAdESSignatureParameters parameters;
 	protected final JAdESLevelBaselineB jadesLevelBaselineB;
@@ -41,10 +41,29 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 		JWS jws = new JWS();
 		incorporateHeader(jws);
 		incorporatePayload(jws);
-		String dataToBeSignedString = JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
 		
-		// The data to sign by RFC 7515 shall be ASCII-encoded
-		byte[] dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
+		/*
+        https://tools.ietf.org/html/rfc7797#section-3
+        +-------+-----------------------------------------------------------+
+        | "b64" | JWS Signing Input Formula                                 |
+        +-------+-----------------------------------------------------------+
+        | true  | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||     |
+        |       | BASE64URL(JWS Payload))                                   |
+        |       |                                                           |
+        | false | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.') ||    |
+        |       | JWS Payload                                               |
+        +-------+-----------------------------------------------------------+
+		*/
+		byte[] dataToSign;
+		if (parameters.isBase64UrlEncodedPayload()) {
+			String dataToBeSignedString = JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
+			dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
+		} else {
+			String encodedHeader = new String(JAdESUtils.getAsciiBytes(jws.getEncodedHeader()));
+			String dataToBeSignedString = JAdESUtils.concatenate(encodedHeader, jws.getUnverifiedPayload());
+			dataToSign = dataToBeSignedString.getBytes();
+		}
+		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Data to sign: ");
 			LOG.trace(new String(dataToSign));

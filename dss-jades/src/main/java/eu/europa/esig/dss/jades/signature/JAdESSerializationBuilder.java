@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
+import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +53,21 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			JWSJsonSerializationObject jwsJsonSerializationObject) {
 		if (Utils.isStringNotBlank(jwsJsonSerializationObject.getPayload())) {
 			// enveloping signature
-			byte[] payloadBytes = JAdESUtils.fromBase64Url(jwsJsonSerializationObject.getPayload());
-			return Collections.singletonList(new InMemoryDocument(payloadBytes));
+			try {
+				JsonSerializationSignature signature = jwsJsonSerializationObject.getSignatures().get(0);
+				JWS jws = new JWS();
+				jws.setProtected(signature.getBase64UrlProtectedHeader());
+				
+				byte[] payloadBytes;
+				if (jws.isRfc7797UnencodedPayload()) {
+					payloadBytes = jwsJsonSerializationObject.getPayload().getBytes();
+				} else {
+					payloadBytes = JAdESUtils.fromBase64Url(jwsJsonSerializationObject.getPayload());
+				}
+				return Collections.singletonList(new InMemoryDocument(payloadBytes));
+			} catch (JoseException e) {
+				throw new DSSException("The document contains a signature with an invalid content! Unable to sign/extend.");
+			}
 			
 		} else if (Utils.isCollectionNotEmpty(parameters.getDetachedContents())) {
 			// detached signature
@@ -72,7 +86,9 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		
 		if (jwsJsonSerializationObject == null) {
 			jwsJsonSerializationObject = new JWSJsonSerializationObject();
-			jwsJsonSerializationObject.setPayload(jws.getEncodedPayload());
+			jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
+		} else {
+			assertB64ConfigurationConsistent();
 		}
 		
 		JsonSerializationSignature jsonSerializationSignature = new JsonSerializationSignature();
@@ -98,6 +114,27 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		return jsonSerialization.toJSONString().getBytes();
 	}
 	
+	/**
+	 * All not detached signatures must have the same 'b64' value
+	 */
+	private void assertB64ConfigurationConsistent() {
+		// verify only for non-detached cases
+		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			try {
+				boolean base64UrlEncodedPayload = parameters.isBase64UrlEncodedPayload();
+				for (JsonSerializationSignature signature : jwsJsonSerializationObject.getSignatures()) {
+					JWS jws = new JWS();
+					jws.setProtected(signature.getBase64UrlProtectedHeader());
+					if (base64UrlEncodedPayload != !jws.isRfc7797UnencodedPayload()) {
+						throw new DSSException("'b64' value shall be the same for all signatures!");
+					}
+				}
+			} catch (JoseException e) {
+				throw new DSSException(String.format("Unable to verify protected header of existing signatures. Reason : %s", e.getMessage()), e);
+			}
+		}
+	}
+	
 	private JSONObject buildJWSJsonSerialization() {
 		if (jwsJsonSerializationObject.isFlattened()) {
 			LOG.warn("A flattened signature will be transformed to a Complete JWS JSON Serialization Format!");
@@ -105,8 +142,8 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		
 		Map<String, Object> jsonSerializationMap = new LinkedHashMap<>();
 		
-		String encodedPayload = jwsJsonSerializationObject.getPayload();
-		if (Utils.isStringNotBlank(encodedPayload)) {
+		String payload = jwsJsonSerializationObject.getPayload();
+		if (Utils.isStringNotBlank(payload)) {
 			jsonSerializationMap.put(JWSConstants.PAYLOAD, jwsJsonSerializationObject.getPayload());
 		}
 		

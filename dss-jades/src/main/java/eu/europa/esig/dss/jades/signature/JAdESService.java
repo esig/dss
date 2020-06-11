@@ -155,7 +155,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 				// check if the document contains JWS signature(s)
 				if (documentsToSign.size() == 1) {
 					DSSDocument documentToSign = documentsToSign.get(0);
-					if (JAdESUtils.isJWSJsonSerializationDocument(documentToSign)) {
+					if (JAdESUtils.isJsonDocument(documentToSign)) {
 						JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(documentsToSign.get(0));
 						JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {

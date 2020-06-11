@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,7 +16,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 
-	private final static List<Byte> BASE64_URL_BINARIES = Arrays.asList(JAdESUtils.BASE64_URL_SAFE_ENCODE_TABLE);
 	private final static int NUMBER_DOTS = 2;
 	
 	private List<AdvancedSignature> signatures;
@@ -37,7 +35,7 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 			int b = -1;
 			while ((b = is.read()) != -1) {
 				byte currentByte = (byte) b;
-				if (!BASE64_URL_BINARIES.contains(currentByte)) {
+				if (!JAdESUtils.isUrlSafe(currentByte)) {
 
 					if (currentByte == '.') {
 						separatorCounter++;
@@ -66,7 +64,7 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 			signatures = new ArrayList<>();
 	
 			try (Scanner scanner = new Scanner(document.openStream(), StandardCharsets.UTF_8.name())) {
-				String compactSerialization = scanner.next();
+				String compactSerialization = scanner.nextLine();
 				String[] parts = CompactSerializer.deserialize(compactSerialization);
 	
 				JWS jws = new JWS(parts);

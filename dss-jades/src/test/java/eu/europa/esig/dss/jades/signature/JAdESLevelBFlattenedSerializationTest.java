@@ -49,7 +49,7 @@ public class JAdESLevelBFlattenedSerializationTest extends AbstractJAdESTestSign
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		
-		assertTrue(JAdESUtils.isJWSJsonSerializationDocument(new InMemoryDocument(byteArray)));
+		assertTrue(JAdESUtils.isJsonDocument(new InMemoryDocument(byteArray)));
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(byteArray));
 			

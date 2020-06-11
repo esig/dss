@@ -40,6 +40,14 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	private boolean includeSignatureType = true;
 	
 	/**
+	 * Defines if the payload has to be base64url encoded
+	 * If false, original signed document binaries will be used according to RFC 7797
+	 * 
+	 * Default : TRUE (base64url encoded payload)
+	 */
+	private boolean base64UrlEncodedPayload = true;
+	
+	/**
 	 * The DigestAlgorithm used to create a reference to a signing certificate, 
 	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
 	 */
@@ -161,6 +169,30 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	public void setSigDMechanism(SigDMechanism sigDMechanism) {
 		Objects.requireNonNull(sigDMechanism, "sigDMechanism cannot be null!");
 		this.sigDMechanism = sigDMechanism;
+	}
+
+	/**
+	 * Gets if base64Url encoded payload shall be used
+	 * 
+	 * @return TRUE if to use base64url encoded payload, FALSE otherwise
+	 */
+	public boolean isBase64UrlEncodedPayload() {
+		return base64UrlEncodedPayload;
+	}
+
+	/**
+	 * Sets if base64Url encoded payload shall be used
+	 * If FALSE, the unencoded (original) payload will be used according to RFC 7797
+	 * 
+	 * NOTE: some restrictions for payload content can apply when dealing with unencoded payload.
+	 * For more information please see RFC 7797
+	 * 
+	 * Default : TRUE (base64Url encoded payload will be used)
+	 * 
+	 * @param base64EncodedPayload
+	 */
+	public void setBase64UrlEncodedPayload(boolean base64EncodedPayload) {
+		this.base64UrlEncodedPayload = base64EncodedPayload;
 	}
 
 }

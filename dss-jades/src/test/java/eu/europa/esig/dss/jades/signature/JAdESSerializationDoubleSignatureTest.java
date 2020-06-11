@@ -8,11 +8,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -31,6 +34,12 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation {
+	
+	@RepeatedTest(10)
+	@Override
+	public void validate() {
+		super.validate();
+	}
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -38,30 +47,39 @@ public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestVali
 
 		JAdESService service = new JAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+		
+		Date time = new Date();
 
 		JAdESSignatureParameters params = new JAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		params.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		params.setSigningCertificate(getSigningCert());
+		params.bLevel().setSigningDate(time);
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 		// signedDocument.save("target/" + "signedDocument.json");
+		
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(time);
+        cal.add(Calendar.SECOND, 1);
+        time = cal.getTime();
 
 		params = new JAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		params.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		params.setSigningCertificate(getSigningCert());
+		params.bLevel().setSigningDate(time);
 
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");
 		
-		assertTrue(JAdESUtils.isJWSJsonSerializationDocument(doubleSignedDocument));
+		assertTrue(JAdESUtils.isJsonDocument(doubleSignedDocument));
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(doubleSignedDocument)));
 			

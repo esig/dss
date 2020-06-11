@@ -53,6 +53,28 @@ public class JWS extends JsonWebSignature {
             setEncodedPayload(JAdESUtils.toBase64Url(payload));
         }
 	}
+	
+	/**
+	 * Returns payload string based on a 'b64' value in the protected header
+	 * (The actual signed payload value)
+	 */
+	public String getSignedPayload() {
+		if (isRfc7797UnencodedPayload()) {
+            return getUnverifiedPayload();
+        } else {
+            return getEncodedPayload();
+        }
+	}
+	
+	/**
+	 * Checks if the signature's payload is 'b64' unencoded (see RFC 7797)
+	 * 
+	 * @return TRUE if 'b64' is present and set to false, FALSE otherwise
+	 */
+	@Override
+	public boolean isRfc7797UnencodedPayload() {
+		return super.isRfc7797UnencodedPayload();
+	}
 
 	/**
 	 * Returns SignatureValue bytes

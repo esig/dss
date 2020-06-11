@@ -50,7 +50,7 @@ public class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValida
 		DSSDocument doubleSignedDocument = getCompleteSerializationSignature(signedDocument);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");
 		
-		assertTrue(JAdESUtils.isJWSJsonSerializationDocument(doubleSignedDocument));
+		assertTrue(JAdESUtils.isJsonDocument(doubleSignedDocument));
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(doubleSignedDocument)));
 			
