@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.Set;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.keys.X509Util;
 import org.slf4j.Logger;
@@ -30,6 +28,7 @@ import eu.europa.esig.dss.jades.HTTPHeaderDocument;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.LinkedJSONObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -189,10 +188,10 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.2.2 The x5t#o (X509 certificate digest) header parameter
 	 */
 	protected void incorporateSigningCertificateOtherDigestReferences(List<CertificateToken> certificates, DigestAlgorithm digestAlgorithm) {
-		List<JSONObject> digAndValues = new ArrayList<>();
+		List<LinkedJSONObject> digAndValues = new ArrayList<>();
 		for (CertificateToken certificateToken : certificates) {
 			byte[] digestValue = certificateToken.getDigest(digestAlgorithm);
-			JSONObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
+			LinkedJSONObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
 			digAndValues.add(digAndVal);
 		}
 		addCriticalHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
@@ -300,15 +299,15 @@ public class JAdESLevelBaselineB {
 					+ "All indications except the first one are omitted.");
 		}
 		CommitmentType commitmentType = parameters.bLevel().getCommitmentTypeIndications().iterator().next();
-		JSONObject oidObject = JAdESUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
+		LinkedJSONObject oidObject = JAdESUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
 		
-		Map<String, Object> srCmParams = new HashMap<>();
+		Map<String, Object> srCmParams = new LinkedHashMap<>();
 		srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
 		
 		// Qualifiers are not supported
 		// srCmParams.put(JAdESHeaderParameterNames.COMM_QUALS, quals);
 		
-		JSONObject srCmParamsObject = new JSONObject(srCmParams);
+		LinkedJSONObject srCmParamsObject = new LinkedJSONObject(srCmParams);
 		
 		addCriticalHeader(JAdESHeaderParameterNames.SR_CM, srCmParamsObject);
 	}
@@ -328,7 +327,7 @@ public class JAdESLevelBaselineB {
 			
 			// sigPlace must have at least one property
 			if (Utils.isAtLeastOneStringNotEmpty(city, streetAddress, stateOrProvince, postalCode, country)) {
-				Map<String, Object> sigPlaceMap = new HashMap<>();
+				Map<String, Object> sigPlaceMap = new LinkedHashMap<>();
 				
 				if (city != null) {
 					sigPlaceMap.put(JAdESHeaderParameterNames.CITY, city);
@@ -346,7 +345,7 @@ public class JAdESLevelBaselineB {
 					sigPlaceMap.put(JAdESHeaderParameterNames.COUNTRY, country);
 				}
 				
-				addCriticalHeader(JAdESHeaderParameterNames.SIG_PL, new JSONObject(sigPlaceMap));
+				addCriticalHeader(JAdESHeaderParameterNames.SIG_PL, new LinkedJSONObject(sigPlaceMap));
 				
 			} else {
 				LOG.warn("SignerLocation is defined, but does not contain any properties! 'SigPlace' attribute requires at least one property!");
@@ -359,7 +358,7 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.2.5 The srAts (signer attributes) header parameter
 	 */
 	private void incorporateSignerRoles() {
-		Map<String, Object> srAtsParams = new HashMap<>();
+		Map<String, Object> srAtsParams = new LinkedHashMap<>();
 
 		JSONArray claimed = getEncodedClaimedSignerRoles();
 		if (claimed != null) {
@@ -375,7 +374,7 @@ public class JAdESLevelBaselineB {
 		}
 
 		if (!srAtsParams.isEmpty()) {
-			JSONObject srAtsParamsObject = new JSONObject(srAtsParams);
+			LinkedJSONObject srAtsParamsObject = new LinkedJSONObject(srAtsParams);
 			addCriticalHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
 		}
 	}
@@ -415,7 +414,7 @@ public class JAdESLevelBaselineB {
 		}
 		
 		// canonicalization shall be null for content timestamps (see 5.2.6)
-		JSONObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
+		LinkedJSONObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
 		addCriticalHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
 	}
 
@@ -431,31 +430,31 @@ public class JAdESLevelBaselineB {
 				throw new DSSException("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
 			}
 			
-			Map<String, Object> sigPIdParams = new HashMap<>();
+			Map<String, Object> sigPIdParams = new LinkedHashMap<>();
 			
-			JSONObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), null);
+			LinkedJSONObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), null);
 			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
 			
 			if ((signaturePolicy.getDigestValue() != null) && (signaturePolicy.getDigestAlgorithm() != null)) {
-				JSONObject digAlgVal = JAdESUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
+				LinkedJSONObject digAlgVal = JAdESUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
 				sigPIdParams.put(JAdESHeaderParameterNames.HASH_AV, digAlgVal);
 			}
 
 			// hashPSp is not added and treated as FALSE, because qualifier 'spDSpec' is not supported
 			// sigPIdParams.put(JAdESHeaderParameterNames.HASH_PSP, value)
 			
-			List<JSONObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
+			List<LinkedJSONObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
 			if (Utils.isCollectionNotEmpty(signaturePolicyQualifiers)) {
 				sigPIdParams.put(JAdESHeaderParameterNames.SIG_PQUALS, signaturePolicyQualifiers);
 			}
 			
-			addCriticalHeader(JAdESHeaderParameterNames.SIG_PID, new JSONObject(sigPIdParams));
+			addCriticalHeader(JAdESHeaderParameterNames.SIG_PID, new LinkedJSONObject(sigPIdParams));
 		}
 	}
 
 	// TODO : refactor Qualifiers to follow the schema (as well as in XAdES)
-	private List<JSONObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
-		List<JSONObject> sigPQualifiers = new ArrayList<>();
+	private List<LinkedJSONObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
+		List<LinkedJSONObject> sigPQualifiers = new ArrayList<>();
 
 		String spuri = signaturePolicy.getSpuri();
 		if (Utils.isStringNotEmpty(spuri)) {
@@ -465,9 +464,9 @@ public class JAdESLevelBaselineB {
 			 * EN 119-182 ch. 5.2.7.1 Semantics and syntax:
 			 * The sigPQuals member may contain one or more qualifiers of the same type.
 			 */
-			Map<String, Object> spURI = new HashMap<>();
+			Map<String, Object> spURI = new LinkedHashMap<>();
 			spURI.put(JAdESHeaderParameterNames.SP_URI, spuri);
-			sigPQualifiers.add(new JSONObject(spURI));
+			sigPQualifiers.add(new LinkedJSONObject(spURI));
 		}
 		
 		// other policy qualifiers are not supported
@@ -499,7 +498,7 @@ public class JAdESLevelBaselineB {
 					throw new DSSException(String.format("The 'sigD' mechanism '%s' is not supported!", parameters.getSigDMechanism()));
 			}
 			
-			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JSONObject(sigDParams));
+			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new LinkedJSONObject(sigDParams));
 		}
 	}
 	
@@ -512,7 +511,7 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private Map<String, Object> getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
-		Map<String, Object> sigDParams = new HashMap<>();
+		Map<String, Object> sigDParams = new LinkedHashMap<>();
 		
 		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI.getUri());
 		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
@@ -523,7 +522,7 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private Map<String, Object> getSigDForObjectIdByUriHashMechanism(List<DSSDocument> detachedContents) {
-		Map<String, Object> sigDParams = new HashMap<>();
+		Map<String, Object> sigDParams = new LinkedHashMap<>();
 		
 		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.OBJECT_ID_BY_URI_HASH.getUri());
 		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
@@ -540,7 +539,7 @@ public class JAdESLevelBaselineB {
 	private Map<String, Object> getSigDForHttpHeadersMechanism(List<DSSDocument> detachedContents) {
 		assertHttpHeadersConfigurationIsValid();
 		
-		Map<String, Object> sigDParams = new HashMap<>();
+		Map<String, Object> sigDParams = new LinkedHashMap<>();
 
 		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
 		

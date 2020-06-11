@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonSerializationSignature;
+import eu.europa.esig.dss.jades.LinkedJSONObject;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -98,7 +98,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		
 		jwsJsonSerializationObject.getSignatures().add(jsonSerializationSignature);
 		
-		JSONObject jsonSerialization;
+		LinkedJSONObject jsonSerialization;
 		switch (parameters.getJwsSerializationType()) {
 			case JSON_SERIALIZATION:
 				jsonSerialization = buildJWSJsonSerialization();
@@ -135,7 +135,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		}
 	}
 	
-	private JSONObject buildJWSJsonSerialization() {
+	private LinkedJSONObject buildJWSJsonSerialization() {
 		if (jwsJsonSerializationObject.isFlattened()) {
 			LOG.warn("A flattened signature will be transformed to a Complete JWS JSON Serialization Format!");
 		}
@@ -147,17 +147,17 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			jsonSerializationMap.put(JWSConstants.PAYLOAD, jwsJsonSerializationObject.getPayload());
 		}
 		
-		List<JSONObject> signatureList = new ArrayList<>();
+		List<LinkedJSONObject> signatureList = new ArrayList<>();
 		for (JsonSerializationSignature signature : jwsJsonSerializationObject.getSignatures()) {
 			Map<String, Object> signatureMap = getSignatureJsonMap(signature);
-			signatureList.add(new JSONObject(signatureMap));
+			signatureList.add(new LinkedJSONObject(signatureMap));
 		}
 		jsonSerializationMap.put(JWSConstants.SIGNATURES, new JSONArray(signatureList));
 		
-		return new JSONObject(jsonSerializationMap);
+		return new LinkedJSONObject(jsonSerializationMap);
 	}
 	
-	private JSONObject buildFlattenedJwsJsonSerialization() {		
+	private LinkedJSONObject buildFlattenedJwsJsonSerialization() {		
 		Map<String, Object> flattenedJwsMap = new LinkedHashMap<>();
 		String encodedPayload = jwsJsonSerializationObject.getPayload();
 		if (Utils.isStringNotBlank(encodedPayload)) {
@@ -168,7 +168,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		Map<String, Object> signatureJsonMap = getSignatureJsonMap(jsonSerializationSignature);
 		flattenedJwsMap.putAll(signatureJsonMap);
 		
-		return new JSONObject(flattenedJwsMap);
+		return new LinkedJSONObject(flattenedJwsMap);
 	}
 	
 	private JWS getJWS() {

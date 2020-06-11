@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -53,7 +54,10 @@ public class JAdESLevelBFlattenedSerializationTest extends AbstractJAdESTestSign
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(byteArray));
 			
-			String payload = (String) rootStructure.get(JWSConstants.PAYLOAD);
+			String firstEntryName = rootStructure.keySet().iterator().next();
+			assertEquals(JWSConstants.PAYLOAD, firstEntryName);
+			
+			String payload = (String) rootStructure.get(firstEntryName);
 			assertNotNull(payload);
 			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(payload)));
 			
