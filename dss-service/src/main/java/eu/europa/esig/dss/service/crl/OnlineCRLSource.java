@@ -151,7 +151,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.getUrlString()));
 			return crlToken;
 		} catch (Exception e) {
-			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.getUrlString() + ") : " + e.getMessage(), e);
+			LOG.warn("Unable to parse/validate the CRL (url: {}) : {}", dataAndUrl.getUrlString(), e.getMessage(), e);
 			return null;
 		}
 	}

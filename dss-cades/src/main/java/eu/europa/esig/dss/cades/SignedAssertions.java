@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cades;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -44,7 +45,6 @@ public class SignedAssertions extends ASN1Object {
     }
 
     public SignedAssertions(List<SignedAssertion> assertions) {
-        int index = 0;
         this.assertions = assertions;
     }
 

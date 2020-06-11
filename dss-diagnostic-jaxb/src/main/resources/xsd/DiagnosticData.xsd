@@ -573,12 +573,6 @@
 		<xs:attribute name="Category" type="EndorsementType" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name="SignedAssertion">
-		<xs:sequence>
-			<xs:element name="Assertion" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="DigestAlgoAndValue">
 		<xs:sequence>
 			<xs:element name="DigestMethod" type="xs:string" minOccurs="0" /> <!-- Optional in case the digest cannot be retrieved -->

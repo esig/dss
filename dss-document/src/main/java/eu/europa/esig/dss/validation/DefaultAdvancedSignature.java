@@ -25,9 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -45,8 +42,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private static final long serialVersionUID = 6452189007886779360L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultAdvancedSignature.class);
 
 	/**
 	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.

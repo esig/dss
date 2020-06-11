@@ -145,7 +145,7 @@ public enum SignatureQualification implements UriBasedEnum {
 
 	private static class Registry {
 
-		private final static Map<String, SignatureQualification> QUALIFS_BY_READABLE = registerByReadable();
+		private static final Map<String, SignatureQualification> QUALIFS_BY_READABLE = registerByReadable();
 
 		private static Map<String, SignatureQualification> registerByReadable() {
 			final Map<String, SignatureQualification> map = new HashMap<>();

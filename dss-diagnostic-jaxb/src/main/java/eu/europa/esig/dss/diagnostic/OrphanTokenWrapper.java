@@ -59,10 +59,12 @@ public class OrphanTokenWrapper {
 			return false;
 		OrphanTokenWrapper other = (OrphanTokenWrapper) obj;
 		if (getId() == null) {
-			if (other.getId() != null)
+			if (other.getId() != null) {
 				return false;
-		} else if (!getId().equals(other.getId()))
+			}
+		} else if (!getId().equals(other.getId())) {
 			return false;
+		}
 		return true;
 	}
 	

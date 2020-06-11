@@ -171,7 +171,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 						attibuteToAdd = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
 					}
 				} catch (Exception e) {
-					LOG.warn("Unable to build a CMSSignedData object from an unsigned attribute. Reason : {}", e);
+					LOG.warn("Unable to build a CMSSignedData object from an unsigned attribute. Reason : {}", e.getMessage(), e);
 					// we free to continue with the original object, 
 					// because it would not be possible to extend the attribute anyway
 				}

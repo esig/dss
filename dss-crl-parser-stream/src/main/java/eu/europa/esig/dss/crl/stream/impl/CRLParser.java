@@ -403,7 +403,7 @@ class CRLParser {
 		while (skipped < length && skip != 0) {
 			skip = s.skip(length - skipped);
 			skipped += skip;
-		};
+		}
 	}
 
 	private void extractExtensions(ASN1Sequence seq, CRLInfo infos) throws IOException {

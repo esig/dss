@@ -820,7 +820,7 @@ public final class DSSUtils {
 		try {
 			return URLDecoder.decode(uri, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to decode '" + uri + "' : " + e.getMessage(), e);
+			LOG.error("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
 		return uri;
 	}

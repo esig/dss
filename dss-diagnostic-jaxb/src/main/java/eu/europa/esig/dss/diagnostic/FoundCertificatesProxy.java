@@ -87,8 +87,9 @@ public class FoundCertificatesProxy {
 		
 		List<OrphanCertificateWrapper> orphanCertificates = getOrphanCertificates();
 		for (OrphanCertificateWrapper orphanCertificate : orphanCertificates) {
-			if (orphanCertificate.getOrigins().contains(origin)) 
-			orphanCertificatesWrappers.add(orphanCertificate);
+			if (orphanCertificate.getOrigins().contains(origin)) {
+				orphanCertificatesWrappers.add(orphanCertificate);
+			}
 		}
 		return orphanCertificatesWrappers;
 	}

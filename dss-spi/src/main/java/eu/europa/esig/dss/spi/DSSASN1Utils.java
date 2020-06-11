@@ -571,7 +571,7 @@ public final class DSSASN1Utils {
 					certificatePolicies.add(cp);
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the certificatePolicies extension '" + Utils.toBase64(certificatePoliciesBinaries) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the certificatePolicies extension '{}' : {}", Utils.toBase64(certificatePoliciesBinaries), e.getMessage(), e);
 			}
 		}
 		return certificatePolicies;
@@ -597,7 +597,7 @@ public final class DSSASN1Utils {
 					extensionIdList.add(statement.getStatementId().getId());
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
 			}
 		}
 		return extensionIdList;
@@ -640,7 +640,7 @@ public final class DSSASN1Utils {
 					}
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
 			}
 		}
 
@@ -665,8 +665,7 @@ public final class DSSASN1Utils {
 					}
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : "
-						+ e.getMessage(), e);
+				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
 			}
 		}
 		return result;
@@ -870,7 +869,7 @@ public final class DSSASN1Utils {
 				return str.getString();
 			}
 		} catch (Exception e) {
-			LOG.warn("Unable to parse GN " + gn, e);
+			LOG.warn("Unable to parse GN '{}'", gn, e);
 		}
 		return null;
 	}
@@ -1187,7 +1186,7 @@ public final class DSSASN1Utils {
 		try {
 			return Time.getInstance(encodable).getDate();
 		} catch (Exception e) {
-			LOG.warn("Unable to retrieve the date : " + encodable, e);
+			LOG.warn("Unable to retrieve the date {}", encodable, e);
 			return null;
 		}
 	}
@@ -1218,7 +1217,7 @@ public final class DSSASN1Utils {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return IssuerSerial.getInstance(seq);
 		} catch (Exception e) {
-			LOG.error("Unable to decode IssuerSerialV2 textContent '" + Utils.toBase64(binaries) + "' : " + e.getMessage(), e);
+			LOG.error("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
 			return null;
 		}
 	}
@@ -1551,7 +1550,7 @@ public final class DSSASN1Utils {
 						if (value instanceof String) {
 							result.add((String) value);
 						} else {
-							LOG.warn("Ignored value : {}", value);
+							LOG.trace("Ignored value : {}", value);
 						}
 					}
 				}

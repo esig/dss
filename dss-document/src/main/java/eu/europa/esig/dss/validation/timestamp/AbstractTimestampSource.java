@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -84,9 +83,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected ListCertificateSource certificateSource;
 	
-	// Map between timestamps and found certificates
-	private Map<String, List<CertificateToken>> certificateMap;
-
 	// Enclosed content timestamps.
 	private List<TimestampToken> contentTimestamps;
 

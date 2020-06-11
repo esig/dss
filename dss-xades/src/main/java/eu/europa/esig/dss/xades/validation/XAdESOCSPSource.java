@@ -121,7 +121,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		try {
 			addBinary(OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue)), origin);
 		} catch (Exception e) {
-			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
+			LOG.warn("Cannot retrieve OCSP response from '{}' : {}", ocspValue, e.getMessage(), e);
 		}
 	}
 

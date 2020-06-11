@@ -79,7 +79,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
@@ -1169,16 +1168,6 @@ public class DiagnosticDataBuilder {
 			return xmlSignatureProductionPlace;
 		}
 		return null;
-	}
-	
-	private List<XmlSignedAssertion> getXmlSignedAssertion(Collection<String> assertions) {
-		List<XmlSignedAssertion> xmlSignedAssertions = new ArrayList<>();
-		for (String assertion: assertions) {
-			XmlSignedAssertion xmlSignedAssertion = new XmlSignedAssertion();
-			xmlSignedAssertion.setAssertion(assertion);
-			xmlSignedAssertions.add(xmlSignedAssertion);
-		}
-		return xmlSignedAssertions;
 	}
 	
 	private List<XmlSignerRole> getXmlSignerRoles(Collection<SignerRole> signerRoles) {

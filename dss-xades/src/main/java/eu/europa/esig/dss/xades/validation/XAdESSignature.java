@@ -751,7 +751,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			
 		} catch (Exception e) {
 			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
-			LOG.debug("checkSignatureIntegrity : " + e.getMessage(), e);
+			LOG.debug("checkSignatureIntegrity : {}", e.getMessage(), e);
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;

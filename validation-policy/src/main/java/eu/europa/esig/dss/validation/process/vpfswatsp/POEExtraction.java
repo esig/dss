@@ -131,11 +131,7 @@ public class POEExtraction {
 
 	private void addPOE(String tokenId, POE proofOfExistence) {
 		if (proofOfExistence != null) {
-			List<POE> poesById = poeMap.get(tokenId);
-			if (poesById == null) {
-				poesById = new ArrayList<>();
-				poeMap.put(tokenId, poesById);
-			}
+			List<POE> poesById = poeMap.computeIfAbsent(tokenId, k -> new ArrayList<>());
 			poesById.add(proofOfExistence);
 		}
 	}

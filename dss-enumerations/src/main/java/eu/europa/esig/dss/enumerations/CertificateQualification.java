@@ -80,7 +80,7 @@ public enum CertificateQualification {
 
 	private static class Registry {
 
-		private final static Map<String, CertificateQualification> QUALIFS_BY_READABLE = registerByReadable();
+		private static final Map<String, CertificateQualification> QUALIFS_BY_READABLE = registerByReadable();
 
 		private static Map<String, CertificateQualification> registerByReadable() {
 			final Map<String, CertificateQualification> map = new HashMap<>();

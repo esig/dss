@@ -102,7 +102,7 @@ public class UnmarshallingTester {
 			unmarshall = DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData);
 			assertNotNull(unmarshall);
 		} catch (Exception e) {
-			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
+			LOG.error("Unable to unmarshall the Diagnostic data : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 		return unmarshall;
@@ -123,7 +123,7 @@ public class UnmarshallingTester {
 			XmlDiagnosticData diagnosticDataObject = om.readValue(json, XmlDiagnosticData.class);
 			assertNotNull(diagnosticDataObject);
 		} catch (Exception e) {
-			LOG.error("Unable to map the Diagnostic data : " + e.getMessage(), e);
+			LOG.error("Unable to map the Diagnostic data : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}
@@ -135,7 +135,7 @@ public class UnmarshallingTester {
 //			LOG.info(xmlDetailedReport);
 			assertNotNull(DetailedReportFacade.newFacade().unmarshall(xmlDetailedReport));
 		} catch (Exception e) {
-			LOG.error("Unable to unmarshall the Detailed Report : " + e.getMessage(), e);
+			LOG.error("Unable to unmarshall the Detailed Report : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}
@@ -149,7 +149,7 @@ public class UnmarshallingTester {
 			XmlDetailedReport detailedReportObject = om.readValue(json, XmlDetailedReport.class);
 			assertNotNull(detailedReportObject);
 		} catch (Exception e) {
-			LOG.error("Unable to map the Detailed Report : " + e.getMessage(), e);
+			LOG.error("Unable to map the Detailed Report : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}
@@ -161,7 +161,7 @@ public class UnmarshallingTester {
 //			LOG.info(xmlSimpleReport);
 			assertNotNull(SimpleReportFacade.newFacade().unmarshall(xmlSimpleReport));
 		} catch (Exception e) {
-			LOG.error("Unable to unmarshall the Simple Report : " + e.getMessage(), e);
+			LOG.error("Unable to unmarshall the Simple Report : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}
@@ -175,7 +175,7 @@ public class UnmarshallingTester {
 			XmlSimpleReport simpleReportObject = om.readValue(json, XmlSimpleReport.class);
 			assertNotNull(simpleReportObject);
 		} catch (Exception e) {
-			LOG.error("Unable to map the Simple Report : " + e.getMessage(), e);
+			LOG.error("Unable to map the Simple Report : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}
@@ -187,7 +187,7 @@ public class UnmarshallingTester {
 //			LOG.info(xmlValidationReport);
 			assertNotNull(ValidationReportFacade.newFacade().unmarshall(xmlValidationReport));
 		} catch (Exception e) {
-			LOG.error("Unable to unmarshall the ETSI Validation Report : " + e.getMessage(), e);
+			LOG.error("Unable to unmarshall the ETSI Validation Report : {}", e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}

@@ -476,7 +476,7 @@ public final class DomUtils {
 			xmlGregorianCalendar.setFractionalSecond(null);
 			return xmlGregorianCalendar.normalize(); // to UTC = Zulu
 		} catch (DatatypeConfigurationException e) {
-			LOG.warn("Unable to properly convert a Date to an XMLGregorianCalendar " + e.getMessage(), e);
+			LOG.warn("Unable to properly convert a Date to an XMLGregorianCalendar : {}", e.getMessage(), e);
 		}
 		return null;
 	}

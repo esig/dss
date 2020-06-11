@@ -262,7 +262,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 								policyQualifierInfoValue);
 					}
 				} catch (Exception e) {
-					LOG.error("Unable to read SigPolicyQualifierInfo {}", ii, e.getMessage());
+					LOG.error("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
 				}
 			}
 			if (signaturePolicy.getPolicyContent() != null) {
@@ -463,7 +463,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return claimedRoles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with claimed signer roles: [" + signerAttrValues + "]", e);
+			LOG.error("Error when dealing with claimed signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
 	}
@@ -511,7 +511,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return roles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with certified signer roles: [" + signerAttrValues + "]", e);
+			LOG.error("Error when dealing with certified signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
 	}
@@ -543,7 +543,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			try {
 				return SignerAttributeV2.getInstance(attrValue);
 			} catch (Exception e) {
-				LOG.warn("Unable to parse signerAttrV2 " + Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)) + "", e);
+				LOG.warn("Unable to parse signerAttrV2 : {}", Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e);
 			}
 		}
 		return null;
@@ -684,7 +684,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					signatureCryptographicVerification.setErrorMessage(e.getMessage());
 					signatureCryptographicVerification.setSignatureIntact(false);
 				} catch (Exception e) {
-					LOG.error("Unable to validate CMS Signature : " + e.getMessage(), e);
+					LOG.error("Unable to validate CMS Signature : {}", e.getMessage(), e);
 					signatureCryptographicVerification.setErrorMessage(e.getMessage());
 					signatureCryptographicVerification.setSignatureIntact(false);
 				}
