@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 
@@ -66,7 +66,7 @@ public abstract class AbstractCAdESTestSigningTime extends AbstractCAdESTestSign
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
 		super.checkSigningDate(diagnosticData);
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signingTime.equals(signature.getClaimedSigningTime()));
+		assertEquals(signingTime, signature.getClaimedSigningTime());
 	}
 
 	@Override

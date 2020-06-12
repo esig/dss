@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.Date;
@@ -68,8 +69,8 @@ public class XAdESLevelBEnvelopedWithXPathPlacementFirstChildTest extends Abstra
 		super.onDocumentSigned(byteArray);
 		Document dom = DomUtils.buildDOM(byteArray);
 		Element referencedElement = DomUtils.getElement(dom.getDocumentElement(), XPATH);
-		assertTrue(referencedElement.getFirstChild() != null);
-		assertTrue("ds:Signature".equals(referencedElement.getFirstChild().getNodeName()));
+		assertNotNull(referencedElement.getFirstChild());
+		assertEquals("ds:Signature", referencedElement.getFirstChild().getNodeName());
 	}
 
 	@Override

@@ -469,7 +469,7 @@ public abstract class AbstractUtilsTest {
 		dir.mkdir();
 		Utils.cleanDirectory(dir);
 		assertTrue(dir.exists());
-		assertTrue(dir.list().length == 0);
+		assertEquals(0, dir.list().length);
 	}
 
 	@Test

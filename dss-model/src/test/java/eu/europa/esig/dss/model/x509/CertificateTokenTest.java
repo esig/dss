@@ -42,7 +42,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -117,10 +116,10 @@ public class CertificateTokenTest {
 		
 		assertNull(certificate3.getPublicKeyOfTheSigner());
 
-		assertTrue(certificate1.equals(certificate1));
-		assertFalse(certificate1.equals(certificate2));
-		assertFalse(certificate1.equals(certificate3));
-		assertFalse(certificate1.equals(certificate4));
+		assertEquals(certificate1, certificate1);
+		assertNotEquals(certificate1, certificate2);
+		assertNotEquals(certificate1, certificate3);
+		assertNotEquals(certificate1, certificate4);
 		
 		assertTrue(certificate1.isEquivalent(certificate1));
 		assertTrue(certificate1.isEquivalent(certificate2));
@@ -173,16 +172,8 @@ public class CertificateTokenTest {
 		CertificateToken rootCa = getCertificate(rootCaB64);
 		CertificateToken ocspResponder = getCertificate(ocspResponderB64);
 
-		assertTrue(goodUser.equals(goodUser));
-		assertTrue(Objects.equals(goodUser, goodUser));
 		assertEquals(goodUser, goodUser);
-
-		assertTrue(goodUser.equals(goodUserBis));
-		assertTrue(Objects.equals(goodUser, goodUserBis));
 		assertEquals(goodUser, goodUserBis);
-
-		assertFalse(goodUser.equals(goodCa));
-		assertFalse(Objects.equals(goodUser, goodCa));
 		assertNotEquals(goodUser, goodCa);
 
 		List<CertificateToken> tokens = new ArrayList<>();

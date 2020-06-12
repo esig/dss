@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -66,7 +67,7 @@ public class RemoteCertificateValidationServiceTest {
 		validateReports(reportsDTO);
 		
 		XmlDiagnosticData diagnosticData = reportsDTO.getDiagnosticData();
-		assertTrue(certificateDTO.getValidationTime().compareTo(diagnosticData.getValidationDate()) == 0);
+		assertEquals(0, certificateDTO.getValidationTime().compareTo(diagnosticData.getValidationDate()));
 	}
 	
 	@Test

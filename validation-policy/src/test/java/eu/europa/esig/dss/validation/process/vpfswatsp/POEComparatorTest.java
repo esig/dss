@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,14 +52,14 @@ public class POEComparatorTest {
 		
 		assertFalse(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
 		assertFalse(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
-		assertTrue(comparator.compare(new POE(firstTimestamp), new POE(secondTimestamp)) == 0);
+		assertEquals(0, comparator.compare(new POE(firstTimestamp), new POE(secondTimestamp)));
 		
 		xmlTimestamp.setTimestampedObjects(new ArrayList<>());
 		xmlTimestamp2.setTimestampedObjects(Arrays.asList(new XmlTimestampedObject()));
 		
 		assertTrue(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
 		assertFalse(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
-		assertFalse(comparator.compare(new POE(firstTimestamp), new POE(secondTimestamp)) == 0);
+		assertNotEquals(0, comparator.compare(new POE(firstTimestamp), new POE(secondTimestamp)));
 		
 		xmlTimestamp2.setType(TimestampType.VALIDATION_DATA_TIMESTAMP);
 		assertFalse(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));

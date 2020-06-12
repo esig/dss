@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -77,7 +76,7 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 
 		// Signature has been generated in the very first version of the PDF
 		byte[] byteArray = DSSUtils.toByteArray(retrievedDoc);
-		assertTrue(byteArray.length == 0);
+		assertEquals(0, byteArray.length);
 	}
 
 }

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -162,7 +162,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 		for (String sigId : signatureIds) {
 			Indication basicIndication = detailedReport.getBasicValidationIndication(sigId);
 			assertNotNull(basicIndication);
-			assertFalse(Indication.FAILED.equals(basicIndication));
+			assertNotEquals(Indication.FAILED, basicIndication);
 			if (!Indication.PASSED.equals(basicIndication)) {
 				assertNotNull(detailedReport.getBasicValidationSubIndication(sigId));
 			}
@@ -173,7 +173,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 			for (String tspId : timestampIds) {
 				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
 				assertNotNull(timestampIndication);
-				assertFalse(Indication.FAILED.equals(timestampIndication));
+				assertNotEquals(Indication.FAILED, timestampIndication);
 				if (!Indication.PASSED.equals(timestampIndication)) {
 					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
 				}
@@ -183,7 +183,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 		for (String sigId : signatureIds) {
 			Indication ltvIndication = detailedReport.getLongTermValidationIndication(sigId);
 			assertNotNull(ltvIndication);
-			assertFalse(Indication.FAILED.equals(ltvIndication));
+			assertNotEquals(Indication.FAILED, ltvIndication);
 			if (!Indication.PASSED.equals(ltvIndication)) {
 				assertNotNull(detailedReport.getLongTermValidationSubIndication(sigId));
 			}
@@ -192,7 +192,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 		for (String sigId : signatureIds) {
 			Indication archiveDataIndication = detailedReport.getArchiveDataValidationIndication(sigId);
 			assertNotNull(archiveDataIndication);
-			assertFalse(Indication.FAILED.equals(archiveDataIndication));
+			assertNotEquals(Indication.FAILED, archiveDataIndication);
 			if (!Indication.PASSED.equals(archiveDataIndication)) {
 				assertNotNull(detailedReport.getArchiveDataValidationSubIndication(sigId));
 			}

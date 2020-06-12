@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.validation.dkcert;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.text.ParseException;
@@ -63,16 +63,16 @@ public class DKExpectedSigCertTest extends AbstractDKTestCertificate {
 		assertFalse(PREVIOUS_SIG_CERT.isEquivalent(EXPECTED_SIG_CERT));
 		assertFalse(PREVIOUS_SIG_CERT.isEquivalent(AIA_CERT));
 		assertFalse(EXPECTED_SIG_CERT.isEquivalent(AIA_CERT));
-		assertFalse(PREVIOUS_SIG_CERT.getPublicKey().equals(EXPECTED_SIG_CERT.getPublicKey()));
-		assertFalse(PREVIOUS_SIG_CERT.getPublicKey().equals(AIA_CERT.getPublicKey()));
-		assertFalse(EXPECTED_SIG_CERT.getPublicKey().equals(AIA_CERT.getPublicKey()));
-		assertFalse(PREVIOUS_SIG_CERT.getEntityKey().equals(EXPECTED_SIG_CERT.getEntityKey()));
-		assertFalse(PREVIOUS_SIG_CERT.getEntityKey().equals(AIA_CERT.getEntityKey()));
-		assertFalse(EXPECTED_SIG_CERT.getEntityKey().equals(AIA_CERT.getEntityKey()));
-		assertFalse(PREVIOUS_SIG_CERT.getDSSId().equals(EXPECTED_SIG_CERT.getDSSId()));
-		assertFalse(PREVIOUS_SIG_CERT.getDSSId().equals(AIA_CERT.getDSSId()));
-		assertFalse(EXPECTED_SIG_CERT.getDSSId().equals(AIA_CERT.getDSSId()));
-		assertTrue(PREVIOUS_SIG_CERT.getSubject().equals(EXPECTED_SIG_CERT.getSubject()));
+		assertNotEquals(PREVIOUS_SIG_CERT.getPublicKey(), EXPECTED_SIG_CERT.getPublicKey());
+		assertNotEquals(PREVIOUS_SIG_CERT.getPublicKey(), AIA_CERT.getPublicKey());
+		assertNotEquals(EXPECTED_SIG_CERT.getPublicKey(), AIA_CERT.getPublicKey());
+		assertNotEquals(PREVIOUS_SIG_CERT.getEntityKey(), EXPECTED_SIG_CERT.getEntityKey());
+		assertNotEquals(PREVIOUS_SIG_CERT.getEntityKey(), AIA_CERT.getEntityKey());
+		assertNotEquals(EXPECTED_SIG_CERT.getEntityKey(), AIA_CERT.getEntityKey());
+		assertNotEquals(PREVIOUS_SIG_CERT.getDSSId(), EXPECTED_SIG_CERT.getDSSId());
+		assertNotEquals(PREVIOUS_SIG_CERT.getDSSId(), AIA_CERT.getDSSId());
+		assertNotEquals(EXPECTED_SIG_CERT.getDSSId(), AIA_CERT.getDSSId());
+		assertEquals(PREVIOUS_SIG_CERT.getSubject(), EXPECTED_SIG_CERT.getSubject());
 	}
 
 }
