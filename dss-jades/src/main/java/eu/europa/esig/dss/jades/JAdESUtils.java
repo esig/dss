@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 import org.jose4j.base64url.Base64Url;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwx.CompactSerializer;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
@@ -158,13 +157,13 @@ public class JAdESUtils {
 	}
 	
 	/**
-	 * Creates a 'DigAlgVal' LinkedJSONObject from the given values
+	 * Creates a 'DigAlgVal' JsonObject from the given values
 	 * 
 	 * @param digestValue a byte array representing a hash value
 	 * @param digestAlgorithm {@link DigestAlgorithm} has been used to generate the value
-	 * @return 'DigAlgVal' {@link LinkedJSONObject}
+	 * @return 'DigAlgVal' {@link JsonObject}
 	 */
-	public static LinkedJSONObject getDigAlgValObject(byte[] digestValue, DigestAlgorithm digestAlgorithm) {
+	public static JsonObject getDigAlgValObject(byte[] digestValue, DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestValue, "digestValue must be defined!");
 		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be defined!");
 		
@@ -172,7 +171,7 @@ public class JAdESUtils {
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getUri());
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, Utils.toBase64(digestValue));
 		
-		return new LinkedJSONObject(digAlgValParams);
+		return new JsonObject(digAlgValParams);
 	}
 
 	/**
@@ -195,9 +194,9 @@ public class JAdESUtils {
 	 * Creates an 'oid' LinkedJSONObject according to EN 119-182 ch. 5.4.1 The oId data type
 	 * 
 	 * @param uri {@link String} URI defining the object.
-	 * @return 'oid' {@link LinkedJSONObject}
+	 * @return 'oid' {@link JsonObject}
 	 */
-	public static LinkedJSONObject getOidObject(String uri) {
+	public static JsonObject getOidObject(String uri) {
 		return getOidObject(uri, null, null);
 	}
 	
@@ -224,23 +223,23 @@ public class JAdESUtils {
 	 * Creates an 'oid' LinkedJSONObject according to EN 119-182 ch. 5.4.1 The oId data type
 	 * 
 	 * @param objectIdentifier {@link ObjectIdentifier} to create an 'oid' from
-	 * @return 'oid' {@link LinkedJSONObject}
+	 * @return 'oid' {@link JsonObject}
 	 */
-	public static LinkedJSONObject getOidObject(ObjectIdentifier objectIdentifier) {
+	public static JsonObject getOidObject(ObjectIdentifier objectIdentifier) {
 		return getOidObject(getUriOrUrnOid(objectIdentifier), objectIdentifier.getDescription(), 
 				Arrays.asList(objectIdentifier.getDocumentationReferences()));
 	}
 
 	/**
-	 * Creates an 'oid' LinkedJSONObject according to EN 119-182 ch. 5.4.1 The oId data type
+	 * Creates an 'oid' JsonObject according to EN 119-182 ch. 5.4.1 The oId data type
 	 * 
 	 * @param uri {@link String} URI defining the object. The property is REQUIRED.
 	 * @param desc {@link String} the object description. The property is OPTIONAL.
 	 * @param docRefs a list of {@link String} URIs containing any other additional information about the object. 
 	 * 				The property is OPTIONAL.
-	 * @return 'oid' {@link LinkedJSONObject}
+	 * @return 'oid' {@link JsonObject}
 	 */
-	public static LinkedJSONObject getOidObject(String uri, String desc, List<String> docRefs) {
+	public static JsonObject getOidObject(String uri, String desc, List<String> docRefs) {
 		Objects.requireNonNull(uri, "uri must be defined!");
 		
 		Map<String, Object> oidParams = new LinkedHashMap<>();
@@ -252,17 +251,17 @@ public class JAdESUtils {
 			oidParams.put(JAdESHeaderParameterNames.DOC_REFS, new JSONArray(docRefs));
 		}
 		
-		return new LinkedJSONObject(oidParams);
+		return new JsonObject(oidParams);
 	}
 	
 	/**
-	 * Creates a 'tstContainer' LinkedJSONObject according to EN 119-182 ch. 5.4.3.3 The tstContainer type
+	 * Creates a 'tstContainer' JsonObject according to EN 119-182 ch. 5.4.3.3 The tstContainer type
 	 * 
 	 * @param timestampTokens a list of {@link TimestampToken}s to incorporate
 	 * @param canonicalizationMethodUri a canonicalization method (OPTIONAL, e.g. shall not be present for content timestamps)
-	 * @return 'tstContainer' {@link LinkedJSONObject}
+	 * @return 'tstContainer' {@link JsonObject}
 	 */
-	public static LinkedJSONObject getTstContainer(List<TimestampToken> timestampTokens, String canonicalizationMethodUri) {
+	public static JsonObject getTstContainer(List<TimestampToken> timestampTokens, String canonicalizationMethodUri) {
 		if (Utils.isCollectionEmpty(timestampTokens)) {
 			throw new DSSException("Impossible to create 'tstContainer'. TimestampTokens cannot be null or empty!");
 		}
@@ -271,24 +270,24 @@ public class JAdESUtils {
 		if (canonicalizationMethodUri != null) {
 			tstContainerParams.put(JAdESHeaderParameterNames.CANON_ALG, canonicalizationMethodUri);
 		}
-		List<LinkedJSONObject> tsTokens = new ArrayList<>();
+		List<JsonObject> tsTokens = new ArrayList<>();
 		for (TimestampToken timestampToken : timestampTokens) {
-			LinkedJSONObject tstToken = getTstToken(timestampToken);
+			JsonObject tstToken = getTstToken(timestampToken);
 			tsTokens.add(tstToken);
 		}
 		JSONArray tsTokensArray = new JSONArray(tsTokens);
 		tstContainerParams.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokensArray);
 		
-		return new LinkedJSONObject(tstContainerParams);
+		return new JsonObject(tstContainerParams);
 	}
 	
 	/**
-	 * Creates a 'tstToken' JSONObject according to EN 119-182 ch. 5.4.3.3 The tstContainer type
+	 * Creates a 'tstToken' JsonObject according to EN 119-182 ch. 5.4.3.3 The tstContainer type
 	 * 
 	 * @param timestampToken {@link TimestampToken}s to incorporate
-	 * @return 'tstToken' {@link JSONObject}
+	 * @return 'tstToken' {@link JsonObject}
 	 */
-	private static LinkedJSONObject getTstToken(TimestampToken timestampToken) {
+	private static JsonObject getTstToken(TimestampToken timestampToken) {
 		Objects.requireNonNull(timestampToken, "timestampToken cannot be null!");
 		
 		Map<String, Object> tstTokenParams = new HashMap<>();
@@ -296,7 +295,7 @@ public class JAdESUtils {
 		// 'type', 'encoding' and 'specRef' params are not need to be defined (see EN 119-182 ch. 5.4.3.3)
 		tstTokenParams.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timestampToken.getEncoded())); // DER-encoded value
 		
-		return new LinkedJSONObject(tstTokenParams);
+		return new JsonObject(tstTokenParams);
 	}
 	
 	/**

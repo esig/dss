@@ -24,11 +24,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.HTTPHeaderDocument;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
-import eu.europa.esig.dss.jades.LinkedJSONObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -188,10 +188,10 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.2.2 The x5t#o (X509 certificate digest) header parameter
 	 */
 	protected void incorporateSigningCertificateOtherDigestReferences(List<CertificateToken> certificates, DigestAlgorithm digestAlgorithm) {
-		List<LinkedJSONObject> digAndValues = new ArrayList<>();
+		List<JsonObject> digAndValues = new ArrayList<>();
 		for (CertificateToken certificateToken : certificates) {
 			byte[] digestValue = certificateToken.getDigest(digestAlgorithm);
-			LinkedJSONObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
+			JsonObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
 			digAndValues.add(digAndVal);
 		}
 		addCriticalHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
@@ -299,7 +299,7 @@ public class JAdESLevelBaselineB {
 					+ "All indications except the first one are omitted.");
 		}
 		CommitmentType commitmentType = parameters.bLevel().getCommitmentTypeIndications().iterator().next();
-		LinkedJSONObject oidObject = JAdESUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
+		JsonObject oidObject = JAdESUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
 		
 		Map<String, Object> srCmParams = new LinkedHashMap<>();
 		srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
@@ -307,7 +307,7 @@ public class JAdESLevelBaselineB {
 		// Qualifiers are not supported
 		// srCmParams.put(JAdESHeaderParameterNames.COMM_QUALS, quals);
 		
-		LinkedJSONObject srCmParamsObject = new LinkedJSONObject(srCmParams);
+		JsonObject srCmParamsObject = new JsonObject(srCmParams);
 		
 		addCriticalHeader(JAdESHeaderParameterNames.SR_CM, srCmParamsObject);
 	}
@@ -345,7 +345,7 @@ public class JAdESLevelBaselineB {
 					sigPlaceMap.put(JAdESHeaderParameterNames.COUNTRY, country);
 				}
 				
-				addCriticalHeader(JAdESHeaderParameterNames.SIG_PL, new LinkedJSONObject(sigPlaceMap));
+				addCriticalHeader(JAdESHeaderParameterNames.SIG_PL, new JsonObject(sigPlaceMap));
 				
 			} else {
 				LOG.warn("SignerLocation is defined, but does not contain any properties! 'SigPlace' attribute requires at least one property!");
@@ -374,7 +374,7 @@ public class JAdESLevelBaselineB {
 		}
 
 		if (!srAtsParams.isEmpty()) {
-			LinkedJSONObject srAtsParamsObject = new LinkedJSONObject(srAtsParams);
+			JsonObject srAtsParamsObject = new JsonObject(srAtsParams);
 			addCriticalHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
 		}
 	}
@@ -414,7 +414,7 @@ public class JAdESLevelBaselineB {
 		}
 		
 		// canonicalization shall be null for content timestamps (see 5.2.6)
-		LinkedJSONObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
+		JsonObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
 		addCriticalHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
 	}
 
@@ -432,29 +432,29 @@ public class JAdESLevelBaselineB {
 			
 			Map<String, Object> sigPIdParams = new LinkedHashMap<>();
 			
-			LinkedJSONObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), null);
+			JsonObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), null);
 			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
 			
 			if ((signaturePolicy.getDigestValue() != null) && (signaturePolicy.getDigestAlgorithm() != null)) {
-				LinkedJSONObject digAlgVal = JAdESUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
+				JsonObject digAlgVal = JAdESUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
 				sigPIdParams.put(JAdESHeaderParameterNames.HASH_AV, digAlgVal);
 			}
 
 			// hashPSp is not added and treated as FALSE, because qualifier 'spDSpec' is not supported
 			// sigPIdParams.put(JAdESHeaderParameterNames.HASH_PSP, value)
 			
-			List<LinkedJSONObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
+			List<JsonObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
 			if (Utils.isCollectionNotEmpty(signaturePolicyQualifiers)) {
 				sigPIdParams.put(JAdESHeaderParameterNames.SIG_PQUALS, signaturePolicyQualifiers);
 			}
 			
-			addCriticalHeader(JAdESHeaderParameterNames.SIG_PID, new LinkedJSONObject(sigPIdParams));
+			addCriticalHeader(JAdESHeaderParameterNames.SIG_PID, new JsonObject(sigPIdParams));
 		}
 	}
 
 	// TODO : refactor Qualifiers to follow the schema (as well as in XAdES)
-	private List<LinkedJSONObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
-		List<LinkedJSONObject> sigPQualifiers = new ArrayList<>();
+	private List<JsonObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
+		List<JsonObject> sigPQualifiers = new ArrayList<>();
 
 		String spuri = signaturePolicy.getSpuri();
 		if (Utils.isStringNotEmpty(spuri)) {
@@ -466,7 +466,7 @@ public class JAdESLevelBaselineB {
 			 */
 			Map<String, Object> spURI = new LinkedHashMap<>();
 			spURI.put(JAdESHeaderParameterNames.SP_URI, spuri);
-			sigPQualifiers.add(new LinkedJSONObject(spURI));
+			sigPQualifiers.add(new JsonObject(spURI));
 		}
 		
 		// other policy qualifiers are not supported
@@ -498,7 +498,7 @@ public class JAdESLevelBaselineB {
 					throw new DSSException(String.format("The 'sigD' mechanism '%s' is not supported!", parameters.getSigDMechanism()));
 			}
 			
-			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new LinkedJSONObject(sigDParams));
+			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JsonObject(sigDParams));
 		}
 	}
 	
