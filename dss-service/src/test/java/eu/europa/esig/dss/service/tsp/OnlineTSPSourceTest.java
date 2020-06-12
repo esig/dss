@@ -113,14 +113,14 @@ public class OnlineTSPSourceTest {
 
 	@Test
 	public void testNotTSA() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			OnlineTSPSource tspSource = new OnlineTSPSource();
-			tspSource.setDataLoader(new TimestampDataLoader());
-			tspSource.setTspServer("http://www.google.com");
+		OnlineTSPSource tspSource = new OnlineTSPSource();
+		tspSource.setDataLoader(new TimestampDataLoader());
+		tspSource.setTspServer("http://www.google.com");
 
-			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-			tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
-		});
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+
+		Exception exception = assertThrows(DSSException.class,
+				() -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
 		assertTrue(exception.getMessage().contains("Unable to process POST call for url [http://www.google.com]"));
 	}
 

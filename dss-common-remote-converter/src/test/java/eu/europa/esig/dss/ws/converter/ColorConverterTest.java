@@ -36,8 +36,11 @@ public class ColorConverterTest {
 
 	@Test
 	public void convertNotValid() {
-		assertThrows(IllegalArgumentException.class, () -> ColorConverter.toColor(new RemoteColor(-1, 10, 10)));
-		assertThrows(IllegalArgumentException.class, () -> ColorConverter.toColor(new RemoteColor(10, 10, 10, -1)));
+		RemoteColor remoteColor = new RemoteColor(-1, 10, 10);
+		assertThrows(IllegalArgumentException.class, () -> ColorConverter.toColor(remoteColor));
+
+		RemoteColor remoteColorWithAlpha = new RemoteColor(10, 10, 10, -1);
+		assertThrows(IllegalArgumentException.class, () -> ColorConverter.toColor(remoteColorWithAlpha));
 	}
 
 }

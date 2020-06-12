@@ -83,54 +83,52 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 				getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		assertThrows(EncryptedDocumentException.class,
-				() -> service.getContentTimestamp(openProtected, getParameter()));
+		PAdESSignatureParameters parameters = getParameters();
+		SignatureValue sigValue = new SignatureValue();
+		PAdESTimestampParameters timestampParameters = getTimestampParameters();
 
-		assertThrows(EncryptedDocumentException.class, () -> service.getDataToSign(openProtected, getParameter()));
-
-		assertThrows(EncryptedDocumentException.class,
-				() -> service.signDocument(openProtected, getParameter(), new SignatureValue()));
-
-		assertThrows(EncryptedDocumentException.class, () -> service.timestamp(openProtected, getTimestampParameter()));
-
-		// --------
-		assertThrows(EncryptedDocumentException.class,
-				() -> service.getContentTimestamp(editionProtectedNone, getParameter()));
-
-		assertThrows(EncryptedDocumentException.class,
-				() -> service.getDataToSign(editionProtectedNone, getParameter()));
-
-		assertThrows(EncryptedDocumentException.class,
-				() -> service.signDocument(editionProtectedNone, getParameter(), new SignatureValue()));
-
-		assertThrows(EncryptedDocumentException.class,
-				() -> service.timestamp(editionProtectedNone, getTimestampParameter()));
+		assertThrows(EncryptedDocumentException.class, () -> service.getContentTimestamp(openProtected, parameters));
+		assertThrows(EncryptedDocumentException.class, () -> service.getDataToSign(openProtected, parameters));
+		assertThrows(EncryptedDocumentException.class, () -> service.signDocument(openProtected, parameters, sigValue));
+		assertThrows(EncryptedDocumentException.class, () -> service.timestamp(openProtected, timestampParameters));
 
 		// --------
 		assertThrows(EncryptedDocumentException.class,
-				() -> service.getContentTimestamp(editionProtectedSigningAllowedNoField, getParameter()));
+				() -> service.getContentTimestamp(editionProtectedNone, parameters));
+
+		assertThrows(EncryptedDocumentException.class, () -> service.getDataToSign(editionProtectedNone, parameters));
 
 		assertThrows(EncryptedDocumentException.class,
-				() -> service.getDataToSign(editionProtectedSigningAllowedNoField, getParameter()));
-
-		assertThrows(EncryptedDocumentException.class, () -> service.signDocument(editionProtectedSigningAllowedNoField,
-				getParameter(), new SignatureValue()));
+				() -> service.signDocument(editionProtectedNone, parameters, sigValue));
 
 		assertThrows(EncryptedDocumentException.class,
-				() -> service.timestamp(editionProtectedSigningAllowedNoField, getTimestampParameter()));
+				() -> service.timestamp(editionProtectedNone, timestampParameters));
 
 		// --------
 		assertThrows(EncryptedDocumentException.class,
-				() -> service.getContentTimestamp(editionProtectedSigningAllowedWithField, getParameter()));
+				() -> service.getContentTimestamp(editionProtectedSigningAllowedNoField, parameters));
 
 		assertThrows(EncryptedDocumentException.class,
-				() -> service.getDataToSign(editionProtectedSigningAllowedWithField, getParameter()));
-
-		assertThrows(EncryptedDocumentException.class, () -> service
-				.signDocument(editionProtectedSigningAllowedWithField, getParameter(), new SignatureValue()));
+				() -> service.getDataToSign(editionProtectedSigningAllowedNoField, parameters));
 
 		assertThrows(EncryptedDocumentException.class,
-				() -> service.timestamp(editionProtectedSigningAllowedWithField, getTimestampParameter()));
+				() -> service.signDocument(editionProtectedSigningAllowedNoField, parameters, sigValue));
+
+		assertThrows(EncryptedDocumentException.class,
+				() -> service.timestamp(editionProtectedSigningAllowedNoField, timestampParameters));
+
+		// --------
+		assertThrows(EncryptedDocumentException.class,
+				() -> service.getContentTimestamp(editionProtectedSigningAllowedWithField, parameters));
+
+		assertThrows(EncryptedDocumentException.class,
+				() -> service.getDataToSign(editionProtectedSigningAllowedWithField, parameters));
+
+		assertThrows(EncryptedDocumentException.class,
+				() -> service.signDocument(editionProtectedSigningAllowedWithField, parameters, sigValue));
+
+		assertThrows(EncryptedDocumentException.class,
+				() -> service.timestamp(editionProtectedSigningAllowedWithField, timestampParameters));
 
 	}
 
@@ -158,7 +156,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 
 	}
 
-	private PAdESSignatureParameters getParameter() {
+	private PAdESSignatureParameters getParameters() {
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -166,7 +164,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 		return signatureParameters;
 	}
 
-	private PAdESTimestampParameters getTimestampParameter() {
+	private PAdESTimestampParameters getTimestampParameters() {
 		PAdESTimestampParameters params = new PAdESTimestampParameters();
 		return params;
 	}

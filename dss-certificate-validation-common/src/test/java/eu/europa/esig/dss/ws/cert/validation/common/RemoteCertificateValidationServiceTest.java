@@ -89,7 +89,8 @@ public class RemoteCertificateValidationServiceTest {
 	@Test
 	public void testWithNoCertificateProvided() {
 		assertThrows(NullPointerException.class, () -> validationService.validateCertificate(null));
-		assertThrows(NullPointerException.class, () -> validationService.validateCertificate(new CertificateToValidateDTO()));
+		CertificateToValidateDTO emptyDTO=	new CertificateToValidateDTO();
+		assertThrows(NullPointerException.class, () -> validationService.validateCertificate(emptyDTO));
 	}
 	
 	protected CertificateToValidateDTO getCompleteCertificateToValidateDTO() {

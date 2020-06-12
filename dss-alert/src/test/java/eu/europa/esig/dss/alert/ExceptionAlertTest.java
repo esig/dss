@@ -17,10 +17,8 @@ public class ExceptionAlertTest {
 	public void throwExceptionAlertTest() {
 		Status status = new Status(EXCEPTION_MESSAGE);
 		
-		AlertException alertException = assertThrows(AlertException.class, () -> {
-			ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
-			exceptionAlert.alert(status);
-		});
+		ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
+		AlertException alertException = assertThrows(AlertException.class, () -> exceptionAlert.alert(status));
 		assertTrue(alertException.getMessage().contains(EXCEPTION_MESSAGE));
 	}
 

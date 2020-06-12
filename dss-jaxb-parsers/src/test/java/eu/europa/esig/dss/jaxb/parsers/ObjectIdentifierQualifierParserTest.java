@@ -2,7 +2,6 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -23,9 +22,7 @@ public class ObjectIdentifierQualifierParserTest {
 
 	@Test
 	public void parseUnknown() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			assertNull(ObjectIdentifierQualifierParser.parse("bla"));
-		});
+		assertThrows(IllegalArgumentException.class, () -> ObjectIdentifierQualifierParser.parse("bla"));
 	}
 
 }

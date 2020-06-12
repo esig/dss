@@ -248,25 +248,21 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 	@Test
 	public void testSignTwiceSameField() throws IOException {
-		assertThrows(DSSException.class, () -> {
-			signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.setSignatureFieldId("Signature1");
 
-			DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-			DSSDocument doc = signAndValidate(documentToSign);
-			assertNotNull(doc);
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+		DSSDocument doc = signAndValidate(documentToSign);
+		assertNotNull(doc);
 
-			signAndValidate(doc);		
-		});
+		assertThrows(DSSException.class, () -> signAndValidate(doc));
 	}
 
 	@Test
 	public void testFieldNotFound() throws IOException {
-		assertThrows(DSSException.class, () -> {
-			signatureParameters.setSignatureFieldId("not-found");
+		signatureParameters.setSignatureFieldId("not-found");
 
-			DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-			signAndValidate(documentToSign);
-		});
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+		assertThrows(DSSException.class, () -> signAndValidate(documentToSign));
 
 	}
 

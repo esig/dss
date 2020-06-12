@@ -48,15 +48,16 @@ public class CommonCertificateVerifierTest {
 	@Test
 	public void testNotTrustedCertificateSource() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
-		Exception exception = assertThrows(DSSException.class, () -> {
-			ccv.setTrustedCertSources(new CommonCertificateSource());
-		});
+		CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
+
+		Exception exception = assertThrows(DSSException.class,
+				() -> ccv.setTrustedCertSources(commonCertificateSource));
 		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
 				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());
 		
-		exception = assertThrows(DSSException.class, () -> {
-			ccv.setTrustedCertSources(new CommonTrustedCertificateSource(), new CommonCertificateSource());
-		});
+		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
+		exception = assertThrows(DSSException.class,
+				() -> ccv.setTrustedCertSources(commonTrustedCertificateSource, commonCertificateSource));
 		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
 				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());
 	}

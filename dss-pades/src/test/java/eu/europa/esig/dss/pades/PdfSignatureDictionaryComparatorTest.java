@@ -128,15 +128,18 @@ public class PdfSignatureDictionaryComparatorTest {
 
 	@Test
 	public void testNotZero() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			List<PdfSignatureDictionary> listToSort = new ArrayList<>();
+		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
-			listToSort.add(strange);
-			listToSort.add(mock0);
+		listToSort.add(strange);
+		listToSort.add(mock0);
 
-			Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
-		});
-		assertEquals("Strange byte ranges (ByteRange : [0, 91747, 124517, 723] / ByteRange : [40000, 120000, 140000, 500])", exception.getMessage());
+		PdfSignatureDictionaryComparator pdfSignatureDictionaryComparator = new PdfSignatureDictionaryComparator();
+
+		Exception exception = assertThrows(DSSException.class,
+				() -> Collections.sort(listToSort, pdfSignatureDictionaryComparator));
+		assertEquals(
+				"Strange byte ranges (ByteRange : [0, 91747, 124517, 723] / ByteRange : [40000, 120000, 140000, 500])",
+				exception.getMessage());
 	}
 
 	@Test

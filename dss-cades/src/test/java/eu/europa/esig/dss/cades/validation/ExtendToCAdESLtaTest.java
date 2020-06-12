@@ -76,7 +76,8 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		DSSDocument detachedContent = new FileDocument(DETACHED_DOC_PATH);
 		parameters.setDetachedContents(Arrays.asList(detachedContent));
-		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(new FileDocument(SIGNED_DOC_PATH), parameters));
+		FileDocument document = new FileDocument(SIGNED_DOC_PATH);
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(document, parameters));
 		assertEquals("Cryptographic signature verification has failed.", exception.getMessage());
 	}
 

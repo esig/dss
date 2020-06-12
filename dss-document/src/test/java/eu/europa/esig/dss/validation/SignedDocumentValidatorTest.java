@@ -33,24 +33,21 @@ public class SignedDocumentValidatorTest {
 
 	@Test
 	public void testNoDepencency() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/sample.xml"));
-		});
+		FileDocument fileDocument = new FileDocument("src/test/resources/sample.xml");
+		Exception exception = assertThrows(DSSException.class,
+				() -> SignedDocumentValidator.fromDocument(fileDocument));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 	@Test
 	public void testNull() {
-		assertThrows(NullPointerException.class, () -> {
-			SignedDocumentValidator.fromDocument(null);
-		});
+		assertThrows(NullPointerException.class, () -> SignedDocumentValidator.fromDocument(null));
 	}
 
 	@Test
 	public void testEmtpyDoc() {
-		assertThrows(NullPointerException.class, () -> {
-			SignedDocumentValidator.fromDocument(new InMemoryDocument());
-		});
+		InMemoryDocument emptyDoc = new InMemoryDocument();
+		assertThrows(NullPointerException.class, () -> SignedDocumentValidator.fromDocument(emptyDoc));
 	}
 
 }
