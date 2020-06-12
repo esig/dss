@@ -24,11 +24,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.HTTPHeaderDocument;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -219,7 +219,9 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.9 The crit (critical) header parameter
 	 */
 	private void incorporateCritical() {
-		addHeader(HeaderParameterNames.CRITICAL, new JSONArray(criticalHeaderNames));
+		if (Utils.isCollectionNotEmpty(criticalHeaderNames)) {
+			addHeader(HeaderParameterNames.CRITICAL, new JSONArray(criticalHeaderNames));
+		}
 	}
 
 	/**

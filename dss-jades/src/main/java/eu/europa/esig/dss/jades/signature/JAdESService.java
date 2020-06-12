@@ -157,8 +157,14 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 					DSSDocument documentToSign = documentsToSign.get(0);
 					if (JAdESUtils.isJsonDocument(documentToSign)) {
 						JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(documentsToSign.get(0));
+						
 						JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {
+							if (!jwsJsonSerializationObject.isValid()) {
+								throw new DSSException(String.format("JWS Serialization is not supported for invalid RFC 7515 files. "
+										+ "Reason(s) : %s", jwsJsonSerializationObject.getErrorMessages()));
+							}
+							
 							return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);
 						}
 						// continue otherwise

@@ -7,11 +7,17 @@ import eu.europa.esig.dss.utils.Utils;
 
 public class JWSJsonSerializationObject {
 	
+	/** The JWS payload */
 	private String payload;
 	
+	/** The list of incorporated signatures */
 	private List<JsonSerializationSignature> signatures;
 	
+	/** TRUE when the parsed file is a flattened signature type, FALSE otherwise */
 	private boolean flattened;
+	
+	/** A list of parsing errors if occurred */
+	private List<String> errors = new ArrayList<>();
 
 	public String getPayload() {
 		if (payload == null) {
@@ -41,6 +47,18 @@ public class JWSJsonSerializationObject {
 
 	public void setFlattened(boolean flattened) {
 		this.flattened = flattened;
+	}
+	
+	public void addErrorMessage(String error) {
+		errors.add(error);
+	}
+	
+	public String getErrorMessages() {
+		return String.join("; ", errors);
+	}
+	
+	public boolean isValid() {
+		return Utils.isCollectionEmpty(errors);
 	}
 
 }
