@@ -17,14 +17,15 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JsonSerializationSignature;
 import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.JsonSerializationSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
@@ -94,7 +95,9 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		JsonSerializationSignature jsonSerializationSignature = new JsonSerializationSignature();
 		jsonSerializationSignature.setBase64UrlProtectedHeader(jws.getEncodedHeader());
 		// jsonSerializationSignature.setUnprotected(getUnprotectedParameters());
-		jsonSerializationSignature.setBase64UrlSignature(JAdESUtils.toBase64Url(signatureValue.getValue()));
+		
+		byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
+		jsonSerializationSignature.setBase64UrlSignature(JAdESUtils.toBase64Url(signatureValueBytes));
 		
 		jwsJsonSerializationObject.getSignatures().add(jsonSerializationSignature);
 		

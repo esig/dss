@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -32,19 +33,21 @@ public class JAdESLevelBWithAECDSATest extends AbstractJAdESTestSignature {
 	private static Stream<Arguments> data() {
 		List<Arguments> args = new ArrayList<>();
 
-		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
-			SignatureAlgorithm sa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
-			if (sa != null && Utils.isStringNotBlank(sa.getJWAId())) {
-				args.add(Arguments.of(digestAlgo));
+		for (JWSSerializationType jwsSerializationType : JWSSerializationType.values()) {
+			for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+				SignatureAlgorithm sa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
+				if (sa != null && Utils.isStringNotBlank(sa.getJWAId())) {
+					args.add(Arguments.of(jwsSerializationType, digestAlgo));
+				}
 			}
 		}
 
 		return args.stream();
 	}
 
-	@ParameterizedTest(name = "Combination {index} of ECDSA with digest algorithm {0}")
+	@ParameterizedTest(name = "Combination {index} if type {0} and ECDSA with digest algorithm {1}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) {
+	public void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
 		signatureParameters = new JAdESSignatureParameters();
@@ -52,6 +55,7 @@ public class JAdESLevelBWithAECDSATest extends AbstractJAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
+		signatureParameters.setJwsSerializationType(jwsSerializationType);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 
 		service = new JAdESService(getOfflineCertificateVerifier());

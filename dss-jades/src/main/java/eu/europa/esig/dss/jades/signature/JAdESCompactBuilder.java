@@ -10,6 +10,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class JAdESCompactBuilder extends AbstractJAdESBuilder {
@@ -35,7 +36,9 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 			incorporatePayload(jws);
 		}
 		String payload = parameters.isBase64UrlEncodedPayload() ? jws.getEncodedPayload() : jws.getUnverifiedPayload();
-		String signatureString = JAdESUtils.concatenate(jws.getEncodedHeader(), payload, JAdESUtils.toBase64Url(signatureValue.getValue()));
+		byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
+		
+		String signatureString = JAdESUtils.concatenate(jws.getEncodedHeader(), payload, JAdESUtils.toBase64Url(signatureValueBytes));
 		return signatureString.getBytes();
 	}
 

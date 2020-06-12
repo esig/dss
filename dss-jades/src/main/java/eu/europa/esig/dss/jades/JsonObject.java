@@ -28,7 +28,7 @@ public class JsonObject implements Map, Serializable {
 	/**
 	 * Wraps a provided Map to the object
 	 * 
-	 * @param map
+	 * @param m {@link Map} to wrap
 	 */
 	public JsonObject(Map m) {
 		Objects.requireNonNull("Map cannot be null!");
