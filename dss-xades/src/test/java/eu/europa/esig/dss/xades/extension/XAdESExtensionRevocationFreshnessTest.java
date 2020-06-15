@@ -87,18 +87,17 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	
 	@Test
 	public void throwExceptionTest() {
-		Exception exception = assertThrows(AlertException.class, () -> {
-			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-			
-			certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
-			XAdESService service = new XAdESService(certificateVerifier);
-	        service.setTspSource(getGoodTsa());
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
-			DSSDocument signedDocument = sign(service, documentToSign);
-			
-			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-			service.extendDocument(signedDocument, signatureParameters);
-		});
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
+		XAdESService service = new XAdESService(certificateVerifier);
+		service.setTspSource(getGoodTsa());
+
+		DSSDocument signedDocument = sign(service, documentToSign);
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.extendDocument(signedDocument, signatureParameters));
 		assertTrue(exception.getMessage().contains("Fresh revocation data is missing for one or more certificate(s)."));
 	}
 	

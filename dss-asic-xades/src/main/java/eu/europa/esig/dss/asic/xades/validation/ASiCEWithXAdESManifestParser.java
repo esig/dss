@@ -81,7 +81,7 @@ public class ASiCEWithXAdESManifestParser {
 				}
 			}
 		} catch (Exception e) {
-			LOG.error("Unable to parse manifest file " + manifestDocument.getName(), e);
+			LOG.error("Unable to parse manifest file '{}'", manifestDocument.getName(), e);
 		}
 		return result;
 	}

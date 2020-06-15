@@ -158,9 +158,8 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		assertEquals(SignatureScopeType.DIGEST, xmlSignatureScope.getScope());
 		assertNull(xmlSignatureScope.getName());
 		
-		Exception exception = assertThrows(DSSException.class, () -> {
-			service.extendDocument(signedDoc, getExtendParams(digestDocument));
-		});
+		XAdESSignatureParameters extendParams = getExtendParams(digestDocument);
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDoc, extendParams));
 		assertEquals("An error occurred while building a message imprint data. Reason : No binaries found for URI ''", exception.getMessage());
 	}
 

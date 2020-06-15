@@ -493,15 +493,14 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	
 	@Test
 	public void certificateIdIsMissingTest() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
-			assertNotNull(diagnosticData);
-			DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
-			executor.setDiagnosticData(diagnosticData);
-			executor.setValidationPolicy(loadDefaultPolicy());
-			executor.setCurrentTime(diagnosticData.getValidationDate());
-			executor.execute();
-		});
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
+		assertNotNull(diagnosticData);
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The certificate id is missing", exception.getMessage());
 	}
 	

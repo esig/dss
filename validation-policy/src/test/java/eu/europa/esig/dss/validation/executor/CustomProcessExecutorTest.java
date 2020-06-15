@@ -2867,59 +2867,54 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	@Test
 	public void diagDataNotNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-			executor.setDiagnosticData(null);
-			executor.setValidationPolicy(loadPolicyNoRevoc());
-			executor.setCurrentTime(new Date());
-			executor.execute();
-		});
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(null);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(new Date());
+
+		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The diagnostic data is missing", exception.getMessage());
 	}
 
 	@Test
 	public void validationPolicyNotNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
-			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-			executor.setDiagnosticData(diagnosticData);
-			executor.setValidationPolicy(null);
-			executor.setCurrentTime(new Date());
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(null);
+		executor.setCurrentTime(new Date());
 
-			executor.execute();
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 
 	@Test
 	public void currentDateNotNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
-			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-			executor.setDiagnosticData(diagnosticData);
-			executor.setValidationPolicy(loadPolicyNoRevoc());
-			executor.setCurrentTime(null);
-
-			executor.execute();
-		});
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(null);
+		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The current time is missing", exception.getMessage());
 	}
 
 	@Test
 	public void validationLevelNotNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
-			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-			executor.setDiagnosticData(diagnosticData);
-			executor.setValidationPolicy(loadPolicyNoRevoc());
-			executor.setCurrentTime(new Date());
-			executor.setValidationLevel(null);
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(new Date());
+		executor.setValidationLevel(null);
 
-			executor.execute();
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The validation level is missing", exception.getMessage());
 	}
 

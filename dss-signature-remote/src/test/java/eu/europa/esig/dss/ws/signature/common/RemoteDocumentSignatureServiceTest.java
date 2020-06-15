@@ -128,13 +128,11 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
 		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Arrays.asList(digestDocument)));
 
-
-		DSSException exception = assertThrows(DSSException.class, () -> {
-			RemoteSignatureParameters extensionParameters = new RemoteSignatureParameters();
-			extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-			extensionParameters.setDetachedContents(Arrays.asList(digestDocument));
-			signatureService.extendDocument(signedDocument, extensionParameters);
-		});
+		RemoteSignatureParameters extensionParameters = new RemoteSignatureParameters();
+		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		extensionParameters.setDetachedContents(Arrays.asList(digestDocument));
+		DSSException exception = assertThrows(DSSException.class,
+				() -> signatureService.extendDocument(signedDocument, extensionParameters));
 		assertEquals("An error occurred while building a message imprint data. Reason : No binaries found for URI 'sample.xml'", exception.getMessage());
 	}
 

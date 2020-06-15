@@ -66,18 +66,16 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 
 	@Test
 	public void extendInvalidFile() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			DSSDocument doc = new FileDocument(
-					"src/test/resources/validation/dss1334/document-signed-xades-baseline-b--null-for-filename.xml");
+		DSSDocument doc = new FileDocument(
+				"src/test/resources/validation/dss1334/document-signed-xades-baseline-b--null-for-filename.xml");
 
-			XAdESService service = new XAdESService(new CommonCertificateVerifier());
-			service.setTspSource(getGoodTsa());
+		XAdESService service = new XAdESService(new CommonCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
-			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-			parameters.setDetachedContents(Arrays.<DSSDocument>asList(ORIGINAL_FILE));
-			service.extendDocument(doc, parameters);
-		});
+		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		parameters.setDetachedContents(Arrays.<DSSDocument>asList(ORIGINAL_FILE));
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("Cryptographic signature verification has failed / Certificate #1: Signature verification failed", exception.getMessage());
 	}
 	

@@ -60,7 +60,8 @@ public class StateMachineTest {
 		assertFalse(cachedEntry.isRefreshNeeded());
 
 		// cannot update twice
-		assertThrows(IllegalStateException.class, () -> cachedEntry.update(new MockCachedResult(7)));
+		MockCachedResult mockCachedResult = new MockCachedResult(7);
+		assertThrows(IllegalStateException.class, () -> cachedEntry.update(mockCachedResult));
 
 		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
 		Date desynchonizedStateDate = cachedEntry.getLastStateTransitionTime();

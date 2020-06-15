@@ -104,7 +104,7 @@ public class DigestTest {
 		assertNotEquals(hexValue, d1.getHexValue());
 	}
 
-	@Disabled
+	@Disabled("performances")
 	public void perfs() {
 
 		int bigIntCounter = 0;
