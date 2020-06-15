@@ -129,7 +129,8 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 					JWS jws = new JWS();
 					jws.setProtected(signature.getBase64UrlProtectedHeader());
 					if (base64UrlEncodedPayload != !jws.isRfc7797UnencodedPayload()) {
-						throw new DSSException("'b64' value shall be the same for all signatures!");
+						throw new DSSException("'b64' value shall be the same for all signatures! "
+								+ "Change 'Base64UrlEncodedPayload' signature parameter or sign another file!");
 					}
 				}
 			} catch (JoseException e) {

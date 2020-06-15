@@ -63,7 +63,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(document);
 			JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 			if (!jwsJsonSerializationObject.isValid()) {
-				LOG.warn("The fail parsing finished with the following errors : {}", jwsJsonSerializationObject.getErrorMessages());
+				LOG.warn("The file parsing finished with the following errors : {}", jwsJsonSerializationObject.getErrorMessages());
 			}
 			
 			String payload = jwsJsonSerializationObject.getPayload();

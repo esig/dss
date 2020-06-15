@@ -111,7 +111,8 @@ public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidat
 		signatureParameters.setSigningCertificate(getSigningCert());
 		
 		Exception exception = assertThrows(DSSException.class, () -> sign(signedDocument, signatureParameters));
-		assertEquals("'b64' value shall be the same for all signatures!", exception.getMessage());
+		assertEquals("'b64' value shall be the same for all signatures! "
+				+ "Change 'Base64UrlEncodedPayload' signature parameter or sign another file!", exception.getMessage());
 	}
 
 	@Override
