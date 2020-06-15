@@ -15,30 +15,31 @@ import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
 import eu.europa.esig.trustedlist.jaxb.ecc.QualifierType;
-import eu.europa.esig.trustedlist.jaxb.mra.CertificateContentEquivalenceListType;
-import eu.europa.esig.trustedlist.jaxb.mra.CertificateContentEquivalenceType;
+import eu.europa.esig.trustedlist.jaxb.mra.CertificateContentReferenceEquivalenceType;
+import eu.europa.esig.trustedlist.jaxb.mra.CertificateContentReferencesEquivalenceListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QualifierEquivalenceListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QualifierEquivalenceType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceEquivalenceInformationType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLQualificationExtensionEquivalenceListType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLStatusEquivalenceListType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLStatusEquivalenceType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLStatusList;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLTypeEquivalenceListType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLTypeListType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceTSLTypeType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceEquivalenceInformationType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLQualificationExtensionEquivalenceListType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLStatusEquivalenceListType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLStatusEquivalenceType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLStatusList;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLTypeEquivalenceListType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLTypeListType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLTypeType;
 import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalServiceInformationType;
 
-public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceInformationType, ServiceEquivalence> {
+public class TrustServiceEquivalenceConverter
+		implements Function<TrustServiceEquivalenceInformationType, ServiceEquivalence> {
 
 	private CriteriaListTypeConverter criteriaConverter = new CriteriaListTypeConverter();
 
 	@Override
-	public ServiceEquivalence apply(ServiceEquivalenceInformationType t) {
+	public ServiceEquivalence apply(TrustServiceEquivalenceInformationType t) {
 		ServiceEquivalence result = new ServiceEquivalence();
-		result.setLegalInfo(t.getServiceLegalInformation());
-		result.setStartDate(t.getServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime());
-		result.setStatus(t.getServiceEquivalenceStatus());
+		result.setLegalInfo(t.getTrustServiceLegalInformation());
+		result.setStartDate(t.getTrustServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime());
+		result.setStatus(t.getTrustServiceEquivalenceStatus());
 
 		fillTypeASiEquivalence(t, result);
 		fillStatusEquivalence(t, result);
@@ -48,19 +49,22 @@ public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceI
 		return result;
 	}
 
-	private void fillTypeASiEquivalence(ServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		ServiceTSLTypeEquivalenceListType serviceTSLTypeEquivalenceList = t.getServiceTSLTypeEquivalenceList();
+	private void fillTypeASiEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
+		TrustServiceTSLTypeEquivalenceListType serviceTSLTypeEquivalenceList = t
+				.getTrustServiceTSLTypeEquivalenceList();
 		if (serviceTSLTypeEquivalenceList != null) {
-			ServiceTSLTypeListType expected = serviceTSLTypeEquivalenceList.getServiceTSLTypeListExpected();
-			ServiceTSLTypeListType substitute = serviceTSLTypeEquivalenceList.getServiceTSLTypeListSubstitute();
-			List<ServiceTSLTypeType> expectedServiceTSLTypes = expected.getServiceTSLType();
-			List<ServiceTSLTypeType> subtituteServiceTSLTypes = substitute.getServiceTSLType();
+			TrustServiceTSLTypeListType expected = serviceTSLTypeEquivalenceList
+					.getTrustServiceTSLTypeListPointedParty();
+			TrustServiceTSLTypeListType substitute = serviceTSLTypeEquivalenceList
+					.getTrustServiceTSLTypeListPointingParty();
+			List<TrustServiceTSLTypeType> expectedServiceTSLTypes = expected.getTrustServiceTSLType();
+			List<TrustServiceTSLTypeType> subtituteServiceTSLTypes = substitute.getTrustServiceTSLType();
 
 			Map<ServiceTypeASi, ServiceTypeASi> typeAsiEquivalence = new HashMap<>();
 
-			for (ServiceTSLTypeType expectedTypeASI : expectedServiceTSLTypes) {
+			for (TrustServiceTSLTypeType expectedTypeASI : expectedServiceTSLTypes) {
 				ServiceTypeASi staExpected = getServiceTypeASi(expectedTypeASI);
-				for (ServiceTSLTypeType subtituteTypeASI : subtituteServiceTSLTypes) {
+				for (TrustServiceTSLTypeType subtituteTypeASI : subtituteServiceTSLTypes) {
 					ServiceTypeASi staSubtitute = getServiceTypeASi(subtituteTypeASI);
 					typeAsiEquivalence.put(staExpected, staSubtitute);
 				}
@@ -69,7 +73,7 @@ public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceI
 		}
 	}
 
-	private ServiceTypeASi getServiceTypeASi(ServiceTSLTypeType expectedTypeASI) {
+	private ServiceTypeASi getServiceTypeASi(TrustServiceTSLTypeType expectedTypeASI) {
 		ServiceTypeASi sta = new ServiceTypeASi();
 		sta.setType(expectedTypeASI.getServiceTypeIdentifier());
 		AdditionalServiceInformationType additionalServiceInformation = expectedTypeASI
@@ -80,20 +84,22 @@ public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceI
 		return sta;
 	}
 
-	private void fillStatusEquivalence(ServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		ServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList = t.getServiceTSLStatusEquivalenceList();
+	private void fillStatusEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
+		TrustServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList = t
+				.getTrustServiceTSLStatusEquivalenceList();
 		if (serviceTSLStatusEquivalenceList != null
-				&& Utils.isCollectionNotEmpty(serviceTSLStatusEquivalenceList.getServiceTSLStatusEquivalence())) {
+				&& Utils.isCollectionNotEmpty(serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusEquivalence())) {
 
 			Map<List<String>, List<String>> statusEquivalenceMap = new HashMap<>();
-			for (ServiceTSLStatusEquivalenceType statusEquivalence : serviceTSLStatusEquivalenceList
-					.getServiceTSLStatusEquivalence()) {
+			for (TrustServiceTSLStatusEquivalenceType statusEquivalence : serviceTSLStatusEquivalenceList
+					.getTrustServiceTSLStatusEquivalence()) {
 
-				ServiceTSLStatusList serviceTSLStatusListExpected = statusEquivalence.getServiceTSLStatusListExpected();
+				TrustServiceTSLStatusList serviceTSLStatusListExpected = statusEquivalence
+						.getTrustServiceTSLStatusListPointedParty();
 				List<String> expected = serviceTSLStatusListExpected.getServiceStatus();
 
-				ServiceTSLStatusList serviceTSLStatusListSubstitute = statusEquivalence
-						.getServiceTSLStatusListSubstitute();
+				TrustServiceTSLStatusList serviceTSLStatusListSubstitute = statusEquivalence
+						.getTrustServiceTSLStatusListPointingParty();
 				List<String> substitute = serviceTSLStatusListSubstitute.getServiceStatus();
 
 				statusEquivalenceMap.put(expected, substitute);
@@ -102,17 +108,18 @@ public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceI
 		}
 	}
 
-	private void fillCertificateEquivalence(ServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		CertificateContentEquivalenceListType certificateContentEquivalenceList = t
-				.getCertificateContentEquivalenceList();
+	private void fillCertificateEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
+		CertificateContentReferencesEquivalenceListType certificateContentEquivalenceList = t
+				.getCertificateContentReferencesEquivalenceList();
 		if (certificateContentEquivalenceList != null
-				&& Utils.isCollectionNotEmpty(certificateContentEquivalenceList.getCertificateContentEquivalence())) {
+				&& Utils.isCollectionNotEmpty(
+						certificateContentEquivalenceList.getCertificateContentReferenceEquivalence())) {
 
 			Map<Condition, QCStatementOids> certContentMap = new HashMap<>();
-			for (CertificateContentEquivalenceType certEquiv : certificateContentEquivalenceList
-					.getCertificateContentEquivalence()) {
-				CriteriaListType expected = certEquiv.getCertificateContentExpected();
-				CriteriaListType subtitute = certEquiv.getCertificateContentSubstitute();
+			for (CertificateContentReferenceEquivalenceType certEquiv : certificateContentEquivalenceList
+					.getCertificateContentReferenceEquivalence()) {
+				CriteriaListType expected = certEquiv.getCertificateContentDeclarationPointedParty();
+				CriteriaListType subtitute = certEquiv.getCertificateContentDeclarationPointingParty();
 				Condition condition = criteriaConverter.apply(subtitute);
 				certContentMap.put(criteriaConverter.apply(expected), getQCStatementOids(condition));
 			}
@@ -148,9 +155,9 @@ public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceI
 		return result;
 	}
 
-	private void fillQualifierEquivalence(ServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		ServiceTSLQualificationExtensionEquivalenceListType qualificationExtensionEquivalenceListType = t
-				.getServiceTSLQualificationExtensionEquivalenceList();
+	private void fillQualifierEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
+		TrustServiceTSLQualificationExtensionEquivalenceListType qualificationExtensionEquivalenceListType = t
+				.getTrustServiceTSLQualificationExtensionEquivalenceList();
 		if (qualificationExtensionEquivalenceListType != null && Utils
 				.isCollectionNotEmpty(qualificationExtensionEquivalenceListType.getQualifierEquivalenceList())) {
 
@@ -161,8 +168,8 @@ public class ServiceEquivalenceConverter implements Function<ServiceEquivalenceI
 				List<QualifierEquivalenceType> qualifierEquivalence = qualifierEquivalenceList
 						.getQualifierEquivalence();
 				for (QualifierEquivalenceType qualifierEquivalenceType : qualifierEquivalence) {
-					QualifierType qualifierExpected = qualifierEquivalenceType.getQualifierExpected();
-					QualifierType qualifierSubstitute = qualifierEquivalenceType.getQualifierSubstitute();
+					QualifierType qualifierExpected = qualifierEquivalenceType.getQualifierPointedParty();
+					QualifierType qualifierSubstitute = qualifierEquivalenceType.getQualifierPointingParty();
 					qualifierEquivalenceMap.put(qualifierExpected.getUri(), qualifierSubstitute.getUri());
 				}
 			}

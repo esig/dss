@@ -2259,7 +2259,8 @@ public class DiagnosticDataBuilder {
 
 		Date startDate = serviceInfoStatus.getStartDate();
 		for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
-			if ("enacted".equals(serviceEquivalence.getStatus())
+			if ("http://uri.etsi.org/TrstSvc/TrustedList/mutualrecognitionagreement/enacted".equals(serviceEquivalence
+					.getStatus())
 					&& startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
 				
 				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus,

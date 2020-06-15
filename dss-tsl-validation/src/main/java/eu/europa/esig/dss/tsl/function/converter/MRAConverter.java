@@ -7,11 +7,11 @@ import java.util.function.Function;
 import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
 import eu.europa.esig.trustedlist.jaxb.mra.MutualRecognitionAgreementInformationType;
-import eu.europa.esig.trustedlist.jaxb.mra.ServiceEquivalenceInformationType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceEquivalenceInformationType;
 
 public class MRAConverter implements Function<MutualRecognitionAgreementInformationType, MRA> {
 
-	private ServiceEquivalenceConverter converter = new ServiceEquivalenceConverter();
+	private TrustServiceEquivalenceConverter converter = new TrustServiceEquivalenceConverter();
 
 	@Override
 	public MRA apply(MutualRecognitionAgreementInformationType t) {
@@ -21,9 +21,10 @@ public class MRAConverter implements Function<MutualRecognitionAgreementInformat
 		result.setPointedContractingPartyLegislation(t.getPointedContractingPartyLegislation());
 		List<ServiceEquivalence> serviceEquivalences = new ArrayList<>();
 
-		List<ServiceEquivalenceInformationType> serviceEquivalenceInformation = t.getServiceEquivalenceInformation();
-		for (ServiceEquivalenceInformationType serviceEquivalenceInformationType : serviceEquivalenceInformation) {
-			serviceEquivalences.add(converter.apply(serviceEquivalenceInformationType));
+		List<TrustServiceEquivalenceInformationType> trustServiceEquivalenceInformations = t
+				.getTrustServiceEquivalenceInformation();
+		for (TrustServiceEquivalenceInformationType trustServiceEquivalenceInformationType : trustServiceEquivalenceInformations) {
+			serviceEquivalences.add(converter.apply(trustServiceEquivalenceInformationType));
 		}
 
 		result.setServiceEquivalence(serviceEquivalences);
