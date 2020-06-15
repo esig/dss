@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.jose4j.json.internal.json_simple.JSONObject;
+import org.jose4j.json.JsonUtil;
 
 /**
  * Represents a wrapper of a Map with JsonObject methods
@@ -41,7 +41,7 @@ public class JsonObject implements Map, Serializable {
 	 * @return {@link String} JSON
 	 */
 	public String toJSONString() {
-		return JSONObject.toJSONString(map);
+		return JsonUtil.toJson(map);
 	}
 
 	@Override
