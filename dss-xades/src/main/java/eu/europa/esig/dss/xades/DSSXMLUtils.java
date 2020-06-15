@@ -586,6 +586,9 @@ public final class DSSXMLUtils {
 	 * @return Oid Code
 	 */
 	public static String getOidCode(String oid) {
+		if (oid == null) {
+			return null;
+		}
 		return oid.substring(oid.lastIndexOf(':') + 1);
 	}
 

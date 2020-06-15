@@ -121,12 +121,17 @@ import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.QCStatementOids;
+import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
+import eu.europa.esig.dss.spi.tsl.ServiceTypeASi;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
@@ -2200,28 +2205,33 @@ public class DiagnosticDataBuilder {
 		List<XmlTrustedService> result = new ArrayList<>();
 
 		for (TrustProperties trustProperties : trustPropertiesList) {
+
+			MRA mra = trustProperties.getMra();
+
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService = trustProperties.getTrustService();
 			List<TrustServiceStatusAndInformationExtensions> serviceStatusAfterOfEqualsCertIssuance = trustService.getAfter(certToken.getNotBefore());
 			if (Utils.isCollectionNotEmpty(serviceStatusAfterOfEqualsCertIssuance)) {
 				for (TrustServiceStatusAndInformationExtensions serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
+
+					if (mra != null) {
+						LOG.info("MRA");
+						serviceInfoStatus = translate(serviceInfoStatus, certToken, mra);
+					}
+
 					XmlTrustedService trustedService = new XmlTrustedService();
 
 					trustedService.setServiceDigitalIdentifier(xmlCertsMap.get(trustedCert.getDSSIdAsString()));
 					trustedService.setServiceNames(getLangAndValues(serviceInfoStatus.getNames()));
+
 					trustedService.setServiceType(serviceInfoStatus.getType());
-					trustedService.setStatus(serviceInfoStatus.getStatus());
-					trustedService.setStartDate(serviceInfoStatus.getStartDate());
-					trustedService.setEndDate(serviceInfoStatus.getEndDate());
-
-					List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
-					if (Utils.isCollectionNotEmpty(qualifiers)) {
-						trustedService.setCapturedQualifiers(qualifiers);
-					}
-
 					List<String> additionalServiceInfoUris = serviceInfoStatus.getAdditionalServiceInfoUris();
 					if (Utils.isCollectionNotEmpty(additionalServiceInfoUris)) {
 						trustedService.setAdditionalServiceInfoUris(additionalServiceInfoUris);
 					}
+
+					trustedService.setStatus(serviceInfoStatus.getStatus());
+					trustedService.setStartDate(serviceInfoStatus.getStartDate());
+					trustedService.setEndDate(serviceInfoStatus.getEndDate());
 
 					List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
 					if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
@@ -2230,11 +2240,117 @@ public class DiagnosticDataBuilder {
 
 					trustedService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
 
+					List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
+					if (Utils.isCollectionNotEmpty(qualifiers)) {
+						trustedService.setCapturedQualifiers(qualifiers);
+					}
+
 					result.add(trustedService);
 				}
 			}
 		}
 		return Collections.unmodifiableList(result);
+	}
+
+	private TrustServiceStatusAndInformationExtensions translate(
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken, MRA mra) {
+
+		List<TrustServiceStatusAndInformationExtensions> equivalents = new ArrayList<>();
+
+		Date startDate = serviceInfoStatus.getStartDate();
+		for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
+			if ("enacted".equals(serviceEquivalence.getStatus())
+					&& startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
+				
+				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus,
+						serviceEquivalence);
+				if (equivalent != null) {
+					equivalents.add(equivalent);
+					overrideCertContent(certToken, serviceEquivalence);
+				}
+			}
+		}
+
+		if (equivalents.size() > 1) {
+			LOG.warn("More than one equivalence (returns first)");
+		}
+
+		return equivalents.iterator().next();
+	}
+
+	private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
+		Map<Condition, QCStatementOids> certificateContentEquivalence = serviceEquivalence
+				.getCertificateContentEquivalence();
+		for (Entry<Condition, QCStatementOids> equivalence : certificateContentEquivalence.entrySet()) {
+			Condition expected = equivalence.getKey();
+			if (expected.check(certToken)) {
+				LOG.info("Replace certificate content (MRA)");
+				replaceQCStatements(certToken, equivalence.getValue());
+			}
+		}
+	}
+
+	private void replaceQCStatements(CertificateToken certToken, QCStatementOids qcStatementOids) {
+		String id = certToken.getDSSIdAsString();
+		XmlCertificate xmlCertificate = xmlCertsMap.get(id);
+		xmlCertificate.getQCStatementIds().clear();
+		xmlCertificate.setQCStatementIds(null);
+		xmlCertificate.getQCTypes().clear();
+		xmlCertificate.setQCTypes(null);
+
+		if (qcStatementOids != null) {
+			xmlCertificate.setQCStatementIds(getXmlOids(qcStatementOids.getQcStatementIds()));
+			xmlCertificate.setQCTypes(getXmlOids(qcStatementOids.getQcTypeIds()));
+		}
+
+		xmlCertsMap.put(id, xmlCertificate);
+	}
+
+	private TrustServiceStatusAndInformationExtensions getEquivalent(
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+			ServiceEquivalence serviceEquivalence) {
+		
+		ServiceTypeASi typeASiSubstitution = getTypeASiSubstitution(serviceInfoStatus, serviceEquivalence);
+		String status = getStatusSubstitution(serviceInfoStatus, serviceEquivalence);
+
+		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		builder.setType(typeASiSubstitution.getType());
+		builder.setAdditionalServiceInfoUris(Arrays.asList(typeASiSubstitution.getAsi()));
+		builder.setStatus(status);
+		// copy
+		builder.setStartDate(serviceInfoStatus.getStartDate());
+		builder.setEndDate(serviceInfoStatus.getEndDate());
+		builder.setNames(serviceInfoStatus.getNames());
+		builder.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
+		builder.setServiceSupplyPoints(serviceInfoStatus.getServiceSupplyPoints());
+		builder.setConditionsForQualifiers(serviceInfoStatus.getConditionsForQualifiers());
+		return new TrustServiceStatusAndInformationExtensions(builder);
+	}
+
+	private ServiceTypeASi getTypeASiSubstitution(
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+			ServiceEquivalence serviceEquivalence) {
+		for (Entry<ServiceTypeASi, ServiceTypeASi> expectedSubstitution : serviceEquivalence.getTypeAsiEquivalence()
+				.entrySet()) {
+			ServiceTypeASi expected = expectedSubstitution.getKey();
+			if (Utils.areStringsEqual(serviceInfoStatus.getType(), expected.getType())) {
+				return expectedSubstitution.getValue();
+			}
+		}
+		return null;
+	}
+
+	private String getStatusSubstitution(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+			ServiceEquivalence serviceEquivalence) {
+		Map<List<String>, List<String>> statusEquivalence = serviceEquivalence.getStatusEquivalence();
+		for (Entry<List<String>, List<String>> equivalence : statusEquivalence.entrySet()) {
+			List<String> expected = equivalence.getKey();
+			if (expected.contains(serviceInfoStatus.getStatus())) {
+				return equivalence.getValue().iterator().next();
+			}
+
+		}
+		return null;
 	}
 
 	private Map<TrustServiceProvider, List<TrustProperties>> classifyByServiceProvider(

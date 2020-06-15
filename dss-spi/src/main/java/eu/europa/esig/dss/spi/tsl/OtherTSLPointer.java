@@ -28,13 +28,16 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 public class OtherTSLPointer implements Serializable {
 
 	private static final long serialVersionUID = 3015076999802292662L;
-	
+
 	private final String location;
 	private final List<CertificateToken> certificates;
 
-	public OtherTSLPointer(String location, List<CertificateToken> certificates) {
+	private final MRA mra;
+
+	public OtherTSLPointer(String location, List<CertificateToken> certificates, MRA mra) {
 		this.location = location;
 		this.certificates = certificates;
+		this.mra = mra;
 	}
 
 	public String getLocation() {
@@ -43,6 +46,10 @@ public class OtherTSLPointer implements Serializable {
 
 	public List<CertificateToken> getCertificates() {
 		return certificates;
+	}
+
+	public MRA getMra() {
+		return mra;
 	}
 
 }

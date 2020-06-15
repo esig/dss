@@ -59,6 +59,7 @@ public class TrustedListFacadeTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testMRA_LOTL_extract() throws JAXBException, XMLStreamException, IOException, SAXException {
 		TrustedListFacade facade = TrustedListFacade.newFacade();
 

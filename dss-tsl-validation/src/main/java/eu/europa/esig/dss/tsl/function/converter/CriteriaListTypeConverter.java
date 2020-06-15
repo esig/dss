@@ -15,12 +15,15 @@ import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.trustedlist.enums.Assert;
 import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
 import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
 import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
 import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.trustedlist.jaxb.mra.QcStatementInfoType;
 import eu.europa.esig.trustedlist.jaxb.mra.QcStatementListType;
+import eu.europa.esig.trustedlist.jaxb.mra.QcStatementType;
 import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
 import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
@@ -99,7 +102,29 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 								new ExtendedKeyUsageCondition(extractOids(extendedKeyUsage.getKeyPurposeId())));
 					} else if (objectValue instanceof QcStatementListType) {
 						QcStatementListType qcStatementList = (QcStatementListType) objectValue;
-						condition.addChild(new QCStatementCondition(extractOids(qcStatementList.getQcStatement())));
+						CompositeCondition composite = new CompositeCondition(Assert.ALL);
+						List<QcStatementType> qcStatement = qcStatementList.getQcStatement();
+						for (QcStatementType qcStatementType : qcStatement) {
+							String oid = null;
+							String legislation = null;
+							String type = null;
+
+							oid = qcStatementType.getQcStatementId().getIdentifier().getValue();
+							QcStatementInfoType qcStatementInfo = qcStatementType.getQcStatementInfo();
+							if (qcStatementInfo != null) {
+								legislation = qcStatementInfo.getQcCClegislation();
+								ObjectIdentifierType qcType = qcStatementInfo.getQcType();
+								if (qcType != null) {
+									type = qcType.getIdentifier().getValue();
+								}
+							}
+
+							composite.addChild(new QCStatementCondition(DSSXMLUtils.getOidCode(oid),
+									DSSXMLUtils.getOidCode(type), legislation));
+						}
+
+						condition.addChild(composite);
+
 					} else {
 						throw new DSSException("Unsupported OtherCriteriaList");
 					}
