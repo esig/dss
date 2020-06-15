@@ -5,46 +5,46 @@
 <xsd:import namespace="http://uri.etsi.org/02231/v2#" schemaLocation="http://uri.etsi.org/19612/v1.2.1/tsl.xsd"/>
 <xsd:import namespace="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" schemaLocation="https://uri.etsi.org/19612/v2.2.1/ts_119612v020101_sie_xsd.xsd"/>
 
-	<xsd:element name= "MutualRecognitionAgreementInformation" type="mra:MutualRecognitionAgreementInformationType"/>
+	<xsd:element name="MutualRecognitionAgreementInformation" type="mra:MutualRecognitionAgreementInformationType"/>
 
-	<xsd:complexType name= "MutualRecognitionAgreementInformationType">
+	<xsd:complexType name="MutualRecognitionAgreementInformationType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceEquivalenceInformation" type="mra:ServiceEquivalenceInformationType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceEquivalenceInformation" type="mra:TrustServiceEquivalenceInformationType" maxOccurs="unbounded"/>
 		</xsd:sequence>
-		<xsd:attribute name= "technicalType" type="xsd:integer" use="required"/>
-		<xsd:attribute name= "firstContractingPartyLegislation" type="tsl:NonEmptyURIType" use="required"/>
-		<xsd:attribute name= "secondContractingPartyLegislation" type="tsl:NonEmptyURIType" use="required"/>
+		<xsd:attribute name="technicalType" type="xsd:integer" use="required"/>
+		<xsd:attribute name="pointingContractingPartyLegislation" type="tsl:NonEmptyURIType" use="required"/>
+		<xsd:attribute name="pointedContractingPartyLegislation" type="tsl:NonEmptyURIType" use="required"/>
 	</xsd:complexType>
 
-	<xsd:complexType name= "ServiceEquivalenceInformationType">
+	<xsd:complexType name="TrustServiceEquivalenceInformationType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceLegalInformation" type="tsl:NonEmptyString"/>
-			<xsd:element name= "ServiceTSLTypeEquivalenceList" type="mra:ServiceTSLTypeEquivalenceListType"/>
-			<xsd:element name= "ServiceEquivalenceStatus" type="tsl:NonEmptyURIType"/>
-			<xsd:element name= "ServiceEquivalenceStatusStartingTime" type="xsd:dateTime"/>
-			<xsd:element name= "ServiceTSLStatusEquivalenceList" type="mra:ServiceTSLStatusEquivalenceListType"/>
-			<xsd:element name= "CertificateContentEquivalenceList" type="mra:CertificateContentEquivalenceListType" minOccurs="0"/>
-			<xsd:element name= "ServiceTSLQualificationExtensionEquivalenceList" type="mra:ServiceTSLQualificationExtensionEquivalenceListType" minOccurs="0"/>
-			<xsd:element name= "ServiceEquivalenceHistory" type="mra:ServiceEquivalenceHistoryType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceLegalInformation" type="tsl:NonEmptyString"/>
+			<xsd:element name="TrustServiceTSLTypeEquivalenceList" type="mra:TrustServiceTSLTypeEquivalenceListType"/>
+			<xsd:element name="TrustServiceEquivalenceStatus" type="tsl:NonEmptyURIType"/>
+			<xsd:element name="TrustServiceEquivalenceStatusStartingTime" type="xsd:dateTime"/>
+			<xsd:element name="TrustServiceTSLStatusEquivalenceList" type="mra:TrustServiceTSLStatusEquivalenceListType"/>
+			<xsd:element name="CertificateContentReferencesEquivalenceList" type="mra:CertificateContentReferencesEquivalenceListType" minOccurs="0"/>
+			<xsd:element name="TrustServiceTSLQualificationExtensionEquivalenceList" type="mra:TrustServiceTSLQualificationExtensionEquivalenceListType" minOccurs="0"/>
+			<xsd:element name="TrustServiceEquivalenceHistory" type="mra:TrustServiceEquivalenceHistoryType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>	
 	</xsd:complexType>
 
 
-	<!-- Definition of ServiceTSLTypeEquivalenceList-->
-	<xsd:complexType name= "ServiceTSLTypeEquivalenceListType">
+	<!-- Definition of TrustServiceTSLTypeEquivalenceList-->
+	<xsd:complexType name="TrustServiceTSLTypeEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLTypeListSubstitute" type="mra:ServiceTSLTypeListType"/>
-			<xsd:element name= "ServiceTSLTypeListExpected" type="mra:ServiceTSLTypeListType"/>
+			<xsd:element name="TrustServiceTSLTypeListPointingParty" type="mra:TrustServiceTSLTypeListType"/>
+			<xsd:element name="TrustServiceTSLTypeListPointedParty" type="mra:TrustServiceTSLTypeListType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "ServiceTSLTypeListType">
+	<xsd:complexType name="TrustServiceTSLTypeListType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLType" type="mra:ServiceTSLTypeType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceTSLType" type="mra:TrustServiceTSLTypeType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "ServiceTSLTypeType">
+	<xsd:complexType name="TrustServiceTSLTypeType">
 		<xsd:sequence>
 			<xsd:element ref= "tsl:ServiceTypeIdentifier"/>
 			<xsd:element ref= "tsl:AdditionalServiceInformation" minOccurs="0"/>
@@ -52,38 +52,39 @@
 	</xsd:complexType>
 
 
-	<!-- Definition of ServiceTSLStatusEquivalenceList -->
-	<xsd:complexType name= "ServiceTSLStatusEquivalenceListType">
+	<!-- Definition of TrustServiceTSLStatusEquivalenceList -->
+	<xsd:complexType name="TrustServiceTSLStatusEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLStatusEquivalence" type="mra:ServiceTSLStatusEquivalenceType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceTSLStatusEquivalence" type="mra:TrustServiceTSLStatusEquivalenceType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "ServiceTSLStatusEquivalenceType">
+	<xsd:complexType name="TrustServiceTSLStatusEquivalenceType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLStatusListSubstitute" type="mra:ServiceTSLStatusList"/>
-			<xsd:element name= "ServiceTSLStatusListExpected" type="mra:ServiceTSLStatusList"/>
+			<xsd:element name="TrustServiceTSLStatusListPointingParty" type="mra:TrustServiceTSLStatusList"/>
+			<xsd:element name="TrustServiceTSLStatusListPointedParty" type="mra:TrustServiceTSLStatusList"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "ServiceTSLStatusList">
+	<xsd:complexType name="TrustServiceTSLStatusList">
 		<xsd:sequence>
 			<xsd:element ref= "tsl:ServiceStatus" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
 
-	<!-- Definition of CertificateContentEquivalenceList -->
-	<xsd:complexType name= "CertificateContentEquivalenceListType">
+	<!-- Definition of CertificateContentReferencesEquivalenceList -->
+	<xsd:complexType name="CertificateContentReferencesEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "CertificateContentEquivalence" type="mra:CertificateContentEquivalenceType" maxOccurs="unbounded"/>
+			<xsd:element name="CertificateContentReferenceEquivalence" type="mra:CertificateContentReferenceEquivalenceType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "CertificateContentEquivalenceType">
+	<xsd:complexType name="CertificateContentReferenceEquivalenceType">
 		<xsd:sequence>
-			<xsd:element name= "CertificateContentSubstitute" type="tns:CriteriaListType"/>
-			<xsd:element name= "CertificateContentExpected" type="tns:CriteriaListType"/>
+			<xsd:element name="CertificateContentReferenceEquivalenceContext" type="tsl:NonEmptyURIType"/>
+			<xsd:element name="CertificateContentDeclarationPointingParty" type="tns:CriteriaListType"/>
+			<xsd:element name="CertificateContentDeclarationPointedParty" type="tns:CriteriaListType"/>
 		</xsd:sequence>
 	</xsd:complexType>	<xsd:element name="QcStatementSet" type="mra:QcStatementListType"/>
 	<xsd:complexType name="QcStatementListType">
@@ -112,43 +113,50 @@
 
 
 
-	<!-- Definition of ServiceTSLQualificationExtensionEquivalenceList -->
-	<xsd:complexType name= "ServiceTSLQualificationExtensionEquivalenceListType">
+	<!-- Definition of TrustServiceTSLQualificationExtensionEquivalenceList -->
+	<xsd:complexType name="TrustServiceTSLQualificationExtensionEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLQualificationExtensionNameExpected" type="xsd:string" minOccurs="0"/>
-			<xsd:element name= "QualifierEquivalenceList" type="mra:QualifierEquivalenceListType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceTSLQualificationExtensionName" type="mra:TrustServiceTSLQualificationExtensionNameType"/>
+			<xsd:element name="QualifierEquivalenceList" type="mra:QualifierEquivalenceListType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "QualifierEquivalenceListType">
+	<xsd:complexType name="TrustServiceTSLQualificationExtensionNameType">
 		<xsd:sequence>
-			<xsd:element name= "QualifierEquivalence" type="mra:QualifierEquivalenceType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceTSLQualificationExtensionNamePointingParty" type="xsd:string"/>
+			<xsd:element name="TrustServiceTSLQualificationExtensionNamePointedParty" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "QualifierEquivalenceType">
+	<xsd:complexType name="QualifierEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name= "QualifierSubstitute" type="tns:QualifierType"/>
-			<xsd:element name= "QualifierExpected" type="tns:QualifierType"/>
+			<xsd:element name="QualifierEquivalence" type="mra:QualifierEquivalenceType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="QualifierEquivalenceType">
+		<xsd:sequence>
+			<xsd:element name="QualifierPointingParty" type="tns:QualifierType"/>
+			<xsd:element name="QualifierPointedParty" type="tns:QualifierType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
 
-	<!-- Definition of ServiceEquivalenceHistory -->
-	<xsd:complexType name= "ServiceEquivalenceHistoryType">
+	<!-- Definition of TrustServiceEquivalenceHistory -->
+	<xsd:complexType name="TrustServiceEquivalenceHistoryType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceEquivalenceHistoryInstance" type="mra:ServiceEquivalenceHistoryInstanceType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceEquivalenceHistoryInstance" type="mra:TrustServiceEquivalenceHistoryInstanceType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name= "ServiceEquivalenceHistoryInstanceType">
+	<xsd:complexType name="TrustServiceEquivalenceHistoryInstanceType">
 		<xsd:sequence>
-			<xsd:element name= "ServiceTSLTypeEquivalenceList" type="mra:ServiceTSLTypeEquivalenceListType"/>
-			<xsd:element name= "ServiceEquivalenceStatus" type="tsl:NonEmptyURIType"/>
-			<xsd:element name= "ServiceEquivalenceStatusStartingTime" type="xsd:dateTime"/>
-			<xsd:element name= "ServiceTSLStatusEquivalenceList" type="mra:ServiceTSLStatusEquivalenceListType"/>
-			<xsd:element name= "CertificateContentEquivalenceList" type="mra:CertificateContentEquivalenceListType" minOccurs="0"/>
-			<xsd:element name= "ServiceTSLQualificationExtensionEquivalenceList" type="mra:ServiceTSLQualificationExtensionEquivalenceListType" minOccurs="0"/>
+			<xsd:element name="TrustServiceTSLTypeEquivalenceList" type="mra:TrustServiceTSLTypeEquivalenceListType"/>
+			<xsd:element name="TrustServiceEquivalenceStatus" type="tsl:NonEmptyURIType"/>
+			<xsd:element name="TrustServiceEquivalenceStatusStartingTime" type="xsd:dateTime"/>
+			<xsd:element name="TrustServiceTSLStatusEquivalenceList" type="mra:TrustServiceTSLStatusEquivalenceListType"/>
+			<xsd:element name="CertificateContentReferencesEquivalenceList" type="mra:CertificateContentReferencesEquivalenceListType" minOccurs="0"/>
+			<xsd:element name="TrustServiceTSLQualificationExtensionEquivalenceList" type="mra:TrustServiceTSLQualificationExtensionEquivalenceListType" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
