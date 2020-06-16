@@ -676,15 +676,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 
 	/**
-	 * This method performs the reference transformation.
-	 *
-	 * @param reference
-	 *            {@code DSSReference} to be transformed
-	 * @return {@code DSSDocument} containing transformed reference's data
-	 */
-	protected abstract DSSDocument transformReference(final DSSReference reference);
-
-	/**
 	 * This method incorporates the signature value.
 	 */
 	protected void incorporateSignatureValue() {

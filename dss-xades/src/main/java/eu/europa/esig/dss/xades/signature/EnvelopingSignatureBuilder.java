@@ -61,11 +61,6 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		super(params, origDoc, certificateVerifier);
 	}
 
-	@Override
-	protected DSSDocument transformReference(final DSSReference reference) {
-		return reference.getContents();
-	}
-
 	/**
 	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
 	 *

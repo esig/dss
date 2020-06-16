@@ -21,16 +21,12 @@
 package eu.europa.esig.dss.xades.signature;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
  * This class handles the specifics of the detached XML signature.
@@ -66,17 +62,6 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 			return documentDom.getDocumentElement();
 		}
 		return documentDom;
-	}
-	
-	@Override
-	protected DSSDocument transformReference(final DSSReference reference) {
-		if (Utils.isCollectionNotEmpty(reference.getTransforms())) {
-			DSSDocument contents = reference.getContents();
-			Document dom = DomUtils.buildDOM(contents);
-			Element root = dom.getDocumentElement();
-			return new InMemoryDocument(applyTransformations(reference, root));
-		}
-		return reference.getContents();
 	}
 
 }

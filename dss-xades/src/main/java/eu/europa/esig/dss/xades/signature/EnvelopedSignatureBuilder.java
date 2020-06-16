@@ -28,12 +28,9 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
  * This class handles the specifics of the enveloped XML signature
@@ -103,54 +100,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 			    parentNodeOfSignature.appendChild(signatureDom);
 			    break;
 	    }
-	}
-
-	/**
-	 * Preconditions:
-	 * - The reference data is XML
-	 * - The last transformation is canonicalization.
-	 *
-	 * @param reference
-	 *            {@code DSSReference} to be transformed
-	 * @return {@code DSSDocument} containing transformed reference's data
-	 */
-	@Override
-	protected DSSDocument transformReference(final DSSReference reference) {
-
-		DSSDocument dssDocument = reference.getContents();
-
-		// In the case of ENVELOPED signature the document to sign is an XML. However one of the references can point to
-		// another document this test case is not taken into account!
-
-		Node nodeToTransform = null;
-		final String uri = reference.getUri();
-		// Check if the reference is related to the whole document
-		if (Utils.isStringNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
-			final Document document = DomUtils.buildDOM(dssDocument);
-			DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
-			final String targetId = DomUtils.getId(uri);
-			nodeToTransform = document.getElementById(targetId);
-			
-		}
-		if (Utils.isCollectionEmpty(reference.getTransforms())) {
-			if (nodeToTransform == null) {
-				return dssDocument;
-			} else {
-				byte[] nodeBytes = DSSXMLUtils.getNodeBytes(nodeToTransform);
-				return new InMemoryDocument(nodeBytes);
-			}
-		}
-		if (nodeToTransform == null) {
-			nodeToTransform = DomUtils.buildDOM(dssDocument);
-		}
-		
-		byte[] transformedReferenceBytes = applyTransformations(reference, nodeToTransform);
-		return new InMemoryDocument(transformedReferenceBytes);
-	}
-
-	private static boolean isXPointer(final String uri) {
-		final boolean xPointer = uri.startsWith("#xpointer(") || uri.startsWith("#xmlns(");
-		return xPointer;
 	}
 
 	/**

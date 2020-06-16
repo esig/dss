@@ -40,7 +40,7 @@ public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignatu
 	static Stream<Arguments> combine(Object[] canonicalizations, Object[] packagings) {
 		List<Arguments> args = new ArrayList<>();
 		for (int i = 0; i < canonicalizations.length; i++) {
-			for (int j = 0; j < packagings.length; j++) {
+			for (int j = 0; j < canonicalizations.length; j++) {
 				for (int k = 0; k < packagings.length; k++) {
 					args.add(Arguments.of(canonicalizations[i], canonicalizations[j], packagings[k]));
 				}
@@ -58,7 +58,7 @@ public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignatu
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(packaging);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters(DigestAlgorithm.SHA256, contentTstC14N));

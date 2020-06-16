@@ -82,12 +82,6 @@ public class AllDataObjectsTimeStampBuilder {
 		 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
 		 * ds:SignedInfo.
 		 */
-		
-		/*
-		 * A canonicalization method must be always used, 4.4.3.2:
-		 * If the data object is a node-set and the next transform requires octets, the signature application must 
-		 * attempt to convert the node-set to an octet stream using Canonical XML [XML-C14N].
-		 */
 		XAdESTimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
 		String canonicalizationMethod = contentTimestampParameters.getCanonicalizationMethod();
 		
@@ -95,6 +89,7 @@ public class AllDataObjectsTimeStampBuilder {
 			for (DSSReference reference : references) {
 				DSSDocument referenceContent = referenceFactory.getTransformedReferenceContent(reference);
 				byte[] binaries = DSSUtils.toByteArray(referenceContent);
+				// TODO : investigate canonicalization usage
 				if (DomUtils.isDOM(binaries)) {
 					binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
 				}

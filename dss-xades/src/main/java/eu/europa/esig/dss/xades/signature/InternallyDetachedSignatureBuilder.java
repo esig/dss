@@ -28,7 +28,6 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -84,14 +83,6 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 			Node adopted = documentDom.importNode(root, true);
 			documentDom.getDocumentElement().appendChild(adopted);
 		}
-	}
-
-	@Override
-	protected DSSDocument transformReference(final DSSReference reference) {
-		DSSDocument contents = reference.getContents();
-		Document dom = DomUtils.buildDOM(contents);
-		Element root = dom.getDocumentElement();
-		return new InMemoryDocument(applyTransformations(reference, root));
 	}
 
 }
