@@ -145,7 +145,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					// LT or LTA
 					if (dssDictionary != null) {
 						// obtain covered DSS dictionary if already exist
-						previousRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
+						previousRevisionDssDict = getDSSDictionaryPresentInRevision(extractBeforeSignatureValue(byteRange, signedContent));
 					}
 					
 					PdfRevision newRevision = null;
@@ -257,7 +257,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			if (!match) {
 				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
 			}
-		} catch (IOException | IllegalArgumentException e) {
+		} catch (Exception e) {
 			String message = String.format("Unable to retrieve data from the ByteRange : [%s]", byteRange);
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
@@ -283,19 +283,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		byte[] signatureValueArray = new byte[signatureValueArraySize];
 		
 		try (InputStream is = dssDocument.openStream()) {
-			
 			DSSUtils.skipAvailableBytes(is, startSigValueContent);
 			DSSUtils.readAvailableBytes(is, signatureValueArray);
-			
-		} catch (IllegalStateException e) {
-			LOG.error("Cannot extract signature value. Reason : {}", e.getMessage());
 		}
 		
 		return Utils.fromHex(new String(signatureValueArray));
 	}
 
-	protected byte[] getOriginalBytes(ByteRange byteRange, byte[] signedContent) {
+	protected byte[] extractBeforeSignatureValue(ByteRange byteRange, byte[] signedContent) {
 		final int length = byteRange.getFirstPartEnd();
+		if (signedContent.length < length) {
+			return new byte[0];
+		}
 		final byte[] result = new byte[length];
 		System.arraycopy(signedContent, 0, result, 0, length);
 		return result;
