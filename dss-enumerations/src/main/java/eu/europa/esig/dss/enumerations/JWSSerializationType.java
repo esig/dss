@@ -59,16 +59,18 @@ public enum JWSSerializationType {
 	 * In summary, the syntax of a JWS using the general JWS JSON
 	 * Serialization is as follows:
 	 * 
-	 * {
-	 *  "payload":"<payload contents>",
-	 *   "signatures":[
-	 *    {"protected":"<integrity-protected header 1 contents>",
-	 *    "header":<non-integrity-protected header 1 contents>,
-	 *    "signature":"<signature 1 contents>"},
-	 *   ...
-	 *   {"protected":"<integrity-protected header N contents>",
-	 *    "header":<non-integrity-protected header N contents>,
-	 *    "signature":"<signature N contents>"}]
+	 * {@code
+	 *     {
+	 *      "payload":"<payload contents>",
+	 *       "signatures":[
+	 *        {"protected":"<integrity-protected header 1 contents>",
+	 *        "header":<non-integrity-protected header 1 contents>,
+	 *        "signature":"<signature 1 contents>"},
+	 *       ...
+	 *       {"protected":"<integrity-protected header N contents>",
+	 *        "header":<non-integrity-protected header N contents>,
+	 *        "signature":"<signature N contents>"}]
+	 *     }
 	 * }
 	 */
 	JSON_SERIALIZATION,
@@ -92,11 +94,13 @@ public enum JWSSerializationType {
 	 * In summary, the syntax of a JWS using the flattened JWS JSON
 	 * Serialization is as follows:
 	 * 
-	 * {
-	 *  "payload":"<payload contents>",
-	 *  "protected":"<integrity-protected header contents>",
-	 *  "header":<non-integrity-protected header contents>,
-	 *  "signature":"<signature contents>"
+	 * {@code
+	 *     {
+	 *      "payload":"<payload contents>",
+	 *      "protected":"<integrity-protected header contents>",
+	 *      "header":<non-integrity-protected header contents>,
+	 *      "signature":"<signature contents>"
+	 *     }
 	 * }
 	 */
 	FLATTENED_JSON_SERIALIZATION;
