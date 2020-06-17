@@ -2067,22 +2067,22 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
         <mra:TrustServiceEquivalenceStatus>http://ec.europa.eu/trust-services/mutualrecognitionagreement/enacted</mra:TrustServiceEquivalenceStatus>
         <mra:TrustServiceEquivalenceStatusStartingTime>2020-05-16T23:59:59Z</mra:TrustServiceEquivalenceStatusStartingTime>
         <mra:TrustServiceTSLStatusEquivalenceList>
-            <mra:TrustServiceTSLStatusEquivalence>
+            <mra:TrustServiceTSLStatusValidEquivalence>
                 <mra:TrustServiceTSLStatusListPointingParty>
                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
                 </mra:TrustServiceTSLStatusListPointingParty>
                 <mra:TrustServiceTSLStatusListPointedParty>
                     <ServiceStatus>http://tc-trusted-list.go.tc/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
                 </mra:TrustServiceTSLStatusListPointedParty>
-            </mra:TrustServiceTSLStatusEquivalence>
-            <mra:TrustServiceTSLStatusEquivalence>
+            </mra:TrustServiceTSLStatusValidEquivalence>
+            <mra:TrustServiceTSLStatusInvalidEquivalence>
                 <mra:TrustServiceTSLStatusListPointingParty>
                     <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
                 </mra:TrustServiceTSLStatusListPointingParty>
                 <mra:TrustServiceTSLStatusListPointedParty>
                     <ServiceStatus>http://tc-trusted-list.go.tc/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
                 </mra:TrustServiceTSLStatusListPointedParty>
-            </mra:TrustServiceTSLStatusEquivalence>
+            </mra:TrustServiceTSLStatusInvalidEquivalence>
         </mra:TrustServiceTSLStatusEquivalenceList>
         <mra:CertificateContentReferencesEquivalenceList>
 
