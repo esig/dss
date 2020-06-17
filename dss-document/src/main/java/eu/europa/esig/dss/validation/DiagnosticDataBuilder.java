@@ -79,7 +79,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignedAssertion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
@@ -97,6 +96,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MRAUri;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -1176,16 +1176,6 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private List<XmlSignedAssertion> getXmlSignedAssertion(Collection<String> assertions) {
-		List<XmlSignedAssertion> xmlSignedAssertions = new ArrayList<>();
-		for (String assertion: assertions) {
-			XmlSignedAssertion xmlSignedAssertion = new XmlSignedAssertion();
-			xmlSignedAssertion.setAssertion(assertion);
-			xmlSignedAssertions.add(xmlSignedAssertion);
-		}
-		return xmlSignedAssertions;
-	}
-	
 	private List<XmlSignerRole> getXmlSignerRoles(Collection<SignerRole> signerRoles) {
 		List<XmlSignerRole> xmlSignerRoles = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signerRoles)) {
@@ -2259,12 +2249,9 @@ public class DiagnosticDataBuilder {
 
 		Date startDate = serviceInfoStatus.getStartDate();
 		for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
-			if ("http://uri.etsi.org/TrstSvc/TrustedList/mutualrecognitionagreement/enacted".equals(serviceEquivalence
-					.getStatus())
-					&& startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
-				
-				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus,
-						serviceEquivalence);
+			if (Utils.areStringsEqual(MRAUri.ENACTED.getUri(), serviceEquivalence.getStatus()) && startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
+
+				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
 				if (equivalent != null) {
 					equivalents.add(equivalent);
 					overrideCertContent(certToken, serviceEquivalence);

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.QCStatementOids;
 import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
@@ -29,15 +32,16 @@ import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLTypeListType;
 import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLTypeType;
 import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalServiceInformationType;
 
-public class TrustServiceEquivalenceConverter
-		implements Function<TrustServiceEquivalenceInformationType, ServiceEquivalence> {
+public class TrustServiceEquivalenceConverter implements Function<TrustServiceEquivalenceInformationType, ServiceEquivalence> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TrustServiceEquivalenceConverter.class);
 
 	private CriteriaListTypeConverter criteriaConverter = new CriteriaListTypeConverter();
 
 	@Override
 	public ServiceEquivalence apply(TrustServiceEquivalenceInformationType t) {
 		ServiceEquivalence result = new ServiceEquivalence();
-		result.setLegalInfo(t.getTrustServiceLegalInformation());
+		result.setLegalInfo(t.getTrustServiceLegalIdentifier());
 		result.setStartDate(t.getTrustServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime());
 		result.setStatus(t.getTrustServiceEquivalenceStatus());
 
@@ -50,13 +54,10 @@ public class TrustServiceEquivalenceConverter
 	}
 
 	private void fillTypeASiEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		TrustServiceTSLTypeEquivalenceListType serviceTSLTypeEquivalenceList = t
-				.getTrustServiceTSLTypeEquivalenceList();
+		TrustServiceTSLTypeEquivalenceListType serviceTSLTypeEquivalenceList = t.getTrustServiceTSLTypeEquivalenceList();
 		if (serviceTSLTypeEquivalenceList != null) {
-			TrustServiceTSLTypeListType expected = serviceTSLTypeEquivalenceList
-					.getTrustServiceTSLTypeListPointedParty();
-			TrustServiceTSLTypeListType substitute = serviceTSLTypeEquivalenceList
-					.getTrustServiceTSLTypeListPointingParty();
+			TrustServiceTSLTypeListType expected = serviceTSLTypeEquivalenceList.getTrustServiceTSLTypeListPointedParty();
+			TrustServiceTSLTypeListType substitute = serviceTSLTypeEquivalenceList.getTrustServiceTSLTypeListPointingParty();
 			List<TrustServiceTSLTypeType> expectedServiceTSLTypes = expected.getTrustServiceTSLType();
 			List<TrustServiceTSLTypeType> subtituteServiceTSLTypes = substitute.getTrustServiceTSLType();
 
@@ -76,8 +77,7 @@ public class TrustServiceEquivalenceConverter
 	private ServiceTypeASi getServiceTypeASi(TrustServiceTSLTypeType expectedTypeASI) {
 		ServiceTypeASi sta = new ServiceTypeASi();
 		sta.setType(expectedTypeASI.getServiceTypeIdentifier());
-		AdditionalServiceInformationType additionalServiceInformation = expectedTypeASI
-				.getAdditionalServiceInformation();
+		AdditionalServiceInformationType additionalServiceInformation = expectedTypeASI.getAdditionalServiceInformation();
 		if (additionalServiceInformation != null && additionalServiceInformation.getURI() != null) {
 			sta.setAsi(additionalServiceInformation.getURI().getValue());
 		}
@@ -85,21 +85,16 @@ public class TrustServiceEquivalenceConverter
 	}
 
 	private void fillStatusEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		TrustServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList = t
-				.getTrustServiceTSLStatusEquivalenceList();
-		if (serviceTSLStatusEquivalenceList != null
-				&& Utils.isCollectionNotEmpty(serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusEquivalence())) {
+		TrustServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList = t.getTrustServiceTSLStatusEquivalenceList();
+		if (serviceTSLStatusEquivalenceList != null && Utils.isCollectionNotEmpty(serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusEquivalence())) {
 
 			Map<List<String>, List<String>> statusEquivalenceMap = new HashMap<>();
-			for (TrustServiceTSLStatusEquivalenceType statusEquivalence : serviceTSLStatusEquivalenceList
-					.getTrustServiceTSLStatusEquivalence()) {
+			for (TrustServiceTSLStatusEquivalenceType statusEquivalence : serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusEquivalence()) {
 
-				TrustServiceTSLStatusList serviceTSLStatusListExpected = statusEquivalence
-						.getTrustServiceTSLStatusListPointedParty();
+				TrustServiceTSLStatusList serviceTSLStatusListExpected = statusEquivalence.getTrustServiceTSLStatusListPointedParty();
 				List<String> expected = serviceTSLStatusListExpected.getServiceStatus();
 
-				TrustServiceTSLStatusList serviceTSLStatusListSubstitute = statusEquivalence
-						.getTrustServiceTSLStatusListPointingParty();
+				TrustServiceTSLStatusList serviceTSLStatusListSubstitute = statusEquivalence.getTrustServiceTSLStatusListPointingParty();
 				List<String> substitute = serviceTSLStatusListSubstitute.getServiceStatus();
 
 				statusEquivalenceMap.put(expected, substitute);
@@ -109,15 +104,12 @@ public class TrustServiceEquivalenceConverter
 	}
 
 	private void fillCertificateEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		CertificateContentReferencesEquivalenceListType certificateContentEquivalenceList = t
-				.getCertificateContentReferencesEquivalenceList();
+		CertificateContentReferencesEquivalenceListType certificateContentEquivalenceList = t.getCertificateContentReferencesEquivalenceList();
 		if (certificateContentEquivalenceList != null
-				&& Utils.isCollectionNotEmpty(
-						certificateContentEquivalenceList.getCertificateContentReferenceEquivalence())) {
+				&& Utils.isCollectionNotEmpty(certificateContentEquivalenceList.getCertificateContentReferenceEquivalence())) {
 
 			Map<Condition, QCStatementOids> certContentMap = new HashMap<>();
-			for (CertificateContentReferenceEquivalenceType certEquiv : certificateContentEquivalenceList
-					.getCertificateContentReferenceEquivalence()) {
+			for (CertificateContentReferenceEquivalenceType certEquiv : certificateContentEquivalenceList.getCertificateContentReferenceEquivalence()) {
 				CriteriaListType expected = certEquiv.getCertificateContentDeclarationPointedParty();
 				CriteriaListType subtitute = certEquiv.getCertificateContentDeclarationPointingParty();
 				Condition condition = criteriaConverter.apply(subtitute);
@@ -131,38 +123,44 @@ public class TrustServiceEquivalenceConverter
 		QCStatementOids result = new QCStatementOids();
 		List<String> qcStatementIds = new ArrayList<>();
 		List<String> qcTypeIds = new ArrayList<>();
-		
-		if(condition instanceof CompositeCondition) {
+
+		if (condition instanceof CompositeCondition) {
 			CompositeCondition composite = (CompositeCondition) condition;
-			switch(composite.getMatchingCriteriaIndicator().getValue()) {
-			case("all"):
+			switch (composite.getMatchingCriteriaIndicator()) {
+			case ALL:
 				for (Condition childCondition : composite.getChildren()) {
 					QCStatementOids childResult = getQCStatementOids(childCondition);
-					for(String childQCStatementId : childResult.getQcStatementIds()) {
-						if(!qcStatementIds.contains(childQCStatementId))
+					for (String childQCStatementId : childResult.getQcStatementIds()) {
+						if (!qcStatementIds.contains(childQCStatementId))
 							qcStatementIds.add(childQCStatementId);
 					}
-					for(String childQCTypeId : childResult.getQcTypeIds()) {
-						if(!qcTypeIds.contains(childQCTypeId))
+					for (String childQCTypeId : childResult.getQcTypeIds()) {
+						if (!qcTypeIds.contains(childQCTypeId))
 							qcTypeIds.add(childQCTypeId);
 					}
 				}
-			case("atLeastOne"):
+				break;
+			case AT_LEAST_ONE:
 				Condition childCondition = composite.getChildren().get(0);
 				QCStatementOids childResult = getQCStatementOids(childCondition);
-				for(String childQCStatementId : childResult.getQcStatementIds()) {
-					if(!qcStatementIds.contains(childQCStatementId))
+				for (String childQCStatementId : childResult.getQcStatementIds()) {
+					if (!qcStatementIds.contains(childQCStatementId))
 						qcStatementIds.add(childQCStatementId);
 				}
-				for(String childQCTypeId : childResult.getQcTypeIds()) {
-					if(!qcTypeIds.contains(childQCTypeId))
+				for (String childQCTypeId : childResult.getQcTypeIds()) {
+					if (!qcTypeIds.contains(childQCTypeId))
 						qcTypeIds.add(childQCTypeId);
 				}
-			case("none"):
+				break;
+			case NONE:
+				// nothing
+				break;
+			default:
+				LOG.warn("Unsupported assert {}", composite.getMatchingCriteriaIndicator());
 			}
 		}
-		
-		if(condition instanceof QCStatementCondition) {
+
+		if (condition instanceof QCStatementCondition) {
 			QCStatementCondition qcCondition = (QCStatementCondition) condition;
 
 			String oid = qcCondition.getOid();
@@ -174,8 +172,6 @@ public class TrustServiceEquivalenceConverter
 				qcTypeIds.add(type);
 			}
 		}
-		
-
 
 		result.setQcStatementIds(qcStatementIds);
 		result.setQcTypeIds(qcTypeIds);
@@ -185,15 +181,13 @@ public class TrustServiceEquivalenceConverter
 	private void fillQualifierEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
 		TrustServiceTSLQualificationExtensionEquivalenceListType qualificationExtensionEquivalenceListType = t
 				.getTrustServiceTSLQualificationExtensionEquivalenceList();
-		if (qualificationExtensionEquivalenceListType != null && Utils
-				.isCollectionNotEmpty(qualificationExtensionEquivalenceListType.getQualifierEquivalenceList())) {
+		if (qualificationExtensionEquivalenceListType != null
+				&& Utils.isCollectionNotEmpty(qualificationExtensionEquivalenceListType.getQualifierEquivalenceList())) {
 
 			Map<String, String> qualifierEquivalenceMap = new HashMap<>();
-			for (QualifierEquivalenceListType qualifierEquivalenceList : qualificationExtensionEquivalenceListType
-					.getQualifierEquivalenceList()) {
+			for (QualifierEquivalenceListType qualifierEquivalenceList : qualificationExtensionEquivalenceListType.getQualifierEquivalenceList()) {
 
-				List<QualifierEquivalenceType> qualifierEquivalence = qualifierEquivalenceList
-						.getQualifierEquivalence();
+				List<QualifierEquivalenceType> qualifierEquivalence = qualifierEquivalenceList.getQualifierEquivalence();
 				for (QualifierEquivalenceType qualifierEquivalenceType : qualifierEquivalence) {
 					QualifierType qualifierExpected = qualifierEquivalenceType.getQualifierPointedParty();
 					QualifierType qualifierSubstitute = qualifierEquivalenceType.getQualifierPointingParty();
