@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.tsl.function.converter;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
+import eu.europa.esig.dss.spi.tsl.CertificateContentEquivalence;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.QCStatementOids;
 import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
@@ -114,14 +117,19 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 		if (certificateContentEquivalenceList != null
 				&& Utils.isCollectionNotEmpty(certificateContentEquivalenceList.getCertificateContentReferenceEquivalence())) {
 
-			Map<Condition, QCStatementOids> certContentMap = new HashMap<>();
+			EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = new EnumMap<>(MRAEquivalenceContext.class);
 			for (CertificateContentReferenceEquivalenceType certEquiv : certificateContentEquivalenceList.getCertificateContentReferenceEquivalence()) {
 				CriteriaListType expected = certEquiv.getCertificateContentDeclarationPointedParty();
 				CriteriaListType subtitute = certEquiv.getCertificateContentDeclarationPointingParty();
 				Condition condition = criteriaConverter.apply(subtitute);
-				certContentMap.put(criteriaConverter.apply(expected), getQCStatementOids(condition));
+
+				CertificateContentEquivalence equiv = new CertificateContentEquivalence();
+				equiv.setCondition(criteriaConverter.apply(expected));
+				equiv.setContentReplacement(getQCStatementOids(condition));
+
+				certificateContentEquivalences.put(certEquiv.getCertificateContentReferenceEquivalenceContext(), equiv);
 			}
-			result.setCertificateContentEquivalence(certContentMap);
+			result.setCertificateContentEquivalences(certificateContentEquivalences);
 		}
 	}
 

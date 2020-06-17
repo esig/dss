@@ -1,18 +1,22 @@
 package eu.europa.esig.dss.spi.tsl;
 
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
+import eu.europa.esig.dss.enumerations.MRAStatus;
 
 public class ServiceEquivalence {
 
 	private String legalInfo;
-	private String status;
+	private MRAStatus status;
 	private Date startDate;
 
 	private Map<ServiceTypeASi, ServiceTypeASi> typeAsiEquivalence;
 	private Map<List<String>, List<String>> statusEquivalence;
-	private Map<Condition, QCStatementOids> certificateContentEquivalence;
+	private EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences;
 	private Map<String, String> qualifierEquivalence;
 
 	public String getLegalInfo() {
@@ -23,11 +27,11 @@ public class ServiceEquivalence {
 		this.legalInfo = legalInfo;
 	}
 
-	public String getStatus() {
+	public MRAStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(MRAStatus status) {
 		this.status = status;
 	}
 
@@ -55,12 +59,12 @@ public class ServiceEquivalence {
 		this.statusEquivalence = statusEquivalence;
 	}
 
-	public Map<Condition, QCStatementOids> getCertificateContentEquivalence() {
-		return certificateContentEquivalence;
+	public EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> getCertificateContentEquivalences() {
+		return certificateContentEquivalences;
 	}
 
-	public void setCertificateContentEquivalence(Map<Condition, QCStatementOids> certificateContentEquivalence) {
-		this.certificateContentEquivalence = certificateContentEquivalence;
+	public void setCertificateContentEquivalences(EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences) {
+		this.certificateContentEquivalences = certificateContentEquivalences;
 	}
 
 	public Map<String, String> getQualifierEquivalence() {

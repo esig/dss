@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -96,8 +97,10 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MRAUri;
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
+import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.OidDescription;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -117,6 +120,7 @@ import eu.europa.esig.dss.model.x509.TokenComparator;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.CertificateContentEquivalence;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
@@ -2249,7 +2253,7 @@ public class DiagnosticDataBuilder {
 
 		Date startDate = serviceInfoStatus.getStartDate();
 		for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
-			if (Utils.areStringsEqual(MRAUri.ENACTED.getUri(), serviceEquivalence.getStatus()) && startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
+			if (MRAStatus.ENACTED == serviceEquivalence.getStatus() && startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
 
 				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
 				if (equivalent != null) {
@@ -2267,32 +2271,79 @@ public class DiagnosticDataBuilder {
 	}
 
 	private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
-		Map<Condition, QCStatementOids> certificateContentEquivalence = serviceEquivalence
-				.getCertificateContentEquivalence();
-		for (Entry<Condition, QCStatementOids> equivalence : certificateContentEquivalence.entrySet()) {
-			Condition expected = equivalence.getKey();
-			if (expected.check(certToken)) {
-				LOG.info("Replace certificate content (MRA)");
-				replaceQCStatements(certToken, equivalence.getValue());
+		EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
+
+		for (Entry<MRAEquivalenceContext, CertificateContentEquivalence> equivalence : certificateContentEquivalences.entrySet()) {
+			CertificateContentEquivalence certificateContentEquivalence = equivalence.getValue();
+			Condition condition = certificateContentEquivalence.getCondition();
+
+			if (condition.check(certToken)) {
+				LOG.info("MRA condition match ({})", equivalence.getKey());
+				QCStatementOids contentReplacement = certificateContentEquivalence.getContentReplacement();
+
+				switch (equivalence.getKey()) {
+				case QC_COMPLIANCE:
+					remplaceCompliance(certToken, contentReplacement);
+					break;
+				case QC_TYPE:
+					remplaceType(certToken, contentReplacement);
+					break;
+				case QC_QSCD:
+					remplaceQCSD(certToken, contentReplacement);
+					break;
+				default:
+					LOG.warn("Unsupported equivalence context {}", equivalence.getKey());
+					break;
+				}
 			}
 		}
 	}
 
-	private void replaceQCStatements(CertificateToken certToken, QCStatementOids qcStatementOids) {
+	private void remplaceCompliance(CertificateToken certToken, QCStatementOids contentReplacement) {
 		String id = certToken.getDSSIdAsString();
 		XmlCertificate xmlCertificate = xmlCertsMap.get(id);
-		xmlCertificate.getQCStatementIds().clear();
-		xmlCertificate.setQCStatementIds(null);
-		xmlCertificate.getQCTypes().clear();
-		xmlCertificate.setQCTypes(null);
+		List<XmlOID> originals = xmlCertificate.getQCStatementIds();
+		List<XmlOID> news = getXmlOids(contentReplacement.getQcStatementIds());
 
-		if (qcStatementOids != null) {
-			xmlCertificate.setQCStatementIds(getXmlOids(qcStatementOids.getQcStatementIds()));
-			xmlCertificate.setQCTypes(getXmlOids(qcStatementOids.getQcTypeIds()));
+		Iterator<XmlOID> iterator = originals.iterator();
+		while (iterator.hasNext()) {
+			XmlOID current = iterator.next();
+			if (QCStatement.QC_COMPLIANCE.getOid().equals(current.getValue())) {
+				iterator.remove();
+			}
 		}
+		originals.addAll(news);
 
 		xmlCertsMap.put(id, xmlCertificate);
 	}
+
+	private void remplaceQCSD(CertificateToken certToken, QCStatementOids contentReplacement) {
+		String id = certToken.getDSSIdAsString();
+		XmlCertificate xmlCertificate = xmlCertsMap.get(id);
+		List<XmlOID> originals = xmlCertificate.getQCStatementIds();
+		List<XmlOID> news = getXmlOids(contentReplacement.getQcStatementIds());
+
+		Iterator<XmlOID> iterator = originals.iterator();
+		while (iterator.hasNext()) {
+			XmlOID current = iterator.next();
+			if (QCStatement.QC_SSCD.getOid().equals(current.getValue())) {
+				iterator.remove();
+			}
+		}
+		originals.addAll(news);
+
+		xmlCertsMap.put(id, xmlCertificate);
+	}
+
+	private void remplaceType(CertificateToken certToken, QCStatementOids contentReplacement) {
+		String id = certToken.getDSSIdAsString();
+		XmlCertificate xmlCertificate = xmlCertsMap.get(id);
+		xmlCertificate.getQCTypes().clear();
+		xmlCertificate.setQCTypes(null);
+		xmlCertificate.setQCTypes(getXmlOids(contentReplacement.getQcTypeIds()));
+		xmlCertsMap.put(id, xmlCertificate);
+	}
+
 
 	private TrustServiceStatusAndInformationExtensions getEquivalent(
 			TrustServiceStatusAndInformationExtensions serviceInfoStatus,

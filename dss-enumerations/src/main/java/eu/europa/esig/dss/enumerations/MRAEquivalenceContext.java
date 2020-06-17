@@ -1,8 +1,6 @@
 package eu.europa.esig.dss.enumerations;
 
-public enum MRAUri implements UriBasedEnum {
-
-	ENACTED("http://ec.europa.eu/trust-services/mutualrecognitionagreement/enacted"),
+public enum MRAEquivalenceContext implements UriBasedEnum {
 
 	QC_COMPLIANCE("http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcCompliance"),
 
@@ -12,7 +10,7 @@ public enum MRAUri implements UriBasedEnum {
 
 	private final String uri;
 
-	MRAUri(String uri) {
+	MRAEquivalenceContext(String uri) {
 		this.uri = uri;
 	}
 

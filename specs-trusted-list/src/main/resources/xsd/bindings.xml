@@ -14,6 +14,28 @@
 		<jaxb:schemaBindings>
 			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.mra" />
 		</jaxb:schemaBindings>
+			
+		<jaxb:bindings node="//xs:complexType[@name='TrustServiceEquivalenceInformationType']//xs:element[@name='TrustServiceEquivalenceStatus']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.MRAStatus"
+				parseMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.parse"
+				printMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.print" />
+		</jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='TrustServiceEquivalenceHistoryInstanceType']//xs:element[@name='TrustServiceEquivalenceStatus']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.MRAStatus"
+				parseMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.parse"
+				printMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.print" />
+		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:element[@name='CertificateContentReferenceEquivalenceContext']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.MRAEquivalenceContext"
+				parseMethod="eu.europa.esig.trustedlist.parsers.MRAEquivalenceContextParser.parse"
+				printMethod="eu.europa.esig.trustedlist.parsers.MRAEquivalenceContextParser.print" />
+		</jaxb:bindings>
+			
+			
 		<jaxb:bindings schemaLocation="https://uri.etsi.org/19612/v2.2.1/ts_119612v020101_sie_xsd.xsd" node="/xs:schema">
 			<jaxb:schemaBindings>
 				<jaxb:package name="eu.europa.esig.trustedlist.jaxb.ecc" />
