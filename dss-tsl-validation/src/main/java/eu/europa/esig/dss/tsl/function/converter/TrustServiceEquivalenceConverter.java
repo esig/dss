@@ -131,24 +131,51 @@ public class TrustServiceEquivalenceConverter
 		QCStatementOids result = new QCStatementOids();
 		List<String> qcStatementIds = new ArrayList<>();
 		List<String> qcTypeIds = new ArrayList<>();
-
-		CompositeCondition composite = (CompositeCondition) condition;
-		CompositeCondition compositeChildren = (CompositeCondition) composite.getChildren().get(0);
-		for (Condition childCondition : compositeChildren.getChildren()) {
-			if (childCondition instanceof QCStatementCondition) {
-				QCStatementCondition qcCondition = (QCStatementCondition) childCondition;
-
-				String oid = qcCondition.getOid();
-				if (Utils.isStringNotEmpty(oid)) {
-					qcStatementIds.add(oid);
+		
+		if(condition instanceof CompositeCondition) {
+			CompositeCondition composite = (CompositeCondition) condition;
+			switch(composite.getMatchingCriteriaIndicator().getValue()) {
+			case("all"):
+				for (Condition childCondition : composite.getChildren()) {
+					QCStatementOids childResult = getQCStatementOids(childCondition);
+					for(String childQCStatementId : childResult.getQcStatementIds()) {
+						if(!qcStatementIds.contains(childQCStatementId))
+							qcStatementIds.add(childQCStatementId);
+					}
+					for(String childQCTypeId : childResult.getQcTypeIds()) {
+						if(!qcTypeIds.contains(childQCTypeId))
+							qcTypeIds.add(childQCTypeId);
+					}
 				}
-				String type = qcCondition.getType();
-				if (Utils.isStringNotEmpty(type)) {
-					qcTypeIds.add(type);
+			case("atLeastOne"):
+				Condition childCondition = composite.getChildren().get(0);
+				QCStatementOids childResult = getQCStatementOids(childCondition);
+				for(String childQCStatementId : childResult.getQcStatementIds()) {
+					if(!qcStatementIds.contains(childQCStatementId))
+						qcStatementIds.add(childQCStatementId);
 				}
+				for(String childQCTypeId : childResult.getQcTypeIds()) {
+					if(!qcTypeIds.contains(childQCTypeId))
+						qcTypeIds.add(childQCTypeId);
+				}
+			case("none"):
 			}
-
 		}
+		
+		if(condition instanceof QCStatementCondition) {
+			QCStatementCondition qcCondition = (QCStatementCondition) condition;
+
+			String oid = qcCondition.getOid();
+			if (Utils.isStringNotEmpty(oid)) {
+				qcStatementIds.add(oid);
+			}
+			String type = qcCondition.getType();
+			if (Utils.isStringNotEmpty(type)) {
+				qcTypeIds.add(type);
+			}
+		}
+		
+
 
 		result.setQcStatementIds(qcStatementIds);
 		result.setQcTypeIds(qcTypeIds);
