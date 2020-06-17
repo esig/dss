@@ -57,7 +57,8 @@
 	<!-- Definition of TrustServiceTSLStatusEquivalenceList -->
 	<xsd:complexType name="TrustServiceTSLStatusEquivalenceListType">
 		<xsd:sequence>
-			<xsd:element name="TrustServiceTSLStatusEquivalence" type="mra:TrustServiceTSLStatusEquivalenceType" maxOccurs="unbounded"/>
+			<xsd:element name="TrustServiceTSLStatusValidEquivalence" type="mra:TrustServiceTSLStatusEquivalenceType"/>
+			<xsd:element name="TrustServiceTSLStatusInvalidEquivalence" type="mra:TrustServiceTSLStatusEquivalenceType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
