@@ -86,20 +86,26 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 
 	private void fillStatusEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
 		TrustServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList = t.getTrustServiceTSLStatusEquivalenceList();
-		if (serviceTSLStatusEquivalenceList != null && Utils.isCollectionNotEmpty(serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusEquivalence())) {
 
-			Map<List<String>, List<String>> statusEquivalenceMap = new HashMap<>();
-			for (TrustServiceTSLStatusEquivalenceType statusEquivalence : serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusEquivalence()) {
+		Map<List<String>, List<String>> statusEquivalenceMap = new HashMap<>();
+		TrustServiceTSLStatusEquivalenceType validEquivalences = serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusValidEquivalence();
+		extractEquivalences(validEquivalences, statusEquivalenceMap);
 
-				TrustServiceTSLStatusList serviceTSLStatusListExpected = statusEquivalence.getTrustServiceTSLStatusListPointedParty();
-				List<String> expected = serviceTSLStatusListExpected.getServiceStatus();
+		TrustServiceTSLStatusEquivalenceType invalidEquivalences = serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusInvalidEquivalence();
+		extractEquivalences(invalidEquivalences, statusEquivalenceMap);
 
-				TrustServiceTSLStatusList serviceTSLStatusListSubstitute = statusEquivalence.getTrustServiceTSLStatusListPointingParty();
-				List<String> substitute = serviceTSLStatusListSubstitute.getServiceStatus();
+		result.setStatusEquivalence(statusEquivalenceMap);
+	}
 
-				statusEquivalenceMap.put(expected, substitute);
-			}
-			result.setStatusEquivalence(statusEquivalenceMap);
+	private void extractEquivalences(TrustServiceTSLStatusEquivalenceType statusEquivalence, Map<List<String>, List<String>> statusEquivalenceMap) {
+		if (statusEquivalence != null) {
+			TrustServiceTSLStatusList serviceTSLStatusListExpected = statusEquivalence.getTrustServiceTSLStatusListPointedParty();
+			List<String> expected = serviceTSLStatusListExpected.getServiceStatus();
+
+			TrustServiceTSLStatusList serviceTSLStatusListSubstitute = statusEquivalence.getTrustServiceTSLStatusListPointingParty();
+			List<String> substitute = serviceTSLStatusListSubstitute.getServiceStatus();
+
+			statusEquivalenceMap.put(expected, substitute);
 		}
 	}
 
