@@ -12,13 +12,15 @@
 			<xsd:element name="TrustServiceEquivalenceInformation" type="mra:TrustServiceEquivalenceInformationType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="technicalType" type="xsd:integer" use="required"/>
+		<xsd:attribute name="version" type="xsd:integer" use="required"/>
 		<xsd:attribute name="pointingContractingPartyLegislation" type="tsl:NonEmptyURIType" use="required"/>
 		<xsd:attribute name="pointedContractingPartyLegislation" type="tsl:NonEmptyURIType" use="required"/>
+		<xsd:attribute name="MRADepth" type="xsd:integer" use="required"/>
 	</xsd:complexType>
 
 	<xsd:complexType name="TrustServiceEquivalenceInformationType">
 		<xsd:sequence>
-			<xsd:element name="TrustServiceLegalInformation" type="tsl:NonEmptyString"/>
+			<xsd:element name="TrustServiceLegalIdentifier" type="tsl:NonEmptyString"/>
 			<xsd:element name="TrustServiceTSLTypeEquivalenceList" type="mra:TrustServiceTSLTypeEquivalenceListType"/>
 			<xsd:element name="TrustServiceEquivalenceStatus" type="tsl:NonEmptyURIType"/>
 			<xsd:element name="TrustServiceEquivalenceStatusStartingTime" type="xsd:dateTime"/>

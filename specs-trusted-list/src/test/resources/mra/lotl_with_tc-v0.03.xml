@@ -2046,9 +2046,9 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                         </SchemeTypeCommunityRules>
                     </OtherInformation>
                     <OtherInformation>
-<mra:MutualRecognitionAgreementInformation technicalType="1" pointingContractingPartyLegislation="uri/.../" pointedContractingPartyLegislation="uri/.../">
+<mra:MutualRecognitionAgreementInformation technicalType="1" version="1" pointingContractingPartyLegislation="uri/.../" pointedContractingPartyLegislation="uri/.../" MRADepth="1">
     <mra:TrustServiceEquivalenceInformation>
-        <mra:TrustServiceLegalInformation>QCForESig</mra:TrustServiceLegalInformation>
+        <mra:TrustServiceLegalIdentifier>QCForESig</mra:TrustServiceLegalIdentifier>
         <mra:TrustServiceTSLTypeEquivalenceList>
             <mra:TrustServiceTSLTypeListPointingParty>
                 <mra:TrustServiceTSLType>
@@ -2064,7 +2064,7 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                 </mra:TrustServiceTSLType>
             </mra:TrustServiceTSLTypeListPointedParty>
         </mra:TrustServiceTSLTypeEquivalenceList>
-        <mra:TrustServiceEquivalenceStatus>http://uri.etsi.org/TrstSvc/TrustedList/mutualrecognitionagreement/enacted</mra:TrustServiceEquivalenceStatus>
+        <mra:TrustServiceEquivalenceStatus>http://ec.europa.eu/trust-services/mutualrecognitionagreement/enacted</mra:TrustServiceEquivalenceStatus>
         <mra:TrustServiceEquivalenceStatusStartingTime>2020-05-16T23:59:59Z</mra:TrustServiceEquivalenceStatusStartingTime>
         <mra:TrustServiceTSLStatusEquivalenceList>
             <mra:TrustServiceTSLStatusEquivalence>
@@ -2085,8 +2085,56 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
             </mra:TrustServiceTSLStatusEquivalence>
         </mra:TrustServiceTSLStatusEquivalenceList>
         <mra:CertificateContentReferencesEquivalenceList>
+
             <mra:CertificateContentReferenceEquivalence>
-                <mra:CertificateContentReferenceEquivalenceContext>http://uri.etsi.org/TrstSvc/TrustedList/mutualrecognitionagreement/QCertForEsig</mra:CertificateContentReferenceEquivalenceContext>
+                <mra:CertificateContentReferenceEquivalenceContext>http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcCompliance</mra:CertificateContentReferenceEquivalenceContext>
+                <mra:CertificateContentDeclarationPointingParty assert="all">
+                    <ns5:CriteriaList assert="all">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>
+                            </ns5:otherCriteriaList>
+                    </ns5:CriteriaList>
+                    <ns5:CriteriaList assert="none">
+                        <ns5:otherCriteriaList>
+                            <mra:QcStatementSet>
+                                <mra:QcStatement>
+                                    <mra:QcStatementId>
+                                        <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
+                                    </mra:QcStatementId>
+                                </mra:QcStatement>
+                            </mra:QcStatementSet>
+                        </ns5:otherCriteriaList>                         
+                    </ns5:CriteriaList>                            
+                </mra:CertificateContentDeclarationPointingParty>
+                <mra:CertificateContentDeclarationPointedParty assert="all">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                    </mra:QcStatement>
+                                    <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcCClegislation>TC</mra:QcCClegislation>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>                                    
+                                </mra:QcStatementSet>
+                            </ns5:otherCriteriaList>                    
+                </mra:CertificateContentDeclarationPointedParty>
+            </mra:CertificateContentReferenceEquivalence>
+
+            <mra:CertificateContentReferenceEquivalence>
+                <mra:CertificateContentReferenceEquivalenceContext>http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcType</mra:CertificateContentReferenceEquivalenceContext>
                 <mra:CertificateContentDeclarationPointingParty assert="all">
                     <ns5:CriteriaList assert="atLeastOne">
                         <ns5:CriteriaList assert="all">
@@ -2094,11 +2142,6 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                 <mra:QcStatementSet>
                                     <mra:QcStatement>
                                         <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                    </mra:QcStatement>
-                                    <mra:QcStatement>
-                                        <mra:QcStatementId>
                                             <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
                                         </mra:QcStatementId>
                                         <mra:QcStatementInfo>
@@ -2110,65 +2153,74 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                 </mra:QcStatementSet>
                             </ns5:otherCriteriaList>
                         </ns5:CriteriaList>
+                        <ns5:CriteriaList assert="none">
+                            <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                     <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>                                                                                            
+                            </ns5:otherCriteriaList>                        
+                        </ns5:CriteriaList>
+                    </ns5:CriteriaList>
+                    <ns5:CriteriaList assert="none">
+                        <ns5:otherCriteriaList>
+                                <mra:QcStatementSet>
+                                     <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.2</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet>                             
+                                <mra:QcStatementSet>
+                                     <mra:QcStatement>
+                                        <mra:QcStatementId>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                        </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.3</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
+                                    </mra:QcStatement>
+                                </mra:QcStatementSet> 
+                        </ns5:otherCriteriaList>                         
+                    </ns5:CriteriaList>
+                </mra:CertificateContentDeclarationPointingParty>
+                <mra:CertificateContentDeclarationPointedParty assert="all">
+                    <ns5:CriteriaList assert="atLeastOne">
                         <ns5:CriteriaList assert="all">
                             <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
                                     <mra:QcStatement>
                                         <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
                                         </mra:QcStatementId>
+                                        <mra:QcStatementInfo>
+                                            <mra:QcType>
+                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                            </mra:QcType>
+                                        </mra:QcStatementInfo>
                                     </mra:QcStatement>
                                 </mra:QcStatementSet>
                             </ns5:otherCriteriaList>
-                        </ns5:CriteriaList>                        
-                    </ns5:CriteriaList>
-                    <ns5:CriteriaList assert="none">
+                        </ns5:CriteriaList>
+                        <ns5:CriteriaList assert="none">
                             <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
                                      <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                        <mra:QcStatementInfo>
-                                            <mra:QcType>
-                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.2</ns3:Identifier>
-                                            </mra:QcType>
-                                        </mra:QcStatementInfo>
-                                    </mra:QcStatement>
-                                </mra:QcStatementSet>
-                                <mra:QcStatementSet>
-                                     <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                        <mra:QcStatementInfo>
-                                            <mra:QcType>
-                                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.3</ns3:Identifier>
-                                            </mra:QcType>
-                                        </mra:QcStatementInfo>
-                                    </mra:QcStatement>
-                                </mra:QcStatementSet>
-                                <mra:QcStatementSet>
-                                     <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                    </mra:QcStatement>
-                                </mra:QcStatementSet>                                                                
-                            </ns5:otherCriteriaList>                        
-                    </ns5:CriteriaList>
-                </mra:CertificateContentDeclarationPointingParty>
-                <mra:CertificateContentDeclarationPointedParty assert="all">
-                    <ns5:CriteriaList assert="atLeastOne">
-                        <ns5:CriteriaList assert="all">                    
-                            <ns5:otherCriteriaList>
-                                <mra:QcStatementSet>
-                                    <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                    </mra:QcStatement>
-                                    <mra:QcStatement>
                                         <mra:QcStatementId>
                                             <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
                                         </mra:QcStatementId>
@@ -2178,39 +2230,12 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                             </mra:QcType>
                                         </mra:QcStatementInfo>
                                     </mra:QcStatement>
-                                    <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                        <mra:QcStatementInfo>
-                                            <mra:QcCClegislation>TC</mra:QcCClegislation>
-                                        </mra:QcStatementInfo>
-                                    </mra:QcStatement>
-                                </mra:QcStatementSet>
-                            </ns5:otherCriteriaList>
+                                </mra:QcStatementSet>                                                                                            
+                            </ns5:otherCriteriaList>                        
                         </ns5:CriteriaList>
-                        <ns5:CriteriaList assert="all">                    
-                            <ns5:otherCriteriaList>
-                                <mra:QcStatementSet>
-                                    <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                    </mra:QcStatement>
-                                    <mra:QcStatement>
-                                        <mra:QcStatementId>
-                                            <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
-                                        </mra:QcStatementId>
-                                        <mra:QcStatementInfo>
-                                            <mra:QcCClegislation>TC</mra:QcCClegislation>
-                                        </mra:QcStatementInfo>
-                                    </mra:QcStatement>
-                                </mra:QcStatementSet>
-                            </ns5:otherCriteriaList>
-                        </ns5:CriteriaList>                        
                     </ns5:CriteriaList>
                     <ns5:CriteriaList assert="none">
-                            <ns5:otherCriteriaList>
+                        <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
                                      <mra:QcStatement>
                                         <mra:QcStatementId>
@@ -2222,7 +2247,7 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                             </mra:QcType>
                                         </mra:QcStatementInfo>
                                     </mra:QcStatement>
-                                </mra:QcStatementSet>
+                                </mra:QcStatementSet>                             
                                 <mra:QcStatementSet>
                                      <mra:QcStatement>
                                         <mra:QcStatementId>
@@ -2234,13 +2259,14 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                                             </mra:QcType>
                                         </mra:QcStatementInfo>
                                     </mra:QcStatement>
-                                </mra:QcStatementSet>                                                               
-                            </ns5:otherCriteriaList>                        
-                    </ns5:CriteriaList>                    
+                                </mra:QcStatementSet> 
+                        </ns5:otherCriteriaList>                         
+                    </ns5:CriteriaList>                
                 </mra:CertificateContentDeclarationPointedParty>
             </mra:CertificateContentReferenceEquivalence>
+
             <mra:CertificateContentReferenceEquivalence>
-                <mra:CertificateContentReferenceEquivalenceContext>http://uri.etsi.org/TrstSvc/TrustedList/mutualrecognitionagreement/CertQSCD</mra:CertificateContentReferenceEquivalenceContext>
+                <mra:CertificateContentReferenceEquivalenceContext>http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcQSCD</mra:CertificateContentReferenceEquivalenceContext>
                 <mra:CertificateContentDeclarationPointingParty assert="all">
                             <ns5:otherCriteriaList>
                                 <mra:QcStatementSet>
@@ -2264,6 +2290,7 @@ Europska Komisija održava ovo web-mjesto kao sredstvo za postizanje interoperab
                             </ns5:otherCriteriaList>
                 </mra:CertificateContentDeclarationPointedParty>
             </mra:CertificateContentReferenceEquivalence>
+
         </mra:CertificateContentReferencesEquivalenceList>
         <mra:TrustServiceTSLQualificationExtensionEquivalenceList>
             <mra:TrustServiceTSLQualificationExtensionName>
