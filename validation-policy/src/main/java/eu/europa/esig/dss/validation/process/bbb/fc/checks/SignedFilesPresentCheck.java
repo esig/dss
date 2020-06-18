@@ -4,6 +4,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -26,7 +27,7 @@ public class SignedFilesPresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		if ("ASiC-S".equals(containerInfo.getContainerType())) { // ASiC-S one signed file in the root directory
+		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) { // ASiC-S one signed file in the root directory
 			message = MessageTag.BBB_FC_ISFP_ASICS;
 			error = MessageTag.BBB_FC_ISFP_ASICS_ANS;
 			List<String> contentFiles = containerInfo.getContentFiles();

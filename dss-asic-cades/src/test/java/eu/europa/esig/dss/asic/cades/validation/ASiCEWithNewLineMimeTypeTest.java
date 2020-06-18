@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
@@ -42,7 +43,7 @@ public class ASiCEWithNewLineMimeTypeTest extends AbstractASiCWithCAdESTestValid
 
 		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
 		assertNotNull(containerInfo);
-		assertEquals("ASiC-E", containerInfo.getContainerType());
+		assertEquals(ASiCContainerType.ASiC_E, containerInfo.getContainerType());
 		assertEquals("mimetype=application/vnd.etsi.asic-e+zip\n", containerInfo.getZipComment());
 		assertTrue(containerInfo.isMimeTypeFilePresent());
 		assertEquals("application/vnd.etsi.asic-e+zip\r\n", containerInfo.getMimeTypeContent());

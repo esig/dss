@@ -143,7 +143,7 @@ public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {
 		assertNotNull(diagnosticData.getContainerInfo());
-		assertEquals("ASiC-E", diagnosticData.getContainerType());
+		assertEquals(ASiCContainerType.ASiC_E, diagnosticData.getContainerType());
 		assertNotNull(diagnosticData.getMimetypeFileContent());
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
 	}

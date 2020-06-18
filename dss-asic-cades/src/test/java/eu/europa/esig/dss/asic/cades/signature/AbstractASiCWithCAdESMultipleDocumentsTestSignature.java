@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -44,6 +45,8 @@ public abstract class AbstractASiCWithCAdESMultipleDocumentsTestSignature extend
 		assertNotNull(diagnosticData.getContainerType());
 		assertNotNull(diagnosticData.getMimetypeFileContent());
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
+		
+		assertEquals(getSignatureParameters().aSiC().getContainerType(), diagnosticData.getContainerType());
 	}
 	
 	@Override

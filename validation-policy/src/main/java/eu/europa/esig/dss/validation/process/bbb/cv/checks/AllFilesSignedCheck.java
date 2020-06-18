@@ -28,15 +28,16 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 
@@ -53,9 +54,9 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 	protected boolean process() {
 
 		/* ASiC-S -> nb files = 1 */
-		if ("ASiC-S".equals(containerInfo.getContainerType())) {
+		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) {
 			return 1 == Utils.collectionSize(containerInfo.getContentFiles());
-		} else if ("ASiC-E".equals(containerInfo.getContainerType())) {
+		} else if (ASiCContainerType.ASiC_E.equals(containerInfo.getContainerType())) {
 			String signatureFilename = signature.getSignatureFilename();
 			List<String> coveredFiles = getCoveredFilesBySignatureFilename(signatureFilename);
 			List<String> contentFiles = containerInfo.getContentFiles();

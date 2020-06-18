@@ -21,7 +21,7 @@
 			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 			<xs:element name="ValidSignaturesCount" type="xs:int" />
 			<xs:element name="SignaturesCount" type="xs:int" />
-			<xs:element name="ContainerType" type="xs:string" minOccurs="0" />
+			<xs:element name="ContainerType" type="ContainerType" minOccurs="0" />
 			
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />
@@ -31,6 +31,13 @@
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
 	</xs:complexType>
+	
+	<xs:simpleType name="ContainerType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ASiC-S" />
+			<xs:enumeration value="ASiC-E" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="Token" abstract="true">
 		<xs:sequence>
