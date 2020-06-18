@@ -334,7 +334,7 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-test</artifactId>
-			<scope>test</scope>
+			<type>test-jar</type>
 		</dependency>
 	</dependencies>
 </project>
