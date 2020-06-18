@@ -544,10 +544,7 @@ public class JAdESLevelBaselineB {
 		Map<String, Object> sigDParams = new LinkedHashMap<>();
 
 		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
-		
-		HTTPHeaderDocument httpMessageDocument = (HTTPHeaderDocument) detachedContents.get(0);
-		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames(httpMessageDocument));
-		
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames());
 		
 		return sigDParams;
 	}
@@ -597,7 +594,7 @@ public class JAdESLevelBaselineB {
 	 * @param httpMessage {@link HTTPHeaderDocument} to extract field names from
 	 * @return a set of HTTP message field names
 	 */
-	private Collection<String> getHttpHeaderNames(HTTPHeaderDocument httpMessageDocument) {
+	private Collection<String> getHttpHeaderNames() {
 		/*
 		 * TS 119 182-1 "5.2.8.2 Mechanism HttpHeaders" : 
 		 * 
@@ -651,7 +648,7 @@ public class JAdESLevelBaselineB {
 		} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(parameters.getSigDMechanism())) {
 			return getPayloadForObjectIdByUriMechanism();
 		} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(parameters.getSigDMechanism())) {
-			return null;
+			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}
 		throw new DSSException("The configured signature format is not supported!");
 	}

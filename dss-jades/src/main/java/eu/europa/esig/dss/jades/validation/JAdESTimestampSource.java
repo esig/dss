@@ -133,14 +133,14 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	protected TimestampToken makeTimestampToken(JAdESAttribute signatureAttribute, TimestampType timestampType, List<TimestampedReference> references) {
 
 		Map<String, Object> array = (Map<String, Object>) signatureAttribute.getValue();
-		List<Map> tokens = (List<Map>) array.get(JAdESHeaderParameterNames.TST_TOKENS);
+		List<Map<String, Object>> tokens = (List<Map<String, Object>>) array.get(JAdESHeaderParameterNames.TST_TOKENS);
 
 		// TODO handle all tokens
 		if (Utils.collectionSize(tokens) > 1) {
 			LOG.warn("More than one timestamp tokens ({})", Utils.collectionSize(tokens));
 		}
 
-		for (Map jsonToken : tokens) {
+		for (Map<String, Object> jsonToken : tokens) {
 			String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
 			try {
 				return new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES);

@@ -9,7 +9,7 @@ public class JAdESReferenceValidation extends ReferenceValidation {
 	
 	private static final long serialVersionUID = 2819574054512130987L;
 	
-	private List<String> errorMessages = new ArrayList<String>();
+	private List<String> errorMessages = new ArrayList<>();
 	
 	public void addErrorMessage(String errorMessage) {
 		errorMessages.add(errorMessage);

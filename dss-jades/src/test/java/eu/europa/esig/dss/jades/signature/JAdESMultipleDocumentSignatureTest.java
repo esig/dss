@@ -39,7 +39,8 @@ public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDoc
 	
 	@Test
 	public void test() {
-		Exception exception = assertThrows(DSSException.class, () -> getService().getDataToSign(documentToSigns, signatureParameters));
+		MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service = getService();
+		Exception exception = assertThrows(DSSException.class, () -> service.getDataToSign(documentToSigns, signatureParameters));
 		assertEquals("Not supported operation (only DETACHED are allowed for multiple document signing)!", exception.getMessage());
 	}
 	

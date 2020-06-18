@@ -46,18 +46,6 @@ public class JAdESUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESUtils.class);
 	
-    /**
-     * This is a copy of the STANDARD_ENCODE_TABLE above, but with + and / changed
-     * to - and _ to make the encoded Base64 results more URL-SAFE. This table is
-     * only used when the Base64's mode is set to URL-SAFE.
-     */
-    public static final Byte[] BASE64_URL_SAFE_ENCODE_TABLE = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-            'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
-            '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_' };
-    
-    public final static List<Byte> BASE64_URL_BINARIES = Arrays.asList(BASE64_URL_SAFE_ENCODE_TABLE);
-	
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
 	
 	/**
@@ -70,6 +58,9 @@ public class JAdESUtils {
 		criticalHeaders = Stream.of(SIG_T, X5T_O, SR_CM, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D)
 				.collect(Collectors.toSet());
 		criticalHeaders.add(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD); // b64 #RFC7797
+	}
+	
+	private JAdESUtils() {
 	}
 	
 	/**
@@ -321,14 +312,14 @@ public class JAdESUtils {
 	 * @return a list of {@link HTTPHeaderDocument}s
 	 * @throws IllegalArgumentException if a document of not {@link HTTPHeaderDocument} class found
 	 */
-	public static List<HTTPHeaderDocument> toHTTPHeaderDocuments(List<DSSDocument> dssDocuments) throws IllegalArgumentException {
+	public static List<HTTPHeaderDocument> toHTTPHeaderDocuments(List<DSSDocument> dssDocuments) {
 		List<HTTPHeaderDocument> httpHeaderDocuments = new ArrayList<>();
 		for (DSSDocument document : dssDocuments) {
 			if (document instanceof HTTPHeaderDocument) {
 				HTTPHeaderDocument httpHeaderDocument = (HTTPHeaderDocument) document;
 				httpHeaderDocuments.add(httpHeaderDocument);
 			} else {
-				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeaderDocument!"));
+				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeaderDocument!", document.getName()));
 			}
 		}
 		return httpHeaderDocuments;

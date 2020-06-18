@@ -2,6 +2,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -119,7 +120,7 @@ public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestVali
 			assertFalse(diagnosticData.getSignatureById(signatureId).isSignatureDuplicated());
 		}
 
-		assertFalse(signatureIdList.get(0).equals(signatureIdList.get(1)));
+		assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
 	}
 	
 	@Override

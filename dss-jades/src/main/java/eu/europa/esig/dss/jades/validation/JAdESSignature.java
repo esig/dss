@@ -595,7 +595,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						!caseSensitive && Utils.areStringsEqualIgnoreCase(signedDataName, document.getName())) {
 					found = true;
 					signedDocuments.add(document);
-					continue;
+					// do not break - same name docs possible
 				}
 			}
 			if (!found) {
@@ -689,7 +689,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private Map<String, String> getSignedDataUriHashMap() {
-		Map<String, String> signedDataHashMap = new LinkedHashMap<String, String>(); // LinkedHashMap is used to keep the original order
+		Map<String, String> signedDataHashMap = new LinkedHashMap<>(); // LinkedHashMap is used to keep the original order
 		
 		List<String> signedDataUriList = getSignedDataUriList();
 		List<String> signedDataHashList = getSignedDataHashList();
@@ -704,6 +704,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return signedDataHashMap;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<String> getSignedDataUriList() {
 		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
@@ -713,6 +714,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return Collections.emptyList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<String> getSignedDataHashList() {
 		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);

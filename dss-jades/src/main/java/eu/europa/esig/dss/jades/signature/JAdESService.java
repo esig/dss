@@ -172,7 +172,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 				}
 				return new JAdESSerializationBuilder(certificateVerifier, parameters, documentsToSign);
 			default:
-				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!"));
+				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!", parameters.getJwsSerializationType()));
 		}
 	}
 

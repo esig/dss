@@ -91,7 +91,7 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 	 */
 	protected void incorporatePayload(final JWS jws) {
 		byte[] payloadBytes = jadesLevelBaselineB.getPayloadBytes();
-		if (payloadBytes != null) {
+		if (Utils.isArrayNotEmpty(payloadBytes)) {
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("The payload of created signature -> {}", new String(payloadBytes));
 				LOG.trace("The base64 payload of created signature -> {}", Utils.toBase64(payloadBytes));

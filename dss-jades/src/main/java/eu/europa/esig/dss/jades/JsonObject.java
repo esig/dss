@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.jades;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +11,9 @@ import org.jose4j.json.JsonUtil;
 /**
  * Represents a wrapper of a Map with JsonObject methods
  */
-public class JsonObject implements Map, Serializable {
+public class JsonObject implements Map<String, Object> {
 	
-	private static final long serialVersionUID = -8891417988762118707L;
-	
-	private Map map;
+	private Map<String, Object> map;
 	
 	/**
 	 * Creates an empty HashMap
@@ -30,7 +27,7 @@ public class JsonObject implements Map, Serializable {
 	 * 
 	 * @param m {@link Map} to wrap
 	 */
-	public JsonObject(Map m) {
+	public JsonObject(Map<String, Object> m) {
 		Objects.requireNonNull("Map cannot be null!");
 		map = m;
 	}
@@ -70,7 +67,7 @@ public class JsonObject implements Map, Serializable {
 	}
 
 	@Override
-	public Object put(Object key, Object value) {
+	public Object put(String key, Object value) {
 		return map.put(key, value);
 	}
 
@@ -80,7 +77,7 @@ public class JsonObject implements Map, Serializable {
 	}
 
 	@Override
-	public void putAll(Map m) {
+	public void putAll(Map<? extends String, ? extends Object> m) {
 		map.putAll(m);
 	}
 
@@ -90,17 +87,17 @@ public class JsonObject implements Map, Serializable {
 	}
 
 	@Override
-	public Set keySet() {
+	public Set<String> keySet() {
 		return map.keySet();
 	}
 
 	@Override
-	public Collection values() {
+	public Collection<Object> values() {
 		return map.values();
 	}
 
 	@Override
-	public Set entrySet() {
+	public Set<Map.Entry<String, Object>> entrySet() {
 		return map.entrySet();
 	}
 	

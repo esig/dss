@@ -4,6 +4,9 @@ package eu.europa.esig.dss.jades;
  * ETSI TS 119 182-1 V0.0.3
  */
 public final class JAdESHeaderParameterNames {
+	
+	private JAdESHeaderParameterNames() {
+	}
 
 	/**
 	 * Claimed signing time

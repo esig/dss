@@ -63,7 +63,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 			return jadesSignature.getOriginalDocuments();
 		} catch (DSSException e) {
 			LOG.warn("A JAdES signer's original document is not found [{}].", e.getMessage());
-			return null;
+			return Collections.emptyList();
 		}
 	}
 

@@ -35,7 +35,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCertificateSource.class);
 
-	private final JWS jws;
+	private transient final JWS jws;
 
 	public JAdESCertificateSource(JWS jws) {
 		Objects.requireNonNull(jws, "JSON Web signature cannot be null");
