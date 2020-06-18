@@ -108,7 +108,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	
 	private byte[] getReferenceBytes(final Reference reference, final String canonicalizationMethod) throws XMLSecurityException {
 		byte[] referencedBytes = reference.getReferencedBytes();
-		if (Utils.isStringNotBlank(canonicalizationMethod) && DomUtils.isDOM(referencedBytes)) {
+		if (DomUtils.isDOM(referencedBytes)) {
 			referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
 		}
 		if (LOG.isTraceEnabled()) {
@@ -382,7 +382,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	private void writeCanonicalizedValue(final String xPathString, final String canonicalizationMethod, final ByteArrayOutputStream buffer) throws IOException {
 		final Element element = DomUtils.getElement(signature, xPathString);
 		if (element != null) {
-			buffer.write(DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, element));
+			buffer.write(DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, element));
 		}
 	}
 
@@ -465,7 +465,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
 				canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
 			} else {
-				canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
+				canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
 			}
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
@@ -519,7 +519,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 					continue;
 				}
 			}
-			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
+			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
 			buffer.write(canonicalizedValue);
 		}
 		

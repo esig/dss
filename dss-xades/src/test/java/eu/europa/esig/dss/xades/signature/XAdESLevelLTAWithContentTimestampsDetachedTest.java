@@ -36,7 +36,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -73,23 +72,12 @@ public class XAdESLevelLTAWithContentTimestampsDetachedTest extends AbstractXAdE
 		signerLocation.setLocality("Brussels");
 		signerLocation.setStreet("Anspach");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
-
 		signatureParameters.bLevel()
 				.setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfSender, CommitmentTypeEnum.ProofOfCreation));
-
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
-
 		signatureParameters.setAddX509SubjectName(true);
 
-		XAdESTimestampParameters contentTimestampParameters = new XAdESTimestampParameters();
-		contentTimestampParameters.setCanonicalizationMethod(null); // The file cannot be canonicalized
-		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
-
-		contentTimestampParameters = new XAdESTimestampParameters();
-		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-		contentTimestampParameters.setCanonicalizationMethod(null); // The file cannot be canonicalized
-		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 		TimestampToken contentTimestamp2 = service.getContentTimestamp(documentToSign, signatureParameters);
 
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp, contentTimestamp2));

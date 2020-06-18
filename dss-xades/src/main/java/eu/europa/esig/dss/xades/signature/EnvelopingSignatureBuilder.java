@@ -23,8 +23,6 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -68,7 +66,6 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	public EnvelopingSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
-		setCanonicalizationMethods(params, CanonicalizationMethod.INCLUSIVE);
 	}
 
 	@Override

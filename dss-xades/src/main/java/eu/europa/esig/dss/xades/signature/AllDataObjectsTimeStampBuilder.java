@@ -35,7 +35,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -59,7 +58,6 @@ public class AllDataObjectsTimeStampBuilder {
 	}
 
 	public TimestampToken build(List<DSSDocument> documents) {
-		boolean canonicalizationUsed = false;
 		byte[] dataToBeDigested = null;
 
 		/*
@@ -69,12 +67,17 @@ public class AllDataObjectsTimeStampBuilder {
 		 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
 		 * ds:SignedInfo.
 		 */
+		
+		/*
+		 * A canonicalization method must be always used, 4.4.3.2:
+		 * If the data object is a node-set and the next transform requires octets, the signature application must 
+		 * attempt to convert the node-set to an octet stream using Canonical XML [XML-C14N].
+		 */
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSDocument document : documents) {
 				byte[] binaries = DSSUtils.toByteArray(document);
-				if (Utils.isStringNotEmpty(timestampParameters.getCanonicalizationMethod()) && DomUtils.isDOM(binaries)) {
+				if (DomUtils.isDOM(binaries)) {
 					binaries = DSSXMLUtils.canonicalize(timestampParameters.getCanonicalizationMethod(), binaries);
-					canonicalizationUsed = true;
 				}
 				baos.write(binaries);
 			}
@@ -87,9 +90,7 @@ public class AllDataObjectsTimeStampBuilder {
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(timestampParameters.getDigestAlgorithm(), digestToTimestamp);
 		try {
 			TimestampToken token = new TimestampToken(timeStampResponse.getBytes(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-			if (canonicalizationUsed) {
-				token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
-			}
+			token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
 			return token;
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot build an AllDataObjectsTimestamp", e);
