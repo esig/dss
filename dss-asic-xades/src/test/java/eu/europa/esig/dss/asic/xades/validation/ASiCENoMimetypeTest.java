@@ -46,7 +46,7 @@ public class ASiCENoMimetypeTest extends AbstractASiCWithXAdESTestValidation {
 		assertNotNull(diagnosticData.getContainerInfo());
 		assertNull(diagnosticData.getMimetypeFileContent());
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
-		assertEquals(ASiCContainerType.ASiC_E.getReadable(), diagnosticData.getContainerType());
+		assertEquals(ASiCContainerType.ASiC_E, diagnosticData.getContainerType());
 	}
 	
 	@Override

@@ -429,6 +429,8 @@ public interface ValidationPolicy {
 
 	LevelConstraint getManifestFilePresentConstraint();
 
+	LevelConstraint getSignedFilesPresentConstraint();
+
 	LevelConstraint getFullScopeConstraint();
 
 	/* Article 32 */

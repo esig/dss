@@ -59,7 +59,7 @@ public class CrossedASiCContainerTypeTest extends AbstractASiCECAdESTestSignatur
 	@Override
 	public void signAndVerify() {
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> super.signAndVerify());
-		assertEquals("Original container type 'ASiC_S' vs parameter : 'ASiC_E'", exception.getMessage());
+		assertEquals("Original container type 'ASiC-S' vs parameter : 'ASiC-E'", exception.getMessage());
 	}
 
 	@Override

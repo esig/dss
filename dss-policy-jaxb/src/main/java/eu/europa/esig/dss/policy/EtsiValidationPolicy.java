@@ -932,6 +932,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getSignedFilesPresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getSignedFilesPresent();
+		}
+		return null;
+	}
 
 	@Override
 	public boolean isEIDASConstraintPresent() {

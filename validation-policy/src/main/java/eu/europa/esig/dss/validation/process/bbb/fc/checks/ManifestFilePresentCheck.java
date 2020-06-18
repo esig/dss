@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -44,7 +45,7 @@ public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		if ("ASiC-S".equals(containerInfo.getContainerType())) { // ASiC-S no Manifest
+		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) { // ASiC-S no Manifest
 			message = MessageTag.BBB_FC_IMFP_ASICS;
 			error = MessageTag.BBB_FC_IMFP_ASICS_ANS;
 			return Utils.isCollectionEmpty(containerInfo.getManifestFiles());

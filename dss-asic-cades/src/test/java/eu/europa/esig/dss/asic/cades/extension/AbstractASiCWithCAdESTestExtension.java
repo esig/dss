@@ -112,7 +112,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
 		assertNotNull(containerInfo);
 
-		assertEquals(getContainerType().getReadable(), containerInfo.getContainerType());
+		assertEquals(getContainerType(), containerInfo.getContainerType());
 	}
 
 	@Override

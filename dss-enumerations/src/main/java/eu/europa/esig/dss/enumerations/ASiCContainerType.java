@@ -27,10 +27,21 @@ public enum ASiCContainerType {
 
 	/* Associated Signature Container Extended */
 	ASiC_E;
+	
+	/**
+	 * Returns the ASiCContainerType based on the name (String)
+	 *
+	 * @param name
+	 *            the asic container type's name to retrieve
+	 * @return the ASiCContainerType
+	 */
+	public static ASiCContainerType valueByName(String name) {
+		return valueOf(name.replace('-', '_'));
+	}
 
-	public String getReadable() {
-		String name = this.name();
-		return name.replace('_', '-');
+	@Override
+	public String toString() {
+		return super.toString().replace('_', '-');
 	}
 
 }

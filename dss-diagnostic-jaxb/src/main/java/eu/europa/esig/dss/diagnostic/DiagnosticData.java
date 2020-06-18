@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -1017,7 +1018,7 @@ public class DiagnosticData {
 	 * 
 	 * @return the container type (ASiC-S/E)
 	 */
-	public String getContainerType() {
+	public ASiCContainerType getContainerType() {
 		XmlContainerInfo containerInfo = wrapped.getContainerInfo();
 		if (containerInfo != null) {
 			return containerInfo.getContainerType();

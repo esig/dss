@@ -682,7 +682,7 @@ public class DiagnosticDataBuilder {
 	private XmlContainerInfo getXmlContainerInfo() {
 		if (containerInfo != null) {
 			XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
-			xmlContainerInfo.setContainerType(containerInfo.getContainerType().getReadable());
+			xmlContainerInfo.setContainerType(containerInfo.getContainerType());
 			String zipComment = containerInfo.getZipComment();
 			if (Utils.isStringNotBlank(zipComment)) {
 				xmlContainerInfo.setZipComment(zipComment);
