@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.DSSException;
  */
 public class NativeHTTPDataLoader implements DataLoader {
 
-	public enum HttpMethod {
+	protected enum HttpMethod {
 		GET, POST
 	}
 

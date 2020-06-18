@@ -631,7 +631,7 @@ public class DetailedReport {
 		return messages;
 	}
 
-	enum MessageType {
+	private enum MessageType {
 		INFO, WARN, ERROR
 	}
 

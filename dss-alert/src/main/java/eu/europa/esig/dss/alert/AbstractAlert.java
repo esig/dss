@@ -29,8 +29,8 @@ import eu.europa.esig.dss.alert.handler.AlertHandler;
  */
 public abstract class AbstractAlert<T> implements Alert<T> {
 
-	protected final AlertDetector<T> detector;
-	protected final AlertHandler<T> handler;
+	private final AlertDetector<T> detector;
+	private final AlertHandler<T> handler;
 
 	protected AbstractAlert(AlertDetector<T> detector, AlertHandler<T> handler) {
 		this.detector = detector;

@@ -61,7 +61,7 @@ public class SSLCertificateLoader implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SSLCertificateLoader.class);
 
-    public static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
+	private static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
     
     /* A proxied CommonsDataLoader to be used */
     private CommonsDataLoader commonsDataLoader;

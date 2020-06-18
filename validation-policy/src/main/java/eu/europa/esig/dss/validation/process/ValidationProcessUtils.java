@@ -36,7 +36,7 @@ import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ValidationProcessUtils {
 
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
 	/*
 	 * RFC 2560 : 4.2.2.2.1  Revocation Checking of an Authorized Responder

@@ -21,13 +21,13 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import java.io.Serializable;
 
 /**
  * Parameters for a visible signature creation
@@ -35,9 +35,9 @@ import java.io.Serializable;
  */
 public class SignatureImageParameters implements Serializable {
 
-	public static final int DEFAULT_PAGE = 1;
+	private static final int DEFAULT_PAGE = 1;
 
-	public static final int NO_SCALING = 100;
+	private static final int NO_SCALING = 100;
 
 	/**
 	 * This variable contains the image to use (company logo,...)

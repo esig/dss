@@ -33,8 +33,6 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -45,8 +43,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 
 public class JdbcCacheCrlSourceTest {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCrlSourceTest.class);
 	
 	private JdbcDataSource dataSource = new JdbcDataSource();
 	

@@ -598,22 +598,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Build a list of {@code SignatureScope} to add to Diagnostic Data
-	 * 
-	 * @param signatures a list of {@link AdvancedSignature}s (in case if present)
-	 * @return a list of {@link SignatureScope}s
-	 */
-	protected List<SignatureScope> getSignatureScope(List<AdvancedSignature> signatures) {
-		List<SignatureScope> signatureScopes = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (AdvancedSignature signature : signatures) {
-				signatureScopes.addAll(signature.getSignatureScopes());
-			}
-		}
-		return signatureScopes;
-	}
-
-	/**
 	 * Executes the validation regarding to the given {@code validationPolicy}
 	 * 
 	 * @param diagnosticData   {@link DiagnosticData} contained a data to be

@@ -40,9 +40,9 @@ import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
 
 public final class DiagnosticDataXmlDefiner {
 
-	public static final String DIAGNOSTIC_DATA_SCHEMA_LOCATION = "/xsd/DiagnosticData.xsd";
-
-	public static final String DIAGNOSTIC_DATA_XSLT_SVG_LOCATION = "/xslt/svg/diagnostic-data.xslt";
+	private static final String DIAGNOSTIC_DATA_SCHEMA_LOCATION = "/xsd/DiagnosticData.xsd";
+	
+	private static final String DIAGNOSTIC_DATA_XSLT_SVG_LOCATION = "/xslt/svg/diagnostic-data.xslt";
 
 	private DiagnosticDataXmlDefiner() {
 	}

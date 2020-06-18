@@ -27,7 +27,7 @@ package eu.europa.esig.dss.service.http.commons;
  */
 public class OCSPDataLoader extends CommonsDataLoader {
 
-	public static final String OCSP_CONTENT_TYPE = "application/ocsp-request";
+	private static final String OCSP_CONTENT_TYPE = "application/ocsp-request";
 
 	/**
 	 * The default constructor for CommonsDataLoader.

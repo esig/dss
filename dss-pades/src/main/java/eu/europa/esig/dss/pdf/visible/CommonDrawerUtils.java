@@ -26,7 +26,7 @@ import java.awt.RenderingHints;
 public class CommonDrawerUtils {
 
 	private static final int DPI = 300;
-	protected static final int PDF_DEFAULT_DPI = 72;
+	private static final int PDF_DEFAULT_DPI = 72;
 	
 	private CommonDrawerUtils() {
 	}
@@ -49,11 +49,6 @@ public class CommonDrawerUtils {
 	
 	public static float computeProperSize(float x, float dpi) {
 		return x * dpi / PDF_DEFAULT_DPI;
-	}
-
-	public static float getRation(Integer dpi) {
-		float floatDpi = getDpi(dpi);
-		return floatDpi / PDF_DEFAULT_DPI;
 	}
 	
 	public static float getPageScaleFactor(Integer dpi) {

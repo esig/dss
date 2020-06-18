@@ -59,8 +59,8 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCRLSource.class);
 
-	protected final transient CMSSignedData cmsSignedData;
-	protected final transient AttributeTable unsignedAttributes;
+	private final transient CMSSignedData cmsSignedData;
+	private final transient AttributeTable unsignedAttributes;
 
 	/**
 	 * The default constructor for CMSCRLSource.

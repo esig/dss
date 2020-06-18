@@ -110,7 +110,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * The default canonicalization method used in {@link SignatureDigestReference} computation
 	 */
-	protected static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
+	private static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 
 	/**
 	 * This variable contains the list of {@code XAdESPaths} adapted to the specific

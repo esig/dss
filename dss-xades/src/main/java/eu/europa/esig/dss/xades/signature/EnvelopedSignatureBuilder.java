@@ -26,12 +26,9 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -190,23 +187,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	private static boolean isXPointer(final String uri) {
 		final boolean xPointer = uri.startsWith("#xpointer(") || uri.startsWith("#xmlns(");
 		return xPointer;
-	}
-
-	/**
-	 * Bob --> This method is not used anymore, but it can replace {@code NOT_ANCESTOR_OR_SELF_DS_SIGNATURE}
-	 * transformation. Performance test should be performed!
-	 * In case of the enveloped signature the existing signatures are removed.
-	 *
-	 * @param domDoc
-	 *            {@code Document} containing the signatures to analyse
-	 */
-	protected void removeExistingSignatures(final Document domDoc) {
-		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLDSigElement.SIGNATURE.getURI(),
-				XMLDSigElement.SIGNATURE.getTagName());
-		for (int ii = signatureNodeList.getLength() - 1; ii >= 0; ii--) {
-			final Element signatureDOM = (Element) signatureNodeList.item(ii);
-			signatureDOM.getParentNode().removeChild(signatureDOM);
-		}
 	}
 
 }

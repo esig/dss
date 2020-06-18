@@ -313,8 +313,4 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		return conclusion != null && Indication.INDETERMINATE.equals(conclusion.getIndication());
 	}
 
-	protected boolean isAcceptableConclusion(XmlConclusion conclusion) {
-		return conclusion != null && !Indication.FAILED.equals(conclusion.getIndication());
-	}
-
 }

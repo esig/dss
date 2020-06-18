@@ -25,7 +25,7 @@ package eu.europa.esig.dss.service.http.commons;
  */
 public class TimestampDataLoader extends CommonsDataLoader {
 
-	public static final String TIMESTAMP_QUERY_CONTENT_TYPE = "application/timestamp-query";
+	private static final String TIMESTAMP_QUERY_CONTENT_TYPE = "application/timestamp-query";
 
 	/**
 	 * The default constructor for CommonsDataLoader.

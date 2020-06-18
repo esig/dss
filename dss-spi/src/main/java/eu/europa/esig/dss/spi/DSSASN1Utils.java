@@ -42,11 +42,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
@@ -375,39 +371,6 @@ public final class DSSASN1Utils {
 		byte[] hashAlgorithmDEREncoded = getDEREncoded(signPolicyHashAlgIdentifier);
 		byte[] signPolicyInfoDEREncoded = getDEREncoded(signPolicyInfo);
 		return DSSUtils.digest(digestAlgorithm, hashAlgorithmDEREncoded, signPolicyInfoDEREncoded);
-	}
-
-	/**
-	 * This method can be removed the simple IssuerSerial verification can be
-	 * performed. In fact the hash verification is sufficient.
-	 *
-	 * @param generalNames
-	 *            the generalNames
-	 * @return the canonicalized name
-	 */
-	public static String getCanonicalizedName(final GeneralNames generalNames) {
-		GeneralName[] names = generalNames.getNames();
-		TreeMap<String, String> treeMap = new TreeMap<>();
-		for (GeneralName name : names) {
-			String ldapString = String.valueOf(name.getName());
-			LOG.debug("ldapString to canonicalize: {} ", ldapString);
-			try {
-				LdapName ldapName = new LdapName(ldapString);
-				List<Rdn> rdns = ldapName.getRdns();
-				for (final Rdn rdn : rdns) {
-					treeMap.put(rdn.getType().toLowerCase(), String.valueOf(rdn.getValue()).toLowerCase());
-				}
-			} catch (InvalidNameException e) {
-				throw new DSSException(e);
-			}
-		}
-		StringBuilder stringBuilder = new StringBuilder();
-		for (Entry<String, String> entry : treeMap.entrySet()) {
-			stringBuilder.append(entry.getKey()).append('=').append(entry.getValue()).append('|');
-		}
-		final String canonicalizedName = stringBuilder.toString();
-		LOG.debug("canonicalizedName: {} ", canonicalizedName);
-		return canonicalizedName;
 	}
 
 	/**

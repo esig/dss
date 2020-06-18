@@ -227,24 +227,6 @@ public final class DSSXMLUtils {
 		return null;
 	}
 	
-	/**
-	 * Returns first {@link Element} child from the given parentNode
-	 * @param parentNode {@link Node} to get first {@link Element} child from
-	 * @return {@link Element} child
-	 */
-	public static Element getFirstElementChildNode(Node parentNode) {
-		if (parentNode.hasChildNodes()) {
-			NodeList nodeList = parentNode.getChildNodes();
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				Node child = nodeList.item(i);
-				if (Node.ELEMENT_NODE == child.getNodeType()) {
-					return (Element) child;
-				}
-			}
-		}
-		return null;
-	}
-	
 	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
 		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		for (int i = 0; i < signatures.getLength(); i++) {
