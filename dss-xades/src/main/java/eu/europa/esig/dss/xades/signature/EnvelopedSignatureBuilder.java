@@ -37,7 +37,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
-import eu.europa.esig.dss.xades.reference.XPathEnvelopedSignatureTransform;
+import eu.europa.esig.dss.xades.reference.XPath2FilterEnvelopedSignatureTransform;
 
 /**
  * This class handles the specifics of the enveloped XML signature
@@ -126,8 +126,8 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		final List<DSSTransform> dssTransformList = new ArrayList<>();
 
 		// For parallel signatures
-		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform(getXmldsigNamespace());
-		dssTransformList.add(xPathTransform);
+		XPath2FilterEnvelopedSignatureTransform xPath2FilterTransform = new XPath2FilterEnvelopedSignatureTransform(getXmldsigNamespace());
+		dssTransformList.add(xPath2FilterTransform);
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
 		CanonicalizationTransform canonicalizationTransform = 

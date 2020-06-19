@@ -20,18 +20,31 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.XPathEnvelopedSignatureTransform;
 
 public class XAdESLevelBEnvelopedWithXPathTest extends AbstractXAdESTestSignature {
 
@@ -52,8 +65,40 @@ public class XAdESLevelBEnvelopedWithXPathTest extends AbstractXAdESTestSignatur
 		// Will add the signature within the tr tag
 		signatureParameters.setXPathLocationString("//*[local-name() = 'tr']");
 
-		service = new XAdESService(getOfflineCertificateVerifier());
+		List<DSSReference> dssReferences = new ArrayList<>();
+		DSSReference reference = new DSSReference();
+		reference.setContents(documentToSign);
+		reference.setId("REF-ID1");
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setUri("");
+		List<DSSTransform> transforms1 = new ArrayList<>();
+		XPathEnvelopedSignatureTransform transform1 = new XPathEnvelopedSignatureTransform();
+		transforms1.add(transform1);
+		reference.setTransforms(transforms1);
+		dssReferences.add(reference);
 
+		signatureParameters.setReferences(dssReferences);
+
+		service = new XAdESService(getOfflineCertificateVerifier());
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertEquals(1, signatureScopes.size());
+		
+		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+		assertNotNull(xmlSignatureScope.getSignerData());
+		assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
+		
+		List<String> transformations = xmlSignatureScope.getTransformations();
+		assertEquals(1, transformations.size());
+		
+		String transform = transformations.get(0);
+		assertEquals("XPath filtering (XPath: not(ancestor-or-self::ds:Signature))", transform);
 	}
 
 	@Override
