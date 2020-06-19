@@ -20,13 +20,11 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
-public interface SerializableSignatureParameters extends Serializable {
+public interface SerializableSignatureParameters extends SerializableParameters {
 	
 	/**
 	 * Get the signing certificate

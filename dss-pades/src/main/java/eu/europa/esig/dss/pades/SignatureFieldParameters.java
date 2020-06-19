@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.model.SerializableParameters;
+
 /**
  * Parameters which allow to create a new signature field in a PDF document
  */
-public class SignatureFieldParameters {
+@SuppressWarnings("serial")
+public class SignatureFieldParameters implements SerializableParameters {
 
 	/* Signature field name (optional) */
 	private String name;
@@ -84,6 +87,12 @@ public class SignatureFieldParameters {
 
 	public void setHeight(float height) {
 		this.height = height;
+	}
+
+	@Override
+	public String toString() {
+		return "SignatureFieldParameters [name=" + name + ", page=" + page + ", originX=" + originX + ", originY="
+				+ originY + ", width=" + width + ", height=" + height + "]";
 	}
 
 }

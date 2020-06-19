@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.pdfbox.cos.COSArray;
@@ -61,20 +63,22 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SerializableParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
-import eu.europa.esig.dss.pades.EncryptedDocumentException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
+import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
+import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -85,6 +89,18 @@ import eu.europa.esig.dss.utils.Utils;
 public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
+	
+	private SecureRandomProvider secureRandomProvider;
+
+	/**
+	 * Set the {@code SecureRandomProvider}. Allows to modify a custom behavior for signing of encrypted documents.
+	 * 
+	 * @param secureRandomProvider {@link SecureRandomProvider}
+	 */
+	public void setSecureRandomProvider(SecureRandomProvider secureRandomProvider) {
+		Objects.requireNonNull(secureRandomProvider, "SecureRandomProvider cannot be null");
+		this.secureRandomProvider = secureRandomProvider;
+	}
 
 	/**
 	 * Constructor for the PdfBoxSignatureService
@@ -100,12 +116,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected void checkDocumentPermissions(DSSDocument document) {
-		try (InputStream is = document.openStream(); PDDocument pdDocument = PDDocument.load(is)) {
-
-			if (pdDocument.isEncrypted()) {
-				throw new EncryptedDocumentException("The document is encrypted (not supported operation)");
-			}
+	protected void checkDocumentPermissions(final DSSDocument document, final String pwd) {
+		try (InputStream is = document.openStream(); PDDocument pdDocument = PDDocument.load(is, pwd)) {
 
 			AccessPermission accessPermission = pdDocument.getCurrentAccessPermission();
 			if (accessPermission.isReadOnly()) {
@@ -123,23 +135,27 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (!accessPermission.canFillInForm()) {
 				throw new ProtectedDocumentException("Cannot fill in form");
 			}
+			
 		} catch (InvalidPasswordException e) {
-			throw new EncryptedDocumentException("The document is encrypted (not supported operation)");
+			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException("The document is encrypted (password is invalid)");
+			
 		} catch (DSSException e) {
 			throw e;
+			
 		} catch (Exception e) {
 			throw new DSSException("Unable to check document", e);
+			
 		}
 	}
 
 	@Override
 	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		checkDocumentPermissions(toSignDocument);
+		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				InputStream is = toSignDocument.openStream();
-				PDDocument pdDocument = PDDocument.load(is)) {
+				PDDocument pdDocument = PDDocument.load(is, parameters.getPasswordProtection())) {
 
 			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument);
 			if (LOG.isDebugEnabled()) {
@@ -155,11 +171,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
 			final PAdESCommonParameters parameters) {
 		
-		checkDocumentPermissions(toSignDocument);
+		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = toSignDocument.openStream();
-				PDDocument pdDocument = PDDocument.load(is)) {
+				PDDocument pdDocument = PDDocument.load(is, parameters.getPasswordProtection())) {
 
 			signDocumentAndReturnDigest(parameters, signatureValue, baos, pdDocument);
 
@@ -203,7 +219,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
 
-			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
+			// the document needs to have an ID, if not the current system time is used, 
+			// and then the digest of the signed data will be different
+			if (pdDocument.getDocumentId() == null) {
+				pdDocument.setDocumentId(parameters.getSigningDate().getTime());
+			}
+			saveDocumentIncrementally(pdDocument, fileOutputStream, parameters);
 
 			return digest.digest();
 		} catch (IOException e) {
@@ -342,26 +363,30 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setNeedToBeUpdated(true);
 	}
 
-	public void saveDocumentIncrementally(PAdESCommonParameters parameters, OutputStream outputStream,
-			PDDocument pdDocument) throws DSSException {
+	public void saveDocumentIncrementally(PDDocument pdDocument, OutputStream outputStream, SerializableParameters parameters) throws DSSException {
 		try {
-			// the document needs to have an ID, if not a ID based on the current system
-			// time is used, and then the
-			// digest of the signed data is different
-			if (pdDocument.getDocumentId() == null) {
-				pdDocument.setDocumentId(parameters.getSigningDate().getTime());
+			if (pdDocument.isEncrypted()) {
+				SecureRandom secureRandom = getSecureRandomProvider(parameters).getSecureRandom();
+				pdDocument.getEncryption().getSecurityHandler().setCustomSecureRandom(secureRandom);
 			}
 			pdDocument.saveIncremental(outputStream);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
+	
+	private SecureRandomProvider getSecureRandomProvider(SerializableParameters parameters) {
+		if (secureRandomProvider == null) {
+			secureRandomProvider = new DSSSecureRandomProvider(parameters);
+		}
+		return secureRandomProvider;
+	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, PAdESCommonParameters parameters) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
-				PDDocument pdDocument = PDDocument.load(is)) {
+				PDDocument pdDocument = PDDocument.load(is, parameters.getPasswordProtection())) {
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
@@ -369,7 +394,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
-			pdDocument.saveIncremental(baos);
+			saveDocumentIncrementally(pdDocument, baos, parameters);
 
 			DSSDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
 			inMemoryDocument.setMimeType(MimeType.PDF);
@@ -481,9 +506,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(DSSDocument document) {
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
 		List<String> result = new ArrayList<>();
-		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is, passwordProtection)) {
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is, pwd)) {
 			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
 			for (PDSignatureField pdSignatureField : signatureFields) {
 				PDSignature signature = pdSignatureField.getSignature();
@@ -492,7 +517,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				}
 			}
 		} catch (InvalidPasswordException e) {
-			throw new eu.europa.esig.dss.pades.InvalidPasswordException(e.getMessage());
+			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
 			throw new DSSException("Unable to determine signature fields", e);
 		}
@@ -500,12 +525,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
 		
-		checkDocumentPermissions(document);
+		checkDocumentPermissions(document, pwd);
 		
 		try (InputStream is = document.openStream();
-				PDDocument pdfDoc = PDDocument.load(is);
+				PDDocument pdfDoc = PDDocument.load(is, pwd);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
 			PDPage page = pdfDoc.getPage(parameters.getPage());
@@ -543,7 +568,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signatureField.getCOSObject().setNeedToBeUpdated(true);
 			page.getCOSObject().setNeedToBeUpdated(true);
 
-			pdfDoc.saveIncremental(baos);
+			saveDocumentIncrementally(pdfDoc, baos, parameters);
 
 			return new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
 
@@ -553,12 +578,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		return new PdfBoxDocumentReader(dssDocument, passwordProtection);
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		return new PdfBoxDocumentReader(binaries, passwordProtection);
 	}
 
