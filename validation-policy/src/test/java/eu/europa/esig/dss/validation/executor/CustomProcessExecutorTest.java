@@ -152,6 +152,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setIncludeSemantics(true);
 
 		Reports reports = executor.execute();
 

@@ -123,6 +123,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
 
+	/**
+	 * This variable allows to include the semantics for Indication / SubIndication
+	 */
+	private boolean includeSemantics = false;
+
 	protected final SignatureScopeFinder signatureScopeFinder;
 
 	private SignaturePolicyProvider signaturePolicyProvider;
@@ -203,6 +208,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
 		Objects.requireNonNull(tokenExtractionStategy);
 		this.tokenExtractionStategy = tokenExtractionStategy;
+	}
+
+	@Override
+	public void setIncludeSemantics(boolean include) {
+		this.includeSemantics = include;
 	}
 
 	@Override
@@ -395,8 +405,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return new DiagnosticDataBuilder().document(document).usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.tokenExtractionStategy(
-						tokenExtractionStategy)
+				.tokenExtractionStategy(tokenExtractionStategy)
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes()).trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).foundSignatures(signatures)
 				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
@@ -610,6 +619,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
+		executor.setIncludeSemantics(includeSemantics);
 		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());

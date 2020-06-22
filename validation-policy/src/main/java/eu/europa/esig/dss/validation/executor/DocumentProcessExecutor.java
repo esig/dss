@@ -40,4 +40,14 @@ public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {
 	 */
 	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
 
+	/**
+	 * This method allows to enable/disable the semantics inclusion in the reports
+	 * (Indication / SubIndication meanings)
+	 * 
+	 * Disabled by default
+	 * 
+	 * @param includeSemantics true to enable the inclusion of the semantics
+	 */
+	void setIncludeSemantics(boolean includeSemantics);
+
 }

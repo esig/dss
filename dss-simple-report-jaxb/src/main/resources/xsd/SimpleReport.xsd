@@ -28,6 +28,7 @@
 				<xs:element name="Timestamp" type="Timestamp" />
 			</xs:choice>
 			
+			<xs:element name="Semantic" type="Semantic" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
 	</xs:complexType>
@@ -228,5 +229,13 @@
 			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="Semantic">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Key" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 </xs:schema>

@@ -36,10 +36,14 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
@@ -54,11 +58,19 @@ import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
  */
 public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
+	private final I18nProvider i18nProvider;
+	private final boolean includeSemantics;
+
 	private int totalSignatureCount = 0;
 	private int validSignatureCount = 0;
+	private Set<Indication> finalIndications = new HashSet<>();
+	private Set<SubIndication> finalSubIndications = new HashSet<>();
 
-	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+	public SimpleReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy,
+			DiagnosticData diagnosticData, DetailedReport detailedReport, boolean includeSemantics) {
 		super(currentTime, policy, diagnosticData, detailedReport);
+		this.i18nProvider = i18nProvider;
+		this.includeSemantics = includeSemantics;
 	}
 
 	/**
@@ -91,7 +103,29 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		addStatistics(simpleReport);
 
+		if (includeSemantics) {
+			addSemantics(simpleReport);
+		}
+
 		return simpleReport;
+	}
+
+	private void addSemantics(XmlSimpleReport simpleReport) {
+
+		for (Indication indication : finalIndications) {
+			XmlSemantic semantic = new XmlSemantic();
+			semantic.setKey(indication.name());
+			semantic.setValue(i18nProvider.getMessage(MessageTag.getSemantic(indication.name())));
+			simpleReport.getSemantic().add(semantic);
+		}
+
+		for (SubIndication subIndication : finalSubIndications) {
+			XmlSemantic semantic = new XmlSemantic();
+			semantic.setKey(subIndication.name());
+			semantic.setValue(i18nProvider.getMessage(MessageTag.getSemantic(subIndication.name())));
+			simpleReport.getSemantic().add(semantic);
+		}
+
 	}
 
 	private void addStatistics(XmlSimpleReport simpleReport) {
@@ -143,7 +177,13 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		} else {
 			xmlSignature.setIndication(indication); // INDERTERMINATE
 		}
-		xmlSignature.setSubIndication(detailedReport.getHighestSubIndication(signatureId));
+		finalIndications.add(xmlSignature.getIndication());
+
+		SubIndication highestSubIndication = detailedReport.getHighestSubIndication(signatureId);
+		if (highestSubIndication != null) {
+			xmlSignature.setSubIndication(highestSubIndication);
+			finalSubIndications.add(highestSubIndication);
+		}
 
 		addSignatureProfile(xmlSignature);
 

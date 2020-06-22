@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2020-06-19T14:56:13" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+                Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+                signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>ChangingSizeWithoutChain.pdf</DocumentName>
+    <ValidSignaturesCount>0</ValidSignaturesCount>
+    <SignaturesCount>1</SignaturesCount>
+    <Signature SignatureFormat="PAdES-BASELINE-T" Id="S-632D8A2F2763E5538C8B9CF45EE057737FFDF0475EF0029CBE1D11C6B1750B1D">
+        <CertificateChain>
+            <Certificate>
+                <id>C-12598566F2213834E81EB215855CDC124DA12B3D8498FD171AE3CAAF9A90480B</id>
+                <qualifiedName>TEST Signature.Bank</qualifiedName>
+            </Certificate>
+            <Certificate>
+                <id>C-917791BF89BAB924E1C30764793A2427CD2D544B7E38D9C5168BD2F75E9B00AE</id>
+                <qualifiedName>Legal Person CA G2 Test</qualifiedName>
+            </Certificate>
+        </CertificateChain>
+        <Indication>TOTAL_FAILED</Indication>
+        <SubIndication>SIG_CRYPTO_FAILURE</SubIndication>
+        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
+        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
+        <Errors>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Errors>
+        <Errors>The signature is not intact!</Errors>
+        <Errors>The result of the timestamps validation process is not conclusive!</Errors>
+        <Errors>The algorithm is no longer considered reliable!</Errors>
+        <Errors>The certificate chain for timestamp is not trusted, it does not contain a trust anchor.</Errors>
+        <Warnings>The signature/seal is not a valid AdES digital signature!</Warnings>
+        <SigningTime>2018-08-31T14:49:38</SigningTime>
+        <BestSignatureTime>2020-06-19T14:56:13</BestSignatureTime>
+        <SignedBy>TEST Signature.Bank</SignedBy>
+        <SignatureLevel description="Not applicable">N/A</SignatureLevel>
+        <SignatureScope name="Partial PDF" scope="PARTIAL">The document ByteRange : [0, 38045, 238047, 313]</SignatureScope>
+    </Signature>
+    <Semantic Key="TOTAL_FAILED">The signature validation process results into TOTAL-FAILED because the format-check failed, cryptographic checks of the signature failed (including checks of hashes of individual data objects that have been signed indirectly) or it has been proven that the signing certificate was invalid at the time of generation of the signature.</Semantic>
+    <Semantic Key="SIG_CRYPTO_FAILURE">The signature validation process results into TOTAL-FAILED because the signature value in the signature could not be verified using the signers public key in the signing certificate.</Semantic>
+</SimpleReport>

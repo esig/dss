@@ -45,6 +45,11 @@ public class SimpleReportFacadeTest {
 		createAndValidate("sr-sig-and-tst.xml");
 	}
 	
+	@Test
+	public void generateSemantics() throws Exception {
+		createAndValidate("sr-semantics.xml");
+	}
+
 	private void createAndValidate(String filename) throws Exception {
 		SimpleReportFacade facade = SimpleReportFacade.newFacade();
 
