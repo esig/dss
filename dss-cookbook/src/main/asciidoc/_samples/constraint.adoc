@@ -21,6 +21,7 @@
 			<Id>application/vnd.etsi.asic-e+zip</Id>
 		</AcceptableMimeTypeFileContent>
 		<ManifestFilePresent Level="FAIL" />
+		<SignedFilesPresent Level="FAIL" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
 	<SignatureConstraints>
@@ -79,6 +80,7 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
+			<UnicitySigningCertificate Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -193,14 +195,22 @@
 			</CACertificate>
 			<Cryptographic />
 		</BasicSignatureConstraints>
+		<SignedAttributes>
+			<SigningCertificatePresent Level="WARN" />
+			<UnicitySigningCertificate Level="WARN" />
+			<CertDigestPresent Level="WARN" />
+			<CertDigestMatch Level="WARN" />
+			<IssuerSerialMatch Level="WARN" />
+		</SignedAttributes>
 	</Timestamp>
 	<Revocation>
         <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+        <UnknownStatus Level="FAIL" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
-			<ProspectiveCertificateChain Level="WARN" />
+			<ProspectiveCertificateChain Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -231,12 +241,14 @@
 			<Algo>DSA</Algo>
 			<Algo>ECDSA</Algo>
 			<Algo>PLAIN-ECDSA</Algo>
+<!-- 		<Algo>Ed25519</Algo> 				Not referenced in ETSI/SOGIS -->
 		</AcceptableEncryptionAlgo>
 		<MiniPublicKeySize>
 			<Algo Size="160">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
 			<Algo Size="160">ECDSA</Algo>
 			<Algo Size="160">PLAIN-ECDSA</Algo>
+<!-- 		<Algo Size="24">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
 		</MiniPublicKeySize>
 		<AcceptableDigestAlgo>
 			<Algo>MD2</Algo>
@@ -290,6 +302,7 @@
 			<Algo Date="2026" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<Algo Date="2026" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<Algo Date="2026" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+<!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic> 
@@ -300,9 +313,8 @@
 	<eIDAS>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="WARN" />
-		<TLWellSigned Level="FAIL" />
+		<TLWellSigned Level="WARN" />
 		<TLVersion Level="FAIL" value="5" />
-		<TLConsistency Level="FAIL" />
 	</eIDAS>
 </ConstraintsParameters>
 ----

@@ -41,9 +41,9 @@ These installation will run all unit tests present in the modules, which can tak
 
 In addition to the general build, the framework provides a list of custom profiles, allowing a customized behavior:
 
- * quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes). Be aware, that some modules (dss-utils, dss-crl-parser and dss-pades) still have to be built completely.
+ * quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes). Be aware, that some modules (dss-test, dss-utils, dss-crl-parser and dss-pades) still have to be built completely.
  * slow-tests - executes all tests, including time-consuming unit tests.
- * owasp - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
+ * owasp - runs validation of the project and using dependencies according to the [National Vulnerability Database (NVD)](https://nvd.nist.gov).
  * jdk19-plus - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
  * spotless - used to add a licence header into project files.
  
