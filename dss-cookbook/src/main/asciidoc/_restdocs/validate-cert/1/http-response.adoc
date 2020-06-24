@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 17 Apr 2020 12:42:46 GMT
+Date: Wed, 24 Jun 2020 13:48:32 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -13,12 +13,12 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 6419
+Content-Length: 6716
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-04-17T12:42:46",
+    "ValidationDate" : "2020-06-24T13:48:32",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -38,16 +38,19 @@ Content-Length: 6419
         "Format" : "RFC2253"
       } ],
       "SerialNumber" : 51497007561559,
+      "SubjectSerialNumber" : null,
       "CommonName" : "SignerFake",
       "Locality" : null,
       "State" : null,
       "CountryName" : null,
+      "OrganizationIdentifier" : null,
       "OrganizationName" : "DSS-test",
       "GivenName" : null,
       "OrganizationalUnit" : null,
       "Surname" : null,
       "Pseudonym" : null,
       "Email" : null,
+      "subjectAlternativeName" : null,
       "aiaUrl" : [ ],
       "crlUrl" : [ ],
       "ocspServerUrl" : [ ],
@@ -56,8 +59,10 @@ Content-Length: 6419
       "NotBefore" : "2017-06-08T11:26:01",
       "PublicKeySize" : 2048,
       "PublicKeyEncryptionAlgo" : "RSA",
+      "EntityKey" : "PK-3CFCA257859E202BCC83864D02B267B08A997C357AB98D923BBC63F00607C7B6",
       "KeyUsage" : [ "keyCertSign", "crlSign" ],
       "extendedKeyUsagesOid" : [ ],
+      "PSD2Info" : null,
       "IdPkixOcspNoCheck" : false,
       "BasicSignature" : {
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
@@ -74,12 +79,14 @@ Content-Length: 6419
       "certificatePolicy" : [ ],
       "qcStatementOid" : [ ],
       "qcTypeOid" : [ ],
+      "SemanticsIdentifier" : null,
       "TrustedServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {
         "DigestMethod" : "SHA256",
-        "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw="
+        "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw=",
+        "match" : null
       }
     } ],
     "Revocation" : [ ],
@@ -124,7 +131,7 @@ Content-Length: 6419
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-04-17T12:42:46"
+    "ValidationTime" : "2020-06-24T13:48:32"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

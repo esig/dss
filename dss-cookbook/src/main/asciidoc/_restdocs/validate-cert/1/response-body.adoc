@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-04-17T12:42:46",
+    "ValidationDate" : "2020-06-24T13:48:32",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -23,16 +23,19 @@
         "Format" : "RFC2253"
       } ],
       "SerialNumber" : 51497007561559,
+      "SubjectSerialNumber" : null,
       "CommonName" : "SignerFake",
       "Locality" : null,
       "State" : null,
       "CountryName" : null,
+      "OrganizationIdentifier" : null,
       "OrganizationName" : "DSS-test",
       "GivenName" : null,
       "OrganizationalUnit" : null,
       "Surname" : null,
       "Pseudonym" : null,
       "Email" : null,
+      "subjectAlternativeName" : null,
       "aiaUrl" : [ ],
       "crlUrl" : [ ],
       "ocspServerUrl" : [ ],
@@ -41,8 +44,10 @@
       "NotBefore" : "2017-06-08T11:26:01",
       "PublicKeySize" : 2048,
       "PublicKeyEncryptionAlgo" : "RSA",
+      "EntityKey" : "PK-3CFCA257859E202BCC83864D02B267B08A997C357AB98D923BBC63F00607C7B6",
       "KeyUsage" : [ "keyCertSign", "crlSign" ],
       "extendedKeyUsagesOid" : [ ],
+      "PSD2Info" : null,
       "IdPkixOcspNoCheck" : false,
       "BasicSignature" : {
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
@@ -59,12 +64,14 @@
       "certificatePolicy" : [ ],
       "qcStatementOid" : [ ],
       "qcTypeOid" : [ ],
+      "SemanticsIdentifier" : null,
       "TrustedServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {
         "DigestMethod" : "SHA256",
-        "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw="
+        "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw=",
+        "match" : null
       }
     } ],
     "Revocation" : [ ],
@@ -109,7 +116,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-04-17T12:42:46"
+    "ValidationTime" : "2020-06-24T13:48:32"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Date;
@@ -34,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
@@ -54,7 +55,7 @@ public class DSS1566Test extends AbstractTestValidationExecutor {
 		SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 		List<String> certIds = simpleReport.getCertificateIds();
-		assertNotEquals(0, certIds);
+		assertTrue(Utils.isCollectionNotEmpty(certIds));
 		for (String certId : certIds) {
 			Indication indication = simpleReport.getCertificateIndication(certId);
 			assertNotNull(indication);

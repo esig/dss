@@ -1427,37 +1427,44 @@ As you can see, it is easy to add another implementation of the SignatureTokenCo
 == Management of certificates sources
 
 The validation of a certificate requires the access to some other certificates from multiple sources like trusted lists, trust store, the signature itself: certificates can be contained inside or any other source. 
-Within the framework, an X509 certificate is modelled through the class:
+Within the framework, an X509 certificate is wrapped through the class:
 
- * `eu.europa.esig.dss.x509.CertificateToken`
+ * `eu.europa.esig.dss.model.x509.CertificateToken`
  
-This encapsulation helps make certificate handling more suited to the needs of the validation in the context of trust. Each certificate is unambiguously identified by its issuer DN and serial number. The framework associates a unique internal identifier to each certificate but this identifier is not calculated on the data contained in the certificate and therefore varies from one application to another. However, it is independent of its source. It allows comparison of certificates issued by different sources.
-Certificate tokens are grouped into pools. A certificate token can be declared in several pools. The class that models a pool is called:
+This encapsulation helps make certificate handling more suited to the needs of the validation in the context of trust. The framework associates two internal identifiers to the certificate : the DSS Id based on the certificate binary (unique for each certificate) and the Entity Id based on its public key (common to cross-signed certificates).
 
- * `eu.europa.esig.dss.x509.CertificatePool`
- 
-This class allows keeping only one occurrence of the certificate in the given context (i.e. validation). 
- 
-The CertificateSource interface provides abstraction for accessing a certificate, regardless of the source. However, each source has its own type:
+Certificate tokens are grouped into sources. A certificate token can be declared in several sources. The class that models a source is called:
 
- * `eu.europa.esig.dss.x509.CertificateSourceType`
+ * `eu.europa.esig.dss.spi.x509.CertificateSource`
+ 
+This class stores all extracted/injected certificates for a specific source (Signature, OCSP Response, Trust store, Trusted-list,...). All source types are specified in the enumeration : 
+ 
+ * `eu.europa.esig.dss.enumerations.CertificateSourceType`
  
 This information is used, for example, to distinguish between the certificate from a trusted source and the others. A source has one and only one type, but a certificate token can be found in multiple sources. 
 The DSS framework supplies some standard implementations, but also gives the possibility to implement owner solutions. Among the standard solutions you can find:
 
- * `eu.europa.esig.dss.x509.CommonCertificateSource`
+ * `eu.europa.esig.dss.spi.x509.CommonCertificateSource`
  
-This is the superclass of almost of the certificate sources. 
-It implements the common method CommonCertificateSource#get returns the list of CertificateToken(s) corresponding to the given subject distinguished name. Note that the content of the encapsulated certificates pool can be different from the content of the source. Only CertificateToken(s) present in the source are taken into account.
-It exposes also the method CommonCertificateSource#addCertificate which gives the possibility to add manually any X509Certificate as a part of this source and as a part of the encapsulated pool. If the certificate is already present in the pool its source type is associated to the token. 
+This is the superclass of almost of the certificate sources. It stores the extracted certificates and implements the common methods from the `CertificateSource` to retrieve certificate(s) by subject, public key, subject key identifier (ski),...
 
- * `eu.europa.esig.dss.x509.SignatureCertificateSource`
- 
-Some certificate sources are based on data encapsulated within a signature. That means that the set of certificates is available and the software only needs to find the certificate using its subject name. This class also contains a list of methods allowing to obtain specialized list of certificates contained in the source by their original location.
+It also exposes the method CommonCertificateSource#addCertificate which gives the possibility to add manually any CertificateToken as a part of this source.
 
- * `eu.europa.esig.dss.tsl.TrustedListsCertificateSource`
+ * `eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource`
  
-Certificates coming from the list of Trusted Lists. This class gives the mechanism to define the set of trusted certificates (trust anchors). They are used in the validation process to decide if the prospective certificate chain has a trust anchor. See chapter <<tlValidationJob>> to get more information about trusted lists loading (e.g. EU Trusted List).
+The CommonTrustedCertificateSource is a certificate source for trusted certificates. All added certificates are marked as trust anchors and no revocation data are required for these certificates.
+
+ * `eu.europa.esig.dss.validation.SignatureCertificateSource`
+ 
+This class and its sub-classes are used to extract and collect certificates from signatures / timestamps. It also has methods to retrieve certificates / certificate references by their origin (eg : SigningCertificate attribute, DSS Dictionary,...).
+
+ * `eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource`
+ 
+Certificates coming from the list of Trusted Lists. This class inherits of `CommonTrustedCertificateSource` and  gives the mechanism to define the set of trusted certificates (trust anchors). They are used in the validation process to decide if the prospective certificate chain has a trust anchor. See chapter <<tlValidationJob>> to get more information about trusted lists loading (e.g. EU Trusted List).
+
+ * `eu.europa.esig.dss.spi.x509.ListCertificateSource`
+ 
+This class follows the composite design pattern with a list of CertificateSources. That's used in the validation to retrieve all sources from the signatures / timestamps / revocation data / trusted lists /... It contains some methods which check over all sources to retrieve certificates or verify if a certificate is trusted.
 
 == Management of CRL and OCSP sources
 
@@ -1484,17 +1491,18 @@ The interface OCSPSource defines the method which returns OCSPToken for the give
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo]
 ----
 
-We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on CSPAndCRLCertificateVerifier class whose role is to fetch revocation data by querying an OCSP server first and then a CRL server if no OCSP response could be retrieved.
+We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on `OCSPAndCRLRevocationSource` class whose role is to fetch revocation data by querying an OCSP server first and then a CRL server if no OCSP response could be retrieved.
 In general, we can distinguish three main sources:
 
- * Offline sources;
- * Online sources;
- * Sources with the cache mechanism.
+ * Offline sources (`OfflineRevocationSource`);
+ * Online sources (`OnlineRevocationSource`);
+ * Sources with the cache mechanism;
+ * List of sources (`ListRevocationSource`) with a collection of several sources.
  
 === Repository Revocation Source
 
 The above-mentioned class allows caching of CRL and OCSP responses to a user-chosen source. By default DSS provides a JDBC based implementation for this class, but other implementations also can be created. The class contains a complete set of functions to save revocation data to a database, extract, update and remove it. +
-Furthermore, the `Repository Revocation Source` allows the implementer to define a backup revocation source, for the case if the database does not contains the certificate's revocation data yet. +
+Furthermore, the `RepositoryRevocationSource` allows the implementer to define a backup revocation source, for the case if the database does not contains the certificate's revocation data yet. +
 
 List of cached Revocation sources implemented in DSS:
 
@@ -1525,24 +1533,24 @@ Be aware that you have to initialize a table before start of working with the ca
 Such sources find the status of a certificate either from a list stored locally or using the information contained in the advanced signature or online way. Here is the list of sources already implemented in the DSS framework:
 
  * CRL sources
- ** `OfflineCRLSource` : This class that implements in a generic way the findCrl method that operates on the different CRLs implemented in children classes.
- *** `ListCRLSource` : This source maintains a list of CRLToken. 
- *** `SignatureCRLSource` : The advanced signature contains a list of CRL that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed CRL from a list. The child needs to retrieve the list of wrapped CRLs.
- **** `CAdESCRLSource` : Retrieves information from a CAdES signature.
- **** `PAdESCRLSource` : Retrieves information from a PAdES signature.
- **** `XAdESCRLSource` : Retrieves information from a XAdES signature.
- **** `ExternalResourcesCRLSource` : A class that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
- ** `OnlineCRLSource` : Retrieves CRL files from online sources.
+ ** `OfflineCRLSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and CRL contents are injected by its sub-classes : 
+ *** `CMSCRLSource` : Extracts CRLs and CRL references from a CMS Signed Data :
+ **** `CAdESCRLSource` : Sub-class of `CMSCRLSource` for a CAdES Signature;
+ **** `TimestampCRLSource`: Sub-class of `CMSCRLSource` for a Timestamp token (RFC 3161);
+ *** `PAdESCRLSource` : Extracts CRLs and CRL references from a PAdES signature.
+ *** `XAdESCRLSource` : Extracts CRLs and CRL references from a XAdES signature.
+ *** `ExternalResourcesCRLSource` : A class that can instantiate a list of certificate revocation lists from a directory where should be the individual lists.
+ ** `OnlineCRLSource` : Retrieves CRL files from online sources with the CRL Distribution Points information from the certificate.
  ** `JdbcCacheCrlSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid CRL entries to a defined `DataSource'` and retrieve them locally.
 
  * OCSP sources
- ** `OfflineOCSPSource` : An abstract class that helps to implement OCSPSource with an already loaded list of OCSPToken. It implements in a generic way the getOCSPResponse method that operates on the different OCSP implementations in children classes.
- *** `ListOCSPSource` : Implements an OCSPSource from a list of OCSPToken.
- *** `SignatureOCSPSource` : The advanced signature contains a list of OCSPResp that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed OCSPResp from a list. The children need to retrieve the list of wrapped OCSPResp.
- **** `CAdESOCSPSource` : Retrieves information from a CAdES signature.
- **** `PAdESOCSPSource` : Retrieves information from a PAdES signature.
- **** `XAdESOCSPSource` : Retrieves information from a XAdES signature.
- **** `ExternalResourcesOCSPSource` : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
+ ** `OfflineOCSPSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and OCSP responses are injected by its sub-classes : 
+ *** `CMSOCSPSource` : Extracts OCSP responses and OCSP references from a CMS Signed Data :
+ **** `CAdESOCSPSource` : Sub-class of `CMSOCSPSource` for a CAdES Signature;
+ **** `TimestampOCSPSource`: Sub-class of `CMSOCSPSource` for a Timestamp token (RFC 3161);
+ *** `PAdESOCSPSource` : Extracts OCSP responses and OCSP references from a PAdES signature.
+ *** `XAdESOCSPSource` : Extracts OCSP responses and OCSP references from a XAdES signature.
+ **** `ExternalResourcesOCSPSource` : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files.
  ** `OnlineOCSPSource` : Retrieves OCSP responses from online source.
  ** `JdbcCacheOcspSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid OCSP entries to a defined `DataSource` and retrieve them locally.
 
@@ -1872,7 +1880,7 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 DSS can be used in multi-threaded environments but some points need to be considered like resources sharing and caching. All operations are stateless and this fact requires to be maintained. Some resources can be shared, others are proper to an operation. 
 
-For each provided operation, DSS requires a CertificateVerifier object. This object is responsible to provide certificates and accesses to external resources (AIA, CRL, OCSP,...). At the beginning of all operation, a new internal CertificatePool is created and all available certificates are copied. Throughout the signature/validation process, the CertificatePool content evolves. Certificates are added/updated from the signature, timestamp(s), revocation data,... Revocation data / issuer certificates are collected and added to the certificate. Certificate status are updated to give as much as possible information. For these reasons, integrators need to be careful about the CertificateVerifier configuration.
+For each provided operation, DSS requires a CertificateVerifier object. This object is responsible to provide certificates and accesses to external resources (AIA, CRL, OCSP,...). At the beginning of all operation, CertificateSources and RevocationSources are created for each signature / timestamp / revocation data. Extracted information are combined with the configured sources in the CertificateVerifier. For these reasons, integrators need to be careful about the CertificateVerifier configuration.
 
 === Resource sharing
 
@@ -1993,18 +2001,19 @@ Since DSS 5.7 the framework includes an extended possibility to execute custom p
 The `Alert` is a basic interface used to trigger a process on a passed object.
 DSS provides an `AbstractAlert` implementation of the interface with a clearly defined structure. The class must be instantiated with two attributes:
 
- * `Detector` - used to detect an event/state of the object and trigger a process;
+ * `AlertDetector` - used to detect an event/state of the object and trigger a process;
  * `AlertHandler` - defines a process to be executed on an object.
 
-In its basic module framework provides a few alerts allowing to handle Exceptions:
+In its basic module, framework provides a few alerts based on a `Status`:
 
- * `ExceptionAlert` - accepts a custom `AlertHandler` to perform actions on an exception if present;
- * `DSSLogAlert` - allows to define a log level and print a stacktrace if an exception occurs.
+ * `ExceptionOnStatusAlert` - throws an `AlertException` (RuntimeException) when the status reports an issue;
+ * `LogOnStatusAlert` - logs a message with the defined log level;
+ * `SilentOnStatusAlert` - ignores the reported issue and does nothing.
 
 The usage of alerts is available in the following classes:
 
  * <<xmlSecurities>> configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`;
- * <<certificateVerifier>> - to handle the raising exception in a custom way (introduced `DSSExceptionAlert` to re-throw exceptions);
+ * <<certificateVerifier>> - to handle the unexpected situation(s) in a custom way (introduced `AlertException` to re-throw exceptions);
  * <<tlValidationJob>> - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert`).
 
 == I18N (Internationalization)
@@ -2048,6 +2057,17 @@ DSS always computes the status at 2 different times : certificate issuance and s
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/CertificateValidationTest.java[tags=demo]
 ----
+
+=== SSL Certificate validation (QWAC)
+
+With DSS, that's also possible to validate SSL certificate against the EUMS TL and the ETSI TS 119 615 to determine if it is a Qualified certificate for WebSite Authentication (QWAC).
+
+[source,java,indent=0]
+.Validate a SSL certificate and retrieve its qualification level
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValidationTest.java[tags=demo]
+----
+
 
 === Extract the signed data from a signature
 
@@ -2125,10 +2145,10 @@ The method allows timestamping of a provided document.
 Available for PDF, ASiC-E and ASiC-S container formats.
 
 .Request
-include::_restdocs/timestamp-one-document/http-request.adoc[]
+include::_restdocs/timestamp-one-document/1/http-request.adoc[]
 
 .Response
-include::_restdocs/timestamp-one-document/http-response.adoc[]
+include::_restdocs/timestamp-one-document/1/http-response.adoc[]
 
 === REST server signature service
 
@@ -2213,7 +2233,7 @@ include::_restdocs/validate-cert/1/http-response.adoc[]
 This service allows a remote timestamp creation. The method takes as an input the digest to be timestamped and digest algorithm that has been used for the digest value computation. The output of the method is the generated timestamp's binaries.
 
 .Request
-include::_restdocs/get-timestamp-response/http-request.adoc[]
+include::_restdocs/get-timestamp-response/1/http-request.adoc[]
 
 .Response
-include::_restdocs/get-timestamp-response/http-response.adoc[]
+include::_restdocs/get-timestamp-response/1/http-response.adoc[]

@@ -116,7 +116,6 @@ public class CertificateTokenTest {
 		
 		assertNull(certificate3.getPublicKeyOfTheSigner());
 
-		assertEquals(certificate1, certificate1);
 		assertNotEquals(certificate1, certificate2);
 		assertNotEquals(certificate1, certificate3);
 		assertNotEquals(certificate1, certificate4);

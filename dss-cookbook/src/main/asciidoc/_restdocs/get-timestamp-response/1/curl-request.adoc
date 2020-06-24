@@ -4,7 +4,7 @@ $ curl 'http://localhost:8080/services/rest/timestamp-service/getTimestampRespon
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
     -H 'Content-Type: application/json; charset=UTF-8' \
     -d '{
-  "algorithm" : "SHA1",
-  "value" : "Ir3ZcUPfazmmWvrSr2vYvyDNT3s="
+  "algorithm" : "SHA256",
+  "value" : "ZOyIygCyaOW6GjVnihtTFtIS9PNmskdyMlNKiuyjfzw="
 }'
 ----
