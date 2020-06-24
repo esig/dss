@@ -79,8 +79,6 @@ public class RemoteTimestampParameters implements Serializable {
 	}
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
-		Objects.requireNonNull(canonicalizationMethod, 
-				"Canonicalization cannot be null! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
