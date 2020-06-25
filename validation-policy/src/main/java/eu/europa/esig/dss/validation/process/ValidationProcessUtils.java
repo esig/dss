@@ -45,11 +45,11 @@ public class ValidationProcessUtils {
 	 * lifetime of the responder's certificate. The CA does so by including
 	 * the extension id-pkix-ocsp-nocheck.
 	 */
-	public static boolean isRevocationNoNeedCheck(CertificateWrapper certificate, Date controlTime) {
+	public static boolean isRevocationCheckRequired(CertificateWrapper certificate, Date controlTime) {
 		if (certificate.isIdPkixOcspNoCheck()) {
-			return controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0;
+			return !(controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0);
 		}
-		return false;
+		return true;
 	}
 	
 	/**

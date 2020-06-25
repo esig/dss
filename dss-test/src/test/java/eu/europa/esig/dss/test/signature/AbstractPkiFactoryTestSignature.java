@@ -139,7 +139,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 
 	protected void checkMimeType(DSSDocument signedDocument) {
-		assertTrue(getExpectedMime().equals(signedDocument.getMimeType()));
+		assertEquals(getExpectedMime(), signedDocument.getMimeType());
 	}
 
 	@Override

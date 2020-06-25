@@ -320,6 +320,16 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return timestamps;
 	}
 
+	public List<TimestampWrapper> getAllTimestampsProducedAfterSignatureCreation() {
+		List<TimestampWrapper> timestamps = new ArrayList<>();
+		for (TimestampType timestampType : TimestampType.values()) {
+			if (!timestampType.isContentTimestamp()) {
+				timestamps.addAll(getTimestampListByType(timestampType));
+			}
+		}
+		return timestamps;
+	}
+
 	public List<TimestampWrapper> getSignatureTimestamps() {
 		return getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 	}

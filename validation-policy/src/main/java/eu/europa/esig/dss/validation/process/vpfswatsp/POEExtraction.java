@@ -106,7 +106,7 @@ public class POEExtraction {
 	/**
 	 * Extracts all POEs from the provided collection of timestamps
 	 * 
-	 * @param timestamps a colelction of {@link TimestampWrapper}s
+	 * @param timestamps a collection of {@link TimestampWrapper}s
 	 */
 	public void collectAllPOE(Collection<TimestampWrapper> timestamps) {
 		for (TimestampWrapper timestamp : timestamps) {

@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature.prettyprint;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -30,6 +32,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -227,6 +233,33 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		validate(doubleSignedDocument);
 
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
+		
+	}
+	
+	@Test
+	public void doubleCreatedSignatureTest() {
+		DiagnosticData diagnosticData = validate(new FileDocument("src/test/resources/validation/doubleSignedTest.xml"));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(2, signatures.size());
+		SignatureWrapper signatureWrapper = signatures.get(0);
+		List<RevocationRefWrappper> allFoundRevocationRefs = signatureWrapper.foundRevocations().getRelatedRevocationRefs();
+		assertNotNull(allFoundRevocationRefs);
+		assertEquals(0, allFoundRevocationRefs.size());
+		
+		assertEquals(2, signatureWrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationData().size());
+		
+		List<RelatedCertificateWrapper> foundCertificatesByLocation = signatureWrapper.foundCertificates()
+				.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
+		assertNotNull(foundCertificatesByLocation);
+		assertEquals(2, foundCertificatesByLocation.size());
+		
+		SignatureWrapper signature2Wrapper = signatures.get(1);
+		allFoundRevocationRefs = signature2Wrapper.foundRevocations().getRelatedRevocationRefs();
+		assertNotNull(allFoundRevocationRefs);
+		assertEquals(2, allFoundRevocationRefs.size());
+		assertEquals(2, signature2Wrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, signature2Wrapper.foundRevocations().getOrphanRevocationData().size());
 		
 	}
 	

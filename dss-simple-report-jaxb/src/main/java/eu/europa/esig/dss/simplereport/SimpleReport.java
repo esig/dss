@@ -308,6 +308,38 @@ public class SimpleReport {
 	}
 
 	/**
+	 * If the signature validation is TOTAL_PASSED, the result date is the date from
+	 * when a signature extension is useful (all certificates can be covered by an
+	 * usable revocation data).
+	 * 
+	 * @param signatureId the signature id
+	 * @return the minimal useful date for a signature extension (or null)
+	 */
+	public Date getSignatureExtensionPeriodMin(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null) {
+			return xmlSignature.getExtensionPeriodMin();
+		}
+		return null;
+	}
+
+	/**
+	 * If the signature validation is TOTAL_PASSED, the result date is the maximum
+	 * possible date to extend the signature (before the expiration of the signing
+	 * certificate or the latest timestamping certificate).
+	 * 
+	 * @param signatureId the signature id
+	 * @return the maximum useful date for a signature extension (or null)
+	 */
+	public Date getSignatureExtensionPeriodMax(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null) {
+			return xmlSignature.getExtensionPeriodMax();
+		}
+		return null;
+	}
+
+	/**
 	 * This method returns the signature's signer name
 	 *
 	 * @param signatureId

@@ -121,7 +121,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 				item = item.setNextItem(idPkixOcspNoCheck(revocationCertificate));
 			}
 			
-			if (!ValidationProcessUtils.isRevocationNoNeedCheck(revocationCertificate, controlTime)) {
+			if (ValidationProcessUtils.isRevocationCheckRequired(revocationCertificate, controlTime)) {
 
 				SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ? 
 						SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
