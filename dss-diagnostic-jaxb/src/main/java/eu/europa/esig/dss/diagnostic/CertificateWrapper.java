@@ -250,6 +250,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 						wrapper.setEndDate(trustedService.getEndDate());
 						wrapper.setCapturedQualifiers(new ArrayList<>(trustedService.getCapturedQualifiers()));
 						wrapper.setAdditionalServiceInfos(new ArrayList<>(trustedService.getAdditionalServiceInfoUris()));
+						wrapper.setEnactedMRA(trustedService.isEnactedMRA());
 						result.add(wrapper);
 					}
 				}

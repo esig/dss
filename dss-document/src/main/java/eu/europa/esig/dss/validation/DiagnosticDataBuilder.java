@@ -2207,9 +2207,27 @@ public class DiagnosticDataBuilder {
 			if (Utils.isCollectionNotEmpty(serviceStatusAfterOfEqualsCertIssuance)) {
 				for (TrustServiceStatusAndInformationExtensions serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 
+					Boolean enactedMra = null;
 					if (mra != null) {
 						LOG.info("MRA");
-						serviceInfoStatus = translate(serviceInfoStatus, certToken, mra);
+						enactedMra = false;
+
+						List<ServiceEquivalence> equivalences = new ArrayList<>();
+						Date startDate = serviceInfoStatus.getStartDate();
+						for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
+							if (MRAStatus.ENACTED == serviceEquivalence.getStatus()
+									&& startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
+								enactedMra = true;
+								equivalences.add(serviceEquivalence);
+							}
+						}
+
+						if (equivalences.size() == 1) {
+							serviceInfoStatus = translate(serviceInfoStatus, certToken, equivalences.iterator().next());
+						} else {
+							LOG.warn("More than one equivalence");
+						}
+
 					}
 
 					XmlTrustedService trustedService = new XmlTrustedService();
@@ -2226,6 +2244,7 @@ public class DiagnosticDataBuilder {
 					trustedService.setStatus(serviceInfoStatus.getStatus());
 					trustedService.setStartDate(serviceInfoStatus.getStartDate());
 					trustedService.setEndDate(serviceInfoStatus.getEndDate());
+					trustedService.setEnactedMRA(enactedMra);
 
 					List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
 					if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
@@ -2247,27 +2266,11 @@ public class DiagnosticDataBuilder {
 	}
 
 	private TrustServiceStatusAndInformationExtensions translate(
-			TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken, MRA mra) {
-
-		List<TrustServiceStatusAndInformationExtensions> equivalents = new ArrayList<>();
-
-		Date startDate = serviceInfoStatus.getStartDate();
-		for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
-			if (MRAStatus.ENACTED == serviceEquivalence.getStatus() && startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
-
-				TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
-				if (equivalent != null) {
-					equivalents.add(equivalent);
-					overrideCertContent(certToken, serviceEquivalence);
-				}
-			}
-		}
-
-		if (equivalents.size() > 1) {
-			LOG.warn("More than one equivalence (returns first)");
-		}
-
-		return equivalents.iterator().next();
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken,
+			ServiceEquivalence serviceEquivalence) {
+		TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
+		overrideCertContent(certToken, serviceEquivalence);
+		return equivalent;
 	}
 
 	private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {

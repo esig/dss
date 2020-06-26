@@ -40,6 +40,7 @@ public class TrustedServiceWrapper {
 	private Date endDate;
 	private List<String> capturedQualifiers;
 	private List<String> additionalServiceInfos;
+	private Boolean enactedMRA;
 
 	public XmlTrustedList getTrustedList() {
 		return trustedList;
@@ -143,6 +144,14 @@ public class TrustedServiceWrapper {
 
 	public void setAdditionalServiceInfos(List<String> additionalServiceInfos) {
 		this.additionalServiceInfos = additionalServiceInfos;
+	}
+
+	public void setEnactedMRA(Boolean enactedMRA) {
+		this.enactedMRA = enactedMRA;
+	}
+
+	public Boolean getEnactedMRA() {
+		return enactedMRA;
 	}
 
 }
