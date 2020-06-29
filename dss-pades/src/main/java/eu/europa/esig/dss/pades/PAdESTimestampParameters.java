@@ -65,6 +65,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 */
 	private SignatureImageParameters timestampImageParameters;
 	
+	/**
+	 * Password used to encrypt a PDF
+	 */
+	private String passwordProtection;
+	
 	public PAdESTimestampParameters() {
 	}
 	
@@ -127,6 +132,20 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 
 	public void setFieldId(String timestampFieldId) {
 		this.timestampFieldId = timestampFieldId;
+	}
+
+	@Override
+	public String getPasswordProtection() {
+		return passwordProtection;
+	}
+
+	/**
+	 * Sets a password string
+	 * 
+	 * @param passwordProtection {@link String} password to set
+	 */
+	public void setPasswordProtection(String passwordProtection) {
+		this.passwordProtection = passwordProtection;
 	}
 
 }

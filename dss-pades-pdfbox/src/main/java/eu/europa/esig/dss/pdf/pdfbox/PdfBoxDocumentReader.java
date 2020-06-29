@@ -60,9 +60,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * 
 	 * @param dssDocument {@link DSSDocument} to read
 	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+	public PdfBoxDocumentReader(DSSDocument dssDocument) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		this(dssDocument, null);
 	}
 	
@@ -72,15 +72,15 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * @param dssDocument {@link DSSDocument} to read
 	 * @param passwordProtection {@link String} a password to open a protected document
 	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
 		try (InputStream is = dssDocument.openStream()) {
 			this.pdDocument = PDDocument.load(is, passwordProtection);
 		} catch (InvalidPasswordException e) {
-            throw new eu.europa.esig.dss.pades.InvalidPasswordException(e.getMessage());
+            throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		}
 	}
 
@@ -90,14 +90,14 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * @param binaries a byte array of a PDF to read
 	 * @param passwordProtection {@link String} a password to open a protected document
 	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
-	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.InvalidPasswordException {
+	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");
 		try {
 			this.pdDocument = PDDocument.load(binaries, passwordProtection);
 		} catch (InvalidPasswordException e) {
-            throw new eu.europa.esig.dss.pades.InvalidPasswordException(e.getMessage());
+            throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		}
 	}
 

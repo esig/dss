@@ -326,4 +326,13 @@ public class SignatureImageParameters implements Serializable {
 	public void setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical) {
 		this.alignmentVertical = alignmentVertical;
 	}
+
+	@Override
+	public String toString() {
+		return "SignatureImageParameters [image=" + image + ", page=" + page + ", xAxis=" + xAxis + ", yAxis=" + yAxis
+				+ ", width=" + width + ", height=" + height + ", zoom=" + zoom + ", backgroundColor=" + backgroundColor
+				+ ", dpi=" + dpi + ", rotation=" + rotation + ", alignmentHorizontal=" + alignmentHorizontal
+				+ ", alignmentVertical=" + alignmentVertical + ", textParameters=" + textParameters + "]";
+	}
+	
 }

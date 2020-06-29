@@ -63,6 +63,12 @@ public class PAdESSignatureParametersSerializationTest extends AbstractPAdESTest
 		service = new PAdESService(getEmptyCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
+	
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		// Skip : OpenPDF does not allow singing of an existing invisible signature field
+		// It creates a new field
+	}
 
 	@Test
 	public void testSerialization() throws IOException, ClassNotFoundException {

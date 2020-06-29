@@ -239,8 +239,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	protected List<PdfRevision> getRevisions() {
 		if (documentRevisions == null) {
 			PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
-			pdfSignatureService.setPasswordProtection(passwordProtection);
-			documentRevisions = pdfSignatureService.validateSignatures(document);
+			documentRevisions = pdfSignatureService.getRevisions(document, passwordProtection);
 		}
 		return documentRevisions;
 	}
