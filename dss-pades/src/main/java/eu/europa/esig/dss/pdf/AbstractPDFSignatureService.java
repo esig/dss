@@ -195,6 +195,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 	
 	@Override
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
+		return addDssDictionary(document, callbacks, null);
+	}
+	
+	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document) {
 		return getAvailableSignatureFields(document, null);
 	}

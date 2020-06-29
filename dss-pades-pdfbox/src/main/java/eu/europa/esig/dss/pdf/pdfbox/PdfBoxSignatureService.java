@@ -388,11 +388,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 		return secureRandomProvider;
 	}
-	
-	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
-		return addDssDictionary(document, callbacks, null);
-	}
 
 	@Override
 	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, String pwd) {
