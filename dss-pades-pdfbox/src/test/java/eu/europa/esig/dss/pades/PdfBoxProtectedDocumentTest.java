@@ -67,7 +67,12 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
 		DSSDocument signed = sign(padesService, openProtected, signatureParameters);
-		verify(signed);
+		
+		Reports reports = verify(signed);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isThereALevel(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	} 
 	
 	@Test
@@ -174,6 +179,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		
 		signatureFields = service.getAvailableSignatureFields(signedDocument, correctProtectionPhrase);
 		assertEquals(1, signatureFields.size());
+		assertEquals(secondFieldName, signatureFields.get(0));
 	}
 
 	private DSSDocument sign(DSSDocument doc, String pwd) throws Exception {

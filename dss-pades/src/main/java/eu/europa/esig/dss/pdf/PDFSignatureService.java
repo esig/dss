@@ -80,14 +80,28 @@ public interface PDFSignatureService {
 	 *            the document to be extended
 	 * @param callbacks
 	 *            the callbacks to retrieve the revocation data,...
-	 * @param parameters
-	 *            the signature/timestamp parameters
 	 * @return the pdf document with the added dss dictionary
 	 * 
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, final PAdESCommonParameters parameters);
+	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks);
+
+	/**
+	 * This method adds the DSS dictionary (Baseline-LT)
+	 * 
+	 * @param document
+	 *            the document to be extended
+	 * @param callbacks
+	 *            the callbacks to retrieve the revocation data,...
+	 * @param pwd
+	 *            the password protection used to create the encrypted document
+	 * @return the pdf document with the added dss dictionary
+	 * 
+	 * @throws DSSException
+	 *             if an error occurred
+	 */
+	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, final String pwd);
 
 	/**
 	 * This method returns not signed signature-fields

@@ -10,7 +10,6 @@ import org.bouncycastle.crypto.prng.FixedSecureRandom;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.SerializableParameters;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -37,21 +36,17 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 	private int binaryLength = 512;
 	
 	/**
-	 * Parameters to compute seed value from
+	 * The parameters to compute seed value from
 	 */
-	private SerializableParameters parameters;
+	private PAdESCommonParameters parameters;
 	
-	public DSSSecureRandomProvider(SerializableParameters parameters) {
-		this.parameters = parameters;
-	}
-
 	/**
-	 * A default constructor to instantiate a FixedSecureRandomProvider from parameters
+	 * The default constructor taking an object to compute seeds from
+	 * Concatenates all attributes from PAdESCommonParameters to a BAOS
 	 * 
-	 * @param parameters to be used for signature/timestamp creation/extenstion
+	 * @param parameters {@link PAdESCommonParameters} to compute seed value from
 	 */
-	@Override
-	public void setParameters(final SerializableParameters parameters) {
+	public DSSSecureRandomProvider(PAdESCommonParameters parameters) {
 		this.parameters = parameters;
 	}
 	
@@ -93,48 +88,41 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 		if (parameters == null) {
 			throw new DSSException("Parameters must be defined! Unable to use DSSFixedSecureRandomProvider.");
 		}
-		if (parameters instanceof PAdESCommonParameters) {
-			PAdESCommonParameters commonParameters = (PAdESCommonParameters) parameters;
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-				baos.write(commonParameters.getContentSize());
-				DigestAlgorithm digestAlgorithm = commonParameters.getDigestAlgorithm();
-				if (digestAlgorithm != null) {
-					baos.write(digestAlgorithm.getName().getBytes());
-				}
-				String fieldId = commonParameters.getFieldId();
-				if (fieldId != null) {
-					baos.write(fieldId.getBytes());
-				}
-				String filter = commonParameters.getFilter();
-				if (filter != null) {
-					baos.write(filter.getBytes());
-				}
-				SignatureImageParameters imageParameters = commonParameters.getImageParameters();
-				if (imageParameters != null) {
-					baos.write(imageParameters.toString().getBytes());
-				}
-				String passwordProtection = commonParameters.getPasswordProtection();
-				if (passwordProtection != null) {
-					baos.write(passwordProtection.getBytes());
-				}
-				Date signingDate = commonParameters.getSigningDate();
-				if (signingDate != null) {
-					baos.write((int)signingDate.getTime());
-				}
-				String subFilter = commonParameters.getSubFilter();
-				if (subFilter != null) {
-					baos.write(subFilter.getBytes());
-				}
-				return baos.toByteArray();
-				
-			} catch (IOException e) {
-				throw new DSSException(String.format("Unable to build a seed value. Reason : %s", e.getMessage()), e);
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			baos.write(parameters.getContentSize());
+			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+			if (digestAlgorithm != null) {
+				baos.write(digestAlgorithm.getName().getBytes());
 			}
+			String fieldId = parameters.getFieldId();
+			if (fieldId != null) {
+				baos.write(fieldId.getBytes());
+			}
+			String filter = parameters.getFilter();
+			if (filter != null) {
+				baos.write(filter.getBytes());
+			}
+			SignatureImageParameters imageParameters = parameters.getImageParameters();
+			if (imageParameters != null) {
+				baos.write(imageParameters.toString().getBytes());
+			}
+			String passwordProtection = parameters.getPasswordProtection();
+			if (passwordProtection != null) {
+				baos.write(passwordProtection.getBytes());
+			}
+			Date signingDate = parameters.getSigningDate();
+			if (signingDate != null) {
+				baos.write((int)signingDate.getTime());
+			}
+			String subFilter = parameters.getSubFilter();
+			if (subFilter != null) {
+				baos.write(subFilter.getBytes());
+			}
+			return baos.toByteArray();
 			
-		} else {
-			return parameters.toString().getBytes();
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to build a seed value. Reason : %s", e.getMessage()), e);
 		}
-		
 	}
 
 }

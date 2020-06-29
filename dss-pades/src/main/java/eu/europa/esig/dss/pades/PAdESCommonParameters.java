@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.pades;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.SerializableParameters;
 
 /**
  * Defines a list of common PAdES parameters between signature and timestamps
  *
  */
-public interface PAdESCommonParameters extends SerializableParameters {
+public interface PAdESCommonParameters extends Serializable {
 	
 	/**
 	 * Returns a claimed signing time

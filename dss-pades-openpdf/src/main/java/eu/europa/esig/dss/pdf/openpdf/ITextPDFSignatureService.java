@@ -290,12 +290,17 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException(e);
 		}
 	}
+	
+	@Override
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
+		return addDssDictionary(document, callbacks, null);
+	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, PAdESCommonParameters parameters) {
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, getPasswordBinary(parameters.getPasswordProtection()))) {
+				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			PdfWriter writer = stp.getWriter();

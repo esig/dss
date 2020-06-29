@@ -95,7 +95,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		}
 
 		final PDFSignatureService signatureService = newPdfSignatureService();
-		return signatureService.addDssDictionary(document, callbacks, parameters);
+		return signatureService.addDssDictionary(document, callbacks, parameters.getPasswordProtection());
 
 	}
 	

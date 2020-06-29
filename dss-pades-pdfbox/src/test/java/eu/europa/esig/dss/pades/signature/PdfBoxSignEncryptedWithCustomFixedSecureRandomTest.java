@@ -10,7 +10,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.SerializableParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
@@ -86,11 +85,6 @@ public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends Abstract
 		@Override
 		public SecureRandom getSecureRandom() {
 			return new FixedSecureRandom(seed);
-		}
-
-		@Override
-		public void setParameters(SerializableParameters parameters) {
-			// do nothing
 		}
 		
 	}

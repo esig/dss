@@ -63,7 +63,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.SerializableParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
@@ -224,7 +223,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (pdDocument.getDocumentId() == null) {
 				pdDocument.setDocumentId(parameters.getSigningDate().getTime());
 			}
-			saveDocumentIncrementally(pdDocument, fileOutputStream, parameters);
+			checkEncryptedAndSaveIncrementally(pdDocument, fileOutputStream, parameters);
 
 			return digest.digest();
 		} catch (IOException e) {
@@ -363,38 +362,52 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setNeedToBeUpdated(true);
 	}
 
-	public void saveDocumentIncrementally(PDDocument pdDocument, OutputStream outputStream, SerializableParameters parameters) throws DSSException {
+	public void checkEncryptedAndSaveIncrementally(PDDocument pdDocument, OutputStream outputStream, PAdESCommonParameters parameters) {
 		try {
 			if (pdDocument.isEncrypted()) {
 				SecureRandom secureRandom = getSecureRandomProvider(parameters).getSecureRandom();
 				pdDocument.getEncryption().getSecurityHandler().setCustomSecureRandom(secureRandom);
 			}
-			pdDocument.saveIncremental(outputStream);
+			saveDocumentIncrementally(pdDocument, outputStream);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
 	
-	private SecureRandomProvider getSecureRandomProvider(SerializableParameters parameters) {
+	public void saveDocumentIncrementally(PDDocument pdDocument, OutputStream outputStream) {
+		try {
+			pdDocument.saveIncremental(outputStream);
+		} catch (Exception e) {
+			throw new DSSException(String.format("Unable to save a document. Reason : %s", e.getMessage()), e);
+		}
+	}
+	
+	private SecureRandomProvider getSecureRandomProvider(PAdESCommonParameters parameters) {
 		if (secureRandomProvider == null) {
 			secureRandomProvider = new DSSSecureRandomProvider(parameters);
 		}
 		return secureRandomProvider;
 	}
+	
+	@Override
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
+		return addDssDictionary(document, callbacks, null);
+	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, PAdESCommonParameters parameters) {
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
-				PDDocument pdDocument = PDDocument.load(is, parameters.getPasswordProtection())) {
+				PDDocument pdDocument = PDDocument.load(is, pwd)) {
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
 				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(pdDocument, callbacks));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
-
-			saveDocumentIncrementally(pdDocument, baos, parameters);
+			
+			// encryption is not required (no signature/timestamp is added on the step)
+			saveDocumentIncrementally(pdDocument, baos);
 
 			DSSDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
 			inMemoryDocument.setMimeType(MimeType.PDF);
@@ -568,7 +581,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signatureField.getCOSObject().setNeedToBeUpdated(true);
 			page.getCOSObject().setNeedToBeUpdated(true);
 
-			saveDocumentIncrementally(pdfDoc, baos, parameters);
+			saveDocumentIncrementally(pdfDoc, baos);
 
 			return new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
 

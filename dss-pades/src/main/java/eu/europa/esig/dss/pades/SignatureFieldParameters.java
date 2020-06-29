@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.model.SerializableParameters;
+import java.io.Serializable;
 
 /**
  * Parameters which allow to create a new signature field in a PDF document
  */
 @SuppressWarnings("serial")
-public class SignatureFieldParameters implements SerializableParameters {
+public class SignatureFieldParameters implements Serializable {
 
 	/* Signature field name (optional) */
 	private String name;
