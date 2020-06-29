@@ -874,7 +874,7 @@ Current version of DSS supports the following transformations:
 
  * Enveloped - removes the current `Signature` element from the digest calculation of the reference.
 
-WARNING: Does not support parallel signatures!
+WARNING: Enveloped Signature Transform does not support parallel signatures!
 
 [source,java,indent=0]
 ----
@@ -907,6 +907,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBW
 ----
 
  * XPath-2-Filter - an alternative to 'XPath Transform'. Additional information about the 'XPath2Filter Transform' can be found https://www.w3.org/TR/xmldsig-filter2/[by the link]. DSS contains an additional class `XPath2FilterEnvelopedSignatureTransform` allowing to exclude signatures from the digest calculation.
+
+NOTE: Since DSS 5.7 the XPath-2-Filter transform is used by default for ENVELOPED signature packaging.
 
 [source,java,indent=0]
 ----
