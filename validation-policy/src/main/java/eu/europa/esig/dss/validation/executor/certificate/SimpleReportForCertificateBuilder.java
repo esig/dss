@@ -203,8 +203,8 @@ public class SimpleReportForCertificateBuilder {
 	}
 
 	private void addQualifications(XmlChainItem firstChainItem) {
-		firstChainItem.setQualificationAtIssuance(detailedReport.getCertificateQualificationAtIssuance());
-		firstChainItem.setQualificationAtValidation(detailedReport.getCertificateQualificationAtValidation());
+		firstChainItem.setQualificationAtIssuance(detailedReport.getCertificateQualificationAtIssuance(certificateId));
+		firstChainItem.setQualificationAtValidation(detailedReport.getCertificateQualificationAtValidation(certificateId));
 	}
 
 }

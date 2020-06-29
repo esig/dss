@@ -29,7 +29,6 @@
 			
 			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationSignatureQualification" type="ValidationSignatureQualification" minOccurs="0" />
-			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" /> 
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
@@ -51,6 +50,7 @@
 				<xs:sequence>
 					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
+				<xs:attribute name="Id" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -89,7 +89,6 @@
 				<xs:sequence>
 					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
-				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>

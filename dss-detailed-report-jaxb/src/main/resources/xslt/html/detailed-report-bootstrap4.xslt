@@ -291,6 +291,10 @@
 					<xsl:attribute name="class">fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="title"><xsl:value-of select="@DateTime"/></xsl:attribute>
        			</i>
+	 			<xsl:if test="@Id">
+	       			<br />    
+		        	<xsl:value-of select="concat('Id = ', @Id)"/>
+	        	</xsl:if>
 	        </div>
     		<div>
     			<xsl:attribute name="class">card-body collapse in</xsl:attribute>

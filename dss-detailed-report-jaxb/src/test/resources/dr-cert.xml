@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DetailedReport ValidationTime="2018-02-09T07:03:45" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
-    <Certificate Title="Certificate Qualification">
+    <Certificate Id="C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF" Title="Certificate Qualification">
         <Constraint>
             <Name NameId="BBB_ACCEPT">Is the result of the Basic Building Block conclusive?</Name>
             <Status>WARNING</Status>

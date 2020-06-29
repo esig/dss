@@ -50,6 +50,9 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 		XmlDetailedReport detailedReport = init();
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
+		if (certificate == null) {
+			throw new IllegalArgumentException(String.format("The certificate with the given Id '%s' has not been found in DiagnosticData", certificateId));
+		}
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<>();
 		process(Collections.singleton(certificate), Context.CERTIFICATE, bbbs);

@@ -84,6 +84,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);
 		assertEquals(1, detailedReport.getCertificates().size());
+		assertNotNull(detailedReport.getXmlCertificateById(certificateId));
 		assertEquals(2, detailedReport.getJAXBModel().getTLAnalysis().size());
 		assertEquals(1, detailedReport.getJAXBModel().getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReport.getSignatures().size());
@@ -500,8 +501,14 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
+		
 		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The certificate id is missing", exception.getMessage());
+		
+		executor.setCertificateId("certId");
+		
+		exception = assertThrows(IllegalArgumentException.class, () -> executor.execute());
+		assertEquals("The certificate with the given Id 'certId' has not been found in DiagnosticData", exception.getMessage());
 	}
 	
 	private void checkReports(CertificateReports reports) {

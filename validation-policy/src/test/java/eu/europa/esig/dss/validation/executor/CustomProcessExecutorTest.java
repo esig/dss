@@ -73,6 +73,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -2926,6 +2927,26 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
 		assertEquals("The validation level is missing", exception.getMessage());
+	}
+	
+	@Test
+	public void getCertQualificationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(CertificateQualification.NA, detailedReport.getCertificateQualificationAtIssuance("certId"));
+		assertEquals(CertificateQualification.NA, detailedReport.getCertificateQualificationAtValidation("certId"));
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> detailedReport.getCertificateXCVConclusion("certId"));
+		assertEquals("Only supported in report for certificate", exception.getMessage());
 	}
 
 	private void validateBestSigningTimes(Reports reports) {

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,10 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	public CertificateQualificationBlock(I18nProvider i18nProvider, XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlCertificate());
+		Objects.requireNonNull(validationTime, "The validationTime shall be provided!");
+		Objects.requireNonNull(signingCertificate, "The signingCertificate shall be provided!");
+		
+		result.setId(signingCertificate.getId());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
 		this.validationTime = validationTime;
@@ -68,11 +73,10 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 
 	@Override
 	protected void initChain() {
-
 		// cover incomplete cert chain / expired/ revoked certs
 		ChainItem<XmlCertificate> item = firstItem = isAcceptableBuildingBlockConclusion(buildingBlocksConclusion);
 
-		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
+		if (signingCertificate.isTrustedListReached()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 			
@@ -134,9 +138,11 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	}
 
 	private XmlTLAnalysis getTlAnalysis(String url) {
-		for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
-			if (Utils.areStringsEqual(url, xmlTLAnalysis.getURL())) {
-				return xmlTLAnalysis;
+		if (Utils.isCollectionNotEmpty(tlAnalysis)) {
+			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
+				if (Utils.areStringsEqual(url, xmlTLAnalysis.getURL())) {
+					return xmlTLAnalysis;
+				}
 			}
 		}
 		return null;

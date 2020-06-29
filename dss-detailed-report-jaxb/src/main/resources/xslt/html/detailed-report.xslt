@@ -419,7 +419,11 @@
 						<xsl:value-of select="@CertificateQualification"/>	       			
 	       			</span>
 			        
-		       		<xsl:value-of select="@Title"/>    
+		       		<xsl:value-of select="@Title"/>
+		 			<xsl:if test="@Id">
+		       			<br />    
+			        	<xsl:value-of select="concat('Id = ', @Id)"/>
+		        	</xsl:if>
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
