@@ -135,12 +135,12 @@ public class BLevelParameters implements Serializable {
 	}
 
 	public List<String> getSignedAssertions() {
-                return signedAssertions;
-        }
+        return signedAssertions;
+    }
 
-        public void setSignedAssertions(List<String> signedAssertions) {
-                this.signedAssertions = signedAssertions;
-        }
+    public void setSignedAssertions(List<String> signedAssertions) {
+        this.signedAssertions = signedAssertions;
+    }
 
 	/**
 	 * Get the commitment type indications

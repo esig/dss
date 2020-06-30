@@ -304,7 +304,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		
 		
 		final SignatureProperties<SignatureAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
-		if (!unsignedSignatureProperties.isExist()) {
+		if (unsignedSignatureProperties == null || !unsignedSignatureProperties.isExist()) {
 			// timestamp tokens cannot be created if signature does not contain "unsigned-signature-properties" element
 			return;
 		}

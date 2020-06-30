@@ -97,6 +97,9 @@ public final class DSSUtils {
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	
+	/* RFC 3061 */
+	private static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -106,6 +109,7 @@ public final class DSSUtils {
 
 	/**
 	 * Formats a date to use for internal purposes (logging, toString)
+	 * Example: "2019-11-19T17:28:15Z"
 	 *
 	 * @param date
 	 *            the date to be converted
@@ -114,9 +118,44 @@ public final class DSSUtils {
 	public static String formatInternal(final Date date) {
 		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT);
 	}
-	
+
+	/**
+	 * Formats the date according to the given format (with system TimeZone)
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @return {@link String} formatted date
+	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format) {
-		return (date == null) ? "N/A" : new SimpleDateFormat(format).format(date);
+		return formatDateWithCustomFormat(date, format, null);
+	}
+
+	/**
+	 * Formats a date to use according to RFC 3339. The date is aligned to UTC TimeZone
+	 * Example: "2019-11-19T17:28:15Z"
+	 *
+	 * @param date
+	 *            the date to be converted
+	 * @return the textual representation (a null date will result in "N/A")
+	 */
+	public static String formatDateToRFC(final Date date) {
+		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT, "UTC");
+	}
+	
+	/**
+	 * Formats the date according to the given format and timeZone
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @param timeZone {@link String} specifying a TimeZone
+	 * @return {@link String} formatted date
+	 */
+	public static String formatDateWithCustomFormat(final Date date, final String format, final String timeZone) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		if (Utils.isStringNotEmpty(timeZone)) {
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
+		return (date == null) ? "N/A" : simpleDateFormat.format(date);
 	}
 
 	/**
@@ -907,7 +946,7 @@ public final class DSSUtils {
 		String uriDelimiter = "";
 		final String[] uriParts = fileURI.split("/");
 		for (String part : uriParts) {
-			sb.append(uriDelimiter );
+			sb.append(uriDelimiter);
 			sb.append(encodePartURI(part));
 			uriDelimiter = "/";
 		}
@@ -972,6 +1011,61 @@ public final class DSSUtils {
 			return cleanedString;
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the given id is a URN representation of OID according to IETF RFC 3061
+	 * 
+	 * @param id {@link String} to check
+	 * @return TRUE if the provided id is aURN representation of OID, FALSE otherwise
+	 */
+	public static boolean isUrnOid(String id) {
+		return id != null && id.matches("^(?i)urn:oid:.*$");
+	}
+
+	/**
+	 * Returns a URN URI generated from the given OID:
+	 * 
+	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
+	 * 
+	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
+	 *
+	 * @param oid {@link String} to be converted to URN URI
+	 * @return URI based on the algorithm's OID
+	 */
+	public static String toUrnOid(String oid) {
+		return OID_NAMESPACE_PREFIX + oid;
+	}
+	
+	/**
+	 * Keeps only code of the oid string
+	 * e.g. "urn:oid:1.2.3" to "1.2.3"
+	 * 
+	 * @param urnOid {@link String} uri to extract OID value from
+	 * @return OID Code
+	 */
+	public static String getOidCode(String urnOid) {
+		if (urnOid == null) {
+			return null;
+		}
+		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
+	}
+	
+	/**
+	 * Trims the leading string if it is a leading part of the text
+	 * 
+	 * @param text {@link String} to trim
+	 * @param leading {@link String} to remove
+	 * @return trimmed text {@link String}
+	 */
+	public static String stripFirstLeadingOccurance(String text, String leading) {
+		if (text == null) {
+			return null;
+		}
+		if (leading == null) {
+			return text;
+		}
+		return text.replaceFirst("^"+leading, "");
 	}
 
 }

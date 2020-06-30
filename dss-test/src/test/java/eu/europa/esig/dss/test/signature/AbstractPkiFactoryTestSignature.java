@@ -278,6 +278,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					SignatureForm signatureForm = signatureWrapper.getSignatureFormat().getSignatureForm();
 					switch (signatureForm) {
 						case XAdES:
+						case JAdES:
 							uriMatch = indication.equals(commitmentTypeIndication.getUri()) || indication.equals("urn:oid:" + commitmentTypeIndication.getOid());
 							break;
 						case CAdES:
@@ -309,9 +310,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkClaimedRoles(diagnosticData);
 		
 		List<String> claimedRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
+
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<String> foundClaimedRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getClaimedRoles());
+
+		assertEquals(Utils.collectionSize(claimedRoles), Utils.collectionSize(foundClaimedRoles));
 		if (Utils.isCollectionNotEmpty(claimedRoles)) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundClaimedRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getClaimedRoles());
 			assertEquals(claimedRoles, foundClaimedRoles);
 		}
 	}
@@ -321,9 +325,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkSignedAssertions(diagnosticData);
 
 		List<String> signedAssertions = getSignatureParameters().bLevel().getSignedAssertions();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<String> foundSignedAssertionRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getSignedAssertions());
+
+		assertEquals(Utils.collectionSize(signedAssertions), Utils.collectionSize(foundSignedAssertionRoles));
 		if (Utils.isCollectionNotEmpty(signedAssertions)) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundSignedAssertionRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getSignedAssertions());
 			for (int i = 0; i < signedAssertions.size(); i++) {
 				Document expected = DomUtils.buildDOM(signedAssertions.get(i));
 				Document extracted = DomUtils.buildDOM(foundSignedAssertionRoles.get(i));

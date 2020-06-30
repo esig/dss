@@ -25,6 +25,6 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum SignatureForm {
 
-	XAdES, CAdES, PAdES, PKCS7;
+	XAdES, CAdES, JAdES, PAdES, PKCS7;
 
 }

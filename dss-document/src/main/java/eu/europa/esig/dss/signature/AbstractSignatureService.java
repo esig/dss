@@ -148,6 +148,9 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 					return "pkcs7";
 				case PAdES:
 					return "pdf";
+				case JAdES:
+					// TODO : use another extension ?
+					return "json";
 				default:
 					throw new DSSException("Unable to generate a full document name");
 			}

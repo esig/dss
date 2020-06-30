@@ -35,10 +35,10 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.signature.DSSSignatureUtils;
 
-public class EncodingXMLTest {
+public class EncodingASN1SignatureValueTest {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -47,7 +47,7 @@ public class EncodingXMLTest {
 		String test = "MEQCIEJNA0AElH/vEH9xLxvqrwCqh+yUh9ACL2vU/2eObRbTAiAxTLSWSioJrfSwPkKcypf+KCHvMGdwZbRWQHnZN2sDnQ==";
 		byte[] signatureValue = DatatypeConverter.parseBase64Binary(test);
 
-		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
+		byte[] convertToXmlDSig = DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue);
@@ -64,7 +64,7 @@ public class EncodingXMLTest {
 		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 
-		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue);
+		byte[] convertToXmlDSig = DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.DSA, signatureValue);
 		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 	}
 
@@ -77,7 +77,7 @@ public class EncodingXMLTest {
 		s.initSign(pair.getPrivate());
 		s.update(HELLO_WORLD.getBytes());
 		byte[] binary = s.sign();
-		assertTrue(Arrays.equals(binary, DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.RSA, binary)));
+		assertTrue(Arrays.equals(binary, DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.RSA, binary)));
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class EncodingXMLTest {
 		s.initSign(pair.getPrivate());
 		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
-		assertTrue(Utils.isArrayNotEmpty(DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.DSA, signatureValue)));
+		assertTrue(Utils.isArrayNotEmpty(DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.DSA, signatureValue)));
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public class EncodingXMLTest {
 		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 
-		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
+		byte[] convertToXmlDSig = DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] asn1xmlsec = SignatureECDSA.convertXMLDSIGtoASN1(convertToXmlDSig);
@@ -127,7 +127,7 @@ public class EncodingXMLTest {
 		s.update(HELLO_WORLD.getBytes());
 		byte[] signatureValue = s.sign();
 
-		byte[] convertToXmlDSig = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
+		byte[] convertToXmlDSig = DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] asn1xmlsec = SignatureECDSA.convertXMLDSIGtoASN1(convertToXmlDSig);
@@ -164,7 +164,7 @@ public class EncodingXMLTest {
 
 	private void assertCvcSignatureValid(String cvcSignatureInHex) {
 		byte[] signatureValue = DatatypeConverter.parseHexBinary(cvcSignatureInHex);
-		byte[] xmlDSigValue = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
+		byte[] xmlDSigValue = DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(Arrays.equals(signatureValue, xmlDSigValue));
 	}
 }
