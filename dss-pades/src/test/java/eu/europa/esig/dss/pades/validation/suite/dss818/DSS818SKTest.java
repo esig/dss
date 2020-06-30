@@ -29,10 +29,14 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class DSS818SKTest extends AbstractDSS818Test {
 
@@ -71,6 +75,18 @@ public class DSS818SKTest extends AbstractDSS818Test {
 			assertTrue(signingCertificateReference.isDigestValueMatch());
 			assertFalse(signingCertificateReference.isIssuerSerialPresent());
 			assertFalse(signingCertificateReference.isIssuerSerialMatch());
+		}
+	}
+	
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+			DiagnosticData diagnosticData) {
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			FoundCertificatesProxy foundCertificates = timestampWrapper.foundCertificates();
+			assertEquals(2, foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+			List<RelatedCertificateWrapper> relatedCertificatesByRefOrigin = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+			assertEquals(1, relatedCertificatesByRefOrigin.size());
+			assertEquals(2, relatedCertificatesByRefOrigin.get(0).getReferences().size());
 		}
 	}
 

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -77,11 +78,16 @@ public class DSS2025Test extends AbstractPAdESTestValidation {
 		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
 		
 		List<RelatedCertificateWrapper> relatedSignCertRefs = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		assertEquals(2, relatedSignCertRefs.size());
+		assertEquals(1, relatedSignCertRefs.size());
 		List<OrphanCertificateWrapper> orphanSignCertRefs = foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		assertEquals(0,  orphanSignCertRefs.size());
 		
-		assertEquals(relatedSignCertRefs.get(0), relatedSignCertRefs.get(1));
+		List<CertificateRefWrapper> relatedCertificateRefsByRefOrigin = foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		assertEquals(2, relatedCertificateRefsByRefOrigin.size());
+		assertEquals(relatedCertificateRefsByRefOrigin.get(0).getDigestAlgoAndValue().getDigestMethod(), 
+				relatedCertificateRefsByRefOrigin.get(1).getDigestAlgoAndValue().getDigestMethod());
+		assertArrayEquals(relatedCertificateRefsByRefOrigin.get(0).getDigestAlgoAndValue().getDigestValue(), 
+				relatedCertificateRefsByRefOrigin.get(1).getDigestAlgoAndValue().getDigestValue());
 	}
 
 }
