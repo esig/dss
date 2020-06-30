@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -419,15 +418,82 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	private long getUniqueRelatedCertificateRefsAmount(FoundCertificatesProxy foundCertificates, CertificateRefOrigin refOrigin) {
 		List<RelatedCertificateWrapper> certificates = foundCertificates.getRelatedCertificatesByRefOrigin(refOrigin);
 		Set<CertificateRefWrapper> refsSet = new HashSet<>();
-		certificates.stream().map(RelatedCertificateWrapper::getReferences).collect(Collectors.toList()).forEach(refsSet::addAll);
-		return refsSet.stream().filter(r -> refOrigin.equals(r.getOrigin())).count();
+		for (RelatedCertificateWrapper certificateWrapper : certificates) {
+			for (CertificateRefWrapper ref : certificateWrapper.getReferences()) {
+				if (refOrigin.equals(ref.getOrigin())) {
+					refsSet.add(ref);
+				}
+			}
+		}
+		return filterUniqueRefs(refsSet).size();
 	}
 	
 	private long getUniqueOrphanCertificateRefsAmount(FoundCertificatesProxy foundCertificates, CertificateRefOrigin refOrigin) {
 		List<OrphanCertificateWrapper> certificates = foundCertificates.getOrphanCertificatesByRefOrigin(refOrigin);
 		Set<CertificateRefWrapper> refsSet = new HashSet<>();
-		certificates.stream().map(OrphanCertificateWrapper::getReferences).collect(Collectors.toList()).forEach(refsSet::addAll);
-		return refsSet.stream().filter(r -> refOrigin.equals(r.getOrigin())).count();
+		for (OrphanCertificateWrapper certificateWrapper : certificates) {
+			for (CertificateRefWrapper ref : certificateWrapper.getReferences()) {
+				if (refOrigin.equals(ref.getOrigin())) {
+					refsSet.add(ref);
+				}
+			}
+		}
+		return filterUniqueRefs(refsSet).size();
+	}
+	
+	private Set<CertificateRefWrapper> filterUniqueRefs(Collection<CertificateRefWrapper> certificateRefs) {
+		Set<CertificateRefWrapper> refsSet = new HashSet<>();
+		for (CertificateRefWrapper certRef : certificateRefs) {
+			boolean found = false;
+			for (CertificateRefWrapper currentCertRef : refsSet) {
+				if (equal(certRef, currentCertRef)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				refsSet.add(certRef);
+			}
+		}
+		return refsSet;
+	}
+	
+	private boolean equal(CertificateRefWrapper certRefOne, CertificateRefWrapper certRefTwo) {
+		if (certRefOne.getDigestAlgoAndValue() != null) {
+			if (certRefTwo.getDigestAlgoAndValue() == null) {
+				return false;
+			}
+			if (!certRefOne.getDigestAlgoAndValue().getDigestMethod().equals(certRefTwo.getDigestAlgoAndValue().getDigestMethod())) {
+				return false;
+			}
+			if (!Arrays.equals(certRefOne.getDigestAlgoAndValue().getDigestValue(), certRefTwo.getDigestAlgoAndValue().getDigestValue())) {
+				return false;
+			}
+		} else if (certRefTwo.getDigestAlgoAndValue() != null) {
+			return false;
+		}
+		if (certRefOne.getIssuerName() != null) {
+			if (!certRefOne.getIssuerName().equals(certRefTwo.getIssuerName())) {
+				return false;
+			}
+		} else if (certRefTwo.getIssuerName() != null) {
+			return false;
+		}
+		if (certRefOne.getIssuerSerial() != null) {
+			if (!Arrays.equals(certRefOne.getIssuerSerial(), certRefTwo.getIssuerSerial())) {
+				return false;
+			}
+		} else if (certRefTwo.getIssuerSerial() != null) {
+			return false;
+		}
+		if (certRefOne.getSki() != null) {
+			if (!Arrays.equals(certRefOne.getSki(), certRefTwo.getSki())) {
+				return false;
+			}
+		} else if (certRefTwo.getSki() != null) {
+			return false;
+		}
+		return true;
 	}
 	
 	@Override
