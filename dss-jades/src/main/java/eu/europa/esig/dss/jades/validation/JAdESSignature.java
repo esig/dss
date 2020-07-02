@@ -421,8 +421,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						signatureValueReferenceValidation.setFound(detachedContentPresent);
 						jws.setDetachedPayload(getPayloadForObjectIdByUriMechanism());
 						
-					} else if (detachedContentPresent) {
-						// other mechanisms
+					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
+						// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
 						signatureValueReferenceValidation.setFound(true);
 						
 					} else {
@@ -607,10 +607,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private List<JAdESReferenceValidation> getReferenceValidationsByUriHashMechanism() {
+		List<DSSDocument> detachedDocuments = detachedContents;
 		
 		if (Utils.isCollectionEmpty(detachedContents)) {
 			LOG.warn("The detached content is not provided! Validation of 'sigD' is not possible.");
-			return Collections.emptyList();
+			detachedDocuments = Collections.emptyList();
+			// continue in order to extract signed data references
 		}
 		
 		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForDetachedContent();
@@ -623,27 +625,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		if (Utils.isMapEmpty(signedDataHashMap)) {
 			LOG.warn("The SignedData has not been found or incorrect for detached content.");
 			return Collections.emptyList();
-		}
-		
-		if (signedDataHashMap.size() == 1 && detachedContents.size() == 1) {
-			JAdESReferenceValidation referenceValidation = new JAdESReferenceValidation();
-			referenceValidation.setType(DigestMatcherType.SIG_D_ENTRY);
-			
-			Map.Entry<String, String> signedDataEntry = signedDataHashMap.entrySet().iterator().next();
-			
-			String signedDataName = signedDataEntry.getKey();
-			referenceValidation.setName(signedDataName);
-			
-			String expectedDigest = signedDataEntry.getValue();
-			referenceValidation.setDigest(new Digest(digestAlgorithm, Utils.fromBase64(expectedDigest)));
-			
-			DSSDocument detachedDocument = detachedContents.get(0);
-			referenceValidation.setFound(true);
-			
-			if (isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
-				referenceValidation.setIntact(true);
-			}
-			return Collections.singletonList(referenceValidation);
 		}
 		
 		List<JAdESReferenceValidation> detachedReferenceValidations = new ArrayList<>();
@@ -659,14 +640,25 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			referenceValidation.setDigest(new Digest(digestAlgorithm, Utils.fromBase64(expectedDigest)));
 			
 			boolean found = false;
-			for (DSSDocument detachedDocument : detachedContents) {
-				if (signedDataName.equals(detachedDocument.getName())) {
-					found = true;
-					if (isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
-						referenceValidation.setIntact(true);
+			// accept document with any name if only one detached document has been signed
+			if (signedDataHashMap.size() == 1 && detachedDocuments.size() == 1) {
+				found = true;
+				if (isDocumentDigestMatch(detachedDocuments.get(0), digestAlgorithm, expectedDigest)) {
+					referenceValidation.setIntact(true);
+				}
+				
+			} else {
+				// if more than one document signed/provided
+				for (DSSDocument detachedDocument : detachedDocuments) {
+					if (signedDataName.equals(detachedDocument.getName())) {
+						found = true;
+						if (isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
+							referenceValidation.setIntact(true);
+						}
 					}
 				}
 			}
+			
 			referenceValidation.setFound(found);
 			if (!found) {
 				LOG.warn("A valid detached document for a 'sigD' entry with name '{}' has not been found!", signedDataName);
