@@ -139,7 +139,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
-		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters,toSignDocuments);
+		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
 		
 		return new InMemoryDocument(signatureBinaries,

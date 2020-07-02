@@ -167,7 +167,6 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * @param sigDMechanism {@link SigDMechanism}
 	 */
 	public void setSigDMechanism(SigDMechanism sigDMechanism) {
-		Objects.requireNonNull(sigDMechanism, "sigDMechanism cannot be null!");
 		this.sigDMechanism = sigDMechanism;
 	}
 

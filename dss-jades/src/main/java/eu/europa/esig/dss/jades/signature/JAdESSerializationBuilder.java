@@ -87,7 +87,10 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		
 		if (jwsJsonSerializationObject == null) {
 			jwsJsonSerializationObject = new JWSJsonSerializationObject();
-			jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
+			if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+				// do not include payload for detached case
+				jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
+			}
 		} else {
 			assertB64ConfigurationConsistent();
 		}
@@ -148,7 +151,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		
 		String payload = jwsJsonSerializationObject.getPayload();
 		if (Utils.isStringNotBlank(payload)) {
-			jsonSerializationMap.put(JWSConstants.PAYLOAD, jwsJsonSerializationObject.getPayload());
+			jsonSerializationMap.put(JWSConstants.PAYLOAD, payload);
 		}
 		
 		List<JsonObject> signatureList = new ArrayList<>();
@@ -163,9 +166,9 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 	
 	private JsonObject buildFlattenedJwsJsonSerialization() {		
 		Map<String, Object> flattenedJwsMap = new LinkedHashMap<>();
-		String encodedPayload = jwsJsonSerializationObject.getPayload();
-		if (Utils.isStringNotBlank(encodedPayload)) {
-			flattenedJwsMap.put(JWSConstants.PAYLOAD, jwsJsonSerializationObject.getPayload());
+		String payload = jwsJsonSerializationObject.getPayload();
+		if (Utils.isStringNotBlank(payload)) {
+			flattenedJwsMap.put(JWSConstants.PAYLOAD, payload);
 		}
 		
 		JsonSerializationSignature jsonSerializationSignature = jwsJsonSerializationObject.getSignatures().get(0);
