@@ -32,7 +32,7 @@ public enum SignatureLevel {
 
 	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B, PKCS7_B, PKCS7_T, PKCS7_LT, PKCS7_LTA,
 	
-	JSON_NOT_ETSI, JAdES_BASELINE_B,
+	JSON_NOT_ETSI, JAdES_BASELINE_B, JAdES_BASELINE_T, JAdES_BASELINE_LT, JAdES_BASELINE_LTA,
 	
 	UNKNOWN;
 
@@ -78,7 +78,10 @@ public enum SignatureLevel {
 		case CAdES_101733_X:
 			return SignatureForm.CAdES;
 		case JSON_NOT_ETSI:
-		case JAdES_BASELINE_B : 
+		case JAdES_BASELINE_B:
+		case JAdES_BASELINE_T:
+		case JAdES_BASELINE_LT:
+		case JAdES_BASELINE_LTA:
 			return SignatureForm.JAdES;
 		case PDF_NOT_ETSI:
 		case PAdES_BASELINE_B:

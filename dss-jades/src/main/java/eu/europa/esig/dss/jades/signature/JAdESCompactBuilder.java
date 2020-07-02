@@ -2,6 +2,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -52,6 +53,10 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);
+		}
+		SignatureLevel signatureLevel = signatureParameters.getSignatureLevel();
+		if (!SignatureLevel.JAdES_BASELINE_B.equals(signatureLevel)) {
+			throw new DSSException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature!");
 		}
 	}
 
