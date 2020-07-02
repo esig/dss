@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
-import eu.europa.esig.dss.jades.JsonSerializationSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -66,24 +65,9 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 				LOG.warn("The file parsing finished with the following errors : {}", jwsJsonSerializationObject.getErrorMessages());
 			}
 			
-			String payload = jwsJsonSerializationObject.getPayload();
-			
-			List<JsonSerializationSignature> foundSignatures = jwsJsonSerializationObject.getSignatures();
+			List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
 			LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
-			for (JsonSerializationSignature signature : foundSignatures) {
-				if (Utils.isStringBlank(signature.getBase64UrlProtectedHeader())) {
-					LOG.warn("The protected header is not present in a signature! The entry is skipped.");
-					continue;
-				}
-				if (Utils.isStringBlank(signature.getBase64UrlSignature())) {
-					LOG.warn("The signature binaries are not present in a signature! The entry is skipped.");
-					continue;
-				}
-				
-				String[] parts = new String[] { signature.getBase64UrlProtectedHeader(), payload, signature.getBase64UrlSignature() };
-				JWS jws = new JWS(parts);
-				jws.setUnprotected(signature.getUnprotected());
-				
+			for (JWS jws : foundSignatures) {
 				JAdESSignature jadesSignature = new JAdESSignature(jws);
 				jadesSignature.setDetachedContents(detachedContents);
 				signatures.add(jadesSignature);

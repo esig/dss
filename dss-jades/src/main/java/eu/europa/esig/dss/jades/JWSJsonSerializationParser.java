@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.jades;
 
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +8,7 @@ import java.util.Map;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -51,11 +52,7 @@ public class JWSJsonSerializationParser {
 				checkForAllowedElements(jwsJsonSerializationObject, rootStructure, 
 						JWSConstants.PAYLOAD, JWSConstants.SIGNATURES);
 				
-				List<JsonSerializationSignature> signatures = getSignatures(jwsJsonSerializationObject, signaturesObject);
-				if (Utils.isCollectionNotEmpty(signatures)) {
-					jwsJsonSerializationObject.setSignatures(signatures);
-				}
-				
+				extractSignatures(jwsJsonSerializationObject, signaturesObject);
 			} else {
 				// otherwise extract flattened JWS JSON Serialization signature
 				jwsJsonSerializationObject.setFlattened(true);
@@ -63,10 +60,7 @@ public class JWSJsonSerializationParser {
 				checkForAllowedElements(jwsJsonSerializationObject, rootStructure, 
 						JWSConstants.PAYLOAD, JWSConstants.SIGNATURE, JWSConstants.HEADER, JWSConstants.PROTECTED);
 				
-				JsonSerializationSignature signature = getSignature(jwsJsonSerializationObject, rootStructure);
-				if (signature != null) {
-					jwsJsonSerializationObject.setSignatures(new ArrayList<>(Arrays.asList(signature)));
-				}
+				extractSignature(jwsJsonSerializationObject, rootStructure);
 			}
 			
 			return jwsJsonSerializationObject;
@@ -78,9 +72,7 @@ public class JWSJsonSerializationParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<JsonSerializationSignature> getSignatures(JWSJsonSerializationObject jwsJsonSerializationObject, Object signaturesObject) {
-		List<JsonSerializationSignature> signatures = new ArrayList<>();
-		
+	private void extractSignatures(JWSJsonSerializationObject jwsJsonSerializationObject, Object signaturesObject) {
 		if (signaturesObject instanceof List<?>) {
 			List<Object> signaturesObjectList = (List<Object>) signaturesObject;
 			if (Utils.isCollectionNotEmpty(signaturesObjectList)) {
@@ -91,10 +83,7 @@ public class JWSJsonSerializationParser {
 						checkForAllowedElements(jwsJsonSerializationObject, signatureMap, 
 								JWSConstants.SIGNATURE, JWSConstants.HEADER, JWSConstants.PROTECTED);
 						
-						JsonSerializationSignature signature = getSignature(jwsJsonSerializationObject, signatureMap);
-						if (signature != null) {
-							signatures.add(signature);
-						}
+						extractSignature(jwsJsonSerializationObject, signatureMap);
 					} else if (signatureObject != null) {
 						jwsJsonSerializationObject.addErrorMessage("The element in 'signatures' list shall be a JSON Map!");
 					}
@@ -105,27 +94,25 @@ public class JWSJsonSerializationParser {
 		} else {
 			jwsJsonSerializationObject.addErrorMessage("The 'signatures' element must be a list of objects!");
 		}
-		
-		return signatures;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private JsonSerializationSignature getSignature(JWSJsonSerializationObject jwsJsonSerializationObject, Map<String, Object> signatureMap) {
+	private void extractSignature(JWSJsonSerializationObject jwsJsonSerializationObject, Map<String, Object> signatureMap) {
 		try {
-			JsonSerializationSignature signature = new JsonSerializationSignature();
+			JWS signature = new JWS();
 			
 			Object signatureObject = signatureMap.get(JWSConstants.SIGNATURE);
 			if (signatureObject == null) {
 				jwsJsonSerializationObject.addErrorMessage("The 'signature' element is not present!");
-				return null;
+				return;
 			}
 			if (signatureObject instanceof String) {
 				String signatureBase64Url = (String) signatureObject;
 				if (Utils.isStringBlank(signatureBase64Url)) {
 					jwsJsonSerializationObject.addErrorMessage("The 'signature' element content cannot be blank!");
-					return null;
+					return;
 				}
-				signature.setBase64UrlSignature(signatureBase64Url);
+				signature.setSignature(JAdESUtils.fromBase64Url(signatureBase64Url));
 			} else {
 				jwsJsonSerializationObject.addErrorMessage("The 'signature' element must be of String type!");
 			}
@@ -133,7 +120,7 @@ public class JWSJsonSerializationParser {
 			Object protectedObject = signatureMap.get(JWSConstants.PROTECTED);
 			if (protectedObject instanceof String) {
 				String protectedBase64Url = (String) protectedObject;
-				signature.setBase64UrlProtectedHeader(protectedBase64Url);
+				signature.setProtected(protectedBase64Url);
 			} else if (protectedObject != null) {
 				jwsJsonSerializationObject.addErrorMessage("The 'protected' element must be of String type!");
 			}
@@ -146,7 +133,13 @@ public class JWSJsonSerializationParser {
 				jwsJsonSerializationObject.addErrorMessage("The 'header' element must be of JSON Map type!");
 			}
 			
-			return signature;
+			if (signature.isRfc7797UnencodedPayload()) {
+				signature.setPayloadBytes(jwsJsonSerializationObject.getPayload().getBytes(StandardCharsets.UTF_8));
+			} else {
+				signature.setPayloadBytes(JAdESUtils.fromBase64Url(jwsJsonSerializationObject.getPayload()));
+			}
+
+			jwsJsonSerializationObject.getSignatures().add(signature);
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to build a signature. Reason : [%s]", e.getMessage()), e);
 		}

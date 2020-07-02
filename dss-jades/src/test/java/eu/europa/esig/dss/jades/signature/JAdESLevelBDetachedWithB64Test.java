@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collections;
 import java.util.Date;
@@ -13,6 +14,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
+import eu.europa.esig.dss.jades.JWSConverter;
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -51,6 +55,25 @@ public class JAdESLevelBDetachedWithB64Test extends AbstractJAdESTestSignature {
 		
 		String signatureString = new String(byteArray);
 		assertFalse(signatureString.contains(ORIGINAL_STRING));
+
+		InMemoryDocument compactSignature = new InMemoryDocument(byteArray);
+		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(compactSignature);
+		JWS jws = parser.parse();
+		assertNotNull(jws);
+
+		DSSDocument converted = JWSConverter.fromJWSCompactToJSONFlattenedSerialization(compactSignature);
+		assertNotNull(converted);
+		assertNotNull(converted.getMimeType());
+		assertNotNull(converted.getName());
+
+		verify(converted);
+
+		converted = JWSConverter.fromJWSCompactToJSONSerialization(compactSignature);
+		assertNotNull(converted);
+		assertNotNull(converted.getMimeType());
+		assertNotNull(converted.getName());
+
+		verify(converted);
 	}
 
 	@Override

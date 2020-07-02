@@ -2,14 +2,11 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
-import org.jose4j.jwx.CompactSerializer;
 
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -62,18 +59,11 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 	public List<AdvancedSignature> getSignatures() {
 		if (signatures == null) {
 			signatures = new ArrayList<>();
-	
-			try (Scanner scanner = new Scanner(document.openStream(), StandardCharsets.UTF_8.name())) {
-				String compactSerialization = scanner.nextLine();
-				String[] parts = CompactSerializer.deserialize(compactSerialization);
-	
-				JWS jws = new JWS(parts);
-	
-				JAdESSignature jadesSignature = new JAdESSignature(jws);
-				jadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
-				jadesSignature.setDetachedContents(detachedContents);
-				signatures.add(jadesSignature);
-			}
+			JWSCompactSerializationParser parser = new JWSCompactSerializationParser(document);
+			JAdESSignature jadesSignature = new JAdESSignature(parser.parse());
+			jadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+			jadesSignature.setDetachedContents(detachedContents);
+			signatures.add(jadesSignature);
 		}
 		return signatures;
 	}

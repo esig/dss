@@ -3,6 +3,7 @@ package eu.europa.esig.dss.jades;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.utils.Utils;
 
 public class JWSJsonSerializationObject {
@@ -11,7 +12,7 @@ public class JWSJsonSerializationObject {
 	private String payload;
 	
 	/** The list of incorporated signatures */
-	private List<JsonSerializationSignature> signatures;
+	private List<JWS> signatures;
 	
 	/** TRUE when the parsed file is a flattened signature type, FALSE otherwise */
 	private boolean flattened;
@@ -30,14 +31,14 @@ public class JWSJsonSerializationObject {
 		this.payload = encodedPayload;
 	}
 
-	public List<JsonSerializationSignature> getSignatures() {
+	public List<JWS> getSignatures() {
 		if (signatures == null) {
 			signatures = new ArrayList<>();
 		}
 		return signatures;
 	}
 
-	public void setSignatures(List<JsonSerializationSignature> signatures) {
+	public void setSignatures(List<JWS> signatures) {
 		this.signatures = signatures;
 	}
 
