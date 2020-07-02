@@ -102,7 +102,12 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.2 The alg (X.509 URL) header parameter
 	 */
 	private void incorporateSignatureAlgorithm() {
-		addHeader(HeaderParameterNames.ALGORITHM, parameters.getSignatureAlgorithm().getJWAId());
+		String id = parameters.getSignatureAlgorithm().getJWAId();
+		if (Utils.isStringNotEmpty(id)) {
+			addHeader(HeaderParameterNames.ALGORITHM, id);
+		} else {
+			throw new DSSException(String.format("The defined signature algorithm '%s' is not supported!", parameters.getSignatureAlgorithm()));
+		}
 	}
 
 	/**
