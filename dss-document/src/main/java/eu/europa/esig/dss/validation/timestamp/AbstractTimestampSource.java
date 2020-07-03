@@ -84,10 +84,10 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected ListCertificateSource certificateSource;
 	
 	// Enclosed content timestamps.
-	private List<TimestampToken> contentTimestamps;
+	protected List<TimestampToken> contentTimestamps;
 
 	// Enclosed signature timestamps.
-	private List<TimestampToken> signatureTimestamps;
+	protected List<TimestampToken> signatureTimestamps;
 
 	// Enclosed SignAndRefs timestamps.
 	private List<TimestampToken> sigAndRefsTimestamps;
@@ -96,7 +96,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	private List<TimestampToken> refsOnlyTimestamps;
 
 	// This variable contains the list of enclosed archive signature timestamps.
-	private List<TimestampToken> archiveTimestamps;
+	protected List<TimestampToken> archiveTimestamps;
 
 	/**
 	 * Default constructor

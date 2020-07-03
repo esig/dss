@@ -217,4 +217,14 @@ public final class JAdESHeaderParameterNames {
 	 */
 	public static final String VAL = "val";
 
+	/**
+	 * ETSI Unsigned properties
+	 */
+	public static final String ETSI_U = "etsiU";
+
+	/**
+	 * Signature timestamp
+	 */
+	public static final String SIG_TST = "sigTst";
+
 }
