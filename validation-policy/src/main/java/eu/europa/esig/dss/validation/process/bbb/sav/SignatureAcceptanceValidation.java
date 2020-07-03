@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -80,8 +81,10 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		// content-hints
 		item = item.setNextItem(contentHints());
 		
-		// message-digest for CAdES and SignedProperties for XAdES are present
-		item = item.setNextItem(messageDigestOrSignedProperties());
+		// message-digest for CAdES/PAdES and SignedProperties for XAdES are present
+		if (!SignatureForm.JAdES.equals(token.getSignatureFormat().getSignatureForm())) {
+			item = item.setNextItem(messageDigestOrSignedProperties());
+		}
 
 		// TODO content-reference
 

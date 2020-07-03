@@ -41,6 +41,8 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class DSS2011WithContentTstTest extends AbstractCAdESTestValidation {
 
@@ -100,6 +102,16 @@ public class DSS2011WithContentTstTest extends AbstractCAdESTestValidation {
 			assertEquals(Indication.INDETERMINATE, contentTstBBB.getConclusion().getIndication());
 			assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, contentTstBBB.getConclusion().getSubIndication());
 		}
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		assertTrue(Utils.isCollectionEmpty(diagnosticData.getOriginalSignerDocuments()));
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

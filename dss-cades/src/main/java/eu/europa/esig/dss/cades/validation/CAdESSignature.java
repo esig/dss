@@ -823,14 +823,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
 		ReferenceValidation contentValidation = new ReferenceValidation();
 		contentValidation.setType(DigestMatcherType.CONTENT_DIGEST);
-		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(signerInformation.getDigestAlgOID());
-		if (originalDocument != null && digestAlgorithm != null) {
-			byte[] contentDigest = signerInformation.getContentDigest();
-			if (Utils.isArrayNotEmpty(contentDigest)) {
-				contentValidation.setFound(true);
-				contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
-				if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
-					contentValidation.setIntact(true);
+		if (signerInformation != null) {
+			DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(signerInformation.getDigestAlgOID());
+			if (originalDocument != null && digestAlgorithm != null) {
+				byte[] contentDigest = signerInformation.getContentDigest();
+				if (Utils.isArrayNotEmpty(contentDigest)) {
+					contentValidation.setFound(true);
+					contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
+					if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
+						contentValidation.setIntact(true);
+					}
 				}
 			}
 		}

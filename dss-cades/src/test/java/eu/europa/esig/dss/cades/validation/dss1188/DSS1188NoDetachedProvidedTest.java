@@ -22,12 +22,17 @@ package eu.europa.esig.dss.cades.validation.dss1188;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class DSS1188NoDetachedProvidedTest extends AbstractCAdESTestValidation {
 
@@ -45,6 +50,16 @@ public class DSS1188NoDetachedProvidedTest extends AbstractCAdESTestValidation {
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals("C-A5518784E8001EF099F4BAEC5573BC965830079EDDED92752EA94B6548DFFC06", signature.getSigningCertificate().getId());
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		assertTrue(Utils.isCollectionEmpty(diagnosticData.getOriginalSignerDocuments()));
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

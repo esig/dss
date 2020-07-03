@@ -51,7 +51,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         	if (reference.isIntact()) {
                 DSSDocument originalDocument = getOriginalDocument(cadesSignature);
                 return getSignatureScopeFromOriginalDocument(originalDocument);
-        	} else {
+        	} else if (reference.isFound()) {
                 return getSignatureScopeFromReferenceValidation(reference);
         	}
         }

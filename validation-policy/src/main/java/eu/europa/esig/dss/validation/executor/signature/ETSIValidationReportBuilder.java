@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -729,20 +730,37 @@ public class ETSIValidationReportBuilder {
 		sigId.setDAIdentifier(sigWrapper.getDAIdentifier());
 		sigId.setDocHashOnly(sigWrapper.isDocHashOnly());
 		sigId.setHashOnly(sigWrapper.isHashOnly());
-		sigId.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper.getDigestMatchers()));
+		sigId.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper));
 		SignatureValueType sigValue = new SignatureValueType();
 		sigValue.setValue(sigWrapper.getSignatureValue());
 		sigId.setSignatureValue(sigValue);
 		return sigId;
 	}
 	
-	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(List<XmlDigestMatcher> digestMatchers) {
+	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(SignatureWrapper sigWrapper) {
+		// TODO : a temporary code, shall be changed with DSS-2116
+		switch (sigWrapper.getSignatureFormat().getSignatureForm()) {
+			case XAdES:
+				return getDigestMatcherOfType(sigWrapper, Arrays.asList(DigestMatcherType.SIGNED_PROPERTIES));
+			case CAdES:
+			case PAdES:
+			case PKCS7:
+				return getDigestMatcherOfType(sigWrapper, Arrays.asList(DigestMatcherType.MESSAGE_DIGEST, DigestMatcherType.CONTENT_DIGEST));
+			case JAdES:
+				return getDigestMatcherOfType(sigWrapper, Arrays.asList(DigestMatcherType.JWS_SIGNING_INPUT_DIGEST));
+			default:
+				// unsupported format
+				return null;
+		}
+	}
+	
+	private DigestAlgAndValueType getDigestMatcherOfType(SignatureWrapper sigWrapper, Collection<DigestMatcherType> acceptedDigestMatcherTypes) {
 		XmlDigestMatcher digestMatcher = null;
+		List<XmlDigestMatcher> digestMatchers = sigWrapper.getDigestMatchers();
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				if ( (digestMatcher == null || DigestMatcherType.SIGNED_PROPERTIES.equals(xmlDigestMatcher.getType()) || 
-						DigestMatcherType.CONTENT_DIGEST.equals(xmlDigestMatcher.getType()) ) &&
-						xmlDigestMatcher.getDigestMethod() != null && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
+				if ( (digestMatcher == null || acceptedDigestMatcherTypes.contains(xmlDigestMatcher.getType())) 
+						&& xmlDigestMatcher.getDigestMethod() != null && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue()) ) {
 					digestMatcher = xmlDigestMatcher;
 				}
 			}

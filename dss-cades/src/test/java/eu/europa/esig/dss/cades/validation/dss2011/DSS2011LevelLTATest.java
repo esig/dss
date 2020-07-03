@@ -41,6 +41,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class DSS2011LevelLTATest extends AbstractCAdESTestValidation {
 
@@ -111,6 +113,16 @@ public class DSS2011LevelLTATest extends AbstractCAdESTestValidation {
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		assertTrue(Utils.isCollectionEmpty(diagnosticData.getOriginalSignerDocuments()));
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

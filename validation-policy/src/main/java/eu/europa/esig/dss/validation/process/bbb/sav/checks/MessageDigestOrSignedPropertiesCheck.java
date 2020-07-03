@@ -28,11 +28,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public class MessageDigestOrSignedPropertiesCheck extends ChainItem<XmlSAV> {
 
@@ -45,13 +45,24 @@ public class MessageDigestOrSignedPropertiesCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected boolean process() {
+		switch (signature.getSignatureFormat().getSignatureForm()) {
+			case XAdES:
+				return isRequiredDigestMatcherPresent(DigestMatcherType.SIGNED_PROPERTIES);
+			case CAdES:
+			case PAdES:
+			case PKCS7:
+				return isRequiredDigestMatcherPresent(DigestMatcherType.MESSAGE_DIGEST);
+			default:
+				// JAdES shall be skipped
+				return false;
+		}
+	}
+	
+	private boolean isRequiredDigestMatcherPresent(DigestMatcherType digestMatcherType) {
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				// for CAdES and PAdES
-				if (DigestMatcherType.MESSAGE_DIGEST.equals(digestMatcher.getType()) || 
-						// for XAdES
-						DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
+				if (digestMatcherType.equals(digestMatcher.getType())) {
 					return true;
 				}
 			}

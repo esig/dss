@@ -667,6 +667,13 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			detachedReferenceValidations.add(referenceValidation);
 		}
 		
+		if (Utils.isCollectionEmpty(detachedReferenceValidations)) {
+			// add an empty reference if none found
+			JAdESReferenceValidation referenceValidation = new JAdESReferenceValidation();
+			referenceValidation.setType(DigestMatcherType.SIG_D_ENTRY);
+			detachedReferenceValidations.add(referenceValidation);
+		}
+		
 		return detachedReferenceValidations;
 	}
 	
