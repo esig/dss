@@ -32,24 +32,24 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
 	
-	private final Element signatureProptiesDom;
+	private final Element signaturePropertiesDom;
 	private final XAdESPaths xadesPaths;
 	
-	XAdESSigProperties(Element signaturePropties, XAdESPaths xadesPaths) {
-		this.signatureProptiesDom = signaturePropties;
+	XAdESSigProperties(Element signatureProperties, XAdESPaths xadesPaths) {
+		this.signaturePropertiesDom = signatureProperties;
 		this.xadesPaths = xadesPaths;
 	}
 	
 	@Override
 	public boolean isExist() {
-		return signatureProptiesDom != null;
+		return signaturePropertiesDom != null;
 	}
 
 	@Override
 	public List<XAdESAttribute> getAttributes() {
 		List<XAdESAttribute> unsignedAttributes = new ArrayList<>();
-		if (signatureProptiesDom != null && signatureProptiesDom.hasChildNodes()) {
-			final NodeList unsignedProperties = signatureProptiesDom.getChildNodes();
+		if (signaturePropertiesDom != null && signaturePropertiesDom.hasChildNodes()) {
+			final NodeList unsignedProperties = signaturePropertiesDom.getChildNodes();
 			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 				Node node = unsignedProperties.item(ii);
 				if (isElementNode(node)) {

@@ -27,8 +27,8 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 public class XAdESUnsignedSigProperties extends XAdESSigProperties {
 
-	XAdESUnsignedSigProperties(Element signaturePropties, XAdESPaths xadesPaths) {
-		super(signaturePropties, xadesPaths);
+	XAdESUnsignedSigProperties(Element signatureProperties, XAdESPaths xadesPaths) {
+		super(signatureProperties, xadesPaths);
 	}
 	
 	public static XAdESUnsignedSigProperties build(Element signatureElement, XAdESPaths xadesPaths) {
