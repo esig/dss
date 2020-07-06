@@ -779,7 +779,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		if (!hasBProfile()) {
 			return SignatureLevel.JSON_NOT_ETSI;
 		}
-		return SignatureLevel.JAdES_BASELINE_B;
+		if (!hasTProfile()) {
+			return SignatureLevel.JAdES_BASELINE_B;
+		}
+
+		return SignatureLevel.JAdES_BASELINE_T;
 	}
 
 	private boolean hasBProfile() {

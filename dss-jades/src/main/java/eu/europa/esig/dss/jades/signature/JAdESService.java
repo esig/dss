@@ -22,11 +22,13 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -128,12 +130,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
-
-		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, Collections.singletonList(toSignDocument));
-		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
-		
-		return new InMemoryDocument(signatureBinaries,
-				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), jadesBuilder.getMimeType());
+		return signDocument(Collections.singletonList(toSignDocument), parameters, signatureValue);
 	}
 
 	@Override
@@ -141,9 +138,16 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			SignatureValue signatureValue) {
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
-		
-		return new InMemoryDocument(signatureBinaries,
-				getFinalFileName(toSignDocuments.get(0), SigningOperation.SIGN, parameters.getSignatureLevel()), jadesBuilder.getMimeType());
+
+		DSSDocument signedDocument = new InMemoryDocument(signatureBinaries);
+		SignatureExtension<JAdESSignatureParameters> signatureExtension = getExtensionProfile(parameters);
+		if (signatureExtension != null) {
+			signedDocument = signatureExtension.extendSignatures(signedDocument, parameters);
+		}
+		signedDocument.setName(getFinalFileName(toSignDocuments.iterator().next(), SigningOperation.SIGN,
+				parameters.getSignatureLevel()));
+		signedDocument.setMimeType(jadesBuilder.getMimeType());
+		return signedDocument;
 	}
 	
 	protected JAdESBuilder getJAdESBuilder(JAdESSignatureParameters parameters, List<DSSDocument> documentsToSign) {
@@ -178,13 +182,37 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, JAdESSignatureParameters parameters) {
-		throw new UnsupportedOperationException("Extension is not supported with JAdES");
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+
+		final SignatureExtension<JAdESSignatureParameters> extension = getExtensionProfile(parameters);
+		if (extension != null) {
+			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
+			dssDocument.setName(
+					getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+			dssDocument.setMimeType(MimeType.JOSE_JSON);
+			return dssDocument;
+		}
+		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel());
+	}
+
+	private SignatureExtension<JAdESSignatureParameters> getExtensionProfile(JAdESSignatureParameters parameters) {
+		switch (parameters.getSignatureLevel()) {
+		case JAdES_BASELINE_B:
+			return null;
+		case JAdES_BASELINE_T:
+			final JAdESLevelBaselineT extensionT = new JAdESLevelBaselineT(certificateVerifier);
+			extensionT.setTspSource(tspSource);
+			return extensionT;
+		default:
+			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+		}
 	}
 
 	@Override
 	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, JAdESTimestampParameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
 }

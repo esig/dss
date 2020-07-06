@@ -73,6 +73,14 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 		return contentTimestampParameters;
 	}
 
+	@Override
+	public JAdESTimestampParameters getSignatureTimestampParameters() {
+		if (signatureTimestampParameters == null) {
+			signatureTimestampParameters = new JAdESTimestampParameters();
+		}
+		return signatureTimestampParameters;
+	}
+
 	/**
 	 * Defines if complete certificate chain binaries must be included into the signed header ('x5c' attribute)
 	 * 
