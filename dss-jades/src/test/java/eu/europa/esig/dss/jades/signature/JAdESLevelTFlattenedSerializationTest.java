@@ -2,7 +2,6 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,7 +25,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JAdESLevelBFlattenedSerializationTest extends AbstractJAdESTestSignature {
+public class JAdESLevelTFlattenedSerializationTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
@@ -35,17 +34,20 @@ public class JAdESLevelBFlattenedSerializationTest extends AbstractJAdESTestSign
 	@BeforeEach
 	public void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		signatureParameters = new JAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
 		
 		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		
@@ -67,8 +69,9 @@ public class JAdESLevelBFlattenedSerializationTest extends AbstractJAdESTestSign
 			String signatureValue = (String) rootStructure.get(JWSConstants.SIGNATURE);
 			assertNotNull(signatureValue);
 			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(signatureValue)));
-
-			assertNull(rootStructure.get(JWSConstants.HEADER));
+			
+			Map<String, Object> unprotected = (Map<String, Object>) rootStructure.get(JWSConstants.HEADER);
+			assertTrue(Utils.isMapNotEmpty(unprotected));
 
 		} catch (JoseException e) {
 			fail("Unable to parse the signed file : " + e.getMessage());

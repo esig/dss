@@ -69,7 +69,7 @@ public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestVali
         time = cal.getTime();
 
 		params = new JAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		params.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		params.setSigningCertificate(getSigningCert());

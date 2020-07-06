@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.jades.signature;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -100,14 +102,21 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 			unsignedProperties.put(JAdESHeaderParameterNames.SIG_TST, sigTst);
 		}
 
+		List<JSONObject> tsTokens = (List<JSONObject>) sigTst.get(JAdESHeaderParameterNames.TST_TOKENS);
+		if (tsTokens == null) {
+			tsTokens = new ArrayList<>();
+			sigTst.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokens);
+		}
+
 		JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
 		byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, jadesSignature.getSignatureValue());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
 
-
 		JSONObject tst = new JSONObject();
 		tst.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timeStampResponse.getBytes()));
+
+		tsTokens.add(tst);
 
 	}
 

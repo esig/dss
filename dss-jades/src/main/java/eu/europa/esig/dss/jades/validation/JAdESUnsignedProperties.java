@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureProperties;
 
 public class JAdESUnsignedProperties implements SignatureProperties<JAdESAttribute> {
@@ -17,7 +18,7 @@ public class JAdESUnsignedProperties implements SignatureProperties<JAdESAttribu
 
 	@Override
 	public boolean isExist() {
-		return etsiU != null;
+		return Utils.isMapNotEmpty(etsiU);
 	}
 
 	@Override

@@ -29,8 +29,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getSignatureTimestampData(TimestampToken timestampToken) {
-		// not supported
-		return null;
+		return new InMemoryDocument(signature.getSignatureValue());
 	}
 
 	@Override

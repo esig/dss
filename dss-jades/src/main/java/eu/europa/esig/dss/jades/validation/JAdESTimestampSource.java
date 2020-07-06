@@ -71,6 +71,8 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		contentTimestamps = new ArrayList<>();
 		signatureTimestamps = new ArrayList<>();
 		archiveTimestamps = new ArrayList<>();
+		sigAndRefsTimestamps = new ArrayList<>();
+		refsOnlyTimestamps = new ArrayList<>();
 
 		// initialize combined revocation sources
 		crlSource = new ListRevocationSource<CRL>(signatureCRLSource);
@@ -104,7 +106,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		}
 
 		final List<TimestampToken> timestamps = new ArrayList<>();
-		final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
+		// final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
 
 		final List<JAdESAttribute> unsignedAttributes = unsignedSignatureProperties.getAttributes();
 		for (JAdESAttribute unsignedAttribute : unsignedAttributes) {
@@ -119,59 +121,6 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 				if (Utils.isCollectionNotEmpty(currentTimestamps)) {
 					signatureTimestamps.addAll(currentTimestamps);
 				}
-
-			} else if (isCompleteCertificateRef(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
-				continue;
-
-			} else if (isAttributeCertificateRef(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
-				continue;
-
-			} else if (isCompleteRevocationRef(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
-				continue;
-
-			} else if (isAttributeRevocationRef(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
-				continue;
-
-			} else if (isCertificateValues(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
-				continue;
-
-			} else if (isRevocationValues(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
-				continue;
-
-			} else if (isAttrAuthoritiesCertValues(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
-				continue;
-
-			} else if (isAttributeRevocationValues(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
-				continue;
-
-			} else if (isArchiveTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = new ArrayList<>();
-				addReferencesForPreviousTimestamps(references, timestamps);
-				addReferences(references, encapsulatedReferences);
-
-				// TODO
-//				timestampToken = makeTimestampToken(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP, references);
-//				if (timestampToken == null) {
-//					continue;
-//				}
-//				timestampToken.setArchiveTimestampType(getArchiveTimestampType(unsignedAttribute));
-//				addReferences(timestampToken.getTimestampedReferences(),
-//						getArchiveTimestampOtherReferences(timestampToken));
-//
-//				archiveTimestamps.add(timestampToken);
-
-			} else if (isTimeStampValidationData(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampValidationData(unsignedAttribute));
-				continue;
-
 			} else {
 				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute);
 				continue;

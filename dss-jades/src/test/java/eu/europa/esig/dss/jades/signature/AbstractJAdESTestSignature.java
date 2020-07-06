@@ -11,6 +11,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.HTTPHeaderDocument;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
@@ -42,14 +43,17 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 
 	@Override
 	protected boolean isBaselineT() {
-		// TODO Auto-generated method stub
-		return false;
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel)
+				|| SignatureLevel.JAdES_BASELINE_LT.equals(signatureLevel)
+				|| SignatureLevel.JAdES_BASELINE_T.equals(signatureLevel);
 	}
+
 
 	@Override
 	protected boolean isBaselineLTA() {
-		// TODO Auto-generated method stub
-		return false;
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel);
 	}
 	
 	@Override

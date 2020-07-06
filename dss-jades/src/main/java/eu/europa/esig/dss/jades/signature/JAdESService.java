@@ -22,6 +22,7 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -129,12 +130,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
-
-		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, Collections.singletonList(toSignDocument));
-		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
-		
-		return new InMemoryDocument(signatureBinaries,
-				getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()), jadesBuilder.getMimeType());
+		return signDocument(Collections.singletonList(toSignDocument), parameters, signatureValue);
 	}
 
 	@Override
@@ -142,9 +138,16 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			SignatureValue signatureValue) {
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
-		
-		return new InMemoryDocument(signatureBinaries,
-				getFinalFileName(toSignDocuments.get(0), SigningOperation.SIGN, parameters.getSignatureLevel()), jadesBuilder.getMimeType());
+
+		DSSDocument signedDocument = new InMemoryDocument(signatureBinaries);
+		SignatureExtension<JAdESSignatureParameters> signatureExtension = getExtensionProfile(parameters);
+		if (signatureExtension != null) {
+			signedDocument = signatureExtension.extendSignatures(signedDocument, parameters);
+		}
+		signedDocument.setName(getFinalFileName(toSignDocuments.iterator().next(), SigningOperation.SIGN,
+				parameters.getSignatureLevel()));
+		signedDocument.setMimeType(jadesBuilder.getMimeType());
+		return signedDocument;
 	}
 	
 	protected JAdESBuilder getJAdESBuilder(JAdESSignatureParameters parameters, List<DSSDocument> documentsToSign) {
@@ -188,6 +191,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
 			dssDocument.setName(
 					getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+			dssDocument.setMimeType(MimeType.JOSE_JSON);
 			return dssDocument;
 		}
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel());
