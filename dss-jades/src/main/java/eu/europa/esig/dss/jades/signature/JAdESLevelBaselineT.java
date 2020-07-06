@@ -82,31 +82,13 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 
 		assertExtendSignatureToTPossible(jadesSignature, params);
 
-		JWS jws = jadesSignature.getJws();
-		Map<String, Object> unprotected = jws.getUnprotected();
-		if (unprotected == null) {
-			unprotected = new HashMap<>();
-			jws.setUnprotected(unprotected);
-		}
+		Map<String, Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
-		Map<String, Object> unsignedProperties = (Map<String, Object>) unprotected
-				.get(JAdESHeaderParameterNames.ETSI_U);
-		if (unsignedProperties == null) {
-			unsignedProperties = new HashMap<>();
-			unprotected.put(JAdESHeaderParameterNames.ETSI_U, unsignedProperties);
-		}
+		Map<String, Object> sigTst = (Map<String, Object>) unsignedProperties
+				.computeIfAbsent(JAdESHeaderParameterNames.SIG_TST, k -> new HashMap<>());
 
-		Map<String, Object> sigTst = (Map<String, Object>) unsignedProperties.get(JAdESHeaderParameterNames.SIG_TST);
-		if (sigTst == null) {
-			sigTst = new HashMap<>();
-			unsignedProperties.put(JAdESHeaderParameterNames.SIG_TST, sigTst);
-		}
-
-		List<JSONObject> tsTokens = (List<JSONObject>) sigTst.get(JAdESHeaderParameterNames.TST_TOKENS);
-		if (tsTokens == null) {
-			tsTokens = new ArrayList<>();
-			sigTst.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokens);
-		}
+		List<JSONObject> tsTokens = (List<JSONObject>) sigTst.computeIfAbsent(JAdESHeaderParameterNames.TST_TOKENS,
+				k -> new ArrayList<>());
 
 		JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
@@ -115,9 +97,20 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 
 		JSONObject tst = new JSONObject();
 		tst.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timeStampResponse.getBytes()));
-
 		tsTokens.add(tst);
+	}
 
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getUnsignedProperties(JAdESSignature jadesSignature) {
+		JWS jws = jadesSignature.getJws();
+		Map<String, Object> unprotected = jws.getUnprotected();
+		if (unprotected == null) {
+			unprotected = new HashMap<>();
+			jws.setUnprotected(unprotected);
+		}
+
+		return (Map<String, Object>) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U,
+				k -> new HashMap<>());
 	}
 
 	/**
