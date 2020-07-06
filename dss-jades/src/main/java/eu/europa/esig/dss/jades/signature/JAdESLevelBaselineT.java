@@ -30,7 +30,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignatureParameters> {
 
-	private final CertificateVerifier certificateVerifier;
+	protected final CertificateVerifier certificateVerifier;
 
 	/*
 	 * The object encapsulating the Time Stamp Protocol needed to create the level
@@ -101,7 +101,7 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> getUnsignedProperties(JAdESSignature jadesSignature) {
+	protected Map<String, Object> getUnsignedProperties(JAdESSignature jadesSignature) {
 		JWS jws = jadesSignature.getJws();
 		Map<String, Object> unprotected = jws.getUnprotected();
 		if (unprotected == null) {

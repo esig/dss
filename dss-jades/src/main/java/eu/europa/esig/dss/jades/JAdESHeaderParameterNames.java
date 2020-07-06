@@ -227,4 +227,29 @@ public final class JAdESHeaderParameterNames {
 	 */
 	public static final String SIG_TST = "sigTst";
 
+	/**
+	 * Certificate Values
+	 */
+	public static final String X_VALS = "xVals";
+
+	/**
+	 * Revocation Values
+	 */
+	public static final String R_VALS = "rVals";
+
+	/**
+	 * CRL Values
+	 */
+	public static final String CRL_VALS = "crlVals";
+
+	/**
+	 * OCSP Values
+	 */
+	public static final String OCSP_VALS = "ocspVals";
+
+	/**
+	 * Other values
+	 */
+	public static final String OTHER_VALS = "otherVals";
+
 }

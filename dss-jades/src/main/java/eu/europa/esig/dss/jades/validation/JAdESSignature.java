@@ -782,7 +782,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		if (!hasTProfile()) {
 			return SignatureLevel.JAdES_BASELINE_B;
 		}
-
+		if (hasLTProfile()) {
+			if (hasLTAProfile()) {
+				return SignatureLevel.JAdES_BASELINE_LTA;
+			}
+			return SignatureLevel.JAdES_BASELINE_LT;
+		}
 		return SignatureLevel.JAdES_BASELINE_T;
 	}
 
