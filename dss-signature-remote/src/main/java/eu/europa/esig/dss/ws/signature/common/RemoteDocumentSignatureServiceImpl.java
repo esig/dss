@@ -33,6 +33,8 @@ import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -63,6 +65,8 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> padesService;
 
+	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> jadesService;
+
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService;
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService;
@@ -77,6 +81,10 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	public void setPadesService(DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> padesService) {
 		this.padesService = padesService;
+	}
+
+	public void setJadesService(DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> jadesService) {
+		this.jadesService = jadesService;
 	}
 
 	public void setAsicWithXAdESService(DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService) {
@@ -106,6 +114,8 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 					return cadesService;
 				case PAdES:
 					return padesService;
+				case JAdES:
+					return jadesService;
 				default:
 					throw new DSSException("Unrecognized format " + signatureForm);
 				}

@@ -36,6 +36,8 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -91,17 +93,17 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			parameters = getASiCSignatureParameters(asicContainerType, signatureForm);
 		} else {
 			switch (signatureForm) {
+			case XAdES:
+				parameters = new XAdESSignatureParameters();
+				break;
 			case CAdES:
 				parameters = new CAdESSignatureParameters();
 				break;
 			case PAdES:
-				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
-				padesParams.setContentSize(9472 * 2); // double reserved space for signature
-				padesParams.setImageParameters(this.toImageParameters(remoteParameters.getImageParameters()));
-				parameters = padesParams;
+				parameters = getPAdESSignatureParameters(remoteParameters);
 				break;
-			case XAdES:
-				parameters = new XAdESSignatureParameters();
+			case JAdES:
+				parameters = getJAdESSignatureParameters(remoteParameters);
 				break;
 			default:
 				throw new DSSException("Unsupported signature form : " + signatureForm);
@@ -115,6 +117,21 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 
 		return parameters;
+	}
+	
+	protected SerializableSignatureParameters getPAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
+		PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
+		padesParams.setContentSize(9472 * 2); // double reserved space for signature
+		padesParams.setImageParameters(toImageParameters(remoteParameters.getImageParameters()));
+		return padesParams;
+	}
+	
+	protected SerializableSignatureParameters getJAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
+		JAdESSignatureParameters jadesParameters = new JAdESSignatureParameters();
+		if (remoteParameters.getJwsSerializationType() != null) {
+			jadesParameters.setJwsSerializationType(remoteParameters.getJwsSerializationType());
+		}
+		return jadesParameters;
 	}
 
 	protected void fillParameters(AbstractSignatureParameters<TimestampParameters> parameters, RemoteSignatureParameters remoteParameters) {
@@ -166,7 +183,9 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		policy.setId(remoteBLevelParameters.getPolicyId());
 		policy.setQualifier(remoteBLevelParameters.getPolicyQualifier());
 		policy.setSpuri(remoteBLevelParameters.getPolicySpuri());
-		bLevelParameters.setSignaturePolicy(policy);
+		if (!policy.isEmpty()) {
+			bLevelParameters.setSignaturePolicy(policy);
+		}
 		
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry(remoteBLevelParameters.getSignerLocationCountry());
@@ -229,6 +248,9 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				case XAdES:
 					timestampParameters = new XAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm(), 
 							remoteTimestampParameters.getCanonicalizationMethod());
+					break;
+				case JAdES:
+					timestampParameters = new JAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
 					break;
 				default:
 					throw new DSSException("Unsupported signature form : " + signatureForm);

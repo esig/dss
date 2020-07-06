@@ -28,6 +28,7 @@ import java.util.Objects;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -66,6 +67,11 @@ public class RemoteSignatureParameters implements Serializable {
 	 * This variable indicates the expected signature packaging
 	 */
 	private SignaturePackaging signaturePackaging;
+
+	/**
+	 * JAdES JWS Serialization Type
+	 */
+	private JWSSerializationType jwsSerializationType;
 
 	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
@@ -181,6 +187,25 @@ public class RemoteSignatureParameters implements Serializable {
 	public void setSignatureLevel(final SignatureLevel signatureLevel) {
 		Objects.requireNonNull(signatureLevel, "signatureLevel must be defined!");
 		this.signatureLevel = signatureLevel;
+	}
+
+	/**
+	 * Gets {@code JWSSerializationType}
+	 * NOTE: used only for JAdES
+	 * 
+	 * @return {@link JWSSerializationType}
+	 */
+	public JWSSerializationType getJwsSerializationType() {
+		return jwsSerializationType;
+	}
+
+	/**
+	 * Sets {@code JWSSerializationType}
+	 * 
+	 * @param jwsSerializationType {@link JWSSerializationType} to use
+	 */
+	public void setJwsSerializationType(JWSSerializationType jwsSerializationType) {
+		this.jwsSerializationType = jwsSerializationType;
 	}
 
 	/**

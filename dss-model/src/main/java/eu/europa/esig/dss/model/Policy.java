@@ -183,6 +183,36 @@ public class Policy implements Serializable {
 	public void setSpuri(String spuri) {
 		this.spuri = spuri;
 	}
+	
+	/**
+	 * Checks if the object's data is not filled
+	 * 
+	 * @return TRUE if the POlicy object does not have filled data, FALSE otherwiese
+	 */
+	public boolean isEmpty() {
+		if (id != null && !id.isEmpty()) {
+			return false;
+		}
+		if (qualifier != null) {
+			return false;
+		}
+		if (description != null && !description.isEmpty()) {
+			return false;
+		}
+		if (documentationReferences != null && documentationReferences.length != 0) {
+			return false;
+		}
+		if (digestAlgorithm != null) {
+			return false;
+		}
+		if (digestValue != null && digestValue.length != 0) {
+			return false;
+		}
+		if (spuri != null && !spuri.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public int hashCode() {

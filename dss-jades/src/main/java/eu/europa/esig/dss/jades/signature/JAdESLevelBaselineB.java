@@ -430,7 +430,7 @@ public class JAdESLevelBaselineB {
 	 */
 	private void incorporateSignaturePolicy() {
 		Policy signaturePolicy = parameters.bLevel().getSignaturePolicy();
-		if (signaturePolicy != null) {
+		if (signaturePolicy != null && !signaturePolicy.isEmpty()) {
 			String signaturePolicyId = signaturePolicy.getId();
 			if (Utils.isStringEmpty(signaturePolicyId)) {
 				// see EN 119-182 ch. 5.2.7.1 Semantics and syntax ('id' is required)
