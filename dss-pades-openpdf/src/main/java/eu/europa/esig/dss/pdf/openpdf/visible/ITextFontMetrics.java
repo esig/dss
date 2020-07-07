@@ -39,9 +39,17 @@ public class ITextFontMetrics extends AbstractFontMetrics {
 
 	@Override
 	public float getHeight(String str, float size) {
-		float ascent = baseFont.getAscentPoint(str, size);
-		float descent = baseFont.getDescentPoint(str, size);
+		float ascent = getAscentPoint(str, size);
+		float descent = getDescentPoint(str, size);
 		return ascent - descent;
+	}
+	
+	public float getAscentPoint(String str, float size) {
+		return baseFont.getAscentPoint(str, size);
+	}
+	
+	public float getDescentPoint(String str, float size) {
+		return baseFont.getDescentPoint(str, size);
 	}
 
 }
