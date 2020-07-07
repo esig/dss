@@ -145,6 +145,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public Date getNotAfter() {
 		return certificate.getNotAfter();
 	}
+	
+	public String getEntityKey() {
+		return certificate.getEntityKey();
+	}
 
 	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
 		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();

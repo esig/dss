@@ -46,11 +46,15 @@ import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 
 public class ValidationPolicyFacadeTest {
 
+	private ValidationPolicyFacade facade = ValidationPolicyFacade.newFacade();
+
 	@Test
 	public void testUnmarshalling() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint.xml"));
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
+				.unmarshall(new File("src/test/resources/constraint.xml"));
 
-		Algo algo = constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
+		Algo algo = constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getCryptographic()
+				.getMiniPublicKeySize().getAlgo().get(0);
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);
@@ -59,10 +63,11 @@ public class ValidationPolicyFacadeTest {
 		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
 		assertNotNull(marshall);
 	}
-	
+
 	@Test
 	public void testUnmarshallingWithModel() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint.xml"));
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
+				.unmarshall(new File("src/test/resources/constraint.xml"));
 
 		ModelConstraint mc = new ModelConstraint();
 		mc.setValue(Model.SHELL);
@@ -70,7 +75,7 @@ public class ValidationPolicyFacadeTest {
 
 		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
 		assertNotNull(marshall);
-		
+
 		ConstraintsParameters cp = ValidationPolicyFacade.newFacade().unmarshall(marshall);
 		assertNotNull(cp);
 		assertNotNull(cp.getModel());
@@ -79,7 +84,8 @@ public class ValidationPolicyFacadeTest {
 
 	@Test
 	public void testUnmarshalCoreValidation() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint-core-validation.xml"));
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
+				.unmarshall(new File("src/test/resources/constraint-core-validation.xml"));
 		assertNotNull(constraintsParameters);
 	}
 
@@ -90,21 +96,23 @@ public class ValidationPolicyFacadeTest {
 
 	@Test
 	public void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
-		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
+		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade()
+				.getTrustedListValidationPolicy();
 		assertNotNull(trustedListValidationPolicy);
 		assertEquals("Policy to validate Trusted Lists", trustedListValidationPolicy.getPolicyDescription());
 	}
 
 	@Test
 	public void incorrectPath() throws JAXBException, XMLStreamException, IOException, SAXException {
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy("aaaa"));
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy((InputStream) null));
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy((File) null));
+		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy("aaaa"));
+		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy((InputStream) null));
+		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy((File) null));
 	}
 
 	@Test
 	public void testUnmarshalConstraint() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint.xml"));
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
+				.unmarshall(new File("src/test/resources/constraint.xml"));
 		RevocationConstraints revocation = constraintsParameters.getRevocation();
 		assertNotNull(revocation);
 		TimeConstraint revocationFreshness = revocation.getRevocationFreshness();
@@ -117,32 +125,33 @@ public class ValidationPolicyFacadeTest {
 
 	@Test
 	public void testInvalid() throws Exception {
-		assertThrows(UnmarshalException.class, () -> ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/invalid-policy.xml")));
+		File invalidFile = new File("src/test/resources/invalid-policy.xml");
+		assertThrows(UnmarshalException.class, () -> facade.unmarshall(invalidFile));
 	}
 
 	@Test
 	public void unmarshallNullIS() throws Exception {
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((InputStream) null));
+		assertThrows(NullPointerException.class, () -> facade.unmarshall((InputStream) null));
 	}
 
 	@Test
 	public void unmarshallNullFile() throws Exception {
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((File) null));
+		assertThrows(NullPointerException.class, () -> facade.unmarshall((File) null));
 	}
 
 	@Test
 	public void unmarshallNullString() throws Exception {
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((String) null));
+		assertThrows(NullPointerException.class, () -> facade.unmarshall((String) null));
 	}
 
 	@Test
 	public void marshallNull() throws Exception {
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().marshall(null));
+		assertThrows(NullPointerException.class, () -> facade.marshall(null));
 	}
 
 	@Test
 	public void marshallNull2() throws Exception {
-		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().marshall(null, null));
+		assertThrows(NullPointerException.class, () -> facade.marshall(null, null));
 	}
 
 }

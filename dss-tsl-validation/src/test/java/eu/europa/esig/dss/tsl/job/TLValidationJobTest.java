@@ -311,14 +311,12 @@ public class TLValidationJobTest {
 	
 	@Test
 	public void emptyTLTest() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			tlValidationJob = new TLValidationJob();
-			tlValidationJob.setOfflineDataLoader(offlineFileLoader);
-			tlValidationJob.setOnlineDataLoader(onlineFileLoader);
-			tlValidationJob.setCacheCleaner(cacheCleaner);
-			tlValidationJob.setTrustedListSources(new TLSource());
-			tlValidationJob.offlineRefresh();
-		});
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(new TLSource());
+		Exception exception = assertThrows(NullPointerException.class, () -> tlValidationJob.offlineRefresh());
 		assertEquals("URL cannot be null.", exception.getMessage());
 	}
 	
@@ -363,14 +361,12 @@ public class TLValidationJobTest {
 	
 	@Test
 	public void emptyLOTLTest() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			tlValidationJob = new TLValidationJob();
-			tlValidationJob.setOfflineDataLoader(offlineFileLoader);
-			tlValidationJob.setOnlineDataLoader(onlineFileLoader);
-			tlValidationJob.setCacheCleaner(cacheCleaner);
-			tlValidationJob.setListOfTrustedListSources(new LOTLSource());
-			tlValidationJob.offlineRefresh();
-		});
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(new LOTLSource());
+		Exception exception = assertThrows(NullPointerException.class, () -> tlValidationJob.offlineRefresh());
 		assertEquals("URL cannot be null.", exception.getMessage());
 	}
 	

@@ -39,7 +39,8 @@ public class ASiCUtilsTest {
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 0 })));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'P' })));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'p', 'k' })));
-		assertThrows(NullPointerException.class, () -> ASiCUtils.isZip(new InMemoryDocument()));
+		InMemoryDocument emptyInMemoryDoc = new InMemoryDocument();
+		assertThrows(NullPointerException.class, () -> ASiCUtils.isZip(emptyInMemoryDoc));
 
 		assertTrue(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'K' })));
 	}
@@ -55,11 +56,9 @@ public class ASiCUtilsTest {
 
 	@Test
 	public void getWrongASiCContainerType() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			MimeType mt = new MimeType();
-			mt.setMimeTypeString("application/wrong");
-			ASiCUtils.getASiCContainerType(mt);
-		});
+		MimeType mt = new MimeType();
+		mt.setMimeTypeString("application/wrong");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> ASiCUtils.getASiCContainerType(mt));
 		assertEquals("Not allowed mimetype 'application/wrong'", exception.getMessage());
 	}
 

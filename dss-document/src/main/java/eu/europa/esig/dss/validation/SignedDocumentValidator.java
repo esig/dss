@@ -123,6 +123,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
 
+	/**
+	 * This variable allows to include the semantics for Indication / SubIndication
+	 */
+	private boolean includeSemantics = false;
+
 	protected final SignatureScopeFinder signatureScopeFinder;
 
 	private SignaturePolicyProvider signaturePolicyProvider;
@@ -203,6 +208,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
 		Objects.requireNonNull(tokenExtractionStategy);
 		this.tokenExtractionStategy = tokenExtractionStategy;
+	}
+
+	@Override
+	public void setIncludeSemantics(boolean include) {
+		this.includeSemantics = include;
 	}
 
 	@Override
@@ -395,8 +405,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return new DiagnosticDataBuilder().document(document).usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.tokenExtractionStategy(
-						tokenExtractionStategy)
+				.tokenExtractionStategy(tokenExtractionStategy)
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes()).trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).foundSignatures(signatures)
 				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
@@ -598,22 +607,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Build a list of {@code SignatureScope} to add to Diagnostic Data
-	 * 
-	 * @param signatures a list of {@link AdvancedSignature}s (in case if present)
-	 * @return a list of {@link SignatureScope}s
-	 */
-	protected List<SignatureScope> getSignatureScope(List<AdvancedSignature> signatures) {
-		List<SignatureScope> signatureScopes = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (AdvancedSignature signature : signatures) {
-				signatureScopes.addAll(signature.getSignatureScopes());
-			}
-		}
-		return signatureScopes;
-	}
-
-	/**
 	 * Executes the validation regarding to the given {@code validationPolicy}
 	 * 
 	 * @param diagnosticData   {@link DiagnosticData} contained a data to be
@@ -626,6 +619,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
+		executor.setIncludeSemantics(includeSemantics);
 		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());

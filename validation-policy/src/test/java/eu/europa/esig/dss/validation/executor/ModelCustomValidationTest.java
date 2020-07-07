@@ -118,7 +118,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 		diagnosticData.setValidationDate(testCase.getValidationDate());
 		
 		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate().getId();
-		assertTrue(testCase.getTestData().getSignerCertificateIdentifier().equals(signerCertId));
+		assertEquals(testCase.getTestData().getSignerCertificateIdentifier(), signerCertId);
 		
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -134,7 +134,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 
 		XmlSimpleReport simpleReport = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReport);
-		assertTrue(1 == simpleReport.getSignaturesCount());
+		assertEquals(1, simpleReport.getSignaturesCount());
 		assertNotNull(simpleReport.getSignatureOrTimestamp().get(0));
 		assertEquals(testCase.getExpectedCertResult("ind"), simpleReport.getSignatureOrTimestamp().get(0).getIndication());
 		

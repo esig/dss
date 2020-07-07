@@ -394,7 +394,7 @@ public final class DSSRevocationUtils {
 		try {
 			return basicResponse.getResponses();
 		} catch (Exception e) {
-			LOG.warn("Unable to extract SingleResp(s)", e.getMessage());
+			LOG.warn("Unable to extract SingleResp(s) : {}", e.getMessage());
 			return new SingleResp[] {};
 		}
 	}

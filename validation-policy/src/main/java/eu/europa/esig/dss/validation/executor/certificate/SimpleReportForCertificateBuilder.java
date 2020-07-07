@@ -204,8 +204,8 @@ public class SimpleReportForCertificateBuilder {
 	}
 
 	private void addQualifications(XmlChainItem firstChainItem, CertificateWrapper certificate) {
-		firstChainItem.setQualificationAtIssuance(detailedReport.getCertificateQualificationAtIssuance());
-		firstChainItem.setQualificationAtValidation(detailedReport.getCertificateQualificationAtValidation());
+		firstChainItem.setQualificationAtIssuance(detailedReport.getCertificateQualificationAtIssuance(certificateId));
+		firstChainItem.setQualificationAtValidation(detailedReport.getCertificateQualificationAtValidation(certificateId));
 
 		Boolean enactedMRA = null;
 		List<TrustedServiceWrapper> trustedServices = certificate.getTrustedServices();

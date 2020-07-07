@@ -37,8 +37,8 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -81,7 +81,8 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 			String indent = removeLastTimestampValidationData();
 			
-			final ValidationDataForInclusion validationDataForInclusion = xadesSignature.getValidationDataForInclusion(validationContext);
+			ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
+			
 			incorporateTimestampValidationData(validationDataForInclusion, indent);
 		}
 
@@ -113,10 +114,10 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 * @param validationDataForInclusion {@link ValidationDataForInclusion} to be included into the signature
 	 */
 	private void incorporateTimestampValidationData(final ValidationDataForInclusion validationDataForInclusion, String indent) {
-		
-		Set<CertificateToken> certificateValuesToAdd = filterCertificateTokensPresentIntoSignature(validationDataForInclusion.certificateTokens);
-		Set<CRLToken> crlsToAdd = filterCRLsPresentIntoSignature(validationDataForInclusion.crlTokens);
-		Set<OCSPToken> ocspsToAdd = filterOCSPsPresentIntoSignature(validationDataForInclusion.ocspTokens);
+
+		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 		
 		if (Utils.isCollectionNotEmpty(certificateValuesToAdd) || Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
 			

@@ -232,10 +232,12 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return false;
 		AbstractTokenProxy other = (AbstractTokenProxy) obj;
 		if (getId() == null) {
-			if (other.getId() != null)
+			if (other.getId() != null) {
 				return false;
-		} else if (!getId().equals(other.getId()))
+			}
+		} else if (!getId().equals(other.getId())) {
 			return false;
+		}
 		return true;
 	}
 

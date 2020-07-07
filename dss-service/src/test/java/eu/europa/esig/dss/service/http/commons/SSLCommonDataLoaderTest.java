@@ -107,20 +107,16 @@ public class SSLCommonDataLoaderTest {
 	@Test
 	// TODO check root cause SSLHandshakeException
 	public void testWrongTrustStore() throws GeneralSecurityException, IOException {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			CommonsDataLoader dataLoader = new CommonsDataLoader();
-			dataLoader.setSslTruststore(wrongKeyStore);
-			dataLoader.setSslTruststoreType(KS_TYPE);
-			dataLoader.setSslTruststorePassword(new String(KS_PASSWORD));
+		CommonsDataLoader dataLoader = new CommonsDataLoader();
+		dataLoader.setSslTruststore(wrongKeyStore);
+		dataLoader.setSslTruststoreType(KS_TYPE);
+		dataLoader.setSslTruststorePassword(new String(KS_PASSWORD));
 
-			dataLoader.setSslTruststore(wrongKeyStore);
-			dataLoader.setSslKeystoreType(KS_TYPE);
-			dataLoader.setSslKeystorePassword(new String(KS_PASSWORD));
+		dataLoader.setSslTruststore(wrongKeyStore);
+		dataLoader.setSslKeystoreType(KS_TYPE);
+		dataLoader.setSslKeystorePassword(new String(KS_PASSWORD));
 
-			byte[] binaries = dataLoader.get(URL);
-			assertNotNull(binaries);
-			assertTrue(binaries.length > 0);
-		});
+		Exception exception = assertThrows(DSSException.class, () -> dataLoader.get(URL));
 		assertTrue(exception.getMessage().contains("Unable to process GET call for url [" + URL + "]"));
 	}
 

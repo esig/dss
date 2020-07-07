@@ -61,13 +61,7 @@ public final class NamespaceContextMap implements NamespaceContext {
 	}
 
 	private void createNamespace(final String prefix, final String namespace) {
-
-		Set<String> prefixes = namespaceMap.get(namespace);
-		if (prefixes == null) {
-
-			prefixes = new HashSet<>();
-			namespaceMap.put(namespace, prefixes);
-		}
+		Set<String> prefixes = namespaceMap.computeIfAbsent(namespace, k -> new HashSet<>());
 		prefixes.add(prefix);
 	}
 

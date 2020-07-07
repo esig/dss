@@ -80,20 +80,19 @@ public class PAdESSignatureFieldTest {
 
 	@Test
 	public void testAddSignatureFieldPageNotFound() throws IOException {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-			assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+		assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
-			SignatureFieldParameters parameters = new SignatureFieldParameters();
-			parameters.setPage(10);
-			parameters.setName("signature-test");
-			parameters.setOriginX(50);
-			parameters.setOriginY(50);
-			parameters.setWidth(200);
-			parameters.setHeight(200);
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setPage(10);
+		parameters.setName("signature-test");
+		parameters.setOriginX(50);
+		parameters.setOriginY(50);
+		parameters.setWidth(200);
+		parameters.setHeight(200);
 
-			padesService.addNewSignatureField(document, parameters);
-		});
+		Exception exception = assertThrows(DSSException.class,
+				() -> padesService.addNewSignatureField(document, parameters));
 		assertEquals("Unable to add a new signature fields", exception.getMessage());
 	}
 

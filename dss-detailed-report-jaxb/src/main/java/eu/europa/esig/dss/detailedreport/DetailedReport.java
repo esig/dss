@@ -321,7 +321,7 @@ public class DetailedReport {
 	}
 
 	private XmlValidationTimestampQualification getXmlTimestampQualificationById(String timestampId) {
-		XmlTimestamp timestamp = getTimestampById(timestampId);
+		XmlTimestamp timestamp = getXmlTimestampById(timestampId);
 		if (timestamp != null) {
 			return timestamp.getValidationTimestampQualification();
 		}
@@ -329,14 +329,21 @@ public class DetailedReport {
 	}
 
 	private XmlValidationProcessTimestamp getTimestampValidationById(String timestampId) {
-		XmlTimestamp timestamp = getTimestampById(timestampId);
+		XmlTimestamp timestamp = getXmlTimestampById(timestampId);
 		if (timestamp != null) {
 			return timestamp.getValidationProcessTimestamp();
 		}
 		return null;
 	}
 
-	private XmlTimestamp getTimestampById(String timestampId) {
+	/**
+	 * Returns an {@code XmlTimestamp} by the given id
+	 * Null if the timestamp is not found
+	 * 
+	 * @param timestampId {@link String} id of a timestamp to get
+	 * @return {@link XmlTimestamp}
+	 */
+	public XmlTimestamp getXmlTimestampById(String timestampId) {
 		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
 			if (xmlTimestamp.getId().equals(timestampId)) {
 				return xmlTimestamp;
@@ -355,12 +362,38 @@ public class DetailedReport {
 		return null;
 	}
 
+	/**
+	 * Returns an {@code XmlSignature} by the given id
+	 * Null if the signature is not found
+	 * 
+	 * @param signatureId {@link String} id of a signature to get
+	 * @return {@link XmlSignature}
+	 */
 	public XmlSignature getXmlSignatureById(String signatureId) {
 		List<XmlSignature> signatures = getSignatures();
 		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (signatureId.equals(xmlSignature.getId())) {
 					return xmlSignature;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns an {@code XmlCertificate} by id if exists, null otherwise
+	 * NOTE: should be used only for certificate validation process
+	 * 
+	 * @param certificateId id of a certificate to extract
+	 * @return {@link XmlCertificate}
+	 */
+	public XmlCertificate getXmlCertificateById(String certificateId) {
+		List<XmlCertificate> certificates = getCertificates();
+		if (certificates != null) {
+			for (XmlCertificate xmlCertificate : certificates) {
+				if (certificateId.equals(xmlCertificate.getId())) {
+					return xmlCertificate;
 				}
 			}
 		}
@@ -387,6 +420,12 @@ public class DetailedReport {
 		return result;
 	}
 
+	/**
+	 * Returns a list of processed {@link XmlCertificate}s
+	 * NOTE: the method returns not empty list only for certificate validation process
+	 * 
+	 * @return list of {@link XmlCertificate}s
+	 */
 	public List<XmlCertificate> getCertificates() {
 		List<XmlCertificate> result = new ArrayList<>();
 		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
@@ -419,16 +458,16 @@ public class DetailedReport {
 		return jaxbDetailedReport;
 	}
 
-	public CertificateQualification getCertificateQualificationAtIssuance() {
-		return getCertificateQualification(ValidationTime.CERTIFICATE_ISSUANCE_TIME);
+	public CertificateQualification getCertificateQualificationAtIssuance(String certificateId) {
+		return getCertificateQualification(ValidationTime.CERTIFICATE_ISSUANCE_TIME, certificateId);
 	}
 
-	public CertificateQualification getCertificateQualificationAtValidation() {
-		return getCertificateQualification(ValidationTime.VALIDATION_TIME);
+	public CertificateQualification getCertificateQualificationAtValidation(String certificateId) {
+		return getCertificateQualification(ValidationTime.VALIDATION_TIME, certificateId);
 	}
 
-	private CertificateQualification getCertificateQualification(ValidationTime validationTime) {
-		XmlCertificate certificate = getCertificates().get(0);
+	private CertificateQualification getCertificateQualification(ValidationTime validationTime, String certificateId) {
+		XmlCertificate certificate = getXmlCertificateById(certificateId);
 		if (certificate != null) {
 			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
 			if (validationCertificateQualifications != null) {
@@ -443,8 +482,8 @@ public class DetailedReport {
 	}
 
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
-		XmlCertificate certificate = getCertificates().get(0);
-		if (certificate == null) {
+		List<XmlCertificate> certificates = getCertificates();
+		if (certificates == null || certificates.size() == 0) {
 			throw new UnsupportedOperationException("Only supported in report for certificate");
 		}
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
@@ -631,7 +670,7 @@ public class DetailedReport {
 		return messages;
 	}
 
-	enum MessageType {
+	private enum MessageType {
 		INFO, WARN, ERROR
 	}
 

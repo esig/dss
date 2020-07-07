@@ -96,12 +96,7 @@ public final class DSSUtils {
 
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
-	/**
-	 * The default date pattern: "yyyy-MM-dd"
-	 */
-	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -820,7 +815,7 @@ public final class DSSUtils {
 		try {
 			return URLDecoder.decode(uri, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to decode '" + uri + "' : " + e.getMessage(), e);
+			LOG.error("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
 		return uri;
 	}

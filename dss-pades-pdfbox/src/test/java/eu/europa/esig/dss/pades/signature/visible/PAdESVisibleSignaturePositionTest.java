@@ -65,7 +65,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	/**
 	 * The degree of similarity between generated and original image
 	 */
-	private static final float SIMILARITY_LIMIT = 0.986f;
+	private static final float SIMILARITY_LIMIT = 0.987f;
 	
 	/**
 	 * Comparison resolution: step in pixels in horizontal and vertical directions.
@@ -230,8 +230,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 
 		for (VisualSignatureRotation rotation : VisualSignatureRotation.values()) {
-			for (VisualSignatureAlignmentHorizontal horizontal : VisualSignatureAlignmentHorizontal
-					.values()) {
+			for (VisualSignatureAlignmentHorizontal horizontal : VisualSignatureAlignmentHorizontal.values()) {
 				for (VisualSignatureAlignmentVertical vertical : VisualSignatureAlignmentVertical.values()) {
 					signatureImageParameters.setRotation(rotation);
 					signatureImageParameters.setAlignmentHorizontal(horizontal);
@@ -244,7 +243,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 						service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 						DSSDocument nativeSigned = sign(signablePdfs.get(pdf));
 						// nativeSigned.save("target/native_" + rotation + "_" + horizontal + "_" + vertical + "_" + pdf + ".pdf");
-						compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT - 0.002f);
+						compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT - 0.004f);
 					}
 				}
 			}

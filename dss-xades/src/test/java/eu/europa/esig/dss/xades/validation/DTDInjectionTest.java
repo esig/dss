@@ -71,10 +71,10 @@ public class DTDInjectionTest extends AbstractXAdESTestValidation {
 
 	@Test
 	public void test() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator.fromDocument(
-					new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
-		});
+		FileDocument fileDocument = new FileDocument(
+				new File("src/test/resources/validation/xades-with-dtd-injection.xml"));
+		Exception exception = assertThrows(DSSException.class,
+				() -> SignedDocumentValidator.fromDocument(fileDocument));
 		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
 	}
 

@@ -101,7 +101,8 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         signAndValidate(documentToSign, signatureParameters);
         
-        exception = assertThrows(NullPointerException.class, () -> signatureParameters.bLevel().setSigningDate(null));
+		BLevelParameters bLevel = signatureParameters.bLevel();
+		exception = assertThrows(NullPointerException.class, () -> bLevel.setSigningDate(null));
         assertEquals("SigningDate cannot be null!", exception.getMessage());
 
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);

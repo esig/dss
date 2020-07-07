@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.xml.security.transforms.Transforms;
@@ -87,12 +86,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * This is the reference to the original document to sign
 	 */
 	protected DSSDocument detachedDocument;
-	
-	/**
-	 * The default Canonicalization method.
-	 * Will be used if another is not specified.
-	 */
-	protected static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 
 	protected String keyInfoCanonicalizationMethod;
 	protected String signedInfoCanonicalizationMethod;
@@ -166,34 +159,19 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *            the certificate verifier with its OCSPSource,...
 	 */
 	public XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument detachedDocument, final CertificateVerifier certificateVerifier) {
-
 		super(certificateVerifier);
+		
 		this.params = params;
 		this.detachedDocument = detachedDocument;
-
 		this.deterministicId = params.getDeterministicId();
-	}
-
-	protected void setCanonicalizationMethods(final XAdESSignatureParameters params, final String canonicalizationMethod) {
-
-		keyInfoCanonicalizationMethod = getCanonicalizationMethod(params.getKeyInfoCanonicalizationMethod(), canonicalizationMethod);
-		signedInfoCanonicalizationMethod = getCanonicalizationMethod(params.getSignedInfoCanonicalizationMethod(), canonicalizationMethod);
-		signedPropertiesCanonicalizationMethod = getCanonicalizationMethod(params.getSignedPropertiesCanonicalizationMethod(), canonicalizationMethod);
-
+		
+		setCanonicalizationMethods(params);
 	}
 	
-	/**
-	 * Returns {@value signatureParameterCanonicalizationMethod} if exist, {@value defaultCanonicalizationMethod} otherwise
-	 * @param signatureParameterCanonicalizationMethod - Canonicalization method parameter defined in {@link XAdESSignatureParameters}
-	 * @param defaultCanonicalizationMethod - default Canonicalization method to apply if {@value signatureParameterCanonicalizationMethod} is not specified
-	 * @return - canonicalization method String
-	 */
-	private String getCanonicalizationMethod(final String signatureParameterCanonicalizationMethod, final String defaultCanonicalizationMethod) {
-		if (Utils.isStringNotBlank(signatureParameterCanonicalizationMethod)) {
-			return signatureParameterCanonicalizationMethod;
-		} else {
-			return defaultCanonicalizationMethod;
-		}
+	private void setCanonicalizationMethods(final XAdESSignatureParameters params) {
+		this.keyInfoCanonicalizationMethod = params.getKeyInfoCanonicalizationMethod();
+		this.signedInfoCanonicalizationMethod = params.getSignedInfoCanonicalizationMethod();
+		this.signedPropertiesCanonicalizationMethod = params.getSignedPropertiesCanonicalizationMethod();
 	}
 
 	/**
@@ -1270,6 +1248,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			final Element canonicalizationMethodElement = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.CANONICALIZATION_METHOD);
 			canonicalizationMethodElement.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), canonicalizationMethod);
 			timestampElement.appendChild(canonicalizationMethodElement);
+		} else {
+			throw new DSSException("Unable to create a timestamp with empty canonicalization method. "
+					+ "See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");
 		}
 
 		Element encapsulatedTimestampElement = DomUtils.createElementNS(documentDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());

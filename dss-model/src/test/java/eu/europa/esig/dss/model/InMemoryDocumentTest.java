@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
@@ -90,9 +91,11 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void testFileNotFound() {
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument(getClass().getResourceAsStream("/AdobeCAAA.p7c")));
-		assertEquals("The InputStream is null", exception.getMessage());
+	public void testFileNotFound() throws IOException {
+		try (InputStream is = getClass().getResourceAsStream("/AdobeCAAA.p7c")) {
+			NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument(is));
+			assertEquals("The InputStream is null", exception.getMessage());
+		}
 	}
 
 	@Test

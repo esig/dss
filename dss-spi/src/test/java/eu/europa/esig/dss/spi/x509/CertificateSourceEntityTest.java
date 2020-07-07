@@ -22,9 +22,8 @@ package eu.europa.esig.dss.spi.x509;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -62,8 +61,8 @@ public class CertificateSourceEntityTest {
 		CertificateSourceEntity cpe2 = new CertificateSourceEntity(c2);
 		CertificateSourceEntity cpeWrong = new CertificateSourceEntity(wrongCert);
 
-		assertTrue(cpe1.equals(cpe2));
-		assertFalse(cpe1.equals(cpeWrong));
+		assertEquals(cpe1, cpe2);
+		assertNotEquals(cpe1, cpeWrong);
 	}
 
 }

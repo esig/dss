@@ -40,10 +40,10 @@ import eu.europa.esig.dss.simplereport.jaxb.ObjectFactory;
 
 public final class SimpleReportXmlDefiner {
 
-	public static final String SIMPLE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleReport.xsd";
-	public static final String SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-report.xslt";
-	public static final String SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-report-bootstrap4.xslt";
-	public static final String SIMPLE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-report.xslt";
+	private static final String SIMPLE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleReport.xsd";
+	private static final String SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-report.xslt";
+	private static final String SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-report-bootstrap4.xslt";
+	private static final String SIMPLE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-report.xslt";
 
 	private SimpleReportXmlDefiner() {
 	}

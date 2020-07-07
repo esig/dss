@@ -370,7 +370,8 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 	@Test
 	public void incompleteCRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 })) {
-			Exception exception = assertThrows(DSSException.class, () -> CRLUtils.buildCRLBinary(toByteArray(is)));
+			byte[] byteArray = toByteArray(is);
+			Exception exception = assertThrows(DSSException.class, () -> CRLUtils.buildCRLBinary(byteArray));
 			assertTrue(exception.getMessage().contains("Unable to load CRL."));
 		}
 	}

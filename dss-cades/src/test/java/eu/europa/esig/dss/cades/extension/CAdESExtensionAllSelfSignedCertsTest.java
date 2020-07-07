@@ -71,37 +71,31 @@ public class CAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
 
 	@Test
 	public void bToLTTest() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-	        DSSDocument signedDocument = sign();
-	        
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-			extend(signedDocument);
-		});
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		DSSDocument signedDocument = sign();
+
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		Exception exception = assertThrows(DSSException.class, () -> extend(signedDocument));
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
 	@Test
 	public void tToLTTest() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-	        DSSDocument signedDocument = sign();
-	        
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-			extend(signedDocument);
-		});
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		DSSDocument signedDocument = sign();
+
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		Exception exception = assertThrows(DSSException.class, () -> extend(signedDocument));
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
 	@Test
 	public void tToLTATest() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-	        DSSDocument signedDocument = sign();
-	        
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-			extend(signedDocument);
-		});
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		DSSDocument signedDocument = sign();
+
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		Exception exception = assertThrows(DSSException.class, () -> extend(signedDocument));
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 	

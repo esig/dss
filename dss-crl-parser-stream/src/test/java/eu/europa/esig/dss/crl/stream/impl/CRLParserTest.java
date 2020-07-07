@@ -44,12 +44,10 @@ public class CRLParserTest {
 
 	@Test
 	public void illegalArgumenException() throws IOException {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			try (InputStream fis = new FileInputStream("pom.xml")) {
-				parser.retrieveInfo(fis);
-			}
-		});
-		assertEquals("The InputStream MUST support mark/reset methods !", exception.getMessage());
+		try (InputStream fis = new FileInputStream("pom.xml")) {
+			Exception exception = assertThrows(IllegalArgumentException.class, () -> parser.retrieveInfo(fis));
+			assertEquals("The InputStream MUST support mark/reset methods !", exception.getMessage());
+		}
 	}
 
 	@Test

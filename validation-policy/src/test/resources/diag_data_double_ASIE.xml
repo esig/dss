@@ -96,6 +96,7 @@
             <NotBefore>2017-07-05T13:18:37</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D</EntityKey>
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
@@ -168,6 +169,7 @@
             <NotBefore>2017-07-05T13:18:36</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</EntityKey>
             <KeyUsageBits/>
             <ExtendedKeyUsages>
                 <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>

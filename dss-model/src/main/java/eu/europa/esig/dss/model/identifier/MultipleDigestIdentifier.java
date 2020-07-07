@@ -50,12 +50,7 @@ public abstract class MultipleDigestIdentifier extends Identifier {
 	}
 	
 	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
-		byte[] digestValue = digestMap.get(digestAlgorithm);
-		if (digestValue == null) {
-			digestValue = getMessageDigest(digestAlgorithm).digest(getBinaries());
-			digestMap.put(digestAlgorithm, digestValue);
-		}
-		return digestValue;
+		return digestMap.computeIfAbsent(digestAlgorithm, k -> getMessageDigest(digestAlgorithm).digest(getBinaries()));
 	}
 
 	public boolean isMatch(Digest expectedDigest) {

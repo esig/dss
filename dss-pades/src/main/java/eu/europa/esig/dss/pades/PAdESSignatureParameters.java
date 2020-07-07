@@ -75,6 +75,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 * future change(s).
 	 */
 	private CertificationPermission permission;
+	
+	/**
+	 * Password used to encrypt a PDF
+	 */
+	private String passwordProtection;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -194,6 +199,20 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 
 	public void setPermission(CertificationPermission permission) {
 		this.permission = permission;
+	}
+
+	@Override
+	public String getPasswordProtection() {
+		return passwordProtection;
+	}
+
+	/**
+	 * Sets a password string
+	 * 
+	 * @param passwordProtection {@link String} password to set
+	 */
+	public void setPasswordProtection(String passwordProtection) {
+		this.passwordProtection = passwordProtection;
 	}
 
 	@Override

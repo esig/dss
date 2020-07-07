@@ -25,6 +25,7 @@
             <NotBefore>2013-06-11T20:58:59</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D</EntityKey>
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
                 <KeyUsage>keyEncipherment</KeyUsage>

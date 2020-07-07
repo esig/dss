@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
@@ -74,20 +75,20 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void testExpansionXml() throws Exception {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			assertNotNull(DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_expansion.xml")));
-		});
-		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
+	public void testExpansionXml() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/xml_expansion.xml")) {
+			Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(fis));
+			assertEquals("Unable to parse content (XML expected)", exception.getMessage());
+		}
 	}
 
 	@Test
-	public void testEntityXml() throws Exception {
+	public void testEntityXml() throws IOException {
 		// Should ignore the URL embedded in the DTD
-		Exception exception = assertThrows(DSSException.class, () -> {
-			DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_entity.xml"));
-		});
-		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
+		try (FileInputStream fis = new FileInputStream("src/test/resources/xml_entity.xml")) {
+			Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(fis));
+			assertEquals("Unable to parse content (XML expected)", exception.getMessage());
+		}
 	}
 
 	@Test

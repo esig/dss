@@ -121,12 +121,11 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	
 	@Test
 	public void noTSPSourceDefinedTest() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			RemoteTimestampService remoteTimestampService = new RemoteTimestampService();
-			byte[] contentToBeTimestamped = "Hello World!".getBytes();
-			byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA1, contentToBeTimestamped);
-			remoteTimestampService.getTimestampResponse(DigestAlgorithm.SHA1, digestValue);
-		});
+		RemoteTimestampService remoteTimestampService = new RemoteTimestampService();
+		byte[] contentToBeTimestamped = "Hello World!".getBytes();
+		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA1, contentToBeTimestamped);
+		Exception exception = assertThrows(NullPointerException.class,
+				() -> remoteTimestampService.getTimestampResponse(DigestAlgorithm.SHA1, digestValue));
 		assertEquals("TSPSource must be not null!", exception.getMessage());
 	}
 

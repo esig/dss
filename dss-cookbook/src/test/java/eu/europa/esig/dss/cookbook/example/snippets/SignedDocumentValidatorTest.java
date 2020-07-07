@@ -94,6 +94,11 @@ public class SignedDocumentValidatorTest {
 		// Default : true
 		documentValidator.setEnableEtsiValidationReport(true);
 		
+		// Sets if the semantics for Indication / SubIndication must be included in the
+		// Simple Report (see table 5 / 6 of the ETSI TS 119 102-1)
+		// Default : false
+		documentValidator.setIncludeSemantics(true);
+
 		// Executes the validation process and produces validation reports:
 		// Simple report, Detailed report, Diagnostic data and ETSI Validation Report (if enabled)
 		Reports reports = documentValidator.validateDocument();

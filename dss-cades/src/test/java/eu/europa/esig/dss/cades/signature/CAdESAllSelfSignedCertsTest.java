@@ -69,19 +69,15 @@ public class CAdESAllSelfSignedCertsTest extends AbstractCAdESTestSignature {
 
 	@Test
 	public void ltLevelTest() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-			super.signAndVerify();
-		});
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		Exception exception = assertThrows(DSSException.class, () -> super.signAndVerify());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
 	@Test
 	public void ltaLevelTest() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-			super.signAndVerify();
-		});
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		Exception exception = assertThrows(DSSException.class, () -> super.signAndVerify());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 

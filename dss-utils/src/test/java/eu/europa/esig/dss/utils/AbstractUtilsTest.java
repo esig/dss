@@ -324,9 +324,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void toHexNull() {
-		assertThrows(NullPointerException.class, () -> {
-			Utils.toHex(null);
-		});
+		assertThrows(NullPointerException.class, () -> Utils.toHex(null));
 	}
 
 	@Test
@@ -346,9 +344,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void fromHexNull() {
-		assertThrows(NullPointerException.class, () -> {
-			Utils.fromHex(null);
-		});
+		assertThrows(NullPointerException.class, () -> Utils.fromHex(null));
 	}
 	
 	@Test
@@ -365,9 +361,7 @@ public abstract class AbstractUtilsTest {
 	
 	@Test
 	public void isBase64EncodedNullPointer() {
-		assertThrows(NullPointerException.class, () -> {
-			assertFalse(Utils.isBase64Encoded(null));
-		});
+		assertThrows(NullPointerException.class, () -> Utils.isBase64Encoded(null));
 	}
 
 	@Test
@@ -469,7 +463,7 @@ public abstract class AbstractUtilsTest {
 		dir.mkdir();
 		Utils.cleanDirectory(dir);
 		assertTrue(dir.exists());
-		assertTrue(dir.list().length == 0);
+		assertEquals(0, dir.list().length);
 	}
 
 	@Test

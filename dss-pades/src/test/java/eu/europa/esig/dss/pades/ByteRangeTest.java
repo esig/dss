@@ -34,36 +34,47 @@ public class ByteRangeTest {
 	public void validateByteRangeTest() {
 		ByteRange byteRangeOk = new ByteRange(new int[] { 0, 1280, 2400, 480 });
 		byteRangeOk.validate();
+	}
 
-		Exception exception = assertThrows(DSSException.class, () -> {
-			ByteRange byteRange = new ByteRange(new int[] { 1, 1280, 2400, 480 });
-			byteRange.validate();
-		});
+	@Test
+	public void startNotCover() {
+		ByteRange byteRange = new ByteRange(new int[] { 1, 1280, 2400, 480 });
+		Exception exception = assertThrows(DSSException.class, () -> byteRange.validate());
 		assertEquals("The ByteRange must cover start of file", exception.getMessage());
-		exception = assertThrows(DSSException.class, () -> {
-			ByteRange byteRange = new ByteRange(new int[] { 0, 0, 240, 480 });
-			byteRange.validate();
-		});
+	}
+
+	@Test
+	public void emptyFirstPart() {
+		ByteRange byteRange = new ByteRange(new int[] { 0, 0, 240, 480 });
+		Exception exception = assertThrows(DSSException.class, () -> byteRange.validate());
 		assertEquals("The first hash part doesn't cover anything", exception.getMessage());
-		exception = assertThrows(DSSException.class, () -> {
-			ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 240, 480 });
-			byteRange.validate();
-		});
+	}
+
+	@Test
+	public void secondAfterFirst() {
+		ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 240, 480 });
+		Exception exception = assertThrows(DSSException.class, () -> byteRange.validate());
 		assertEquals("The second hash part must start after the first hash part", exception.getMessage());
-		exception = assertThrows(DSSException.class, () -> {
-			ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 2400, 0 });
-			byteRange.validate();
-		});
+	}
+
+	@Test
+	public void emptySecondPart() {
+		ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 2400, 0 });
+		Exception exception = assertThrows(DSSException.class, () -> byteRange.validate());
 		assertEquals("The second hash part doesn't cover anything", exception.getMessage());
-		exception = assertThrows(DSSException.class, () -> {
-			ByteRange byteRange = new ByteRange(new int[] { 0 });
-			byteRange.validate();
-		});
+	}
+
+	@Test
+	public void wrongSize() {
+		ByteRange byteRange = new ByteRange(new int[] { 0 });
+		Exception exception = assertThrows(DSSException.class, () -> byteRange.validate());
 		assertEquals("Incorrect ByteRange size", exception.getMessage());
-		exception = assertThrows(DSSException.class, () -> {
-			ByteRange byteRange = new ByteRange(new int[0]);
-			byteRange.validate();
-		});
+	}
+
+	@Test
+	public void wrongSize2() {
+		ByteRange byteRange = new ByteRange(new int[0]);
+		Exception exception = assertThrows(DSSException.class, () -> byteRange.validate());
 		assertEquals("Incorrect ByteRange size", exception.getMessage());
 	}
 

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -84,6 +85,17 @@ public final class DSSXMLUtils {
 	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
+	
+	/**
+	 * This is the default canonicalization method for XMLDSIG used for signatures and timestamps (see XMLDSIG 4.4.3.2). 
+	 * 
+	 * Another complication arises because of the way that the default canonicalization algorithm handles namespace declarations; 
+	 * frequently a signed XML document needs to be embedded in another document; 
+	 * in this case the original canonicalization algorithm will not yield the same result 
+	 * as if the document is treated alone. For this reason, the so-called Exclusive Canonicalization,
+	 * which serializes XML namespace declarations independently of the surrounding XML, was created.
+	 */
+	public static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 	
 	static {
 		SantuarioInitializer.init();
@@ -221,24 +233,6 @@ public final class DSSXMLUtils {
 					if (idIdentifier == null || idIdentifier.equals(getIDIdentifier(newChildNode))) {
 						return i + 1;
 					}
-				}
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns first {@link Element} child from the given parentNode
-	 * @param parentNode {@link Node} to get first {@link Element} child from
-	 * @return {@link Element} child
-	 */
-	public static Element getFirstElementChildNode(Node parentNode) {
-		if (parentNode.hasChildNodes()) {
-			NodeList nodeList = parentNode.getChildNodes();
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				Node child = nodeList.item(i);
-				if (Node.ELEMENT_NODE == child.getNodeType()) {
-					return (Element) child;
 				}
 			}
 		}
@@ -443,7 +437,7 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
 		try {
-			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
+			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
 			return c14n.canonicalize(toCanonicalizeBytes);
 		} catch (Exception e) {
 			throw new DSSException("Cannot canonicalize the binaries", e);
@@ -452,37 +446,35 @@ public final class DSSXMLUtils {
 
 	/**
 	 * This method canonicalizes the given {@code Node}.
+	 * If canonicalization method is not provided, the {@code DEFAULT_CANONICALIZATION_METHOD} is being used
 	 *
 	 * @param canonicalizationMethod
-	 *            canonicalization method
+	 *            canonicalization method (can be null)
 	 * @param node
 	 *            {@code Node} to canonicalize
 	 * @return array of canonicalized bytes
 	 */
-	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
+	public static byte[] canonicalizeSubtree(String canonicalizationMethod, final Node node) {
 		try {
-			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
+			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
 			return c14n.canonicalizeSubtree(node);
 		} catch (Exception e) {
 			throw new DSSException("Cannot canonicalize the subtree", e);
 		}
 	}
-
+	
 	/**
-	 * This methods canonicalizes or serializes the given node depending on the canonicalization method (can be null)
+	 * Returns the {@code canonicalizationMethod} if provided, otherwise returns the DEFAULT_CANONICALIZATION_METHOD
 	 * 
-	 * @param canonicalizationMethod
-	 *            the canonicalization method or null
-	 * @param node
-	 *            the node to be canonicalized/serialized
-	 * @return array of bytes
+	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
+	 * @return canonicalizationMethod to be used
 	 */
-	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
+	public static String getCanonicalizationMethod(String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			return serializeNode(node);
-		} else {
-			return canonicalizeSubtree(canonicalizationMethod, node);
+			LOG.warn("Canonicalization method is not defined. A default canonicalization '{}' will be used.", DEFAULT_CANONICALIZATION_METHOD);
+			return DEFAULT_CANONICALIZATION_METHOD;
 		}
+		return canonicalizationMethod;
 	}
 
 	/**

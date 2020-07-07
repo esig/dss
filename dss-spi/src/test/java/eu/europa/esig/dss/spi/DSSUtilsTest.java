@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -118,11 +117,9 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
-		try {
-			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
-			fail("Should not load single certificate (first?)");
-		} catch (DSSException dssEx) {
-			assertEquals("Could not parse certificate", dssEx.getMessage());
+		try (FileInputStream fis = new FileInputStream("src/test/resources/certchain.p7c")) {
+			DSSException exception = assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(fis));
+			assertEquals("Could not parse certificate", exception.getMessage());
 		}
 	}
 
@@ -183,8 +180,10 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws Exception {
-		assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(new ByteArrayInputStream("test".getBytes("UTF-8"))));
+	public void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws IOException {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream("test".getBytes("UTF-8"))) {
+			assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(bais));
+		}
 	}
 
 	@Test

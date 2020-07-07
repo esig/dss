@@ -55,6 +55,12 @@ public class InvisibleSignatureFieldSignTest extends AbstractPAdESTestSignature 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
+	
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		// Skip : OpenPDF does not allow singing of an existing invisible signature field
+		// It creates a new field
+	}
 
 	@Override
 	protected DSSDocument getDocumentToSign() {

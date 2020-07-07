@@ -124,8 +124,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		
 		for (SignerInformation signerInformation : signerInformationCollection) {
-			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-			cadesSignature.setDetachedContents(parameters.getDetachedContents());
+			final CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 			assertSignatureValid(cadesSignature, parameters);
 			final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			newSignerInformationList.add(newSignerInformation);
@@ -160,8 +159,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 			if (lastSignerInformation == signerInformation) {
 
-				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-				cadesSignature.setDetachedContents(parameters.getDetachedContents());
+				final CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 				assertSignatureValid(cadesSignature, parameters);
 				final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 				newSignerInformationList.add(newSignerInformation);
@@ -221,8 +219,23 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param detachedContents list of {@link DSSDocument}s
 	 * @return extended {@link CMSSignedData}
 	 */
-	public CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
 		return cmsSignedData;
+	}
+	
+	/**
+	 * Creates a CAdESSignature.
+	 * Note: recommended method to use.
+	 * 
+	 * @param cmsSignedData {@link CMSSignedData} of a signature to create
+	 * @param signerInformation {@link SignerInformation}
+	 * @param detachedContents a list of detached {@link DSSDocument}s
+	 * @return created {@link CAdESSignature}
+	 */
+	protected CAdESSignature newCAdESSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+		final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		cadesSignature.setDetachedContents(detachedContents);
+		return cadesSignature;
 	}
 
 	protected ASN1Object getTimeStampAttributeValue(byte[] message, CAdESSignatureParameters parameters) {

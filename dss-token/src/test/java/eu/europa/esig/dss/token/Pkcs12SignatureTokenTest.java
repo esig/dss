@@ -51,7 +51,8 @@ public class Pkcs12SignatureTokenTest {
 			assertNotNull(dssPrivateKeyEntry);
 			assertNotNull(dssPrivateKeyEntry.getAlias());
 
-			DSSPrivateKeyEntry entry = signatureToken.getKey(dssPrivateKeyEntry.getAlias(), new PasswordProtection("password".toCharArray()));
+			DSSPrivateKeyEntry entry = signatureToken.getKey(dssPrivateKeyEntry.getAlias(),
+					new PasswordProtection("password".toCharArray()));
 			assertNotNull(entry);
 			assertNotNull(entry.getCertificate());
 			assertNotNull(entry.getCertificateChain());
@@ -67,12 +68,9 @@ public class Pkcs12SignatureTokenTest {
 
 	@Test
 	public void wrongPassword() throws IOException {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
-					new PasswordProtection("wrong password".toCharArray()))) {
-
-			}
-		});
+		PasswordProtection passwordProtection = new PasswordProtection("wrong password".toCharArray());
+		Exception exception = assertThrows(DSSException.class,
+				() -> new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12", passwordProtection));
 		assertEquals("Unable to instantiate KeyStoreSignatureTokenConnection", exception.getMessage());
 	}
 

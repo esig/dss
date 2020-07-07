@@ -70,6 +70,14 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parseShortName" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.printShortName" />
 		</jaxb:bindings>
+		
+		
+	  	<jaxb:bindings node="//xs:complexType[@name='SubXCV']//xs:element[@name='CrossCertificate']">
+			<jaxb:property name="CrossCertificates" />
+		</jaxb:bindings>
+	  	<jaxb:bindings node="//xs:complexType[@name='SubXCV']//xs:element[@name='EquivalentCertificate']">
+			<jaxb:property name="EquivalentCertificates" />
+		</jaxb:bindings>
 	</jaxb:bindings>
 
 </jaxb:bindings>

@@ -1,5 +1,26 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pades.validation.suite;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -57,11 +78,16 @@ public class DSS2025Test extends AbstractPAdESTestValidation {
 		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
 		
 		List<RelatedCertificateWrapper> relatedSignCertRefs = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		assertEquals(2, relatedSignCertRefs.size());
+		assertEquals(1, relatedSignCertRefs.size());
 		List<OrphanCertificateWrapper> orphanSignCertRefs = foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		assertEquals(0,  orphanSignCertRefs.size());
 		
-		assertEquals(relatedSignCertRefs.get(0), relatedSignCertRefs.get(1));
+		List<CertificateRefWrapper> relatedCertificateRefsByRefOrigin = foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		assertEquals(2, relatedCertificateRefsByRefOrigin.size());
+		assertEquals(relatedCertificateRefsByRefOrigin.get(0).getDigestAlgoAndValue().getDigestMethod(), 
+				relatedCertificateRefsByRefOrigin.get(1).getDigestAlgoAndValue().getDigestMethod());
+		assertArrayEquals(relatedCertificateRefsByRefOrigin.get(0).getDigestAlgoAndValue().getDigestValue(), 
+				relatedCertificateRefsByRefOrigin.get(1).getDigestAlgoAndValue().getDigestValue());
 	}
 
 }

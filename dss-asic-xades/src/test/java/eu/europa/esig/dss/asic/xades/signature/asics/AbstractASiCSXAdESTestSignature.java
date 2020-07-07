@@ -29,6 +29,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -63,7 +64,7 @@ public abstract class AbstractASiCSXAdESTestSignature extends AbstractPkiFactory
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {
 		assertNotNull(diagnosticData.getContainerInfo());
-		assertEquals("ASiC-S", diagnosticData.getContainerType());
+		assertEquals(ASiCContainerType.ASiC_S, diagnosticData.getContainerType());
 		assertNotNull(diagnosticData.getMimetypeFileContent());
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
 	}

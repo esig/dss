@@ -21,9 +21,11 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -45,6 +47,10 @@ public class LibreOfficeValidationTest extends AbstractOpenDocumentTestValidatio
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		
+		XmlFC fc = signatureBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
 	}
 
 }

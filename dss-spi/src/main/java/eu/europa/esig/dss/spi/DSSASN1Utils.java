@@ -42,11 +42,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
@@ -378,39 +374,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method can be removed the simple IssuerSerial verification can be
-	 * performed. In fact the hash verification is sufficient.
-	 *
-	 * @param generalNames
-	 *            the generalNames
-	 * @return the canonicalized name
-	 */
-	public static String getCanonicalizedName(final GeneralNames generalNames) {
-		GeneralName[] names = generalNames.getNames();
-		TreeMap<String, String> treeMap = new TreeMap<>();
-		for (GeneralName name : names) {
-			String ldapString = String.valueOf(name.getName());
-			LOG.debug("ldapString to canonicalize: {} ", ldapString);
-			try {
-				LdapName ldapName = new LdapName(ldapString);
-				List<Rdn> rdns = ldapName.getRdns();
-				for (final Rdn rdn : rdns) {
-					treeMap.put(rdn.getType().toLowerCase(), String.valueOf(rdn.getValue()).toLowerCase());
-				}
-			} catch (InvalidNameException e) {
-				throw new DSSException(e);
-			}
-		}
-		StringBuilder stringBuilder = new StringBuilder();
-		for (Entry<String, String> entry : treeMap.entrySet()) {
-			stringBuilder.append(entry.getKey()).append('=').append(entry.getValue()).append('|');
-		}
-		final String canonicalizedName = stringBuilder.toString();
-		LOG.debug("canonicalizedName: {} ", canonicalizedName);
-		return canonicalizedName;
-	}
-
-	/**
 	 * Gets the ASN.1 algorithm identifier structure corresponding to the algorithm 
 	 * found in the provided Timestamp Hash Index Table, if such algorithm is present
 	 *
@@ -571,7 +534,7 @@ public final class DSSASN1Utils {
 					certificatePolicies.add(cp);
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the certificatePolicies extension '" + Utils.toBase64(certificatePoliciesBinaries) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the certificatePolicies extension '{}' : {}", Utils.toBase64(certificatePoliciesBinaries), e.getMessage(), e);
 			}
 		}
 		return certificatePolicies;
@@ -597,7 +560,7 @@ public final class DSSASN1Utils {
 					extensionIdList.add(statement.getStatementId().getId());
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
 			}
 		}
 		return extensionIdList;
@@ -640,7 +603,7 @@ public final class DSSASN1Utils {
 					}
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
 			}
 		}
 
@@ -665,8 +628,7 @@ public final class DSSASN1Utils {
 					}
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : "
-						+ e.getMessage(), e);
+				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
 			}
 		}
 		return result;
@@ -870,7 +832,7 @@ public final class DSSASN1Utils {
 				return str.getString();
 			}
 		} catch (Exception e) {
-			LOG.warn("Unable to parse GN " + gn, e);
+			LOG.warn("Unable to parse GN '{}'", gn, e);
 		}
 		return null;
 	}
@@ -1187,7 +1149,7 @@ public final class DSSASN1Utils {
 		try {
 			return Time.getInstance(encodable).getDate();
 		} catch (Exception e) {
-			LOG.warn("Unable to retrieve the date : " + encodable, e);
+			LOG.warn("Unable to retrieve the date {}", encodable, e);
 			return null;
 		}
 	}
@@ -1218,7 +1180,7 @@ public final class DSSASN1Utils {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return IssuerSerial.getInstance(seq);
 		} catch (Exception e) {
-			LOG.error("Unable to decode IssuerSerialV2 textContent '" + Utils.toBase64(binaries) + "' : " + e.getMessage(), e);
+			LOG.error("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
 			return null;
 		}
 	}
@@ -1551,7 +1513,7 @@ public final class DSSASN1Utils {
 						if (value instanceof String) {
 							result.add((String) value);
 						} else {
-							LOG.warn("Ignored value : {}", value);
+							LOG.trace("Ignored value : {}", value);
 						}
 					}
 				}

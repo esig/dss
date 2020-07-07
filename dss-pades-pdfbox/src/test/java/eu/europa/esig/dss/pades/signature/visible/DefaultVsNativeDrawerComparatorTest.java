@@ -77,7 +77,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	/**
 	 * The degree of similarity between generated and original images
 	 */
-	private static final float SIMILARITY_LIMIT = 0.988f;
+	private static final float SIMILARITY_LIMIT = 0.987f;
 	
 	@BeforeEach
 	public void init(TestInfo testInfo) {

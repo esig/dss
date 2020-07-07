@@ -79,19 +79,17 @@ public class CertificateValidatorTest {
 
 	@Test
 	public void testCertNull() {
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
-			CertificateValidator.fromCertificate(null);
-		});
+		NullPointerException exception = assertThrows(NullPointerException.class,
+				() -> CertificateValidator.fromCertificate(null));
 		assertEquals("The certificate is missing", exception.getMessage());
 	}
 
 	@Test
 	public void testPolicyNull() {
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
-			CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
-			cv.setCertificateVerifier(new CommonCertificateVerifier());
-			cv.validate(null);
-		});
+		CertificateValidator cv = CertificateValidator
+				.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> cv.validate(null));
 		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 

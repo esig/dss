@@ -40,10 +40,10 @@ import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
 
 public final class DetailedReportXmlDefiner {
 
-	public static final String DETAILED_REPORT_SCHEMA_LOCATION = "/xsd/DetailedReport.xsd";
-	public static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/detailed-report.xslt";
-	public static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/detailed-report-bootstrap4.xslt";
-	public static final String DETAILED_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/detailed-report.xslt";
+	private static final String DETAILED_REPORT_SCHEMA_LOCATION = "/xsd/DetailedReport.xsd";
+	private static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/detailed-report.xslt";
+	private static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/detailed-report-bootstrap4.xslt";
+	private static final String DETAILED_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/detailed-report.xslt";
 
 	private DetailedReportXmlDefiner() {
 	}

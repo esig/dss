@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -63,10 +64,8 @@ public class FileCacheDataLoaderTest {
 
 	@Test
 	public void testNotDefineSubDataLoader() {
-		assertThrows(NullPointerException.class, () -> {
-			FileCacheDataLoader fcdl = new FileCacheDataLoader();
-			fcdl.get(URL_TO_LOAD);
-		});
+		FileCacheDataLoader fcdl = new FileCacheDataLoader();
+		assertThrows(NullPointerException.class, () -> fcdl.get(URL_TO_LOAD));
 	}
 
 	@Test
@@ -142,9 +141,8 @@ public class FileCacheDataLoaderTest {
 		offlineFileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
 		offlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
 		
-		DSSException multipleException = assertThrows(DSSException.class, () -> {
-			offlineFileCacheDataLoader.get(Arrays.asList("sample", "null", "empty-array", "0", "1.2.3.4.5"));
-		});
+		List<String> urls = Arrays.asList("sample", "null", "empty-array", "0", "1.2.3.4.5");
+		DSSException multipleException = assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get(urls));
 		assertTrue(multipleException.getMessage().contains("sample"));
 		assertTrue(multipleException.getMessage().contains("null"));
 		assertTrue(multipleException.getMessage().contains("empty-array"));

@@ -229,8 +229,21 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the list of empty signature fields
 	 */
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
+		return getAvailableSignatureFields(document, null);
+	}
+
+	/**
+	 * This method returns not signed signature-fields from an encrypted document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param passwordProtection
+	 *            the password protection used to create the encrypted document
+	 * @return the list of empty signature fields
+	 */
+	public List<String> getAvailableSignatureFields(DSSDocument document, String passwordProtection) {
 		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		return pdfSignatureService.getAvailableSignatureFields(document);
+		return pdfSignatureService.getAvailableSignatureFields(document, passwordProtection);
 	}
 
 	/**
@@ -243,8 +256,23 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+		return addNewSignatureField(document, parameters, null);
+	}
+
+	/**
+	 * This method allows to add a new signature field to an encrypted pdf document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param parameters
+	 *            the parameters with the coordinates,... of the signature field
+	 * @param passwordProtection
+	 *            the password protection used to create the encrypted document
+	 * @return the pdf document with the new added signature field
+	 */
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String passwordProtection) {
 		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		return pdfSignatureService.addNewSignatureField(document, parameters);
+		return pdfSignatureService.addNewSignatureField(document, parameters, passwordProtection);
 	}
 
 	@Override

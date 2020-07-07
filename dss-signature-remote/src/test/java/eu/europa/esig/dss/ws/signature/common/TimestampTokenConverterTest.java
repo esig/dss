@@ -102,32 +102,26 @@ public class TimestampTokenConverterTest {
 
 	@Test
 	public void emptyTimestampTokenDTOTest() {
-		Exception e = assertThrows(NullPointerException.class, () -> {
-			TimestampTokenConverter.toTimestampToken(null);
-		});
+		Exception e = assertThrows(NullPointerException.class, () -> TimestampTokenConverter.toTimestampToken(null));
 		assertEquals("TimestampDTO cannot be null!", e.getMessage());
 
-		e = assertThrows(NullPointerException.class, () -> {
-			TimestampTokenConverter.toTimestampToken(new TimestampDTO());
-		});
+		TimestampDTO emptyDTO = new TimestampDTO();
+		e = assertThrows(NullPointerException.class, () -> TimestampTokenConverter.toTimestampToken(emptyDTO));
 		assertEquals("TimestampDTO binaries cannot be null!", e.getMessage());
 
-		e = assertThrows(NullPointerException.class, () -> {
-			TimestampTokenConverter.toTimestampToken(new TimestampDTO(null, TimestampType.CONTENT_TIMESTAMP));
-		});
+		TimestampDTO nullBinary = new TimestampDTO(null, TimestampType.CONTENT_TIMESTAMP);
+		e = assertThrows(NullPointerException.class, () -> TimestampTokenConverter.toTimestampToken(nullBinary));
 		assertEquals("TimestampDTO binaries cannot be null!", e.getMessage());
 
-		e = assertThrows(NullPointerException.class, () -> {
-			TimestampTokenConverter.toTimestampToken(new TimestampDTO(Utils.fromBase64(timestampBinaries), null));
-		});
+		TimestampDTO nullType = new TimestampDTO(Utils.fromBase64(timestampBinaries), null);
+		e = assertThrows(NullPointerException.class, () -> TimestampTokenConverter.toTimestampToken(nullType));
 		assertEquals("TimestampDTO type cannot be null!", e.getMessage());
 	}
 
 	@Test
 	public void wrongBinaryTest() {
-		Exception e = assertThrows(DSSException.class, () -> {
-			TimestampTokenConverter.toTimestampToken(new TimestampDTO(new byte[] { 1, 2, 3 }, TimestampType.CONTENT_TIMESTAMP));
-		});
+		TimestampDTO wrongBinary = new TimestampDTO(new byte[] { 1, 2, 3 }, TimestampType.CONTENT_TIMESTAMP);
+		Exception e = assertThrows(DSSException.class, () -> TimestampTokenConverter.toTimestampToken(wrongBinary));
 		assertTrue(e.getMessage().contains("Cannot convert a TimestampDTO to TimestampToken class"));
 	}
 

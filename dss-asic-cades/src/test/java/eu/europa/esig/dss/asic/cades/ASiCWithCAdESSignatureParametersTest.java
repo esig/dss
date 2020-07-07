@@ -31,10 +31,9 @@ public class ASiCWithCAdESSignatureParametersTest {
 
 	@Test
 	public void testIllegal() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			ASiCWithCAdESSignatureParameters params = new ASiCWithCAdESSignatureParameters();
-			params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		});
+		ASiCWithCAdESSignatureParameters params = new ASiCWithCAdESSignatureParameters();
+		Exception exception = assertThrows(IllegalArgumentException.class,
+				() -> params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B));
 		assertEquals("Only CAdES form is allowed !", exception.getMessage());
 	}
 

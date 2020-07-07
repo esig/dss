@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,10 +34,14 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Unit test to fix issue https://esig-dss.atlassian.net/browse/DSS-646
@@ -50,21 +55,33 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument(SIGNED_DOC_PATH);
 	}
-	
+
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		return Arrays.asList(new FileDocument(DETACHED_DOC_PATH));
 	}
-	
+
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
-	
+
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		List<RelatedRevocationWrapper> relatedRevocations = signature.foundRevocations().getRelatedRevocationData();
+		assertTrue(Utils.isCollectionNotEmpty(relatedRevocations));
+		for (RevocationWrapper revocation : relatedRevocations) {
+			assertNotNull(revocation);
+			assertNotNull(revocation.getId());
+		}
+		assertTrue(Utils.isCollectionEmpty(signature.foundRevocations().getOrphanRevocationData()));
+
 	}
 
 	@Test
@@ -76,7 +93,8 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		DSSDocument detachedContent = new FileDocument(DETACHED_DOC_PATH);
 		parameters.setDetachedContents(Arrays.asList(detachedContent));
-		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(new FileDocument(SIGNED_DOC_PATH), parameters));
+		FileDocument document = new FileDocument(SIGNED_DOC_PATH);
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(document, parameters));
 		assertEquals("Cryptographic signature verification has failed.", exception.getMessage());
 	}
 

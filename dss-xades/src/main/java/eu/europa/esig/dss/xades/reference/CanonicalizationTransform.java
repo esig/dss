@@ -52,7 +52,7 @@ public class CanonicalizationTransform extends ComplexTransform {
 	protected boolean isExcludeComments(String uri) {
 		// see XMLDSig core 4.4.3.2 The Reference Processing Model and 4.4.3.3 Same-Document URI-References
 		// i.e. comments shall be omitted for the same document references
-		return uri != null && (uri == "" || DomUtils.isElementReference(uri));
+		return uri != null && ("".equals(uri) || DomUtils.isElementReference(uri));
 	}
 
 }

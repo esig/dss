@@ -89,6 +89,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		super(i18nProvider, new XmlSubXCV());
 		result.setId(currentCertificate.getId());
 		result.setTrustAnchor(currentCertificate.isTrusted());
+		result.setSelfSigned(currentCertificate.isSelfSigned());
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
@@ -158,7 +159,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			item = item.setNextItem(idPkixOcspNoCheck(currentCertificate));
 		}
 
-		if (!ValidationProcessUtils.isRevocationNoNeedCheck(currentCertificate, currentTime)) {
+		if (ValidationProcessUtils.isRevocationCheckRequired(currentCertificate, currentTime)) {
 
 			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 			

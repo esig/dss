@@ -89,19 +89,15 @@ public class KeyStoreCertificateSourceTest {
 
 	@Test
 	public void wrongPassword() throws IOException {
-		assertThrows(DSSException.class, () -> {
-			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, "wrong password");
-			assertNotNull(kscs);
-		});
-		
+		File ksFile = new File(KEYSTORE_FILEPATH);
+		assertThrows(DSSException.class, () -> new KeyStoreCertificateSource(ksFile, KEYSTORE_TYPE, "wrong password"));
 	}
 
 	@Test
 	public void wrongFile() throws IOException {
-		assertThrows(IOException.class, () -> {
-			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/keystore.p13"), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
-			assertNotNull(kscs);
-		});
+		File wrongFile = new File("src/test/resources/keystore.p13");
+		assertThrows(IOException.class,
+				() -> new KeyStoreCertificateSource(wrongFile, KEYSTORE_TYPE, KEYSTORE_PASSWORD));
 	}
 
 }

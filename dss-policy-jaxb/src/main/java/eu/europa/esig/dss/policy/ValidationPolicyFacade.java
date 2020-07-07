@@ -38,8 +38,8 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 
 public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParameters> {
 
-	public static final String DEFAULT_VALIDATION_POLICY_LOCATION = "/policy/constraint.xml";
-	public static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/policy/tsl-constraint.xml";
+	private static final String DEFAULT_VALIDATION_POLICY_LOCATION = "/policy/constraint.xml";
+	private static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/policy/tsl-constraint.xml";
 
 	public static ValidationPolicyFacade newFacade() {
 		return new ValidationPolicyFacade();

@@ -39,6 +39,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
 
@@ -96,6 +97,8 @@ public class FormatChecking extends Chain<XmlFC> {
 			item = item.setNextItem(mimetypeFileContentCheck());
 
 			item = item.setNextItem(manifestFilePresentCheck());
+
+			item = item.setNextItem(signedFilesPresentCheck());
 		}
 	}
 
@@ -147,6 +150,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> manifestFilePresentCheck() {
 		LevelConstraint constraint = policy.getManifestFilePresentConstraint();
 		return new ManifestFilePresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
+	}
+
+	private ChainItem<XmlFC> signedFilesPresentCheck() {
+		LevelConstraint constraint = policy.getSignedFilesPresentConstraint();
+		return new SignedFilesPresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

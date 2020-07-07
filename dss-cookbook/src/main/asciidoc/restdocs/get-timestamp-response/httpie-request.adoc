@@ -1,9 +1,0 @@
-[source,bash]
-----
-$ echo '{
-  "algorithm" : "SHA1",
-  "value" : "Ir3ZcUPfazmmWvrSr2vYvyDNT3s="
-}' | http POST 'http://localhost:8080/services/rest/timestamp-service/getTimestampResponse' \
-    'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
-----

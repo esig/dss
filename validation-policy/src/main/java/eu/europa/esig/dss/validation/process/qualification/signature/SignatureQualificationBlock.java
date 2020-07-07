@@ -67,7 +67,6 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
 			CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationSignatureQualification());
-		result.setId(signatureId);
 
 		this.etsi319102Conclusion = etsi319102validation.getConclusion();
 		this.bestSignatureTime = etsi319102validation.getProofOfExistence().getTime();

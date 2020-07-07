@@ -54,7 +54,7 @@ public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> exte
 		boolean inValidityRange = isInValidityRange();
 		if (!inValidityRange) {
 			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
-			if (!ValidationProcessUtils.isRevocationNoNeedCheck(certificate, currentTime)) {
+			if (ValidationProcessUtils.isRevocationCheckRequired(certificate, currentTime)) {
 				if (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked()) {
 					subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
 				}

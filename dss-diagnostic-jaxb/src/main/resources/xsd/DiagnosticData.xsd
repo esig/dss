@@ -68,7 +68,7 @@
 	
 	<xs:complexType name="ContainerInfo">
 		<xs:sequence>
-			<xs:element name="ContainerType" type="xs:string" minOccurs="0" />
+			<xs:element name="ContainerType" type="ContainerType" minOccurs="0" />
 			<xs:element name="ZipComment" type="xs:string" minOccurs="0" />
 			<xs:element name="MimeTypeFilePresent" type="xs:boolean" minOccurs="0" />
 			<xs:element name="MimeTypeContent" type="xs:string" minOccurs="0" />
@@ -90,6 +90,13 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:simpleType name="ContainerType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ASiC-S" />
+			<xs:enumeration value="ASiC-E" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="ManifestFile">
 		<xs:sequence>
@@ -292,6 +299,7 @@
 					<xs:element name="NotBefore" type="xs:dateTime" />
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
+					<xs:element name="EntityKey" type="xs:string" />
 		
 					<xs:element name="KeyUsageBits" minOccurs="0">
 						<xs:complexType>
@@ -570,12 +578,6 @@
 			<xs:element name="NotBefore" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Category" type="EndorsementType" use="required" />
-	</xs:complexType>
-
-	<xs:complexType name="SignedAssertion">
-		<xs:sequence>
-			<xs:element name="Assertion" type="xs:string" />
-		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="DigestAlgoAndValue">

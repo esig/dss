@@ -81,16 +81,16 @@ public final class SignatureImageAndPositionProcessor {
 
         switch (rotation) {
             case ImageRotationUtils.ANGLE_90:
-                x = processXAngle90(pageBox, ires, signatureImageParameters, width);
+                x = processXAngle90(pageBox, signatureImageParameters, width);
                 break;
             case ImageRotationUtils.ANGLE_180:
-                x = processXAngle180(pageBox, ires, signatureImageParameters, width);
+                x = processXAngle180(pageBox, signatureImageParameters, width);
                 break;
             case ImageRotationUtils.ANGLE_270:
-                x = processXAngle270(pageBox, ires, signatureImageParameters, width);
+                x = processXAngle270(pageBox, signatureImageParameters, width);
                 break;
             case ImageRotationUtils.ANGLE_360:
-                x = processXAngle360(pageBox, ires, signatureImageParameters, width);
+                x = processXAngle360(pageBox, signatureImageParameters, width);
                 break;
             default:
                 throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
@@ -107,16 +107,16 @@ public final class SignatureImageAndPositionProcessor {
         
         switch (rotation) {
             case ImageRotationUtils.ANGLE_90:
-                y = processYAngle90(pageBox, ires, signatureImageParameters, height);
+                y = processYAngle90(pageBox, signatureImageParameters, height);
                 break;
             case ImageRotationUtils.ANGLE_180:
-                y = processYAngle180(pageBox, ires, signatureImageParameters, height);
+                y = processYAngle180(pageBox, signatureImageParameters, height);
                 break;
             case ImageRotationUtils.ANGLE_270:
-                y = processYAngle270(pageBox, ires, signatureImageParameters, height);
+                y = processYAngle270(pageBox, signatureImageParameters, height);
                 break;
             case ImageRotationUtils.ANGLE_360:
-                y = processYAngle360(pageBox, ires, signatureImageParameters, height);
+                y = processYAngle360(pageBox, signatureImageParameters, height);
                 break;
             default:
                 throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
@@ -143,7 +143,7 @@ public final class SignatureImageAndPositionProcessor {
         return height;
     }
 
-    private static float processXAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
+    private static float processXAngle90(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -166,7 +166,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processXAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
+    private static float processXAngle180(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -189,7 +189,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processXAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
+    private static float processXAngle270(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -212,7 +212,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processXAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
+    private static float processXAngle360(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -235,7 +235,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processYAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
+    private static float processYAngle90(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -258,7 +258,7 @@ public final class SignatureImageAndPositionProcessor {
         return y;
     }
 
-    private static float processYAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
+    private static float processYAngle180(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -281,7 +281,7 @@ public final class SignatureImageAndPositionProcessor {
         return y;
     }
 
-    private static float processYAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
+    private static float processYAngle270(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -304,7 +304,7 @@ public final class SignatureImageAndPositionProcessor {
         return y;
     }
 
-    private static float processYAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
+    private static float processYAngle360(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();

@@ -336,11 +336,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 						provider.clear();
 					}
 				} catch (LoginException e) {
-					LOG.error("Unable to logout : " + e.getMessage(), e);
+					LOG.error("Unable to logout : {}", e.getMessage(), e);
 				}
 				Security.removeProvider(provider.getName());
 			} catch (SecurityException e) {
-				LOG.error("Unable to remove provider '" + provider.getName() + "'", e);
+				LOG.error("Unable to remove provider '{}'", provider.getName(), e);
 			} finally {
 				provider = null;
 			}

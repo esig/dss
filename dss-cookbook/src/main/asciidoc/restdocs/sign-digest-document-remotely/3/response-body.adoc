@@ -1,7 +1,0 @@
-[source,options="nowrap"]
-----
-{
-  "algorithm" : "RSA_SHA256",
-  "value" : "Iah7XnCKKc5Qc3M/5E91ESRkBP5j9vmyoGifAROjXvMswfm/YHHXVlMxg4Ssja9UsRBE/z1Irn7e9dmCNjhzZAWafg2Mv4PkmdTn5F036iHH0MqafThlSutgD7rz5hVKdYtaH7n+VMecnzWiFxPANAfyxfrE6To0Fv65h9KV4R+G+wRXN5WfA29b4jSZFHjmH/OZ2DcC1OH9UkbOuODzV+pw0a5r9aGLfZ7NfzedDxUqrAerSm/+zrS128KwI4jouOc/W+kWM/0j4lIm3KdAl8mJN69pjfUZ7KFQSnKl+BIapSkoxdRq4WVuGWbr3/dcI9Mw1H3Hmwb6ezBkKIU4rQ=="
-}
-----

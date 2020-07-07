@@ -25,9 +25,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -56,8 +53,6 @@ import eu.europa.esig.dss.validation.SignatureProductionPlace;
 public class PAdESSignature extends CAdESSignature {
 
 	private static final long serialVersionUID = 3818555396958720967L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final PdfSignatureRevision pdfSignatureRevision;
 

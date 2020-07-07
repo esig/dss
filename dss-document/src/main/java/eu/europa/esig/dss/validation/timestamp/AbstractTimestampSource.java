@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -84,9 +83,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected ListCertificateSource certificateSource;
 	
-	// Map between timestamps and found certificates
-	private Map<String, List<CertificateToken>> certificateMap;
-
 	// Enclosed content timestamps.
 	private List<TimestampToken> contentTimestamps;
 
@@ -329,11 +325,11 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				signatureTimestamps.add(timestampToken);
 				
 			} else if (isCompleteCertificateRef(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute, signatureCertificateSource));
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isAttributeCertificateRef(unsignedAttribute)) {
-				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute, signatureCertificateSource));
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isCompleteRevocationRef(unsignedAttribute)) {
@@ -602,14 +598,17 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	/**
-	 * Returns a list of {@link TimestampedReference} certificate refs found in the given {@code unsignedAttribute}
+	 * Returns a list of {@link TimestampedReference} certificate refs found in the
+	 * given {@code unsignedAttribute}
+	 * 
 	 * @param unsignedAttribute {@link SignatureAttribute} to find references from
 	 * @return list of {@link TimestampedReference}s
 	 */
-	protected List<TimestampedReference> getTimestampedCertificateRefs(SignatureAttribute unsignedAttribute, SignatureCertificateSource signatureCertificateSource) {
+	protected List<TimestampedReference> getTimestampedCertificateRefs(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (CertificateRef certRef : getCertificateRefs(unsignedAttribute)) {
-			timestampedReferences.add(new TimestampedReference(certRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			timestampedReferences
+					.add(new TimestampedReference(certRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		return timestampedReferences;
 	}

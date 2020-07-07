@@ -60,7 +60,7 @@ public class DTOConverterTest {
 	@Test
 	public void toToBeSignedNullTest() {
 		ToBeSigned toBeSigned = DTOConverter.toToBeSigned(null);
-		assertTrue(toBeSigned == null);
+		assertNull(toBeSigned);
 	}
 	
 	@Test

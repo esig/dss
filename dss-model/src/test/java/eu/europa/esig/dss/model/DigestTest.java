@@ -22,11 +22,10 @@ package eu.europa.esig.dss.model;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,10 +101,10 @@ public class DigestTest {
 		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
 		String hexValue = d1.getHexValue();
 		d1.setValue(new byte[] { 5, 6, 7 });
-		assertFalse(hexValue.equals(d1.getHexValue()));
+		assertNotEquals(hexValue, d1.getHexValue());
 	}
 
-	@Disabled
+	@Disabled("performances")
 	public void perfs() {
 
 		int bigIntCounter = 0;
@@ -153,7 +152,7 @@ public class DigestTest {
 				formatterCounter++;
 			}
 
-			assertTrue(hex1.equals(hex2));
+			assertEquals(hex1, hex2);
 		}
 		
 		LOG.info("bigInt total : {}", bigIntCounter);

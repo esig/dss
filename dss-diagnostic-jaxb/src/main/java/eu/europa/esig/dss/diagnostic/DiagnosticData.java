@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -793,6 +794,39 @@ public class DiagnosticData {
 		}
 		return orphanRevocationRefs;
 	}
+	
+	/**
+	 * Returns a list of cross-certificates
+	 * 
+	 * @param certificate {@link CertificateWrapper} to find cross certificates for
+	 * @return a list of cross certificate {@link CertificateWrapper}s
+	 */
+	public List<CertificateWrapper> getCrossCertificates(CertificateWrapper certificate) {
+		List<CertificateWrapper> crossCertificates = new ArrayList<>();
+		for (CertificateWrapper candidate : getEquivalentCertificates(certificate)) {
+			if (!certificate.getCertificateDN().equals(candidate.getCertificateDN()) || 
+					!certificate.getCertificateIssuerDN().equals(candidate.getCertificateIssuerDN())) {
+				crossCertificates.add(candidate);
+			}
+		}
+		return crossCertificates;
+	}
+
+	/**
+	 * Returns a list of equivalent certificates (certificates with the same public key)
+	 * 
+	 * @param certificate {@link CertificateWrapper} to find equivalent certificates for
+	 * @return a list of equivalent certificates
+	 */
+	public List<CertificateWrapper> getEquivalentCertificates(CertificateWrapper certificate) {
+		List<CertificateWrapper> equivalentCertificates = new ArrayList<>();
+		for (CertificateWrapper candidate : getUsedCertificates()) {
+			if (!certificate.equals(candidate) && certificate.getEntityKey().equals(candidate.getEntityKey())) {
+				equivalentCertificates.add(candidate);
+			}
+		}
+		return equivalentCertificates;
+	}
 
 	/**
 	 * This method retrieves a list of signature wrappers.
@@ -984,7 +1018,7 @@ public class DiagnosticData {
 	 * 
 	 * @return the container type (ASiC-S/E)
 	 */
-	public String getContainerType() {
+	public ASiCContainerType getContainerType() {
 		XmlContainerInfo containerInfo = wrapped.getContainerInfo();
 		if (containerInfo != null) {
 			return containerInfo.getContainerType();

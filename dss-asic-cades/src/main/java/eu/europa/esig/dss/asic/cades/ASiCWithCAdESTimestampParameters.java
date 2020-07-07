@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 @SuppressWarnings("serial")
 public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters implements ASiCWithCAdESCommonParameters {
 	
-	protected Date zipCreationDate = new Date();
+	private Date zipCreationDate = new Date();
 	
 	/**
 	 * The object representing the parameters related to ASiC for the timestamp.

@@ -291,6 +291,10 @@
 					<xsl:attribute name="class">fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="title"><xsl:value-of select="@DateTime"/></xsl:attribute>
        			</i>
+	 			<xsl:if test="@Id">
+	       			<br />    
+		        	<xsl:value-of select="concat('Id = ', @Id)"/>
+	        	</xsl:if>
 	        </div>
     		<div>
     			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
@@ -382,17 +386,38 @@
 					<xsl:choose>
       					<xsl:when test="@TrustAnchor = 'true'">
 			       			<i>
-								<xsl:attribute name="class">fa fa-certificate float-right</xsl:attribute>
+								<xsl:attribute name="class">fa fa-certificate float-right ml-2</xsl:attribute>
 								<xsl:attribute name="title">Trust Anchor</xsl:attribute>		       			
 			       			</i>
 		       			</xsl:when>
 			       		<xsl:otherwise>
 							<xsl:call-template name="badge-conclusion">
 								<xsl:with-param name="Conclusion" select="dss:Conclusion" />
-								<xsl:with-param name="AdditionalClass" select="' float-right'" />
+								<xsl:with-param name="AdditionalClass" select="' float-right ml-2'" />
 							</xsl:call-template>
 						</xsl:otherwise>
 					</xsl:choose>
+					
+    				<xsl:if test="@SelfSigned = 'true'">
+		       			<i>
+							<xsl:attribute name="class">fa fa-user-circle float-right ml-2</xsl:attribute>
+							<xsl:attribute name="title">Self-signed</xsl:attribute>		       			
+		       			</i>
+	       			</xsl:if>
+					
+    				<xsl:if test="dss:CrossCertificate">
+		       			<i>
+							<xsl:attribute name="class">fa fa-link float-right ml-2</xsl:attribute>
+							<xsl:attribute name="title">Cross-Certification: <xsl:value-of select="dss:CrossCertificate"/></xsl:attribute>		       			
+		       			</i>
+	       			</xsl:if>
+					
+    				<xsl:if test="dss:EquivalentCertificate">
+		       			<i>
+							<xsl:attribute name="class">fa fa-refresh float-right ml-2</xsl:attribute>
+							<xsl:attribute name="title">Equivalent certification: <xsl:value-of select="dss:EquivalentCertificate"/></xsl:attribute>		       			
+		       			</i>
+	       			</xsl:if>
 					
 	       			<xsl:value-of select="@Title"/>
 	       			

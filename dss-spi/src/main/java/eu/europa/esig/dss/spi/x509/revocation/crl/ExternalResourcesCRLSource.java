@@ -20,11 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import java.io.IOException;
 import java.io.InputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -38,8 +34,6 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 
 	private static final long serialVersionUID = -985602836642741439L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExternalResourcesCRLSource.class);
-
 	/**
 	 * This constructor allows to build a CRL source from a list of
 	 * resource paths.
@@ -49,11 +43,7 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 	 */
 	public ExternalResourcesCRLSource(final String... paths) {
 		for (final String pathItem : paths) {
-			try {
-				addCRLToken(getClass().getResourceAsStream(pathItem));
-			} catch (Exception e) {
-				LOG.error("Unable to load '" + pathItem + "'", e);
-			}
+			addCRLToken(getClass().getResourceAsStream(pathItem));
 		}
 	}
 
@@ -73,8 +63,8 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 	private void addCRLToken(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
 			addBinary(CRLUtils.buildCRLBinary(Utils.toByteArray(is)), RevocationOrigin.EXTERNAL);
-		} catch (IOException e) {
-			throw new DSSException(e);
+		} catch (Exception e) {
+			throw new DSSException("Unable to parse the stream (CRL is expected)", e);
 		}
 	}
 

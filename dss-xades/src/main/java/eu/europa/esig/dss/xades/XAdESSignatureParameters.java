@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -69,8 +70,21 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for KeyInfo.
+	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String keyInfoCanonicalizationMethod;
+	private String keyInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+
+	/**
+	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
+	 * The EXCLUSIVE canonicalization is used by default
+	 */
+	private String signedInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+
+	/**
+	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
+	 * The EXCLUSIVE canonicalization is used by default
+	 */
+	private String signedPropertiesCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
 
 	/**
 	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
@@ -93,11 +107,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * The digest method used to create the digest of the signer's certificate.
 	 */
 	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA512;
-
-	/**
-	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
-	 */
-	private String signedInfoCanonicalizationMethod;
 	
 	/**
 	 * Optional parameter defining should the "KeyInfo" element be signed.
@@ -105,11 +114,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * FALSE by default.
 	 */
 	private boolean signKeyInfo = false;
-
-	/**
-	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
-	 */
-	private String signedPropertiesCanonicalizationMethod;
 
 	private String xPathLocationString;
 
@@ -179,6 +183,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
+		if (Utils.isStringEmpty(signedInfoCanonicalizationMethod)) {
+			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
+		}
 		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
 	}
 
@@ -196,6 +203,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
+		if (Utils.isStringEmpty(signedPropertiesCanonicalizationMethod)) {
+			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
+		}
 		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
 	}
 	
@@ -212,6 +222,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @param keyInfoCanonicalizationMethod - name of the canonicalization algorithm for dealing with KeyInfo.
 	 */
 	public void setKeyInfoCanonicalizationMethod(final String keyInfoCanonicalizationMethod) {
+		if (Utils.isStringEmpty(keyInfoCanonicalizationMethod)) {
+			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
+		}
 		this.keyInfoCanonicalizationMethod = keyInfoCanonicalizationMethod;
 	}
 	

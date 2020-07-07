@@ -1,0 +1,7 @@
+[source,options="nowrap"]
+----
+{
+  "algorithm" : "SHA256",
+  "value" : "ZOyIygCyaOW6GjVnihtTFtIS9PNmskdyMlNKiuyjfzw="
+}
+----

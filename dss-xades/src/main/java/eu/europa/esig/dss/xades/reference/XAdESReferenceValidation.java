@@ -32,6 +32,7 @@ import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -53,7 +54,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 		presentableTransformationNames.put(Transforms.TRANSFORM_ENVELOPED_SIGNATURE, "Enveloped Signature Transform");
 		presentableTransformationNames.put(Transforms.TRANSFORM_BASE64_DECODE, "Base64 Decoding");
 
-		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH2FILTER, "XPath filtering");
+		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH2FILTER, "XPath Filter 2.0 Transform");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XSLT, "XSLT Transform");
 
@@ -147,20 +148,41 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	 * @return transformation description name
 	 */
 	private String buildTransformationName(Node transformation) {
-		String algorithm = DomUtils.getValue(transformation, "@Algorithm");
-		if (presentableTransformationNames.containsKey(algorithm)) {
-			algorithm = presentableTransformationNames.get(algorithm);
+		String algorithmUri = DomUtils.getValue(transformation, "@Algorithm");
+		String algorithm = algorithmUri;
+		if (presentableTransformationNames.containsKey(algorithmUri)) {
+			algorithm = presentableTransformationNames.get(algorithmUri);
 		}
 		StringBuilder stringBuilder = new StringBuilder(algorithm);
 		if (transformation.hasChildNodes()) {
 			NodeList childNodes = transformation.getChildNodes();
 			stringBuilder.append(" (");
 			boolean hasValues = false;
-			for (int j = 0; j < childNodes.getLength(); j++) {
-				Node parameterNode = childNodes.item(j);
+			
+			for (int ii = 0; ii < childNodes.getLength(); ii++) {
+				Node parameterNode = childNodes.item(ii);
 				if (Node.ELEMENT_NODE != parameterNode.getNodeType()) {
 					continue;
 				}
+
+				// attach attribute values
+				NamedNodeMap attributes = parameterNode.getAttributes();
+				for (int jj = 0; jj < attributes.getLength(); jj++) {
+					Node attribute = attributes.item(jj);
+					String attrName = attribute.getLocalName();
+					String attrValue = attribute.getNodeValue();
+					if (algorithmUri.equals(attrValue)) {
+						continue; // skip the case when the algorithm uri is defined in a child node
+					}
+					if (hasValues) {
+						stringBuilder.append("; ");
+					}
+					stringBuilder.append(attrName).append(": ");
+					stringBuilder.append(attrValue);
+					hasValues = true;
+				}
+				
+				// attach node value
 				Node parameterValueNode = parameterNode.getFirstChild();
 				if (parameterValueNode != null && Node.TEXT_NODE == parameterValueNode.getNodeType() &&
 						Utils.isStringNotBlank(parameterValueNode.getTextContent())) {

@@ -51,7 +51,7 @@
                 <Time>2019-12-17T10:12:32</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
-        <ValidationSignatureQualification Id="S-132A03478A000A8356CE0470BCB15FF5A51B7A4C00B1EBD83AFC78DB67DFE178" SignatureQualification="N/A" Title="Signature Qualification">
+        <ValidationSignatureQualification SignatureQualification="N/A" Title="Signature Qualification">
             <Constraint>
                 <Name NameId="QUAL_IS_ADES">Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?</Name>
                 <Status>WARNING</Status>
@@ -121,7 +121,7 @@
                 <Time>2019-12-17T10:12:32</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
-        <ValidationSignatureQualification Id="S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59" SignatureQualification="N/A" Title="Signature Qualification">
+        <ValidationSignatureQualification SignatureQualification="N/A" Title="Signature Qualification">
             <Constraint>
                 <Name NameId="QUAL_IS_ADES">Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?</Name>
                 <Status>WARNING</Status>

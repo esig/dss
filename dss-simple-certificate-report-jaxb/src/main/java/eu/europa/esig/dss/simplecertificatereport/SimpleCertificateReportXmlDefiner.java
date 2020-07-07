@@ -40,10 +40,10 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.ObjectFactory;
 
 public final class SimpleCertificateReportXmlDefiner {
 
-	public static final String SIMPLE_CERTIFICATE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleCertificateReport.xsd";
-	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-certificate-report.xslt";
-	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-certificate-report-bootstrap4.xslt";
-	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-certificate-report.xslt";
+	private static final String SIMPLE_CERTIFICATE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleCertificateReport.xsd";
+	private static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-certificate-report.xslt";
+	private static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-certificate-report-bootstrap4.xslt";
+	private static final String SIMPLE_CERTIFICATE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-certificate-report.xslt";
 
 	private SimpleCertificateReportXmlDefiner() {
 	}

@@ -37,9 +37,9 @@ import eu.europa.esig.dss.policy.jaxb.ObjectFactory;
 
 public final class ValidationPolicyXmlDefiner {
 
-	public static final String VALIDATION_POLICY_SCHEMA_LOCATION = "/xsd/policy.xsd";
-
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+
+	private static final String VALIDATION_POLICY_SCHEMA_LOCATION = "/xsd/policy.xsd";
 
 	private ValidationPolicyXmlDefiner() {
 	}

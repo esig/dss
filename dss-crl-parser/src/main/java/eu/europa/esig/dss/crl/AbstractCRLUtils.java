@@ -79,7 +79,7 @@ public abstract class AbstractCRLUtils {
 					LOG.warn("Attribute 'expiredCertsOnCRL' found but ignored (should be encoded as ASN.1 GeneralizedTime)");
 				}
 			} catch (Exception e) {
-				LOG.error("Unable to parse expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+				LOG.error("Unable to parse expiredCertsOnCRL on CRL : {}", e.getMessage(), e);
 			}
 		}
 	}

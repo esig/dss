@@ -108,8 +108,8 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 			crlValidity.setIssuerToken(issuerToken);
 		} catch (GeneralSecurityException e) {
 			String msg = String.format("CRL Signature cannot be validated : %s", e.getMessage());
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(msg, e);
+			if (LOG.isTraceEnabled()) {
+				LOG.trace(msg, e);
 			} else {
 				LOG.warn(msg);
 			}

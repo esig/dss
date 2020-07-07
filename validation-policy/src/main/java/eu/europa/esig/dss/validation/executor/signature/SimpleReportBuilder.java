@@ -30,17 +30,24 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
@@ -49,17 +56,28 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
  */
 public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
+	private final I18nProvider i18nProvider;
+	private final boolean includeSemantics;
+
 	private int totalSignatureCount = 0;
 	private int validSignatureCount = 0;
+	private Set<Indication> finalIndications = new HashSet<>();
+	private Set<SubIndication> finalSubIndications = new HashSet<>();
+	private POEExtraction poe;
 
-	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+	public SimpleReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy,
+			DiagnosticData diagnosticData, DetailedReport detailedReport, boolean includeSemantics) {
 		super(currentTime, policy, diagnosticData, detailedReport);
+		this.i18nProvider = i18nProvider;
+		this.includeSemantics = includeSemantics;
 	}
 
 	/**
@@ -69,20 +87,24 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	 */
 	@Override
 	public XmlSimpleReport build() {
-		
+
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
+
+		poe = new POEExtraction();
+		poe.init(diagnosticData, diagnosticData.getValidationDate());
+		poe.collectAllPOE(diagnosticData.getTimestampList());
 
 		XmlSimpleReport simpleReport = super.build();
 
 		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
-		
+
 		Set<String> attachedTimestampIds = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			attachedTimestampIds.addAll(signature.getTimestampIdsList());
 			simpleReport.getSignatureOrTimestamp().add(getSignature(signature, containerInfoPresent));
 		}
-		
+
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			if (attachedTimestampIds.contains(timestamp.getId())) {
 				continue;
@@ -92,7 +114,29 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		addStatistics(simpleReport);
 
+		if (includeSemantics) {
+			addSemantics(simpleReport);
+		}
+
 		return simpleReport;
+	}
+
+	private void addSemantics(XmlSimpleReport simpleReport) {
+
+		for (Indication indication : finalIndications) {
+			XmlSemantic semantic = new XmlSemantic();
+			semantic.setKey(indication.name());
+			semantic.setValue(i18nProvider.getMessage(MessageTag.getSemantic(indication.name())));
+			simpleReport.getSemantic().add(semantic);
+		}
+
+		for (SubIndication subIndication : finalSubIndications) {
+			XmlSemantic semantic = new XmlSemantic();
+			semantic.setKey(subIndication.name());
+			semantic.setValue(i18nProvider.getMessage(MessageTag.getSemantic(subIndication.name())));
+			simpleReport.getSemantic().add(semantic);
+		}
+
 	}
 
 	private void addStatistics(XmlSimpleReport simpleReport) {
@@ -138,13 +182,20 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		Indication indication = detailedReport.getHighestIndication(signatureId);
 		if (Indication.PASSED.equals(indication)) {
 			validSignatureCount++;
+			determineExtensionPeriod(xmlSignature);
 			xmlSignature.setIndication(Indication.TOTAL_PASSED);
 		} else if (Indication.FAILED.equals(indication)) {
 			xmlSignature.setIndication(Indication.TOTAL_FAILED);
 		} else {
 			xmlSignature.setIndication(indication); // INDERTERMINATE
 		}
-		xmlSignature.setSubIndication(detailedReport.getHighestSubIndication(signatureId));
+		finalIndications.add(xmlSignature.getIndication());
+
+		SubIndication highestSubIndication = detailedReport.getHighestSubIndication(signatureId);
+		if (highestSubIndication != null) {
+			xmlSignature.setSubIndication(highestSubIndication);
+			finalSubIndications.add(highestSubIndication);
+		}
 
 		addSignatureProfile(xmlSignature);
 
@@ -276,6 +327,110 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			}
 		}
 		return strings;
+	}
+
+	private void determineExtensionPeriod(XmlSignature xmlSignature) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(xmlSignature.getId());
+		xmlSignature.setExtensionPeriodMin(getMinExtensionPeriod(signatureWrapper));
+		xmlSignature.setExtensionPeriodMax(getMaxExtensionPeriod(signatureWrapper));
+	}
+
+	private Date getMinExtensionPeriod(SignatureWrapper signatureWrapper) {
+
+		Date min = null;
+		List<List<CertificateWrapper>> chains = new ArrayList<>();
+		chains.add(signatureWrapper.getCertificateChain());
+		List<RelatedRevocationWrapper> relatedRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
+		for (RevocationWrapper revocation : relatedRevocations) {
+			chains.add(revocation.getCertificateChain());
+		}
+
+		for (List<CertificateWrapper> certificateChain : chains) {
+			Date certChainMin = getMinExtensionPeriodForChain(certificateChain, null);
+			if (certChainMin != null) {
+				if (min == null || min.after(certChainMin)) {
+					min = certChainMin;
+				}
+			}
+		}
+
+		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			Date certChainMin = getMinExtensionPeriodForChain(timestampWrapper.getCertificateChain(), timestampWrapper.getProductionTime());
+			if (certChainMin != null) {
+				if (min == null || min.after(certChainMin)) {
+					min = certChainMin;
+				}
+			}
+		}
+
+		return min;
+	}
+
+	private Date getMinExtensionPeriodForChain(List<CertificateWrapper> certificateChain, Date usageTime) {
+		Date min = null;
+		for (CertificateWrapper certificateWrapper : certificateChain) {
+			if (certificateWrapper.isTrusted()) {
+				break;
+			}
+
+			Date lastTrustedUsage = null;
+			if (usageTime != null) {
+				lastTrustedUsage = usageTime;
+			} else {
+				lastTrustedUsage = poe.getLowestPOETime(certificateWrapper.getId());
+			}
+
+			if (ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper, lastTrustedUsage)) {
+				Date tempMin = null;
+				List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
+				for (CertificateRevocationWrapper revocationData : certificateRevocationData) {
+					if (lastTrustedUsage.after(revocationData.getThisUpdate())) {
+
+						Date nextUpdate = revocationData.getNextUpdate();
+						if (nextUpdate == null) {
+							nextUpdate = new Date(lastTrustedUsage.getTime() + 1000); // last usage + 1s
+						}
+
+						if (tempMin == null || tempMin.after(nextUpdate)) {
+							tempMin = nextUpdate;
+						}
+					}
+				}
+
+				if (tempMin != null) {
+					if (min == null || min.after(tempMin)) {
+						min = tempMin;
+					}
+				}
+			}
+		}
+		return min;
+	}
+
+	private Date getMaxExtensionPeriod(SignatureWrapper signatureWrapper) {
+		Date max = null;
+
+		CertificateWrapper signingCertificate = signatureWrapper.getSigningCertificate();
+		if (signingCertificate != null) {
+			max = signingCertificate.getNotAfter();
+		}
+
+		List<TimestampWrapper> timestampList = signatureWrapper.getAllTimestampsProducedAfterSignatureCreation();
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			if (!timestampWrapper.isSignatureValid()) {
+				continue;
+			}
+			CertificateWrapper timestampSigningCertificate = timestampWrapper.getSigningCertificate();
+			List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
+			if (timestampSigningCertificate != null && timestampedSignatures.contains(signatureWrapper)) {
+				if (timestampSigningCertificate.getNotAfter().after(max)) {
+					max = timestampSigningCertificate.getNotAfter();
+				}
+			}
+		}
+
+		return max;
 	}
 
 }

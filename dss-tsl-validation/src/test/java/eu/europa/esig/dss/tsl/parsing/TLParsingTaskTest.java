@@ -245,8 +245,8 @@ public class TLParsingTaskTest {
 		TLParsingResult result = task.get();
 
 		assertNotNull(result);
-		assertNotNull(result.getVersion());
-		assertNotNull(result.getSequenceNumber());
+		assertEquals(4, result.getVersion());
+		assertEquals(22, result.getSequenceNumber());
 		assertNotNull(result.getIssueDate());
 		assertNotNull(result.getNextUpdateDate());
 		assertEquals("DE", result.getTerritory());

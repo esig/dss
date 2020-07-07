@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -58,13 +57,12 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
-import eu.europa.esig.dss.pades.EncryptedDocumentException;
-import eu.europa.esig.dss.pades.InvalidPasswordException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -102,15 +100,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected void checkDocumentPermissions(DSSDocument toSignDocument) {
-		try (InputStream is = toSignDocument.openStream(); PdfReader reader = new PdfReader(is)) {
+	protected void checkDocumentPermissions(final DSSDocument toSignDocument, final String pwd) {
+		try (InputStream is = toSignDocument.openStream(); PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 			if (!reader.isOpenedWithFullPermissions()) {
 				throw new ProtectedDocumentException("Protected document");
-			} else if (reader.isEncrypted()) {
-				throw new EncryptedDocumentException("Encrypted document");
+			} 
+			else if (reader.isEncrypted()) {
+				throw new ProtectedDocumentException("Encrypted document");
 			}
 		} catch (BadPasswordException e) {
-			throw new EncryptedDocumentException("Encrypted document");
+			throw new InvalidPasswordException("Encrypted document");
 		} catch (DSSException e) {
 			throw e;
 		} catch (Exception e) {
@@ -122,7 +121,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
 		
-		PdfReader reader = new PdfReader(pdfData);
+		PdfReader reader = new PdfReader(pdfData, getPasswordBinary(parameters.getPasswordProtection()));
 		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
 		stp.setIncludeFileID(true);
 		stp.setOverrideFileId(generateFileId(parameters));
@@ -245,7 +244,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 		
-		checkDocumentPermissions(toSignDocument);
+		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
 
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
@@ -263,7 +262,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
 
-		checkDocumentPermissions(toSignDocument);
+		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
 
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
@@ -293,10 +292,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is)) {
+				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -385,19 +384,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(DSSDocument document) {
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
 		try (InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, getPasswordBinary(passwordProtection))) {
-			List<String> result = new ArrayList<>();
+				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 			AcroFields acroFields = reader.getAcroFields();
-			List<String> names = acroFields.getSignedFieldNames();
-			for (String name : names) {
-				PdfDictionary dictionary = acroFields.getSignatureDictionary(name);
-				if (dictionary == null) {
-					result.add(name);
-				}
-			}
-			return result;
+			return acroFields.getFieldNamesWithBlankSignatures();
 		} catch (BadPasswordException e) {
 			throw new InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
@@ -406,13 +397,13 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	@Override
-	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
 
-		checkDocumentPermissions(document);
+		checkDocumentPermissions(document, pwd);
 		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is)) {
+				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 

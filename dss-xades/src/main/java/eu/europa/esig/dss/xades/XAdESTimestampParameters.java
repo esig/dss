@@ -20,24 +20,14 @@
  */
 package eu.europa.esig.dss.xades;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
 public class XAdESTimestampParameters extends TimestampParameters {
 
-	/**
-	 * This is the default canonicalization method for XMLDSIG used for timestamps. Another complication arises because
-	 * of the way that the default canonicalization algorithm
-	 * handles namespace declarations; frequently a signed XML document needs to be embedded in another document; in
-	 * this case the original canonicalization algorithm will not
-	 * yield the same result as if the document is treated alone. For this reason, the so-called Exclusive
-	 * Canonicalization, which serializes XML namespace declarations
-	 * independently of the surrounding XML, was created.
-	 */
-	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+	private String canonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
 	
 	public XAdESTimestampParameters() {
 	}
@@ -56,6 +46,9 @@ public class XAdESTimestampParameters extends TimestampParameters {
 	}
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
+			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");
+		}
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 

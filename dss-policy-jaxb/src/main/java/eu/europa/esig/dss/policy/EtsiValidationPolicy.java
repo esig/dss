@@ -713,10 +713,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
+	public LevelConstraint getBestSignatureTimeBeforeExpirationDateOfSigningCertificateConstraint() {
 		TimestampConstraints timestamp = policy.getTimestamp();
 		if (timestamp != null) {
-			return timestamp.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificate();
+			return timestamp.getBestSignatureTimeBeforeExpirationDateOfSigningCertificate();
 		}
 		return null;
 	}
@@ -929,6 +929,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getManifestFilePresent();
+		}
+		return null;
+	}
+	
+	@Override
+	public LevelConstraint getSignedFilesPresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getSignedFilesPresent();
 		}
 		return null;
 	}

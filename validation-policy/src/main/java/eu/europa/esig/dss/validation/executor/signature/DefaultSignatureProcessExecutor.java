@@ -41,6 +41,7 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 
 	protected ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 	protected boolean enableEtsiValidationReport = true;
+	protected boolean includeSemantics = false;
 
 	@Override
 	public void setValidationLevel(ValidationLevel validationLevel) {
@@ -51,7 +52,12 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
 		this.enableEtsiValidationReport = enableEtsiValidationReport;
 	}
-	
+
+	@Override
+	public void setIncludeSemantics(boolean includeSemantics) {
+		this.includeSemantics = includeSemantics;
+	}
+
 	@Override
 	public Reports execute() {
 		assertConfigurationValid();
@@ -63,21 +69,23 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 	protected DiagnosticData getDiagnosticData() {
 		return new DiagnosticData(jaxbDiagnosticData);
 	}
-	
+
 	protected Reports buildReports(final DiagnosticData diagnosticData) {
-		
-		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(getI18nProvider(), currentTime, policy, validationLevel, diagnosticData);
+
+		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(getI18nProvider(), currentTime, policy,
+				validationLevel, diagnosticData);
 		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
 		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);
 
-		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
+		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(getI18nProvider(), currentTime, policy,
+				diagnosticData, detailedReportWrapper, includeSemantics);
 		XmlSimpleReport simpleReport = simpleReportBuilder.build();
 
 		ValidationReportType validationReport = null;
 		if (enableEtsiValidationReport) {
-			ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime, diagnosticData,
-					detailedReportWrapper);
+			ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime,
+					diagnosticData, detailedReportWrapper);
 			validationReport = etsiValidationReportBuilder.build();
 		}
 

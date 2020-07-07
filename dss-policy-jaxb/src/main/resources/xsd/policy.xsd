@@ -104,6 +104,11 @@
 					<xsd:documentation>Checks if one or more manifest file is present (ASiC-E) or none is present (ASiC-S)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SignedFilesPresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if one or more signed files is present outside META-INF folder (ASiC-E) or only one file is present at root level (ASiC-S)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="AllFilesSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>
@@ -276,9 +281,9 @@
 					<xsd:documentation>Checks if the revocation date is after the best-signature-time</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="BestSignatureTimeBeforeExpirationDateOfSigningCertificate" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the best-signature-time is not before the creation of the signing certificate</xsd:documentation>
+					<xsd:documentation>Checks if the best-signature-time is before the expiration of the signing certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Coherence" type="LevelConstraint" minOccurs="0">

@@ -1,9 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/services/rest/server-signing/sign/certificate/SHA256' -i -X POST \
-    -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
-    -d '{
-  "bytes" : "MYIBJDARBgsqhkiG9w0BCRACDzECBQAwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAwNDE3MTI0MjQ1WjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqGSIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCCRwMc5mPBmFV+4OG6EJ4IRFGZilMfgmPhGZ9VWLfVD2DB3BgsqhkiG9w0BCRACLzFoMGYwZDBiBCAC8+vKAWMnQlO8gJ0nSY3UG7AxbX5rBmlgEV3hVVidnDA+MDSkMjAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0AgYu1hTXu1c="
-}'
-----

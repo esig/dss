@@ -104,7 +104,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 				return revocationToken;
 			}
 		} catch (DSSException e) {
-			LOG.error("OCSP DSS Exception: " + e.getMessage(), e);
+			LOG.error("OCSP DSS Exception: {}", e.getMessage(), e);
 			return null;
 		}
 		if (LOG.isDebugEnabled()) {
@@ -130,7 +130,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 				return revocationToken;
 			}
 		} catch (DSSException e) {
-			LOG.error("CRL DSS Exception: " + e.getMessage(), e);
+			LOG.error("CRL DSS Exception: {}", e.getMessage(), e);
 			return null;
 		}
 		if (LOG.isDebugEnabled()) {

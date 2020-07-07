@@ -134,14 +134,17 @@ public class DTOTest {
 		Map<String, List<String>> tspNames = trustServiceProvider.getNames();
 		assertTrue(Utils.isMapNotEmpty(tspNames));
 		assertTrue(Utils.isCollectionNotEmpty(tspNames.get("CZ")));
-		assertThrows(UnsupportedOperationException.class, () -> tspNames.get("CZ").add("name"));
-		assertThrows(UnsupportedOperationException.class, () -> tspNames.put("LU", Arrays.asList("Lux")));
+		List<String> czTspNames = tspNames.get("CZ");
+		assertThrows(UnsupportedOperationException.class, () -> czTspNames.add("name"));
+		List<String> list = Arrays.asList("Lux");
+		assertThrows(UnsupportedOperationException.class, () -> tspNames.put("LU", list));
 		
 		Map<String, List<String>> tspTradeNames = trustServiceProvider.getTradeNames();
 		assertTrue(Utils.isMapNotEmpty(tspTradeNames));
 		assertTrue(Utils.isCollectionNotEmpty(tspTradeNames.get("CZ")));
-		assertThrows(UnsupportedOperationException.class, () -> tspTradeNames.get("CZ").add("name"));
-		assertThrows(UnsupportedOperationException.class, () -> tspTradeNames.put("LU", Arrays.asList("Lux")));
+		List<String> czTspTradeNames = tspTradeNames.get("CZ");
+		assertThrows(UnsupportedOperationException.class, () -> czTspTradeNames.add("name"));
+		assertThrows(UnsupportedOperationException.class, () -> tspTradeNames.put("LU", list));
 		
 		List<String> tspRegistrationIdentifiers = trustServiceProvider.getRegistrationIdentifiers();
 		assertTrue(Utils.isCollectionNotEmpty(tspRegistrationIdentifiers));
@@ -157,7 +160,8 @@ public class DTOTest {
 		
 		List<TrustService> services = trustServiceProvider.getServices();
 		assertTrue(Utils.isCollectionNotEmpty(services));
-		assertThrows(UnsupportedOperationException.class, () -> services.add(new TrustService.TrustServiceBuilder().build()));
+		TrustService emptyTrustService = new TrustService.TrustServiceBuilder().build();
+		assertThrows(UnsupportedOperationException.class, () -> services.add(emptyTrustService));
 		assertEquals(1, services.size());
 		
 		TrustService trustService = services.get(0);
@@ -181,12 +185,15 @@ public class DTOTest {
 		Map<String, List<String>> latestStatusNames = latest.getNames();
 		assertTrue(Utils.isMapNotEmpty(latestStatusNames));
 		assertTrue(Utils.isCollectionNotEmpty(latestStatusNames.get("CZ")));
-		assertThrows(UnsupportedOperationException.class, () -> latestStatusNames.get("CZ").add("name"));
-		assertThrows(UnsupportedOperationException.class, () -> latestStatusNames.put("LU", Arrays.asList("Lux")));
+		List<String> czLatestStatusNames = latestStatusNames.get("CZ");
+		assertThrows(UnsupportedOperationException.class, () -> czLatestStatusNames.add("name"));
+		assertThrows(UnsupportedOperationException.class, () -> latestStatusNames.put("LU", list));
 		
 		List<ConditionForQualifiers> latestConditionsForQualifiers = latest.getConditionsForQualifiers();
 		assertTrue(Utils.isCollectionNotEmpty(latestConditionsForQualifiers));
-		assertThrows(UnsupportedOperationException.class, () -> latestConditionsForQualifiers.add(getConditionForQualifiers()));
+		ConditionForQualifiers conditionForQualifiers = getConditionForQualifiers();
+		assertThrows(UnsupportedOperationException.class,
+				() -> latestConditionsForQualifiers.add(conditionForQualifiers));
 		
 		List<String> latestAdditionalServiceInfoUris = latest.getAdditionalServiceInfoUris();
 		assertTrue(Utils.isCollectionNotEmpty(latestAdditionalServiceInfoUris));

@@ -79,8 +79,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 		InMemoryDocument dssDocument = new InMemoryDocument(byteArray);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		SignedDocumentValidator validator = getValidator(dssDocument);
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 
@@ -104,10 +103,10 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertNotNull(pdfSignatureRevision.getSigningDate());
 
 		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
-		List<String> originalSignatureFields = service.getAvailableSignatureFields(getDocumentToSign());
+		List<String> originalSignatureFields = service.getAvailableSignatureFields(getDocumentToSign(), getPasswordProtection());
 		int originalSignatureFieldsNumber = originalSignatureFields.size();
 
-		List<String> availableSignatureFields = service.getAvailableSignatureFields(dssDocument);
+		List<String> availableSignatureFields = service.getAvailableSignatureFields(dssDocument, getPasswordProtection());
 		int availableSignatureFieldsNumber = availableSignatureFields.size();
 
 		if ((originalSignatureFieldsNumber > 0)) {
@@ -121,6 +120,10 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		}
 
 		checkSignedAttributesOrder(padesSig);
+	}
+	
+	protected String getPasswordProtection() {
+		return getSignatureParameters().getPasswordProtection();
 	}
 
 	@Override

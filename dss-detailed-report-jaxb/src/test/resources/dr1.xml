@@ -111,7 +111,7 @@
                 <TimestampId>T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2</TimestampId>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
-        <ValidationSignatureQualification Id="S-3933842D6213C62CF3BE126A56FCF3A9EFFC24D93FEA04B66D6DA5BDEC550703" SignatureQualification="QESig" Title="Signature Qualification">
+        <ValidationSignatureQualification SignatureQualification="QESig" Title="Signature Qualification">
             <Constraint>
                 <Name NameId="QUAL_IS_ADES">Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?</Name>
                 <Status>OK</Status>

@@ -46,7 +46,7 @@
                 <Time>2020-02-10T13:14:22</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
-        <ValidationSignatureQualification Id="S-B076879EC80E7D31F8B4ABECDFB4B646AF9AF30843BA2C44B4261243CC8D4542" SignatureQualification="Not AdES but QC with QSCD" Title="Signature Qualification">
+        <ValidationSignatureQualification SignatureQualification="Not AdES but QC with QSCD" Title="Signature Qualification">
             <Constraint>
                 <Name NameId="QUAL_IS_ADES">Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?</Name>
                 <Status>WARNING</Status>

@@ -692,7 +692,7 @@ public class DiagnosticDataBuilder {
 	private XmlContainerInfo getXmlContainerInfo() {
 		if (containerInfo != null) {
 			XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
-			xmlContainerInfo.setContainerType(containerInfo.getContainerType().getReadable());
+			xmlContainerInfo.setContainerType(containerInfo.getContainerType());
 			String zipComment = containerInfo.getZipComment();
 			if (Utils.isStringNotBlank(zipComment)) {
 				xmlContainerInfo.setZipComment(zipComment);
@@ -2007,6 +2007,7 @@ public class DiagnosticDataBuilder {
 		final PublicKey publicKey = certToken.getPublicKey();
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
+		xmlCert.setEntityKey(certToken.getEntityKey().asXmlId());
 
 		xmlCert.setKeyUsageBits(certToken.getKeyUsageBits());
 		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));

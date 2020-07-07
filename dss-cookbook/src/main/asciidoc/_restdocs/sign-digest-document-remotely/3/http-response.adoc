@@ -1,0 +1,22 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Date: Wed, 24 Jun 2020 13:48:32 GMT
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Server: ESIG-DSS
+Content-Type: application/json
+Transfer-Encoding: chunked
+Keep-Alive: timeout=20
+Connection: keep-alive
+Content-Length: 395
+
+{
+  "algorithm" : "RSA_SHA256",
+  "value" : "XykhVVHMLJawKDTGgy/2kZDD1+ax1sDczmrrsdAEE8yDNPb/l1M4BodZ1WbIuHHJQkJVP8VAohmBRDBuJf/Jnb7rxoWpbkZoncoFIoedCOx7b699xRqEDbFCCfumyRXP7QIiNPHcwfL2Hhkf/lBYWjzxjUlN6/QOgio0kVBysMT66J2uGhDn/AzibjpCSNBK04h9mh1rJhm2v55FnXgCgd6kHVa5DefYbHvlEwhO2JTOhoKfFNpLrssDoP6szjxD1PCg1SQGaTxksklkkWhS/e2R308mIxoiyiuX8s+kxKUc0NrMQjcfawYTndsQjjiINGD/MaOJa2bqgCo9aSkarA=="
+}
+----

@@ -36,7 +36,7 @@ import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ValidationProcessUtils {
 
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
 	/*
 	 * RFC 2560 : 4.2.2.2.1  Revocation Checking of an Authorized Responder
@@ -45,11 +45,11 @@ public class ValidationProcessUtils {
 	 * lifetime of the responder's certificate. The CA does so by including
 	 * the extension id-pkix-ocsp-nocheck.
 	 */
-	public static boolean isRevocationNoNeedCheck(CertificateWrapper certificate, Date controlTime) {
+	public static boolean isRevocationCheckRequired(CertificateWrapper certificate, Date controlTime) {
 		if (certificate.isIdPkixOcspNoCheck()) {
-			return controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0;
+			return !(controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0);
 		}
-		return false;
+		return true;
 	}
 	
 	/**

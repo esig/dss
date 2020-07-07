@@ -24,6 +24,7 @@ import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
@@ -45,12 +46,15 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 
 /**
  * This class holds the CAdES-A signature profiles; it supports the later, over time _extension_ of a signature with
@@ -93,31 +97,38 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
 			final CAdESSignatureParameters parameters) throws DSSException {
 
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		try {
-			// add missing validation data to the previous ArchiveTimestamp
-			unsignedAttributes = addValidationData(unsignedAttributes, parameters);
+			// add missing validation data to the previous (last) ArchiveTimestamp
+			CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
+			ValidationDataForInclusionBuilder validationDataForInclusionBuilder = cadesProfileLT.getValidationDataForInclusionBuilder(cadesSignature)
+					.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
+					.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
+					.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
+			ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
+			unsignedAttributes = addValidationData(unsignedAttributes, validationDataForInclusion, parameters.getDetachedContents());
 			signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 		} catch (IOException | CMSException | TSPException e) {
 			LOG.warn("Validation data to a timestamp was not added due the error : {}", e.getMessage());
 		}
 
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-		cadesSignature.setDetachedContents(parameters.getDetachedContents());
+		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		
 		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
 		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 	
-	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final CAdESSignatureParameters parameters) throws IOException, CMSException, TSPException {
+	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final ValidationDataForInclusion validationDataForInclusion,
+			final List<DSSDocument> detachedContents) throws IOException, CMSException, TSPException {
 		TimeStampToken timestampTokenToExtend = getLastArchiveTimestamp(unsignedAttributes);
 		if (timestampTokenToExtend != null) {
 			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
-			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.postExtendCMSSignedData(
-					timestampCMSSignedData, getFirstSigner(timestampCMSSignedData), parameters.getDetachedContents());
+			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.extendWithValidationData(
+					timestampCMSSignedData, validationDataForInclusion, detachedContents);
 					
 			unsignedAttributes = replaceTimeStampAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
 		}
@@ -160,7 +171,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 						attibuteToAdd = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
 					}
 				} catch (Exception e) {
-					LOG.warn("Unable to build a CMSSignedData object from an unsigned attribute. Reason : {}", e);
+					LOG.warn("Unable to build a CMSSignedData object from an unsigned attribute. Reason : {}", e.getMessage(), e);
 					// we free to continue with the original object, 
 					// because it would not be possible to extend the attribute anyway
 				}

@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pdf.openpdf;
 
 import java.io.IOException;
@@ -20,7 +40,7 @@ import com.lowagie.text.pdf.PdfReader;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.InvalidPasswordException;
+import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -71,7 +91,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @param binaries a byte array of a PDF to read
 	 * @param passwordProtection binaries of a password to open a protected document
 	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
 	public ITextDocumentReader(byte[] binaries, byte[] passwordProtection) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 

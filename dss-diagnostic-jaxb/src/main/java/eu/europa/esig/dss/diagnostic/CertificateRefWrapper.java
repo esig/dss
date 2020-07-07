@@ -1,6 +1,24 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.diagnostic;
-
-import java.util.Arrays;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -110,99 +128,6 @@ public class CertificateRefWrapper {
 		} else {
 			return "CertificateRefWrapper certificateRef=" + certificateRef;
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((certificateRef.getOrigin() == null) ? 0 : certificateRef.getOrigin().hashCode());
-		result = prime * result + ((certificateRef.getIssuerSerial() == null) ? 0 : Arrays.hashCode(certificateRef.getIssuerSerial().getValue()));
-		result = prime * result + ((certificateRef.getSerialInfo() == null || certificateRef.getSerialInfo().getIssuerName() == null) ?
-				0 : certificateRef.getSerialInfo().getIssuerName().hashCode());
-		result = prime * result + ((certificateRef.getSerialInfo() == null || certificateRef.getSerialInfo().getSki() == null) ?
-				0 : Arrays.hashCode(certificateRef.getSerialInfo().getSki()));
-		result = prime * result + ((certificateRef.getDigestAlgoAndValue() == null || certificateRef.getDigestAlgoAndValue().getDigestMethod() == null) ?
-				0 : certificateRef.getDigestAlgoAndValue().getDigestMethod().hashCode());
-		result = prime * result + ((certificateRef.getDigestAlgoAndValue() == null || certificateRef.getDigestAlgoAndValue().getDigestValue() == null) ?
-				0 : Arrays.hashCode(certificateRef.getDigestAlgoAndValue().getDigestValue()));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CertificateRefWrapper other = (CertificateRefWrapper) obj;
-		if (certificateRef == null) {
-			if (other.certificateRef != null) {
-				return false;
-			}
-		} else if (other.certificateRef == null) {
-			return false;
-		}
-		if (certificateRef.getOrigin() == null) {
-			if (other.certificateRef.getOrigin() != null) {
-				return false;
-			}
-		} else if (!certificateRef.getOrigin().equals(other.certificateRef.getOrigin())) {
-			return false;
-		}
-		if (certificateRef.getIssuerSerial() == null) {
-			if (other.certificateRef.getIssuerSerial() != null) {
-				return false;
-			}
-		} else if (!Arrays.equals(certificateRef.getIssuerSerial().getValue(), other.certificateRef.getIssuerSerial().getValue())) {
-			return false;
-		}
-		if (certificateRef.getSerialInfo() == null) {
-			if (other.certificateRef.getSerialInfo() != null) {
-				return false;
-			}
-		} else {
-			if (certificateRef.getSerialInfo().getIssuerName() == null) {
-				if (other.certificateRef.getSerialInfo().getIssuerName() != null) {
-					return false;
-				}
-			} else if (!certificateRef.getSerialInfo().getIssuerName().equals(other.certificateRef.getSerialInfo().getIssuerName())) {
-				return false;
-			}
-			if (certificateRef.getSerialInfo().getSki() == null) {
-				if (other.certificateRef.getSerialInfo().getSki() != null) {
-					return false;
-				}
-			} else if (!Arrays.equals(certificateRef.getSerialInfo().getSki(), other.certificateRef.getSerialInfo().getSki())) {
-				return false;
-			}
-		}
-		if (certificateRef.getDigestAlgoAndValue() == null) {
-			if (other.certificateRef.getDigestAlgoAndValue() != null) {
-				return false;
-			}
-		} else {
-			if (certificateRef.getDigestAlgoAndValue().getDigestMethod() == null) {
-				if (other.certificateRef.getDigestAlgoAndValue().getDigestMethod() != null) {
-					return false;
-				}
-			} else if (!certificateRef.getDigestAlgoAndValue().getDigestMethod().equals(other.certificateRef.getDigestAlgoAndValue().getDigestMethod())) {
-				return false;
-			}
-			if (certificateRef.getDigestAlgoAndValue().getDigestValue() == null) {
-				if (other.certificateRef.getDigestAlgoAndValue().getDigestValue() != null) {
-					return false;
-				}
-			} else if (!Arrays.equals(certificateRef.getDigestAlgoAndValue().getDigestValue(), other.certificateRef.getDigestAlgoAndValue().getDigestValue())) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 }

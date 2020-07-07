@@ -74,17 +74,6 @@ public class CertificateToken extends Token {
 	private List<KeyUsageBit> keyUsageBits;
 
 	/**
-	 * This method returns an instance of {@link eu.europa.esig.dss.model.x509.CertificateToken}.
-	 *
-	 * @param cert
-	 *            <code>X509Certificate</code>
-	 * @return the wrapper for the certificate
-	 */
-	static CertificateToken newInstance(X509Certificate cert) {
-		return new CertificateToken(cert);
-	}
-
-	/**
 	 * Creates a CertificateToken wrapping the provided X509Certificate.
 	 *
 	 * @param x509Certificate

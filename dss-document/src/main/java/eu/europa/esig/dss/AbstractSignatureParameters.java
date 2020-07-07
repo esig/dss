@@ -170,13 +170,6 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	}
 
 	/**
-	 * Clears the certificate chain
-	 */
-	public void clearCertificateChain() {
-		certificateChain.clear();
-	}
-
-	/**
 	 * Set the certificate chain
 	 *
 	 * @param certificateChain the {@code List} of {@code CertificateToken}s

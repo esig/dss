@@ -64,16 +64,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected Element unsignedSignaturePropertiesDom;
 
-	/**
-	 * This field represents the signed properties
-	 */
-	protected Element signedPropertiesDom;
-
-	/**
-	 * This field contains signed data object properties
-	 */
-	protected Element signedDataObjectPropertiesDom;
-
 	protected ExtensionBuilder(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
@@ -136,9 +126,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	protected void ensureSignedDataObjectProperties() {
 		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
 		final int length = signedDataObjectPropertiesNodeList.getLength();
-		if (length == 1) {
-			signedDataObjectPropertiesDom = (Element) signedDataObjectPropertiesNodeList.item(0);
-		} else if (length > 1) {
+		if (length > 1) {
 			throw new DSSException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
 		}
 	}

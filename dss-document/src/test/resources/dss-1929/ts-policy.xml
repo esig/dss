@@ -12,6 +12,7 @@
 			<Id>application/vnd.etsi.asic-e+zip</Id>
 		</AcceptableMimeTypeFileContent>
 		<ManifestFilePresent Level="FAIL"/>
+		<SignedFilesPresent Level="FAIL"/>
 		<AllFilesSigned Level="WARN"/>
 	</ContainerConstraints>
 	<SignatureConstraints>
@@ -124,7 +125,7 @@
 	<Timestamp>
 		<TimestampDelay Unit="DAYS" Value="0" Level="IGNORE"/>
 		<RevocationTimeAgainstBestSignatureTime Level="FAIL"/>
-		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL"/>
+		<BestSignatureTimeBeforeExpirationDateOfSigningCertificate Level="FAIL"/>
 		<Coherence Level="WARN"/>
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL"/>
