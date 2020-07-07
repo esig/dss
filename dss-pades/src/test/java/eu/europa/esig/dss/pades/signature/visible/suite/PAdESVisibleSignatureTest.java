@@ -31,11 +31,18 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
+import eu.europa.esig.dss.enumerations.SignerTextPosition;
+import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -131,6 +138,35 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate();
+	}
+	
+	@Test
+	public void dss2090Test() throws IOException {
+		String signature = "Some long signature text with\nmultiple\nnewlines in them\nfor testing";
+
+	    SignatureImageParameters imageParams = new SignatureImageParameters();
+	    imageParams.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.LEFT);
+	    imageParams.setAlignmentVertical(VisualSignatureAlignmentVertical.TOP);
+	    imageParams.setRotation(VisualSignatureRotation.AUTOMATIC);
+	    imageParams.setxAxis(71);
+	    imageParams.setyAxis(71);
+
+	    SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+	    DSSFileFont fileFont = DSSFileFont.initializeDefault();
+	    fileFont.setSize(10);
+	    textParameters.setFont(fileFont);
+	    textParameters.setTextColor(Color.BLACK);
+	    textParameters.setBackgroundColor(Color.WHITE);
+	    textParameters.setPadding(0f);
+	    textParameters.setSignerTextVerticalAlignment(SignerTextVerticalAlignment.TOP);
+	    textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.LEFT);
+	    textParameters.setSignerTextPosition(SignerTextPosition.TOP);
+	    textParameters.setText(signature);
+	    imageParams.setTextParameters(textParameters);
+	    
+	    signatureParameters.setImageParameters(imageParams);
 
 		signAndValidate();
 	}

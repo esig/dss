@@ -148,13 +148,17 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		
 		layer.beginText();
 		
-		float strHeight = iTextFontMetrics.getHeight(lines[0], size);
-		float y = boundingRectangle.getHeight() - textParameters.getPadding();
+		// required with iText in order to not cut the bottom part of characters
+		float descentPoint = iTextFontMetrics.getDescentPoint(lines[0], size);
+		
+		// compute initial position
+		float y = boundingRectangle.getHeight() - textParameters.getPadding() - descentPoint;
 		float x = textParameters.getPadding();
 		
 		layer.moveText(x, y);
 		layer.newlineText();
-
+		
+		float strHeight = iTextFontMetrics.getHeight(lines[0], size);
 		y = -strHeight;
 
         float previousOffset = 0;
