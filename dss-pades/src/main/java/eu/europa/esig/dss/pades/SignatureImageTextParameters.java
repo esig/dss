@@ -218,14 +218,5 @@ public class SignatureImageTextParameters implements Serializable {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
-	/**
-	 * Sets a size for a text.
-	 * Note: overrides values defined in {@code setFont(DSSFont dssFont)} method!
-	 * @param size {@code int} size
-	 */
-	public void setSize(int size) {
-		dssFont.setSize(size);
-	}
 
 }

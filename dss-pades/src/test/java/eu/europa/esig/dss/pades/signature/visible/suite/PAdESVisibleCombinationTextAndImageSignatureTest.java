@@ -118,8 +118,9 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactory
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
-		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
-		textParameters.setSize(15);
+		DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf"));
+		font.setSize(15);
+		textParameters.setFont(font);
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);

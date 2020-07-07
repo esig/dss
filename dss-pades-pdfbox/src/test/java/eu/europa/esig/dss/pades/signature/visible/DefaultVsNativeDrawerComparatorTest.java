@@ -348,8 +348,9 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
-		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
-		textParameters.setSize(15);
+		DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf"));
+		font.setSize(15);
+		textParameters.setFont(font);
 		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
@@ -507,8 +508,9 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
 		textParameters.setBackgroundColor(new Color(1, 0, 0, 0.25f));
 		textParameters.setTextColor(Color.MAGENTA);
-		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansExtraBold.ttf")));
-		textParameters.setSize(8);
+		DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansExtraBold.ttf"));
+		font.setSize(8);
+		textParameters.setFont(font);
 		imageParameters.setTextParameters(textParameters);
 		imageParameters.setBackgroundColor(new Color(0, 0, 1, 0.25f));
 		imageParameters.setxAxis(20);

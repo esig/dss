@@ -375,8 +375,9 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
 		textParameters.setBackgroundColor(TRANSPARENT);
 		textParameters.setTextColor(Color.MAGENTA);
-		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansExtraBold.ttf")));
-		textParameters.setSize(8);
+		DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansExtraBold.ttf"));
+		font.setSize(8);
+		textParameters.setFont(font);
 		imageParameters.setTextParameters(textParameters);
 		imageParameters.setBackgroundColor(TRANSPARENT);
 		imageParameters.setxAxis(10);
