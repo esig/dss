@@ -230,6 +230,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		RemoteSignatureImageTextParameters textParameters = new RemoteSignatureImageTextParameters();
 		textParameters.setText("Signature");
+		textParameters.setSize(14);
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
 		textParameters.setTextColor(ColorConverter.toRemoteColor(Color.BLUE));
