@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.jose4j.base64url.Base64Url;
+import org.jose4j.json.internal.json_simple.JSONArray;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
@@ -49,13 +50,16 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 		// certificate chain
 		extractX5C();
+
+//		Map<String, Object> etsiU = JAdESUtils.getEtsiU(jws);
+//		extractEtsiU(etsiU);
 	}
 
 	private void extractX5T() {
 		String base64UrlSHA1Certificate = jws.getHeaders()
 				.getStringHeaderValue(HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA1Certificate)) {
-			Digest digest = new Digest(DigestAlgorithm.SHA1, Base64Url.decode(base64UrlSHA1Certificate));
+			Digest digest = new Digest(DigestAlgorithm.SHA1, JAdESUtils.fromBase64Url(base64UrlSHA1Certificate));
 			LOG.warn("Found {} with value {} but not supported by the JAdES standard",
 					HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, digest);
 		}
@@ -67,7 +71,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		if (Utils.isStringNotEmpty(base64UrlSHA256Certificate)) {
 			CertificateRef certRef = new CertificateRef();
 			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Base64Url.decode(base64UrlSHA256Certificate)));
+			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, JAdESUtils.fromBase64Url(base64UrlSHA256Certificate)));
 			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 		}
 	}
@@ -107,13 +111,23 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	// ------------- Not supported
+	private void extractEtsiU(Map<String, Object> etsiU) {
+		if (Utils.isMapEmpty(etsiU)) {
+			return;
+		}
 
-	@Override
-	public List<CertificateToken> getCertificateValues() {
-		// Not supported
-		return Collections.emptyList();
+		JSONArray xVals = (JSONArray) etsiU.get(JAdESHeaderParameterNames.X_VALS);
+		if (Utils.isCollectionNotEmpty(xVals)) {
+			for (Object xVal : xVals) {
+				if (xVal instanceof JSONObject) {
+					JSONObject xValObj = (JSONObject) xVal;
+//					xValObj.
+				}
+			}
+		}
 	}
+
+	// ------------- Not supported
 
 	@Override
 	public List<CertificateToken> getAttrAuthoritiesCertValues() {

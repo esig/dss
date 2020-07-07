@@ -211,7 +211,12 @@ public final class JAdESHeaderParameterNames {
 	 * Timestamp tokens array
 	 */
 	public static final String TST_TOKENS = "tsTokens";
-	
+
+	/**
+	 * Encoding (eg : DER,...)
+	 */
+	public static final String ENCODING = "encoding";
+
 	/**
 	 * Value (i.e. Timestamp base64 value)
 	 */

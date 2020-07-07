@@ -2,7 +2,6 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -46,13 +46,13 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		return new JAdESSignedProperties(signature.getJws().getHeaders());
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	@SuppressWarnings("unchecked")
 	protected SignatureProperties<JAdESAttribute> getUnsignedSignatureProperties() {
-		Map<String, Object> etsiU = new HashMap<>();
+		List etsiU = new ArrayList<>();
 		Map<String, Object> unprotected = signature.getJws().getUnprotected();
 		if (Utils.isMapNotEmpty(unprotected)) {
-			etsiU = (Map<String, Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+			etsiU = (List) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 		}
 		return new JAdESUnsignedProperties(etsiU);
 	}
@@ -222,12 +222,16 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		List<Map<String, Object>> tokens = (List<Map<String, Object>>) array.get(JAdESHeaderParameterNames.TST_TOKENS);
 
 		for (Map<String, Object> jsonToken : tokens) {
-			String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
-			try {
-				result.add(new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references,
-						TimestampLocation.JAdES));
-			} catch (Exception e) {
-				LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+			String encoding = (String) jsonToken.get(JAdESHeaderParameterNames.ENCODING);
+			if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+				String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
+				try {
+					result.add(new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES));
+				} catch (Exception e) {
+					LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+				}
+			} else {
+				LOG.warn("Unsupported encoding {}", encoding);
 			}
 		}
 		return result;

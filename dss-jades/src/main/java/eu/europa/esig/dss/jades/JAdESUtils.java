@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -349,6 +351,21 @@ public class JAdESUtils {
 			throw new DSSException(String.format("Cannot read the document. Reason : %s", e.getMessage()), e);
 		}
 		return false;
+	}
+
+	/**
+	 * This method returns the etsiU container with the unsigned properties or an
+	 * empty List
+	 * 
+	 * @param jws the signature
+	 * @return etsiU content or an empty List
+	 */
+	public static List getEtsiU(JWS jws) {
+		Map<String, Object> unprotected = jws.getUnprotected();
+		if (unprotected == null) {
+			return Collections.emptyList();
+		}
+		return (List) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 	}
 
 }

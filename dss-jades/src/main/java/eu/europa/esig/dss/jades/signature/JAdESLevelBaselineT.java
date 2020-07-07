@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -77,31 +77,34 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 		return new InMemoryDocument(generator.generate());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 
 		assertExtendSignatureToTPossible(jadesSignature, params);
 
-		Map<String, Object> unsignedProperties = getUnsignedProperties(jadesSignature);
-
-		Map<String, Object> sigTst = (Map<String, Object>) unsignedProperties
-				.computeIfAbsent(JAdESHeaderParameterNames.SIG_TST, k -> new HashMap<>());
-
-		List<JSONObject> tsTokens = (List<JSONObject>) sigTst.computeIfAbsent(JAdESHeaderParameterNames.TST_TOKENS,
-				k -> new ArrayList<>());
+		List unsignedProperties = getUnsignedProperties(jadesSignature);
 
 		JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
 		byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, jadesSignature.getSignatureValue());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
 
+		JSONArray tsTokens = new JSONArray();
+		
 		JSONObject tst = new JSONObject();
 		tst.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timeStampResponse.getBytes()));
 		tsTokens.add(tst);
+		
+		JSONObject sigTst = new JSONObject();
+		sigTst.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokens);
+
+		JSONObject sigTstItem = new JSONObject();
+		sigTstItem.put(JAdESHeaderParameterNames.SIG_TST, sigTst);
+		unsignedProperties.add(sigTstItem);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Map<String, Object> getUnsignedProperties(JAdESSignature jadesSignature) {
+	@SuppressWarnings("rawtypes")
+	protected List getUnsignedProperties(JAdESSignature jadesSignature) {
 		JWS jws = jadesSignature.getJws();
 		Map<String, Object> unprotected = jws.getUnprotected();
 		if (unprotected == null) {
@@ -109,8 +112,7 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 			jws.setUnprotected(unprotected);
 		}
 
-		return (Map<String, Object>) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U,
-				k -> new HashMap<>());
+		return (List) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U, k -> new JSONArray());
 	}
 
 	/**

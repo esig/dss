@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.Map;
 import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -52,7 +51,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 		assertExtendSignatureToLTPossible(jadesSignature, params);
 
-		Map<String, Object> unsignedProperties = getUnsignedProperties(jadesSignature);
+//		Map<String, Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
 
 	}
@@ -62,7 +61,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	 */
 	private void assertExtendSignatureToLTPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.JAdES_BASELINE_LT.equals(signatureLevel) && params.hasLTAProfile()) {
+		if (SignatureLevel.JAdES_BASELINE_LT.equals(signatureLevel) && jadesSignature.hasLTAProfile()) {
 			final String exceptionMessage = "Cannot extend the signature. The signedData is already extended with [%s]!";
 			throw new DSSException(String.format(exceptionMessage, "JAdES LTA"));
 		} else if (jadesSignature.areAllSelfSignedCertificates()) {
