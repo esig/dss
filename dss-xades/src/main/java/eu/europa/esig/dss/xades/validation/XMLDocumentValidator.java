@@ -33,7 +33,6 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -51,9 +50,6 @@ import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
  *
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
-
-	private static final byte[] xmlPreamble = new byte[] { '<' };
-	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
 
 	/**
 	 * This variable contains the list of {@code XAdESPaths} adapted to the specific
@@ -97,7 +93,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		return DSSUtils.compareFirstBytes(dssDocument, xmlPreamble) || DSSUtils.compareFirstBytes(dssDocument, xmlWithBomPreample);
+		return DomUtils.startsWithXmlPreamble(dssDocument);
 	}
 
 	/**

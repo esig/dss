@@ -85,6 +85,9 @@ public final class DomUtils {
 	private static final String XP_OPEN = "xpointer(";
 	private static final String XNS_OPEN = "xmlns(";
 
+	private static final byte[] xmlPreamble = new byte[] { '<' };
+	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
+
 	private DomUtils() {
 	}
 
@@ -192,6 +195,19 @@ public final class DomUtils {
 		}
 		transformer.setErrorListener(new DSSXmlErrorListener());
 		return transformer;
+	}
+	
+	/**
+	 * Checks if the given document starts with an XML Preamble {@code '<'}
+	 * Processes values with or without BOM-encoding
+	 * NOTE: does not check XML-conformity of the whole file
+	 *       call isDOM(bytes) for a deep check
+	 * 
+	 * @param document {@link DSSDocument} to verify
+	 * @return TRUE if the provided document starts from xmlPreamble, FALSE otherwise
+	 */
+	public static boolean startsWithXmlPreamble(DSSDocument document) {
+		return DSSUtils.compareFirstBytes(document, xmlPreamble) || DSSUtils.compareFirstBytes(document, xmlWithBomPreample);
 	}
 
 	/**

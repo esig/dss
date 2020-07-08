@@ -392,6 +392,11 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	public String getCurrentSignaturePolicyImplied() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_IMPLIED);
 	}
+	
+	@Override
+	public String getCurrentSignaturePolicyTransforms() {
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
+	}
 
 	@Override
 	public String getCurrentIssuerSerialIssuerNamePath() {

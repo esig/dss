@@ -31,7 +31,7 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
 /**
  * This class covers the case of non ASN1 signature policies (eg : PDF file and its digest)
  */
-public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyValidator implements SignaturePolicyValidator {
+public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
 	@Override
 	public boolean canValidate() {

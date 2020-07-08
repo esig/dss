@@ -427,6 +427,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (docRefsNode != null) {
 					signaturePolicy.setDocumentationReferences(getDocumentationReferences(docRefsNode));
 				}
+				
+				Element transformsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyTransforms());
+				if (transformsNode != null) {
+					signaturePolicy.setTransforms(transformsNode);
+					
+					TransformsDescriptionBuilder transformsDescriptionBuilder = new TransformsDescriptionBuilder(transformsNode);
+					signaturePolicy.setTransformsDescription(transformsDescriptionBuilder.build());
+				}
 
 				signaturePolicy.setUrl(policyUrlString);
 				signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicy(policyIdString, policyUrlString));

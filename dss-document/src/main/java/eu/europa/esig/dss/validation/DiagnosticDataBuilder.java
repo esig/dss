@@ -1616,6 +1616,11 @@ public class DiagnosticDataBuilder {
 		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
 		xmlPolicy.setNotice(signaturePolicy.getNotice());
 		xmlPolicy.setZeroHash(signaturePolicy.isZeroHash());
+		
+		List<String> transformsDescription = signaturePolicy.getTransformsDescription();
+		if (Utils.isCollectionNotEmpty(transformsDescription)) {
+			xmlPolicy.setTransformations(transformsDescription);
+		}
 
 		final Digest digest = signaturePolicy.getDigest();
 		if (digest != null) {

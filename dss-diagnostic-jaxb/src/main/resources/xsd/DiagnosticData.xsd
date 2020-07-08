@@ -207,6 +207,7 @@
 			<xs:element name="ZeroHash" type="xs:boolean" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
+			<xs:element name="Transformations" type="Transformations" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Status" type="xs:boolean" minOccurs="0" />
 			<xs:element name="ProcessingError" type="xs:string" minOccurs="0" />
@@ -425,15 +426,15 @@
 			<xs:element name="Scope" type="ScopeType" />
 			<xs:element name="Name" type="xs:string" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" />
-			<xs:element name="Transformations" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="Transformations" type="Transformations" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="Transformations">
+		<xs:sequence>
+			<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:simpleType name="SignatureFormat" final="restriction">

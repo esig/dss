@@ -183,6 +183,8 @@ public interface XAdESPaths {
 
 	String getCurrentSignaturePolicyImplied();
 
+	String getCurrentSignaturePolicyTransforms();
+
 	String getCurrentInclude();
 
 	String getCurrentQualifyingPropertiesPath();
