@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.Digest;
@@ -51,8 +52,8 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		// certificate chain
 		extractX5C();
 
-//		Map<String, Object> etsiU = JAdESUtils.getEtsiU(jws);
-//		extractEtsiU(etsiU);
+		// unsigned properties
+		extractEtsiU();
 	}
 
 	private void extractX5T() {
@@ -111,29 +112,54 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	private void extractEtsiU(Map<String, Object> etsiU) {
-		if (Utils.isMapEmpty(etsiU)) {
+	private void extractEtsiU() {
+		List<?> etsiU = JAdESUtils.getEtsiU(jws);
+		if (Utils.isCollectionEmpty(etsiU)) {
 			return;
 		}
 
-		JSONArray xVals = (JSONArray) etsiU.get(JAdESHeaderParameterNames.X_VALS);
-		if (Utils.isCollectionNotEmpty(xVals)) {
-			for (Object xVal : xVals) {
-				if (xVal instanceof JSONObject) {
-					JSONObject xValObj = (JSONObject) xVal;
-//					xValObj.
+		for (Object item : etsiU) {
+			if (item instanceof JSONObject) {
+				JSONObject jsonObject = (JSONObject) item;
+				JSONArray xVals = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
+				if (Utils.isCollectionNotEmpty(xVals)) {
+					extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
+				}
+				JSONArray axVals = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
+				if (Utils.isCollectionNotEmpty(axVals)) {
+					extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
 				}
 			}
 		}
 	}
 
-	// ------------- Not supported
-
-	@Override
-	public List<CertificateToken> getAttrAuthoritiesCertValues() {
-		// Not supported
-		return Collections.emptyList();
+	private void extractCertificateValues(JSONArray xVals, CertificateOrigin origin) {
+		for (Object item : xVals) {
+			if (item instanceof JSONObject) {
+				JSONObject xVal = (JSONObject) item;
+				JSONObject x509Cert = (JSONObject) xVal.get(JAdESHeaderParameterNames.X509_CERT);
+				JSONObject otherCert = (JSONObject) xVal.get(JAdESHeaderParameterNames.OTHER_CERT);
+				if (x509Cert != null) {
+					extractX509Cert(x509Cert, origin);
+				} else if (otherCert != null) {
+					LOG.warn("Unsupported otherCert found");
+				}
+			}
+		}
 	}
+
+	private void extractX509Cert(JSONObject x509Cert, CertificateOrigin origin) {
+		String encoding = (String) x509Cert.get(JAdESHeaderParameterNames.ENCODING);
+		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+			String certDerBase64 = (String) x509Cert.get(JAdESHeaderParameterNames.VAL);
+			addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(certDerBase64),
+					origin);
+		} else {
+			LOG.warn("Unsupported encoding '{}'", encoding);
+		}
+	}
+
+	// ------------- Not supported
 
 	@Override
 	public List<CertificateToken> getTimeStampValidationDataCertValues() {

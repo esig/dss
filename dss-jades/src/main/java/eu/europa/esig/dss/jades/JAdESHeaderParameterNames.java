@@ -238,9 +238,19 @@ public final class JAdESHeaderParameterNames {
 	public static final String X_VALS = "xVals";
 
 	/**
+	 * Certificate Values of Attribute Authorities
+	 */
+	public static final String AX_VALS = "axVals";
+
+	/**
 	 * Revocation Values
 	 */
 	public static final String R_VALS = "rVals";
+
+	/**
+	 * Revocation Values of Attribute Authorities
+	 */
+	public static final String AR_VALS = "arVals";
 
 	/**
 	 * CRL Values
@@ -256,5 +266,15 @@ public final class JAdESHeaderParameterNames {
 	 * Other values
 	 */
 	public static final String OTHER_VALS = "otherVals";
+
+	/**
+	 * X.509 Certificate
+	 */
+	public static final String X509_CERT = "x509Cert";
+
+	/**
+	 * Other certificate
+	 */
+	public static final String OTHER_CERT = "otherCert";
 
 }

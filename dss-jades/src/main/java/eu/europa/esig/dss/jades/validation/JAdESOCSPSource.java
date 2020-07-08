@@ -29,11 +29,11 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 		Objects.requireNonNull(jws, "JWS cannot be null");
 		this.jws = jws;
 
-		extractOCSPValues();
+		extractEtsiU();
 	}
 
-	private void extractOCSPValues() {
-		List etsiU = JAdESUtils.getEtsiU(jws);
+	private void extractEtsiU() {
+		List<?> etsiU = JAdESUtils.getEtsiU(jws);
 		if (Utils.isCollectionEmpty(etsiU)) {
 			return;
 		}
@@ -42,28 +42,33 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 			if (item instanceof JSONObject) {
 				JSONObject jsonObject = (JSONObject) item;
 				JSONObject rVals = (JSONObject) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
-				extractRVals(rVals);
+				if (rVals != null) {
+					extractOCSPValues(rVals, RevocationOrigin.REVOCATION_VALUES);
+				}
+
+				JSONObject arVals = (JSONObject) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
+				if (arVals != null) {
+					extractOCSPValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+				}
 			}
 		}
 	}
 
-	private void extractRVals(JSONObject rVals) {
-		if (rVals != null) {
-			JSONArray ocspValues = (JSONArray) rVals.get(JAdESHeaderParameterNames.OCSP_VALS);
-			if (Utils.isCollectionNotEmpty(ocspValues)) {
-				for (Object item : ocspValues) {
-					if (item instanceof JSONObject) {
-						JSONObject pkiOb = (JSONObject) item;
-						String encoding = (String) pkiOb.get(JAdESHeaderParameterNames.ENCODING);
-						if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-							String ocspValueDerB64 = (String) pkiOb.get(JAdESHeaderParameterNames.VAL);
-							add(ocspValueDerB64, RevocationOrigin.REVOCATION_VALUES);
-						} else {
-							LOG.warn("Unsupported encoding '{}'", encoding);
-						}
+	private void extractOCSPValues(JSONObject rVals, RevocationOrigin origin) {
+		JSONArray ocspValues = (JSONArray) rVals.get(JAdESHeaderParameterNames.OCSP_VALS);
+		if (Utils.isCollectionNotEmpty(ocspValues)) {
+			for (Object item : ocspValues) {
+				if (item instanceof JSONObject) {
+					JSONObject pkiOb = (JSONObject) item;
+					String encoding = (String) pkiOb.get(JAdESHeaderParameterNames.ENCODING);
+					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+						String ocspValueDerB64 = (String) pkiOb.get(JAdESHeaderParameterNames.VAL);
+						add(ocspValueDerB64, origin);
 					} else {
-						LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.OCSP_VALS, item.getClass());
+						LOG.warn("Unsupported encoding '{}'", encoding);
 					}
+				} else {
+					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.OCSP_VALS, item.getClass());
 				}
 			}
 		}

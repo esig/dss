@@ -360,12 +360,12 @@ public class JAdESUtils {
 	 * @param jws the signature
 	 * @return etsiU content or an empty List
 	 */
-	public static List getEtsiU(JWS jws) {
+	public static List<?> getEtsiU(JWS jws) {
 		Map<String, Object> unprotected = jws.getUnprotected();
 		if (unprotected == null) {
 			return Collections.emptyList();
 		}
-		return (List) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		return (List<?>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 	}
 
 }
