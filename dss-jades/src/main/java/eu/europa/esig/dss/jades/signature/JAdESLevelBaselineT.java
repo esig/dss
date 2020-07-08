@@ -78,7 +78,7 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
+	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 
 		assertExtendSignatureToTPossible(jadesSignature, params);
 
