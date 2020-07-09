@@ -77,12 +77,12 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 		return new InMemoryDocument(generator.generate());
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 
 		assertExtendSignatureToTPossible(jadesSignature, params);
 
-		List unsignedProperties = getUnsignedProperties(jadesSignature);
+		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
 		JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
@@ -103,8 +103,8 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 		unsignedProperties.add(sigTstItem);
 	}
 
-	@SuppressWarnings("rawtypes")
-	protected List getUnsignedProperties(JAdESSignature jadesSignature) {
+	@SuppressWarnings("unchecked")
+	protected List<Object> getUnsignedProperties(JAdESSignature jadesSignature) {
 		JWS jws = jadesSignature.getJws();
 		Map<String, Object> unprotected = jws.getUnprotected();
 		if (unprotected == null) {
@@ -112,7 +112,7 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 			jws.setUnprotected(unprotected);
 		}
 
-		return (List) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U, k -> new JSONArray());
+		return (List<Object>) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U, k -> new JSONArray());
 	}
 
 	/**

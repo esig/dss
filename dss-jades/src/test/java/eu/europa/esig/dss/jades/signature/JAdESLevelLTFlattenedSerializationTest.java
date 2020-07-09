@@ -6,12 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -77,6 +83,30 @@ public class JAdESLevelLTFlattenedSerializationTest extends AbstractJAdESTestSig
 			fail("Unable to parse the signed file : " + e.getMessage());
 		}
 		
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+		assertEquals(0, foundCertificates.getOrphanCertificates().size());
+
+		List<RelatedCertificateWrapper> relatedCertificates = foundCertificates.getRelatedCertificates();
+		for (CertificateWrapper certificateWrapper : usedCertificates) {
+			boolean found = false;
+			for (RelatedCertificateWrapper relatedCertificateWrapper : relatedCertificates) {
+				if (Utils.areStringsEqual(relatedCertificateWrapper.getId(), certificateWrapper.getId())) {
+					found = true;
+					break;
+				}
+			}
+			assertTrue(found);
+		}
+
 	}
 
 	@Override

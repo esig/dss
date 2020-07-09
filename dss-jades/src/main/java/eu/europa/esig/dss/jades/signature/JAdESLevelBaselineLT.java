@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -10,14 +9,8 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
-import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWS;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -31,32 +24,6 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 	public JAdESLevelBaselineLT(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
-	}
-
-	@Override
-	public DSSDocument extendSignatures(DSSDocument document, JAdESSignatureParameters params) throws DSSException {
-		Objects.requireNonNull(document, "The document cannot be null");
-		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
-
-		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
-		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
-
-		if (jwsJsonSerializationObject == null || Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
-			throw new DSSException("There is no signature to extend!");
-		}
-
-		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
-
-			JAdESSignature jadesSignature = new JAdESSignature(signature);
-			jadesSignature.setDetachedContents(params.getDetachedContents());
-			jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
-
-			extendSignature(jadesSignature, params);
-		}
-
-		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
-				params.getJwsSerializationType());
-		return new InMemoryDocument(generator.generate());
 	}
 
 	@Override
@@ -80,7 +47,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
 
-		List<?> unsignedProperties = getUnsignedProperties(jadesSignature);
+		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
 		addXVals(certificateValuesToAdd, unsignedProperties);
 		addRVals(crlsToAdd, ocspsToAdd, unsignedProperties);
@@ -88,7 +55,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addXVals(Set<CertificateToken> certificateValuesToAdd, List unsignedProperties) {
+	private void addXVals(Set<CertificateToken> certificateValuesToAdd, List<Object> unsignedProperties) {
 		if (Utils.isCollectionEmpty(certificateValuesToAdd)) {
 			return;
 		}
@@ -114,7 +81,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd, List unsignedProperties) {
+	private void addRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd, List<Object> unsignedProperties) {
 		if (Utils.isCollectionEmpty(crlsToAdd) && Utils.isCollectionEmpty(ocspsToAdd)) {
 			return;
 		}

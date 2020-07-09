@@ -46,13 +46,13 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		return new JAdESSignedProperties(signature.getJws().getHeaders());
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
+	@SuppressWarnings("unchecked")
 	protected SignatureProperties<JAdESAttribute> getUnsignedSignatureProperties() {
-		List etsiU = new ArrayList<>();
+		List<Object> etsiU = new ArrayList<>();
 		Map<String, Object> unprotected = signature.getJws().getUnprotected();
 		if (Utils.isMapNotEmpty(unprotected)) {
-			etsiU = (List) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+			etsiU = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 		}
 		return new JAdESUnsignedProperties(etsiU);
 	}

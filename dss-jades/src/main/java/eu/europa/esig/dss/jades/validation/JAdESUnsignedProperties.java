@@ -11,9 +11,9 @@ import eu.europa.esig.dss.validation.SignatureProperties;
 
 public class JAdESUnsignedProperties implements SignatureProperties<JAdESAttribute> {
 
-	private final List<?> etsiU;
+	private final List<Object> etsiU;
 
-	public JAdESUnsignedProperties(List<?> etsiU) {
+	public JAdESUnsignedProperties(List<Object> etsiU) {
 		this.etsiU = etsiU;
 	}
 
