@@ -18,14 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.spi.x509;
 
 import java.io.Serializable;
 import java.security.PublicKey;
 import java.util.Objects;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 
 /**
  * This class stores the information about the validity of the signing certificate.
@@ -38,15 +37,26 @@ public class CertificateValidity implements Serializable {
 	 * This field is used when only the public key is available (non AdES signature)
 	 */
 	private PublicKey publicKey;
+	
 	private CertificateToken certificateToken;
+	
 	private CertificateIdentifier certificateIdentifier;
-	/* CMS Signer id */
+	
+	/** CMS Signer id */
 	private boolean signerIdMatch;
+
+	/** Digest parameters */
 	private boolean digestPresent;
 	private boolean digestEqual;
+
+	/** Issuer Serial */
 	private boolean issuerSerialPresent;
 	private boolean serialNumberEqual;
 	private boolean distinguishedNameEqual;
+	
+	/** OCSP Responder Id */
+	private boolean responderIdPresent;
+	private boolean responderIdMatch;
 
 	/**
 	 * This constructor create an object containing all information concerning the validity of a candidate for the
@@ -169,6 +179,22 @@ public class CertificateValidity implements Serializable {
 	public boolean isDistinguishedNameEqual() {
 		return distinguishedNameEqual;
 	}
+	
+	public boolean isResponderIdPresent() {
+		return responderIdPresent;
+	}
+
+	public void setResponderIdPresent(boolean responderIdPresent) {
+		this.responderIdPresent = responderIdPresent;
+	}
+	
+	public boolean isResponderIdMatch() {
+		return responderIdMatch;
+	}
+
+	public void setResponderIdMatch(boolean responderIdMatch) {
+		this.responderIdMatch = responderIdMatch;
+	}
 
 	/**
 	 * This method returns {@code true} if the certificate digest or
@@ -177,7 +203,7 @@ public class CertificateValidity implements Serializable {
 	 * @return {@code true} if the certificate digest matches.
 	 */
 	public boolean isValid() {
-		return isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual());
+		return isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || isResponderIdMatch();
 	}
 
 }

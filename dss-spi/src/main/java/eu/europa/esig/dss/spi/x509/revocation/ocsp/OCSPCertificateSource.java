@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -31,9 +32,13 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
+import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Represents a Source of certificates embedded into an OCSP Token
@@ -42,7 +47,16 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 @SuppressWarnings("serial")
 public class OCSPCertificateSource extends RevocationCertificateSource {
 	
+	/**
+	 * The Basic OCSP Response
+	 */
 	private final BasicOCSPResp basicOCSPResp;
+
+	/**
+	 * The reference to the object containing all candidates to the signing
+	 * certificate.
+	 */
+	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 	
 	public OCSPCertificateSource(final BasicOCSPResp basicOCSPResp) {
 		Objects.requireNonNull(basicOCSPResp, "BasicOCSPResp must be provided!");
@@ -65,6 +79,45 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 		signingCertificateRef.setResponderId(responderId);
 		signingCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		addCertificateRef(signingCertificateRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+	}
+	
+	/**
+	 * Returns candidates for the OCSP Response's signing certificate
+	 * 
+	 * @param certificateIssuer {@link CertificateToken} the issuer of a certificate covered by the OCSP
+	 * @return {@link CandidatesForSigningCertificate}
+	 */
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate(CertificateToken certificateIssuer) {
+		if (candidatesForSigningCertificate == null) {
+			candidatesForSigningCertificate = extractCandidatesForSigningCertificate(certificateIssuer);
+		}
+		return candidatesForSigningCertificate;
+	}
+	
+	private CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken certificateIssuer) {
+		CandidatesForSigningCertificate candidatesForSigningCertificate = new CandidatesForSigningCertificate();
+		
+		candidatesForSigningCertificate.add(new CertificateValidity(certificateIssuer));
+		for (CertificateToken certificateToken : getCertificates()) {
+			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+		}
+		
+		List<CertificateRef> signingCertificateRefs = getCertificateRefsByOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
+			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
+			
+			CertificateRef signingCertificateRef = signingCertificateRefs.iterator().next();
+			for (CertificateValidity certificateValidity : candidatesForSigningCertificate.getCertificateValidityList()) {
+				certificateValidity.setResponderIdPresent(signingCertificateRef.getResponderId() != null);
+
+				CertificateToken certificateToken = certificateValidity.getCertificateToken();
+				if (certificateToken != null) {
+					certificateValidity.setResponderIdMatch(matcher.matchByResponderId(certificateToken, signingCertificateRef));
+				}
+			}
+		}
+		
+		return candidatesForSigningCertificate;
 	}
 	
 	@Override
