@@ -71,5 +71,13 @@ public class CertificateTokenRefMatcher {
 		}
 		return false;
 	}
+	
+	public boolean matchByResponderId(CertificateToken certificateToken, CertificateRef certificateRef) {
+		ResponderId responderId = certificateRef.getResponderId();
+		if (responderId != null) {
+			return responderId.isRelatedToCertificate(certificateToken);
+		}
+		return false;
+	}
 
 }

@@ -54,6 +54,8 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
+import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
@@ -190,14 +192,30 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	}
 
 	private void checkSignatureValidity(CertificateToken issuerCertificateToken) {
-		if (isSignedBy(issuerCertificateToken)) {
-			return;
+		CandidatesForSigningCertificate candidates = getCertificateSource().getCandidatesForSigningCertificate(issuerCertificateToken);
+		
+		LOG.debug("Determining OCSP's signing certificate from certificate candidates list...");
+		
+		CertificateValidity bestCertificateValidity = candidates.getTheBestCandidate();
+		if (bestCertificateValidity != null) {
+			LOG.debug("Checking the Best Certificate Validity...");
+			CertificateToken certificateToken = bestCertificateValidity.getCertificateToken();
+			if (isSignedBy(certificateToken)) {
+				return;
+			} else {
+				LOG.warn("The best signing certificate candidate is not the OCSP's signing certificate!",
+						certificateToken.getDSSIdAsString());
+			}
 		}
-		for (CertificateToken signingCertCandidate : getCertificateSource().getCertificates()) {
-			if (isSignedBy(signingCertCandidate)) {
+
+		for (final CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
+			CertificateToken certificateToken = certificateValidity.getCertificateToken();
+			if (certificateToken != null && isSignedBy(certificateToken)) {
 				return;
 			}
 		}
+		
+		LOG.warn("Failed to find an OCSP's signing certificate for a token with Id '{}'", getDSSIdAsString());
 	}
 
 	@Override
@@ -269,6 +287,8 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	public boolean isSignedBy(CertificateToken token) {
 		boolean signedBy = super.isSignedBy(token);
 		if (signedBy) {
+			LOG.debug("Determining OCSP's signing certificate from certificate candidates list succeeded : {}",
+					token.getDSSIdAsString());
 			issuerCertificateToken = token;
 		}
 		return signedBy;

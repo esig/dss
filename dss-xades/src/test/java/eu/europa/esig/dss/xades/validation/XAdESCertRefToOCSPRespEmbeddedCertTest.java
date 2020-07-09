@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
@@ -38,9 +40,11 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class XAdESCertRefToOCSPRespEmbeddedCertTest extends AbstractXAdESTestValidation {
@@ -107,6 +111,34 @@ public class XAdESCertRefToOCSPRespEmbeddedCertTest extends AbstractXAdESTestVal
 			}
 		}
 		assertEquals(1, archiveTimestampCounter);
+	}
+	
+	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		super.checkRevocationData(diagnosticData);
+		
+		boolean ocspWithOtherIssuerFound = false;
+
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			CertificateWrapper signingCertificate = certificateWrapper.getSigningCertificate();
+			if (signingCertificate == null) {
+				continue;
+			}
+			
+			List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
+			if (Utils.isCollectionNotEmpty(certificateRevocationData)) {
+				for (CertificateRevocationWrapper certificateRevocationWrapper : certificateRevocationData) {
+					if (RevocationType.OCSP.equals(certificateRevocationWrapper.getRevocationType())) {
+						CertificateWrapper ocspSignCert = certificateRevocationWrapper.getSigningCertificate();
+						if (!signingCertificate.getId().equals(ocspSignCert.getId())) {
+							ocspWithOtherIssuerFound = true;
+						}
+					}
+				}
+			}
+		}
+		
+		assertTrue(ocspWithOtherIssuerFound);
 	}
 
 }
