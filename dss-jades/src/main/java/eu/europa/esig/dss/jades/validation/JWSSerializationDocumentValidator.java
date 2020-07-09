@@ -70,6 +70,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			for (JWS jws : foundSignatures) {
 				JAdESSignature jadesSignature = new JAdESSignature(jws);
 				jadesSignature.setDetachedContents(detachedContents);
+				jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 				signatures.add(jadesSignature);
 			}
 		}

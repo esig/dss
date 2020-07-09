@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.jose4j.base64url.Base64Url;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.Digest;
@@ -49,13 +49,16 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 		// certificate chain
 		extractX5C();
+
+		// unsigned properties
+		extractEtsiU();
 	}
 
 	private void extractX5T() {
 		String base64UrlSHA1Certificate = jws.getHeaders()
 				.getStringHeaderValue(HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA1Certificate)) {
-			Digest digest = new Digest(DigestAlgorithm.SHA1, Base64Url.decode(base64UrlSHA1Certificate));
+			Digest digest = new Digest(DigestAlgorithm.SHA1, JAdESUtils.fromBase64Url(base64UrlSHA1Certificate));
 			LOG.warn("Found {} with value {} but not supported by the JAdES standard",
 					HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, digest);
 		}
@@ -67,7 +70,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		if (Utils.isStringNotEmpty(base64UrlSHA256Certificate)) {
 			CertificateRef certRef = new CertificateRef();
 			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Base64Url.decode(base64UrlSHA256Certificate)));
+			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, JAdESUtils.fromBase64Url(base64UrlSHA256Certificate)));
 			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 		}
 	}
@@ -107,19 +110,54 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
+	private void extractEtsiU() {
+		List<?> etsiU = JAdESUtils.getEtsiU(jws);
+		if (Utils.isCollectionEmpty(etsiU)) {
+			return;
+		}
+
+		for (Object item : etsiU) {
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
+				List<?> xVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
+				if (Utils.isCollectionNotEmpty(xVals)) {
+					extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
+				}
+				List<?> axVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
+				if (Utils.isCollectionNotEmpty(axVals)) {
+					extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+				}
+			}
+		}
+	}
+
+	private void extractCertificateValues(List<?> xVals, CertificateOrigin origin) {
+		for (Object item : xVals) {
+			if (item instanceof Map) {
+				Map<?, ?> xVal = (Map<?, ?>) item;
+				Map<?, ?> x509Cert = (Map<?, ?>) xVal.get(JAdESHeaderParameterNames.X509_CERT);
+				Map<?, ?> otherCert = (Map<?, ?>) xVal.get(JAdESHeaderParameterNames.OTHER_CERT);
+				if (x509Cert != null) {
+					extractX509Cert(x509Cert, origin);
+				} else if (otherCert != null) {
+					LOG.warn("Unsupported otherCert found");
+				}
+			}
+		}
+	}
+
+	private void extractX509Cert(Map<?, ?> x509Cert, CertificateOrigin origin) {
+		String encoding = (String) x509Cert.get(JAdESHeaderParameterNames.ENCODING);
+		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+			String certDerBase64 = (String) x509Cert.get(JAdESHeaderParameterNames.VAL);
+			addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(certDerBase64),
+					origin);
+		} else {
+			LOG.warn("Unsupported encoding '{}'", encoding);
+		}
+	}
+
 	// ------------- Not supported
-
-	@Override
-	public List<CertificateToken> getCertificateValues() {
-		// Not supported
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<CertificateToken> getAttrAuthoritiesCertValues() {
-		// Not supported
-		return Collections.emptyList();
-	}
 
 	@Override
 	public List<CertificateToken> getTimeStampValidationDataCertValues() {

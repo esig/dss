@@ -205,6 +205,10 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			final JAdESLevelBaselineT extensionT = new JAdESLevelBaselineT(certificateVerifier);
 			extensionT.setTspSource(tspSource);
 			return extensionT;
+		case JAdES_BASELINE_LT:
+			final JAdESLevelBaselineLT extensionLT = new JAdESLevelBaselineLT(certificateVerifier);
+			extensionLT.setTspSource(tspSource);
+			return extensionLT;
 		default:
 			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
 		}

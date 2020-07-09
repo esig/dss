@@ -137,7 +137,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public OfflineCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
-			signatureCRLSource = new JAdESCRLSource();
+			signatureCRLSource = new JAdESCRLSource(jws);
 		}
 		return signatureCRLSource;
 	}
@@ -145,7 +145,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new JAdESOCSPSource();
+			signatureOCSPSource = new JAdESOCSPSource(jws);
 		}
 		return signatureOCSPSource;
 	}
@@ -782,7 +782,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		if (!hasTProfile()) {
 			return SignatureLevel.JAdES_BASELINE_B;
 		}
-
+		if (hasLTProfile()) {
+			if (hasLTAProfile()) {
+				return SignatureLevel.JAdES_BASELINE_LTA;
+			}
+			return SignatureLevel.JAdES_BASELINE_LT;
+		}
 		return SignatureLevel.JAdES_BASELINE_T;
 	}
 

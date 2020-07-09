@@ -2,7 +2,6 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -49,10 +49,10 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	@Override
 	@SuppressWarnings("unchecked")
 	protected SignatureProperties<JAdESAttribute> getUnsignedSignatureProperties() {
-		Map<String, Object> etsiU = new HashMap<>();
+		List<Object> etsiU = new ArrayList<>();
 		Map<String, Object> unprotected = signature.getJws().getUnprotected();
 		if (Utils.isMapNotEmpty(unprotected)) {
-			etsiU = (Map<String, Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+			etsiU = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 		}
 		return new JAdESUnsignedProperties(etsiU);
 	}
@@ -106,7 +106,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		}
 
 		final List<TimestampToken> timestamps = new ArrayList<>();
-		// final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
+		final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
 
 		final List<JAdESAttribute> unsignedAttributes = unsignedSignatureProperties.getAttributes();
 		for (JAdESAttribute unsignedAttribute : unsignedAttributes) {
@@ -121,8 +121,23 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 				if (Utils.isCollectionNotEmpty(currentTimestamps)) {
 					signatureTimestamps.addAll(currentTimestamps);
 				}
+			} else if (isCertificateValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
+				continue;
+
+			} else if (isRevocationValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
+				continue;
+
+			} else if (isAttrAuthoritiesCertValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
+				continue;
+
+			} else if (isAttributeRevocationValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
+				continue;
 			} else {
-				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute);
+				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute.getHeaderName());
 				continue;
 			}
 
@@ -190,14 +205,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected boolean isCertificateValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.X_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isRevocationValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.R_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -222,12 +235,16 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		List<Map<String, Object>> tokens = (List<Map<String, Object>>) array.get(JAdESHeaderParameterNames.TST_TOKENS);
 
 		for (Map<String, Object> jsonToken : tokens) {
-			String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
-			try {
-				result.add(new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references,
-						TimestampLocation.JAdES));
-			} catch (Exception e) {
-				LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+			String encoding = (String) jsonToken.get(JAdESHeaderParameterNames.ENCODING);
+			if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+				String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
+				try {
+					result.add(new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES));
+				} catch (Exception e) {
+					LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+				}
+			} else {
+				LOG.warn("Unsupported encoding {}", encoding);
 			}
 		}
 		return result;
@@ -242,14 +259,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected boolean isAttrAuthoritiesCertValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.AX_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isAttributeRevocationValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.AR_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
