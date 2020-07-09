@@ -133,14 +133,26 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	private JSONArray getCrlVals(List<CRLToken> crlsToAdd) {
-		// TODO Auto-generated method stub
-		return null;
+		JSONArray array = new JSONArray();
+		for (CRLToken crlToken : crlsToAdd) {
+			JSONObject pkiOb = new JSONObject();
+			pkiOb.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(crlToken.getEncoded()));
+			array.add(pkiOb);
+		}
+		return array;
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONArray getOcspVals(List<OCSPToken> ocspsToAdd) {
-		// TODO Auto-generated method stub
-		return null;
+		JSONArray array = new JSONArray();
+		for (OCSPToken ocspToken : ocspsToAdd) {
+			JSONObject pkiOb = new JSONObject();
+			pkiOb.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(ocspToken.getEncoded()));
+			array.add(pkiOb);
+		}
+		return array;
 	}
 
 	/**

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
@@ -119,13 +117,13 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 
 		for (Object item : etsiU) {
-			if (item instanceof JSONObject) {
-				JSONObject jsonObject = (JSONObject) item;
-				JSONArray xVals = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
+				List<?> xVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
 				if (Utils.isCollectionNotEmpty(xVals)) {
 					extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
 				}
-				JSONArray axVals = (JSONArray) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
+				List<?> axVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
 				if (Utils.isCollectionNotEmpty(axVals)) {
 					extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
 				}
@@ -133,12 +131,12 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	private void extractCertificateValues(JSONArray xVals, CertificateOrigin origin) {
+	private void extractCertificateValues(List<?> xVals, CertificateOrigin origin) {
 		for (Object item : xVals) {
-			if (item instanceof JSONObject) {
-				JSONObject xVal = (JSONObject) item;
-				JSONObject x509Cert = (JSONObject) xVal.get(JAdESHeaderParameterNames.X509_CERT);
-				JSONObject otherCert = (JSONObject) xVal.get(JAdESHeaderParameterNames.OTHER_CERT);
+			if (item instanceof Map) {
+				Map<?, ?> xVal = (Map<?, ?>) item;
+				Map<?, ?> x509Cert = (Map<?, ?>) xVal.get(JAdESHeaderParameterNames.X509_CERT);
+				Map<?, ?> otherCert = (Map<?, ?>) xVal.get(JAdESHeaderParameterNames.OTHER_CERT);
 				if (x509Cert != null) {
 					extractX509Cert(x509Cert, origin);
 				} else if (otherCert != null) {
@@ -148,7 +146,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	private void extractX509Cert(JSONObject x509Cert, CertificateOrigin origin) {
+	private void extractX509Cert(Map<?, ?> x509Cert, CertificateOrigin origin) {
 		String encoding = (String) x509Cert.get(JAdESHeaderParameterNames.ENCODING);
 		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 			String certDerBase64 = (String) x509Cert.get(JAdESHeaderParameterNames.VAL);

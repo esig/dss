@@ -1,10 +1,9 @@
 package eu.europa.esig.dss.jades.validation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +38,15 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 		}
 
 		for (Object item : etsiU) {
-			if (item instanceof JSONObject) {
-				JSONObject jsonObject = (JSONObject) item;
-				JSONObject rVals = (JSONObject) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
+
+				Map<?, ?> rVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
 				if (rVals != null) {
 					extractOCSPValues(rVals, RevocationOrigin.REVOCATION_VALUES);
 				}
 
-				JSONObject arVals = (JSONObject) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
+				Map<?, ?> arVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
 				if (arVals != null) {
 					extractOCSPValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 				}
@@ -54,12 +54,12 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void extractOCSPValues(JSONObject rVals, RevocationOrigin origin) {
-		JSONArray ocspValues = (JSONArray) rVals.get(JAdESHeaderParameterNames.OCSP_VALS);
+	private void extractOCSPValues(Map<?, ?> rVals, RevocationOrigin origin) {
+		List<?> ocspValues = (List<?>) rVals.get(JAdESHeaderParameterNames.OCSP_VALS);
 		if (Utils.isCollectionNotEmpty(ocspValues)) {
 			for (Object item : ocspValues) {
-				if (item instanceof JSONObject) {
-					JSONObject pkiOb = (JSONObject) item;
+				if (item instanceof Map) {
+					Map<?, ?> pkiOb = (Map<?, ?>) item;
 					String encoding = (String) pkiOb.get(JAdESHeaderParameterNames.ENCODING);
 					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 						String ocspValueDerB64 = (String) pkiOb.get(JAdESHeaderParameterNames.VAL);

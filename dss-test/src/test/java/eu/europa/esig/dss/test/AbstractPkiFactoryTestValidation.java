@@ -466,6 +466,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			case XAdES_BASELINE_LT:
 			case XAdES_XL:
 			case CAdES_BASELINE_LT:
+			case JAdES_BASELINE_LT:
 			case PAdES_BASELINE_LT:
 				return true;
 			default:
@@ -478,6 +479,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			case XAdES_BASELINE_LTA:
 			case XAdES_A:
 			case CAdES_BASELINE_LTA:
+			case JAdES_BASELINE_LTA:
 			case PAdES_BASELINE_LTA:
 				return true;
 			default:

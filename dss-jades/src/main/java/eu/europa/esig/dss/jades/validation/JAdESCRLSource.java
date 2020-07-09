@@ -1,10 +1,9 @@
 package eu.europa.esig.dss.jades.validation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,15 +37,15 @@ public class JAdESCRLSource extends OfflineCRLSource {
 		}
 
 		for (Object item : etsiU) {
-			if (item instanceof JSONObject) {
-				JSONObject jsonObject = (JSONObject) item;
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
 
-				JSONObject rVals = (JSONObject) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
+				Map<?, ?> rVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
 				if (rVals != null) {
 					extractCRLValues(rVals, RevocationOrigin.REVOCATION_VALUES);
 				}
 
-				JSONObject arVals = (JSONObject) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
+				Map<?, ?> arVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
 				if (arVals != null) {
 					extractCRLValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 				}
@@ -54,12 +53,12 @@ public class JAdESCRLSource extends OfflineCRLSource {
 		}
 	}
 
-	private void extractCRLValues(JSONObject rVals, RevocationOrigin origin) {
-		JSONArray crlValues = (JSONArray) rVals.get(JAdESHeaderParameterNames.CRL_VALS);
+	private void extractCRLValues(Map<?, ?> rVals, RevocationOrigin origin) {
+		List<?> crlValues = (List<?>) rVals.get(JAdESHeaderParameterNames.CRL_VALS);
 		if (Utils.isCollectionNotEmpty(crlValues)) {
 			for (Object item : crlValues) {
-				if (item instanceof JSONObject) {
-					JSONObject pkiOb = (JSONObject) item;
+				if (item instanceof Map) {
+					Map<?, ?> pkiOb = (Map<?, ?>) item;
 					String encoding = (String) pkiOb.get(JAdESHeaderParameterNames.ENCODING);
 					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 						String crlValueDerB64 = (String) pkiOb.get(JAdESHeaderParameterNames.VAL);

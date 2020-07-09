@@ -106,7 +106,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		}
 
 		final List<TimestampToken> timestamps = new ArrayList<>();
-		// final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
+		final List<TimestampedReference> encapsulatedReferences = new ArrayList<>();
 
 		final List<JAdESAttribute> unsignedAttributes = unsignedSignatureProperties.getAttributes();
 		for (JAdESAttribute unsignedAttribute : unsignedAttributes) {
@@ -121,8 +121,23 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 				if (Utils.isCollectionNotEmpty(currentTimestamps)) {
 					signatureTimestamps.addAll(currentTimestamps);
 				}
+			} else if (isCertificateValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
+				continue;
+
+			} else if (isRevocationValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
+				continue;
+
+			} else if (isAttrAuthoritiesCertValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
+				continue;
+
+			} else if (isAttributeRevocationValues(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
+				continue;
 			} else {
-				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute);
+				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute.getHeaderName());
 				continue;
 			}
 
@@ -190,14 +205,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected boolean isCertificateValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.X_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isRevocationValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.R_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -246,14 +259,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected boolean isAttrAuthoritiesCertValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.AX_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isAttributeRevocationValues(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.AR_VALS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
