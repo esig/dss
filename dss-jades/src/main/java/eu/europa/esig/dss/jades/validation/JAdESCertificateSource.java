@@ -119,13 +119,25 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		for (Object item : etsiU) {
 			if (item instanceof Map) {
 				Map<?, ?> jsonObject = (Map<?, ?>) item;
+				
 				List<?> xVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
 				if (Utils.isCollectionNotEmpty(xVals)) {
 					extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
 				}
+				
 				List<?> axVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
 				if (Utils.isCollectionNotEmpty(axVals)) {
 					extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+				}
+
+				List<?> xRefs = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_REFS);
+				if (Utils.isCollectionNotEmpty(xRefs)) {
+					extractCertificateRefs(xRefs, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
+				}
+
+				List<?> axRefs = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_REFS);
+				if (Utils.isCollectionNotEmpty(axRefs)) {
+					extractCertificateRefs(axRefs, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
 				}
 			}
 		}
@@ -146,6 +158,17 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
+	private void extractCertificateRefs(List<?> xRefs, CertificateRefOrigin origin) {
+		for (Object item : xRefs) {
+			if (item instanceof Map) {
+				CertificateRef certificateRef = JAdESCertificateRefExtractionUtils.createCertificateRef((Map<?, ?>) item);
+				if (certificateRef != null) {
+					addCertificateRef(certificateRef, origin);
+				}
+			}
+		}
+	}
+
 	private void extractX509Cert(Map<?, ?> x509Cert, CertificateOrigin origin) {
 		String encoding = (String) x509Cert.get(JAdESHeaderParameterNames.ENCODING);
 		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
@@ -161,18 +184,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateToken> getTimeStampValidationDataCertValues() {
-		// Not supported
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<CertificateRef> getCompleteCertificateRefs() {
-		// Not supported
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<CertificateRef> getAttributeCertificateRefs() {
 		// Not supported
 		return Collections.emptyList();
 	}
@@ -267,12 +278,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private IssuerSerial getCurrentIssuerSerial() {
-		String kid = jws.getKeyIdHeaderValue();
-		if (Utils.isStringNotEmpty(kid) && Utils.isBase64Encoded(kid)) {
-			byte[] binary = Utils.fromBase64(kid);
-			return DSSASN1Utils.getIssuerSerial(binary);
-		}
-		return null;
+		return JAdESUtils.getIssuerSerial(jws.getKeyIdHeaderValue());
 	}
 
 }

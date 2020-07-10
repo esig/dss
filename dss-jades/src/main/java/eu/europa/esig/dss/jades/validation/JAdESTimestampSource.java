@@ -121,6 +121,22 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 				if (Utils.isCollectionNotEmpty(currentTimestamps)) {
 					signatureTimestamps.addAll(currentTimestamps);
 				}
+			} else if (isCompleteCertificateRef(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
+				continue;
+
+			} else if (isAttributeCertificateRef(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
+				continue;
+
+			} else if (isCompleteRevocationRef(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
+				continue;
+
+			} else if (isAttributeRevocationRef(unsignedAttribute)) {
+				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
+				continue;
+
 			} else if (isCertificateValues(unsignedAttribute)) {
 				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
 				continue;
@@ -169,26 +185,22 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected boolean isCompleteCertificateRef(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.X_REFS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isAttributeCertificateRef(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.AX_REFS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isCompleteRevocationRef(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.R_REFS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isAttributeRevocationRef(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.AR_REFS.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -269,20 +281,53 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected List<CertificateRef> getCertificateRefs(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return Collections.emptyList();
+		List<CertificateRef> result = new ArrayList<>();
+		List<?> certificateRefsList = (List<?>) unsignedAttribute.getValue();
+		if (Utils.isCollectionNotEmpty(certificateRefsList)) {
+			for (Object item : certificateRefsList) {
+				if (item instanceof Map) {
+					CertificateRef certificateRef = JAdESCertificateRefExtractionUtils.createCertificateRef((Map<?, ?>) item);
+					if (certificateRef != null) {
+						result.add(certificateRef);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
 	protected List<CRLRef> getCRLRefs(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return Collections.emptyList();
+		List<CRLRef> result = new ArrayList<>();
+		List<?> crlRefsList = (List<?>) unsignedAttribute.getValue();
+		if (Utils.isCollectionNotEmpty(crlRefsList)) {
+			for (Object item : crlRefsList) {
+				if (item instanceof Map) {
+					CRLRef crlRef = JAdESRevocationRefExtractionUtils.createCRLRef((Map<?, ?>) item);
+					if (crlRef != null) {
+						result.add(crlRef);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
 	protected List<OCSPRef> getOCSPRefs(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return Collections.emptyList();
+		List<OCSPRef> result = new ArrayList<>();
+		List<?> ocspRefsList = (List<?>) unsignedAttribute.getValue();
+		if (Utils.isCollectionNotEmpty(ocspRefsList)) {
+			for (Object item : ocspRefsList) {
+				if (item instanceof Map) {
+					OCSPRef ocspRef = JAdESRevocationRefExtractionUtils.createOCSPRef((Map<?, ?>) item);
+					if (ocspRef != null) {
+						result.add(ocspRef);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override

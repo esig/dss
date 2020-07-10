@@ -22,6 +22,7 @@ public final class JAdESHeaderParameterNames {
 	 * Digest algorithm and value
 	 */
 	public static final String DIG_ALG_VAL = "digAlgVal";
+
 	/**
 	 * Digest algorithm
 	 */
@@ -276,5 +277,80 @@ public final class JAdESHeaderParameterNames {
 	 * Other certificate
 	 */
 	public static final String OTHER_CERT = "otherCert";
+
+	/**
+	 * Certificate References
+	 */
+	public static final String X_REFS = "xRefs";
+
+	/**
+	 * References to certificates of Attribute Authorities
+	 */
+	public static final String AX_REFS = "axRefs";
+
+	/**
+	 * Revocation References
+	 */
+	public static final String R_REFS = "rRefs";
+
+	/**
+	 * References to revocations of Attribute Authorities
+	 */
+	public static final String AR_REFS = "arRefs";
+
+	/**
+	 * CRL References
+	 */
+	public static final String CRL_REFS = "crlRefs";
+
+	/**
+	 * OCSP References
+	 */
+	public static final String OCSP_REFS = "ocspRefs";
+
+	/**
+	 * OCSP Id
+	 */
+	public static final String OCSP_ID = "ocspId";
+
+	/**
+	 * OCSP Response production time
+	 */
+	public static final String PRODUCED_AT = "producedAt";
+
+	/**
+	 * OCSP Responder id
+	 */
+	public static final String RESPONDER_ID = "responderId";
+
+	/**
+	 * OCSP Responder id - by name
+	 */
+	public static final String BY_NAME = "byName";
+
+	/**
+	 * OCSP Responder id - by key
+	 */
+	public static final String BY_KEY = "byKey";
+
+	/**
+	 * CRL Id
+	 */
+	public static final String CRL_ID = "crlId";
+
+	/**
+	 * CRL issuer
+	 */
+	public static final String ISSUER = "issuer";
+
+	/**
+	 * CRL issue time
+	 */
+	public static final String ISSUE_TIME = "issueTime";
+
+	/**
+	 * CRL Number
+	 */
+	public static final String NUMBER = "number";
 
 }

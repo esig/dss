@@ -1,15 +1,12 @@
 package eu.europa.esig.dss.jades.validation;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
@@ -58,9 +55,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignature.class);
 
-	/* Format date-time as specified in RFC 3339 5.6 */
-	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
 	/** The JWS signature object */
 	private final JWS jws;
 	
@@ -104,19 +98,9 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public Date getSigningTime() {
 		String signingTimeStr = jws.getHeaders().getStringHeaderValue(JAdESHeaderParameterNames.SIG_T);
-		if (Utils.isStringNotEmpty(signingTimeStr)) {
-			try {
-				SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT_RFC3339);
-				sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-				return sdf.parse(signingTimeStr);
-			} catch (ParseException e) {
-				LOG.warn("Unable to parse {} with value '{}' : {}", JAdESHeaderParameterNames.SIG_T, signingTimeStr,
-						e.getMessage());
-			}
-		}
-		return null;
+		return JAdESUtils.getDate(signingTimeStr);
 	}
-	
+
 	/**
 	 * Checks if the JAdES Signature is a detached (contains 'sigD' dictionary)
 	 * 

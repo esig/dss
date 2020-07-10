@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -49,6 +51,16 @@ public class JAdESCRLSource extends OfflineCRLSource {
 				if (arVals != null) {
 					extractCRLValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 				}
+
+				Map<?, ?> rRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_REFS);
+				if (rRefs != null) {
+					extractCRLReferences(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+				}
+
+				Map<?, ?> arRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_REFS);
+				if (arRefs != null) {
+					extractCRLReferences(arRefs, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+				}
 			}
 		}
 	}
@@ -78,6 +90,20 @@ public class JAdESCRLSource extends OfflineCRLSource {
 			addBinary(CRLUtils.buildCRLBinary(Utils.fromBase64(crlValueDerB64)), origin);
 		} catch (Exception e) {
 			LOG.error("Unable to extract CRL from '{}'", crlValueDerB64, e);
+		}
+	}
+
+	private void extractCRLReferences(Map<?, ?> rRefs, RevocationRefOrigin origin) {
+		List<?> crlRefs = (List<?>) rRefs.get(JAdESHeaderParameterNames.CRL_REFS);
+		if (Utils.isCollectionNotEmpty(crlRefs)) {
+			for (Object item : crlRefs) {
+				if (item instanceof Map) {
+					CRLRef crlRef = JAdESRevocationRefExtractionUtils.createCRLRef((Map<?, ?>) item);
+					if (crlRef != null) {
+						addRevocationReference(crlRef, origin);
+					}
+				}
+			}
 		}
 	}
 
