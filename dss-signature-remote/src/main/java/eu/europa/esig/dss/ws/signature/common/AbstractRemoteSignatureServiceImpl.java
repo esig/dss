@@ -46,6 +46,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.DSSFileFont;
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -320,6 +321,11 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		if (remoteTextParameters.getFont() != null && remoteTextParameters.getFont().getBytes() != null) {
 			textParameters.setFont(new DSSFileFont(new ByteArrayInputStream(remoteTextParameters.getFont().getBytes())));
 		}
+		// size
+		if (remoteTextParameters.getSize() != null) {
+			DSSFont font = textParameters.getFont();
+			font.setSize(remoteTextParameters.getSize());
+		}
 		// padding
 		if (remoteTextParameters.getPadding() != null) {
 			textParameters.setPadding(remoteTextParameters.getPadding());
@@ -335,10 +341,6 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		// signerTextVerticalAlignment
 		if (remoteTextParameters.getSignerTextVerticalAlignment() != null) {
 			textParameters.setSignerTextVerticalAlignment(remoteTextParameters.getSignerTextVerticalAlignment());
-		}
-		// size
-		if (remoteTextParameters.getSize() != null) {
-			textParameters.setSize(8);
 		}
 		// text
 		textParameters.setText(remoteTextParameters.getText());

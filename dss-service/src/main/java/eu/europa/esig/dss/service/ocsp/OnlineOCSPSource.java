@@ -86,11 +86,23 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	/**
 	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
 	 * default {@code OCSPDataLoader} is set. It is possible to change it with
-	 * {@code
-	 * #setDataLoader}.
+	 * {@code #setDataLoader(dataLoader)}.
 	 */
 	public OnlineOCSPSource() {
 		dataLoader = new OCSPDataLoader();
+		LOG.trace("+OnlineOCSPSource with the default data loader.");
+	}
+	
+	/**
+	 * Creates an Online OCSP Source with the provided {@code DataLoader} instance.
+	 * It is still possible to change the defined instance with 
+	 * {@code #setDataLoader(dataLoader)}.
+	 * 
+	 * @param dataLoader {@link DataLoader} to use
+	 */
+	public OnlineOCSPSource(final DataLoader dataLoader) {
+		this.dataLoader = dataLoader;
+		LOG.trace("+OnlineOCSPSource with the specific data loader.");
 	}
 
 	@Override

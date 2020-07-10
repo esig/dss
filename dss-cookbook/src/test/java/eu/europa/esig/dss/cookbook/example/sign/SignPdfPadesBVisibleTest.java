@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFileFont;
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -93,7 +94,7 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			
 			// tag::font[]
 			// Initialize text to generate for visual signature
-			DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
+			DSSFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
 			// end::font[]
 			// tag::text[]
 			// Instantiates a SignatureImageTextParameters object
@@ -102,8 +103,6 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			textParameters.setFont(font);
 			// Defines the text content
 			textParameters.setText("My visual signature \n #1");
-			// Specifies the text size value (the default font size is 12pt)
-			textParameters.setSize(14);
 			// Defines the color of the characters
 			textParameters.setTextColor(Color.BLUE);
 			// Defines the background color for the area filled out by the text
