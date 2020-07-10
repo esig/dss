@@ -70,18 +70,31 @@ public final class CRLRef extends RevocationRef<CRL> {
 		}
 	}
 	
+
 	public X500Name getCrlIssuer() {
 		return crlIssuer;
+	}
+
+	public void setCrlIssuer(X500Name crlIssuer) {
+		this.crlIssuer = crlIssuer;
 	}
 
 	public Date getCrlIssuedTime() {
 		return crlIssuedTime;
 	}
 
+	public void setCrlIssuedTime(Date crlIssuedTime) {
+		this.crlIssuedTime = crlIssuedTime;
+	}
+
 	public BigInteger getCrlNumber() {
 		return crlNumber;
 	}
-	
+
+	public void setCrlNumber(BigInteger crlNumber) {
+		this.crlNumber = crlNumber;
+	}
+
 	@Override
 	public String toString() {
 		return "CRL Reference with Digest [" + super.toString() + "]";

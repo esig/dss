@@ -12,18 +12,23 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.base64url.Base64Url;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -40,6 +45,7 @@ import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -49,6 +55,9 @@ public class JAdESUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESUtils.class);
 	
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
+
+	/* Format date-time as specified in RFC 3339 5.6 */
+	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	
 	/**
 	 * Contains header names that are supported to be present in the critical attribute
@@ -174,13 +183,14 @@ public class JAdESUtils {
 	 * @return an instance of Digest or null
 	 */
 	public static Digest getDigest(Map<?, ?> digestValueAndAlgo) {
-		String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
-		String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
-		if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
-			return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));
-		} else {
-			return null;
+		if (Utils.isMapNotEmpty(digestValueAndAlgo)) {
+			String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
+			String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
+			if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
+				return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));
+			}
 		}
+		return null;
 	}
 
 	/**
@@ -366,6 +376,27 @@ public class JAdESUtils {
 			return Collections.emptyList();
 		}
 		return (List<?>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+	}
+
+	public static Date getDate(String dateTimeString) {
+		if (Utils.isStringNotEmpty(dateTimeString)) {
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT_RFC3339);
+				sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+				return sdf.parse(dateTimeString);
+			} catch (ParseException e) {
+				LOG.warn("Unable to parse date with value '{}' : {}", dateTimeString, e.getMessage());
+			}
+		}
+		return null;
+	}
+
+	public static IssuerSerial getIssuerSerial(String value) {
+		if (Utils.isStringNotEmpty(value) && Utils.isBase64Encoded(value)) {
+			byte[] binary = Utils.fromBase64(value);
+			return DSSASN1Utils.getIssuerSerial(binary);
+		}
+		return null;
 	}
 
 }

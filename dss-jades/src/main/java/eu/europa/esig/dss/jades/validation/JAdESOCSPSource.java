@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -50,6 +52,16 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 				if (arVals != null) {
 					extractOCSPValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 				}
+
+				Map<?, ?> rRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_REFS);
+				if (rRefs != null) {
+					extractOCSPReferences(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+				}
+
+				Map<?, ?> arRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_REFS);
+				if (arRefs != null) {
+					extractOCSPReferences(arRefs, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+				}
 			}
 		}
 	}
@@ -81,4 +93,19 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 			LOG.error("Unable to extract OCSP from '{}'", ocspValueDerB64, e);
 		}
 	}
+
+	private void extractOCSPReferences(Map<?, ?> rRefs, RevocationRefOrigin origin) {
+		List<?> ocspRefs = (List<?>) rRefs.get(JAdESHeaderParameterNames.OCSP_REFS);
+		if (Utils.isCollectionNotEmpty(ocspRefs)) {
+			for (Object item : ocspRefs) {
+				if (item instanceof Map) {
+					OCSPRef ocspRef = JAdESRevocationRefExtractionUtils.createOCSPRef((Map<?, ?>) item);
+					if (ocspRef != null) {
+						addRevocationReference(ocspRef, origin);
+					}
+				}
+			}
+		}
+	}
+
 }
