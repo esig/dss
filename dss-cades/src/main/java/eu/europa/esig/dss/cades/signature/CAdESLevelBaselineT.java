@@ -29,7 +29,6 @@ import org.bouncycastle.cms.SignerInformation;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
@@ -63,7 +62,7 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	 */
 	private void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
 		final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-		if (SignatureLevel.CAdES_BASELINE_LTA.equals(cadesSignature.getDataFoundUpToLevel())) {
+		if (cadesSignature.hasLTAProfile()) {
 			throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
 		}
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation());

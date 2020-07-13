@@ -268,11 +268,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[] { SignatureLevel.JSON_NOT_ETSI, SignatureLevel.JAdES_BASELINE_B };
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector) {
 		Map<String, Object> sigPolicy = (Map<String, Object>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PID);

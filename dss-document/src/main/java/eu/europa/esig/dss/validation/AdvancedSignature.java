@@ -437,12 +437,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a value of {@link SignatureLevel}
 	 */
 	SignatureLevel getDataFoundUpToLevel();
-
-	/**
-	 * @return the list of signature levels for this type of signature, in the simple to complete order. Example:
-	 *         B,T,LT,LTA
-	 */
-	SignatureLevel[] getSignatureLevels();
 	
 	/**
 	 * Checks if all certificate chains present in the signature are self-signed

@@ -1085,11 +1085,4 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;
 	}
 
-	@Override
-	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[] { SignatureLevel.CMS_NOT_ETSI, SignatureLevel.CAdES_BASELINE_B, SignatureLevel.CAdES_BASELINE_T,
-				SignatureLevel.CAdES_101733_C, SignatureLevel.CAdES_101733_X, SignatureLevel.CAdES_BASELINE_LT, SignatureLevel.CAdES_101733_A,
-				SignatureLevel.CAdES_BASELINE_LTA };
-	}
-
 }

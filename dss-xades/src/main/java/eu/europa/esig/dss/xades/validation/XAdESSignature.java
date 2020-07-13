@@ -99,13 +99,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private static final long serialVersionUID = -2639858392612722185L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignature.class);
-
-	/**
-	 * This array contains all the XAdES signatures levels TODO: do not return redundant levels.
-	 */
-	private static SignatureLevel[] signatureLevels = new SignatureLevel[] { SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B,
-			SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_BASELINE_LT,
-			SignatureLevel.XAdES_BASELINE_LTA };
 	
 	/**
 	 * The default canonicalization method used in {@link SignatureDigestReference} computation
@@ -1093,11 +1086,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		} else {
 			return SignatureLevel.XAdES_BASELINE_T;
 		}
-	}
-
-	@Override
-	public SignatureLevel[] getSignatureLevels() {
-		return signatureLevels;
 	}
 
 	@Override
