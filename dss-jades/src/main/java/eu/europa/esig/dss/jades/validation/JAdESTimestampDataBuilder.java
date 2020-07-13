@@ -222,10 +222,13 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 				
 			}
+
+			byte[] messageImprint = baos.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("The 'all' timestamp message-imprint : {}", new String(messageImprint));
+			}
 			
-			LOG.info(new String(baos.toByteArray()));
-			
-			return baos.toByteArray();
+			return messageImprint;
 			
 			
 		} catch (IOException e) {
@@ -289,7 +292,13 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				LOG.warn("Previous archive timestamp is not found! Message imprint has not been not calculated!");
 			}
 			
-			return baos.toByteArray();
+			byte[] messageImprint = baos.toByteArray();
+
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("The 'previousArcTst' timestamp message-imprint : {}", new String(messageImprint));
+			}
+			
+			return messageImprint;
 			
 		} catch (IOException e) {
 			throw new DSSException("An error occurred during building of a message imprint");
