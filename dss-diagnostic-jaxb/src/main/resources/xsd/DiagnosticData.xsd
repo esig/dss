@@ -794,6 +794,8 @@
 			<xs:enumeration value="CAdES_V3" />
 			<xs:enumeration value="CAdES_DETACHED" />
 			<xs:enumeration value="PAdES" />
+			<xs:enumeration value="JAdES_ALL" />
+			<xs:enumeration value="JAdES_PREVIOUS_ARC_TST" />
 		</xs:restriction>
 	</xs:simpleType>
 	

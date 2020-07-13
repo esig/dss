@@ -34,7 +34,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void extractEtsiU() {
-		List<?> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
 		if (Utils.isCollectionEmpty(etsiU)) {
 			return;
 		}
@@ -42,27 +42,52 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 		for (Object item : etsiU) {
 			if (item instanceof Map) {
 				Map<?, ?> jsonObject = (Map<?, ?>) item;
-
-				Map<?, ?> rVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
-				if (rVals != null) {
-					extractOCSPValues(rVals, RevocationOrigin.REVOCATION_VALUES);
-				}
-
-				Map<?, ?> arVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
-				if (arVals != null) {
-					extractOCSPValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
-				}
-
-				Map<?, ?> rRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_REFS);
-				if (rRefs != null) {
-					extractOCSPReferences(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
-				}
-
-				Map<?, ?> arRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_REFS);
-				if (arRefs != null) {
-					extractOCSPReferences(arRefs, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
-				}
+				
+				extractRevocationValues(jsonObject);
+				extractAttributeRevocationValues(jsonObject);
+				extractTimestampValidationData(jsonObject);
+				
+				extractCompleteRevocationRefs(jsonObject);
+				extractAttributeRevocationRefs(jsonObject);
 			}
+		}
+	}
+	
+	private void extractRevocationValues(Map<?, ?> jsonObject) {
+		Map<?, ?> rVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
+		if (rVals != null) {
+			extractOCSPValues(rVals, RevocationOrigin.REVOCATION_VALUES);
+		}
+	}
+	
+	private void extractAttributeRevocationValues(Map<?, ?> jsonObject) {
+		Map<?, ?> arVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
+		if (arVals != null) {
+			extractOCSPValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+		}
+	}
+	
+	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
+		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
+		if (Utils.isMapNotEmpty(tstVd)) {
+			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.REV_VALS);
+			if (Utils.isMapNotEmpty(revVals)) {
+				extractOCSPValues(revVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+			}
+		}
+	}
+	
+	private void extractCompleteRevocationRefs(Map<?, ?> jsonObject) {
+		Map<?, ?> rRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_REFS);
+		if (rRefs != null) {
+			extractOCSPReferences(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+		}
+	}
+	
+	private void extractAttributeRevocationRefs(Map<?, ?> jsonObject) {
+		Map<?, ?> arRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_REFS);
+		if (arRefs != null) {
+			extractOCSPReferences(arRefs, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 		}
 	}
 

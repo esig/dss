@@ -206,6 +206,35 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
 		return ocspSource;
 	}
+	
+	/**
+	 * This method resets the source of certificates. It must be called when 
+	 * any certificate is added to the KeyInfo or CertificateValues (XAdES), or 'xVals' (JAdES).
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 */
+	public void resetCertificateSource() {
+		offlineCertificateSource = null;
+	}
+
+	/**
+	 * This method resets the sources of the revocation data. It must be called when -LT level is created.
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 */
+	public void resetRevocationSources() {
+		signatureCRLSource = null;
+		signatureOCSPSource = null;
+	}
+
+	/**
+	 * This method resets the timestamp source. It must be called when -LT level is created.
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 */
+	public void resetTimestampSource() {
+		signatureTimestampSource = null;
+	}
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
