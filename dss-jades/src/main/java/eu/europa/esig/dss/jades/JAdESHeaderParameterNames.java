@@ -210,7 +210,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Timestamp tokens array
 	 */
-	public static final String TST_TOKENS = "tsTokens";
+	public static final String TS_TOKENS = "tsTokens";
 
 	/**
 	 * Encoding (eg : DER,...)
@@ -276,5 +276,40 @@ public final class JAdESHeaderParameterNames {
 	 * Other certificate
 	 */
 	public static final String OTHER_CERT = "otherCert";
+
+	/**
+	 * Timestamp Validation Data
+	 */
+	public static final String TST_VD = "tstVd";
+
+	/**
+	 * TST Validation Data Certificate values
+	 */
+	public static final String CERT_VALS = "certVals";
+
+	/**
+	 * TST Validation Data Revocation values
+	 */
+	public static final String REV_VALS = "revVals";
+
+	/**
+	 * Shows of TST Validation Data covers a Content Tst
+	 */
+	public static final String ON_SDO = "onSdo";
+
+	/**
+	 * Archive TimeStamp
+	 */
+	public static final String ARC_TST = "arcTst";
+
+	/**
+	 * Archive TimeStamp
+	 */
+	public static final String TST_CONTAINER = "tstContainer";
+
+	/**
+	 * Shows if the ATST covers all data or only the last 'arcTst'-'tstVd' pair
+	 */
+	public static final String TIMESTAMPED = "timeStamped";
 
 }

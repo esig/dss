@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -34,12 +35,14 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * The class builds a JOSE header according to EN 119-182
@@ -421,8 +424,21 @@ public class JAdESLevelBaselineB {
 		}
 		
 		// canonicalization shall be null for content timestamps (see 5.2.6)
-		JsonObject tstContainer = JAdESUtils.getTstContainer(parameters.getContentTimestamps(), null); 
+		List<TimestampBinary> contentTimestampBinaries = toTimestampBinaries(parameters.getContentTimestamps());
+		JsonObject tstContainer = JAdESUtils.getTstContainer(contentTimestampBinaries, null); 
 		addCriticalHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
+	}
+	
+	private List<TimestampBinary> toTimestampBinaries(List<TimestampToken> timestampTokens) {
+		if (Utils.isCollectionEmpty(timestampTokens)) {
+			return Collections.emptyList();
+		}
+		List<TimestampBinary> timestampBinaries = new ArrayList<>();
+		for (TimestampToken timestampToken : timestampTokens) {
+			TimestampBinary timestampBinary = new TimestampBinary(timestampToken.getEncoded());
+			timestampBinaries.add(timestampBinary);
+		}
+		return timestampBinaries;
 	}
 
 	/**

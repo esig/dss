@@ -111,7 +111,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractEtsiU() {
-		List<?> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
 		if (Utils.isCollectionEmpty(etsiU)) {
 			return;
 		}
@@ -119,14 +119,33 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		for (Object item : etsiU) {
 			if (item instanceof Map) {
 				Map<?, ?> jsonObject = (Map<?, ?>) item;
-				List<?> xVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
-				if (Utils.isCollectionNotEmpty(xVals)) {
-					extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
-				}
-				List<?> axVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
-				if (Utils.isCollectionNotEmpty(axVals)) {
-					extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
-				}
+				extractCertificateValues(jsonObject);
+				extractAttrAutoritiesCertValues(jsonObject);
+				extractTimestampValidationData(jsonObject);
+			}
+		}
+	}
+	
+	private void extractCertificateValues(Map<?, ?> jsonObject) {
+		List<?> xVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
+		if (Utils.isCollectionNotEmpty(xVals)) {
+			extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
+		}
+	}
+	
+	private void extractAttrAutoritiesCertValues(Map<?, ?> jsonObject) {
+		List<?> axVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
+		if (Utils.isCollectionNotEmpty(axVals)) {
+			extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+		}
+	}
+	
+	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
+		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
+		if (Utils.isMapNotEmpty(tstVd)) {
+			List<?> certVals = (List<?>) tstVd.get(JAdESHeaderParameterNames.CERT_VALS);
+			if (Utils.isCollectionNotEmpty(certVals)) {
+				extractCertificateValues(certVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 			}
 		}
 	}

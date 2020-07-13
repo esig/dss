@@ -331,14 +331,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return offlineCertificateSource;
 	}
 
-	/**
-	 * This method resets the source of certificates. It must be called when any certificate is added to the KeyInfo or
-	 * CertificateValues.
-	 */
-	public void resetCertificateSource() {
-		offlineCertificateSource = null;
-	}
-
 	@Override
 	public OfflineCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
@@ -354,14 +346,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signatureOCSPSource;
 	}
-
-	/**
-	 * This method resets the sources of the revocation data. It must be called when -LT level is created.
-	 */
-	public void resetRevocationSources() {
-		signatureCRLSource = null;
-		signatureOCSPSource = null;
-	}
 	
 	@Override
 	public XAdESTimestampSource getTimestampSource() {
@@ -369,13 +353,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths);
 		}
 		return (XAdESTimestampSource) signatureTimestampSource;
-	}
-
-	/**
-	 * This method resets the timestamp source. It must be called when -LT level is created.
-	 */
-	public void resetTimestampSource() {
-		signatureTimestampSource = null;
 	}
 
 	@Override

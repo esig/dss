@@ -20,4 +20,8 @@ public class JAdESAttribute implements ISignatureAttribute {
 		return value;
 	}
 	
+	public int getValueHashCode() {
+		return value.hashCode();
+	}
+	
 }

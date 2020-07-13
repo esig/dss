@@ -39,6 +39,12 @@ public enum ArchiveTimestampType {
 	/* For ASiC */
 	CAdES_DETACHED,
 	
-	PAdES;
+	PAdES,
+	
+	/** Timestamps all the preceding elements from 'etsiU' */
+	JAdES_ALL,
+
+	/** Timestamps only previous 'arcTst' and its related 'tstVd' */
+	JAdES_PREVIOUS_ARC_TST;
 
 }

@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.jose4j.base64url.Base64Url;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
+import org.jose4j.json.internal.json_simple.JSONValue;
 import org.jose4j.jwx.CompactSerializer;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
@@ -40,6 +41,7 @@ import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -83,6 +85,17 @@ public class JAdESUtils {
 	 */
 	public static String toBase64Url(byte[] binary) {
 		return Base64Url.encode(binary);
+	}
+
+	/**
+	 * Returns a base64Url encoded string from the provided JSON Object or JSON Array
+	 * 
+	 * @param object JSON Object or JSON Array to encode
+	 * @return base64Url encoded {@link String}
+	 */
+	public static String toBase64Url(Object object) {
+		String json = JSONValue.toJSONString(object);
+		return Base64Url.encode(json.getBytes());
 	}
 	
 	/**
@@ -254,9 +267,9 @@ public class JAdESUtils {
 	 * @param canonicalizationMethodUri a canonicalization method (OPTIONAL, e.g. shall not be present for content timestamps)
 	 * @return 'tstContainer' {@link JsonObject}
 	 */
-	public static JsonObject getTstContainer(List<TimestampToken> timestampTokens, String canonicalizationMethodUri) {
-		if (Utils.isCollectionEmpty(timestampTokens)) {
-			throw new DSSException("Impossible to create 'tstContainer'. TimestampTokens cannot be null or empty!");
+	public static JsonObject getTstContainer(List<TimestampBinary> timestampBinaries, String canonicalizationMethodUri) {
+		if (Utils.isCollectionEmpty(timestampBinaries)) {
+			throw new DSSException("Impossible to create 'tstContainer'. List of TimestampBinaries cannot be null or empty!");
 		}
 
 		Map<String, Object> tstContainerParams = new LinkedHashMap<>();
@@ -264,12 +277,12 @@ public class JAdESUtils {
 			tstContainerParams.put(JAdESHeaderParameterNames.CANON_ALG, canonicalizationMethodUri);
 		}
 		List<JsonObject> tsTokens = new ArrayList<>();
-		for (TimestampToken timestampToken : timestampTokens) {
-			JsonObject tstToken = getTstToken(timestampToken);
+		for (TimestampBinary timestampBinary : timestampBinaries) {
+			JsonObject tstToken = getTstToken(timestampBinary);
 			tsTokens.add(tstToken);
 		}
 		JSONArray tsTokensArray = new JSONArray(tsTokens);
-		tstContainerParams.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokensArray);
+		tstContainerParams.put(JAdESHeaderParameterNames.TS_TOKENS, tsTokensArray);
 		
 		return new JsonObject(tstContainerParams);
 	}
@@ -280,13 +293,13 @@ public class JAdESUtils {
 	 * @param timestampToken {@link TimestampToken}s to incorporate
 	 * @return 'tstToken' {@link JsonObject}
 	 */
-	private static JsonObject getTstToken(TimestampToken timestampToken) {
-		Objects.requireNonNull(timestampToken, "timestampToken cannot be null!");
+	private static JsonObject getTstToken(TimestampBinary timestampBinary) {
+		Objects.requireNonNull(timestampBinary, "timestampBinary cannot be null!");
 		
 		Map<String, Object> tstTokenParams = new HashMap<>();
 		// only RFC 3161 TimestampTokens are supported
 		// 'type', 'encoding' and 'specRef' params are not need to be defined (see EN 119-182 ch. 5.4.3.3)
-		tstTokenParams.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timestampToken.getEncoded())); // DER-encoded value
+		tstTokenParams.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timestampBinary.getBytes()));
 		
 		return new JsonObject(tstTokenParams);
 	}
@@ -360,12 +373,13 @@ public class JAdESUtils {
 	 * @param jws the signature
 	 * @return etsiU content or an empty List
 	 */
-	public static List<?> getEtsiU(JWS jws) {
+	@SuppressWarnings("unchecked")
+	public static List<Object> getEtsiU(JWS jws) {
 		Map<String, Object> unprotected = jws.getUnprotected();
 		if (unprotected == null) {
 			return Collections.emptyList();
 		}
-		return (List<?>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		return (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 	}
 
 }

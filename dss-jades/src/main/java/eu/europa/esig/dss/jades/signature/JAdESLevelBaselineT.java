@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +14,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
+import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -82,25 +85,23 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 
 		assertExtendSignatureToTPossible(jadesSignature, params);
 
-		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
+		// The timestamp must be added only if there is no one or the extension -T level is being created
+		if (!jadesSignature.hasTProfile() || SignatureLevel.JAdES_BASELINE_T.equals(params.getSignatureLevel())) {
+			
+			List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
-		JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
-		DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
-		byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, jadesSignature.getSignatureValue());
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
-
-		JSONArray tsTokens = new JSONArray();
-		
-		JSONObject tst = new JSONObject();
-		tst.put(JAdESHeaderParameterNames.VAL, Utils.toBase64(timeStampResponse.getBytes()));
-		tsTokens.add(tst);
-		
-		JSONObject sigTst = new JSONObject();
-		sigTst.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokens);
-
-		JSONObject sigTstItem = new JSONObject();
-		sigTstItem.put(JAdESHeaderParameterNames.SIG_TST, sigTst);
-		unsignedProperties.add(sigTstItem);
+			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
+			byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, jadesSignature.getSignatureValue());
+			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
+			
+			JsonObject tstContainer = JAdESUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
+	
+			JSONObject sigTstItem = new JSONObject();
+			sigTstItem.put(JAdESHeaderParameterNames.SIG_TST, tstContainer);
+			unsignedProperties.add(sigTstItem);
+			
+		}
 	}
 
 	@SuppressWarnings("unchecked")

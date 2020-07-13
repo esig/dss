@@ -793,10 +793,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 
 	protected void addReferencesForPreviousTimestamps(List<TimestampedReference> references, List<TimestampToken> timestampedTimestamps) {
-		for (final TimestampToken timestampToken : timestampedTimestamps) {
-			addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
-			addTimestampedReferences(references, timestampToken);
-			addEncapsulatedValuesFromTimestamp(references, timestampToken);
+		if (Utils.isCollectionNotEmpty(timestampedTimestamps)) {
+			for (final TimestampToken timestampToken : timestampedTimestamps) {
+				addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
+				addTimestampedReferences(references, timestampToken);
+				addEncapsulatedValuesFromTimestamp(references, timestampToken);
+			}
 		}
 	}
 	
