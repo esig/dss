@@ -273,7 +273,7 @@ public class JAdESUtils {
 	/**
 	 * Creates a 'tstContainer' JsonObject according to EN 119-182 ch. 5.4.3.3 The tstContainer type
 	 * 
-	 * @param timestampTokens a list of {@link TimestampToken}s to incorporate
+	 * @param timestampBinaries a list of {@link TimestampBinary}s to incorporate
 	 * @param canonicalizationMethodUri a canonicalization method (OPTIONAL, e.g. shall not be present for content timestamps)
 	 * @return 'tstContainer' {@link JsonObject}
 	 */

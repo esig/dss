@@ -77,7 +77,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * Returns ArchiveTimestamp Data for a new Timestamp
 	 * 
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @param archiveTimestampType {@link JAdESArchiveTimestampType}
+	 * @param jadesArchiveTimestampType {@link JAdESArchiveTimestampType}
 	 * @return byte array timestamp data
 	 */
 	public byte[] getArchiveTimestampData(final String canonicalizationMethod, final JAdESArchiveTimestampType jadesArchiveTimestampType) {
