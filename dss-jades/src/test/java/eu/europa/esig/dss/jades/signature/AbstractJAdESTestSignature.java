@@ -12,7 +12,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -90,11 +90,11 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 			for (DSSDocument original : originalDocuments) {
 				boolean found = false;
 				
-				if (original instanceof HTTPHeaderDocument) {
-					HTTPHeaderDocument httpHeaderDocument = (HTTPHeaderDocument) original;
+				if (original instanceof HTTPHeader) {
+					HTTPHeader httpHeaderDocument = (HTTPHeader) original;
 					for (DSSDocument retrieved : retrievedOriginalDocuments) {
-						if (retrieved instanceof HTTPHeaderDocument) {
-							HTTPHeaderDocument retrievedDoc = (HTTPHeaderDocument) retrieved;
+						if (retrieved instanceof HTTPHeader) {
+							HTTPHeader retrievedDoc = (HTTPHeader) retrieved;
 							if (Utils.areStringsEqual(httpHeaderDocument.getName(), retrievedDoc.getName()) && 
 									Utils.areStringsEqual(httpHeaderDocument.getValue(), retrievedDoc.getValue())) {
 								found = true;

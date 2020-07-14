@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -15,14 +15,15 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class HttpHeadersPayloadBuilder {
 	
-	private final List<HTTPHeaderDocument> httpHeaderDocuments;
-	
+	/** The provided detached documents */
+	private final List<HTTPHeader> httpHeaderDocuments;
+
 	/**
 	 * The default constructor
 	 * 
-	 * @param httpHeaderDocuments a list of {@link HTTPHeaderDocument}s to be signed
+	 * @param httpHeaderDocuments a list of {@link HTTPHeader}s to be signed
 	 */
-	public HttpHeadersPayloadBuilder(List<HTTPHeaderDocument> httpHeaderDocuments) {
+	public HttpHeadersPayloadBuilder(List<HTTPHeader> httpHeaderDocuments) {
 		this.httpHeaderDocuments = httpHeaderDocuments;
 	}
 	
@@ -62,7 +63,8 @@ public class HttpHeadersPayloadBuilder {
 		 */
 		
 		Map<String, String> httpFields = new LinkedHashMap<>();
-		for (HTTPHeaderDocument httpHeader : httpHeaderDocuments) {
+		
+		for (HTTPHeader httpHeader : httpHeaderDocuments) {
 			String headerValue = httpFields.get(httpHeader.getName());
 			
 			if (headerValue == null) {

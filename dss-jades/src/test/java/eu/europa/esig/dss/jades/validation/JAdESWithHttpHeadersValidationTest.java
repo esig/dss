@@ -8,7 +8,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -37,16 +37,16 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(new HTTPHeaderDocument("(request-target)", 
+		detachedContents.add(new HTTPHeader("(request-target)", 
 				"post https://api.testbank.com/v1/payments/sepa-credit-transfers"));
-		detachedContents.add(new HTTPHeaderDocument("Content-Type", "application/json"));
-		detachedContents.add(new HTTPHeaderDocument("X-Request-ID", "99391c7e-ad88-49ec-a2ad-99ddcb1f7721"));
-		detachedContents.add(new HTTPHeaderDocument("PSU-IP-Address", "192.168.8.78"));
-		detachedContents.add(new HTTPHeaderDocument("PSU-GEO-Location", "GEO:52.506931,13.144558"));
-		detachedContents.add(new HTTPHeaderDocument("PSU-User-Agent", 
+		detachedContents.add(new HTTPHeader("Content-Type", "application/json"));
+		detachedContents.add(new HTTPHeader("X-Request-ID", "99391c7e-ad88-49ec-a2ad-99ddcb1f7721"));
+		detachedContents.add(new HTTPHeader("PSU-IP-Address", "192.168.8.78"));
+		detachedContents.add(new HTTPHeader("PSU-GEO-Location", "GEO:52.506931,13.144558"));
+		detachedContents.add(new HTTPHeader("PSU-User-Agent", 
 				"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0"));
-		detachedContents.add(new HTTPHeaderDocument("Date", "Fri, 3 Apr 2020 16:38:37 GMT"));
-		detachedContents.add(new HTTPHeaderDocument("Digest", "SHA-256=+xeh7JAayYPh8K13UnQCBBcniZzsyat+KDiuy8aZYdI="));
+		detachedContents.add(new HTTPHeader("Date", "Fri, 3 Apr 2020 16:38:37 GMT"));
+		detachedContents.add(new HTTPHeader("Digest", "SHA-256=+xeh7JAayYPh8K13UnQCBBcniZzsyat+KDiuy8aZYdI="));
 		return detachedContents;
 	}
 	

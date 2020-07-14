@@ -1,46 +1,42 @@
 package eu.europa.esig.dss.jades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 
-public class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends AbstractJAdESMultipleDocumentSignatureTest {
+public class JAdESLevelLTADetactedTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
-	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
+	private JAdESService service;
 	private List<DSSDocument> documentsToSign;
 	private Date signingDate;
 
 	@BeforeEach
 	public void init() throws Exception {
-		JAdESService jadesService = new JAdESService(getCompleteCertificateVerifier());
-		jadesService.setTspSource(getGoodTsa());
-		service = jadesService;
-		
-		signingDate = new Date();
-		
+		service = new JAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 		documentsToSign = new ArrayList<>();
-		documentsToSign.add(new HTTPHeader("content-type", "application/json"));
-		documentsToSign.add(new HTTPHeader("x-example", "HTTP Headers Example"));
-		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));
-		
-		DSSDocument messageBodyDocument = new FileDocument("src/test/resources/sample.json");
-		String digest = messageBodyDocument.getDigest(DigestAlgorithm.SHA1);
-		documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
+		documentsToSign.add(new FileDocument(new File("src/test/resources/sample.json")));
+		documentsToSign.add(new InMemoryDocument("Hello World!".getBytes(), "HelloWorld"));
+		signingDate = new Date();
 	}
 
 	@Override
@@ -50,26 +46,35 @@ public class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends Abstrac
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-		
+		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
-		signatureParameters.setSigDMechanism(SigDMechanism.HTTP_HEADERS);
 		return signatureParameters;
 	}
 	
 	@Override
-	protected List<DSSDocument> getDetachedContents() {
-		// change order
-		List<DSSDocument> detachedContents = new ArrayList<>();
-
-		detachedContents.add(new HTTPHeader("x-example", "HTTP Headers Example"));
-		DSSDocument messageBodyDocument = new FileDocument("src/test/resources/sample.json");
-		String digest = messageBodyDocument.getDigest(DigestAlgorithm.SHA1);
-		detachedContents.add(new HTTPHeader("Digest", "SHA="+digest));
-		detachedContents.add(new HTTPHeader("content-type", "application/json"));
-		detachedContents.add(new HTTPHeader("x-example", "Duplicated Header"));
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 		
-		return detachedContents;
+		boolean archiveTstFound = false;
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			if (timestampWrapper.getType().isArchivalTimestamp()) {
+				archiveTstFound = true;
+			}
+			assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
+		}
+		assertTrue(archiveTstFound);
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+		
+		assertEquals(2, diagnosticData.getOriginalSignerDocuments().size());
+	}
+
+	@Override
+	protected List<DSSDocument> getDetachedContents() {
+		return documentsToSign;
 	}
 
 	@Override

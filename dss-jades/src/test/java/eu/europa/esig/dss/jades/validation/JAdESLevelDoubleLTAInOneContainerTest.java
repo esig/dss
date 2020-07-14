@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.jades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -49,6 +50,8 @@ public class JAdESLevelDoubleLTAInOneContainerTest extends AbstractJAdESTestVali
 			}
 		}
 		assertEquals(2, archiveTstCounter);
+		assertNotEquals(timestampList.get(0).getSigningCertificate().getId(), timestampList.get(1).getSigningCertificate().getId());
+		
 	}
 
 }

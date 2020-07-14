@@ -22,7 +22,7 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
@@ -465,7 +465,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		} catch (DSSException e) {
-			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage(), e);
+			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage());
 		}
 		
 		return signatureValueReferenceValidation;
@@ -524,8 +524,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		 * "Signing HTTP Messages" [17].
 		 */
 		List<DSSDocument> documentsByUri = getSignedDocumentsByUri(false);
-		List<HTTPHeaderDocument> httpHeaderDocuments = JAdESUtils.toHTTPHeaderDocuments(documentsByUri);
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaderDocuments);
+		List<HTTPHeader> httpHeaders = JAdESUtils.toHTTPHeaders(documentsByUri);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
 		
 		return httpHeadersPayloadBuilder.build();
 	}
@@ -559,8 +559,13 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	 * @param caseSensitive defines if the name value is case-sensitive
 	 * @return a list of {@link DSSDocument}s
 	 */
-	private List<DSSDocument> getSignedDocumentsByUri(boolean caseSensitive) {
+	public List<DSSDocument> getSignedDocumentsByUri(boolean caseSensitive) {
 		List<String> signedDataUriList = getSignedDataUriList();
+		
+		if (Utils.isCollectionEmpty(detachedContents)) {
+			LOG.warn("Detached contents is not provided!");
+			return Collections.emptyList();
+		}
 		
 		if (signedDataUriList.size() == 1 && detachedContents.size() == 1) {
 			return detachedContents;

@@ -57,6 +57,8 @@ public class JAdESUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESUtils.class);
 	
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
+	
+	public static final String HTTP_HEADER_DIGEST = "Digest";
 
 	/* Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -115,6 +117,21 @@ public class JAdESUtils {
 	 */
 	public static byte[] fromBase64Url(String base64UrlEncoded) {
 		return Base64Url.decode(base64UrlEncoded);
+	}
+	
+	/**
+	 * Checks if the provided string is base64Url encoded
+	 * 
+	 * @param str {@link String} to check
+	 * @return TRUE if the String is base64Url encoded, FALSE otherwise
+	 */
+	public static boolean isBase64UrlEncoded(String str) {
+		try {
+			byte[] decoded = Base64Url.decode(str);
+			return Utils.isArrayNotEmpty(decoded);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	/**
@@ -331,20 +348,20 @@ public class JAdESUtils {
 	}
 	
 	/**
-	 * Casts a list of {@link DSSDocument}s to a list of {@code HTTPHeaderDocument}s
+	 * Casts a list of {@link DSSDocument}s to a list of {@code HTTPHeader}s
 	 * 
-	 * @param dssDocuments a list of {@link DSSDocument}s to be casted to {@link HTTPHeaderDocument}s
-	 * @return a list of {@link HTTPHeaderDocument}s
-	 * @throws IllegalArgumentException if a document of not {@link HTTPHeaderDocument} class found
+	 * @param dssDocuments a list of {@link DSSDocument}s to be casted to {@link HTTPHeader}s
+	 * @return a list of {@link HTTPHeader}s
+	 * @throws IllegalArgumentException if a document of not {@link HTTPHeader} class found
 	 */
-	public static List<HTTPHeaderDocument> toHTTPHeaderDocuments(List<DSSDocument> dssDocuments) {
-		List<HTTPHeaderDocument> httpHeaderDocuments = new ArrayList<>();
+	public static List<HTTPHeader> toHTTPHeaders(List<DSSDocument> dssDocuments) {
+		List<HTTPHeader> httpHeaderDocuments = new ArrayList<>();
 		for (DSSDocument document : dssDocuments) {
-			if (document instanceof HTTPHeaderDocument) {
-				HTTPHeaderDocument httpHeaderDocument = (HTTPHeaderDocument) document;
+			if (document instanceof HTTPHeader) {
+				HTTPHeader httpHeaderDocument = (HTTPHeader) document;
 				httpHeaderDocuments.add(httpHeaderDocument);
 			} else {
-				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeaderDocument!", document.getName()));
+				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeader!", document.getName()));
 			}
 		}
 		return httpHeaderDocuments;

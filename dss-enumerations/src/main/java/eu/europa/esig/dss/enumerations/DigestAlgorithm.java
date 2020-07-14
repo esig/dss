@@ -35,15 +35,15 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	// see DEPRECATED http://www.w3.org/TR/2012/WD-xmlsec-algorithms-20120105/
 	// see http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	// @formatter:off
-	SHA1("SHA1", "SHA-1", "1.3.14.3.2.26", "http://www.w3.org/2000/09/xmldsig#sha1", 20),
+	SHA1("SHA1", "SHA-1", "1.3.14.3.2.26", "http://www.w3.org/2000/09/xmldsig#sha1", "SHA", 20),
 
 	SHA224("SHA224", "SHA-224", "2.16.840.1.101.3.4.2.4", "http://www.w3.org/2001/04/xmldsig-more#sha224", 28),
 
-	SHA256("SHA256", "SHA-256", "2.16.840.1.101.3.4.2.1", "http://www.w3.org/2001/04/xmlenc#sha256", 32),
+	SHA256("SHA256", "SHA-256", "2.16.840.1.101.3.4.2.1", "http://www.w3.org/2001/04/xmlenc#sha256", "SHA-256", 32),
 
 	SHA384("SHA384", "SHA-384", "2.16.840.1.101.3.4.2.2", "http://www.w3.org/2001/04/xmldsig-more#sha384", 48),
 
-	SHA512("SHA512", "SHA-512", "2.16.840.1.101.3.4.2.3", "http://www.w3.org/2001/04/xmlenc#sha512", 64),
+	SHA512("SHA512", "SHA-512", "2.16.840.1.101.3.4.2.3", "http://www.w3.org/2001/04/xmlenc#sha512", "SHA-512", 64),
 
 	// see https://tools.ietf.org/html/rfc6931
 	SHA3_224("SHA3-224", "SHA3-224", "2.16.840.1.101.3.4.2.7", "http://www.w3.org/2007/05/xmldsig-more#sha3-224", 28),
@@ -65,7 +65,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 
 	MD2("MD2", "MD2", "1.2.840.113549.2.2", "http://www.w3.org/2001/04/xmldsig-more#md2"),
 
-	MD5("MD5", "MD5", "1.2.840.113549.2.5", "http://www.w3.org/2001/04/xmldsig-more#md5"),
+	MD5("MD5", "MD5", "1.2.840.113549.2.5", "http://www.w3.org/2001/04/xmldsig-more#md5", "MD5"),
 
 	WHIRLPOOL("WHIRLPOOL", "WHIRLPOOL", "1.0.10118.3.0.55", "http://www.w3.org/2007/05/xmldsig-more#whirlpool");
 	/**
@@ -80,6 +80,8 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	private final String javaName;
 	private final String oid;
 	private final String xmlId;
+	/* See RFC 5843, used in JAdES sigD HTTP_HEADER */
+	private final String jwsHttpHeader;
 	/* In case of MGF usage */
 	private final int saltLength;
 
@@ -89,6 +91,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 		private static final Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
 		private static final Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
 		private static final Map<String, DigestAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
+		private static final Map<String, DigestAlgorithm> JWS_HTTP_HEADER_ALGORITHMS = registerJwsHttpHeaderAlgorithms();
 
 		private static Map<String, DigestAlgorithm> registerOIDAlgorithms() {
 			final Map<String, DigestAlgorithm> map = new HashMap<>();
@@ -118,6 +121,14 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 			final Map<String, DigestAlgorithm> map = new HashMap<>();
 			for (final DigestAlgorithm digestAlgorithm : values()) {
 				map.put(digestAlgorithm.javaName, digestAlgorithm);
+			}
+			return map;
+		}
+
+		private static Map<String, DigestAlgorithm> registerJwsHttpHeaderAlgorithms() {
+			final Map<String, DigestAlgorithm> map = new HashMap<>();
+			for (final DigestAlgorithm digestAlgorithm : values()) {
+				map.put(digestAlgorithm.jwsHttpHeader, digestAlgorithm);
 			}
 			return map;
 		}
@@ -241,15 +252,43 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 		return algorithm;
 	}
 
+	/**
+	 * Returns the digest algorithm associated to the given JWS Http Header Hash Algorithm.
+	 * See RFC 5843.
+	 *
+	 * @param hashName
+	 *                the algorithm name by RFC 5843
+	 * @return the digest algorithm linked to the given name
+	 * @throws IllegalArgumentException
+	 *                                  if the name doesn't match any digest
+	 *                                  algorithm
+	 */
+	public static DigestAlgorithm forJWSHttpHeader(final String hashName) {
+		final DigestAlgorithm algorithm = Registry.JWS_HTTP_HEADER_ALGORITHMS.get(hashName);
+		if (algorithm == null) {
+			throw new IllegalArgumentException("Unsupported algorithm: " + hashName);
+		}
+		return algorithm;
+	}
+
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId) {
-		this(name, javaName, oid, xmlId, 0);
+		this(name, javaName, oid, xmlId, null, 0);
+	}
+
+	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final String jwsHttpHeader) {
+		this(name, javaName, oid, xmlId, jwsHttpHeader, 0);
 	}
 
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final int saltLength) {
+		this(name, javaName, oid, xmlId, null, saltLength);
+	}
+
+	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final String jwsHttpHeader, final int saltLength) {
 		this.name = name;
 		this.javaName = javaName;
 		this.oid = oid;
 		this.xmlId = xmlId;
+		this.jwsHttpHeader = jwsHttpHeader;
 		this.saltLength = saltLength;
 	}
 
@@ -289,6 +328,15 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	@Override
 	public String getUri() {
 		return xmlId;
+	}
+
+	/**
+	 * Get the algorithm name according to RFC 5843
+	 * 
+	 * @return the algorithm name
+	 */
+	public String getJwsHttpHeaderAlgo() {
+		return jwsHttpHeader;
 	}
 
 	/**

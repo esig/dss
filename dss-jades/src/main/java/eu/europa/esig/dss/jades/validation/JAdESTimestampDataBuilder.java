@@ -12,12 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
+import eu.europa.esig.dss.jades.HTTPHeader;
+import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -33,16 +38,98 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getContentTimestampData(TimestampToken timestampToken) {
-		return new InMemoryDocument(getSignedDataBinaries());
+		byte[] signedDataBinaries = getSignedDataBinaries(false);
+		if (Utils.isArrayNotEmpty(signedDataBinaries)) {
+			return new InMemoryDocument(signedDataBinaries);
+		}
+		return null;
 	}
 	
-	private byte[] getSignedDataBinaries() {
+	private byte[] getSignedDataBinaries(boolean archiveTst) {
+		SigDMechanism sigDMechanism = signature.getSigDMechanism();
+		if (sigDMechanism != null) {
+			return getSigDReferencedOctets(sigDMechanism, archiveTst);
+		} else {
+			return getBase64UrlEncodedPayload();
+		}
+	}
+	
+	private byte[] getBase64UrlEncodedPayload() {
 		try {
-			// TODO sigD
 			return JAdESUtils.toBase64Url(signature.getJws().getPayloadBytes()).getBytes();
 		} catch (JoseException e) {
 			throw new DSSException("Unable to extract the payload", e);
 		}
+	}
+	
+	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean archiveTst) {
+		/*
+		 * 3)	Else, if the JAdES signature incorporates the sigD header parameter specified in clause 5.2.8 of the present document, then:
+		 * -	For each reference to one data object within the ordered list of references present within the aforementioned header parameter:
+		 *      	Retrieve the referenced data object.
+		 *          Base64url encode the retrieved data object
+		 *          Concatenate the result to the octet stream.
+		 */
+		List<DSSDocument> documentList = null;
+		switch (sigDMechanism) {
+			case HTTP_HEADERS:
+				documentList = signature.getSignedDocumentsByUri(false);
+				break;
+			case OBJECT_ID_BY_URI:
+			case OBJECT_ID_BY_URI_HASH:
+				documentList = signature.getSignedDocumentsByUri(true);
+				break;
+			default:
+				LOG.warn("Unsupported SigDMechanism has been found '{}'!", sigDMechanism);
+				return null;
+		}
+		
+		if (Utils.isCollectionEmpty(documentList)) {
+			LOG.warn("Unable to compute message-imprint for a content tst with sigDMechanism '{}'! "
+					+ "The referenced documents are not found.", sigDMechanism);
+			return null;
+		}
+		
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
+			for (DSSDocument document : documentList) {
+				byte[] documentOctets = null;
+				if (document instanceof HTTPHeader) {
+					HTTPHeader httpHeader = (HTTPHeader) document;
+					if (JAdESUtils.HTTP_HEADER_DIGEST.equals(httpHeader.getName()) && archiveTst) {
+						if (httpHeader instanceof HTTPHeaderDigest) {
+							HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) httpHeader;
+							DSSDocument messageBodyDocument = httpHeaderDigest.getMessageBodyDocument();
+							documentOctets = DSSUtils.toByteArray(messageBodyDocument);
+						} else {
+							throw new DSSException("Unable to compute message-imprint for an Archive Timestamp! "
+									+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
+						}
+					} else {
+						documentOctets = httpHeader.getValue().getBytes();
+					}
+					
+				} else {
+					documentOctets = DSSUtils.toByteArray(document);
+				}
+				
+				String base64UrlEncoded = JAdESUtils.toBase64Url(documentOctets);
+				baos.write(base64UrlEncoded.getBytes());
+			}
+			
+			byte[] messageImprint = baos.toByteArray();
+
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("The 'previousArcTst' timestamp message-imprint : {}", new String(messageImprint));
+			}
+			
+			return messageImprint;
+			
+		} catch (IOException e) {
+			throw new DSSException(String.format("An error occurred during a message-imprint computation for "
+					+ "a content timestamp with sigDMechanism '%s'. Reason : %s", sigDMechanism, e.getMessage()), e);
+		}
+		
 	}
 
 	@Override
@@ -135,7 +222,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 *               if both the payload component sigD header parameters are absent.
 			 */
 			
-			baos.write(getSignedDataBinaries());
+			baos.write(getSignedDataBinaries(true));
 			
 			/*
 			 * 2) The character '.'.
@@ -164,8 +251,6 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * 
 			 * NOTE: There is a difference in computation depending on base64Url value
 			 */
-			
-			boolean base64UrlEncoded = !jws.isRfc7797UnencodedPayload();
 			
 			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
 			
@@ -215,7 +300,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					break;
 				}
 				
-				if (base64UrlEncoded) {
+				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
 					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));

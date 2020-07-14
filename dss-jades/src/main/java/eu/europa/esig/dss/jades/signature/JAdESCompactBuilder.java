@@ -56,7 +56,8 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 		}
 		SignatureLevel signatureLevel = signatureParameters.getSignatureLevel();
 		if (!SignatureLevel.JAdES_BASELINE_B.equals(signatureLevel)) {
-			throw new DSSException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature!");
+			throw new DSSException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature! "
+					+ "Change JwsSerializationType in JAdESSignatureParameters in order to support extension!");
 		}
 	}
 

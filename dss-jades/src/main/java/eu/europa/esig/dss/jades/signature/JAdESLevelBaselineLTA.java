@@ -148,11 +148,42 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		JAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		JAdESArchiveTimestampType archiveTimestampType = archiveTimestampParameters.getArchiveTimestampType();
-		if (SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel) && 
-				JAdESArchiveTimestampType.TIMESTAMPED_PREVIOUS_ARC_TST.equals(archiveTimestampType) && !jadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend the signature. The signature shall contain an 'arcTst' for extension with"
-					+ "'previousArcTst' archive timestamp!";
-			throw new DSSException(exceptionMessage);
+		if (SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel)) {
+			if (JAdESArchiveTimestampType.TIMESTAMPED_PREVIOUS_ARC_TST.equals(archiveTimestampType) && !jadesSignature.hasLTAProfile()) {
+				throw new DSSException("Cannot extend the signature. The signature shall contain an 'arcTst' for extension with"
+						+ "'previousArcTst' archive timestamp!");
+			}
+			if (JAdESArchiveTimestampType.TIMESTAMPED_ALL.equals(archiveTimestampType)) {
+				String errorMessage = "Unsupported 'etsiU' container structure! Extension is not possible.";
+				
+				Boolean base64UrlEncoded = null;
+				
+				List<Object> etsiU = JAdESUtils.getEtsiU(jadesSignature.getJws());
+				for (Object unsignedProperty : etsiU) {
+					boolean currentObjectBase64UrlEncoded = false;
+					
+					if (!(unsignedProperty instanceof Map<?, ?>)) {
+						throw new DSSException(errorMessage);
+					}
+					Map<?, ?> propertyMap = (Map<?, ?>) unsignedProperty;
+					if (propertyMap.size() != 1) {
+						throw new DSSException(errorMessage);
+					}
+					Object propertyValue = propertyMap.values().iterator().next();
+					if (propertyValue instanceof String && JAdESUtils.isBase64UrlEncoded((String)propertyValue)) {
+						currentObjectBase64UrlEncoded = true;
+					}
+					
+					if (base64UrlEncoded == null) {
+						base64UrlEncoded = currentObjectBase64UrlEncoded;
+					}
+					
+					if (base64UrlEncoded != currentObjectBase64UrlEncoded) {
+						throw new DSSException(errorMessage);
+					}
+				}
+				
+			}
 		}
 	}
 

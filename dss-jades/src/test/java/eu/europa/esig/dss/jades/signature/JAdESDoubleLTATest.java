@@ -63,7 +63,7 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-         signedDocument.save("target/signed.json");
+        // signedDocument.save("target/signed.json");
          
         checkOnSigned(signedDocument, 0);
 
@@ -82,7 +82,7 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         
         DSSDocument doubleLTADoc = service.extendDocument(extendedDocument, extendParameters);
         
-         doubleLTADoc.save("target/doubleLTA.json");
+        // doubleLTADoc.save("target/doubleLTA.json");
          
         checkOnSigned(doubleLTADoc, 2);
         

@@ -1,10 +1,9 @@
 package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -12,12 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -25,9 +25,9 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAdESMultipleDocumentSignatureTest {
+public class JAdESLevelBDetachedHttpHeadersWithContentTstTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument originalDocument;
@@ -48,10 +48,7 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		documentsToSign.add(new HTTPHeader("content-type", "application/json"));
 		documentsToSign.add(new HTTPHeader("x-example", "HTTP Headers Example"));
 		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));     
-		
-		// build "Digest" header manually
-        String digest = originalDocument.getDigest(DigestAlgorithm.SHA1);
-        documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
+		documentsToSign.add(new HTTPHeaderDigest(originalDocument, DigestAlgorithm.SHA1));
 	}
 
 	@Override
@@ -62,8 +59,12 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-		
+
 		signatureParameters.setSigDMechanism(SigDMechanism.HTTP_HEADERS);
+
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentsToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+		
 		return signatureParameters;
 	}
 	
@@ -81,31 +82,24 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 	}
 	
 	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		
+		TimestampWrapper contentTimestamp = timestampList.get(0);
+		assertEquals(TimestampType.CONTENT_TIMESTAMP, contentTimestamp.getType());
+		assertEquals(2, contentTimestamp.getTimestampedSignedData().size());
+	}
+	
+	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		super.checkSignatureScopes(diagnosticData);
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertEquals(2, signatureScopes.size());
-		
-		boolean payloadSignatureScopeFound = false;
-		boolean httpHeaderDigestSignatureScopeFound = false;
-		
-		for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
-			if ("HttpHeaders payload".equals(xmlSignatureScope.getName())) {
-				assertEquals("Payload value digest", xmlSignatureScope.getDescription());
-				payloadSignatureScopeFound = true;
-			} else if (originalDocument.getName().equals(xmlSignatureScope.getName())) {
-				assertEquals("Message body value digest", xmlSignatureScope.getDescription());
-				httpHeaderDigestSignatureScopeFound = true;
-			}
-			assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
-			assertNotNull(xmlSignatureScope.getSignerData());
-			assertTrue(Utils.isCollectionEmpty(xmlSignatureScope.getTransformations()));
-		}
-		
-		assertTrue(payloadSignatureScopeFound);
-		assertTrue(httpHeaderDigestSignatureScopeFound);
 	}
 
 	@Override

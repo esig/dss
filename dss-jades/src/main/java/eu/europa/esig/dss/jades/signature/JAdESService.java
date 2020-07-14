@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -77,7 +78,13 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		byte[] concatenationResult = DSSUtils.EMPTY_BYTE_ARRAY;
 		for (DSSDocument document : toSignDocuments) {
-			byte[] documentBinaries = DSSUtils.toByteArray(document);
+			byte[] documentBinaries = null;
+			if (document instanceof HTTPHeader) {
+				HTTPHeader httpHeader = (HTTPHeader) document;
+				documentBinaries = httpHeader.getValue().getBytes();
+			} else {
+				documentBinaries = DSSUtils.toByteArray(document);
+			}
 			String base64UrlEncodedDoc = JAdESUtils.toBase64Url(documentBinaries);
 			concatenationResult = DSSUtils.concatenate(concatenationResult, base64UrlEncodedDoc.getBytes());
 		}
@@ -142,6 +149,9 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		DSSDocument signedDocument = new InMemoryDocument(signatureBinaries);
 		SignatureExtension<JAdESSignatureParameters> signatureExtension = getExtensionProfile(parameters);
 		if (signatureExtension != null) {
+			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
+				parameters.setDetachedContents(toSignDocuments);
+			}
 			signedDocument = signatureExtension.extendSignatures(signedDocument, parameters);
 		}
 		signedDocument.setName(getFinalFileName(toSignDocuments.iterator().next(), SigningOperation.SIGN,

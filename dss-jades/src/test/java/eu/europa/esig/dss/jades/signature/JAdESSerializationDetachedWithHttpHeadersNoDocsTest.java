@@ -22,7 +22,7 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,7 +35,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
-public class JAdESSerializationdetachedWithHttpHeadersNoDocsTest extends AbstractJAdESMultipleDocumentSignatureTest {
+public class JAdESSerializationDetachedWithHttpHeadersNoDocsTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private List<DSSDocument> documentsToSign;
@@ -50,13 +50,13 @@ public class JAdESSerializationdetachedWithHttpHeadersNoDocsTest extends Abstrac
 		signingDate = new Date();
 		
 		documentsToSign = new ArrayList<>();
-		documentsToSign.add(new HTTPHeaderDocument("content-type", "application/json"));
-		documentsToSign.add(new HTTPHeaderDocument("x-example", "HTTP Headers Example"));
-		documentsToSign.add(new HTTPHeaderDocument("x-example", "Duplicated Header"));
+		documentsToSign.add(new HTTPHeader("content-type", "application/json"));
+		documentsToSign.add(new HTTPHeader("x-example", "HTTP Headers Example"));
+		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));
 		
 		DSSDocument messageBodyDocument = new FileDocument("src/test/resources/sample.json");
 		String digest = messageBodyDocument.getDigest(DigestAlgorithm.SHA1);
-		documentsToSign.add(new HTTPHeaderDocument("Digest", "SHA="+digest));
+		documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
 	}
 
 	@Override

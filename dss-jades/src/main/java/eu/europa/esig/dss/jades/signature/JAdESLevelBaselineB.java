@@ -7,11 +7,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -25,7 +23,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -612,7 +610,7 @@ public class JAdESLevelBaselineB {
 	/**
 	 * Returns a list of HTTP message field names being included into 'sigD' for HttpHeaders mechanism
 	 * 
-	 * @param httpMessage {@link HTTPHeaderDocument} to extract field names from
+	 * @param httpMessage {@link HTTPHeader} to extract field names from
 	 * @return a set of HTTP message field names
 	 */
 	private Collection<String> getHttpHeaderNames() {
@@ -624,12 +622,16 @@ public class JAdESLevelBaselineB {
 		 * with the semantics and syntax specified in clause 
 		 * 2.1.3 of draft-cavage-http-signatures-10: "Signing HTTP Messages" [17].
 		 */
-		
-		// The set is used in order to not repeat the fields
-		Set<String> httpHeaderNames = new LinkedHashSet<>();
+		List<String> httpHeaderNames = new ArrayList<>();
 		
 		for (DSSDocument document : documentsToSign) {
-			httpHeaderNames.add(Utils.lowerCase(document.getName()));
+			if (document instanceof HTTPHeader) {
+				String headerName = Utils.lowerCase(document.getName());
+				if (!httpHeaderNames.contains(headerName)) {
+					httpHeaderNames.add(headerName);
+				}
+				
+			}
 		}
 		
 		return httpHeaderNames;
@@ -677,18 +679,25 @@ public class JAdESLevelBaselineB {
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		assertHttpHeadersConfigurationIsValid();
 		
-		List<HTTPHeaderDocument> httpHeaderDocuments = JAdESUtils.toHTTPHeaderDocuments(documentsToSign);
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaderDocuments);
+		List<HTTPHeader> httpHeaders = JAdESUtils.toHTTPHeaders(documentsToSign);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
 		
 		return httpHeadersPayloadBuilder.build();
 	}
 	
 	private void assertHttpHeadersConfigurationIsValid() {
 		if (Utils.isCollectionNotEmpty(documentsToSign)) {
+			boolean digestDocumentFound = false;
 			for (DSSDocument document : documentsToSign) {
-				if (!(document instanceof HTTPHeaderDocument)) {
-					throw new DSSException("The documents to sign must have "
-							+ "a type of HTTPHeaderDocument for 'sigD' HttpHeaders mechanism!");
+				if (!(document instanceof HTTPHeader)) {
+                    throw new DSSException("The documents to sign must have "
+                            + "a type of HTTPHeader for 'sigD' HttpHeaders mechanism!");
+				}
+				if (JAdESUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+					if (digestDocumentFound) {                        
+						throw new DSSException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
+					}
+					digestDocumentFound = true;
 				}
 			}
 		}

@@ -27,8 +27,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.jades.HTTPHeader;
+import eu.europa.esig.dss.jades.HTTPHeaderDigest;
+import eu.europa.esig.dss.jades.HTTPHeaderMessageBodySignatureScope;
 import eu.europa.esig.dss.jades.HTTPHeaderSignatureScope;
+import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -75,9 +79,9 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		
 		for (DSSDocument originalDocument : originalDocuments) {
 			String documentName = originalDocument.getName() != null ? originalDocument.getName() : "Detached content";
-			if (originalDocument instanceof HTTPHeaderDocument) {
+			if (originalDocument instanceof HTTPHeader) {
 				// only http header documents shall be present
-				return Collections.singletonList(getHttpHeaderSignatureScope(originalDocuments));
+				return getHttpHeaderSignatureScope(originalDocuments);
 				
 			}
 			else if (originalDocument instanceof DigestDocument) {
@@ -93,17 +97,63 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		return result;
 	}
 	
-	private SignatureScope getHttpHeaderSignatureScope(List<DSSDocument> originalDocuments) {
-		List<HTTPHeaderDocument> httpHeaderDocuments = new ArrayList<>();
+	private List<SignatureScope> getHttpHeaderSignatureScope(List<DSSDocument> originalDocuments) {
+		List<SignatureScope> httpHeadersSignatureScopes = new ArrayList<>();
+		
+		HTTPHeader digestHttpHeader = null;
+		
+		List<HTTPHeader> httpHeaders = new ArrayList<>();
 		for (DSSDocument document : originalDocuments) {
-			if (document instanceof HTTPHeaderDocument) {
-				httpHeaderDocuments.add((HTTPHeaderDocument) document);
+			if (document instanceof HTTPHeader) {
+				httpHeaders.add((HTTPHeader) document);
+				
+				if (JAdESUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+					digestHttpHeader = (HTTPHeader) document;
+				}
 			}
 		}
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaderDocuments);
+		SignatureScope httpHeadersPayloadSignatureScope = getHttpHeadersPayloadSignatureScope(httpHeaders);
+		httpHeadersSignatureScopes.add(httpHeadersPayloadSignatureScope);
+		
+		if (digestHttpHeader != null) {
+			SignatureScope httpHeaderDigestSignatureScope = getHttpHeaderDigestSignatureScope(digestHttpHeader);
+			if (httpHeaderDigestSignatureScope != null) {
+				httpHeadersSignatureScopes.add(httpHeaderDigestSignatureScope);
+			}
+		}
+		
+		return httpHeadersSignatureScopes;
+	}
+	
+	private SignatureScope getHttpHeadersPayloadSignatureScope(List<HTTPHeader> httpHeaders) {
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
 		byte[] payload = httpHeadersPayloadBuilder.build();
 		byte[] digest = DSSUtils.digest(getDefaultDigestAlgorithm(), payload);
 		return new HTTPHeaderSignatureScope(new Digest(getDefaultDigestAlgorithm(), digest));
+	}
+	
+	private SignatureScope getHttpHeaderDigestSignatureScope(HTTPHeader digestHttpHeader) {
+		Digest digest = getDigest(digestHttpHeader.getValue());
+		if (digest != null) {
+			if (digestHttpHeader instanceof HTTPHeaderDigest) {
+				HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) digestHttpHeader;
+				return new HTTPHeaderMessageBodySignatureScope(httpHeaderDigest.getMessageBodyDocument().getName(), digest);
+			} else {
+				return new HTTPHeaderMessageBodySignatureScope(digest);
+			}
+		}
+		return null;
+	}
+	
+	private Digest getDigest(String digestHeaderValue) {
+		String[] valueParts = digestHeaderValue.split("=");
+		if (valueParts.length == 2) {
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJWSHttpHeader(valueParts[0]);
+			byte[] digestValue = Utils.fromBase64(valueParts[1]);
+			return new Digest(digestAlgorithm, digestValue);
+		}
+		LOG.warn("Not conformant value of 'Digest' header : '{}'!", digestHeaderValue);
+		return null;
 	}
 
 }

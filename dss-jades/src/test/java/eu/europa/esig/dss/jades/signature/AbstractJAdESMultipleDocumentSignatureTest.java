@@ -9,7 +9,8 @@ import java.util.List;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.jades.HTTPHeaderDocument;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -58,11 +59,11 @@ public abstract class AbstractJAdESMultipleDocumentSignatureTest extends Abstrac
 			for (DSSDocument original : originalDocuments) {
 				boolean found = false;
 				
-				if (original instanceof HTTPHeaderDocument) {
-					HTTPHeaderDocument httpHeaderDocument = (HTTPHeaderDocument) original;
+				if (original instanceof HTTPHeader) {
+					HTTPHeader httpHeaderDocument = (HTTPHeader) original;
 					for (DSSDocument retrieved : retrievedOriginalDocuments) {
-						if (retrieved instanceof HTTPHeaderDocument) {
-							HTTPHeaderDocument retrievedDoc = (HTTPHeaderDocument) retrieved;
+						if (retrieved instanceof HTTPHeader) {
+							HTTPHeader retrievedDoc = (HTTPHeader) retrieved;
 							if (Utils.areStringsEqual(httpHeaderDocument.getName(), retrievedDoc.getName()) && 
 									Utils.areStringsEqual(httpHeaderDocument.getValue(), retrievedDoc.getValue())) {
 								found = true;
@@ -88,7 +89,11 @@ public abstract class AbstractJAdESMultipleDocumentSignatureTest extends Abstrac
 	
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.JOSE;
+		if (JWSSerializationType.COMPACT_SERIALIZATION.equals(getSignatureParameters().getJwsSerializationType())) {
+			return MimeType.JOSE;
+		} else {
+			return MimeType.JOSE_JSON;
+		}
 	}
 
 	@Override

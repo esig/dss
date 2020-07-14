@@ -17,13 +17,13 @@ import eu.europa.esig.dss.model.MimeType;
  *
  */
 @SuppressWarnings("serial")
-public class HTTPHeaderDocument implements DSSDocument {
+public class HTTPHeader implements DSSDocument {
 	
 	private final String name;
 	private final String value;
 	
 	/** The default constructor */
-	public HTTPHeaderDocument(final String name, final String value) {
+	public HTTPHeader(final String name, final String value) {
 		this.name = name;
 		this.value = value;
 	}
