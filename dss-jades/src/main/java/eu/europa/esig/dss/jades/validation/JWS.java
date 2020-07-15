@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.validation;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
@@ -100,6 +101,16 @@ public class JWS extends JsonWebSignature {
 
 	public Map<String, Object> getUnprotected() {
 		return unprotected;
+	}
+	
+	/**
+	 * Sets values of the 'crit' header that must be known and proceeded
+	 * 
+	 * @param knownCriticalHeaders a collection of supported {@link String} headers
+	 */
+	public void setKnownCriticalHeaders(Collection<String> knownCriticalHeaders) {
+		String[] headersArray = knownCriticalHeaders.toArray(new String[knownCriticalHeaders.size()]);
+		super.setKnownCriticalHeaders(headersArray);
 	}
 
 }

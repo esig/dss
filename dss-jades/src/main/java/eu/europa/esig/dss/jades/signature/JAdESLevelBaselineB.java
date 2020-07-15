@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -56,9 +57,6 @@ public class JAdESLevelBaselineB {
 	
 	/* JOSE Header map representation */
 	private Map<String, Object> signedProperties = new LinkedHashMap<>();
-	
-	/* Contains all critical header names that will be incorporated into the signature */
-	private List<String> criticalHeaderNames = new ArrayList<>();
 	
 	public JAdESLevelBaselineB(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, final List<DSSDocument> documentsToSign) {
 		Objects.requireNonNull(certificateVerifier, "certificateVerifier must not be null!");
@@ -200,7 +198,7 @@ public class JAdESLevelBaselineB {
 			JsonObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
 			digAndValues.add(digAndVal);
 		}
-		addCriticalHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
+		addHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
 	}
 	
 	/**
@@ -225,6 +223,22 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.9 The crit (critical) header parameter
 	 */
 	private void incorporateCritical() {
+		/*
+		 * RFC 7515 : "4.1.11.  "crit" (Critical) Header Parameter"
+		 * 
+		 * Producers MUST NOT include Header Parameter names defined by this specification
+		 * or [JWA] for use with JWS, duplicate names, or names that do not
+		 * occur as Header Parameter names within the JOSE Header in the "crit"
+		 * list. Producers MUST NOT use the empty list "[]" as the "crit" value.
+		 */
+		Set<String> criticalHeaderExceptions = JAdESUtils.getCriticalHeaderExceptions();
+		
+		List<String> criticalHeaderNames = new ArrayList<>();
+		for (String header : signedProperties.keySet()) {
+			if (!criticalHeaderExceptions.contains(header)) {
+				criticalHeaderNames.add(header);
+			}
+		}
 		if (Utils.isCollectionNotEmpty(criticalHeaderNames)) {
 			addHeader(HeaderParameterNames.CRITICAL, new JSONArray(criticalHeaderNames));
 		}
@@ -279,7 +293,7 @@ public class JAdESLevelBaselineB {
 				throw new DSSException("The payload contains not URL-safe characters! "
 						+ "With Unencoded Payload ('b64' = false) only ASCII characters in ranges %x20-2D and %x2F-7E are allowed!");
 			}
-			addCriticalHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
+			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
 		}
 	}
 	
@@ -290,7 +304,7 @@ public class JAdESLevelBaselineB {
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);
 		
-		addCriticalHeader(JAdESHeaderParameterNames.SIG_T, stringSigningTime);
+		addHeader(JAdESHeaderParameterNames.SIG_T, stringSigningTime);
 	}
 
 	/**
@@ -317,7 +331,7 @@ public class JAdESLevelBaselineB {
 		
 		JsonObject srCmParamsObject = new JsonObject(srCmParams);
 		
-		addCriticalHeader(JAdESHeaderParameterNames.SR_CM, srCmParamsObject);
+		addHeader(JAdESHeaderParameterNames.SR_CM, srCmParamsObject);
 	}
 
 	/**
@@ -353,7 +367,7 @@ public class JAdESLevelBaselineB {
 					sigPlaceMap.put(JAdESHeaderParameterNames.COUNTRY, country);
 				}
 				
-				addCriticalHeader(JAdESHeaderParameterNames.SIG_PL, new JsonObject(sigPlaceMap));
+				addHeader(JAdESHeaderParameterNames.SIG_PL, new JsonObject(sigPlaceMap));
 				
 			} else {
 				LOG.warn("SignerLocation is defined, but does not contain any properties! 'SigPlace' attribute requires at least one property!");
@@ -383,7 +397,7 @@ public class JAdESLevelBaselineB {
 
 		if (!srAtsParams.isEmpty()) {
 			JsonObject srAtsParamsObject = new JsonObject(srAtsParams);
-			addCriticalHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
+			addHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
 		}
 	}
 
@@ -424,7 +438,7 @@ public class JAdESLevelBaselineB {
 		// canonicalization shall be null for content timestamps (see 5.2.6)
 		List<TimestampBinary> contentTimestampBinaries = toTimestampBinaries(parameters.getContentTimestamps());
 		JsonObject tstContainer = JAdESUtils.getTstContainer(contentTimestampBinaries, null); 
-		addCriticalHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
+		addHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
 	}
 	
 	private List<TimestampBinary> toTimestampBinaries(List<TimestampToken> timestampTokens) {
@@ -469,7 +483,7 @@ public class JAdESLevelBaselineB {
 				sigPIdParams.put(JAdESHeaderParameterNames.SIG_PQUALS, signaturePolicyQualifiers);
 			}
 			
-			addCriticalHeader(JAdESHeaderParameterNames.SIG_PID, new JsonObject(sigPIdParams));
+			addHeader(JAdESHeaderParameterNames.SIG_PID, new JsonObject(sigPIdParams));
 		}
 	}
 
@@ -519,7 +533,7 @@ public class JAdESLevelBaselineB {
 					throw new DSSException(String.format("The 'sigD' mechanism '%s' is not supported!", parameters.getSigDMechanism()));
 			}
 			
-			addCriticalHeader(JAdESHeaderParameterNames.SIG_D, new JsonObject(sigDParams));
+			addHeader(JAdESHeaderParameterNames.SIG_D, new JsonObject(sigDParams));
 		}
 	}
 	
@@ -635,17 +649,6 @@ public class JAdESLevelBaselineB {
 		}
 		
 		return httpHeaderNames;
-	}
-	
-	/**
-	 * Adds a new critical header property
-	 * 
-	 * @param headerName {@link String} name of a header to incorporate
-	 * @param value of the header property
-	 */
-	protected void addCriticalHeader(String headerName, Object value) {
-		addHeader(headerName, value);
-		criticalHeaderNames.add(headerName);
 	}
 	
 	/**

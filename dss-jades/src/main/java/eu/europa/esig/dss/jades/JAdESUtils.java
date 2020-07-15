@@ -8,6 +8,27 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_T;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_ATS;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CM;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
+import static org.jose4j.jwx.HeaderParameterNames.AGREEMENT_PARTY_U_INFO;
+import static org.jose4j.jwx.HeaderParameterNames.AGREEMENT_PARTY_V_INFO;
+import static org.jose4j.jwx.HeaderParameterNames.ALGORITHM;
+import static org.jose4j.jwx.HeaderParameterNames.AUTHENTICATION_TAG;
+import static org.jose4j.jwx.HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD;
+import static org.jose4j.jwx.HeaderParameterNames.CONTENT_TYPE;
+import static org.jose4j.jwx.HeaderParameterNames.CRITICAL;
+import static org.jose4j.jwx.HeaderParameterNames.ENCRYPTION_METHOD;
+import static org.jose4j.jwx.HeaderParameterNames.EPHEMERAL_PUBLIC_KEY;
+import static org.jose4j.jwx.HeaderParameterNames.INITIALIZATION_VECTOR;
+import static org.jose4j.jwx.HeaderParameterNames.JWK;
+import static org.jose4j.jwx.HeaderParameterNames.JWK_SET_URL;
+import static org.jose4j.jwx.HeaderParameterNames.KEY_ID;
+import static org.jose4j.jwx.HeaderParameterNames.PBES2_ITERATION_COUNT;
+import static org.jose4j.jwx.HeaderParameterNames.PBES2_SALT_INPUT;
+import static org.jose4j.jwx.HeaderParameterNames.TYPE;
+import static org.jose4j.jwx.HeaderParameterNames.X509_CERTIFICATE_CHAIN;
+import static org.jose4j.jwx.HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT;
+import static org.jose4j.jwx.HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT;
+import static org.jose4j.jwx.HeaderParameterNames.X509_URL;
+import static org.jose4j.jwx.HeaderParameterNames.ZIP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,7 +55,6 @@ import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.jose4j.jwx.CompactSerializer;
-import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
 import org.jose4j.lang.StringUtil;
 import org.slf4j.Logger;
@@ -68,11 +88,25 @@ public class JAdESUtils {
 	 */
 	private static final Set<String> criticalHeaders;
 	
+	/**
+	 * Contains a list of headers that MUST NOT be incorporated into a 'crit' header (includes RFC 7515, RFC 7518) 
+	 */
+	private static final Set<String> criticalHeaderExceptions;
+	
 	static {
-		// JAdES EN 119-812 constraints
-		criticalHeaders = Stream.of(SIG_T, X5T_O, SR_CM, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D)
-				.collect(Collectors.toSet());
-		criticalHeaders.add(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD); // b64 #RFC7797
+		criticalHeaders = Stream.of(
+				/* JAdES EN 119-812 constraints */
+				SIG_T, X5T_O, SR_CM, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
+				/* RFC7797 'b64' */
+				BASE64URL_ENCODE_PAYLOAD ).collect(Collectors.toSet());
+		
+		criticalHeaderExceptions = Stream.of(
+				/* RFC 7515 */
+				ALGORITHM, JWK_SET_URL, JWK, KEY_ID, X509_URL, X509_CERTIFICATE_CHAIN, X509_CERTIFICATE_THUMBPRINT,
+				X509_CERTIFICATE_SHA256_THUMBPRINT, TYPE, CONTENT_TYPE, CRITICAL,
+				/* RFC 7518 */
+				EPHEMERAL_PUBLIC_KEY, AGREEMENT_PARTY_U_INFO, AGREEMENT_PARTY_V_INFO, INITIALIZATION_VECTOR, AUTHENTICATION_TAG, 
+				PBES2_SALT_INPUT, PBES2_ITERATION_COUNT, ENCRYPTION_METHOD, ZIP ).collect(Collectors.toSet());
 	}
 	
 	private JAdESUtils() {
@@ -180,12 +214,21 @@ public class JAdESUtils {
 	}
 	
 	/**
-	 * Returns array of supported critical headers
+	 * Returns set of supported critical headers
 	 * 
-	 * @return array of supported critical header strings
-	 */	
-	public static String[] getSupportedCriticalHeaders() {
-		return criticalHeaders.toArray(new String[criticalHeaders.size()]);
+	 * @return set of supported critical header strings
+	 */
+	public static Set<String> getSupportedCriticalHeaders() {
+		return criticalHeaders;
+	}
+
+	/**
+	 * Returns set of critical header exceptions (see RFC 7515)
+	 * 
+	 * @return set of critical header exception strings
+	 */
+	public static Set<String> getCriticalHeaderExceptions() {
+		return criticalHeaderExceptions;
 	}
 	
 	/**
