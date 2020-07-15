@@ -73,7 +73,7 @@ public class ASN1PolicyTest extends AbstractPAdESTestValidation {
 		assertTrue(firstSignature.isPolicyPresent());
 		assertTrue(firstSignature.isPolicyAsn1Processable());
 		assertTrue(firstSignature.isPolicyIdentified());
-		assertTrue(firstSignature.getPolicyStatus());
+		assertTrue(firstSignature.isPolicyStatus());
 	}
 	
 	@Override

@@ -40,7 +40,7 @@ public abstract class ComplexTransform extends AbstractTransform {
 	
 	private Transform transformObject; // internal object, used to build the Transformation
 
-	public ComplexTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+	protected ComplexTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
 		super(xmlDSigNamespace, algorithm);
 	}
 	

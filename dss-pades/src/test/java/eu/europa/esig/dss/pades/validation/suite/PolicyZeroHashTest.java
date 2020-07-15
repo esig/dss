@@ -46,8 +46,8 @@ public class PolicyZeroHashTest extends AbstractPAdESTestValidation {
 		
 		String signatureId = diagnosticData.getFirstSignatureId();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
-		assertTrue(signatureWrapper.getPolicyStatus());
-		assertTrue(signatureWrapper.isZeroHashPolicy());
+		assertTrue(signatureWrapper.isPolicyStatus());
+		assertTrue(signatureWrapper.isPolicyZeroHash());
 	}
 	
 	@Override

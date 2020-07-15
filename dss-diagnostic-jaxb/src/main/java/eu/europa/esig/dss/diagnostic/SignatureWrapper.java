@@ -261,7 +261,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
-	public boolean isZeroHashPolicy() {
+	public boolean isPolicyZeroHash() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.isZeroHash() != null && policy.isZeroHash();
@@ -447,14 +447,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return "";
 	}
-
-	public boolean getPolicyStatus() {
-		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isStatus();
-		}
-		return false;
-	}
 	
 	/**
 	 * Returns XMLPolicy description if it is not empty
@@ -476,6 +468,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null && policy.getDocumentationReferences() != null) {
 			return policy.getDocumentationReferences();
+		}
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * Returns a list of Policy transformations
+	 * NOTE: used only for XAdES signatures
+	 * 
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getPolicyTransforms() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null && policy.getTransformations() != null) {
+			return policy.getTransformations();
 		}
 		return Collections.emptyList();
 	}

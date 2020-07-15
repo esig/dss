@@ -153,7 +153,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
 		assertNotNull(signingCertificate);
 		assertTrue(signature.isPolicyPresent());
-		assertTrue(signature.isZeroHashPolicy());
+		assertTrue(signature.isPolicyZeroHash());
 	}
 	
 	public void testSignatureFalseZeroPolicy() {
@@ -169,7 +169,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
 		assertNotNull(signingCertificate);
 		assertTrue(signature.isPolicyPresent());
-		assertFalse(signature.isZeroHashPolicy());
+		assertFalse(signature.isPolicyZeroHash());
 	}
 
 	@Override
