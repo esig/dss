@@ -455,6 +455,7 @@ dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
 
+[[dssUtils]]
 === DSS Utils
 
 The module dss-utils offers an interface with utility methods to operate on String, Collection, I/O,... DSS framework provides two different implementations with the same behaviour : 
@@ -464,6 +465,7 @@ The module dss-utils offers an interface with utility methods to operate on Stri
 
 If your integration include dss-utils, you will need to select an implementation.
 
+[[dssCrlParser]]
 === DSS CRL Parser
 
 DSS contains two ways to parse/validate a CRL and to retrieve revocation data. An alternative to the X509CRL java object was developed to face memory issues in case of large CRLs. The X509CRL object fully loads the CRL in memory and can cause OutOfMemoryError.
@@ -473,6 +475,7 @@ DSS contains two ways to parse/validate a CRL and to retrieve revocation data. A
  
 If your integration require dss-crl-parser, you will need to choose your implementation.
 
+[[dssPades]]
 === DSS PAdES
 
 Since the version 5.4, DSS allows generation/extension/validation PAdES signatures with two different frameworks : PDFBox and OpenPDF (fork of iText). The dss-pades module only contains the common code and requires an underlying implementation : 
@@ -1004,6 +1007,7 @@ NOTE: When using the TrustedListsCertificateSource class, for performance reason
 
 NOTE: In general, the signature must cover the entire document so that the DSS framework can validate it. However, for example in the case of a XAdES signature, some transformations can be applied on the XML document. They can include operations such as canonicalization, encoding/decoding, XSLT, XPath, XML schema validation, or XInclude. XPath transforms permit the signer to derive an XML document that omits portions of the source document. Consequently those excluded portions can change without affecting signature validity. 
 
+[[signedDocumentValidator]]
 ==== SignedDocumentValidator
 
 For execution of the validation process, DSS uses the 'SignedDocumentValidator' class. The DSS framework provides five implementations of validator:
@@ -1877,6 +1881,49 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 | CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |  
 |===
+
+== Implementation management with ServiceLoader
+
+DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations. In order to provide a chosen implementation(s) to ServiceLoader, a file listing all the desired implementations should be created in the resource directory `META-INF/services` with a name matching the implemented interface.
+
+NOTE: If a DSS module(s) implementing a required interface(s) is added to your project's dependency list, the implementation shall be loaded automatically.
+
+The following modules are provided with independent implementations:
+
+ * <<dssUtils>>;
+ * <<dssCrlParser>>;
+ * <<dssPades>>.
+ 
+Additionally, DSS is able to choose the required implementation for the following interfaces:
+ 
+ * `DocumentValidationFactory` - checks a provided signed file's format and loads a relevant validator;
+ * `SignaturePolicyValidator` - checks a signature policy file and loads a relevant validator to be able to process the detected format.
+
+WARNING: If no appropriate available implementation is found, an exception will be thrown.
+
+=== Document Validation Factory
+
+This factory is used to create a required instance of a `DocumentValidator` based on the provided file's format (signature or timestamp). An implementation shall process a file format check and load the related <<signedDocumentValidator>> implementation to be used for the file's validation.
+
+The following implementations are present in DSS:
+
+ * CMSDocumentValidatorFactory : loads CMSDocumentValidator, used for a CAdES validation (delivered in dss-cades module);
+ * XMLDocumentValidatorFactory : loads XMLDocumentValidator, used for a XAdES validation (delivered in dss-xades module);
+ * PDFDocumentValidatorFactory : loads PDFDocumentValidator, used for a PAdES validation (delivered in dss-pades module);
+ * JAdESDocumentValidatorFactory : loads JWSCompactDocumentValidator or JWSSerializationDocumentValidator, depending on provided JSON signature type (delivered in dss-jades module);
+ * ASiCContainerWithCAdESValidatorFactory : loads ASiCContainerWithCAdESValidator (delivered in dss-asic-cades module);
+ * ASiCContainerWithXAdESValidatorFactory : loads ASiCContainerWithXAdESValidator (delivered in dss-asic-xades module);
+ * DetachedTimestampValidatorFactory : loads DetachedTimestampValidator, for an indepenedent timestamp validation (delivered in dss-document module).
+
+=== Signature Policy Validator
+
+This interface is used to validate a signature policy reference extracted from a signature. The following implementations are provided:
+
+ * BasicASNSignaturePolicyValidator : validates policy files, which are based on ETSI TR 102 272;
+ * XMLSignaturePolicyValidator : validates XML signature policies supporting transformations;
+ * NonASN1SignaturePolicyValidator : validates a policy by digest computed on an original file's content;
+ * ZeroHashSignaturePolicyValidator : validates a policy if "zero hash" value is defined in a signature (see <<R02>>);
+ * EmptySignaturePolicyValidator : is proceeded if a policy file is not found or not accessible.
 
 == Multi-threading
 
