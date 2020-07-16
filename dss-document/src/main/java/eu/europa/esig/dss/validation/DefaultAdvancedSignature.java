@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
@@ -44,11 +45,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private static final long serialVersionUID = 6452189007886779360L;
-
-	/**
-	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.
-	 */
-	protected CertificateToken providedSigningCertificateToken;
 
 	/**
 	 * In case of a detached signature this is the signed document.
@@ -81,6 +77,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private CertificateVerifier offlineCertificateVerifier;
 
+	protected CertificateSource signingCertificateSource;
+
 	// Cached {@code SignatureCertificateSource}
 	protected SignatureCertificateSource offlineCertificateSource;
 
@@ -110,6 +108,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Build and defines {@code signatureIdentifier} value
 	 */
 	protected abstract SignatureIdentifier buildSignatureIdentifier();
+
+	@Override
+	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {
+		this.signingCertificateSource = signingCertificateSource;
+	}
 
 	@Override
 	public String getSignatureFilename() {
@@ -247,7 +250,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		return getCertificateSource().getCandidatesForSigningCertificate(providedSigningCertificateToken);
+		return getCertificateSource().getCandidatesForSigningCertificate(signingCertificateSource);
 	}
 
 	/**
@@ -276,9 +279,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		
 		validationContext.initialize(certificateVerifier);
 
-		if (providedSigningCertificateToken != null) {
-			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+		// Add resolved certificates
+		List<CertificateValidity> certificateValidities = getCandidatesForSigningCertificate().getCertificateValidityList();
+		if (Utils.isCollectionNotEmpty(certificateValidities)) {
+			for (CertificateValidity certificateValidity : certificateValidities) {
+				if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+					validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+				}
+			}
 		}
+
 		final List<CertificateToken> certificates = getCertificates();
 		for (final CertificateToken certificate : certificates) {
 			validationContext.addCertificateTokenForVerification(certificate);
@@ -350,20 +360,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public CertificateToken getProvidedSigningCertificateToken() {
-		return providedSigningCertificateToken;
-	}
-
-	@Override
-	public void setProvidedSigningCertificateToken(final CertificateToken certificateToken) {
-		this.providedSigningCertificateToken = certificateToken;
-	}
-
-	@Override
 	public CertificateToken getSigningCertificateToken() {
 		// This ensures that the variable candidatesForSigningCertificate has been initialized
 		CandidatesForSigningCertificate candidatesForSigningCertificate = getCertificateSource()
-				.getCandidatesForSigningCertificate(providedSigningCertificateToken);
+				.getCandidatesForSigningCertificate(signingCertificateSource);
 		// This ensures that the variable signatureCryptographicVerification has been initialized
 		signatureCryptographicVerification = getSignatureCryptographicVerification();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
@@ -523,9 +523,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		offlineCertificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
 		offlineCertificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
 		validationContext.initialize(offlineCertificateVerifier);
-		if (providedSigningCertificateToken != null) {
-			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+
+		List<CertificateValidity> certificateValidityList = getCandidatesForSigningCertificate()
+				.getCertificateValidityList();
+		for (CertificateValidity certificateValidity : certificateValidityList) {
+			if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+				validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+			}
 		}
+
 		for (final CertificateToken certificate : certificateSources.getAllCertificateTokens()) {
 			validationContext.addCertificateTokenForVerification(certificate);
 		}

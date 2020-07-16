@@ -51,6 +51,9 @@ import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
@@ -106,8 +109,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected List<ManifestFile> manifestFiles;
 
-	protected CertificateToken providedSigningCertificateToken = null;
-	
+	/**
+	 * Certificate source to find signing certificate
+	 */
+	protected CertificateSource signingCertificateSource;
+
 	/**
 	 * A time to validate the document against
 	 */
@@ -185,9 +191,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public abstract boolean isSupported(DSSDocument dssDocument);
 
 	@Override
+	@Deprecated
 	public void defineSigningCertificate(final CertificateToken token) {
 		Objects.requireNonNull(token, "Token is not defined");
-		providedSigningCertificateToken = token;
+		CertificateSource signingCertificateResolver = new CommonCertificateSource();
+		signingCertificateResolver.addCertificate(token);
+		setSigningCertificateSource(signingCertificateResolver);
+	}
+
+
+	@Override
+	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {
+		this.signingCertificateSource = signingCertificateSource;
 	}
 
 	/**
@@ -516,10 +531,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                          revocation data.
 	 */
 	protected void prepareCertificatesAndTimestamps(final ValidationContext validationContext, final List<AdvancedSignature> allSignatureList) {
-		if (providedSigningCertificateToken != null) {
-			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
-		}
 		for (final AdvancedSignature signature : allSignatureList) {
+
+			// Add resolved certificates
+			List<CertificateValidity> certificateValidities = signature.getCandidatesForSigningCertificate().getCertificateValidityList();
+			if (Utils.isCollectionNotEmpty(certificateValidities)) {
+				for (CertificateValidity certificateValidity : certificateValidities) {
+					if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+						validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+					}
+				}
+			}
+
 			ListCertificateSource completeCertificateSource = signature.getCompleteCertificateSource();
 			for (CertificateToken certificateToken : completeCertificateSource.getAllCertificateTokens()) {
 				validationContext.addCertificateTokenForVerification(certificateToken);

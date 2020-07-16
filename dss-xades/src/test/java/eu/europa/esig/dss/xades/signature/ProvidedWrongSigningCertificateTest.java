@@ -29,6 +29,8 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -56,7 +58,9 @@ public class ProvidedWrongSigningCertificateTest extends AbstractXAdESTestSignat
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
+		CertificateSource signingCertificateSource = new CommonCertificateSource();
+		signingCertificateSource.addCertificate(getCertificate(ECDSA_USER));
+		validator.setSigningCertificateSource(signingCertificateSource);
 		return validator;
 	}
 

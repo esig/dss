@@ -34,10 +34,13 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.utils.Utils;
@@ -158,7 +161,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 	
 	@Override
-	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateSource certificateSource) {
 		CandidatesForSigningCertificate candidatesForSigningCertificate = new CandidatesForSigningCertificate();
 		
 		/**
@@ -199,13 +202,42 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 					
 		}
 
-		if (providedSigningCertificateToken != null) {
-			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
+		if (certificateSource != null) {
+			resolveFromSource(certificateSource, candidatesForSigningCertificate);
 		}
 		
 		checkCandidatesAgainstSigningCertificateRef(candidatesForSigningCertificate);
 
 		return candidatesForSigningCertificate;
+	}
+
+	private void resolveFromSource(CertificateSource certificateSource, CandidatesForSigningCertificate candidatesForSigningCertificate) {
+		List<CertificateRef> signingCertificateRefs = getSigningCertificateRefs();
+		for (CertificateRef certificateRef : signingCertificateRefs) {
+			CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
+			if (certificateIdentifier != null) {
+				Set<CertificateToken> certificatesByIdentifier = certificateSource
+						.getByCertificateIdentifier(certificateIdentifier);
+				if (Utils.isCollectionNotEmpty(certificatesByIdentifier)) {
+					LOG.debug("Resolved certificate by certificate identifier");
+					for (CertificateToken certCandidate : certificatesByIdentifier) {
+						candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+					}
+					return;
+				}
+			}
+
+			Digest certDigest = certificateRef.getCertDigest();
+			if (certDigest != null) {
+				Set<CertificateToken> certificatesByDigest = certificateSource.getByCertificateDigest(certDigest);
+				if (Utils.isCollectionNotEmpty(certificatesByDigest)) {
+					LOG.debug("Resolved certificate by digest");
+					for (CertificateToken certCandidate : certificatesByDigest) {
+						candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+					}
+				}
+			}
+		}
 	}
 
 	/**

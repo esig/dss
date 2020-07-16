@@ -471,6 +471,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return signatureValueReferenceValidation;
 	}
 	
+	public String getKid() {
+		return jws.getKeyIdHeaderValue();
+	}
+
 	private List<JAdESReferenceValidation> getDetachedReferenceValidations() {
 		if (isDetachedSignature()) {
 			SigDMechanism sigDMechanism = getSigDMechanism();

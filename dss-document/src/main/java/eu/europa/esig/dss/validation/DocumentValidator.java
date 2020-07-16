@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -115,11 +116,22 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setManifestFiles(final List<ManifestFile> manifestFiles);
 
 	/**
-	 * This method allows to define the signing certificate. It is useful in the case of non AdES signatures.
+	 * This method allows to define the signing certificate. It is useful in the
+	 * case of non AdES signatures.
 	 *
 	 * @param x509Certificate
+	 * @deprecated use {@link #setSigningCertificateSource(CertificateSource)}
 	 */
+	@Deprecated
 	void defineSigningCertificate(final CertificateToken x509Certificate);
+
+	/**
+	 * Set a certificate source which allows to find the signing certificate by kid
+	 * or certificate's digest
+	 * 
+	 * @param certificateSource the certificate source
+	 */
+	void setSigningCertificateSource(CertificateSource certificateSource);
 
 	/**
 	 * This method allows to specify the validation level (Basic / Timestamp /

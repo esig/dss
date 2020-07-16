@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.keys.X509Util;
@@ -37,7 +36,6 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -149,9 +147,7 @@ public class JAdESLevelBaselineB {
 		if (parameters.getSigningCertificate() == null) {
 			return;
 		}
-		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(parameters.getSigningCertificate());
-		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
-		addHeader(HeaderParameterNames.KEY_ID, issuerBase64);
+		addHeader(HeaderParameterNames.KEY_ID, JAdESUtils.generateKid(parameters.getSigningCertificate()));
 	}
 
 	/**

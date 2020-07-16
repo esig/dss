@@ -29,6 +29,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class PAdESLevelBTest extends AbstractPAdESTestSignature {
@@ -58,7 +60,9 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		// test with wrong provided certificate
-		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
+		CertificateSource signingCertificateSource = new CommonCertificateSource();
+		signingCertificateSource.addCertificate(getCertificate(ECDSA_USER));
+		validator.setSigningCertificateSource(signingCertificateSource);
 		return validator;
 	}
 

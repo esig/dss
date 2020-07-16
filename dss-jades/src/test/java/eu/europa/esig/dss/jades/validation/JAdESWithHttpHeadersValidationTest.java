@@ -1,13 +1,16 @@
 package eu.europa.esig.dss.jades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -52,7 +55,7 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-		SignedDocumentValidator validator = super.getValidator(signedDocument);
+		AbstractJWSDocumentValidator validator = (AbstractJWSDocumentValidator) super.getValidator(signedDocument);
 		
 		CertificateToken signingCert = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIIkzCCBnugAwIBAgIDAOqWMA0GCSqGSIb3DQEBCwUAMIGoMQswCQYDVQQGEwJJ" + 
@@ -101,7 +104,13 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 				"R1Q0nRKz5aYFCPqHbBocW4IqDQsuQYzXRoTvBK2qpG9c5e+LRFgeCe1jWBhi0Nai" + 
 				"fl8bmzhHAR7WwdOOtQ9ko7w+cW015Z2ge4JYEMQkMspv5o7fllebGtF2w8gzJkrT" + 
 				"iVbXc/IoD8/DOKU6nHDxkkKSC+Le89cdftvVmlfxyHf3LS2XfFzb");
-		validator.defineSigningCertificate(signingCert);
+
+		KidCertificateSource certificateResolver = new KidCertificateSource();
+		certificateResolver.addCertificate(signingCert);
+		// useless
+		certificateResolver.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIIEvDCCA6SgAwIBAgIQcpyVmdruRVxNgzI3N/NZQTANBgkqhkiG9w0BAQUFADB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlMB4XDTExMDMxODEwMjE0M1oXDTI0MDMxODEwMjE0M1owgZ0xCzAJBgNVBAYTAkVFMQ4wDAYDVQQIEwVIYXJqdTEQMA4GA1UEBxMHVGFsbGlubjEiMCAGA1UEChMZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czENMAsGA1UECxMET0NTUDEfMB0GA1UEAxMWU0sgT0NTUCBSRVNQT05ERVIgMjAxMTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAihvGyhMVrgReHluKln1za6gvCE/mlSREmWjJFpL9llvuEUZoPFIypYA8g5u1VfgkeW5gDq25jAOq4FyXeDGIa+pJn2h0o2Wc2aeppVG/emfGm/jA8jjeyMrwH8fAJrqVQ7c9X2xSwJEch/P2d8CfMZt5YF6gqLtPvG1b+n6otBZA5wjIFfJ/inJBMUvqHSz3+PLfxO2/T3Wyk/c8M9HIMqTelqyiMGRgWehiU1OsL9armv3dQrHs1wm6vHaxfpfWB9YAFpeo9aYqhPCxVt/zo2NQB6vxyZS0hsOrXL7SxRToOJaqsnvlbf0erPPFtRHUvbojYYgl+fzlz0Jt6QJoNwIDAQABo4IBHTCCARkwEwYDVR0lBAwwCgYIKwYBBQUHAwkwHQYDVR0OBBYEFKWhSGFt537NmJ50nCm7vYrecgxZMIGCBgNVHSAEezB5MHcGCisGAQQBzh8EAQIwaTA+BggrBgEFBQcCAjAyHjAAUwBLACAAdABpAG0AZQAgAHMAdABhAG0AcABpAG4AZwAgAHAAbwBsAGkAYwB5AC4wJwYIKwYBBQUHAgEWG2h0dHBzOi8vd3d3LnNrLmVlL2FqYXRlbXBlbDAfBgNVHSMEGDAWgBQS8lo+6lYcv80GrPHxJcmpS9QUmTA9BgNVHR8ENjA0MDKgMKAuhixodHRwOi8vd3d3LnNrLmVlL3JlcG9zaXRvcnkvY3Jscy9lZWNjcmNhLmNybDANBgkqhkiG9w0BAQUFAAOCAQEAw2sKwvTHtYGtD8Jw9mNUuj/mWiBSBEBeY2LhW8V6tjBPAPp3s6iWOh0FbVR2LUyrqRwgT3fyWiGsiDm/6cIqM+IblLp/8ztfRQjquhW6XCD9SK02OQ9ZSdBwcmoAApZLGXQC34wdgmV/hLTTNxONnDACBKz9U+Dy9a4ZT4tpNkbH8jq/BMne8FzbvRt1bjpXBP7gjLX+zdx8/hp0Wq4tD+f9NVX0+vm9ahEKuzx4QzPnSB7hhWM9OnLZT7noRQa+KWk5c+e5VoR5R2t7MjVl8Cd+2llxiSxqMSbU5/23BzAKgN+NQdrBZAzpZ7lfaAuLFaICP+bAm6uW2JUrM6abOw=="));
+		validator.setSigningCertificateSource(certificateResolver);
 		
 		CertificateToken caCert = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIHaDCCBVCgAwIBAgIBATANBgkqhkiG9w0BAQsFADCBqDELMAkGA1UEBhMCSVQx" + 
@@ -163,6 +172,18 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature.getSigningCertificate());
 		assertEquals(2, signature.getCertificateChain().size());
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		// useless certificate is not added to UsedCertificates
+		assertEquals(2, diagnosticData.getUsedCertificates().size());
+
+		for (CertificateWrapper cert : diagnosticData.getUsedCertificates()) {
+			assertFalse(cert.getSources().contains(CertificateSourceType.SIGNATURE));
+		}
 	}
 
 }

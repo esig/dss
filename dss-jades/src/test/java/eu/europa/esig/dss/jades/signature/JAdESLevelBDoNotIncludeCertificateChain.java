@@ -18,6 +18,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.validation.KidCertificateSource;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -49,7 +50,9 @@ public class JAdESLevelBDoNotIncludeCertificateChain extends AbstractJAdESTestSi
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		validator.defineSigningCertificate(getSigningCert());
+		KidCertificateSource signingCertificateSource = new KidCertificateSource();
+		signingCertificateSource.addCertificate(getSigningCert());
+		validator.setSigningCertificateSource(signingCertificateSource);
 		return validator;
 	}
 	

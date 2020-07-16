@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -59,6 +60,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -243,14 +245,18 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	@Override
-	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(
+			CertificateSource signingCertificateSource) {
 		CandidatesForSigningCertificate candidates = new CandidatesForSigningCertificate();
 
 		CertificateIdentifier currentCertificateIdentifier = getCurrentCertificateIdentifier();
 		CertificateToken certificate = getCertificateToken(currentCertificateIdentifier);
-		if (certificate == null && providedSigningCertificateToken != null) {
-			LOG.info("Use the provided signing certificate");
-			certificate = providedSigningCertificateToken;
+		if (certificate == null && signingCertificateSource != null) {
+			Set<CertificateToken> foundTokens = signingCertificateSource.getByCertificateIdentifier(currentCertificateIdentifier);
+			if (Utils.isCollectionNotEmpty(foundTokens)) {
+				LOG.debug("Resolved signing certificate by certificate identifier");
+				certificate = foundTokens.iterator().next();
+			}
 		}
 
 		CertificateValidity certificateValidity = null;

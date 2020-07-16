@@ -67,6 +67,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -471,6 +472,11 @@ public class JAdESUtils {
 			return DSSASN1Utils.getIssuerSerial(binary);
 		}
 		return null;
+	}
+
+	public static String generateKid(CertificateToken signingCertificate) {
+		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificate);
+		return Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
 	}
 
 }

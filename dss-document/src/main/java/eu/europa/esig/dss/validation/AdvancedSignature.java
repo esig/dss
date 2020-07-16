@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
@@ -102,19 +103,13 @@ public interface AdvancedSignature extends Serializable {
 	List<DSSDocument> getManifestedDocuments();
 
 	/**
-	 * @return This method returns the provided signing certificate or {@code null}
+	 * Set a certificate source which allows to find the signing certificate by kid
+	 * or certificate's digest
+	 * 
+	 * @param signingCertificateSource the certificate source to resolve missing
+	 *                                 signing certificate
 	 */
-	CertificateToken getProvidedSigningCertificateToken();
-
-	/**
-	 * This method allows to provide a signing certificate to be used in the validation process. It can happen in the
-	 * case of a non-AdES signature without the signing certificate
-	 * within the signature.
-	 *
-	 * @param certificateToken
-	 *            {@code CertificateToken} representing the signing certificate token.
-	 */
-	void setProvidedSigningCertificateToken(final CertificateToken certificateToken);
+	void setSigningCertificateSource(CertificateSource signingCertificateSource);
 
 	/**
 	 * Specifies the format of the signature

@@ -30,6 +30,8 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -53,7 +55,9 @@ public class CAdESNoKeInfoTrustedStoreTest extends AbstractCAdESTestValidation {
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
 		// the signing certificates are checked only from the embedded certs
-		validator.defineSigningCertificate(signingCertificateToken);
+		CertificateSource signingCertificateSource = new CommonCertificateSource();
+		signingCertificateSource.addCertificate(signingCertificateToken);
+		validator.setSigningCertificateSource(signingCertificateSource);
 		
 		return validator;
 	}
