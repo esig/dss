@@ -1884,7 +1884,9 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 == Implementation management with ServiceLoader
 
-DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations. In order to provide a chosen implementation(s) to ServiceLoader, a file listing all the desired implementations should be created in the resource directory `META-INF/services` with a name matching the implemented interface.
+DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
+
+In order to provide a chosen implementation(s) to ServiceLoader, a file listing all the desired implementations should be created in the resource directory `META-INF/services` with a name matching the implemented interface. When merging sources (e.g. creating a Fat JAR module), the files can be lost/overwritten, and should be configured manually (all the required implementations shall be listed).
 
 NOTE: If a DSS module(s) implementing a required interface(s) is added to your project's dependency list, the implementation shall be loaded automatically.
 
