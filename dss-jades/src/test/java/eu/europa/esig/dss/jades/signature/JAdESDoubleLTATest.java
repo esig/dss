@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
@@ -17,15 +18,20 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -40,6 +46,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
@@ -97,19 +104,61 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         
         DiagnosticData diagnosticData = reports.getDiagnosticData();
         
-        int archiveTimestampCounter = 0;
+        TimestampWrapper allDataArchiveTimestamp = null;
+        TimestampWrapper previousArcTstArchiveTimestamp = null;
         for (String id : timestampIds) {
             assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(id));
             TimestampWrapper timestamp = diagnosticData.getTimestampById(id);
             if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
-            	assertEquals(archiveTimestampCounter == 0 ? ArchiveTimestampType.JAdES_ALL : ArchiveTimestampType.JAdES_PREVIOUS_ARC_TST, 
-            			timestamp.getArchiveTimestampType());
-            	archiveTimestampCounter++;
+            	switch (timestamp.getArchiveTimestampType()) {
+            		case JAdES_ALL:
+            			allDataArchiveTimestamp = timestamp;
+            			break;
+            		case JAdES_PREVIOUS_ARC_TST:
+            			previousArcTstArchiveTimestamp = timestamp;
+            			break;
+            		default:
+            			fail(String.format("The found ArchiveTimestampType '%s' is not supported!", timestamp.getArchiveTimestampType()));
+            	}
             }
         }
-        assertEquals(2, archiveTimestampCounter);
+        assertNotNull(allDataArchiveTimestamp);
+        assertNotNull(previousArcTstArchiveTimestamp);
         
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        List<RelatedCertificateWrapper> timestampValidationDataCertificates = signature
+        		.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+        assertEquals(0, timestampValidationDataCertificates.size());
+        
+        List<TimestampWrapper> timestampedTimestamps = previousArcTstArchiveTimestamp.getTimestampedTimestamps();
+        assertEquals(1, timestampedTimestamps.size());
+        assertEquals(allDataArchiveTimestamp.getId(), timestampedTimestamps.iterator().next().getId());
+        
+        List<CertificateWrapper> timestampedCertificates = previousArcTstArchiveTimestamp.getTimestampedCertificates();
+        assertEquals(allDataArchiveTimestamp.foundCertificates().getRelatedCertificates().size(), timestampedCertificates.size());
+        
+        List<String> timestampedCertIds = timestampedCertificates.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+        for (CertificateWrapper certificateWrapper : allDataArchiveTimestamp.foundCertificates().getRelatedCertificates()) {
+        	assertTrue(timestampedCertIds.contains(certificateWrapper.getId()));
+        }
+        
+        assertEquals(0, allDataArchiveTimestamp.foundRevocations().getRelatedRevocationData().size());
+        List<RelatedRevocationWrapper> timestampValidationDataRevocations = signature
+        		.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+        assertEquals(1, timestampValidationDataRevocations.size());
+        
+        List<RevocationWrapper> timestampedRevocations = previousArcTstArchiveTimestamp.getTimestampedRevocations();
+        assertEquals(timestampValidationDataRevocations.size(), timestampedRevocations.size());
+        
+        List<String> timestampedRevocationIds = timestampedRevocations.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
+        for (RevocationWrapper revocationWrapper : timestampValidationDataRevocations) {
+        	assertTrue(timestampedRevocationIds.contains(revocationWrapper.getId()));
+        }
+        
+        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+        assertEquals(ArchiveTimestampType.JAdES_ALL, timestampList.get(1).getArchiveTimestampType());
+        assertEquals(ArchiveTimestampType.JAdES_PREVIOUS_ARC_TST, timestampList.get(2).getArchiveTimestampType());
+        
         assertContainsAllRevocationData(signature.getCertificateChain());
         for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
         	assertContainsAllRevocationData(timestamp.getCertificateChain());
@@ -118,6 +167,13 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         	assertContainsAllRevocationData(revocation.getCertificateChain());
         }
         
+	}
+	
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
+		validator.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_TIMESTAMPS_ONLY);
+		return validator;
 	}
 	
 	@SuppressWarnings("unchecked")

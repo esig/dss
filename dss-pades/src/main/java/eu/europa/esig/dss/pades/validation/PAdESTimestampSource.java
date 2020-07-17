@@ -111,7 +111,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 						addReferences(individualTimestampReferences, getSignatureTimestampReferences());
 					}
 					addReferences(individualTimestampReferences, references); // add all stored references from previous revisions
-					addReferencesForPreviousTimestamps(individualTimestampReferences, timestampedTimestamps);
+					addReferencesFromPreviousTimestamps(individualTimestampReferences, timestampedTimestamps);
 					
 					final TimestampCertificateSource timestampCertificateSource = timestampToken.getCertificateSource();
 					certificateSource.add(timestampCertificateSource);
