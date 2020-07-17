@@ -142,11 +142,22 @@ public abstract class Token implements Serializable {
 	 * @return true if this token is signed by the given certificate token
 	 */
 	public boolean isSignedBy(CertificateToken token) {
+		return isSignedBy(token.getPublicKey());
+	}
+
+	/**
+	 * Checks if the OCSP token is signed by the given publicKey
+	 * 
+	 * @param publicKey
+	 *              the candidate to be tested
+	 * @return true if this token is signed by the given public key
+	 */
+	public boolean isSignedBy(final PublicKey publicKey) {
 		if (publicKeyOfTheSigner != null) {
-			return publicKeyOfTheSigner.equals(token.getPublicKey());
-		} else if (SignatureValidity.VALID == checkIsSignedBy(token)) {
+			return publicKeyOfTheSigner.equals(publicKey);
+		} else if (SignatureValidity.VALID == checkIsSignedBy(publicKey)) {
 			if (!isSelfSigned()) {
-				this.publicKeyOfTheSigner = token.getPublicKey();
+				this.publicKeyOfTheSigner = publicKey;
 			}
 			return true;
 		}
@@ -154,12 +165,12 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Verifies if the current token has been signed by the specified certificateToken
-	 * @param token {@link CertificateToken} signed candidate
+	 * Verifies if the current token has been signed by the specified publicKey
+	 * @param publicKey {@link PublicKey} of a signing candidate
 	 * 
 	 * @return {@link SignatureValidity}
 	 */
-	protected abstract SignatureValidity checkIsSignedBy(CertificateToken token);
+	protected abstract SignatureValidity checkIsSignedBy(final PublicKey publicKey);
 
 	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign

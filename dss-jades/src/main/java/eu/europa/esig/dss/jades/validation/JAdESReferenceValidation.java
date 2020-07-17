@@ -11,8 +11,8 @@ public class JAdESReferenceValidation extends ReferenceValidation {
 	
 	private List<String> errorMessages = new ArrayList<>();
 	
-	public void addErrorMessage(String errorMessage) {
-		errorMessages.add(errorMessage);
+	public void setErrorMessages(List<String> errorMessages) {
+		this.errorMessages = errorMessages;
 	}
 
 	public List<String> getErrorMessages() {
