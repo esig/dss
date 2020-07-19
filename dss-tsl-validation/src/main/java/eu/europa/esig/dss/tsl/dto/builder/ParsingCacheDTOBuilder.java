@@ -134,7 +134,7 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 		if (result instanceof LOTLParsingResult) {
 			return ((LOTLParsingResult) getResult()).getSigningCertificateAnnouncementURL();
 		}
-		LOG.debug("Cannot extract Pivot URLs for the entry. The parsed file is not a LOTL. Return empty list.");
+		LOG.debug("Cannot extract Signing Certificate Announcement URL for the entry. The parsed file is not a LOTL. Return null.");
 		return null;
 	}
 
