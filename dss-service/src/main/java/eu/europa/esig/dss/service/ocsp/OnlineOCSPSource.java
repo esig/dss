@@ -22,6 +22,8 @@ package eu.europa.esig.dss.service.ocsp;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.NonceSource;
@@ -51,9 +54,10 @@ import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
@@ -83,6 +87,16 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	 * The DigestAlgorithm to be used in hash calculation for CertID on a request building
 	 */
 	private DigestAlgorithm certIDDigestAlgorithm = DigestAlgorithm.SHA1;
+	
+	/**
+	 * The trusted certificate source is used to skip acceptance check for trusted OCSPToken's certificate issuers
+	 */
+	private ListCertificateSource trustedListCertificateSource;
+	
+	/**
+	 * A collection of acceptable DigestAlgorithm for obtained OCSPTokens and its issuers
+	 */
+	private Collection<DigestAlgorithm> acceptableDigestAlgorithms = Arrays.asList(DigestAlgorithm.values());
 
 	/**
 	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
@@ -132,6 +146,37 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		this.certIDDigestAlgorithm = certIDDigestAlgorithm;
 	}
 
+	/**
+	 * Sets a trusted certificate source in order to skip acceptance validation if OCSP's issuer is trusted
+	 * 
+	 * @param trustedListCertificateSource {@link ListCertificateSource}
+	 */
+	public void setTrustedCertificateSource(final ListCertificateSource trustedListCertificateSource) {
+		this.trustedListCertificateSource = trustedListCertificateSource;
+	}
+	
+	/**
+	 * Sets given certificate sources to skip acceptance validation for certificate contained in the sources
+	 * 
+	 * @param certificateSources an array of {@link CertificateSource}s
+	 */
+	public void setTrustedCertificateSource(final CertificateSource... certificateSources) {
+		this.trustedListCertificateSource = new ListCertificateSource();
+		for (CertificateSource certificateSource : certificateSources) {
+			this.trustedListCertificateSource.add(certificateSource);
+		}
+	}
+
+	/**
+	 * Sets a collection of acceptable DigestAlgorithms
+	 * If an OCSPToken or its issuer is signed with a not listed algorithm, the OCSPToken will be skipped
+	 * 
+	 * @param acceptableDigestAlgorithms an array if {@link DigestAlgorithm}s
+	 */
+	public void setAcceptableDigestAlgorithms(Collection<DigestAlgorithm> acceptableDigestAlgorithms) {
+		this.acceptableDigestAlgorithms = acceptableDigestAlgorithms;
+	}
+
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
@@ -179,11 +224,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCertificateToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
 						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
-						if (isAcceptable(ocspToken)) {
+						if (isIssuerTrusted(ocspToken) || isAcceptable(ocspToken, ocspAccessLocation)) {
 							return ocspToken;
-						} else {
-							LOG.warn("The issuer certificate of the obtained OCSPToken from URL '{}' requires a revocation data, "
-									+ "which is not acceptable due its configuration. The token is skipped.", ocspAccessLocation);
 						}
 					} else {
 						LOG.warn("Ignored OCSP Response from URL '{}' : status -> {}", ocspAccessLocation, status);
@@ -258,9 +300,35 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		}
 	}
 	
-	private boolean isAcceptable(RevocationToken<?> revocationToken) {
-		CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
-		return issuerCertificateToken != null && (!doesRequireRevocation(issuerCertificateToken) || hasRevocationAccessPoints(issuerCertificateToken));
+	private boolean isIssuerTrusted(OCSPToken ocspToken) {
+		CertificateToken issuerCertificateToken = ocspToken.getIssuerCertificateToken();
+		return issuerCertificateToken != null && trustedListCertificateSource != null && trustedListCertificateSource.isTrusted(issuerCertificateToken);
+	}
+	
+	private boolean isAcceptable(OCSPToken ocspToken, String ocspAccessLocation) {
+		CertificateToken issuerCertificateToken = ocspToken.getIssuerCertificateToken();
+		if (issuerCertificateToken == null) {
+			LOG.warn("The issuer certificate is not found for the OCSPToken obtained from URL '{}'. "
+					+ "The token is skipped.", ocspAccessLocation);
+			return false;
+			
+		} else if (doesRequireRevocation(issuerCertificateToken) && !hasRevocationAccessPoints(issuerCertificateToken)) {
+			LOG.warn("The issuer certificate of the obtained OCSPToken from URL '{}' requires a revocation data, "
+					+ "which is not acceptable due its configuration. The token is skipped.", ocspAccessLocation);
+			return false;
+			
+		} else if (!isAcceptableDigestAlgo(ocspToken.getSignatureAlgorithm())) {
+			LOG.warn("The SignatureAlgorithm '{}' of the obtained OCSPToken from URL '{}' is not acceptable! "
+					+ "The OCSPToken is skipped.", ocspToken.getSignatureAlgorithm(), ocspAccessLocation);
+			return false;
+			
+		} else if (!isAcceptableDigestAlgo(issuerCertificateToken.getSignatureAlgorithm())) {
+			LOG.warn("The SignatureAlgorithm '{}' of the issuer of obtained OCSPToken from URL '{}' is not acceptable! "
+					+ "The OCSPToken is skipped.", issuerCertificateToken.getSignatureAlgorithm(), ocspAccessLocation);
+			return false;
+			
+		}
+		return true;
 	}
 	
 	private boolean doesRequireRevocation(final CertificateToken certificateToken) {
@@ -281,6 +349,10 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean isAcceptableDigestAlgo(SignatureAlgorithm signatureAlgorithm) {
+		return signatureAlgorithm != null && acceptableDigestAlgorithms.contains(signatureAlgorithm.getDigestAlgorithm());
 	}
 
 }

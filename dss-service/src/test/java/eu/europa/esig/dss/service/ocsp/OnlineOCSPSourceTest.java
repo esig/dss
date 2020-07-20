@@ -46,6 +46,7 @@ import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -59,8 +60,10 @@ public class OnlineOCSPSourceTest {
 	private static CertificateToken goodCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
+	
 	private static CertificateToken ocspSkipUser;
 	private static CertificateToken ocspSkipCa;
+	private static CertificateToken ocspSkipOcspResponder;
 
 	@BeforeAll
 	public static void init() {
@@ -76,6 +79,7 @@ public class OnlineOCSPSourceTest {
 
 		ocspSkipUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/ocsp-skip-user.crt"));
 		ocspSkipCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/ocsp-skip-ca.crt"));
+		ocspSkipOcspResponder = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/ocsp-skip-ocsp-responder.crt"));
 	}
 
 	@Test
@@ -228,6 +232,27 @@ public class OnlineOCSPSourceTest {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken revocationToken = ocspSource.getRevocationToken(ocspSkipUser, ocspSkipCa);
 		assertNull(revocationToken);
+		
+		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(ocspSkipOcspResponder);
+		ocspSource.setTrustedCertificateSource(trustedCertificateSource);
+		
+		revocationToken = ocspSource.getRevocationToken(ocspSkipUser, ocspSkipCa);
+		assertNotNull(revocationToken);
 	}
+	
+	@Test
+	public void ocspSkipDigestAlgoTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setAcceptableDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA512));
+		
+		OCSPToken revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNull(revocationToken);
 
+		ocspSource.setAcceptableDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
+		
+		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(revocationToken);
+	}
+	
 }
