@@ -22,6 +22,7 @@ package eu.europa.esig.dss.service.ocsp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -58,6 +59,8 @@ public class OnlineOCSPSourceTest {
 	private static CertificateToken goodCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
+	private static CertificateToken ocspSkipUser;
+	private static CertificateToken ocspSkipCa;
 
 	@BeforeAll
 	public static void init() {
@@ -71,6 +74,8 @@ public class OnlineOCSPSourceTest {
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
 
+		ocspSkipUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/ocsp-skip-user.crt"));
+		ocspSkipCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/ocsp-skip-ca.crt"));
 	}
 
 	@Test
@@ -216,6 +221,13 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);
 		ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
+	}
+	
+	@Test
+	public void ocspSkipTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken revocationToken = ocspSource.getRevocationToken(ocspSkipUser, ocspSkipCa);
+		assertNull(revocationToken);
 	}
 
 }

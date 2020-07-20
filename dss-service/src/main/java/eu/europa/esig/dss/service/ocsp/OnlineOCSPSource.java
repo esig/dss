@@ -53,6 +53,7 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
@@ -178,7 +179,12 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCertificateToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
 						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
-						return ocspToken;
+						if (isAcceptable(ocspToken)) {
+							return ocspToken;
+						} else {
+							LOG.warn("The issuer certificate of the obtained OCSPToken from URL '{}' requires a revocation data, "
+									+ "which is not acceptable due its configuration. The token is skipped.", ocspAccessLocation);
+						}
 					} else {
 						LOG.warn("Ignored OCSP Response from URL '{}' : status -> {}", ocspAccessLocation, status);
 					}
@@ -250,6 +256,31 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to extract the nonce from the OCSPResponse! Reason : [%s]", e.getMessage()), e);
 		}
+	}
+	
+	private boolean isAcceptable(RevocationToken<?> revocationToken) {
+		CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
+		return issuerCertificateToken != null && (!doesRequireRevocation(issuerCertificateToken) || hasRevocationAccessPoints(issuerCertificateToken));
+	}
+	
+	private boolean doesRequireRevocation(final CertificateToken certificateToken) {
+		if (certificateToken.isSelfSigned()) {
+			return false;
+		}
+		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean hasRevocationAccessPoints(final CertificateToken certificateToken) {
+		if (Utils.isCollectionNotEmpty(DSSASN1Utils.getOCSPAccessLocations(certificateToken))) {
+			return true;
+		}
+		if (Utils.isCollectionNotEmpty(DSSASN1Utils.getCrlUrls(certificateToken))) {
+			return true;
+		}
+		return false;
 	}
 
 }

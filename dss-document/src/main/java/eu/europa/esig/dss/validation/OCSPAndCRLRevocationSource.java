@@ -32,7 +32,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 
 /**
- * Fetchs revocation data for a certificate by querying an OCSP server first and
+ * Fetches revocation data for a certificate by querying an OCSP server first and
  * then a CRL server if no OCSP response could be retrieved.
  *
  */
@@ -63,7 +63,6 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 	/**
 	 * This method tries firstly to collect from the OCSP Source and than from the
 	 * CRL Source. The first result is returned.
-	 * 
 	 * 
 	 */
 	@Override
