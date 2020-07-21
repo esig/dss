@@ -18,12 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.bbb.cv.checks;
+package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
@@ -39,12 +39,12 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class AllFilesSignedCheck extends ChainItem<XmlCV> {
+public class AllFilesSignedCheck extends ChainItem<XmlFC> {
 
 	private final SignatureWrapper signature;
 	private final XmlContainerInfo containerInfo;
 
-	public AllFilesSignedCheck(I18nProvider i18nProvider, XmlCV result, SignatureWrapper signature, XmlContainerInfo containerInfo, LevelConstraint constraint) {
+	public AllFilesSignedCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, XmlContainerInfo containerInfo, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.containerInfo = containerInfo;
@@ -136,7 +136,7 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.SIG_CRYPTO_FAILURE;
+		return SubIndication.FORMAT_FAILURE;
 	}
 
 }

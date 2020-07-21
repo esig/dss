@@ -154,7 +154,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getSigningTimeConstraint() {
-		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
 			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
 			if (signedAttributeConstraints != null) {
@@ -166,7 +166,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public ValueConstraint getContentTypeConstraint() {
-		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
 			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
 			if (signedAttributeConstraints != null) {
@@ -178,7 +178,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getCounterSignatureConstraint() {
-		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
 			UnsignedAttributesConstraints unsignedAttributeConstraints = mainSignature.getUnsignedAttributes();
 			if (unsignedAttributeConstraints != null) {
@@ -453,7 +453,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getUnknownStatusConstraint() {
-		RevocationConstraints revocationConstraints = policy.getRevocation();
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {
 			return revocationConstraints.getUnknownStatus();
 		}
@@ -462,7 +462,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	
 	@Override
 	public LevelConstraint getOCSPResponseCertHashPresentConstraint() {
-		RevocationConstraints revocationConstraints = policy.getRevocation();
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {
 			return revocationConstraints.getOCSPCertHashPresent();
 		}
@@ -471,7 +471,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getOCSPResponseCertHashMatchConstraint() {
-		RevocationConstraints revocationConstraints = policy.getRevocation();
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {
 			return revocationConstraints.getOCSPCertHashMatch();
 		}
@@ -714,7 +714,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getBestSignatureTimeBeforeExpirationDateOfSigningCertificateConstraint() {
-		TimestampConstraints timestamp = policy.getTimestamp();
+		TimestampConstraints timestamp = getTimestampConstraints();
 		if (timestamp != null) {
 			return timestamp.getBestSignatureTimeBeforeExpirationDateOfSigningCertificate();
 		}
@@ -723,7 +723,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getRevocationTimeAgainstBestSignatureTime() {
-		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getRevocationTimeAgainstBestSignatureTime();
 		}
@@ -732,7 +732,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getTimestampCoherenceConstraint() {
-		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getCoherence();
 		}
@@ -741,7 +741,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public TimeConstraint getTimestampDelayConstraint() {
-		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getTimestampDelay();
 		}
@@ -750,7 +750,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public TimeConstraint getRevocationFreshnessConstraint() {
-		RevocationConstraints revocationConstraints = policy.getRevocation();
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {
 			return revocationConstraints.getRevocationFreshness();
 		}
@@ -759,7 +759,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getFullScopeConstraint() {
-		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
 			return mainSignature.getFullScope();
 		}
@@ -768,7 +768,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getContentTimestampConstraint() {
-		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
 			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
 			if (signedAttributeConstraints != null) {
@@ -798,25 +798,25 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		switch (context) {
 		case SIGNATURE:
 		case CERTIFICATE: // TODO improve
-			SignatureConstraints mainSignature = policy.getSignatureConstraints();
+			SignatureConstraints mainSignature = getSignatureConstraints();
 			if (mainSignature != null) {
 				return mainSignature.getBasicSignatureConstraints();
 			}
 			break;
 		case COUNTER_SIGNATURE:
-			SignatureConstraints counterSignature = policy.getCounterSignatureConstraints();
+			SignatureConstraints counterSignature = getCounterSignatureConstraints();
 			if (counterSignature != null) {
 				return counterSignature.getBasicSignatureConstraints();
 			}
 			break;
 		case TIMESTAMP:
-			TimestampConstraints timestampConstraints = policy.getTimestamp();
+			TimestampConstraints timestampConstraints = getTimestampConstraints();
 			if (timestampConstraints != null) {
 				return timestampConstraints.getBasicSignatureConstraints();
 			}
 			break;
 		case REVOCATION:
-			RevocationConstraints revocationConstraints = policy.getRevocation();
+			RevocationConstraints revocationConstraints = getRevocationConstraints();
 			if (revocationConstraints != null) {
 				return revocationConstraints.getBasicSignatureConstraints();
 			}
@@ -832,19 +832,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		switch (context) {
 		case SIGNATURE:
 		case CERTIFICATE: // TODO improve
-			SignatureConstraints mainSignature = policy.getSignatureConstraints();
+			SignatureConstraints mainSignature = getSignatureConstraints();
 			if (mainSignature != null) {
 				return mainSignature.getSignedAttributes();
 			}
 			break;
 		case COUNTER_SIGNATURE:
-			SignatureConstraints counterSignature = policy.getCounterSignatureConstraints();
+			SignatureConstraints counterSignature = getCounterSignatureConstraints();
 			if (counterSignature != null) {
 				return counterSignature.getSignedAttributes();
 			}
 			break;
 		case TIMESTAMP:
-			TimestampConstraints timestampConstraints = policy.getTimestamp();
+			TimestampConstraints timestampConstraints = getTimestampConstraints();
 			if (timestampConstraints != null) {
 				return timestampConstraints.getSignedAttributes();
 			}
@@ -860,9 +860,9 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		switch (context) {
 		case SIGNATURE:
 		case CERTIFICATE: // TODO improve
-			return policy.getSignatureConstraints();
+			return getSignatureConstraints();
 		case COUNTER_SIGNATURE:
-			return policy.getCounterSignatureConstraints();
+			return getCounterSignatureConstraints();
 		default:
 			LOG.warn("Unsupported context {}", context);
 			break;
@@ -872,7 +872,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public MultiValuesConstraint getAcceptedContainerTypesConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAcceptableContainerTypes();
 		}
@@ -881,7 +881,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getZipCommentPresentConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getZipCommentPresent();
 		}
@@ -890,7 +890,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public MultiValuesConstraint getAcceptedZipCommentsConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAcceptableZipComment();
 		}
@@ -899,7 +899,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getMimeTypeFilePresentConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getMimeTypeFilePresent();
 		}
@@ -908,7 +908,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public MultiValuesConstraint getAcceptedMimeTypeContentsConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAcceptableMimeTypeFileContent();
 		}
@@ -917,7 +917,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getAllFilesSignedConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAllFilesSigned();
 		}
@@ -926,7 +926,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getManifestFilePresentConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getManifestFilePresent();
 		}
@@ -935,7 +935,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	
 	@Override
 	public LevelConstraint getSignedFilesPresentConstraint() {
-		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getSignedFilesPresent();
 		}
@@ -944,12 +944,12 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public boolean isEIDASConstraintPresent() {
-		return policy.getEIDAS() != null;
+		return getEIDASConstraints() != null;
 	}
 
 	@Override
 	public TimeConstraint getTLFreshnessConstraint() {
-		EIDAS eIDASConstraints = policy.getEIDAS();
+		EIDAS eIDASConstraints = getEIDASConstraints();
 		if (eIDASConstraints != null) {
 			return eIDASConstraints.getTLFreshness();
 		}
@@ -958,7 +958,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getTLWellSignedConstraint() {
-		EIDAS eIDASConstraints = policy.getEIDAS();
+		EIDAS eIDASConstraints = getEIDASConstraints();
 		if (eIDASConstraints != null) {
 			return eIDASConstraints.getTLWellSigned();
 		}
@@ -967,7 +967,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getTLNotExpiredConstraint() {
-		EIDAS eIDASConstraints = policy.getEIDAS();
+		EIDAS eIDASConstraints = getEIDASConstraints();
 		if (eIDASConstraints != null) {
 			return eIDASConstraints.getTLNotExpired();
 		}
@@ -976,7 +976,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public ValueConstraint getTLVersionConstraint() {
-		EIDAS eIDASConstraints = policy.getEIDAS();
+		EIDAS eIDASConstraints = getEIDASConstraints();
 		if (eIDASConstraints != null) {
 			return eIDASConstraints.getTLVersion();
 		}
@@ -992,10 +992,20 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return currentModel;
 	}
+	
+	@Override
+	public ContainerConstraints getContainerConstraints() {
+		return policy.getContainerConstraints();
+	}
 
 	@Override
 	public SignatureConstraints getSignatureConstraints() {
 		return policy.getSignatureConstraints();
+	}
+	
+	@Override
+	public SignatureConstraints getCounterSignatureConstraints() {
+		return policy.getCounterSignatureConstraints();
 	}
 
 	@Override

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.policy;
 import java.util.Date;
 
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -452,8 +453,12 @@ public interface ValidationPolicy {
 	 * @return the validation model to be used
 	 */
 	Model getValidationModel();
+	
+	ContainerConstraints getContainerConstraints();
 
 	SignatureConstraints getSignatureConstraints();
+	
+	SignatureConstraints getCounterSignatureConstraints();
 
 	TimestampConstraints getTimestampConstraints();
 

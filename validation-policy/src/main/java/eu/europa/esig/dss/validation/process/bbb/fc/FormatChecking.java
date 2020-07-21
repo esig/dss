@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
@@ -99,7 +100,11 @@ public class FormatChecking extends Chain<XmlFC> {
 			item = item.setNextItem(manifestFilePresentCheck());
 
 			item = item.setNextItem(signedFilesPresentCheck());
+			
+			item = item.setNextItem(allFilesSignedCheck());
+			
 		}
+		
 	}
 
 	private ChainItem<XmlFC> formatCheck() {
@@ -155,6 +160,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> signedFilesPresentCheck() {
 		LevelConstraint constraint = policy.getSignedFilesPresentConstraint();
 		return new SignedFilesPresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
+	}
+
+	private ChainItem<XmlFC> allFilesSignedCheck() {
+		LevelConstraint constraint = policy.getAllFilesSignedConstraint();
+		return new AllFilesSignedCheck(i18nProvider, result, signature, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

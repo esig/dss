@@ -203,7 +203,7 @@ public class BasicBuildingBlocks {
 
 	private XmlCV executeCryptographicVerification() {
 		if (!Context.CERTIFICATE.equals(context)) {
-			CryptographicVerification cv = new CryptographicVerification(i18nProvider, diagnosticData, token, context, policy);
+			CryptographicVerification cv = new CryptographicVerification(i18nProvider, token, context, policy);
 			return cv.execute();
 		} else {
 			return null;
