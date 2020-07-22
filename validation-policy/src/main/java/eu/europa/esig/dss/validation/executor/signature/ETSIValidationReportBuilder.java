@@ -584,10 +584,10 @@ public class ETSIValidationReportBuilder {
 	private ValidationStatusType getSignatureValidationStatus(SignatureWrapper signature) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
 
-		Indication indication = detailedReport.getHighestIndication(signature.getId());
+		Indication indication = detailedReport.getFinalIndication(signature.getId());
 		if (indication != null) {
-			fillIndication(validationStatus, indication);
-			SubIndication subIndication = detailedReport.getHighestSubIndication(signature.getId());
+			validationStatus.setMainIndication(indication);
+			SubIndication subIndication = detailedReport.getFinalSubIndication(signature.getId());
 			if (subIndication != null) {
 				validationStatus.getSubIndication().add(subIndication);
 			}
@@ -595,22 +595,6 @@ public class ETSIValidationReportBuilder {
 
 		addValidationReportData(validationStatus, signature);
 		return validationStatus;
-	}
-
-	private void fillIndication(ValidationStatusType validationStatus, Indication indication) {
-		switch (indication) {
-		case PASSED:
-			validationStatus.setMainIndication(Indication.TOTAL_PASSED);
-			break;
-		case FAILED:
-			validationStatus.setMainIndication(Indication.TOTAL_FAILED);
-			break;
-		case INDETERMINATE:
-			validationStatus.setMainIndication(Indication.INDETERMINATE);
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported indication : " + indication);
-		}
 	}
 
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {

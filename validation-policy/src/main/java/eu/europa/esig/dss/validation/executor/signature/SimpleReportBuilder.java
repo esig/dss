@@ -178,22 +178,18 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlSignature.setFilename(signature.getSignatureFilename());
 		}
 
-		Indication indication = detailedReport.getHighestIndication(signatureId);
-		if (Indication.PASSED.equals(indication)) {
+		Indication indication = detailedReport.getFinalIndication(signatureId);
+		if (Indication.TOTAL_PASSED.equals(indication)) {
 			validSignatureCount++;
 			determineExtensionPeriod(xmlSignature);
-			xmlSignature.setIndication(Indication.TOTAL_PASSED);
-		} else if (Indication.FAILED.equals(indication)) {
-			xmlSignature.setIndication(Indication.TOTAL_FAILED);
-		} else {
-			xmlSignature.setIndication(indication); // INDERTERMINATE
 		}
-		finalIndications.add(xmlSignature.getIndication());
+		xmlSignature.setIndication(indication);
+		finalIndications.add(indication);
 
-		SubIndication highestSubIndication = detailedReport.getHighestSubIndication(signatureId);
-		if (highestSubIndication != null) {
-			xmlSignature.setSubIndication(highestSubIndication);
-			finalSubIndications.add(highestSubIndication);
+		SubIndication subIndication = detailedReport.getFinalSubIndication(signatureId);
+		if (subIndication != null) {
+			xmlSignature.setSubIndication(subIndication);
+			finalSubIndications.add(subIndication);
 		}
 
 		addSignatureProfile(xmlSignature);
@@ -274,8 +270,17 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(timestampWrapper.getId());
 		if (timestampBBB != null && timestampBBB.getConclusion() != null) {
 			XmlConclusion bbbConclusion = timestampBBB.getConclusion();
-			xmlTimestamp.setIndication(bbbConclusion.getIndication());
-			xmlTimestamp.setSubIndication(bbbConclusion.getSubIndication());
+			
+			Indication indication = bbbConclusion.getIndication();
+			xmlTimestamp.setIndication(indication);
+			finalIndications.add(indication);
+			
+			SubIndication subIndication = bbbConclusion.getSubIndication();
+			if (subIndication != null) {
+				xmlTimestamp.setSubIndication(subIndication);
+				finalSubIndications.add(subIndication);
+			}
+			
 			xmlTimestamp.getErrors().addAll(toStrings(bbbConclusion.getErrors()));
 			xmlTimestamp.getWarnings().addAll(toStrings(bbbConclusion.getWarnings()));
 			xmlTimestamp.getInfos().addAll(toStrings(bbbConclusion.getInfos()));

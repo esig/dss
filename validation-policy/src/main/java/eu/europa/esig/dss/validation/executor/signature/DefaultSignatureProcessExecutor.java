@@ -73,7 +73,7 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 	protected Reports buildReports(final DiagnosticData diagnosticData) {
 
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(getI18nProvider(), currentTime, policy,
-				validationLevel, diagnosticData);
+				validationLevel, diagnosticData, includeSemantics);
 		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
 		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);

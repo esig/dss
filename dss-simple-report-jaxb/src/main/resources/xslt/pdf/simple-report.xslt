@@ -691,6 +691,7 @@
 						<fo:block>
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
     						<xsl:attribute name="font-size">7pt</xsl:attribute>
+       						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 		    				
 							<xsl:value-of select="@Key"/>
 						</fo:block>
@@ -701,6 +702,7 @@
 						<fo:block>
 		    				<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="font-size">7pt</xsl:attribute>
+       						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 							
 							<xsl:value-of select="."/>
 						</fo:block>

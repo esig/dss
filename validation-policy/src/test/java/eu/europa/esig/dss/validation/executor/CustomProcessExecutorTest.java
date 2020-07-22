@@ -37,7 +37,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXB;
@@ -2496,8 +2495,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
-		DetailedReport detailedReport = reports.getDetailedReport();
-		Set<String> warnings = detailedReport.getWarnings(detailedReport.getFirstSignatureId());
+		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
 		assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IOSIP_ANS)));
 	}
 	

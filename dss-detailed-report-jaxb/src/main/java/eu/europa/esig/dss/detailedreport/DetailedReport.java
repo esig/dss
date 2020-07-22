@@ -22,10 +22,7 @@ package eu.europa.esig.dss.detailedreport;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -34,10 +31,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -45,7 +40,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
@@ -73,6 +67,8 @@ import eu.europa.esig.dss.enumerations.ValidationTime;
 public class DetailedReport {
 
 	private final XmlDetailedReport jaxbDetailedReport;
+	
+	private DetailedReportMessageCollector messageCollector;
 
 	public DetailedReport(XmlDetailedReport jaxbDetailedReport) {
 		this.jaxbDetailedReport = jaxbDetailedReport;
@@ -504,15 +500,15 @@ public class DetailedReport {
 		return null;
 	}
 
-	public Indication getHighestIndication(String signatureId) {
-		return getHighestConclusion(signatureId).getConclusion().getIndication();
+	public Indication getFinalIndication(String signatureId) {
+		return getXmlSignatureById(signatureId).getConclusion().getIndication();
 	}
 
-	public SubIndication getHighestSubIndication(String signatureId) {
-		return getHighestConclusion(signatureId).getConclusion().getSubIndication();
+	public SubIndication getFinalSubIndication(String signatureId) {
+		return getXmlSignatureById(signatureId).getConclusion().getSubIndication();
 	}
 
-	private XmlConstraintsConclusion getHighestConclusion(String signatureId) {
+	public XmlConstraintsConclusion getHighestConclusion(String signatureId) {
 		XmlSignature xmlSignature = getXmlSignatureById(signatureId);
 		if (xmlSignature.getValidationProcessArchivalData() != null) {
 			return xmlSignature.getValidationProcessArchivalData();
@@ -521,157 +517,6 @@ public class DetailedReport {
 		} else {
 			return xmlSignature.getValidationProcessBasicSignature();
 		}
-	}
-
-	public Set<String> getErrors(String signatureId) {
-		return collect(MessageType.ERROR, signatureId);
-	}
-
-	public Set<String> getWarnings(String signatureId) {
-		return collect(MessageType.WARN, signatureId);
-	}
-
-	public Set<String> getInfos(String signatureId) {
-		return collect(MessageType.INFO, signatureId);
-	}
-
-	public Set<String> collect(MessageType type, String signatureId) {
-		Set<String> result = new LinkedHashSet<>();
-
-		XmlSignature signatureById = getXmlSignatureById(signatureId);
-
-		XmlValidationSignatureQualification validationSignatureQualification = signatureById
-				.getValidationSignatureQualification();
-		if (validationSignatureQualification != null) {
-			List<XmlValidationCertificateQualification> validationCertificateQualifications = validationSignatureQualification
-					.getValidationCertificateQualification();
-			for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
-				collect(type, result, validationCertificateQualification);
-			}
-			collect(type, result, validationSignatureQualification);
-		}
-
-		if (MessageType.ERROR == type) {
-			collect(type, result, getHighestConclusion(signatureId));
-			collectTimestamps(type, result, signatureById);
-		} else {
-			collect(type, result, signatureById.getValidationProcessBasicSignature());
-			collectTimestamps(type, result, signatureById);
-			collect(type, result, signatureById.getValidationProcessLongTermData());
-			collect(type, result, signatureById.getValidationProcessArchivalData());
-		}
-
-		return result;
-	}
-
-	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
-		List<XmlTimestamp> timestamps = signatureById.getTimestamp();
-		for (XmlTimestamp xmlTimestamp : timestamps) {
-			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			if (validationTimestampQualification != null) {
-				collect(type, result, validationTimestampQualification);
-			}
-			XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
-			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
-					getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
-				collect(type, result, validationProcessTimestamps);
-			}
-		}
-	}
-
-	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		if (constraintConclusion != null && constraintConclusion.getConstraint() != null) {
-			for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-				XmlName message = getMessage(type, constraint);
-				if (message != null) {
-					result.add(message.getValue());
-				}
-				
-				// do not extract subErrors if the highest conclusion is valid
-				if (!MessageType.ERROR.equals(type) || message != null) {
-					String constraintId = constraint.getId();
-					if (constraintId != null && !constraintId.isEmpty()) {
-						collect(type, result, getBasicBuildingBlockById(constraintId));
-						collect(type, result, getTLAnalysisById(constraintId));
-					}
-				}
-
-			}
-			if (constraintConclusion.getConclusion() != null) {
-				result.addAll(getMessages(type, constraintConclusion.getConclusion()));
-			}
-		}
-	}
-
-	private void collect(MessageType type, Set<String> result, XmlBasicBuildingBlocks bbb) {
-		if (bbb != null) {
-			collect(type, result, bbb.getFC());
-			collect(type, result, bbb.getISC());
-			collect(type, result, bbb.getCV());
-			collect(type, result, bbb.getSAV());
-			XmlXCV xcv = bbb.getXCV();
-			if (xcv != null) {
-				collect(type, result, xcv);
-				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (subXCV != null) {
-					for (XmlSubXCV xmlSubXCV : subXCV) {
-						collect(type, result, xmlSubXCV);
-					}
-				}
-			}
-			collect(type, result, bbb.getVCI());
-		}
-	}
-	
-	private void collect(MessageType type, Set<String> result, XmlTLAnalysis xmlTLAnalysis) {
-		if (xmlTLAnalysis != null) {
-			collect(type, result, (XmlConstraintsConclusion) xmlTLAnalysis);
-		}
-	}
-
-	private XmlName getMessage(MessageType type, XmlConstraint constraint) {
-		XmlName message = null;
-		switch (type) {
-			case ERROR:
-				message = constraint.getError();
-				break;
-			case WARN:
-				message = constraint.getWarning();
-				break;
-			case INFO:
-				message = constraint.getInfo();
-				break;
-			default:
-				break;
-		}
-		return message;
-	}
-	
-	private Set<String> getMessages(MessageType type, XmlConclusion conclusion) {
-		switch (type) {
-			case ERROR:
-				return getMessages(conclusion.getErrors());
-			case WARN:
-				return getMessages(conclusion.getWarnings());
-			case INFO:
-				return getMessages(conclusion.getInfos());
-			default:
-				return Collections.emptySet();
-		}
-	}
-	
-	private Set<String> getMessages(List<XmlName> xmlNames) {
-		Set<String> messages = new HashSet<>();
-		if (xmlNames != null) {
-			for (XmlName xmlName : xmlNames) {
-				messages.add(xmlName.getValue());
-			}
-		}
-		return messages;
-	}
-
-	private enum MessageType {
-		INFO, WARN, ERROR
 	}
 
 	public XmlSubXCV getSigningCertificate(String bbbId) {
@@ -687,5 +532,24 @@ public class DetailedReport {
 		}
 		return null;
 	}
+	
+	DetailedReportMessageCollector getMessageCollector() {
+		if (messageCollector == null) {
+			messageCollector = new DetailedReportMessageCollector(this);
+		}
+		return messageCollector;
+	}
+	
+    public Set<String> getErrors(String signatureId) {
+    	return getMessageCollector().getErrors(signatureId);
+    }
+
+    public Set<String> getWarnings(String signatureId) {
+    	return getMessageCollector().getWarnings(signatureId);
+    }
+
+    public Set<String> getInfos(String signatureId) {
+    	return getMessageCollector().getInfos(signatureId);
+    }
 
 }

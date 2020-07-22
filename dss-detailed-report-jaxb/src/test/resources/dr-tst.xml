@@ -174,4 +174,5 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </TLAnalysis>
+    <Semantic Key="PASSED">The validation process succeeded</Semantic>
 </DetailedReport>

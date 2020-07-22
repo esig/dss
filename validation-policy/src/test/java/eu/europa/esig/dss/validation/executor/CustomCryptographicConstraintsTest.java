@@ -111,7 +111,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA1, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkErrorMessageAbsence(detailedReport, MessageTag.ASCCM_ANS_2);
+		checkErrorMessageAbsence(MessageTag.ASCCM_ANS_2);
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
 		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
@@ -212,7 +212,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		detailedReport = createDetailedReport();
 		XmlBasicBuildingBlocks revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
-		checkErrorMessageAbsence(detailedReport, MessageTag.ASCCM_ANS_2);
+		checkErrorMessageAbsence(MessageTag.ASCCM_ANS_2);
 		
 		result = revocationConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSA, 0);
 		detailedReport = createDetailedReport();
@@ -598,24 +598,24 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	
 	private void checkErrorMessageAbsence(MessageTag messageKey) {
 		Reports reports = createReports();
-		DetailedReport detailedReport = reports.getDetailedReport();
-		checkErrorMessageAbsence(detailedReport, messageKey);
+		SimpleReport simpleReport = reports.getSimpleReport();
+		checkErrorMessageAbsence(simpleReport, messageKey);
 	}
 	
-	private void checkErrorMessageAbsence(DetailedReport detailedReport, MessageTag messageKey) {
-		assertTrue(!detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
-		assertTrue(!detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+	private void checkErrorMessageAbsence(SimpleReport simpleReport, MessageTag messageKey) {
+		assertTrue(!simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(!simpleReport.getErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
 	private void checkErrorMessagePresence(MessageTag messageKey) {
 		Reports reports = createReports();
-		DetailedReport detailedReport = reports.getDetailedReport();
-		checkErrorMessagePresence(detailedReport, messageKey);
+		SimpleReport simpleReport = reports.getSimpleReport();
+		checkErrorMessagePresence(simpleReport, messageKey);
 	}
 
-	private void checkErrorMessagePresence(DetailedReport detailedReport, MessageTag messageKey) {
-		assertTrue(detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
-		assertTrue(detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+	private void checkErrorMessagePresence(SimpleReport simpleReport, MessageTag messageKey) {
+		assertTrue(simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(simpleReport.getErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
 	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
