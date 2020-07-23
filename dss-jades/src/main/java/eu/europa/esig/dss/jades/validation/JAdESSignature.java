@@ -303,11 +303,27 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return jws.getSignatureValue();
 	}
 
+	// TODO : no definition available in ETSI TS 119 442 - V1.1.1
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
-		byte[] signatureElementBytes = jws.getEncodedHeader().getBytes();
-		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureElementBytes);
+		String encodedHeader = jws.getEncodedHeader();
+		String payload = jws.isRfc7797UnencodedPayload() ? jws.getUnverifiedPayload() : jws.getEncodedPayload();
+		String encodedSignature = jws.getEncodedSignature();
+		byte[] signatureReferenceBytes = JAdESUtils.concatenate(encodedHeader, payload, encodedSignature).getBytes();
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureReferenceBytes);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
+	}
+	
+	@Override
+	public Digest getDataToBeSignedRepresentation() {
+		List<ReferenceValidation> referenceValidations = getReferenceValidations();
+		for (ReferenceValidation referenceValidation : referenceValidations) {
+			if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(referenceValidation.getType())) {
+				return referenceValidation.getDigest();
+			}
+		}
+		// shall not happen
+		throw new DSSException("JWS_SIGNING_INPUT_DIGEST is not found! Unable to compute DTBSR.");
 	}
 
 	@Override
@@ -356,14 +372,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	public List<ReferenceValidation> getReferenceValidations() {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<>();
+			
 			JAdESReferenceValidation signingInputReferenceValidation = getSigningInputReferenceValidation();
-			if (signingInputReferenceValidation != null) {
-				referenceValidations.add(signingInputReferenceValidation);
-			}
+			referenceValidations.add(signingInputReferenceValidation);
+			
 			List<JAdESReferenceValidation> detachedReferenceValidations = getDetachedReferenceValidations();
 			if (Utils.isCollectionNotEmpty(detachedReferenceValidations)) {
 				referenceValidations.addAll(detachedReferenceValidations);
 			}
+			
 		}
 		return referenceValidations;
 	}

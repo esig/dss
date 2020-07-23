@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +70,6 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -722,34 +720,11 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(SignatureWrapper sigWrapper) {
-		// TODO : a temporary code, shall be changed with DSS-2116
-		switch (sigWrapper.getSignatureFormat().getSignatureForm()) {
-			case XAdES:
-				return getDigestMatcherOfType(sigWrapper, Arrays.asList(DigestMatcherType.SIGNED_PROPERTIES));
-			case CAdES:
-			case PAdES:
-			case PKCS7:
-				return getDigestMatcherOfType(sigWrapper, Arrays.asList(DigestMatcherType.MESSAGE_DIGEST, DigestMatcherType.CONTENT_DIGEST));
-			case JAdES:
-				return getDigestMatcherOfType(sigWrapper, Arrays.asList(DigestMatcherType.JWS_SIGNING_INPUT_DIGEST));
-			default:
-				// unsupported format
-				return null;
+		XmlDigestAlgoAndValue dtbsr = sigWrapper.getDataToBeSignedRepresentation();
+		if (dtbsr != null) {
+			return getDigestAlgAndValueType(sigWrapper.getDataToBeSignedRepresentation());
 		}
-	}
-	
-	private DigestAlgAndValueType getDigestMatcherOfType(SignatureWrapper sigWrapper, Collection<DigestMatcherType> acceptedDigestMatcherTypes) {
-		XmlDigestMatcher digestMatcher = null;
-		List<XmlDigestMatcher> digestMatchers = sigWrapper.getDigestMatchers();
-		if (Utils.isCollectionNotEmpty(digestMatchers)) {
-			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				if ( (digestMatcher == null || acceptedDigestMatcherTypes.contains(xmlDigestMatcher.getType())) 
-						&& xmlDigestMatcher.getDigestMethod() != null && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue()) ) {
-					digestMatcher = xmlDigestMatcher;
-				}
-			}
-		}
-		return digestMatcher == null ? null : getDigestAlgAndValueType(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
+		return null;
 	}
 	
 	private void getSignersDocuments(SignatureValidationReportType signatureValidationReport, SignatureWrapper sigWrapper) {

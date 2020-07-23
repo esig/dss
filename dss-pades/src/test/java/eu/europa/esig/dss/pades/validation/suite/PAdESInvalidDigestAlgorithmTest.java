@@ -80,6 +80,12 @@ public class PAdESInvalidDigestAlgorithmTest extends AbstractPAdESTestValidation
 	}
 	
 	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNull(signatureWrapper.getDataToBeSignedRepresentation()); // DigestAlgo is not supported
+	}
+	
+	@Override
 	protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());

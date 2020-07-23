@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -32,12 +31,12 @@ import java.util.List;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -96,19 +95,9 @@ public class XAdESSignedPropertiesTest extends AbstractXAdESTestValidation {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		Digest signedPropertiesDigest = null;
-		
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertNotNull(digestMatchers);
 		assertTrue(digestMatchers.size() > 1);
-		
-		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
-				assertNull(signedPropertiesDigest);
-				signedPropertiesDigest = new Digest(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
-			}
-		}
-		assertNotNull(signedPropertiesDigest);
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		List<SignatureValidationReportType> signatureValidationReport = etsiValidationReportJaxb.getSignatureValidationReport();
@@ -116,14 +105,16 @@ public class XAdESSignedPropertiesTest extends AbstractXAdESTestValidation {
 		assertEquals(1, signatureValidationReport.size());
 		SignatureValidationReportType signatureValidationReportType = signatureValidationReport.get(0);
 		
+		XmlDigestAlgoAndValue dataToBeSignedRepresentation = signatureWrapper.getDataToBeSignedRepresentation();
+		
 		SignatureIdentifierType signatureIdentifier = signatureValidationReportType.getSignatureIdentifier();
 		assertNotNull(signatureIdentifier);
 		assertEquals(signatureWrapper.getId(), signatureIdentifier.getId());
 		
 		DigestAlgAndValueType digestAlgAndValue = signatureIdentifier.getDigestAlgAndValue();
 		assertNotNull(digestAlgAndValue);
-		assertEquals(signedPropertiesDigest.getAlgorithm(), DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
-		assertArrayEquals(signedPropertiesDigest.getValue(), digestAlgAndValue.getDigestValue());
+		assertEquals(dataToBeSignedRepresentation.getDigestMethod(), DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
+		assertArrayEquals(dataToBeSignedRepresentation.getDigestValue(), digestAlgAndValue.getDigestValue());
 	}
 
 }

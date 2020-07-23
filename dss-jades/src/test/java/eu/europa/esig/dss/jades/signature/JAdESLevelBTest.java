@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -20,7 +22,9 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 
@@ -64,6 +68,17 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		assertEquals(CommitmentTypeEnum.ProofOfCreation.getDescription(), commitmentTypeIndication.getDescription());
 		assertEquals(CommitmentTypeEnum.ProofOfCreation.getDocumentationReferences().length, 
 				commitmentTypeIndication.getDocumentationReferences().size());
+	}
+	
+	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		super.checkDTBSR(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		XmlDigestAlgoAndValue dtbsr = signature.getDataToBeSignedRepresentation();
+		
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, getSignatureParameters());
+		assertArrayEquals(DSSUtils.digest(dtbsr.getDigestMethod(), dataToSign.getBytes()), dtbsr.getDigestValue());
 	}
 
 	@Override

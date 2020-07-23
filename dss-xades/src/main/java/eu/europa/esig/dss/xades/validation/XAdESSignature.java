@@ -882,6 +882,27 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureElementBytes);
 		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, new Digest(digestAlgorithm, digestValue));
 	}
+
+	@Override
+	public Digest getDataToBeSignedRepresentation() {
+		DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
+		if (digestAlgorithm == null) {
+			LOG.warn("DigestAlgorithm is not found! Unable to compute DTBSR.");
+			return null;
+		}
+		final Element signedInfo = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNED_INFO_PATH);
+		if (signedInfo == null) {
+			LOG.warn("SignedInfo element is not found! Unable to compute DTBSR.");
+			return null;
+		}
+		String canonicalizationMethod = DomUtils.getValue(signedInfo, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
+			LOG.warn("Canonicalization method is not present in SignedInfo element! Unable to compute DTBSR.");
+			return null;
+		}
+		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, signedInfo);
+		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, canonicalizedSignedInfo));
+	}
 	
 	/**
 	 * Returns a list of all references contained in the given manifest

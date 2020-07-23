@@ -35,6 +35,7 @@ import eu.europa.esig.dss.pades.validation.suite.DSS1972Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1983Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2023Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2025Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2116WithPAdESTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
@@ -82,7 +83,7 @@ import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigest
 		DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class, DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class,
 		PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class, BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class, 
 		DSS1469Test.class, DSS1469LTTest.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class, 
-		PAdESOrphanOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class })
+		PAdESOrphanOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class, DSS2116WithPAdESTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

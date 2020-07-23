@@ -30,6 +30,7 @@ import java.util.Objects;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
@@ -162,6 +163,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	
 	public XmlSignatureDigestReference getSignatureDigestReference() {
 		return signature.getSignatureDigestReference();
+	}
+	
+	public XmlDigestAlgoAndValue getDataToBeSignedRepresentation() {
+		return signature.getDataToBeSignedRepresentation();
 	}
 
 	public List<TimestampWrapper> getTimestampList() {

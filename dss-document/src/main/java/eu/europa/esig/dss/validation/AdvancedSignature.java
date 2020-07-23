@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
@@ -497,6 +498,15 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@link SignatureDigestReference}
 	 */
 	SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm);
+	
+	/**
+	 * TS 119 102-1 (4.2.8 Data to be signed representation (DTBSR)) :
+	 * The DTBS preparation component shall take the DTBSF and hash it according to 
+	 * the hash algorithm specified in the cryptographic suite.
+	 * 
+	 * @return {@link Digest} DTBSR, which is then used to create the signature.
+	 */
+	Digest getDataToBeSignedRepresentation();
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 

@@ -20,17 +20,24 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -55,11 +62,6 @@ public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return service;
-	}
-
-	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {
 		// Stateless mode
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
@@ -72,6 +74,22 @@ public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 			signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 		}
 		return signatureParameters;
+	}
+	
+	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		super.checkDTBSR(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		XmlDigestAlgoAndValue dtbsr = signature.getDataToBeSignedRepresentation();
+		
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, getSignatureParameters());
+		assertArrayEquals(DSSUtils.digest(dtbsr.getDigestMethod(), dataToSign.getBytes()), dtbsr.getDigestValue());
+	}
+
+	@Override
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+		return service;
 	}
 
 	@Override

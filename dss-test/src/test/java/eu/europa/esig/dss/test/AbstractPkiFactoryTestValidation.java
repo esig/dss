@@ -69,6 +69,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
@@ -348,6 +349,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkSignatureIdentifier(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
 		checkSignatureDigestReference(diagnosticData);
+		checkDTBSR(diagnosticData);
 		checkSignatureInformationStore(diagnosticData);
 		checkPdfRevision(diagnosticData);
 		checkStructureValidation(diagnosticData);
@@ -761,7 +763,23 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected void checkSignatureDigestReference(DiagnosticData diagnosticData) {
-		// not implemented by default
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			XmlSignatureDigestReference signatureDigestReference = signatureWrapper.getSignatureDigestReference();
+			assertNotNull(signatureDigestReference);
+			assertNotNull(signatureDigestReference.getDigestMethod());
+			assertTrue(Utils.isArrayNotEmpty(signatureDigestReference.getDigestValue()));
+		}
+	}
+	
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.getDigestAlgorithm() != null) {
+				XmlDigestAlgoAndValue dataToBeSignedRepresentation = signatureWrapper.getDataToBeSignedRepresentation();
+				assertNotNull(dataToBeSignedRepresentation);
+				assertNotNull(dataToBeSignedRepresentation.getDigestMethod());
+				assertTrue(Utils.isArrayNotEmpty(dataToBeSignedRepresentation.getDigestValue()));
+			}
+		}
 	}
 
 	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {

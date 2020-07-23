@@ -755,6 +755,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setPDFRevision(getXmlPDFRevision(signature.getPdfRevision()));
 		xmlSignature.setSignatureDigestReference(getXmlSignatureDigestReference(signature));
 		
+		xmlSignature.setDataToBeSignedRepresentation(getXmlDataToBeSignedRepresentation(signature));
 		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
 
 		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature.getDSSId(), signature.getCertificateSource()));
@@ -842,6 +843,14 @@ public class DiagnosticDataBuilder {
 			xmlDigestReference.setDigestMethod(signatureDigestReference.getDigestAlgorithm());
 			xmlDigestReference.setDigestValue(signatureDigestReference.getDigestValue());
 			return xmlDigestReference;
+		}
+		return null;
+	}
+	
+	private XmlDigestAlgoAndValue getXmlDataToBeSignedRepresentation(AdvancedSignature signature) {
+		Digest dtbsr = signature.getDataToBeSignedRepresentation();
+		if (dtbsr != null) {
+			return getXmlDigestAlgoAndValue(dtbsr);
 		}
 		return null;
 	}

@@ -720,38 +720,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			ReferenceValidation validation = null;
 			final byte[] messageDigestValue = getMessageDigestValue();
-			if (messageDigestValue == null) {
+			if (messageDigestValue != null) {
+				validation = getMessageDigestReferenceValidation(originalDocument, messageDigestValue);
+			} else {
 				LOG.warn("message-digest is not present in SignedData! Extracting digests from content SignatureValue...");
 				validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
-			} else {
-				
-				validation = new ReferenceValidation();
-				validation.setType(DigestMatcherType.MESSAGE_DIGEST);
-				
-				Digest messageDigest = new Digest();
-				messageDigest.setValue(messageDigestValue);
-				validation.setDigest(messageDigest);
-				
-				Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
-				
-				if (Utils.collectionSize(messageDigestAlgorithms) == 1) {
-					messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
-				}
-
-				if (originalDocument != null) {
-
-					validation.setFound(true);
-
-					validation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
-
-					// get references to documents contained in the manifest file (for ASiC-E
-					// container)
-					validation.getDependentValidations()
-							.addAll(getManifestEntryValidation(originalDocument, messageDigest));
-
-				} else {
-					LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
-				}
 			}
 
 			referenceValidations.add(validation);
@@ -820,6 +793,33 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return referenceValidations;
 	}
 	
+	private ReferenceValidation getMessageDigestReferenceValidation(DSSDocument originalDocument, byte[] messageDigestValue) {
+		ReferenceValidation messageDigestValidation = new ReferenceValidation();
+		messageDigestValidation.setType(DigestMatcherType.MESSAGE_DIGEST);
+		
+		Digest messageDigest = new Digest();
+		messageDigest.setValue(messageDigestValue);
+		messageDigestValidation.setDigest(messageDigest);
+		
+		Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
+		
+		if (Utils.collectionSize(messageDigestAlgorithms) == 1) {
+			messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
+		}
+
+		if (originalDocument != null) {
+			messageDigestValidation.setFound(true);
+			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
+
+			// get references to documents contained in the manifest file (for ASiC-E container)
+			messageDigestValidation.getDependentValidations()
+					.addAll(getManifestEntryValidation(originalDocument, messageDigest));
+		} else {
+			LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
+		}
+		return messageDigestValidation;
+	}
+	
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
 		ReferenceValidation contentValidation = new ReferenceValidation();
 		contentValidation.setType(DigestMatcherType.CONTENT_DIGEST);
@@ -850,6 +850,27 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		byte[] derEncodedSignerInfo = DSSASN1Utils.getDEREncoded(signerInformation.toASN1Structure());
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, derEncodedSignerInfo);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
+	}
+	
+	@Override
+	public Digest getDataToBeSignedRepresentation() {
+		List<ReferenceValidation> referenceValidations = getReferenceValidations();
+		ReferenceValidation referenceValidation = referenceValidations.iterator().next(); // only one is allowed for CMS
+		switch (referenceValidation.getType()) {
+			case MESSAGE_DIGEST:
+				DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
+				if (digestAlgorithm != null) {
+					AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+					byte[] derEncoded = DSSASN1Utils.getDEREncoded(signedAttributes.toASN1Structure());
+					return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, derEncoded));
+				}
+				return null;
+			case CONTENT_DIGEST:
+				return referenceValidation.getDigest();
+			default:
+				throw new DSSException(String.format("The found referenceValidation type '%s' is not supported! "
+						+ "Unable to compute DTBSR.", referenceValidation.getType()));
+		}
 	}
 
 	/**

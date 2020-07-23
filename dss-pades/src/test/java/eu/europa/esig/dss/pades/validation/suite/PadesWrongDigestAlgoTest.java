@@ -106,6 +106,12 @@ public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 	}
 	
 	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNull(signatureWrapper.getDataToBeSignedRepresentation()); // DigestAlgo is not supported
+	}
+	
+	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
 			DiagnosticData diagnosticData) {
 		for (AdvancedSignature advancedSignature : advancedSignatures) {

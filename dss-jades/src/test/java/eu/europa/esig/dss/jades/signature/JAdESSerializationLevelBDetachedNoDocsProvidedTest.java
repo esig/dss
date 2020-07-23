@@ -82,6 +82,12 @@ public class JAdESSerializationLevelBDetachedNoDocsProvidedTest extends Abstract
 	}
 	
 	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNull(signature.getDataToBeSignedRepresentation()); // no payload provided
+	}
+	
+	@Override
 	protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());
