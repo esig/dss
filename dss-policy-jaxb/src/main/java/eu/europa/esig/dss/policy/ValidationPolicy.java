@@ -76,6 +76,22 @@ public interface ValidationPolicy {
 	LevelConstraint getStructuralValidationConstraint(Context context);
 
 	/**
+	 * Indicates if the Signing Certificate attribute should be checked against the certificate chain.
+	 * If SigningCertificateRefersCertificateChain element is absent within the constraint file then null is returned.
+	 * 
+	 * @return {@code LevelConstraint} if SigningCertificateRefersCertificateChain element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getSigningCertificateRefersCertificateChainConstraint();
+
+	/**
+	 * Indicates if the whole certificate chain is covered by the Signing Certificate attribute.
+	 * If ReferencesToAllCertificateChainPresent element is absent within the constraint file then null is returned.
+	 * 
+	 * @return {@code LevelConstraint} if ReferencesToAllCertificateChainPresent element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getReferencesToAllCertificateChainPresentConstraint();
+
+	/**
 	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the
 	 * constraint file then null is returned.
 	 *

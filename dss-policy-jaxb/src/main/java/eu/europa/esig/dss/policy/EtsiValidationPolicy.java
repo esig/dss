@@ -151,6 +151,30 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getSigningCertificateRefersCertificateChainConstraint() {
+		SignatureConstraints mainSignature = getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningCertificateRefersCertificateChain();
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public LevelConstraint getReferencesToAllCertificateChainPresentConstraint() {
+		SignatureConstraints mainSignature = getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getReferencesToAllCertificateChainPresent();
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public LevelConstraint getSigningTimeConstraint() {

@@ -185,6 +185,16 @@
 					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SigningCertificateRefersCertificateChain" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those certificate present in the certificate chain</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReferencesToAllCertificateChainPresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>If the signingCertificate (V1/V2) attribute contains more than one reference, checks if the whole certificate chain is covered</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signing certificate digest</xsd:documentation>
