@@ -97,7 +97,6 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		// ltLevelDoc.save("target/ltLevelDoc.pkcs7");
 		
-
 		// Extend to LTA level with GoodTSACrossCertification
 		service.setTspSource(getGoodTsaCrossCertification());
 
@@ -134,7 +133,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		
 		// Extend to second LTA level with GoodTSACrossCertification
-		// This must force addition of missing revocation data to the previously created timestamp
+		// A new revocation data shall be added into the root CMS SignedData
 		DSSDocument doubleLtaDoc = service.extendDocument(ltaDoc, extendParams);
 		
 		// doubleLtaDoc.save("target/doubleLtaDoc.pkcs7");
@@ -148,14 +147,14 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(2, advancedSignature.getCRLSource().getAllRevocationBinaries().size());
 		assertEquals(1, advancedSignature.getOCSPSource().getAllRevocationBinaries().size());
 		
 		assertEquals(2, advancedSignature.getCompleteCRLSource().getAllRevocationBinaries().size());
 		assertEquals(1, advancedSignature.getCompleteOCSPSource().getAllRevocationBinaries().size());
 		
 		archiveTimestamp = advancedSignature.getArchiveTimestamps().get(0);
-		assertEquals(1, archiveTimestamp.getCRLSource().getAllRevocationBinaries().size());
+		assertEquals(0, archiveTimestamp.getCRLSource().getAllRevocationBinaries().size());
 		assertEquals(0, archiveTimestamp.getOCSPSource().getAllRevocationBinaries().size());
 		
 		diagnosticData = reports.getDiagnosticData();
@@ -190,7 +189,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		assertEquals(4, archiveTimestampWrapper.foundCertificates().getRelatedCertificates().size());
 		assertEquals(1, archiveTimestampWrapper.foundCertificates().getRelatedCertificateRefs().size());
 		assertEquals(0, archiveTimestampWrapper.foundCertificates().getOrphanCertificateRefs().size());
-		assertEquals(1, archiveTimestampWrapper.foundRevocations().getRelatedRevocationData().size());
+		assertEquals(0, archiveTimestampWrapper.foundRevocations().getRelatedRevocationData().size());
 		assertEquals(0, archiveTimestampWrapper.foundRevocations().getRelatedRevocationRefs().size());
 		assertEquals(0, archiveTimestampWrapper.foundRevocations().getOrphanRevocationRefs().size());
 		assertEquals(2, archiveTimestampWrapper.getTimestampedRevocations().size());
@@ -206,9 +205,9 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		List<RelatedRevocationWrapper> revocationDataDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId())
 				.foundRevocations().getRelatedRevocationData();
-		assertEquals(2, revocationDataDoubleLtaLevel.size());
-		for (RevocationWrapper revocation : revocationDataDoubleLtaLevel) {
-			assertTrue(relatedRevocationDataLTALevel.contains(revocation));
+		assertEquals(3, revocationDataDoubleLtaLevel.size());
+		for (RevocationWrapper revocation : relatedRevocationDataLTALevel) {
+			assertTrue(revocationDataDoubleLtaLevel.contains(revocation));
 		}
 		
 		assertEquals(3, diagnosticData.getAllRevocationData().size());
