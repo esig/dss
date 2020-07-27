@@ -373,9 +373,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			}
 			
 			ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(signatures, timestamps, 
-					archiveManifestFile, originalSignedDocuments);
+					archiveManifestFile, manifests);
 			// populate with a validation data of the last timestamp itself
-			populateValidationDataByDocument(validationDataForInclusion, lastTimestamp, originalSignedDocuments);
+			populateValidationDataByDocument(validationDataForInclusion, lastTimestamp, lastArchiveManifest);
 			
 			DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, validationDataForInclusion, originalSignedDocuments);
 			// a newer version of the timestamp must be created
@@ -410,20 +410,32 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return null;
 	}
 	
+	private DSSDocument getManifestForTokenWithName(List<DSSDocument> manifests, String fileName) {
+		for (DSSDocument manifest : manifests) {
+			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifest);
+			if (fileName.equals(manifestFile.getSignatureFilename())) {
+				return manifest;
+			}
+		}
+		return null;
+	}
+	
 	private ValidationDataForInclusion getValidationDataForInclusion(List<DSSDocument> signatures, List<DSSDocument> timestamps, 
-			ManifestFile manifestFile, List<DSSDocument> originalSignedDocuments) {
+			ManifestFile manifestFile, List<DSSDocument> manifests) {
 		ValidationDataForInclusion validationDataForInclusion = new ValidationDataForInclusion();
 		
 		List<DSSDocument> documentsToGetValidationDataFor = new ArrayList<>();
 		documentsToGetValidationDataFor.addAll(signatures);
 		documentsToGetValidationDataFor.addAll(timestamps);
 		
+		// Add validation data for all covered files
 		for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
 			String fileName = manifestEntry.getFileName();
 			if (Utils.isStringNotBlank(fileName)) {
 				DSSDocument documentToValidate = getDocumentWithName(documentsToGetValidationDataFor, fileName);
+				DSSDocument documentManifest = getManifestForTokenWithName(manifests, fileName);
 				if (documentToValidate != null) {
-					populateValidationDataByDocument(validationDataForInclusion, documentToValidate, originalSignedDocuments);
+					populateValidationDataByDocument(validationDataForInclusion, documentToValidate, documentManifest);
 				}
 			}
 		}
@@ -432,8 +444,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 	
 	private void populateValidationDataByDocument(final ValidationDataForInclusion validationDataForInclusion, DSSDocument documentToValidate,
-			List<DSSDocument> originalSignedDocuments) {
-		ValidationDataForInclusion validationDataForDocument = getValidationDataForDocument(documentToValidate, originalSignedDocuments);
+			DSSDocument signedManifest) {
+		ValidationDataForInclusion validationDataForDocument = getValidationDataForDocument(documentToValidate, signedManifest);
 		// enrich validation data
 		validationDataForInclusion.getCertificateTokens().addAll(validationDataForDocument.getCertificateTokens());
 		validationDataForInclusion.getCrlTokens().addAll(validationDataForDocument.getCrlTokens());
@@ -441,11 +453,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 	
 	@SuppressWarnings("unchecked")
-	private ValidationDataForInclusion getValidationDataForDocument(DSSDocument document, List<DSSDocument> originalSignedDocuments) {
+	private ValidationDataForInclusion getValidationDataForDocument(DSSDocument document, DSSDocument signedManifest) {
 		try {
 			CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
 			CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, cmsSignedData.getSignerInfos().iterator().next());
-			cadesSignature.setDetachedContents(originalSignedDocuments);
+			if (signedManifest != null) {
+				cadesSignature.setDetachedContents(Arrays.asList(signedManifest));
+			}
 			ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 			ValidationDataForInclusionBuilder validationDataForInclusionBuilder = 
 					new ValidationDataForInclusionBuilder(validationContext, cadesSignature.getCompleteCertificateSource())
