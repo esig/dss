@@ -79,41 +79,66 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	@Override
 	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 		/*
-		 * As defined in ETSI EN 319 122-1 V1.1.1 (2016-04), chapter "5.5.3 The archive-time-stamp-v3 attribute":
-		 *     If an ATSv2, or other earlier form of archive time-stamp or a long-term-validation attribute, is
-		 *     present in any SignerInfo of the root SignedData then the root SignedData.certificates and
-         *     SignedData.crls contents shall not be modified. 
+		 * ETSI EN 319 122-1 V1.1.1 (2016-04), chapter "5.5.3 The archive-time-stamp-v3 attribute":
+		 * 
+		 * The present document specifies two strategies for the inclusion of validation data, 
+		 * depending on whether attributes for long term availability, as defined in different 
+		 * versions of ETSI TS 101 733 [1], have already been added to the SignedData:
+		 * 
+		 * - If none of ATSv2 attributes (see clause A.2.4), or an earlier form of archive time-stamp as defined in ETSI
+		 *   TS 101 733 [1] or long-term-validation (see clause A.2.5) attributes is already present in any
+		 *   SignerInfo of the root SignedData, then the new validation material shall be included within the root
+		 *   SignedData.certificates, or SignedData.crls as applicable.
 		 */
-		if (!includesArchiveTimestamps(cmsSignedData)) {
+		if (!includesATSv2(cmsSignedData)) {
 			cmsSignedData = cadesProfileLT.extendCMSSignatures(cmsSignedData, parameters);
 		}
 		return cmsSignedData;
 	}
 	
-	private boolean includesArchiveTimestamps(CMSSignedData cmsSignedData) {
+	private boolean includesATSv2(CMSSignedData cmsSignedData) {
 		SignerInformation signerInformation = cmsSignedData.getSignerInfos().iterator().next();
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		return getLastArchiveTimestamp(unsignedAttributes) != null;
+		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
+		for (final Attribute attribute : attributes) {
+			if (DSSASN1Utils.isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
 			final CAdESSignatureParameters parameters) throws DSSException {
-
+		/*
+		 * If non ATSv2 is present, then the root SignedData is extended in {@code preExtendCMSSignedData(cmsSignedData, parameters)} method
+		 */
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		try {
-			// add missing validation data to the previous (last) ArchiveTimestamp
-			CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-			ValidationDataForInclusionBuilder validationDataForInclusionBuilder = cadesProfileLT.getValidationDataForInclusionBuilder(cadesSignature)
-					.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
-					.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
-					.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
-			ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
-			unsignedAttributes = addValidationData(unsignedAttributes, validationDataForInclusion, parameters.getDetachedContents());
-			signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-		} catch (IOException | CMSException | TSPException e) {
-			LOG.warn("Validation data to a timestamp was not added due the error : {}", e.getMessage());
+		
+		/* 
+		 * - If an ATSv2, or other earlier form of archive time-stamp or a long-term-validation attribute, is
+		 *   present in any SignerInfo of the root SignedData then the root SignedData.certificates and
+         *   SignedData.crls contents shall not be modified. The new validation material shall be provided within 
+         *   the TimeStampToken of the latest archive time-stamp (which can be an ATSv2 as defined in 
+         *   ETSI TS 101 733 [1], or an ATSv3) or within the latest long-term-validation attribute 
+         *   (defined in ETSI TS 101 733 [1]) already contained in the SignerInfo ...
+		 */
+		if (includesATSv2(cmsSignedData)) {
+			try {
+				// add missing validation data to the previous (last) ArchiveTimestamp
+				CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
+				ValidationDataForInclusionBuilder validationDataForInclusionBuilder = cadesProfileLT.getValidationDataForInclusionBuilder(cadesSignature)
+						.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
+						.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
+						.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
+				ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
+				unsignedAttributes = addValidationData(unsignedAttributes, validationDataForInclusion, parameters.getDetachedContents());
+				signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+			} catch (IOException | CMSException | TSPException e) {
+				LOG.warn("Validation data to a timestamp was not added due the error : {}", e.getMessage());
+			}
 		}
 
 		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
