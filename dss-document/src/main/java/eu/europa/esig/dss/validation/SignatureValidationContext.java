@@ -607,7 +607,9 @@ public class SignatureValidationContext implements ValidationContext {
 			currentCRLSource = crlSource;
 		}
 
-		return new OCSPAndCRLRevocationSource(currentCRLSource, currentOCSPSource);
+		OCSPAndCRLRevocationSource ocspAndCrlRevocationSource = new OCSPAndCRLRevocationSource(currentCRLSource, currentOCSPSource);
+		ocspAndCrlRevocationSource.setTrustedCertificateSource(trustedCertSources);
+		return ocspAndCrlRevocationSource;
 	}
 
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {

@@ -22,12 +22,14 @@ package eu.europa.esig.dss.service.ocsp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -70,7 +72,6 @@ public class OnlineOCSPSourceTest {
 
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
-
 	}
 
 	@Test
@@ -209,6 +210,7 @@ public class OnlineOCSPSourceTest {
 		dataLoader.setTimeoutSocket(10000);
 
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource(dataLoader);
+		ocspSource.setDigestAlgorithmsForExclusion(Collections.emptyList());
 
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value
@@ -217,5 +219,23 @@ public class OnlineOCSPSourceTest {
 		ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
 	}
+	
+	@Test
+	public void ocspSkipDigestAlgoTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		
+		OCSPToken revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(revocationToken);
+		
+		ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA256));
+		
+		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNull(revocationToken);
 
+		ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA1));
+		
+		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(revocationToken);
+	}
+	
 }
