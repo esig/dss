@@ -1375,11 +1375,22 @@ public final class DSSASN1Utils {
 	 * @return true if the attribute represents an archive timestamp element, false otherwise
 	 */
 	public static boolean isArchiveTimeStampToken(Attribute attribute) {
+		return isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2) || isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV3);
+	}
+	
+	/**
+	 * Checks if the given attribute is an instance of the expected asn1ObjectIdentifier type
+	 * 
+	 * @param attribute {@link Attribute} to check
+	 * @param asn1ObjectIdentifier {@link ASN1ObjectIdentifier} type to check against
+	 * @return TRUE if the attribute is of type asn1ObjectIdentifier, FALSE otherwise
+	 */
+	public static boolean isAttributeOfType(Attribute attribute, ASN1ObjectIdentifier asn1ObjectIdentifier) {
 		if (attribute == null) {
 			return false;
 		}
 		ASN1ObjectIdentifier objectIdentifier = attribute.getAttrType();
-		return OID.id_aa_ets_archiveTimestampV2.equals(objectIdentifier) || OID.id_aa_ets_archiveTimestampV3.equals(objectIdentifier);
+		return asn1ObjectIdentifier.equals(objectIdentifier);
 	}
 	
 	/**

@@ -191,7 +191,7 @@ public class ValidationDataForInclusionBuilder {
 		
 		final List<OCSPToken> ocspTokens = new ArrayList<>();
 		List<String> revocationIds = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(excludeCRLs)) {
+		if (Utils.isCollectionNotEmpty(excludeOCSPs)) {
 			revocationIds = excludeOCSPs.stream().map(r -> r.asXmlId()).collect(Collectors.toList());
 		}
 		
