@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,6 +64,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -668,52 +668,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		try {
 			final XMLSignature currentSantuarioSignature = getSantuarioSignature();
-			boolean coreValidity = false;
+			CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 			
-			CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-			if (candidates.isEmpty()) {
-				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature or certificate pool.");
+			SignatureIntegrityValidator signingCertificateValidator = new XAdESSignatureIntegrityValidator(currentSantuarioSignature);
+			CertificateValidity certificateValidity = signingCertificateValidator.validate(candidatesForSigningCertificate);
+			if (certificateValidity != null) {
+				candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
 			}
 			
-			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
-			
-			LOG.debug("Determining signing certificate from certificate candidates list...");
-			final List<String> preliminaryErrorMessages = new ArrayList<>();
-			int certificateNumber = 0;
-			for (final CertificateValidity certificateValidity : certificateValidityList) {
-				String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
-				try {
-
-					final PublicKey publicKey = certificateValidity.getPublicKey();
-					if (currentSantuarioSignature.checkSignatureValue(publicKey)) {
-						LOG.debug("Public key matching the signature value found.");
-						coreValidity = true;
-						candidates.setTheCertificateValidity(certificateValidity);
-						if (certificateValidity.isValid()) {
-							LOG.info("Determining signing certificate from certificate candidates list succeeded : {}",
-									certificateValidity.getCertificateToken().getDSSIdAsString());
-							break;
-						} else if (certificateValidity.getCertificateToken() != null) {
-							LOG.warn("The signing certificate candidate '{}' does not match a signing certificate reference!",
-									certificateValidity.getCertificateToken().getDSSIdAsString());
-						}
-					} else {
-						// upon returning false, santuarioSignature (class XMLSignature) will log
-						// "Signature verification failed." with WARN level.
-						preliminaryErrorMessages.add(errorMessagePrefix + "Signature verification failed");
-					}
-				} catch (XMLSignatureException e) {
-					LOG.debug("Exception while probing candidate certificate as signing certificate: {}", e.getMessage());
-					preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
-				}
-				certificateNumber++;
-			}
-			if (!coreValidity) {
-				LOG.warn("Determining signing certificate from certificate candidates list failed: {}", preliminaryErrorMessages);
-				for (String preliminaryErrorMessage : preliminaryErrorMessages) {
-					signatureCryptographicVerification.setErrorMessage(preliminaryErrorMessage);
-				}
-			}
+			List<String> errorMessages = signingCertificateValidator.getErrorMessages();
+			signatureCryptographicVerification.setErrorMessages(errorMessages);
 
 			boolean allReferenceDataFound = true;
 			boolean allReferenceDataIntact = true;
@@ -725,7 +689,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			signatureCryptographicVerification.setReferenceDataFound(allReferenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(allReferenceDataIntact);
-			signatureCryptographicVerification.setSignatureIntact(coreValidity);
+			signatureCryptographicVerification.setSignatureIntact(certificateValidity != null);
 			
 		} catch (Exception e) {
 			LOG.error("checkSignatureIntegrity : {}", e.getMessage());

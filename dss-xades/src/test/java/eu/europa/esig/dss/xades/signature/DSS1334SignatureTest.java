@@ -96,7 +96,7 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		parameters.setDetachedContents(Arrays.<DSSDocument>asList(ORIGINAL_FILE));
 		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
-		assertEquals("Cryptographic signature verification has failed / Certificate #1: Signature verification failed", exception.getMessage());
+		assertEquals("Cryptographic signature verification has failed / Signature verification failed against the best candidate.", exception.getMessage());
 	}
 	
 	@Override

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -240,8 +241,32 @@ public class TimestampToken extends Token {
 	public boolean isSignatureValid() {
 		return SignatureValidity.VALID == signatureValidity;
 	}
+
+	/**
+	 * Checks if the OCSP token is signed by the given publicKey
+	 * 
+	 * @param certificateToken
+	 *              the candidate to be tested
+	 * @return true if this token is signed by the given public key
+	 */
+	@Override
+	public boolean isSignedBy(final CertificateToken certificateToken) {
+		if (publicKeyOfTheSigner != null) {
+			return publicKeyOfTheSigner.equals(certificateToken.getPublicKey());
+		} else if (SignatureValidity.VALID == checkIsSignedBy(certificateToken)) {
+			if (!isSelfSigned()) {
+				this.publicKeyOfTheSigner = certificateToken.getPublicKey();
+			}
+			return true;
+		}
+		return false;
+	}
 	
 	@Override
+	public boolean isSignedBy(final PublicKey publicKey) {
+		throw new UnsupportedOperationException("Use method isSignedBy(certificateToken) for a TimestampToken validation!");
+	}
+	
 	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
 
 		final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(candidate);
@@ -314,6 +339,11 @@ public class TimestampToken extends Token {
 		} catch (OperatorException e) {
 			throw new DSSException("Unable to build an instance of SignerInformationVerifier", e);
 		}
+	}
+	
+	@Override
+	protected SignatureValidity checkIsSignedBy(final PublicKey publicKey) {
+		throw new UnsupportedOperationException("Use method checkIsSignedBy(certificateToken) for a TimestampToken validation!");
 	}
 
 	/**

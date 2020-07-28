@@ -246,7 +246,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * of certificate identifiers from SigningCertificate shall be the key used
 	 * to verify the digital signature.
 	 *
-	 * @return
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {

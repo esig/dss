@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +32,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -434,53 +434,24 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
 					signatureValueReferenceValidation.setDigest(digest);
-					
-					boolean coreValidity = false;
-	
-					CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-					if (candidates.isEmpty()) {
-						signatureValueReferenceValidation
-								.addErrorMessage("There is no signing certificate within the signature or certificate pool.");
-					}
 	
 					jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
 					jws.setDoKeyValidation(false); // restrict on key size,...
 	
-					LOG.debug("Determining signing certificate from certificate candidates list...");
-					final List<String> preliminaryErrorMessages = new ArrayList<>();
-					int certificateNumber = 0;
-					for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
-						String errorMessagePrefix = "Certificate #" + (certificateNumber + 1) + ": ";
-	
-						jws.setKey(certificateValidity.getPublicKey());
-	
-						try {
-							coreValidity = jws.verifySignature();
-							if (coreValidity) {
-								LOG.info("Determining signing certificate from certificate candidates list succeeded");
-								candidates.setTheCertificateValidity(certificateValidity);
-								break;
-							}
-						} catch (JoseException e) {
-							LOG.debug("Exception while probing candidate certificate as signing certificate: {}", e.getMessage());
-							preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
-						}
-	
-						certificateNumber++;
-					}
-	
-					if (!coreValidity) {
-						LOG.warn("Determining signing certificate from certificate candidates list failed: {}",
-								preliminaryErrorMessages);
-						for (String preliminaryErrorMessage : preliminaryErrorMessages) {
-							signatureValueReferenceValidation.addErrorMessage(preliminaryErrorMessage);
-						}
-					}
-	
-					signatureValueReferenceValidation.setIntact(coreValidity);
+					CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 					
+					SignatureIntegrityValidator signingCertificateValidator = new JAdESSignatureIntegrityValidator(jws);
+					CertificateValidity certificateValidity = signingCertificateValidator.validate(candidatesForSigningCertificate);
+					if (certificateValidity != null) {
+						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
+					}
+					
+					List<String> errorMessages = signingCertificateValidator.getErrorMessages();
+					signatureValueReferenceValidation.setErrorMessages(errorMessages);
+					signatureValueReferenceValidation.setIntact(certificateValidity != null);
 				}
 			}
+			
 		} catch (DSSException e) {
 			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage());
 		}

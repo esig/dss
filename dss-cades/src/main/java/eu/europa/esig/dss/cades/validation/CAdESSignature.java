@@ -29,7 +29,6 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCert
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,12 +70,9 @@ import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataParser;
-import org.bouncycastle.cms.CMSSignerDigestMismatchException;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationVerifier;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,13 +94,13 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -645,12 +641,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		try {
-
-			final CertificateValidity bestCandidate = getCandidatesForSigningCertificate().getTheBestCandidate();
-			if (bestCandidate == null) {
-				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature.");
-				return;
-			}
+			
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
 			SignerInformation signerInformationToCheck = null;
 			if (detachedSignature && !isCounterSignature()) {
@@ -663,32 +654,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			} else {
 				signerInformationToCheck = signerInformation;
 			}
-
-			LOG.debug("CHECK SIGNATURE VALIDITY: ");
-
-			if (bestCandidate.getCertificateToken() != null) {
-				try {
-
-					final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
-					verifier.setProvider(DSSSecurityProvider.getSecurityProviderName());
-
-					final CertificateToken certificateToken = bestCandidate.getCertificateToken();
-					final PublicKey publicKey = certificateToken.getPublicKey();
-					final SignerInformationVerifier signerInformationVerifier = verifier.build(publicKey);
-					LOG.debug(" - WITH SIGNING CERTIFICATE: {}", certificateToken.getAbbreviation());
-					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
-					signatureCryptographicVerification.setSignatureIntact(signatureIntact);
-
-				} catch (CMSSignerDigestMismatchException e) {
-					LOG.warn("Unable to validate CMS Signature : {}", e.getMessage());
-					signatureCryptographicVerification.setErrorMessage(e.getMessage());
-					signatureCryptographicVerification.setSignatureIntact(false);
-				} catch (Exception e) {
-					LOG.error("Unable to validate CMS Signature : {}", e.getMessage(), e);
-					signatureCryptographicVerification.setErrorMessage(e.getMessage());
-					signatureCryptographicVerification.setSignatureIntact(false);
-				}
+			
+			CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
+			
+			SignatureIntegrityValidator signingCertificateValidator = new CAdESSignatureIntegrityValidator(signerInformationToCheck);
+			CertificateValidity certificateValidity = signingCertificateValidator.validate(candidatesForSigningCertificate);
+			if (certificateValidity != null) {
+				candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
 			}
+			
+			List<String> errorMessages = signingCertificateValidator.getErrorMessages();
+			signatureCryptographicVerification.setErrorMessages(errorMessages);
+			signatureCryptographicVerification.setSignatureIntact(certificateValidity != null);
 
 			boolean referenceDataFound = true;
 			boolean referenceDataIntact = true;

@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
+import java.util.List;
+
+import eu.europa.esig.dss.utils.Utils;
 
 public class SignatureCryptographicVerification implements Serializable {
 
@@ -66,6 +69,11 @@ public class SignatureCryptographicVerification implements Serializable {
 		return referenceDataFound && signatureIntact && referenceDataIntact;
 	}
 
+	/**
+	 * Returns a list of error messages obtained during signature cryptographic verification
+	 * 
+	 * @return 
+	 */
 	public String getErrorMessage() {
 		return errorMessage;
 	}
@@ -75,6 +83,14 @@ public class SignatureCryptographicVerification implements Serializable {
 			this.errorMessage += "<br/>\n" + errorMessage;
 		} else {
 			this.errorMessage = errorMessage;
+		}
+	}
+	
+	public void setErrorMessages(List<String> errorMessages) {
+		if (Utils.isCollectionNotEmpty(errorMessages)) {
+			for (String errorMessage : errorMessages) {
+				setErrorMessage(errorMessage);
+			}
 		}
 	}
 
