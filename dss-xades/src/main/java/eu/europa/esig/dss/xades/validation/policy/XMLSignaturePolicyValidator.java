@@ -24,7 +24,10 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 	@Override
 	public boolean canValidate() {
 		SignaturePolicy signaturePolicy = getSignaturePolicy();
-		return DomUtils.startsWithXmlPreamble(signaturePolicy.getPolicyContent());
+		if (signaturePolicy.getPolicyContent() != null) {
+			return DomUtils.startsWithXmlPreamble(signaturePolicy.getPolicyContent());
+		}
+		return false;
 	}
 
 	@Override

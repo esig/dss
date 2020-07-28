@@ -31,10 +31,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -85,6 +88,7 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -98,10 +102,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
@@ -149,6 +155,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		checkAdvancedSignatures(signatures);
 		checkDetachedTimestamps(validator.getDetachedTimestamps());
+		checkSignaturePolicy(signatures);
 
 		Reports reports = validator.validateDocument();
 		// reports.setValidateXml(true);
@@ -241,6 +248,31 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void checkDetachedTimestamps(List<TimestampToken> detachedTimestamps) {
 		// not implemented by default
+	}
+
+	protected void checkSignaturePolicy(List<AdvancedSignature> signatures) {
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (AdvancedSignature signature : signatures) {
+				SignaturePolicy signaturePolicy = signature.getPolicyId();
+				if (signaturePolicy != null) {
+					List<SignaturePolicyValidator> validators = new ArrayList<SignaturePolicyValidator>();
+					
+					ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
+					Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
+					if (validatorOptions.hasNext()) {
+						for (SignaturePolicyValidator signaturePolicyValidator : loader) {
+							signaturePolicyValidator.setSignature(signature);
+							if (signaturePolicyValidator.canValidate()) {
+								validators.add(signaturePolicyValidator);
+							}
+						}
+					}
+					if (validators.size() != 1) {
+						throw new DSSException(validators.size() + " signature policy validators found!");
+					}
+				}
+			}
+		}
 	}
 	
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
