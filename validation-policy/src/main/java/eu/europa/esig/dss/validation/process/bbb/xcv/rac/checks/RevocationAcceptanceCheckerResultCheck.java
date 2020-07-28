@@ -65,10 +65,10 @@ public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConc
 	}
 	
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (racResult.getRevocationProductionDate() != null) {
 			String date = ValidationProcessUtils.getFormattedDate(racResult.getRevocationProductionDate());
-			return MessageTag.REVOCATION_ACCEPTANCE_CHECK.setArgs(racResult.getId(), date);
+			return i18nProvider.getMessage(MessageTag.REVOCATION_ACCEPTANCE_CHECK, racResult.getId(), date);
 		}
 		return null;
 	}

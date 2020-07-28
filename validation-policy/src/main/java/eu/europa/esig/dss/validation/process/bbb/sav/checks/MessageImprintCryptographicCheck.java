@@ -28,33 +28,16 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 
-public class DigestCryptographicCheck extends AbstractCryptographicCheck<XmlSAV> {
-	
-	private final DigestAlgorithm digestAlgorithm;
-	
-	public DigestCryptographicCheck(I18nProvider i18nProvider, XmlSAV result, DigestAlgorithm digestAlgorithm, Date currentTime, CryptographicConstraint constraint) {
-		super(i18nProvider, result, currentTime, constraint);
-		this.digestAlgorithm = digestAlgorithm;
-	}
+public class MessageImprintCryptographicCheck extends DigestCryptographicCheck {
 
-	@Override
-	protected boolean process() {
-		
-		// Check digest algorithm
-		if (!digestAlgorithmIsReliable(digestAlgorithm))
-			return false;
-		
-		// Check digest algorithm expiration date
-		if (!digestAlgorithmIsValidOnValidationDate(digestAlgorithm))
-			return false;
-		
-		return true;
-		
+	public MessageImprintCryptographicCheck(I18nProvider i18nProvider, XmlSAV result, DigestAlgorithm digestAlgorithm, Date currentTime,
+			CryptographicConstraint constraint) {
+		super(i18nProvider, result, digestAlgorithm, currentTime, constraint);
 	}
 
 	@Override
 	protected MessageTag getPosition() {
-		return MessageTag.ACCM_POS_REF;
+		return MessageTag.ACCM_POS_MESS_IMP;
 	}
 
 }

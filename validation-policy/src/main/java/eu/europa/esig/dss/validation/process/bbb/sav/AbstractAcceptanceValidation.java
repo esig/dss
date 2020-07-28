@@ -40,6 +40,7 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
@@ -66,7 +67,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 	protected ChainItem<XmlSAV> cryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<>(i18nProvider, result, token, currentTime, constraint);
+		return new CryptographicCheck<>(i18nProvider, result, token, ValidationProcessUtils.getCryptoPosition(context), currentTime, constraint);
 	}
 
 	@Override

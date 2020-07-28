@@ -71,11 +71,11 @@ public class AcceptableRevocationDataAvailableCheck<T extends XmlConstraintsConc
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.TRY_LATER;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (certificateWrapper != null) {
-			return MessageTag.CERTIFICATE_ID.setArgs(certificateWrapper.getId());
+			return i18nProvider.getMessage(MessageTag.CERTIFICATE_ID, certificateWrapper.getId());
 		}
 		return null;
 	}

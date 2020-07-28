@@ -68,14 +68,13 @@ public class IdPkixOcspNoCheck<T extends XmlConstraintsConclusion> extends Chain
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return null;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
 		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
 		String validationTime = ValidationProcessUtils.getFormattedDate(controlTime);
-		Object[] params = new Object[] { notBeforeStr, notAfterStr, validationTime };
-		return MessageTag.OCSP_NO_CHECK.setArgs(params);
+		return i18nProvider.getMessage(MessageTag.OCSP_NO_CHECK, notBeforeStr, notAfterStr, validationTime);
 	}
 
 }

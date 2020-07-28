@@ -35,9 +35,9 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
  */
 public class CertificateAcceptanceValidation extends AbstractAcceptanceValidation<CertificateWrapper> {
 
-    public CertificateAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, CertificateWrapper certificateWrapper,
-            ValidationPolicy validationPolicy) {
-        super(i18nProvider, certificateWrapper, currentTime, Context.CERTIFICATE, validationPolicy);
+	public CertificateAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, CertificateWrapper certificateWrapper,
+			ValidationPolicy validationPolicy) {
+		super(i18nProvider, certificateWrapper, currentTime, Context.CERTIFICATE, validationPolicy);
     }
     
 	@Override

@@ -63,12 +63,12 @@ public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String errorMessage = signature.getStructuralValidationMessage();
 		if (Utils.isStringNotBlank(errorMessage)) {
-			return MessageTag.STRUCTURAL_VALIDATION_FAILURE.setArgs(errorMessage);
+			return i18nProvider.getMessage(MessageTag.STRUCTURAL_VALIDATION_FAILURE, errorMessage);
 		}
 		return null;
 	}

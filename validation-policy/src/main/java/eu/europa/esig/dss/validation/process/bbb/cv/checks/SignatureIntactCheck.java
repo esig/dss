@@ -74,10 +74,10 @@ public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends Ch
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CRYPTO_FAILURE;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.TOKEN_ID.setArgs(token.getId());
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.TOKEN_ID, token.getId());
 	}
 
 }

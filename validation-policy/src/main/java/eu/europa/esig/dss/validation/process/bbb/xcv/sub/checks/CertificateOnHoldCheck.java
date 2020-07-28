@@ -56,10 +56,10 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (certificateRevocation != null && certificateRevocation.getRevocationDate() != null) {
 			String revocationDateStr = ValidationProcessUtils.getFormattedDate(certificateRevocation.getRevocationDate());
-			return MessageTag.REVOCATION.setArgs(certificateRevocation.getReason(), revocationDateStr);
+			return i18nProvider.getMessage(MessageTag.REVOCATION, certificateRevocation.getReason(), revocationDateStr);
 		}
 		return null;
 	}

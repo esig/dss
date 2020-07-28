@@ -52,9 +52,9 @@ public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (Utils.isStringNotEmpty(pseudo)) {
-			return MessageTag.PSEUDO.setArgs(pseudo);
+			return i18nProvider.getMessage(MessageTag.PSEUDO, pseudo);
 		}
 		return null;
 	}

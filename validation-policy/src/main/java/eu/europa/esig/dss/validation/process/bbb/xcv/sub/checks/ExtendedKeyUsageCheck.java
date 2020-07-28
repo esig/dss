@@ -57,8 +57,8 @@ public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.EXTENDED_KEY_USAGE.setArgs(Arrays.toString(getExtendedKeyUsageDescriptions().toArray()));
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.EXTENDED_KEY_USAGE, Arrays.toString(getExtendedKeyUsageDescriptions().toArray()));
 	}
 
 	@Override

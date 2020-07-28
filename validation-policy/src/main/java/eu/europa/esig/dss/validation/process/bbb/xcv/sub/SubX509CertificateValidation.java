@@ -357,7 +357,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
-		return new CertificateCryptographicCheck(i18nProvider, result, certificate, currentTime, cryptographicConstraint);
+		return new CertificateCryptographicCheck(i18nProvider, result, certificate, ValidationProcessUtils.getCertificateChainCryptoPosition(context),
+				currentTime, cryptographicConstraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateQualified(CertificateWrapper certificate, SubContext subContext) {

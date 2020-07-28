@@ -256,7 +256,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 	
     private XmlSAV getCertificateCryptographicAcceptanceResult(CertificateWrapper certificateWrapper, Date controlTime) {
-        CertificateAcceptanceValidation cav = new CertificateAcceptanceValidation(i18nProvider, controlTime, certificateWrapper, policy);
+		CertificateAcceptanceValidation cav = new CertificateAcceptanceValidation(i18nProvider, controlTime, certificateWrapper, policy);
         return cav.execute();
     }
     

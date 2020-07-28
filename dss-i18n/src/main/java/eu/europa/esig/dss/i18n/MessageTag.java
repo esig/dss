@@ -129,16 +129,24 @@ public enum MessageTag {
 	ARCH_LTVV,
 	ARCH_LTVV_ANS,
 
-	ASCCM,
-	ACCCM,
-	ARCCM,
-	ATCCM,
+	ACCM,
 	ASCCM_ANS_1,
 	ASCCM_ANS_2,
 	ASCCM_ANS_3,
 	ASCCM_ANS_4,
 	ASCCM_ANS_5,
 	ASCCM_ANS_6,
+	ASCCM_ANS_7,
+	
+	ACCM_POS_SIG_SIG,
+	ACCM_POS_TST_SIG,
+	ACCM_POS_REVOC_SIG,
+	ACCM_POS_REF,
+	ACCM_POS_MESS_IMP,
+	ACCM_POS_CERT_CHAIN_SIG,
+	ACCM_POS_CERT_CHAIN_TST,
+	ACCM_POS_CERT_CHAIN_REVOC,
+	ACCM_POS_CERT_CHAIN,
 
 	BBB_SAV_ISVA,
 	BBB_SAV_ISVA_ANS,
@@ -558,8 +566,6 @@ public enum MessageTag {
 	SEMANTICS_TRY_LATER, 
 	SEMANTICS_SIGNED_DATA_NOT_FOUND;
 	
-	private Object[] args;
-
 	/**
 	 * This method returns the id code of the referred message.
 	 *
@@ -569,26 +575,6 @@ public enum MessageTag {
 		return name();
 	}
 	
-	/**
-	 * Allows setting of optional attributes for supported string patterns
-	 * 
-	 * @param args an array of {@link Object} arguments to set
-	 * @return this {@link MessageTag}
-	 */
-	public MessageTag setArgs(Object... args) {
-		this.args = args;
-		return this;
-	}
-	
-	/**
-	 * This method returns an array of arguments to fill a message pattern
-	 * 
-	 * @return array of {@link Object} arguments
-	 */
-	public Object[] getArgs() {
-		return args;
-	}
-
 	public static final MessageTag getSemantic(String etsiCode) {
 		String expectedEnumValue = "SEMANTICS_" + etsiCode;
 		for (MessageTag messageTag : values()) {

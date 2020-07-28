@@ -70,11 +70,10 @@ public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> exte
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
 		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
-		Object[] params = new Object[] { notBeforeStr, notAfterStr };
-		return MessageTag.CERTIFICATE_VALIDITY.setArgs(params);
+		return i18nProvider.getMessage(MessageTag.CERTIFICATE_VALIDITY, notBeforeStr, notAfterStr);
 	}
 
 	@Override

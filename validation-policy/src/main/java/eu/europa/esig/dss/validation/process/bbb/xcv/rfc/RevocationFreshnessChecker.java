@@ -156,7 +156,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
 		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<>(i18nProvider, result, revocationData, validationDate, cryptographicConstraint);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, MessageTag.ACCM_POS_REVOC_SIG, validationDate, cryptographicConstraint);
 	}
 
 }

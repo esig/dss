@@ -91,25 +91,25 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
 	}
-	
+
 	@Override
-	protected MessageTag getTitle() {
+	protected String buildChainTitle() {
 		MessageTag message = MessageTag.CERT_QUALIFICATION_AT_TIME;
 		MessageTag param;
 		switch (validationTime) {
-			case BEST_SIGNATURE_TIME:
-				param = MessageTag.VT_BEST_SIGNATURE_TIME;
-				break;
-			case CERTIFICATE_ISSUANCE_TIME:
-				param = MessageTag.VT_CERTIFICATE_ISSUANCE_TIME;
-				break;
-			case VALIDATION_TIME:
-				param = MessageTag.VT_VALIDATION_TIME;
-				break;
-			default:
-				throw new IllegalArgumentException(String.format("The validation time [%s] is not supported", validationTime));
+		case BEST_SIGNATURE_TIME:
+			param = MessageTag.VT_BEST_SIGNATURE_TIME;
+			break;
+		case CERTIFICATE_ISSUANCE_TIME:
+			param = MessageTag.VT_CERTIFICATE_ISSUANCE_TIME;
+			break;
+		case VALIDATION_TIME:
+			param = MessageTag.VT_VALIDATION_TIME;
+			break;
+		default:
+			throw new IllegalArgumentException(String.format("The validation time [%s] is not supported", validationTime));
 		}
-		return message.setArgs(param);
+		return i18nProvider.getMessage(message, param);
 	}
 
 	@Override

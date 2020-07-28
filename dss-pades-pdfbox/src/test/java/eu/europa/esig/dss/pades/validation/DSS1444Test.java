@@ -158,7 +158,8 @@ public class DSS1444Test {
 		assertNotNull(xmlNames);
 		for (int i = 0; i < xmlNames.size(); i++) {
 			if ("ASCCM_ANS_1".equals(xmlNames.get(i).getNameId())) {
-				assertEquals("The encryption algorithm is not authorised!", xmlNames.get(i).getValue());
+				assertEquals("The encryption algorithm is not authorised! (algorithm : PLAIN-ECDSA / position : signature creation)",
+						xmlNames.get(i).getValue());
 				return;
 			}
 		}

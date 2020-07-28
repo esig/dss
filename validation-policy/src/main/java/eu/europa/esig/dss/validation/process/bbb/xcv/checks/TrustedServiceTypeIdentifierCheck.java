@@ -76,9 +76,9 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (Utils.isStringNotEmpty(serviceTypeStr)) {
-			return MessageTag.TRUSTED_SERVICE_TYPE.setArgs(serviceTypeStr);
+			return i18nProvider.getMessage(MessageTag.TRUSTED_SERVICE_TYPE, serviceTypeStr);
 		}
 		return null;
 	}

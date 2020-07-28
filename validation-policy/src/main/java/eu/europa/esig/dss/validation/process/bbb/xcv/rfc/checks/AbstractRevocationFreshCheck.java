@@ -56,7 +56,7 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 	protected abstract long getMaxFreshness();
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String productionTimeString = "not defined";
 		String nextUpdateString = "not defined";
 		if (revocationData != null) {
@@ -65,8 +65,8 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 			if (revocationData.getNextUpdate() != null)
 				nextUpdateString = ValidationProcessUtils.getFormattedDate(revocationData.getNextUpdate());
 		}
-		Object[] params = new Object[] { ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString, nextUpdateString };
-		return MessageTag.REVOCATION_CHECK.setArgs(params);
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CHECK, ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString,
+				nextUpdateString);
 	}
 
 	@Override

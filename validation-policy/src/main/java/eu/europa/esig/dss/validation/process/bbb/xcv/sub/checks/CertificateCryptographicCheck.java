@@ -25,6 +25,7 @@ import java.util.Date;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 
@@ -32,9 +33,9 @@ public class CertificateCryptographicCheck extends CryptographicCheck<XmlSubXCV>
 
 	private final CertificateWrapper certificate;
 
-	public CertificateCryptographicCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, 
-			Date currentTime, CryptographicConstraint constraint) {
-		super(i18nProvider, result, certificate, currentTime, constraint);
+	public CertificateCryptographicCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+			MessageTag position, Date currentTime, CryptographicConstraint constraint) {
+		super(i18nProvider, result, certificate, position, currentTime, constraint);
 
 		this.certificate = certificate;
 	}

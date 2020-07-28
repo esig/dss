@@ -149,7 +149,11 @@ public class POEExtraction {
 	}
 
 	/**
-	 * Returns true if there is a POE exists for a given id at (or before) the control time.
+	 * Returns true if there is a POE exists for a given id at (or before) the
+	 * control time.
+	 * 
+	 * @param tokenId     the token id to be find
+	 * @param controlTime the control time
 	 */
 	public boolean isPOEExists(final String tokenId, final Date controlTime) {
 		List<POE> poes = poeMap.get(tokenId);
