@@ -103,9 +103,9 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (trustedService != null) {
-			return MessageTag.TRUST_SERVICE_NAME.setArgs(trustedService.getServiceNames().get(0));
+			return i18nProvider.getMessage(MessageTag.TRUST_SERVICE_NAME, trustedService.getServiceNames().get(0));
 		}
 		return null;
 	}

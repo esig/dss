@@ -45,10 +45,10 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.DigestAlgorithmAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
@@ -157,8 +157,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 				if ((timestampValidation != null) && (bbbTsp != null)) {
 					latestConclusion = timestampValidation.getConclusion();
 
-					DigestAlgorithmAcceptanceValidation dav = timestampDigestAlgorithmValidation(newestTimestamp);
-					XmlSAV savResult = dav.execute();
+					MessageImprintDigestAlgorithmValidation messageImprintValidation = timestampDigestAlgorithmValidation(newestTimestamp);
+					XmlSAV davResult = messageImprintValidation.execute();
 					
 					/*
 					 * b) If PASSED is returned and the cryptographic hash function used in the time-stamp
@@ -167,7 +167,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 * time-stamp and the cryptographic constraints as inputs. The long term validation process shall
 					 * add the returned POEs to the set of POEs.
 					 */
-					if (isValid(timestampValidation) && isValid(savResult)) {
+					if (isValid(timestampValidation) && isValid(davResult)) {
 						poe.extractPOE(newestTimestamp);
 					}
 					
@@ -195,7 +195,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 						 * continue with
 						 * step 5a using the next timestamp attribute.
 						 */
-						if (isValid(psvResult) && isValid(savResult)) {
+						if (isValid(psvResult) && isValid(davResult)) {
 							poe.extractPOE(newestTimestamp);
 						}
 						
@@ -319,8 +319,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		return null;
 	}
 	
-	private DigestAlgorithmAcceptanceValidation timestampDigestAlgorithmValidation(TimestampWrapper newestTimestamp) {
-		return new MessageImprintDigestAlgorithmValidation(i18nProvider, newestTimestamp.getProductionTime(), newestTimestamp, policy);
+	private MessageImprintDigestAlgorithmValidation timestampDigestAlgorithmValidation(TimestampWrapper newestTimestamp) {
+		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
+		return new MessageImprintDigestAlgorithmValidation(i18nProvider, newestTimestamp.getProductionTime(),
+				newestTimestamp.getMessageImprint().getDigestMethod(), cryptographicConstraint);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {

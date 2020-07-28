@@ -45,8 +45,8 @@ public abstract class AbstractTrustedListCheck<T extends XmlConstraintsConclusio
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.TRUSTED_LIST.setArgs(tlAnalysis.getURL());
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.TRUSTED_LIST, tlAnalysis.getURL());
 	}
 
 	@Override

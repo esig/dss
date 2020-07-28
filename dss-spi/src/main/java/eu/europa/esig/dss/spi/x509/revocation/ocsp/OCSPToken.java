@@ -273,7 +273,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	
 	/**
 	 * Verifies if the current OCSP token has been signed by the specified publicKey
-	 * @param token {@link PublicKey} of a signing candidate
+	 * @param publicKey {@link PublicKey} of a signing candidate
 	 * 
 	 * @return {@link SignatureValidity}
 	 */

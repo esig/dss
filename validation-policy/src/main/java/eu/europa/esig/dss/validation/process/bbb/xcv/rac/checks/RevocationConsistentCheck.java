@@ -117,22 +117,22 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.TRY_LATER;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (thisUpdate == null) {
-			return MessageTag.REVOCATION_NO_THIS_UPDATE.setArgs(revocationData.getId());
+			return i18nProvider.getMessage(MessageTag.REVOCATION_NO_THIS_UPDATE, revocationData.getId());
 		} else if (!certNotBefore.before(thisUpdate)) {
-			return MessageTag.REVOCATION_THIS_UPDATE_BEFORE.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(thisUpdate), 
-					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
+					thisUpdate), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		} else if (certNotAfter.compareTo(notAfterRevoc) < 0 && !certHashOK) {
-			return MessageTag.REVOCATION_NOT_AFTER_AFTER.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(notAfterRevoc), 
-					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
+					notAfterRevoc), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		} else if (certHashOK) {
-			return MessageTag.REVOCATION_CERT_HASH_OK.setArgs(revocationData.getId());
+			return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_HASH_OK, revocationData.getId());
 		} else {
-			return MessageTag.REVOCATION_CONSISTENT.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(thisUpdate), 
-					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
+					thisUpdate), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		}
 	}
 

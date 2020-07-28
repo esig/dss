@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -43,6 +44,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	protected final Date validationDate;
 
 	protected String failedAlgorithm = null;
+	protected String failedKeySize = null;
 	protected MessageTag errorMessage = MessageTag.EMPTY;
 
 	protected AbstractCryptographicCheck(I18nProvider i18nProvider, T result, Date currentTime, CryptographicConstraint constraint) {
@@ -72,7 +74,8 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			Integer expectedMinimumKeySize = minimumKeySizes.get(algoToFind);
 			if (tokenKeySize < expectedMinimumKeySize) {
 				errorMessage = MessageTag.ASCCM_ANS_3;
-				failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
+				failedAlgorithm = algoToFind;
+				failedKeySize = keyLengthUsedToSignThisToken;
 				return false;
 			}
 		}
@@ -126,28 +129,16 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo.getName(), keyLength);
 		if (expirationDate == null) {
 			errorMessage = MessageTag.ASCCM_ANS_4;
-			failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
+			failedAlgorithm = encryptionAlgo.getName() + keyLengthUsedToSignThisToken;
 			return false;
 		}
 		if (expirationDate.before(validationDate)) {
-			errorMessage = MessageTag.ASCCM_ANS_5;
-			failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
+			errorMessage = MessageTag.ASCCM_ANS_7;
+			failedAlgorithm = encryptionAlgo.getName();
+			failedKeySize = keyLengthUsedToSignThisToken;
 			return false;
 		}
 		return true;
-	}
-
-	private String getEncryptionDetails(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Algo : ");
-		if (encryptionAlgo == null) {
-			sb.append("?");
-		} else {
-			sb.append(encryptionAlgo.getName());
-		}
-		sb.append(" / Key Size : ");
-		sb.append(keyLengthUsedToSignThisToken);
-		return sb.toString();
 	}
 
 	private boolean isIn(String algoToFind, List<String> algos) {
@@ -155,14 +146,28 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.ASCCM;
+	protected XmlName buildConstraintMessage() {
+		return buildXmlName(MessageTag.ACCM, getPosition());
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return errorMessage;
+	protected XmlName buildErrorMessage() {
+		MessageTag position = getPosition();
+		if (position != null) {
+			if (failedAlgorithm != null) {
+				if (failedKeySize != null) {
+					return buildXmlName(errorMessage, failedAlgorithm, failedKeySize, position);
+				} else {
+					return buildXmlName(errorMessage, failedAlgorithm, position);
+				}
+			} else {
+				return buildXmlName(errorMessage, position);
+			}
+		}
+		return buildXmlName(errorMessage);
 	}
+
+	protected abstract MessageTag getPosition();
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
@@ -175,12 +180,12 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
 		if (Utils.isStringNotEmpty(failedAlgorithm)) {
-			return MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE.setArgs(failedAlgorithm, dateTime);
+			return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE, failedAlgorithm, dateTime);
 		} else {
-			return MessageTag.VALIDATION_TIME.setArgs(dateTime);
+			return i18nProvider.getMessage(MessageTag.VALIDATION_TIME, dateTime);
 		}
 	}
 

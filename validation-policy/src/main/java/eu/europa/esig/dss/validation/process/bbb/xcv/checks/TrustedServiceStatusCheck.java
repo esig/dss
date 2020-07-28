@@ -78,9 +78,9 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (Utils.isStringNotEmpty(serviceStatusStr)) {
-			return MessageTag.TRUSTED_SERVICE_STATUS.setArgs(serviceStatusStr);
+			return i18nProvider.getMessage(MessageTag.TRUSTED_SERVICE_STATUS, serviceStatusStr);
 		}
 		return null;
 	}

@@ -57,8 +57,8 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.CONTROL_TIME.setArgs(ValidationProcessUtils.getFormattedDate(controlTime));
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.CONTROL_TIME, ValidationProcessUtils.getFormattedDate(controlTime));
 	}
 
 	@Override

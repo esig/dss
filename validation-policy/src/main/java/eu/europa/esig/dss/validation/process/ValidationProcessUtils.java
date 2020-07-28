@@ -29,6 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -103,14 +104,59 @@ public class ValidationProcessUtils {
 	 * Builds a String message from the provided {@code messageTag}
 	 * 
 	 * @param i18nProvider {@link I18nProvider} to build a message
-	 * @param messageTag {@link MessageTag} defining the message to be build
+	 * @param messageTag   {@link MessageTag} defining the message to be build
+	 * @param args         the arguments to fill the message
 	 * @return final message {@link String}
 	 */
-	public static String buildStringMessage(I18nProvider i18nProvider, MessageTag messageTag) {
+	public static String buildStringMessage(I18nProvider i18nProvider, MessageTag messageTag, Object... args) {
 		if (messageTag != null) {
-			return i18nProvider.getMessage(messageTag);
+			return i18nProvider.getMessage(messageTag, args);
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the message tag for the given context (signature creation,...)
+	 * 
+	 * @param context the context
+	 * @return the related message tag
+	 */
+	public static MessageTag getCryptoPosition(Context context) {
+		switch (context) {
+		case SIGNATURE:
+		case COUNTER_SIGNATURE:
+			return MessageTag.ACCM_POS_SIG_SIG;
+		case TIMESTAMP:
+			return MessageTag.ACCM_POS_TST_SIG;
+		case REVOCATION:
+			return MessageTag.ACCM_POS_REVOC_SIG;
+		case CERTIFICATE:
+			return MessageTag.ACCM_POS_CERT_CHAIN;
+		default:
+			throw new IllegalArgumentException("Unsupported context " + context);
+		}
+	}
+
+	/**
+	 * Returns the message tag for the certificate chain of the given context
+	 * 
+	 * @param context the context
+	 * @return the related message tag
+	 */
+	public static MessageTag getCertificateChainCryptoPosition(Context context) {
+		switch (context) {
+		case SIGNATURE:
+		case COUNTER_SIGNATURE:
+			return MessageTag.ACCM_POS_CERT_CHAIN_SIG;
+		case TIMESTAMP:
+			return MessageTag.ACCM_POS_CERT_CHAIN_TST;
+		case REVOCATION:
+			return MessageTag.ACCM_POS_CERT_CHAIN_REVOC;
+		case CERTIFICATE:
+			return MessageTag.ACCM_POS_CERT_CHAIN;
+		default:
+			throw new IllegalArgumentException("Unsupported context " + context);
+		}
 	}
 
 }

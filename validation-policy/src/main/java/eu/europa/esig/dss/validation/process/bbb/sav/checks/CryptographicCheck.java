@@ -23,9 +23,6 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -37,11 +34,13 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 
 	private final TokenProxy token;
 	private final CryptographicConstraint constraint;
+	private final MessageTag position;
 
-	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
+	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, MessageTag position, Date currentTime, CryptographicConstraint constraint) {
 		super(i18nProvider, result, currentTime, constraint);
 		this.constraint = constraint;
 		this.token = token;
+		this.position = position;
 	}
 
 	@Override
@@ -85,24 +84,17 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		if (token instanceof CertificateWrapper) {
-			return MessageTag.ACCCM;
-		} else if (token instanceof RevocationWrapper) {
-			return MessageTag.ARCCM;
-		} else if (token instanceof TimestampWrapper) {
-			return MessageTag.ATCCM;
-		}
-		return super.getMessageTag();
+	protected MessageTag getPosition() {
+		return position;
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
 		if (Utils.isStringNotEmpty(failedAlgorithm)) {
-			return MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID.setArgs(failedAlgorithm, dateTime, token.getId());
+			return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID, failedAlgorithm, dateTime, token.getId());
 		} else {
-			return MessageTag.VALIDATION_TIME_WITH_ID.setArgs(dateTime, token.getId());
+			return i18nProvider.getMessage(MessageTag.VALIDATION_TIME_WITH_ID, dateTime, token.getId());
 		}
 	}
 

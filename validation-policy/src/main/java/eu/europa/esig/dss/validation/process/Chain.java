@@ -66,8 +66,8 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	/**
 	 * Common constructor
 	 * 
-	 * @param newInstance
-	 *            a new instance of the result object
+	 * @param i18nProvider the access to translations
+	 * @param newInstance  a new instance of the result object
 	 */
 	protected Chain(I18nProvider i18nProvider, T newInstance) {
 		this.i18nProvider = i18nProvider;
@@ -86,7 +86,7 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 			firstItem.execute();
 		}
 		
-		result.setTitle(ValidationProcessUtils.buildStringMessage(i18nProvider, getTitle()));
+		result.setTitle(buildChainTitle());
 
 		if (result.getConclusion() == null) {
 			XmlConclusion conclusion = new XmlConclusion();
@@ -98,12 +98,18 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 
 		return result;
 	}
+
+	protected String buildChainTitle() {
+		return ValidationProcessUtils.buildStringMessage(i18nProvider, getTitle());
+	}
 	
 	/**
 	 * Returns title of a Chain (i.e. BasicBuildingBlock title)
 	 * @return {@link MessageTag}
 	 */
-	protected abstract MessageTag getTitle();
+	protected MessageTag getTitle() {
+		return null;
+	}
 
 	protected void addAdditionalInfo() {
 		// default is empty

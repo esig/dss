@@ -38,6 +38,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
@@ -180,7 +181,8 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
 		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<>(i18nProvider, result, certificate, validationTime, constraint);
+		return new CryptographicCheck<>(i18nProvider, result, certificate, ValidationProcessUtils.getCertificateChainCryptoPosition(context), validationTime,
+				constraint);
 	}
 
 	@Override

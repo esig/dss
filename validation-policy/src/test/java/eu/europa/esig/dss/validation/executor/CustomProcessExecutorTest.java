@@ -386,7 +386,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		assertEquals(0, simpleReport.getErrors(simpleReport.getFirstSignatureId()).size());
-		assertEquals(3, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
+		assertEquals(5, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -515,6 +515,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
+//		reports.print();
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -526,7 +527,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(validationDate, bestSignatureTime);
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
-		assertEquals(7, errors.size());
+		assertEquals(8, errors.size());
 		
 
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -1470,7 +1471,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlConstraint xmlConstraint = sav.getConstraint().get(0);
 		XmlName error = xmlConstraint.getError();
 		
-		assertEquals(i18nProvider.getMessage(MessageTag.ASCCM_ANS_6), error.getValue());
+		assertEquals(MessageTag.ASCCM_ANS_6.name(), error.getNameId());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));

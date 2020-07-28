@@ -62,10 +62,10 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.TRY_LATER;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.CERTIFICATE_ID.setArgs(certificate.getId());
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.CERTIFICATE_ID, certificate.getId());
 	}
 
 }

@@ -147,14 +147,18 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * 
 	 * @return {@link MessageTag} key
 	 */
-	protected abstract MessageTag getMessageTag();
+	protected MessageTag getMessageTag() {
+		return null;
+	}
 
 	/**
 	 * Returns an i18n key String of an error message to get
 	 * 
 	 * @return {@link MessageTag} key
 	 */
-	protected abstract MessageTag getErrorMessageTag();
+	protected MessageTag getErrorMessageTag() {
+		return null;
+	}
 
 	protected List<XmlName> getPreviousErrors() {
 		return Collections.emptyList();
@@ -192,7 +196,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		if (Utils.isCollectionNotEmpty(previousErrors)) {
 			conclusion.getErrors().addAll(previousErrors);
 		} else {
-			conclusion.getErrors().add(buildXmlName(getErrorMessageTag()));
+			conclusion.getErrors().add(buildErrorMessage());
 		}
 
 		result.setConclusion(conclusion);
@@ -208,22 +212,34 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private void recordConstraint(XmlStatus status) {
 		XmlConstraint xmlConstraint = new XmlConstraint();
-		xmlConstraint.setName(buildXmlName(getMessageTag()));
+		xmlConstraint.setName(buildConstraintMessage());
 		xmlConstraint.setStatus(status);
 		xmlConstraint.setId(bbbId);
-		if (XmlStatus.NOT_OK.equals(status) || XmlStatus.WARNING.equals(status) || XmlStatus.INFORMATION.equals(status)) {
-			if (XmlStatus.NOT_OK.equals(status)) {
-				xmlConstraint.setError(buildXmlName(getErrorMessageTag()));
-			} else if (XmlStatus.WARNING.equals(status)) {
-				xmlConstraint.setWarning(buildXmlName(getErrorMessageTag()));
-			} else if (XmlStatus.INFORMATION.equals(status)) {
-				xmlConstraint.setInfo(buildXmlName(getErrorMessageTag()));
-			}
+
+		if (XmlStatus.NOT_OK.equals(status)) {
+			xmlConstraint.setError(buildErrorMessage());
+		} else if (XmlStatus.WARNING.equals(status)) {
+			xmlConstraint.setWarning(buildErrorMessage());
+		} else if (XmlStatus.INFORMATION.equals(status)) {
+			xmlConstraint.setInfo(buildErrorMessage());
 		}
+
 		if (!XmlStatus.IGNORED.equals(status)) {
-			xmlConstraint.setAdditionalInfo(ValidationProcessUtils.buildStringMessage(i18nProvider, getAdditionalInfo()));
+			xmlConstraint.setAdditionalInfo(buildAdditionalInfo());
 		}
 		addConstraint(xmlConstraint);
+	}
+
+	protected XmlName buildErrorMessage() {
+		return buildXmlName(getErrorMessageTag());
+	}
+
+	protected XmlName buildConstraintMessage() {
+		return buildXmlName(getMessageTag());
+	}
+
+	protected String buildAdditionalInfo() {
+		return ValidationProcessUtils.buildStringMessage(i18nProvider, getAdditionalInfo());
 	}
 
 	protected MessageTag getAdditionalInfo() {
@@ -234,14 +250,14 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		result.getConstraint().add(constraint);
 	}
 
-	private XmlName buildXmlName(MessageTag messageTag) {
+	protected XmlName buildXmlName(MessageTag messageTag, Object... args) {
 		XmlName xmlName = new XmlName();
-		String message = i18nProvider.getMessage(messageTag);
+		String message = i18nProvider.getMessage(messageTag, args);
 		if (message != null) {
 			xmlName.setNameId(messageTag.getId());
 			xmlName.setValue(message);
 		} else {
-			LOG.error("MessageTag [{}] is not defined an messages.properties!", messageTag);
+			LOG.error("MessageTag [{}] is not defined in dss-messages.properties!", messageTag);
 		}
 		return xmlName;
 	}

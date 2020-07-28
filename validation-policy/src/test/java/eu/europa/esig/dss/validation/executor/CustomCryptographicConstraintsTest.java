@@ -34,6 +34,8 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -80,7 +82,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence(MessageTag.ASCCM_ANS_5);
+		checkErrorMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_ANS_5, DigestAlgorithm.SHA256, MessageTag.ACCM_POS_SIG_SIG));
 		
 		result = defaultConstraintAlgorithmExpiredTest(ALGORITHM_SHA1, 0); // some other algorithm is expired
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -106,7 +108,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence(MessageTag.ASCCM_ANS_2);
+		checkErrorMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_ANS_2, DigestAlgorithm.SHA256, MessageTag.ACCM_POS_SIG_SIG));
 		
 		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA1, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -123,7 +125,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence(MessageTag.ASCCM_ANS_1);
+		checkErrorMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_ANS_1, EncryptionAlgorithm.RSA, MessageTag.ACCM_POS_SIG_SIG));
 		
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -134,7 +136,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence(MessageTag.ASCCM_ANS_3);
+		checkErrorMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_ANS_3, EncryptionAlgorithm.RSA, "2048", MessageTag.ACCM_POS_SIG_SIG));
 		
 		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_DSA); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -309,19 +311,19 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true); // PSV is not executed
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_7, true); // PSV is not executed
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_7, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true); // PSV is not executed
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_7, true); // PSV is not executed
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 	}
 	
@@ -336,7 +338,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_7, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
@@ -354,7 +356,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired("RSA", "2018-01-01", 1536);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_7, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
@@ -372,7 +374,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 4096);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_7, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 4096);
@@ -607,15 +609,14 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertTrue(!simpleReport.getErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
-	private void checkErrorMessagePresence(MessageTag messageKey) {
+	private void checkErrorMessagePresence(String message) {
 		Reports reports = createReports();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		checkErrorMessagePresence(simpleReport, messageKey);
+		checkErrorMessagePresence(simpleReport, message);
 	}
 
-	private void checkErrorMessagePresence(SimpleReport simpleReport, MessageTag messageKey) {
-		assertTrue(simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
-		assertTrue(simpleReport.getErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+	private void checkErrorMessagePresence(SimpleReport simpleReport, String message) {
+		assertTrue(simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(message));
 	}
 	
 	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
@@ -634,12 +635,9 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	private boolean xmlListContainsMessage(List<XmlName> list, MessageTag messageKey) {
-		String message = i18nProvider.getMessage(messageKey);
-		if (message != null) {
-			for (XmlName name : list) {
-				if (message.equals(name.getValue())) {
-					return true;
-				}
+		for (XmlName name : list) {
+			if (messageKey.name().equals(name.getNameId())) {
+				return true;
 			}
 		}
 		return false;
