@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Arrays;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -38,7 +39,7 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 		SignaturePolicy policy = getSignaturePolicy();
 		if (policy.getPolicyContent() != null) {
 			byte firstByte = DSSUtils.readFirstByte(policy.getPolicyContent());
-			return !DSSASN1Utils.isASN1SequenceTag(firstByte);
+			return !DSSASN1Utils.isASN1SequenceTag(firstByte) && !DomUtils.startsWithXmlPreamble(policy.getPolicyContent());
 		}
 		return false;
 	}
