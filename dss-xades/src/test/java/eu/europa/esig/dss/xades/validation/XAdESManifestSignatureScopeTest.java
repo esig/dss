@@ -63,11 +63,11 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 		assertNotNull(signature);
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertNotNull(signatureScopes);
-		assertEquals(12, signatureScopes.size());
+		assertEquals(2, signatureScopes.size());
 		
 		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertNotNull(originalSignerDocuments);
-		assertEquals(12, originalSignerDocuments.size());
+		assertEquals(2, originalSignerDocuments.size());
 	}
 	
 	@Override
@@ -134,7 +134,7 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 				timestampCounter++;
 			}
 		}
-		assertEquals(12, signedDataCounter);
+		assertEquals(2, signedDataCounter);
 		assertEquals(1, timestampCounter);
 	}
 

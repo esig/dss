@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
-		boolean foundManifestEntry = false;
+		int nbManifestEntries = 0;
 		boolean foundManifest = false;
 		boolean foundSignedProperties = false;
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
@@ -105,7 +106,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 				foundManifest = true;
 				break;
 			case MANIFEST_ENTRY:
-				foundManifestEntry = true;
+				nbManifestEntries++;
 				break;
 			case SIGNED_PROPERTIES:
 				foundSignedProperties = true;
@@ -116,7 +117,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 		}
 
 		assertTrue(foundManifest);
-		assertTrue(foundManifestEntry);
+		assertEquals(3, nbManifestEntries);
 		assertTrue(foundSignedProperties);
 	}
 
