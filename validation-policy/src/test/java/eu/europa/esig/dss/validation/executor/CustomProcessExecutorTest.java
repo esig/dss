@@ -2941,6 +2941,89 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 	}
+	
+	@Test
+	public void dss2115ValidTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/DSS-2115/dss-2115-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy defaultPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
+		signatureConstraints.getSignedAttributes().setSigningCertificateRefersCertificateChain(levelConstraint);
+		signatureConstraints.getSignedAttributes().setReferencesToAllCertificateChainPresent(levelConstraint);
+		
+		executor.setValidationPolicy(defaultPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void dss2115WithAdditionalRefTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/DSS-2115/dss-2115-additional-ref.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy defaultPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
+		signatureConstraints.getSignedAttributes().setSigningCertificateRefersCertificateChain(levelConstraint);
+		signatureConstraints.getSignedAttributes().setReferencesToAllCertificateChainPresent(levelConstraint);
+		
+		executor.setValidationPolicy(defaultPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_SAV_DSCACRCC_ANS)));
+	}
+	
+	@Test
+	public void dss2115WithMissingRefTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/DSS-2115/dss-2115-missing-ref.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy defaultPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
+		signatureConstraints.getSignedAttributes().setSigningCertificateRefersCertificateChain(levelConstraint);
+		signatureConstraints.getSignedAttributes().setReferencesToAllCertificateChainPresent(levelConstraint);
+		
+		executor.setValidationPolicy(defaultPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_SAV_ACPCCRSCA_ANS)));
+	}
 
 	@Test
 	public void diagDataNotNull() throws Exception {

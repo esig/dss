@@ -34,6 +34,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertificatePathCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 
@@ -71,6 +73,27 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	protected void initChain() {
 
 		ChainItem<XmlSAV> item = firstItem = structuralValidation();
+		
+		/*
+		 * 5.2.8.4.2.1 Processing signing certificate reference constraint
+		 * 
+		 * If the Signing Certificate Identifier attribute contains references to 
+		 * other certificates in the path, the building block shall check each of 
+		 * the certificates in the certification path against these references.
+		 * 
+		 * When this property contains one or more references to certificates other than 
+		 * those present in the certification path, the building block shall return 
+		 * the indication INDETERMINATE with the sub-indication SIG_CONTRAINTS_FAILURE. 
+		 */
+		item = item.setNextItem(signingCertificateReference());
+		
+		/*
+		 * When one or more certificates in the certification path are not referenced 
+		 * by this property, and the signature policy mandates references to all 
+		 * the certificates in the certification path to be present, the building block shall 
+		 * return the indication INDETERMINATE with the sub-indication SIG_CONTRAINTS_FAILURE. 
+		 */
+		item = item.setNextItem(certificatePath());
 
 		// signing-time
 		item = item.setNextItem(signingTime());
@@ -118,6 +141,16 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> structuralValidation() {
 		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
 		return new StructuralValidationCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> signingCertificateReference() {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint();
+		return new SigningCertificateReferenceCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> certificatePath() {
+		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint();
+		return new CertificatePathCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signingTime() {

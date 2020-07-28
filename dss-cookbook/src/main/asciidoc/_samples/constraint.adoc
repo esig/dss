@@ -81,6 +81,7 @@
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
 			<UnicitySigningCertificate Level="WARN" />
+			<SigningCertificateRefersCertificateChain Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
