@@ -29,8 +29,11 @@ import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -72,6 +75,9 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 		// check if -LT is present
 		super.extendSignatureTag();
+		
+		assertExtendSignatureToLTAPossible();
+		
 		Element levelLTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 		if (xadesSignature.hasLTAProfile()) {
 
@@ -157,4 +163,23 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, archiveTimestampData);
 		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
 	}
+
+	private void assertExtendSignatureToLTAPossible() {
+		if (SignatureLevel.XAdES_BASELINE_LTA.equals(params.getSignatureLevel())) {
+			assertDetachedDocumentsContainBinaries();
+		}
+	}
+	
+	private void assertDetachedDocumentsContainBinaries() {
+		List<DSSDocument> detachedContents = params.getDetachedContents();
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			for (DSSDocument detachedDocument : detachedContents) {
+				if (detachedDocument instanceof DigestDocument) {
+					throw new DSSException("XAdES-LTA requires complete binaries of signed documents! "
+							+ "Extension with a DigestDocument is not possible.");
+				}
+			}
+		}
+	}
+	
 }

@@ -18,7 +18,9 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -132,7 +134,6 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		JsonObject tstContainer = JAdESUtils.getTstContainer(Collections.singletonList(timestampBinary), canonicalizationMethod);
 		arcTst.put(JAdESHeaderParameterNames.TST_CONTAINER, tstContainer);
 		
-		// all data is timestamped
 		arcTst.put(JAdESHeaderParameterNames.TIMESTAMPED, jadesArchiveTimestampType.getValue());
 		
 		JSONObject arcTstItem = new JSONObject();
@@ -154,35 +155,48 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 						+ "'previousArcTst' archive timestamp!");
 			}
 			if (JAdESArchiveTimestampType.TIMESTAMPED_ALL.equals(archiveTimestampType)) {
-				String errorMessage = "Unsupported 'etsiU' container structure! Extension is not possible.";
-				
-				Boolean base64UrlEncoded = null;
-				
-				List<Object> etsiU = JAdESUtils.getEtsiU(jadesSignature.getJws());
-				for (Object unsignedProperty : etsiU) {
-					boolean currentObjectBase64UrlEncoded = false;
-					
-					if (!(unsignedProperty instanceof Map<?, ?>)) {
-						throw new DSSException(errorMessage);
-					}
-					Map<?, ?> propertyMap = (Map<?, ?>) unsignedProperty;
-					if (propertyMap.size() != 1) {
-						throw new DSSException(errorMessage);
-					}
-					Object propertyValue = propertyMap.values().iterator().next();
-					if (propertyValue instanceof String && JAdESUtils.isBase64UrlEncoded((String)propertyValue)) {
-						currentObjectBase64UrlEncoded = true;
-					}
-					
-					if (base64UrlEncoded == null) {
-						base64UrlEncoded = currentObjectBase64UrlEncoded;
-					}
-					
-					if (base64UrlEncoded != currentObjectBase64UrlEncoded) {
-						throw new DSSException(errorMessage);
-					}
+				assertDetachedDocumentsContainBinaries(params);
+				checkEtsiUContentUnicity(jadesSignature);
+			}
+		}
+	}
+	
+	private void assertDetachedDocumentsContainBinaries(JAdESSignatureParameters params) {
+		List<DSSDocument> detachedContents = params.getDetachedContents();
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			for (DSSDocument detachedDocument : detachedContents) {
+				if (detachedDocument instanceof DigestDocument) {
+					throw new DSSException("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
+							+ "Extension with a DigestDocument is not possible.");
 				}
-				
+			}
+		}
+	}
+	
+	private void checkEtsiUContentUnicity(JAdESSignature jadesSignature) {
+		String errorMessage = "Unsupported 'etsiU' container structure! Extension is not possible.";
+		
+		Boolean base64UrlEncoded = null;
+		List<Object> etsiU = JAdESUtils.getEtsiU(jadesSignature.getJws());
+		for (Object unsignedProperty : etsiU) {
+			boolean currentObjectBase64UrlEncoded = false;
+			
+			if (!(unsignedProperty instanceof Map<?, ?>)) {
+				throw new DSSException(errorMessage);
+			}
+			Map<?, ?> propertyMap = (Map<?, ?>) unsignedProperty;
+			if (propertyMap.size() != 1) {
+				throw new DSSException(errorMessage);
+			}
+			Object propertyValue = propertyMap.values().iterator().next();
+			if (propertyValue instanceof String && JAdESUtils.isBase64UrlEncoded((String)propertyValue)) {
+				currentObjectBase64UrlEncoded = true;
+			}
+			if (base64UrlEncoded == null) {
+				base64UrlEncoded = currentObjectBase64UrlEncoded;
+			}
+			if (base64UrlEncoded != currentObjectBase64UrlEncoded) {
+				throw new DSSException(errorMessage);
 			}
 		}
 	}

@@ -7,8 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jose4j.jws.EcdsaUsingShaAlgorithm;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class JAdESUtilsTest {
@@ -57,6 +62,18 @@ public class JAdESUtilsTest {
 		byte[] joseConverted = EcdsaUsingShaAlgorithm.convertDerToConcatenated(derEncoded, 0);
 		byte[] asn1Converted = DSSASN1Utils.fromAsn1toSignatureValue(EncryptionAlgorithm.ECDSA, derEncoded);
 		assertArrayEquals(joseConverted, asn1Converted);
+	}
+	
+	@Test
+	public void isJSONDocumentTest() {
+		FileDocument jsonDoc = new FileDocument("src/test/resources/sample.json");
+		assertTrue(JAdESUtils.isJsonDocument(jsonDoc));
+		assertTrue(JAdESUtils.isJsonDocument(new FileDocument("src/test/resources/validation/jades-lta.json")));
+		assertFalse(JAdESUtils.isJsonDocument(new FileDocument("src/test/resources/validation/simple-detached.json"))); // compact serialization JAdES
+		assertFalse(JAdESUtils.isJsonDocument(new FileDocument("src/test/resources/sample.png")));
+		assertFalse(JAdESUtils.isJsonDocument(new InMemoryDocument("Hello World!".getBytes())));
+		assertFalse(JAdESUtils.isJsonDocument(new HTTPHeader("header", "ByeWorld!")));
+		assertFalse(JAdESUtils.isJsonDocument(new DigestDocument(DigestAlgorithm.SHA1, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA1, jsonDoc)))));
 	}
 
 }

@@ -66,6 +66,7 @@ import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -418,6 +419,12 @@ public class JAdESUtils {
 	 * @return TRUE of the document is JSON, FALSE otherwise
 	 */
 	public static boolean isJsonDocument(DSSDocument document) {
+		if (document instanceof DigestDocument || document instanceof HTTPHeader) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("The provided document of class '{}' cannot be parsed as JSON.", document.getClass());
+			}
+			return false;
+		}
 		try (InputStream is = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			int firstChar = is.read();
 			if (firstChar == '{') {
