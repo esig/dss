@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,6 +30,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -69,6 +75,37 @@ public class XAdESManifestFromDigestDocumentsLevelBTest extends AbstractXAdESTes
 		signatureParameters.setManifestSignature(true);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
+		int nbManifestEntries = 0;
+		boolean foundManifest = false;
+		boolean foundSignedProperties = false;
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			switch (xmlDigestMatcher.getType()) {
+			case MANIFEST:
+				foundManifest = true;
+				break;
+			case MANIFEST_ENTRY:
+				nbManifestEntries++;
+				break;
+			case SIGNED_PROPERTIES:
+				foundSignedProperties = true;
+				break;
+			default:
+				break;
+			}
+		}
+
+		assertTrue(foundManifest);
+		assertEquals(0, nbManifestEntries);
+		assertTrue(foundSignedProperties);
 	}
 
 	@Override
