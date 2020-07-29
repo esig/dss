@@ -89,6 +89,7 @@ public abstract class AbstractTestValidationExecutor {
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getDetailedReport());
 		assertNotNull(reports.getDetailedReportJaxb());
+		assertNotNull(reports.getEtsiValidationReportJaxb());
 		unmarshallXmlReports(reports);
 	}
 
