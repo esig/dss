@@ -136,7 +136,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		extensionParameters.setDetachedContents(Arrays.asList(digestDocument));
 		DSSException exception = assertThrows(DSSException.class,
 				() -> signatureService.extendDocument(signedDocument, extensionParameters));
-		assertEquals("An error occurred while building a message imprint data. Reason : No binaries found for URI 'sample.xml'", exception.getMessage());
+		assertEquals("XAdES-LTA requires complete binaries of signed documents! Extension with a DigestDocument is not possible.", exception.getMessage());
 	}
 
 	@Test
@@ -252,11 +252,6 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
 		validate(iMD, null);
-
-//		try (FileOutputStream fos = new FileOutputStream("target/signed-pdf.pdf")) {
-//			fos.write(signedDocument.getBytes());
-//		} catch (IOException e) {
-//		}
 	}
 
 	@Test
