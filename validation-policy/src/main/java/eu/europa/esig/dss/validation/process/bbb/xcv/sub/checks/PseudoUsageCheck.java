@@ -71,12 +71,12 @@ public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.SIG_CONSTRAINTS_FAILURE;
+		return SubIndication.CHAIN_CONSTRAINTS_FAILURE;
 	}
 
 }
