@@ -87,7 +87,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
             	result.add(new ManifestSignatureScope(xadesReferenceValidation.getName(), xadesReferenceValidation.getDigest(), 
             			xadesReferenceValidation.getTransformationNames()));
 				for (ReferenceValidation manifestEntry : xadesReferenceValidation.getDependentValidations()) {
-					if (manifestEntry.getName() != null) {
+					if (manifestEntry.getName() != null && manifestEntry.isFound()) {
 						// try to get document digest from list of detached contents
 						List<SignatureScope> detachedResult = getFromDetachedContent(xadesSignature, transformations, manifestEntry.getName());
 						if (Utils.isCollectionNotEmpty(detachedResult)) {
