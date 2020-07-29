@@ -41,7 +41,6 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
@@ -129,7 +128,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 				item = item.setNextItem(revocationDataPresentForRevocationChain(revocationCertificate, subContext));
 				
 				CertificateRevocationWrapper latestRevocationData = null;
-				XmlRAC latestRacResult = null;
 				for (CertificateRevocationWrapper revocationWrapper : revocationCertificate.getCertificateRevocationData()) {
 					
 					if (isTokenValidated(revocationWrapper)) {
@@ -148,16 +146,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 					if (isValid(racResult) && (latestRevocationData == null || 
 							revocationWrapper.getProductionDate().after(latestRevocationData.getProductionDate()))) {
 						latestRevocationData = revocationWrapper;
-						latestRacResult = racResult;
 					}
 					
 				}
 				
 				item = item.setNextItem(acceptableRevocationDataAvailable(latestRevocationData, revocationCertificate, subContext));
-				
-				if (latestRacResult != null) {
-					item = item.setNextItem(latestRevocationAcceptable(latestRacResult));
-				}
 				
 			}
 			
@@ -219,10 +212,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	private ChainItem<XmlRAC> revocationAcceptanceResultCheck(XmlRAC racResult) {
 		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
-	}
-	
-	private ChainItem<XmlRAC> latestRevocationAcceptable(XmlRAC racResult) {
-		return new LatestRevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlRAC> acceptableRevocationDataAvailable(RevocationWrapper revocationData, 

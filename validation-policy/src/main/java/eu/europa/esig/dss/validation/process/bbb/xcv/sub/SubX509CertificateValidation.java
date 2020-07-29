@@ -42,7 +42,6 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
@@ -185,10 +184,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 				attachRevocationInformation(latestCertificateRevocation);
 			}
 			
-			if (latestCertificateRevocation != null) {
-				item = item.setNextItem(latestRevocationAcceptable(revocationAcceptanceResultMap.get(latestCertificateRevocation)));
-			}
-			
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation, 
 					currentTime, context, subContext, validationPolicy);
 			XmlRFC rfcResult = rfc.execute();
@@ -264,10 +259,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	
 	private ChainItem<XmlSubXCV> revocationAcceptable(XmlRAC racResult) {
 		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
-	}
-	
-	private ChainItem<XmlSubXCV> latestRevocationAcceptable(XmlRAC racResult) {
-		return new LatestRevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
