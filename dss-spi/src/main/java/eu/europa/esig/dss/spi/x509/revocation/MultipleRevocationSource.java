@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 /**
  * This interface allows to retrieve all revocation data for a given

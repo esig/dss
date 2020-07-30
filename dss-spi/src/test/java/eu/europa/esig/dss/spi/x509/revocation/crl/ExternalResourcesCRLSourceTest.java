@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 
 public class ExternalResourcesCRLSourceTest {
 
@@ -44,7 +45,7 @@ public class ExternalResourcesCRLSourceTest {
 			ExternalResourcesCRLSource source = new ExternalResourcesCRLSource(is1, is2);
 
 			assertEquals(2, source.getAllRevocationBinaries().size());
-			Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> allRevocationBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
+			Map<EncapsulatedRevocationTokenIdentifier<CRL>, Set<RevocationOrigin>> allRevocationBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
 			assertEquals(2, allRevocationBinariesWithOrigins.size());
 			for (Set<RevocationOrigin> origins : allRevocationBinariesWithOrigins.values()) {
 				assertEquals(1, origins.size());

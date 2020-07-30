@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -50,8 +52,8 @@ public class ValidationDataForInclusionBuilder {
 	private final ListCertificateSource completeCertificateSource;
 
 	private Collection<CertificateToken> excludeCertificateTokens;
-	private Collection<EncapsulatedRevocationTokenIdentifier> excludeCRLs;
-	private Collection<EncapsulatedRevocationTokenIdentifier> excludeOCSPs;
+	private Collection<EncapsulatedRevocationTokenIdentifier<CRL>> excludeCRLs;
+	private Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> excludeOCSPs;
 	
 	/**
 	 * The default constructor
@@ -81,7 +83,7 @@ public class ValidationDataForInclusionBuilder {
 	 * @param excludeCRLs a collection of {@link EncapsulatedRevocationTokenIdentifier}s to be excluded from the inclusion list
 	 * @return {@link ValidationDataForInclusionBuilder}
 	 */
-	public ValidationDataForInclusionBuilder excludeCRLs(Collection<EncapsulatedRevocationTokenIdentifier> excludeCRLs) {
+	public ValidationDataForInclusionBuilder excludeCRLs(Collection<EncapsulatedRevocationTokenIdentifier<CRL>> excludeCRLs) {
 		this.excludeCRLs = excludeCRLs;
 		return this;
 	}
@@ -92,7 +94,7 @@ public class ValidationDataForInclusionBuilder {
 	 * @param excludeOCSPs a collection of {@link EncapsulatedRevocationTokenIdentifier}s to be excluded from the inclusion list
 	 * @return {@link ValidationDataForInclusionBuilder}
 	 */
-	public ValidationDataForInclusionBuilder excludeOCSPs(Collection<EncapsulatedRevocationTokenIdentifier> excludeOCSPs) {
+	public ValidationDataForInclusionBuilder excludeOCSPs(Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> excludeOCSPs) {
 		this.excludeOCSPs = excludeOCSPs;
 		return this;
 	}

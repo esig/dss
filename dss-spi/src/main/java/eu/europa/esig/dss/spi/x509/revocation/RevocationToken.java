@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken<R extends Revocation> extends Token {

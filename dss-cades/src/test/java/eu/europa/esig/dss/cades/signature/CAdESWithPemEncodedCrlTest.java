@@ -42,9 +42,9 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 @Tag("slow")
@@ -97,8 +97,8 @@ public class CAdESWithPemEncodedCrlTest extends AbstractCAdESTestSignature {
 		assertEquals(1, signatures.size());
 		AdvancedSignature advancedSignature = signatures.get(0);
 		OfflineRevocationSource<CRL> crlSource = advancedSignature.getCRLSource();
-		Set<EncapsulatedRevocationTokenIdentifier> allRevocationBinaries = crlSource.getAllRevocationBinaries();
-		for (EncapsulatedRevocationTokenIdentifier identifier : allRevocationBinaries) {
+		Set<EncapsulatedRevocationTokenIdentifier<CRL>> allRevocationBinaries = crlSource.getAllRevocationBinaries();
+		for (EncapsulatedRevocationTokenIdentifier<CRL> identifier : allRevocationBinaries) {
 			assertTrue(isDerEncoded(identifier.getBinaries()));
 		}
 	}
