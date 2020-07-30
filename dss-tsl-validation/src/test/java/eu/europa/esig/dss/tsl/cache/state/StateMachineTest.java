@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.cache.state;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +55,8 @@ public class StateMachineTest {
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 		assertEquals(emptyStateDate, cachedEntry.getLastStateTransitionTime());
 
+		await().atMost(1, TimeUnit.SECONDS).until(() -> emptyStateDate != new Date());
+
 		assertThrows(NullPointerException.class, () -> cachedEntry.update(null));
 
 		cachedEntry.update(new MockCachedResult(5));
@@ -70,7 +74,7 @@ public class StateMachineTest {
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
 
-		Thread.sleep(1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> desynchonizedStateDate != new Date());
 		cachedEntry.sync();
 
 		assertEquals(CacheStateEnum.SYNCHRONIZED, cachedEntry.getCurrentState());

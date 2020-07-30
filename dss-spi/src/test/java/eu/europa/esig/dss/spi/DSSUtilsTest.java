@@ -39,6 +39,7 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
@@ -264,16 +265,22 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void getDeterministicId() throws InterruptedException {
-		Date d1 = new Date();
+	public void getDeterministicId() {
+
+		Calendar calendar = Calendar.getInstance();
+
+		Date d1 = calendar.getTime();
+
 		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
 		assertNotNull(deterministicId);
 		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
 		assertEquals(deterministicId, deterministicId2);
 		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
 
-		Thread.sleep(1);
-		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
+		calendar.add(Calendar.MILLISECOND, 1);
+		Date d2 = calendar.getTime();
+
+		String deterministicId3 = DSSUtils.getDeterministicId(d2, certificateWithAIA.getDSSId());
 		
 		assertNotEquals(deterministicId2, deterministicId3);
 	}

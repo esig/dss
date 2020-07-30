@@ -1,13 +1,15 @@
 package eu.europa.esig.dss.jades.signature;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,12 +49,10 @@ public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidat
 		DSSDocument signedDocument = getCompleteSerializationSignature(toBeSigned);
 		// signedDocument.save("target/" + "signedDocument.json");
 		
-		try {
-			 // avoid same second signature creation
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail(e);
-		}
+		// avoid same second signature creation
+		Calendar nextSecond = Calendar.getInstance();
+		nextSecond.add(Calendar.SECOND, 1);
+		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
 
 		DSSDocument doubleSignedDocument = getCompleteSerializationSignature(signedDocument);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");

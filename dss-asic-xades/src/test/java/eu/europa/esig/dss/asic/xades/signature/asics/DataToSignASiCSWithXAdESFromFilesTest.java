@@ -44,7 +44,7 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 	private static final Logger LOG = LoggerFactory.getLogger(DataToSignASiCSWithXAdESFromFilesTest.class);
 
 	@Test
-	public void zipContentEquals() throws Exception {
+	public void zipContentEquals() {
 		Date now = new Date();
 		ASiCParameters asicParameters = new ASiCParameters();
 		List<DSSDocument> filesToBeSigned = new ArrayList<>();
@@ -67,8 +67,6 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 
 		LOG.info(digest);
 
-		Thread.sleep(2000);
-
 		DataToSignASiCSWithXAdESFromFiles dataToSign2 = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);
 		DSSDocument twice = dataToSign2.getToBeSigned().get(0);
 
@@ -80,6 +78,5 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 
 		assertEquals(base64, base64twice);
 		assertTrue(Utils.areStringsEqual(digest, digestTwice));
-
 	}
 }

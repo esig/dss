@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.vpfltvd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,23 +57,25 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void validOrderCheckTest() throws Exception {
+	public void validOrderCheckTest() {
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		timestamps.add(getTimestampWrapper("T-1", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-2", new Date(), TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-3", new Date(), TimestampType.VALIDATION_DATA_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-4", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-5", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-4"));
+		timestamps.add(getTimestampWrapper("T-1", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-2", calendar.getTime(), TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3", calendar.getTime(), TimestampType.VALIDATION_DATA_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-4", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-5", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-4"));
 		
 		validate(timestamps, XmlStatus.OK);
 	}
 	
 	@Test
-	public void sameTimeCheckTest() throws Exception {
+	public void sameTimeCheckTest() {
 		List<TimestampWrapper> timestamps = new ArrayList<>();
 		Date productionTime = new Date();
 		timestamps.add(getTimestampWrapper("T-1", productionTime, TimestampType.CONTENT_TIMESTAMP));
@@ -85,27 +88,33 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void contentTstsCheckTest() throws Exception {
+	public void contentTstsCheckTest() {
+
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		timestamps.add(getTimestampWrapper("T-1", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-2", new Date(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-3", new Date(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		timestamps.add(getTimestampWrapper("T-1", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-2", calendar.getTime(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3", calendar.getTime(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
 		
 		validate(timestamps, XmlStatus.OK);
 	}
 	
 	@Test
-	public void separatedSignatureAndArchiveTimestampsTest() throws Exception {
+	public void separatedSignatureAndArchiveTimestampsTest() {
+
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		timestamps.add(getTimestampWrapper("T-1", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		Date productionTime = new Date();
+		timestamps.add(getTimestampWrapper("T-1", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		Date productionTime = calendar.getTime();
 		timestamps.add(getTimestampWrapper("T-2-1", productionTime, TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
 		timestamps.add(getTimestampWrapper("T-2-2", productionTime, TimestampType.SIGNATURE_TIMESTAMP, "T-2"));
-		Thread.sleep(1);
-		productionTime = new Date();
+		calendar.add(Calendar.SECOND, 1);
+		productionTime = calendar.getTime();
 		timestamps.add(getTimestampWrapper("T-3-1", productionTime, TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2-1"));
 		timestamps.add(getTimestampWrapper("T-3-2", productionTime, TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2-2"));
 		
@@ -113,66 +122,79 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void separatedSignatureAndArchiveTimestampsDifferentTimeTest() throws Exception {
+	public void separatedSignatureAndArchiveTimestampsDifferentTimeTest() {
+
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		timestamps.add(getTimestampWrapper("T-a", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		timestamps.add(getTimestampWrapper("T-b", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		Date productionTime = new Date();
-		timestamps.add(getTimestampWrapper("T-2-1", productionTime, TimestampType.SIGNATURE_TIMESTAMP, "T-a"));
-		timestamps.add(getTimestampWrapper("T-2-2", productionTime, TimestampType.SIGNATURE_TIMESTAMP, "T-a", "T-b"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-3-1", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-a", "T-2-1"));
-		timestamps.add(getTimestampWrapper("T-3-2", productionTime, TimestampType.ARCHIVE_TIMESTAMP, "T-a", "T-b", "T-2-2"));
+		timestamps.add(getTimestampWrapper("T-a", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		timestamps.add(getTimestampWrapper("T-b", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-2-1", calendar.getTime(), TimestampType.SIGNATURE_TIMESTAMP, "T-a"));
+		timestamps.add(getTimestampWrapper("T-2-2", calendar.getTime(), TimestampType.SIGNATURE_TIMESTAMP, "T-a", "T-b"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3-1", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-a", "T-2-1"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3-2", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-a", "T-b", "T-2-2"));
 		
 		validate(timestamps, XmlStatus.OK);
 	}
 	
 	@Test
-	public void typeOrderFailCheckTest() throws Exception {
+	public void typeOrderFailCheckTest() {
+
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		timestamps.add(getTimestampWrapper("T-1", new Date(), TimestampType.SIGNATURE_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-2", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-3", new Date(), TimestampType.VALIDATION_DATA_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-4", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-5", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-4"));
+		timestamps.add(getTimestampWrapper("T-1", calendar.getTime(), TimestampType.SIGNATURE_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-2", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3", calendar.getTime(), TimestampType.VALIDATION_DATA_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-4", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-5", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-4"));
 		
 		validate(timestamps, XmlStatus.NOT_OK);
 	}
 	
 	@Test
-	public void timeOrderFailCheckTest() throws Exception {
+	public void timeOrderFailCheckTest() {
+
+		Calendar beforeAll = Calendar.getInstance();
+
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		Date productionTime = new Date();
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-1", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-2", new Date(), TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-3", new Date(), TimestampType.VALIDATION_DATA_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-4", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
-		timestamps.add(getTimestampWrapper("T-5", productionTime, TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-4"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-1", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-2", calendar.getTime(), TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3", calendar.getTime(), TimestampType.VALIDATION_DATA_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-4", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
+		timestamps.add(getTimestampWrapper("T-5", beforeAll.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-4"));
 		
 		validate(timestamps, XmlStatus.NOT_OK);
 	}
 	
 	@Test
-	public void refOrderFailCheckTest() throws Exception {
+	public void refOrderFailCheckTest() {
+
+		Calendar calendar = Calendar.getInstance();
+
 		List<TimestampWrapper> timestamps = new ArrayList<>();
-		timestamps.add(getTimestampWrapper("T-1", new Date(), TimestampType.CONTENT_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-2", new Date(), TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-3", new Date(), TimestampType.VALIDATION_DATA_TIMESTAMP));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-4", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-5"));
-		Thread.sleep(1);
-		timestamps.add(getTimestampWrapper("T-5", new Date(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
+		timestamps.add(getTimestampWrapper("T-1", calendar.getTime(), TimestampType.CONTENT_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-2", calendar.getTime(), TimestampType.SIGNATURE_TIMESTAMP, "T-1"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-3", calendar.getTime(), TimestampType.VALIDATION_DATA_TIMESTAMP));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-4", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3", "T-5"));
+		calendar.add(Calendar.SECOND, 1);
+		timestamps.add(getTimestampWrapper("T-5", calendar.getTime(), TimestampType.ARCHIVE_TIMESTAMP, "T-1", "T-2", "T-3"));
 		
 		validate(timestamps, XmlStatus.NOT_OK);
 	}

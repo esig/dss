@@ -2,11 +2,10 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,15 +32,20 @@ public class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValid
 	private JAdESService service;
 	private JAdESSignatureParameters signatureParameters;
 	
+	private Calendar calendar;
+
 	@BeforeEach
 	public void init() {
 		documentsToSign = Arrays.asList(new FileDocument("src/test/resources/sample.json"), new FileDocument("src/test/resources/sample.png"),
 				new InMemoryDocument("Hello World!".getBytes(), "helloWorld")) ;
 		
+		calendar = Calendar.getInstance();
+
 		service = new JAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		signatureParameters = new JAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
@@ -53,14 +57,10 @@ public class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValid
 		DSSDocument signedDocument = sign(documentsToSign, signatureParameters);
 		// signedDocument.save("target/" + "signedDocument.json");
 		
-		try {
-			 // avoid same second signature creation
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail(e);
-		}
+		// avoid same second signature creation
+		calendar.add(Calendar.SECOND, 1);
 		
-		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
 		signatureParameters.setDetachedContents(documentsToSign);
 		DSSDocument doubleSignedDocument = sign(Collections.singletonList(signedDocument), signatureParameters);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");

@@ -65,6 +65,7 @@
 		<junit.platform.version>1.6.2</junit.platform.version>
 		<junit.jupiter.version>5.6.2</junit.jupiter.version>
 		
+		<awaitility.version>4.0.3</awaitility.version>
 		<mockito.version>3.3.3</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
 		<jackson.version>2.11.0</jackson.version>
@@ -963,7 +964,11 @@
 			    <version>${junit.platform.version}</version>
 			</dependency>
 
-			
+			<dependency>
+				<groupId>org.awaitility</groupId>
+				<artifactId>awaitility</artifactId>
+				<version>${awaitility.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
