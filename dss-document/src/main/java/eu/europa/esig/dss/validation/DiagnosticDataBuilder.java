@@ -1580,7 +1580,9 @@ public class DiagnosticDataBuilder {
 		
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
 		orphanToken.setId(ref.getDSSIdAsString());
-		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
+		if (ref.getDigest() != null) {
+			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
+		}
 		xmlOrphanRevocationTokensMap.put(ref.getDSSIdAsString(), orphanToken);
 		
 		xmlOrphanRevocation.setToken(orphanToken);
