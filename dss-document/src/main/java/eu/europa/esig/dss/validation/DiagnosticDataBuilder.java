@@ -114,6 +114,9 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.TokenComparator;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
@@ -142,12 +145,9 @@ import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.RoleOfPSP;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -922,14 +922,15 @@ public class DiagnosticDataBuilder {
 		return xmlOrphanTokens;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void buildOrphanRevocationTokensFromCommonSources() {
-		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : commonCRLSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : commonCRLSource.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
 				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
 			}
 		}
-		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : commonOCSPSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : commonOCSPSource.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
 				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
@@ -1471,9 +1472,9 @@ public class DiagnosticDataBuilder {
 	}
 
 	private <R extends Revocation> void addOrphanRevocations(List<XmlOrphanRevocation> xmlOrphanRevocations, OfflineRevocationSource<R> source) {
-		Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> allBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
-		for (Entry<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
-			EncapsulatedRevocationTokenIdentifier token = entry.getKey();
+		Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> allBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
+		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
+			EncapsulatedRevocationTokenIdentifier<R> token = entry.getKey();
 			String tokenId = token.asXmlId();
 			if (!xmlRevocationsMap.containsKey(tokenId)) {
 				XmlOrphanRevocation xmlOrphanRevocation = getXmlOrphanRevocation(token, entry.getValue());
@@ -1553,7 +1554,7 @@ public class DiagnosticDataBuilder {
 		return xmlRevocationRef;
 	}
 	
-	private <R extends Revocation> XmlOrphanRevocation getXmlOrphanRevocation(EncapsulatedRevocationTokenIdentifier token, Set<RevocationOrigin> origins) {
+	private <R extends Revocation> XmlOrphanRevocation getXmlOrphanRevocation(EncapsulatedRevocationTokenIdentifier<R> token, Set<RevocationOrigin> origins) {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 		if (token instanceof CRLBinary) {
 			xmlOrphanRevocation.setType(RevocationType.CRL);
@@ -1565,7 +1566,7 @@ public class DiagnosticDataBuilder {
 		return xmlOrphanRevocation;
 	}
 	
-	private XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
+	private <R extends Revocation> XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(EncapsulatedRevocationTokenIdentifier<R> revocationIdentifier) {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
 		String tokenId = revocationIdentifier.asXmlId();
 		orphanToken.setId(tokenId);
@@ -1589,7 +1590,9 @@ public class DiagnosticDataBuilder {
 		
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
 		orphanToken.setId(ref.getDSSIdAsString());
-		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
+		if (ref.getDigest() != null) {
+			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
+		}
 		xmlOrphanRevocationTokensMap.put(ref.getDSSIdAsString(), orphanToken);
 		
 		xmlOrphanRevocation.setToken(orphanToken);

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 
 /**

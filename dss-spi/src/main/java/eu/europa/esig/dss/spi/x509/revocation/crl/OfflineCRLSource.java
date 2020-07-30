@@ -34,6 +34,7 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
@@ -56,10 +57,10 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 		Objects.requireNonNull(issuerToken, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<CRL>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getAllRevocationBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier<CRL>> collectedBinaries = getAllRevocationBinaries();
 		LOG.trace("--> OfflineCRLSource queried for {} contains: {} element(s).", certificateToken.getDSSIdAsString(), collectedBinaries.size());
 
-		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> binary : collectedBinaries) {
 			CRLBinary crlBinary = (CRLBinary) binary;
 			try {
 				CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);

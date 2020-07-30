@@ -23,9 +23,9 @@ package eu.europa.esig.dss.validation.timestamp;
 import java.io.Serializable;
 import java.util.List;
 
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 
 /**

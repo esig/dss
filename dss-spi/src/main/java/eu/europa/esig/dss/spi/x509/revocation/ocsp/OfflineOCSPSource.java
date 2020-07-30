@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -55,9 +56,9 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 		Objects.requireNonNull(issuer, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<OCSP>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getAllRevocationBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier<OCSP>> collectedBinaries = getAllRevocationBinaries();
 		LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", certificate.getDSSIdAsString(), collectedBinaries.size());
-		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : collectedBinaries) {
 			OCSPResponseBinary ocspBinary = (OCSPResponseBinary) binary;
 			BasicOCSPResp basicOCSPResp = ocspBinary.getBasicOCSPResp();
 			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicOCSPResp, certificate, issuer);

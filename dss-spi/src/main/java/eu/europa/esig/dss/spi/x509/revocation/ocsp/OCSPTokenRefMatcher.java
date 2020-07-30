@@ -23,8 +23,13 @@ package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 import java.util.Arrays;
 
 import org.bouncycastle.asn1.ocsp.ResponderID;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
@@ -32,6 +37,8 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationTokenRefMatcher;
 
 public class OCSPTokenRefMatcher implements RevocationTokenRefMatcher<OCSP> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPTokenRefMatcher.class);
 
 	@Override
 	public boolean match(RevocationToken<OCSP> token, RevocationRef<OCSP> reference) {
@@ -41,20 +48,45 @@ public class OCSPTokenRefMatcher implements RevocationTokenRefMatcher<OCSP> {
 		if (ocspRef.getDigest() != null) {
 			return matchByDigest(ocspToken, ocspRef.getDigest());
 		} else {
-			return matchByProperties(ocspToken, ocspRef);
+			return matchResponse(ocspToken.getBasicOCSPResp(), ocspRef);
 		}
 	}
 
-	private boolean matchByDigest(OCSPToken ocspToken, Digest digestToFind) {
-		return Arrays.equals(digestToFind.getValue(), ocspToken.getDigest(digestToFind.getAlgorithm()));
+	@Override
+	public boolean match(EncapsulatedRevocationTokenIdentifier<OCSP> identifier, RevocationRef<OCSP> reference) {
+		final OCSPResponseBinary ocspResponseBinary = (OCSPResponseBinary) identifier;
+		final OCSPRef ocspRef = (OCSPRef) reference;
+		
+		if (ocspRef.getDigest() != null) {
+			return matchByDigest(ocspResponseBinary, ocspRef.getDigest());
+		} else {
+			return matchResponse(ocspResponseBinary.getBasicOCSPResp(), ocspRef);
+		}
 	}
-
-	private boolean matchByProperties(OCSPToken ocspToken, OCSPRef ocspRef) {
-		if (ocspRef.getProducedAt().equals(ocspToken.getProductionDate())) {
-			ResponderID tokenResponderId = ocspToken.getBasicOCSPResp().getResponderId().toASN1Primitive();
-			ResponderId refResponderId = ocspRef.getResponderId();
-			if (matchByKeyHash(tokenResponderId, refResponderId) || matchByName(tokenResponderId, refResponderId)) {
-				return true;
+	
+	private boolean matchByDigest(RevocationToken<OCSP> token, Digest digest) {
+		return Arrays.equals(digest.getValue(), token.getDigest(digest.getAlgorithm()));
+	}
+	
+	private boolean matchByDigest(EncapsulatedRevocationTokenIdentifier<OCSP> identifier, Digest digest) {
+		return Arrays.equals(digest.getValue(), identifier.getDigestValue(digest.getAlgorithm()));
+	}
+	
+	private boolean matchResponse(BasicOCSPResp basicOCSPResp, OCSPRef ocspRef) {
+		try {
+			if (ocspRef.getProducedAt().equals(basicOCSPResp.getProducedAt())) {
+				ResponderID tokenResponderId = basicOCSPResp.getResponderId().toASN1Primitive();
+	            ResponderId refResponderId = ocspRef.getResponderId();
+	            if (matchByKeyHash(tokenResponderId, refResponderId) || matchByName(tokenResponderId, refResponderId)) {
+	                return true;
+	            }
+			}
+		} catch (Exception e) {
+			String errorMessage = "An exception occurred during an attempt to compare the OCSP binaries with a reference: {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
 			}
 		}
 		return false;

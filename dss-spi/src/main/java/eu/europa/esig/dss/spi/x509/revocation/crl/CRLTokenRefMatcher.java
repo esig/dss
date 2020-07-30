@@ -22,8 +22,11 @@ package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import java.util.Arrays;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationTokenRefMatcher;
@@ -42,8 +45,24 @@ public class CRLTokenRefMatcher implements RevocationTokenRefMatcher<CRL> {
 		}
 	}
 
-	private boolean matchByDigest(CRLToken crlToken, Digest digestToFind) {
-		return Arrays.equals(digestToFind.getValue(), crlToken.getDigest(digestToFind.getAlgorithm()));
+	@Override
+	public boolean match(EncapsulatedRevocationTokenIdentifier<CRL> identifier, RevocationRef<CRL> reference) {
+		final CRLBinary crlBinary = (CRLBinary) identifier;
+		final CRLRef crlRef = (CRLRef) reference;
+
+		if (crlRef.getDigest() != null) {
+			return matchByDigest(crlBinary, crlRef.getDigest());
+		} else {
+			throw new DSSException("Digest is mandatory for comparison");
+		}
+	}
+	
+	private boolean matchByDigest(RevocationToken<CRL> token, Digest digest) {
+		return Arrays.equals(digest.getValue(), token.getDigest(digest.getAlgorithm()));
+	}
+	
+	private boolean matchByDigest(EncapsulatedRevocationTokenIdentifier<CRL> identifier, Digest digest) {
+		return Arrays.equals(digest.getValue(), identifier.getDigestValue(digest.getAlgorithm()));
 	}
 
 }
