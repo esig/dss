@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.x509.revocation;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 public interface RevocationTokenRefMatcher<R extends Revocation> {
 
@@ -40,6 +41,6 @@ public interface RevocationTokenRefMatcher<R extends Revocation> {
 	 * @param reference the revocation reference
 	 * @return true if the reference refers to the identifier
 	 */
-	boolean match(EncapsulatedRevocationTokenIdentifier identifier, RevocationRef<R> reference);
+	boolean match(EncapsulatedRevocationTokenIdentifier<R> identifier, RevocationRef<R> reference);
 
 }

@@ -25,9 +25,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.MultipleRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
@@ -88,17 +88,17 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 		return result;
 	}
 
-	public List<EncapsulatedRevocationTokenIdentifier> getAllRevocationBinaries() {
-		List<EncapsulatedRevocationTokenIdentifier> result = new ArrayList<>();
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getAllRevocationBinaries() {
+		List<EncapsulatedRevocationTokenIdentifier<R>> result = new ArrayList<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
 			result.addAll(revocationSource.getAllRevocationBinaries());
 		}
 		return result;
 	}
 
-	public EncapsulatedRevocationTokenIdentifier findBinaryForReference(RevocationRef<R> reference) {
+	public EncapsulatedRevocationTokenIdentifier<R> findBinaryForReference(RevocationRef<R> reference) {
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			EncapsulatedRevocationTokenIdentifier tokenIdentifier = revocationSource.findBinaryForReference(reference);
+			EncapsulatedRevocationTokenIdentifier<R> tokenIdentifier = revocationSource.findBinaryForReference(reference);
 			if (tokenIdentifier != null) {
 				return tokenIdentifier;
 			}

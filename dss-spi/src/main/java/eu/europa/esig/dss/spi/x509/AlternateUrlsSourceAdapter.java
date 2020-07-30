@@ -23,7 +23,7 @@ package eu.europa.esig.dss.spi.x509;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.Revocation;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 

@@ -38,12 +38,12 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -682,7 +682,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected List<TimestampedReference> getTimestampedRevocationRefs(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (CRLRef crlRef : getCRLRefs(unsignedAttribute)) {
-			EncapsulatedRevocationTokenIdentifier token = crlSource.findBinaryForReference(crlRef);
+			EncapsulatedRevocationTokenIdentifier<CRL> token = crlSource.findBinaryForReference(crlRef);
 			if (token != null) {
 				timestampedReferences.add(new TimestampedReference(token.asXmlId(), TimestampedObjectType.REVOCATION));
 			} else {
@@ -691,7 +691,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		}
 
 		for (OCSPRef ocspRef : getOCSPRefs(unsignedAttribute)) {
-			EncapsulatedRevocationTokenIdentifier token = ocspSource.findBinaryForReference(ocspRef);
+			EncapsulatedRevocationTokenIdentifier<OCSP> token = ocspSource.findBinaryForReference(ocspRef);
 			if (token != null) {
 				timestampedReferences.add(new TimestampedReference(token.asXmlId(), TimestampedObjectType.REVOCATION));
 			} else {
@@ -901,17 +901,17 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			addReference(references, new TimestampedReference(certificateRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		TimestampCRLSource timestampCRLSource = timestampedTimestamp.getCRLSource();
-		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampCRLSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationBinary : timestampCRLSource.getAllRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampCRLSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationBinary : timestampCRLSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
 		TimestampOCSPSource timestampOCSPSource = timestampedTimestamp.getOCSPSource();
-		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampOCSPSource.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationBinary : timestampOCSPSource.getAllRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
-		for (EncapsulatedRevocationTokenIdentifier revocationBinary : timestampOCSPSource.getAllReferencedRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationBinary : timestampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, revocationBinary, TimestampedObjectType.REVOCATION);
 		}
 	}
