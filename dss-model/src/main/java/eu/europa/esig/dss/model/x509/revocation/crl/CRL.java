@@ -18,10 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.spi.x509.revocation.ocsp;
+package eu.europa.esig.dss.model.x509.revocation.crl;
 
-import eu.europa.esig.dss.spi.x509.revocation.Revocation;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
-public interface OCSP extends Revocation {
+public interface CRL extends Revocation {
 
 }

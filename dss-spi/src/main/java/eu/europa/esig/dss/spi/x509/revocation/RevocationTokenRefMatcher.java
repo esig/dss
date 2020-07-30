@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.x509.revocation;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 public interface RevocationTokenRefMatcher<R extends Revocation> {
 
