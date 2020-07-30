@@ -48,10 +48,6 @@ public final class XAdESRevocationRefExtractionUtils {
 	public static OCSPRef createOCSPRef(final XAdESPaths xadesPaths, final Element ocspRefElement) {
 
 		Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
-		if (digest == null) {
-			LOG.warn("Skipped OCSPRef (missing DigestAlgAndValue)");
-			return null;
-		}
 
 		ResponderId responderId = getOCSPResponderId(xadesPaths, ocspRefElement);
 		if (responderId == null) {
@@ -64,7 +60,6 @@ public final class XAdESRevocationRefExtractionUtils {
 			LOG.warn("Skipped OCSPRef (missing OCSPIdentifier / ProducedAt)");
 			return null;
 		}
-
 
 		return new OCSPRef(digest, producedAtDate, responderId);
 	}
