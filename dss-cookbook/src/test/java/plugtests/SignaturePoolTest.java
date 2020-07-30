@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,8 +164,12 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	public void testValidate(File fileToTest) {
 		LOG.info("Begin : {}", fileToTest.getAbsolutePath());
 		document = new FileDocument(fileToTest);
-		assertTimeout(ofSeconds(3L), () -> super.validate());
-		LOG.info("End : {}", fileToTest.getAbsolutePath());
+		try {
+			assertTimeout(ofSeconds(3L), () -> super.validate(), "Execution exceeded timeout for file " + fileToTest);
+			LOG.info("End : {}", fileToTest.getAbsolutePath());
+		} catch (Exception e) {
+			fail("Validation of " + fileToTest + " failed", e);
+		}
 	}
 	
 	@Override
