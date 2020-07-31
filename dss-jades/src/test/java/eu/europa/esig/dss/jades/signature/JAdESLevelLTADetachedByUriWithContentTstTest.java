@@ -69,11 +69,12 @@ public class JAdESLevelLTADetachedByUriWithContentTstTest extends AbstractJAdEST
 		boolean archiveTstFound = false;
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.CONTENT_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 				contentTstFound = true;
 			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 				archiveTstFound = true;
 			}
-			assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 		}
 		assertTrue(contentTstFound);
 		assertTrue(archiveTstFound);

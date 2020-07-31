@@ -380,6 +380,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
 				final List<TimestampedReference> references = new ArrayList<>();
 				addReferencesFromPreviousTimestamps(references, timestamps);
+				addReferences(references, getAllSignedDataReferences());
 				addReferences(references, encapsulatedReferences);
 				
 				timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP, references);

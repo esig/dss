@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.jades.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -99,14 +101,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 
 	@Override
 	protected boolean isRefsOnlyTimestamp(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.RFS_TST.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
 	protected boolean isSigAndRefsTimestamp(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.SIG_AND_RFS_TST.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -155,6 +155,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	protected boolean isAttributeRevocationValues(JAdESAttribute unsignedAttribute) {
 		return JAdESHeaderParameterNames.AR_VALS.equals(unsignedAttribute.getHeaderName());
 	}
+	
+	@Override
+	public List<TimestampedReference> getSignatureTimestampReferences() {
+		// JAdES SigTst covers only the signature value
+		return Arrays.asList(new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE));
+	}
 
 	@Override
 	protected List<CertificateRef> getCertificateRefs(JAdESAttribute unsignedAttribute) {
@@ -176,7 +182,8 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	@Override
 	protected List<CRLRef> getCRLRefs(JAdESAttribute unsignedAttribute) {
 		List<CRLRef> result = new ArrayList<>();
-		List<?> crlRefsList = (List<?>) unsignedAttribute.getValue();
+		Map<?,?> refsValueMap = (Map<?,?>) unsignedAttribute.getValue();
+		List<?> crlRefsList = (List<?>) refsValueMap.get(JAdESHeaderParameterNames.CRL_REFS);
 		if (Utils.isCollectionNotEmpty(crlRefsList)) {
 			for (Object item : crlRefsList) {
 				if (item instanceof Map) {
@@ -193,7 +200,8 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	@Override
 	protected List<OCSPRef> getOCSPRefs(JAdESAttribute unsignedAttribute) {
 		List<OCSPRef> result = new ArrayList<>();
-		List<?> ocspRefsList = (List<?>) unsignedAttribute.getValue();
+		Map<?,?> refsValueMap = (Map<?,?>) unsignedAttribute.getValue();
+		List<?> ocspRefsList = (List<?>) refsValueMap.get(JAdESHeaderParameterNames.OCSP_REFS);
 		if (Utils.isCollectionNotEmpty(ocspRefsList)) {
 			for (Object item : ocspRefsList) {
 				if (item instanceof Map) {
@@ -375,7 +383,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		} else {
 			Object value = signatureAttribute.getValue();
 			if (value instanceof Map<?, ?>) {
-				return extractTimestampTokens((Map<?, ?>) value, timestampType, references);
+				return extractTimestampTokens(signatureAttribute, (Map<?, ?>) value, timestampType, references);
 			} else {
 				LOG.warn("The timestamp container '{}' shall have a map as a value! The entry is skipped.", signatureAttribute.getHeaderName());
 				return Collections.emptyList();
@@ -383,7 +391,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		}
 	}
 
-	private List<TimestampToken> extractTimestampTokens(Map<?, ?> tstContainer, TimestampType timestampType,
+	private List<TimestampToken> extractTimestampTokens(JAdESAttribute signatureAttribute, Map<?, ?> tstContainer, TimestampType timestampType,
 			List<TimestampedReference> references) {
 		List<TimestampToken> result = new LinkedList<TimestampToken>();
 
@@ -395,7 +403,9 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 				if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 					String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
 					try {
-						result.add(new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES));
+						TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES);
+						timestampToken.setHashCode(signatureAttribute.getValueHashCode());
+						result.add(timestampToken);
 					} catch (Exception e) {
 						LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
 					}
@@ -414,12 +424,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		Map<String, Object> arcTst = (Map<String, Object>) signatureAttribute.getValue();
 		Map<String, Object> tstContainer = (Map<String, Object>) arcTst.get(JAdESHeaderParameterNames.TST_CONTAINER);
 		
-		int hashCode = signatureAttribute.getValueHashCode();
-		List<TimestampToken> timestampTokens = extractTimestampTokens(tstContainer, TimestampType.ARCHIVE_TIMESTAMP, references);
-		for (TimestampToken timestampToken : timestampTokens) {
-			timestampToken.setHashCode(hashCode);
-		}
-		return timestampTokens;
+		return extractTimestampTokens(signatureAttribute, tstContainer, TimestampType.ARCHIVE_TIMESTAMP, references);
 	}
 
 }

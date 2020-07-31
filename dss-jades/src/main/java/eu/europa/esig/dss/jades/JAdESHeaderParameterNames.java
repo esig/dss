@@ -379,7 +379,7 @@ public final class JAdESHeaderParameterNames {
 	public static final String ARC_TST = "arcTst";
 
 	/**
-	 * Archive TimeStamp
+	 * Archive TimeStamp container
 	 */
 	public static final String TST_CONTAINER = "tstContainer";
 
@@ -387,5 +387,15 @@ public final class JAdESHeaderParameterNames {
 	 * Shows if the ATST covers all data or only the last 'arcTst'-'tstVd' pair
 	 */
 	public static final String TIMESTAMPED = "timeStamped";
+	
+	/**
+	 * Signature and References Timestamp
+	 */
+	public static final String SIG_AND_RFS_TST = "sigAndRfsTst";
+
+	/**
+	 * References Timestamp
+	 */
+	public static final String RFS_TST = "rfsTst";
 
 }

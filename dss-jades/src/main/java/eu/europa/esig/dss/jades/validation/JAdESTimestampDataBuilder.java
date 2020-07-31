@@ -139,14 +139,185 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX1Data(TimestampToken timestampToken) {
-		// not supported
+		
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("--->Get SigAndRefs timestamp data");
+		}
+		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
+		
+		JWS jws = signature.getJws();
+		/*
+		 * A.1.5.1	The sigRTst JSON object
+		 * 
+		 * The message imprint computation input shall be the concatenation of the components, 
+		 * in the order they are listed below.
+		 */
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
+			/*
+			 * 1) The value of the signature component, which is the base64url encoded JWS Signature Value.
+			 */
+			baos.write(jws.getEncodedSignature().getBytes());
+			
+			/*
+			 * 2) The character '.'.
+			 */
+			baos.write('.');
+			
+			/*
+			 * 3) Those among the following components that appear before sigRTst, in their order of 
+			 *    appearance within the etsiU array, base64url-encoded, and separated by the character '.':
+			 *    
+			 * NOTE: there is a difference in processing base64url encoded values and clear incorporation
+			 */
+			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			
+			boolean separate = false;
+			
+			/*
+			 *    -	The sigTst components.
+			 *    -	The xRefs component.
+			 *    -	The rRefs component.
+			 *    -	The axRefs component if it is present. And
+			 *    -	The arRefs component if it is present
+			 */
+			for (Object item : etsiU) {
+				
+				Object entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.SIG_TST, JAdESHeaderParameterNames.X_REFS, 
+						JAdESHeaderParameterNames.R_REFS, JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS);
+				
+				if (entry == null) {
+					// Validation : check is the current timestamp has been reached
+					entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.SIG_AND_RFS_TST);
+					
+					if (timestampToken != null && timestampToken.getHashCode() == entry.hashCode()) {
+						// the current timestamp is found, stop the iteration
+						break;
+					}
+					
+					// continue to the next attribute otherwise
+					continue;
+				}
+				
+				if (separate) {
+					baos.write('.');
+				}
+				
+				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				} else {
+					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
+				}
+				
+				separate = true;
+				
+			}
+
+			byte[] messageImprint = baos.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("The SigAndRefs timestamp message-imprint : {}", new String(messageImprint));
+			}
+			
+			return new InMemoryDocument(messageImprint);
+			
+		} catch (IOException e) {
+			throw new DSSException("An error occurred during building of a message imprint");
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Object getAllowedTypeEntryOrNull(Object item, String... allowedTypes) {
+		if (!(item instanceof Map<?, ?>)) {
+			LOG.warn("Unsupported element is found in 'etsiU'. Shall be a map. The element is skipped for a message imprint computation!");
+			return null;
+		}
+		
+		Map<String, Object> map = (Map<String, Object>) item;
+		
+		if (map.size() != 1) {
+			LOG.warn("A child of 'etsiU' shall contain only one entry! Found : {}. "
+					+ "The element is skipped for message a imprint computation!", map.size());
+			return null;
+		}
+		
+		for (String entryType : allowedTypes) {
+			Object entry = map.get(entryType);
+			if (entry != null) {
+				return entry;
+			}
+		}
+		
 		return null;
 	}
 
 	@Override
 	public DSSDocument getTimestampX2Data(TimestampToken timestampToken) {
-		// not supported
-		return null;
+		
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("--->Get SigAndRefs timestamp data");
+		}
+		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
+		
+		JWS jws = signature.getJws();
+		
+		/*
+		 * A.1.5.2	The rfsTst JSON object
+		 * 
+		 * The message imprint computation input shall be the concatenation of the components, 
+		 * in the order they are listed below.
+		 */
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
+			/*
+			 * The message imprint computation input shall be the concatenation of 
+			 * the components listed below, base64url encoded, and separated by the character '.', 
+			 * in their order of appearance within the etsiU array:
+			 * - The xRefs component.
+			 * - The rRefs component.
+			 * - The axRefs component if it is present. And
+			 * - The arRefs component if it is present.
+			 * 
+			 * NOTE: there is a difference in processing base64url encoded values and clear incorporation
+			 */
+			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			
+			boolean separate = false;
+			
+			for (Object item : etsiU) {
+				
+				Object entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.X_REFS, JAdESHeaderParameterNames.R_REFS, 
+						JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS);
+				
+				if (entry == null) {
+					continue;
+				}
+				
+				if (separate) {
+					baos.write('.');
+				}
+				
+				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				} else {
+					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
+				}
+				
+				separate = true;
+				
+			}
+
+			byte[] messageImprint = baos.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("The Refs timestamp message-imprint : {}", new String(messageImprint));
+			}
+			
+			return new InMemoryDocument(messageImprint);
+			
+		} catch (IOException e) {
+			throw new DSSException("An error occurred during building of a message imprint");
+		}
+		
 	}
 
 	@Override

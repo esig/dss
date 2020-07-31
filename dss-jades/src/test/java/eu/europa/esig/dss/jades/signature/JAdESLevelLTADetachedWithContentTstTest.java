@@ -66,12 +66,13 @@ public class JAdESLevelLTADetachedWithContentTstTest extends AbstractJAdESMultip
 		boolean archiveTstFound = false;
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			if (timestampWrapper.getType().isContentTimestamp()) {
+				assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 				contentTstFound = true;
 			}
 			if (timestampWrapper.getType().isArchivalTimestamp()) {
+				assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 				archiveTstFound = true;
 			}
-			assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 		}
 		assertTrue(contentTstFound);
 		assertTrue(archiveTstFound);

@@ -96,11 +96,12 @@ public class JAdESLevelLTADetachedHttpHeadersWithContentTstTest extends Abstract
 		boolean archiveTstFound = false;
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.CONTENT_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 				contentTstFound = true;
 			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 				archiveTstFound = true;
 			}
-			assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 		}
 		assertTrue(contentTstFound);
 		assertTrue(archiveTstFound);
