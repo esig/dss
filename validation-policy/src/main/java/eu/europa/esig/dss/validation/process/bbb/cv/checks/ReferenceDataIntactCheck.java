@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -46,12 +47,20 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_CV_IRDOI;
+		if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+			return MessageTag.BBB_CV_TSP_IRDOI;
+		} else {
+			return MessageTag.BBB_CV_IRDOI;
+		}
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_CV_IRDOI_ANS;
+		if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+			return MessageTag.BBB_CV_TSP_IRDOI_ANS;
+		} else {
+			return MessageTag.BBB_CV_IRDOI_ANS;
+		}
 	}
 
 	@Override
