@@ -1644,9 +1644,114 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
+		
+		String firstSigId = simpleReport.getSignatureIdList().get(0);
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(firstSigId));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(firstSigId));
+
+		String secondSigId = simpleReport.getSignatureIdList().get(1);
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(secondSigId));
+		assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(secondSigId));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(2, detailedReport.getSignatureIds().size());
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
+	@Test
+	public void testValidCounterSignature() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/counter-signature-valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
+		
+		String firstSigId = simpleReport.getSignatureIdList().get(0);
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(firstSigId));
+
+		String secondSigId = simpleReport.getSignatureIdList().get(1);
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(secondSigId));
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
+	@Test
+	public void testSAVWithSignatureConstraints() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/counter-signature-valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+		
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		signatureConstraints.getSignedAttributes().setSignerLocation(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
+		
+		String firstSigId = simpleReport.getSignatureIdList().get(0);
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(firstSigId));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(firstSigId));
+		
+		List<String> errors = simpleReport.getErrors(firstSigId);
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPSLP_ANS)));
+
+		String secondSigId = simpleReport.getSignatureIdList().get(1);
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(secondSigId));
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
+	@Test
+	public void testSAVWithCounterSignatureConstraints() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/counter-signature-valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+		
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getCounterSignatureConstraints();
+		signatureConstraints.getSignedAttributes().setContentTimeStamp(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
+		
+		String firstSigId = simpleReport.getSignatureIdList().get(0);
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(firstSigId));
+
+		String secondSigId = simpleReport.getSignatureIdList().get(1);
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(secondSigId));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(secondSigId));
+		
+		List<String> errors = simpleReport.getErrors(secondSigId);
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPCTSIP_ANS)));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);

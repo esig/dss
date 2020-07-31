@@ -144,67 +144,67 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	}
 
 	private ChainItem<XmlSAV> signingCertificateReference() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint();
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
 		return new SigningCertificateReferenceCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> certificatePath() {
-		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint();
+		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
 		return new CertificatePathCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signingTime() {
-		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint();
+		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint(context);
 		return new SigningTimeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentType() {
-		ValueConstraint constraint = validationPolicy.getContentTypeConstraint();
+		ValueConstraint constraint = validationPolicy.getContentTypeConstraint(context);
 		return new ContentTypeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentHints() {
-		ValueConstraint constraint = validationPolicy.getContentHintsConstraint();
+		ValueConstraint constraint = validationPolicy.getContentHintsConstraint(context);
 		return new ContentHintsCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentIdentifier() {
-		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint();
+		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint(context);
 		return new ContentIdentifierCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> messageDigestOrSignedProperties() {
-		LevelConstraint constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint();
+		LevelConstraint constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint(context);
 		return new MessageDigestOrSignedPropertiesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> commitmentTypeIndications() {
-		MultiValuesConstraint constraint = validationPolicy.getCommitmentTypeIndicationConstraint();
+		MultiValuesConstraint constraint = validationPolicy.getCommitmentTypeIndicationConstraint(context);
 		return new CommitmentTypeIndicationsCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signerLocation() {
-		LevelConstraint constraint = validationPolicy.getSignerLocationConstraint();
+		LevelConstraint constraint = validationPolicy.getSignerLocationConstraint(context);
 		return new SignerLocationCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentTimestamp() {
-		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint();
+		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint(context);
 		return new ContentTimestampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {
-		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint();
+		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint(context);
 		return new CounterSignatureCheck(i18nProvider, result, diagnosticData, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> claimedRoles() {
-		MultiValuesConstraint constraint = validationPolicy.getClaimedRoleConstraint();
+		MultiValuesConstraint constraint = validationPolicy.getClaimedRoleConstraint(context);
 		return new ClaimedRolesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> certifiedRoles() {
-		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint();
+		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint(context);
 		return new CertifiedRolesCheck(i18nProvider, result, token, constraint);
 	}
 

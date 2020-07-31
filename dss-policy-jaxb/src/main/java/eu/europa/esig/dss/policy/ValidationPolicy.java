@@ -81,7 +81,7 @@ public interface ValidationPolicy {
 	 * 
 	 * @return {@code LevelConstraint} if SigningCertificateRefersCertificateChain element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningCertificateRefersCertificateChainConstraint();
+	LevelConstraint getSigningCertificateRefersCertificateChainConstraint(Context context);
 
 	/**
 	 * Indicates if the whole certificate chain is covered by the Signing Certificate attribute.
@@ -89,7 +89,7 @@ public interface ValidationPolicy {
 	 * 
 	 * @return {@code LevelConstraint} if ReferencesToAllCertificateChainPresent element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getReferencesToAllCertificateChainPresentConstraint();
+	LevelConstraint getReferencesToAllCertificateChainPresentConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the
@@ -97,7 +97,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code LevelConstraint} if SigningTime element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSigningTimeConstraint();
+	LevelConstraint getSigningTimeConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: content-type should be checked. If ContentType element is absent within the
@@ -105,7 +105,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code ValueConstraint} if ContentType element is present in the constraint file, null otherwise.
 	 */
-	ValueConstraint getContentTypeConstraint();
+	ValueConstraint getContentTypeConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: content-hints should be checked. If ContentHints element is absent within the
@@ -113,7 +113,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code ValueConstraint} if ContentHints element is present in the constraint file, null otherwise.
 	 */
-	ValueConstraint getContentHintsConstraint();
+	ValueConstraint getContentHintsConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: content-identifier should be checked. If ContentIdentifier element is absent
@@ -122,7 +122,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code ValueConstraint} if ContentIdentifier element is present in the constraint file, null otherwise.
 	 */
-	ValueConstraint getContentIdentifierConstraint();
+	ValueConstraint getContentIdentifierConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: message-digest (for CAdES) or SignedProperties (for XAdES) should be checked.
@@ -130,7 +130,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code LevelConstraint} if message-digests/SignedProperties element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getMessageDigestOrSignedPropertiesConstraint();
+	LevelConstraint getMessageDigestOrSignedPropertiesConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication
@@ -140,7 +140,7 @@ public interface ValidationPolicy {
 	 * @return {@code MultiValuesConstraint} if CommitmentTypeIndication element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	MultiValuesConstraint getCommitmentTypeIndicationConstraint();
+	MultiValuesConstraint getCommitmentTypeIndicationConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: signer-location should be checked. If SignerLocation element is absent within
@@ -149,7 +149,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code LevelConstraint} if SignerLocation element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getSignerLocationConstraint();
+	LevelConstraint getSignerLocationConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: content-time-stamp should be checked. If ContentTimeStamp element is absent
@@ -158,7 +158,7 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code LevelConstraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getContentTimestampConstraint();
+	LevelConstraint getContentTimestampConstraint(Context context);
 
 	/**
 	 * Indicates if the unsigned property: claimed-role should be checked. If ClaimedRoles element is absent within the
@@ -166,14 +166,14 @@ public interface ValidationPolicy {
 	 *
 	 * @return {@code MultiValuesConstraint} if ClaimedRoles element is present in the constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getClaimedRoleConstraint();
+	MultiValuesConstraint getClaimedRoleConstraint(Context context);
 
 	/**
 	 * Return the mandated signer role.
 	 *
 	 * @return
 	 */
-	MultiValuesConstraint getCertifiedRolesConstraint();
+	MultiValuesConstraint getCertifiedRolesConstraint(Context context);
 
 	/**
 	 * Returns the name of the policy.
@@ -400,7 +400,7 @@ public interface ValidationPolicy {
 
 	TimeConstraint getRevocationFreshnessConstraint();
 
-	LevelConstraint getCounterSignatureConstraint();
+	LevelConstraint getCounterSignatureConstraint(Context context);
 
 	MultiValuesConstraint getSignatureFormatConstraint(Context context);
 

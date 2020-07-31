@@ -288,7 +288,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				 * a) If no signing-time property/attribute is present, the process shall return the indication
 				 * INDETERMINATE with the sub-indication SIG_CONSTRAINTS_FAILURE.
 				 */
-				item = item.setNextItem(signingTimeAttributePresent());
+				item = item.setNextItem(signingTimeAttributePresent(currentContext));
 				/*
 				 * b) If a signing-time property/attribute is present, the process shall check that the claimed time in the
 				 * attribute plus the time-stamp delay is after the best-signature-time. If the check is successful, the
@@ -496,8 +496,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new TimestampCoherenceOrderCheck(i18nProvider, result, timestamps, policy.getTimestampCoherenceConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> signingTimeAttributePresent() {
-		return new SigningTimeAttributePresentCheck(i18nProvider, result, currentSignature, policy.getSigningTimeConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> signingTimeAttributePresent(Context context) {
+		return new SigningTimeAttributePresentCheck(i18nProvider, result, currentSignature, policy.getSigningTimeConstraint(context));
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
