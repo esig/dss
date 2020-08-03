@@ -228,6 +228,11 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
+	protected boolean isCounterSignature(XAdESAttribute unsignedAttribute) {
+		return XAdES132Element.COUNTER_SIGNATURE.isSameTagName(unsignedAttribute.getName());
+	}
+
+	@Override
 	protected TimestampToken makeTimestampToken(XAdESAttribute unsignedAttribute, TimestampType timestampType, 
 			List<TimestampedReference> references) {
 

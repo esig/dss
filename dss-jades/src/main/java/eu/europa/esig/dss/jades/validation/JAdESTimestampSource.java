@@ -141,6 +141,11 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	}
 
 	@Override
+	protected boolean isCounterSignature(JAdESAttribute unsignedAttribute) {
+		return JAdESHeaderParameterNames.C_SIG.equals(unsignedAttribute.getHeaderName());
+	}
+
+	@Override
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(JAdESAttribute signedAttribute) {
 		// not supported
 		return Collections.emptyList();

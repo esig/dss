@@ -419,7 +419,11 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				addReferences(previousArcTstReferences, timestampValidationData);
 				continue;
 				
-			} else {
+			} else if (isCounterSignature(unsignedAttribute)) {
+				// nothing to do
+				continue;
+
+			}else {
 				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute);
 				continue;
 			}
@@ -562,12 +566,25 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract boolean isPreviousDataArchiveTimestamp(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Determines if the given {@code unsignedAttribute} is an instance of "timestamp-validation-data" element
-	 * @param unsignedAttribute {@link ISignatureAttribute} to process
-	 * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data, FALSE otherwise
+	 * Determines if the given {@code unsignedAttribute} is an instance of
+	 * "timestamp-validation-data" element
+	 * 
+	 * @param unsignedAttribute {@link SignatureAttribute} to process
+	 * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data,
+	 *         FALSE otherwise
 	 */
 	protected abstract boolean isTimeStampValidationData(SignatureAttribute unsignedAttribute);
-	
+
+	/**
+	 * Determines if the given {@code unsignedAttribute} is an instance of
+	 * "counter-signature" element
+	 * 
+	 * @param unsignedAttribute {@link SignatureAttribute} to process
+	 * @return TRUE if the {@code unsignedAttribute} is a Counter signature, FALSE
+	 *         otherwise
+	 */
+	protected abstract boolean isCounterSignature(SignatureAttribute unsignedAttribute);
+
 	/**
 	 * Creates a timestamp token from the provided {@code signatureAttribute}
 	 * @param signatureAttribute {@link ISignatureAttribute} to create timestamp from

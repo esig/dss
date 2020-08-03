@@ -398,4 +398,9 @@ public final class JAdESHeaderParameterNames {
 	 */
 	public static final String RFS_TST = "rfsTst";
 
+	/**
+	 * Counter Signature
+	 */
+	public static final String C_SIG = "cSig";
+
 }

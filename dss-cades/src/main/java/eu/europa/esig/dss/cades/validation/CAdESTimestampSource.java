@@ -40,6 +40,7 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.esf.CrlListID;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
@@ -221,6 +222,11 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected boolean isTimeStampValidationData(CAdESAttribute unsignedAttribute) {
 		// not applicable for CAdES
 		return false;
+	}
+
+	@Override
+	protected boolean isCounterSignature(CAdESAttribute unsignedAttribute) {
+		return CMSAttributes.counterSignature.equals(unsignedAttribute.getASN1Oid());
 	}
 
 	@Override
