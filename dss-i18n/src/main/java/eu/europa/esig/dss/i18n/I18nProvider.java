@@ -66,6 +66,7 @@ public class I18nProvider {
 	 * Extracts an {@code I18nMessage} by its key
 	 * 
 	 * @param messageTag {@link MessageTag} key of the message to get value for
+	 * @param args an array of optional parameters
 	 * @return {@link String} message value
 	 */
 	public String getMessage(MessageTag messageTag, Object... args) {

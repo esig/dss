@@ -427,6 +427,8 @@ public enum MessageTag {
 	
 	REVOCATION_CONSISTENT,
 	
+	REVOCATION_ID,
+	
 	REVOCATION_NO_THIS_UPDATE,
 	
 	REVOCATION_NOT_AFTER_AFTER,
@@ -483,7 +485,7 @@ public enum MessageTag {
 	
 	DAAV,
 	
-	RAV,
+	RAC,
 
 	SIG_QUALIFICATION,
 

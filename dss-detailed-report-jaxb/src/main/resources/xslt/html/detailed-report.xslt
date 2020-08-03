@@ -498,7 +498,7 @@
 	        <xsl:variable name="parentId">
 	        	<xsl:choose>
 					<xsl:when test="name()='SubXCV'" ><xsl:value-of select="../../@Id"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="../@Id"/></xsl:otherwise>
+					<xsl:otherwise><xsl:value-of select="concat(../@Id, '-', ../../../@Id)"/></xsl:otherwise>
 	        	</xsl:choose>
 	        </xsl:variable>
     		<xsl:variable name="currentId" select="concat(name(), '-', @Id, '-', $parentId)"/>
@@ -508,7 +508,7 @@
     			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseSubXCV<xsl:value-of select="$currentId"/></xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapse-SubXCV-<xsl:value-of select="$currentId"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       	
 		       		<xsl:if test="@TrustAnchor = 'true'">
@@ -569,7 +569,7 @@
 		       	<xsl:if test="name() != 'SubXCV' or @TrustAnchor != 'true'">
 		    		<div>
 		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-			        	<xsl:attribute name="id">collapseSubXCV<xsl:value-of select="$currentId"/></xsl:attribute>
+			        	<xsl:attribute name="id">collapse-SubXCV-<xsl:value-of select="$currentId"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
 	    		</xsl:if>
@@ -585,10 +585,16 @@
 				<xsl:value-of select="dss:Name"/>
 	    		<xsl:if test="@Id">
 	    		<xsl:variable name="NameId" select="dss:Name/@NameId"/>
-	    			<a> 
+	    			<a>
 	    				<xsl:choose>
 		    				<xsl:when test="$NameId='BBB_XCV_SUB'">
 								<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
+					        </xsl:when>
+		    				<xsl:when test="$NameId='BBB_XCV_RAC'">
+								<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+					        </xsl:when>
+		    				<xsl:when test="$NameId='BBB_XCV_RFC'">
+								<xsl:attribute name="href">#RFC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
 					        </xsl:when>
 		    				<xsl:when test="$NameId='PSV_IPSVC'">
 								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PSV</xsl:attribute>

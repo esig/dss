@@ -35,7 +35,7 @@ public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConc
 	private final XmlRAC racResult;
 
 	public RevocationAcceptanceCheckerResultCheck(I18nProvider i18nProvider, T result, XmlRAC racResult, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+		super(i18nProvider, result, constraint, racResult.getId());
 		this.racResult = racResult;
 	}
 

@@ -68,7 +68,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	@Override
 	protected MessageTag getTitle() {
-		return MessageTag.RAV;
+		return MessageTag.RAC;
 	}
 	
 	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
