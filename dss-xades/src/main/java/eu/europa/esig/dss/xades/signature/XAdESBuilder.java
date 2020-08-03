@@ -69,7 +69,6 @@ public abstract class XAdESBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
 
 	public static final String REFERENCED_DATA = "referencedData";
-	public static final String SIGNATURE = "Signature";
 	public static final String TARGET = "Target";
 	public static final String URI = "URI";
 

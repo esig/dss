@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
@@ -91,7 +92,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
@@ -107,7 +108,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
 		assertMultiDocumentsAllowed(parameters);
 		DSSDocument firstDoc = toSignDocuments.get(0);
 		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
@@ -130,7 +131,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
+	{
 		Objects.requireNonNull(toSignDocument, "toSignDocument is not defined!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
@@ -167,7 +168,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters, SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters,
+			SignatureValue signatureValue) {
 		assertMultiDocumentsAllowed(parameters);
 		DSSDocument firstDoc = toSignDocuments.get(0);
 		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
@@ -178,7 +180,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
@@ -239,6 +241,12 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		default:
 			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
 		}
+	}
+
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(document, "The document cannot be null");
+		SignaturePolicyStoreBuilder builder = new SignaturePolicyStoreBuilder(certificateVerifier);
+		return builder.addSignaturePolicyStore(document, signaturePolicyStore);
 	}
 
 }

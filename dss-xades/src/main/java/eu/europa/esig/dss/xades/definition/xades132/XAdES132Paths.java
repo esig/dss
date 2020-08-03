@@ -295,6 +295,13 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
 	}
 
+	@Override
+	public String getSignaturePolicyStorePath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES,
+				XAdES132Element.UNSIGNED_PROPERTIES, XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES,
+				XAdES141Element.SIGNATURE_POLICY_STORE);
+	}
+
 	// ------------------------------------------------
 
 	@Override
@@ -473,9 +480,22 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 		return fromCurrentPosition(XAdES132Element.QUALIFYING_PROPERTIES);
 	}
 
+	// --------------------------- Signature Policy Store
+
+	@Override
+	public String getCurrentSPDocSpecification() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicyDocument() {
+		return fromCurrentPosition(XAdES141Element.SIGNATURE_POLICY_DOCUMENT);
+	}
+
 	@Override
 	public XSDAbstractUtils getXSDUtils() {
 		return XAdES319132Utils.getInstance();
 	}
+
 
 }

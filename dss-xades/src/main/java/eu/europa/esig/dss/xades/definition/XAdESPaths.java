@@ -115,6 +115,8 @@ public interface XAdESPaths {
 
 	String getCertifiedRoleV2Path();
 
+	String getSignaturePolicyStorePath();
+
 	// ----------------
 
 	String getCurrentCRLValuesChildren();
@@ -188,6 +190,12 @@ public interface XAdESPaths {
 	String getCurrentInclude();
 
 	String getCurrentQualifyingPropertiesPath();
+
+	// --------------------------- Signature Policy Store
+
+	String getCurrentSPDocSpecification();
+
+	String getCurrentSignaturePolicyDocument();
 
 	XSDAbstractUtils getXSDUtils();
 

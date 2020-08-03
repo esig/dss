@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -264,6 +265,13 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@code SignaturePolicy}
 	 */
 	SignaturePolicy getPolicyId();
+
+	/**
+	 * Returns the Signature Policy Store from the signature
+	 * 
+	 * @return {@code SignaturePolicyStore}
+	 */
+	SignaturePolicyStore getSignaturePolicyStore();
 
 	/**
 	 * Returns information about the place where the signature was generated

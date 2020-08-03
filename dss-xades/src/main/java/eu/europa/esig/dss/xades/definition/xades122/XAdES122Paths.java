@@ -107,6 +107,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getSignedAssertionPath() {
+		return null;
+	}
+
+	@Override
 	public String getCertifiedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNER_ROLE, XAdES122Element.CERTIFIED_ROLES, XAdES122Element.CERTIFIED_ROLE);
@@ -266,6 +271,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getSigAndRefsTimestampV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getSignaturePolicyStorePath() {
 		return null;
 	}
 
@@ -448,13 +458,18 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public XSDAbstractUtils getXSDUtils() {
-		return XAdES122Utils.getInstance();
+	public String getCurrentSPDocSpecification() {
+		return null;
 	}
 
 	@Override
-	public String getSignedAssertionPath() {
+	public String getCurrentSignaturePolicyDocument() {
 		return null;
+	}
+
+	@Override
+	public XSDAbstractUtils getXSDUtils() {
+		return XAdES122Utils.getInstance();
 	}
 
 }

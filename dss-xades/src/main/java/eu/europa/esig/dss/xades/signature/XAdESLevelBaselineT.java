@@ -113,7 +113,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		documentDom = DomUtils.buildDOM(dssDocument);
 
-		final NodeList signatureNodeList = documentDom.getElementsByTagNameNS(XMLNS, SIGNATURE);
+		final NodeList signatureNodeList = documentDom.getElementsByTagNameNS(XMLNS,
+				XMLDSigElement.SIGNATURE.getTagName());
 		if (signatureNodeList.getLength() == 0) {
 			throw new DSSException("There is no signature to extend!");
 		}

@@ -61,6 +61,8 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -451,6 +453,29 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return signatureProductionPlace;
+	}
+
+	@Override
+	public SignaturePolicyStore getSignaturePolicyStore() {
+		String signaturePolicyStorePath = xadesPaths.getSignaturePolicyStorePath();
+		if (Utils.isStringNotEmpty(signaturePolicyStorePath)) {
+			NodeList nodeList = DomUtils.getNodeList(signatureElement, signaturePolicyStorePath);
+			if (nodeList.getLength() > 0) {
+				Node signaturePolicyStoreNode = nodeList.item(0);
+				String spDocSpec = DomUtils.getValue(signaturePolicyStoreNode,
+						xadesPaths.getCurrentSPDocSpecification());
+				String spDocB64 = DomUtils.getValue(signaturePolicyStoreNode,
+						xadesPaths.getCurrentSignaturePolicyDocument());
+
+				SignaturePolicyStore sps = new SignaturePolicyStore();
+				sps.setSpDocSpecification(spDocSpec);
+				if (Utils.isStringNotEmpty(spDocB64) && Utils.isBase64Encoded(spDocB64)) {
+					sps.setSignaturePolicyContent(new InMemoryDocument(Utils.fromBase64(spDocB64)));
+				}
+				return sps;
+			}
+		}
+		return null;
 	}
 
 	@Override

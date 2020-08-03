@@ -114,6 +114,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getSignedAssertionPath() {
+		return null;
+	}
+
+	@Override
 	public String getCertifiedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
 				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNER_ROLE, XAdES111Element.CERTIFIED_ROLES, XAdES111Element.CERTIFIED_ROLE);
@@ -270,6 +275,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getSigAndRefsTimestampV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getSignaturePolicyStorePath() {
 		return null;
 	}
 
@@ -451,14 +461,21 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 		return fromCurrentPosition(XAdES111Element.QUALIFYING_PROPERTIES);
 	}
 
+	// --------------------------- Signature Policy Store
+
 	@Override
-	public XSDAbstractUtils getXSDUtils() {
-		return XAdES111Utils.getInstance();
+	public String getCurrentSPDocSpecification() {
+		return null;
 	}
 
 	@Override
-	public String getSignedAssertionPath() {
+	public String getCurrentSignaturePolicyDocument() {
 		return null;
+	}
+
+	@Override
+	public XSDAbstractUtils getXSDUtils() {
+		return XAdES111Utils.getInstance();
 	}
 
 }
