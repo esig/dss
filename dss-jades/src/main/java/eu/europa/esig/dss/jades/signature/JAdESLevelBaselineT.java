@@ -55,7 +55,7 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 	}
 
 	@Override
-	public DSSDocument extendSignatures(DSSDocument document, JAdESSignatureParameters params) throws DSSException {
+	public DSSDocument extendSignatures(DSSDocument document, JAdESSignatureParameters params) {
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 
