@@ -77,6 +77,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
@@ -108,6 +109,8 @@ import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -751,6 +754,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
+		xmlSignature.setSignaturePolicyStore(getXmlSignaturePolicyStore(signature));
 		xmlSignature.setSignerInformationStore(getXmlSignerInformationStore(signature.getSignerInformationStoreInfos()));
 		xmlSignature.setPDFRevision(getXmlPDFRevision(signature.getPdfRevision()));
 		xmlSignature.setSignatureDigestReference(getXmlSignatureDigestReference(signature));
@@ -1685,6 +1689,31 @@ public class DiagnosticDataBuilder {
 			}
 		}
 		return xmlPolicy;
+	}
+
+	private XmlSignaturePolicyStore getXmlSignaturePolicyStore(AdvancedSignature signature) {
+		SignaturePolicyStore signaturePolicyStore = signature.getSignaturePolicyStore();
+		if (signaturePolicyStore == null) {
+			return null;
+		}
+		XmlSignaturePolicyStore xmlSignaturePolicyStore = new XmlSignaturePolicyStore();
+		SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
+		if (spDocSpecification != null) {
+			xmlSignaturePolicyStore.setId(spDocSpecification.getOid());
+			xmlSignaturePolicyStore.setDescription(spDocSpecification.getDescription());
+			String[] documentationReferences = spDocSpecification.getDocumentationReferences();
+			if (Utils.isArrayNotEmpty(documentationReferences)) {
+				xmlSignaturePolicyStore.setDocumentationReferences(Arrays.asList(documentationReferences));
+			}
+		}
+		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
+		SignaturePolicy signaturePolicy = signature.getPolicyId();
+		if (signaturePolicyContent != null && signaturePolicy != null) {
+			Digest digest = signaturePolicy.getDigest();
+			Digest contentDigest = DSSUtils.getDigest(digest.getAlgorithm(), signaturePolicyContent);
+			xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(contentDigest));
+		}
+		return xmlSignaturePolicyStore;
 	}
 
 	private XmlTimestamp buildDetachedXmlTimestamp(final TimestampToken timestampToken) {

@@ -148,6 +148,7 @@
 					<xs:element name="CommitmentTypeIndications" type="CommitmentTypeIndications" minOccurs="0" />
 					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
+					<xs:element name="SignaturePolicyStore" type="SignaturePolicyStore" minOccurs="0" />
 					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" /> <!-- CAdES -->
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES -->
 					
@@ -214,6 +215,15 @@
 			<xs:element name="ProcessingError" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgorithmsEqual" type="xs:boolean" minOccurs="0" />
 			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="SignaturePolicyStore">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:string" />
+			<xs:element name="Description" type="xs:string" minOccurs="0" />
+			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
