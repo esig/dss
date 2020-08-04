@@ -11,7 +11,7 @@ public class SignaturePolicyStore {
 	 * The SPDocSpecification element shall identify the technical specification
 	 * that defines the syntax used for producing the signature policy document.
 	 */
-	private String spDocSpecification;
+	private SpDocSpecification spDocSpecification;
 
 	/*
 	 * The SignaturePolicyDocument element shall contain the base-64 encoded
@@ -27,11 +27,11 @@ public class SignaturePolicyStore {
 		this.id = id;
 	}
 
-	public String getSpDocSpecification() {
+	public SpDocSpecification getSpDocSpecification() {
 		return spDocSpecification;
 	}
 
-	public void setSpDocSpecification(String spDocSpecification) {
+	public void setSpDocSpecification(SpDocSpecification spDocSpecification) {
 		this.spDocSpecification = spDocSpecification;
 	}
 

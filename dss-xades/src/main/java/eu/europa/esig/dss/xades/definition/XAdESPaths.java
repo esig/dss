@@ -193,7 +193,11 @@ public interface XAdESPaths {
 
 	// --------------------------- Signature Policy Store
 
-	String getCurrentSPDocSpecification();
+	String getCurrentSPDocSpecificationIdentifier();
+
+	String getCurrentSPDocSpecificationDescription();
+
+	String getCurrentSPDocSpecificationDocumentReferenceElements();
 
 	String getCurrentSignaturePolicyDocument();
 

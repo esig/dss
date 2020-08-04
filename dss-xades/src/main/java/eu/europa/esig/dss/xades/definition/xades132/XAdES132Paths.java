@@ -483,8 +483,18 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	// --------------------------- Signature Policy Store
 
 	@Override
-	public String getCurrentSPDocSpecification() {
-		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION);
+	public String getCurrentSPDocSpecificationIdentifier() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDescription() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DESCRIPTION);
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DOCUMENTATION_REFERENCES, XAdES132Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override

@@ -464,7 +464,17 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	// --------------------------- Signature Policy Store
 
 	@Override
-	public String getCurrentSPDocSpecification() {
+	public String getCurrentSPDocSpecificationIdentifier() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDescription() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
 		return null;
 	}
 

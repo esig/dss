@@ -458,7 +458,17 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getCurrentSPDocSpecification() {
+	public String getCurrentSPDocSpecificationIdentifier() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDescription() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
 		return null;
 	}
 

@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -101,18 +101,14 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 		
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 		signaturePolicyStore.setSignaturePolicyContent(POLICY_CONTENT);
-		signaturePolicyStore.setSpDocSpecification("urn:oid:2.2.3.4.1");
+		String[] documentationReferences = new String[] { SIGNATURE_POLICY_DOCUMENTATION };
+		SpDocSpecification spDocSpec = new SpDocSpecification(SIGNATURE_POLICY_ID, SIGNATURE_POLICY_DESCRIPTION,
+				documentationReferences);
+		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(new InMemoryDocument(byteArray), signaturePolicyStore);
 
 		verify(signedDocumentWithSignaturePolicyStore);
 		
-		try {
-			signedDocumentWithSignaturePolicyStore.save("target/1111.xml");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		XMLDocumentValidator validator = new XMLDocumentValidator(signedDocumentWithSignaturePolicyStore);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -120,6 +116,9 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 		XAdESSignature xadesSignature = (XAdESSignature) signatures.get(0);
 		SignaturePolicyStore extractedSPS = xadesSignature.getSignaturePolicyStore();
 		assertNotNull(extractedSPS);
+		assertNotNull(extractedSPS.getSpDocSpecification());
+		assertEquals(SIGNATURE_POLICY_DESCRIPTION, extractedSPS.getSpDocSpecification().getDescription());
+		assertArrayEquals(documentationReferences, extractedSPS.getSpDocSpecification().getDocumentationReferences());
 		assertArrayEquals(DSSUtils.toByteArray(POLICY_CONTENT), DSSUtils.toByteArray(extractedSPS.getSignaturePolicyContent()));
 	}
 	

@@ -63,6 +63,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -462,13 +463,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			NodeList nodeList = DomUtils.getNodeList(signatureElement, signaturePolicyStorePath);
 			if (nodeList.getLength() > 0) {
 				Node signaturePolicyStoreNode = nodeList.item(0);
-				String spDocSpec = DomUtils.getValue(signaturePolicyStoreNode,
-						xadesPaths.getCurrentSPDocSpecification());
-				String spDocB64 = DomUtils.getValue(signaturePolicyStoreNode,
-						xadesPaths.getCurrentSignaturePolicyDocument());
+				Element identifierElement = DomUtils.getElement(signaturePolicyStoreNode, xadesPaths.getCurrentSPDocSpecificationIdentifier());
+				String oid = null;
+				if (identifierElement != null) {
+					oid = identifierElement.getTextContent();
+				}
+
+				String description = DomUtils.getValue(signaturePolicyStoreNode, xadesPaths.getCurrentSPDocSpecificationDescription());
+				NodeList documentReferenceList = DomUtils.getNodeList(signaturePolicyStoreNode,
+						xadesPaths.getCurrentSPDocSpecificationDocumentReferenceElements());
+				String[] documentationReferences = null;
+				if (documentReferenceList != null && documentReferenceList.getLength() > 0) {
+					documentationReferences = new String[documentReferenceList.getLength()];
+					for (int i = 0; i < documentReferenceList.getLength(); i++) {
+						documentationReferences[i] = ((Element) documentReferenceList.item(i)).getTextContent();
+					}
+				}
 
 				SignaturePolicyStore sps = new SignaturePolicyStore();
+				SpDocSpecification spDocSpec = new SpDocSpecification(oid, description, documentationReferences);
 				sps.setSpDocSpecification(spDocSpec);
+				String spDocB64 = DomUtils.getValue(signaturePolicyStoreNode,
+						xadesPaths.getCurrentSignaturePolicyDocument());
 				if (Utils.isStringNotEmpty(spDocB64) && Utils.isBase64Encoded(spDocB64)) {
 					sps.setSignaturePolicyContent(new InMemoryDocument(Utils.fromBase64(spDocB64)));
 				}
