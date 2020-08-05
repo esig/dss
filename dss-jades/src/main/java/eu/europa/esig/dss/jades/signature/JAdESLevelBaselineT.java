@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.jades.signature;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -31,7 +28,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
-public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignatureParameters> {
+public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements SignatureExtension<JAdESSignatureParameters> {
 
 	protected final CertificateVerifier certificateVerifier;
 
@@ -102,18 +99,6 @@ public class JAdESLevelBaselineT implements SignatureExtension<JAdESSignaturePar
 			unsignedProperties.add(sigTstItem);
 			
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected List<Object> getUnsignedProperties(JAdESSignature jadesSignature) {
-		JWS jws = jadesSignature.getJws();
-		Map<String, Object> unprotected = jws.getUnprotected();
-		if (unprotected == null) {
-			unprotected = new HashMap<>();
-			jws.setUnprotected(unprotected);
-		}
-
-		return (List<Object>) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U, k -> new JSONArray());
 	}
 
 	/**

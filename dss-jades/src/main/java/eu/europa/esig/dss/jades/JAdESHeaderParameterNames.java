@@ -402,5 +402,15 @@ public final class JAdESHeaderParameterNames {
 	 * Counter Signature
 	 */
 	public static final String C_SIG = "cSig";
+	
+	/**
+	 * Signature Policy Store 
+	 */
+	public static final String SIG_PST = "sigPSt";
+
+	/**
+	 * Signature policy document
+	 */
+	public static final String SIG_POL_DOC = "sigPolDoc";
 
 }

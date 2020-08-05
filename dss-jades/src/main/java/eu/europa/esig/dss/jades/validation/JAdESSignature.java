@@ -29,6 +29,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -154,6 +156,50 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.STAT_PROV));
 			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.COUNTRY));
 			return result;
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SignaturePolicyStore getSignaturePolicyStore() {
+		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		if (Utils.isCollectionEmpty(etsiU)) {
+			return null;
+		}
+
+		for (Object item : etsiU) {
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
+				Map<?, ?> sigPStMap = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.SIG_PST);
+				if (Utils.isMapNotEmpty(sigPStMap)) {
+					SpDocSpecification spDocSpecification = null;
+					DSSDocument policyContent = null;
+					String sigPolDocBase64 = (String) sigPStMap.get(JAdESHeaderParameterNames.SIG_POL_DOC);
+					if (Utils.isStringNotEmpty(sigPolDocBase64)) {
+						policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+					}
+					Map<?, ?> spDocSpecificationMap = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.SP_DSPEC);
+					if (Utils.isMapNotEmpty(spDocSpecificationMap)) {
+						String oid = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
+						String description = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.DESC);
+						String[] documentationReferences = null;
+
+						List<String> docRefs = (List<String>) spDocSpecificationMap.get(JAdESHeaderParameterNames.DOC_REFS);
+						if (Utils.isCollectionNotEmpty(docRefs)) {
+							documentationReferences = new String[docRefs.size()];
+							docRefs.toArray(documentationReferences);
+						}
+
+						spDocSpecification = new SpDocSpecification(oid, description, documentationReferences);
+					}
+
+					SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+					signaturePolicyStore.setSignaturePolicyContent(policyContent);
+					signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+					return signaturePolicyStore;
+				}
+			}
 		}
 		return null;
 	}
