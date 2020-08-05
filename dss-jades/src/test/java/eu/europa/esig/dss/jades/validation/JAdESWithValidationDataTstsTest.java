@@ -100,22 +100,22 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 			assertNotNull(ocspRef.getDigest().getAlgorithm());
 			assertTrue(Utils.isArrayNotEmpty(ocspRef.getDigest().getValue()));
 		}
+		
+		checkOrphanTokens(diagnosticData);
 	}
 	
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		super.checkOrphanTokens(diagnosticData);
-		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
 		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
-		assertEquals(2, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO));
-		assertEquals(2, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
-		assertEquals(2, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
-		assertEquals(1, foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
+		assertEquals(2, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(2, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(1, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+		assertEquals(1, foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
 		
 		FoundRevocationsProxy foundRevocations = signature.foundRevocations();
-		assertEquals(0, foundRevocations.getRelatedRevocationData());
+		assertEquals(0, foundRevocations.getRelatedRevocationData().size());
 		assertEquals(2, foundRevocations.getOrphanRevocationRefs().size());
 	}
 	
