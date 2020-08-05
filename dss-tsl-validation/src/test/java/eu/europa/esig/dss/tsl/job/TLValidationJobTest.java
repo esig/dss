@@ -273,6 +273,7 @@ public class TLValidationJobTest {
 		assertThrows(UnsupportedOperationException.class, () -> latest.getNames().put(new String(), new ArrayList<String>()));
 		assertThrows(UnsupportedOperationException.class, () -> latest.getServiceSupplyPoints().add(new String()));
 		
+		assertTrue(czTL.getValidationCacheInfo().isValid());
 		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationCacheInfo().getIndication());
 		assertNull(czTL.getValidationCacheInfo().getSubIndication());
 		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
@@ -1154,7 +1155,10 @@ public class TLValidationJobTest {
 		assertTrue(peruvianTL.getParsingCacheInfo().isError());
 		assertTrue(peruvianTL.getValidationCacheInfo().isResultExist());
 		assertFalse(peruvianTL.getValidationCacheInfo().isError());
-		assertEquals(Indication.TOTAL_PASSED, peruvianTL.getValidationCacheInfo().getIndication());
+		// assertEquals(Indication.TOTAL_PASSED, peruvianTL.getValidationCacheInfo().getIndication());
+		// TODO : update Peruvian TL (current (2020-08-05) uses SHA-1)
+		assertEquals(Indication.INDETERMINATE, peruvianTL.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, peruvianTL.getValidationCacheInfo().getSubIndication());
 	}
 	
 	@Test

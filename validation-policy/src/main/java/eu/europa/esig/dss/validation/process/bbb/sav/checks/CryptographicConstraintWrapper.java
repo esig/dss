@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,23 +53,31 @@ public class CryptographicConstraintWrapper {
 	}
 
 	public List<String> getSupportedEncryptionAlgorithms() {
-		return extract(constraint.getAcceptableEncryptionAlgo());
+		if (constraint != null) {
+			return extract(constraint.getAcceptableEncryptionAlgo());
+		}
+		return Collections.emptyList();
 	}
 
 	public List<String> getSupportedDigestAlgorithms() {
-		return extract(constraint.getAcceptableDigestAlgo());
+		if (constraint != null) {
+			return extract(constraint.getAcceptableDigestAlgo());
+		}
+		return Collections.emptyList();
 	}
 
 	public Map<String, Integer> getMinimumKeySizes() {
 		Map<String, Integer> result = new HashMap<>();
-		ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
-		if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
-			for (Algo algo : miniPublicKeySize.getAlgo()) {
-				Integer size = algo.getSize();
-				if (size != null) {
-					result.put(algo.getValue(), size);
-				} else {
-					result.put(algo.getValue(), 0);
+		if (constraint != null) {
+			ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
+			if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
+				for (Algo algo : miniPublicKeySize.getAlgo()) {
+					Integer size = algo.getSize();
+					if (size != null) {
+						result.put(algo.getValue(), size);
+					} else {
+						result.put(algo.getValue(), 0);
+					}
 				}
 			}
 		}
@@ -77,19 +86,21 @@ public class CryptographicConstraintWrapper {
 	
 	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
 		TreeMap<Integer, Date> dates = new TreeMap<>();
-		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-		if (expirations == null) {
-			return null;
-		}
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-
-		for (Algo algo : expirations.getAlgo()) {
-			if (algo.getValue().equals(algoToSearch)) {
-				String expirationDate = algo.getDate();
-				try {
-					dates.put(algo.getSize(), dateFormat.parse(expirationDate));
-				} catch (ParseException e) {
-					LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+		if (constraint != null) {
+			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
+			if (expirations == null) {
+				return null;
+			}
+			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
+	
+			for (Algo algo : expirations.getAlgo()) {
+				if (algo.getValue().equals(algoToSearch)) {
+					String expirationDate = algo.getDate();
+					try {
+						dates.put(algo.getSize(), dateFormat.parse(expirationDate));
+					} catch (ParseException e) {
+						LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+					}
 				}
 			}
 		}
@@ -103,18 +114,20 @@ public class CryptographicConstraintWrapper {
 	}
 
 	public Date getDigestAlgorithmExpirationDate(String digestAlgoToSearch) {
-		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-		if(expirations == null)
-			return null;
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-
-		for (Algo algo : expirations.getAlgo()) {
-			if(algo.getValue().equals(digestAlgoToSearch)) {
-				String expirationDate = algo.getDate();
-				try {
-					return dateFormat.parse(expirationDate);
-				} catch (ParseException e) {
-					LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+		if (constraint != null) {
+			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
+			if(expirations == null)
+				return null;
+			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
+	
+			for (Algo algo : expirations.getAlgo()) {
+				if(algo.getValue().equals(digestAlgoToSearch)) {
+					String expirationDate = algo.getDate();
+					try {
+						return dateFormat.parse(expirationDate);
+					} catch (ParseException e) {
+						LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+					}
 				}
 			}
 		}
@@ -124,16 +137,18 @@ public class CryptographicConstraintWrapper {
 	
 	public Map<String, Date> getExpirationTimes() {
 		Map<String, Date> result = new HashMap<>();
-		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-		if (expirations != null && Utils.isCollectionNotEmpty(expirations.getAlgo())) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-			for (Algo algo : expirations.getAlgo()) {
-				String currentAlgo = algo.getValue();
-				String expirationDate = algo.getDate();
-				try {
-					result.put(currentAlgo, dateFormat.parse(expirationDate));
-				} catch (ParseException e) {
-					LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+		if (constraint != null) {
+			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
+			if (expirations != null && Utils.isCollectionNotEmpty(expirations.getAlgo())) {
+				SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
+				for (Algo algo : expirations.getAlgo()) {
+					String currentAlgo = algo.getValue();
+					String expirationDate = algo.getDate();
+					try {
+						result.put(currentAlgo, dateFormat.parse(expirationDate));
+					} catch (ParseException e) {
+						LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+					}
 				}
 			}
 		}
@@ -148,6 +163,10 @@ public class CryptographicConstraintWrapper {
 			}
 		}
 		return result;
+	}
+	
+	public CryptographicConstraint getConstraint() {
+		return constraint;
 	}
 
 }

@@ -50,6 +50,8 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFr
  * checking the revocation status of a certificate.
  */
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
+	
+	private final static MessageTag REVOC_POSITION = MessageTag.ACCM_POS_REVOC_SIG;
 
 	private final RevocationWrapper revocationData;
 	private final Date validationDate;
@@ -156,7 +158,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
 		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<>(i18nProvider, result, revocationData, MessageTag.ACCM_POS_REVOC_SIG, validationDate, cryptographicConstraint);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, REVOC_POSITION, validationDate, cryptographicConstraint);
 	}
 
 }

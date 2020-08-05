@@ -29,6 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -156,6 +157,41 @@ public class ValidationProcessUtils {
 			return MessageTag.ACCM_POS_CERT_CHAIN;
 		default:
 			throw new IllegalArgumentException("Unsupported context " + context);
+		}
+	}
+	
+	/**
+	 * Returns crypto possition MessageTag for the given XmlDigestMatcher
+	 * 
+	 * @param digestMatcher {@link XmlDigestMatcher} to get crypto position for
+	 * @return {@link MessageTag} position
+	 */
+	public static MessageTag getDigestMatcherCryptoPosition(XmlDigestMatcher digestMatcher) {
+		switch (digestMatcher.getType()) {
+		case OBJECT:
+		case REFERENCE:
+		case XPOINTER:
+			return MessageTag.ACCM_POS_REF;
+		case MANIFEST:
+			return MessageTag.ACCM_POS_MAN;
+		case MANIFEST_ENTRY:
+			return MessageTag.ACCM_POS_MAN_ENT;
+		case SIGNED_PROPERTIES:
+			return MessageTag.ACCM_POS_SIG_PRT;
+		case KEY_INFO:
+			return MessageTag.ACCM_POS_KEY;
+		case MESSAGE_DIGEST:
+			return MessageTag.ACCM_POS_MES_DIG;
+		case CONTENT_DIGEST:
+			return MessageTag.ACCM_POS_CON_DIG;
+		case JWS_SIGNING_INPUT_DIGEST:
+			return MessageTag.ACCM_POS_JWS;
+		case SIG_D_ENTRY:
+			return MessageTag.ACCM_POS_SIG_D_ENT;
+		case MESSAGE_IMPRINT:
+			return MessageTag.ACCM_POS_MESS_IMP;
+		default:
+			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
 		}
 	}
 

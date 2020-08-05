@@ -56,7 +56,7 @@ public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
 	}
 
 	protected ChainItem<XmlSAV> messageImprintCryptographic() {
-		return new MessageImprintCryptographicCheck(i18nProvider, result, digestAlgorithm, currentTime, constraint);
+		return new MessageImprintCryptographicCheck(i18nProvider, digestAlgorithm, result, currentTime, constraint);
 	}
 
 }

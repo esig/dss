@@ -181,10 +181,9 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
-		XmlBasicBuildingBlocks archiveTstBBB = detailedReport.getBasicBuildingBlockById(timestamp.getId());
-		assertNotNull(archiveTstBBB);
-		assertEquals(Indication.INDETERMINATE, archiveTstBBB.getConclusion().getIndication());
-		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, archiveTstBBB.getConclusion().getSubIndication());
+		
+		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(timestamp.getId()));
+		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getTimestampValidationSubIndication(timestamp.getId()));
 		
 	}
 	

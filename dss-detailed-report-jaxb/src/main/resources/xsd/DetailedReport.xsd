@@ -214,6 +214,11 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="CC"> <!-- Cryptographic Checker -->
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="CV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion" />
@@ -478,9 +483,10 @@
 	<xs:complexType name="CryptographicInformation">
 		<xs:sequence>
 			<xs:element name="Algorithm" type="xs:string" />
-			<xs:element name="KeyLength" type="xs:string" />
+			<xs:element name="KeyLength" type="xs:string" minOccurs="0" />
 			<xs:element name="Secure" type="xs:boolean" />
 			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="ConcernedMaterial" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	

@@ -308,7 +308,8 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
 
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-			if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
+			if (currentSignature != null && isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo) 
+					&& isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
 				indication = Indication.INDETERMINATE;
 				subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
 				return false;
@@ -327,6 +328,10 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		}
 
 		return true;
+	}
+	
+	private boolean isSignatureValueConcernedByFailure(SignatureWrapper currentSignature, XmlCryptographicInformation cryptographicInformation) {
+		return currentSignature.getId().equals(cryptographicInformation.getConcernedMaterial());
 	}
 
 	private boolean isThereValidContentTimestampAfterDate(SignatureWrapper currentSignature, Date date) {

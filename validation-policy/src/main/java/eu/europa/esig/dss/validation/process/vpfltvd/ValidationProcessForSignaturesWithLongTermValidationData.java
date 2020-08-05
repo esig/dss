@@ -48,6 +48,8 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -56,6 +58,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -63,6 +66,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
@@ -237,11 +241,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (isCryptoConstraintFailureNoPoe(bsConclusion)) {
 			
+			CryptographicConstraint signatureConstraint = policy.getSignatureCryptographicConstraint(currentContext);
+			
 			// check validity of Cryptographic Constraints for the Signature
-			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime.getTime()));
+			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(currentSignature, bestSignatureTime.getTime(), 
+					ValidationProcessUtils.getCryptoPosition(currentContext), signatureConstraint));
+			
+			for (XmlDigestMatcher digestMatcher : currentSignature.getDigestMatchers()) {
+				item = item.setNextItem(digestMatcherIsSecureAtPoeTime(digestMatcher, bestSignatureTime.getTime(), signatureConstraint));
+			}
 
 			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
-			item = certificateChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime());
+			item = certificateChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime(), currentContext);
 			
 			// check validity of revocation data
 			item = revocationDataReliableAtBestSignatureTime(item, revocationDataToUse, bestSignatureTime.getTime());
@@ -504,9 +515,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new TimestampDelayCheck(i18nProvider, result, currentSignature, bestSignatureTime, policy.getTimestampDelayConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> algorithmReliableAtBestSignatureTime(Date bestSignatureTime) {
-		return new CryptographicCheck<>(i18nProvider, result, currentSignature, MessageTag.ACCM_POS_SIG_SIG,
-				bestSignatureTime, policy.getSignatureCryptographicConstraint(Context.SIGNATURE));
+	private ChainItem<XmlValidationProcessLongTermData> tokenUsedAlgorithmsAreSecureAtPoeTime(TokenProxy currentToken, Date validationDate, 
+			MessageTag position, CryptographicConstraint constraint) {
+		return new CryptographicCheck<>(i18nProvider, result, currentToken,  position, validationDate, constraint);
+	}
+	
+	private ChainItem<XmlValidationProcessLongTermData> digestMatcherIsSecureAtPoeTime(XmlDigestMatcher digestMatcher, Date validationDate, 
+			CryptographicConstraint constraint) {
+		MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
+		return new DigestCryptographicCheck<>(i18nProvider, digestMatcher.getDigestMethod(), result, validationDate, position, constraint);
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
@@ -520,14 +537,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 * @param bestSignatureTime - {@link Date} to check cryptographic constraints validity
 	 * @return last established {@link ChainItem}
 	 */
-	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
+	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, 
+			Date bestSignatureTime, Context context) {
 		for (CertificateWrapper certificate : currentSignature.getCertificateChain()) {
 			if (certificate.isTrusted()) {
 				break;
 			}
 			SubContext subContext = currentSignature.getSigningCertificate().getId().equals(certificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
-			item = item.setNextItem(new CryptographicCheck<>(i18nProvider, result, certificate, MessageTag.ACCM_POS_CERT_CHAIN_SIG,
-					bestSignatureTime, policy.getCertificateCryptographicConstraint(Context.SIGNATURE, subContext)));
+			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(certificate, bestSignatureTime, 
+					ValidationProcessUtils.getCertificateChainCryptoPosition(context), policy.getCertificateCryptographicConstraint(context, subContext)));
 		}
 		
 		return item;
@@ -548,8 +566,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		if (!checkedTokenIds.contains(revocationData.getId()) && 
 				revocationBBB != null && isCryptoConstraintFailureNoPoe(revocationBBB.getConclusion())) {
 			
-			item = item.setNextItem(new CryptographicCheck<>(i18nProvider, result, revocationData,
-					MessageTag.ACCM_POS_REVOC_SIG, bestSignatureTime, policy.getSignatureCryptographicConstraint(Context.REVOCATION)));
+			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(revocationData, bestSignatureTime, 
+					ValidationProcessUtils.getCryptoPosition(Context.REVOCATION), policy.getSignatureCryptographicConstraint(Context.REVOCATION)));
 			
 			checkedTokenIds.add(revocationData.getId());
 			
@@ -561,8 +579,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 						SubContext subContext = revocationData.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
 								SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
 						
-						item = item.setNextItem(new CryptographicCheck<>(i18nProvider, result, certificateWrapper, MessageTag.ACCM_POS_CERT_CHAIN_REVOC,
-								bestSignatureTime, policy.getCertificateCryptographicConstraint(Context.REVOCATION, subContext)));
+						item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(certificateWrapper, bestSignatureTime, 
+								ValidationProcessUtils.getCertificateChainCryptoPosition(Context.REVOCATION), 
+								policy.getCertificateCryptographicConstraint(Context.REVOCATION, subContext)));
 						
 						if (subXCV.getRFC() != null && isCryptoConstraintFailureNoPoe(subXCV.getRFC().getConclusion())) {
 							RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(subXCV.getRFC().getId());

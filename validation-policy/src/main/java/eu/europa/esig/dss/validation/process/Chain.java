@@ -146,6 +146,8 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 
 	protected void collectErrorsWarnsInfos() {
 		XmlConclusion conclusion = result.getConclusion();
+		conclusion.getErrors().clear(); // avoid duplicates
+		
 		List<XmlConstraint> constraints = result.getConstraint();
 		for (XmlConstraint xmlConstraint : constraints) {
 			XmlName error = xmlConstraint.getError();

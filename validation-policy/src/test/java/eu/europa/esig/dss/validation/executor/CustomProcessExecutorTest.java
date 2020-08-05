@@ -67,6 +67,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -77,6 +78,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
@@ -1476,7 +1478,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlConstraint xmlConstraint = sav.getConstraint().get(0);
 		XmlName error = xmlConstraint.getError();
 		
-		assertEquals(MessageTag.ASCCM_ANS_6.name(), error.getNameId());
+		assertEquals(MessageTag.ASCCM_PKSK_ANS.name(), error.getNameId());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -2548,6 +2550,16 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(signatureDigestReference.getDigestMethod(), DigestAlgorithm.forXML(signatureReferenceType.getDigestMethod()));
 		assertTrue(Arrays.equals(signatureDigestReference.getDigestValue(), signatureReferenceType.getDigestValue()));
 		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(1, sav.getConclusion().getErrors().size());
+		
+		XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
+		assertEquals(SignatureAlgorithm.RSA_SHA1, SignatureAlgorithm.forXML(cryptographicInfo.getAlgorithm()));
+		assertEquals("2048", cryptographicInfo.getKeyLength());
+		
 		checkReports(reports);
 	}
 	
@@ -3247,6 +3259,129 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
 		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_XCV_AIA_PRES_ANS)));
+	}
+	
+	@Test
+	public void digestMatcherCryptoTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+		
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		List<XmlDigestMatcher> digestMatchers = xmlSignature.getDigestMatchers();
+		digestMatchers.get(1).setDigestMethod(DigestAlgorithm.SHA1);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		String tstId = detailedReport.getTimestampIds().get(0);
+		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(tstId));
+		
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(1, sav.getConclusion().getErrors().size());
+		
+		XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
+		assertEquals(DigestAlgorithm.SHA1, DigestAlgorithm.forXML(cryptographicInfo.getAlgorithm()));		
+		
+		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1, MessageTag.ACCM_POS_SIG_PRT)));
+	}
+	
+	@Test
+	public void tstDigestMatcherCryptoTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+		
+		XmlTimestamp xmlTimestamp = diagnosticData.getUsedTimestamps().get(0);
+		List<XmlDigestMatcher> digestMatchers = xmlTimestamp.getDigestMatchers();
+		digestMatchers.get(0).setDigestMethod(DigestAlgorithm.SHA1);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(xmlTimestamp.getId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getTimestampValidationSubIndication(xmlTimestamp.getId()));
+		
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(1, sav.getConclusion().getErrors().size());
+		
+		XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
+		assertEquals(DigestAlgorithm.SHA1, DigestAlgorithm.forXML(cryptographicInfo.getAlgorithm()));		
+		
+		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1, MessageTag.ACCM_POS_MESS_IMP)));
+	}
+	
+	@Test
+	public void messageDigestWithSha1WithTstTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/message-digest-sha1-with-tst.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+		
+		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void messageDigestWithSha1WithBrokenTstTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/message-digest-sha1-with-tst.xml"));
+		assertNotNull(diagnosticData);
+		
+		XmlTimestamp xmlTimestamp = diagnosticData.getUsedTimestamps().get(0);
+		xmlTimestamp.getBasicSignature().setSignatureIntact(false);
+		xmlTimestamp.getBasicSignature().setSignatureValid(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
 
 	@Test

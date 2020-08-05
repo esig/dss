@@ -41,12 +41,12 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
@@ -348,8 +348,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
-		return new CertificateCryptographicCheck(i18nProvider, result, certificate, ValidationProcessUtils.getCertificateChainCryptoPosition(context),
-				currentTime, cryptographicConstraint);
+		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
+
+		return new CryptographicCheck<>(i18nProvider, result, certificate, position, currentTime, cryptographicConstraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateQualified(CertificateWrapper certificate, SubContext subContext) {
