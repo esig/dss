@@ -1,0 +1,85 @@
+package eu.europa.esig.dss.jades.signature;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.jose4j.json.internal.json_simple.JSONObject;
+
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
+import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
+import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
+import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.validation.JWS;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignaturePolicy;
+
+public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
+
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");
+		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification(), "SpDocSpecification must be provided");
+		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getOid(), "OID for SpDocSpecification must be provided");
+		Objects.requireNonNull(signaturePolicyStore.getSignaturePolicyContent(), "Signature policy content must be provided");
+
+		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
+		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
+
+		if (jwsJsonSerializationObject == null || Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
+			throw new DSSException("There is no signature to extend!");
+		}
+
+		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
+			JAdESSignature jadesSignature = new JAdESSignature(signature);
+			extendSignature(jadesSignature, signaturePolicyStore);
+		}
+
+		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
+				jwsJsonSerializationObject.isFlattened() ? JWSSerializationType.FLATTENED_JSON_SERIALIZATION : JWSSerializationType.JSON_SERIALIZATION);
+		return new InMemoryDocument(generator.generate());
+	}
+
+	@SuppressWarnings("unchecked")
+	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore) {
+
+		// TODO refactor
+		jadesSignature.checkSignaturePolicy(null);
+
+		SignaturePolicy policyId = jadesSignature.getPolicyId();
+		if (policyId != null && policyId.getDigest() != null) {
+			Digest expectedDigest = policyId.getDigest();
+			byte[] computedDigest = Utils.fromBase64(signaturePolicyStore.getSignaturePolicyContent().getDigest(expectedDigest.getAlgorithm()));
+			if (Arrays.equals(expectedDigest.getValue(), computedDigest)) {
+
+				List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
+
+				Map<String, Object> sigPolicyStoreParams = new LinkedHashMap<>();
+				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SIG_POL_DOC,
+						Utils.toBase64(DSSUtils.toByteArray(signaturePolicyStore.getSignaturePolicyContent())));
+
+				JsonObject oidObject = JAdESUtils.getOidObject(signaturePolicyStore.getSpDocSpecification());
+				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SP_DSPEC, oidObject);
+
+				Map<String, Object> sigPolicyStoreMap = new HashMap<String, Object>();
+				sigPolicyStoreMap.put(JAdESHeaderParameterNames.SIG_PST, sigPolicyStoreParams);
+
+				JSONObject sigPolicyStoreItem = new JSONObject(sigPolicyStoreMap);
+				unsignedProperties.add(sigPolicyStoreItem);
+			}
+		}
+	}
+
+}

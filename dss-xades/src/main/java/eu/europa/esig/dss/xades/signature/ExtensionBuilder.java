@@ -70,8 +70,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedPropertiesType DOM object.
-	 *
-	 * @throws DSSException
 	 */
 	protected void ensureUnsignedProperties() {
 
@@ -99,8 +97,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedSignaturePropertiesType DOM object.
-	 *
-	 * @throws DSSException
 	 */
 	protected void ensureUnsignedSignatureProperties() {
 		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
@@ -120,8 +116,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 	/**
 	 * Returns or create (if it does not exist) the SignedDataObjectProperties DOM object.
-	 *
-	 * @throws DSSException
 	 */
 	protected void ensureSignedDataObjectProperties() {
 		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
