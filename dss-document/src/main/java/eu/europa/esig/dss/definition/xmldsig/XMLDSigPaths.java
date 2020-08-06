@@ -57,6 +57,11 @@ public class XMLDSigPaths extends AbstractPaths {
 	public static final String KEY_INFO_X509_CERTIFICATE_PATH = fromCurrentPosition(XMLDSigElement.KEY_INFO, XMLDSigElement.X509_DATA,
 			XMLDSigElement.X509_CERTIFICATE);
 
+	public static final String SIGNATURE_PROPERTIES_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.SIGNATURE_PROPERTIES);
+
+	public static final String SIGNATURE_PROPERTY_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.SIGNATURE_PROPERTIES,
+			XMLDSigElement.SIGNATURE_PROPERTY);
+
 	// ----------------------- For digest
 
 	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XMLDSigElement.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);

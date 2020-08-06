@@ -776,11 +776,25 @@ public final class DSSXMLUtils {
 	public static boolean isKeyInfoReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element element = DomUtils.getElement(signature, XMLDSigPaths.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
-		if (element != null) {
-			return true;
-		}
-		return false;
+		Element keyInfoElement = DomUtils.getElement(signature, XMLDSigPaths.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
+		return keyInfoElement != null;
+	}
+	
+	/**
+	 * Checks if the given reference is linked to a SignatureProperties element or one of its SignatureProperty children
+	 * 
+	 * @param reference
+	 *                  the {@link Reference} to check
+	 * @param signature
+	 *                  the {@link Element} signature the given reference belongs to
+	 * @return TRUE if the reference is a SignatureProperties reference, FALSE otherwise
+	 */
+	public static boolean isSignaturePropertiesReference(final Reference reference, final Element signature) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element signaturePropertiesElement = DomUtils.getElement(signature, XMLDSigPaths.SIGNATURE_PROPERTIES_PATH + DomUtils.getXPathByIdAttribute(uri));
+		Element signaturePropertyElement = DomUtils.getElement(signature, XMLDSigPaths.SIGNATURE_PROPERTY_PATH + DomUtils.getXPathByIdAttribute(uri));
+		return signaturePropertiesElement != null || signaturePropertyElement != null;
 	}
 	
 	/**

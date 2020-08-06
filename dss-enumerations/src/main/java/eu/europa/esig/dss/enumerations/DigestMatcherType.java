@@ -32,10 +32,13 @@ public enum DigestMatcherType {
 	MANIFEST, 
 
 	/** XAdES SignedProperties element */
-	SIGNED_PROPERTIES, 
+	SIGNED_PROPERTIES,
 	
 	/** XAdES KeyInfo element */
-	KEY_INFO, 
+	KEY_INFO,
+
+	/** XAdES SignatureProperties element */
+	SIGNATURE_PROPERTIES,
 
 	/** XAdES XPointer reference */
 	XPOINTER,

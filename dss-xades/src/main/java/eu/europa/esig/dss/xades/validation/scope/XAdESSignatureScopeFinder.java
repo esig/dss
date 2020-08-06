@@ -59,7 +59,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		List<ReferenceValidation> referenceValidations = xadesSignature.getReferenceValidations();
 		for (ReferenceValidation referenceValidation : referenceValidations) {
 			if (DigestMatcherType.SIGNED_PROPERTIES.equals(referenceValidation.getType()) || 
-					DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) ) {
+					DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) ||
+					DigestMatcherType.SIGNATURE_PROPERTIES.equals(referenceValidation.getType())) {
 				// not a subject for the Signature Scope
 				continue;
 			}
