@@ -56,12 +56,15 @@ public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 		
 		int manifestCounter = 0;
 		int manifestEntryCounter = 0;
+		int signaturePropertiesCounter = 0;
 		List<String> referenceNames = new ArrayList<>();
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.MANIFEST.equals(digestMatcher.getType())) {
 				manifestCounter++;
 			} else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
 				manifestEntryCounter++;
+			} else if (DigestMatcherType.SIGNATURE_PROPERTIES.equals(digestMatcher.getType())) {
+				signaturePropertiesCounter++;
 			}
 			assertTrue(digestMatcher.isDataFound());
 			assertTrue(digestMatcher.isDataIntact());
@@ -70,6 +73,7 @@ public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 		}
 		assertEquals(2, manifestCounter);
 		assertEquals(2, manifestEntryCounter);
+		assertEquals(1, signaturePropertiesCounter);
 	}
 	
 	@Override
@@ -79,7 +83,7 @@ public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(5, signatureScopes.size());
+		assertEquals(4, signatureScopes.size());
 		for (XmlSignatureScope signatureScope : signatureScopes) {
 			assertNotNull(signatureScope.getName());
 			assertNotNull(signatureScope.getDescription());
@@ -89,7 +93,7 @@ public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 			assertTrue(Utils.isCollectionNotEmpty(transformations));
 		}
 		
-		assertEquals(5, diagnosticData.getOriginalSignerDocuments().size());
+		assertEquals(4, diagnosticData.getOriginalSignerDocuments().size());
 	}
 
 }

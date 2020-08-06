@@ -822,6 +822,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
 						
+					} else if (isElementReference && DSSXMLUtils.isSignaturePropertiesReference(reference, currentSantuarioSignature.getElement())) {
+						validation.setType(DigestMatcherType.SIGNATURE_PROPERTIES);
+						found = true; // Id is verified inside "isSignaturePropertiesReference" method
+						
 					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found && (noDuplicateIdFound && (disableXSWProtection || findObjectById(uri)));
