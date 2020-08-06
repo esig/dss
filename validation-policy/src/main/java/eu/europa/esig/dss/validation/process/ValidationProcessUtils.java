@@ -177,9 +177,11 @@ public class ValidationProcessUtils {
 		case MANIFEST_ENTRY:
 			return MessageTag.ACCM_POS_MAN_ENT;
 		case SIGNED_PROPERTIES:
-			return MessageTag.ACCM_POS_SIG_PRT;
+			return MessageTag.ACCM_POS_SIGND_PRT;
 		case KEY_INFO:
 			return MessageTag.ACCM_POS_KEY;
+		case SIGNATURE_PROPERTIES:
+			return MessageTag.ACCM_POS_SIGNTR_PRT;
 		case MESSAGE_DIGEST:
 			return MessageTag.ACCM_POS_MES_DIG;
 		case CONTENT_DIGEST:
