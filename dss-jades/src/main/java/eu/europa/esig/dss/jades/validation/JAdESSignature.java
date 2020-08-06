@@ -179,7 +179,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					if (Utils.isStringNotEmpty(sigPolDocBase64)) {
 						policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
 					}
-					Map<?, ?> spDocSpecificationMap = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.SP_DSPEC);
+					Map<?, ?> spDocSpecificationMap = (Map<?, ?>) sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
 					if (Utils.isMapNotEmpty(spDocSpecificationMap)) {
 						String oid = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
 						String description = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.DESC);

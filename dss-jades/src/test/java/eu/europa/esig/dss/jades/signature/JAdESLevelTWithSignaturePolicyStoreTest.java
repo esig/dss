@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +34,6 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
 	private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
-	private static final String SIGNATURE_POLICY_DOCUMENTATION = "Test documentation";
 	private static final DSSDocument SIGNATURE_POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
 
 	private JAdESService service;
@@ -80,17 +78,10 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 		signaturePolicyStore.setSignaturePolicyContent(SIGNATURE_POLICY_CONTENT);
-		String[] documentationReferences = new String[] { SIGNATURE_POLICY_DOCUMENTATION };
+		String[] documentationReferences = new String[] { "http://docref.com/ref1", "http://docref.com/ref2" };
 		SpDocSpecification spDocSpec = new SpDocSpecification(SIGNATURE_POLICY_ID, SIGNATURE_POLICY_DESCRIPTION, documentationReferences);
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(new InMemoryDocument(byteArray), signaturePolicyStore);
-
-		try {
-			signedDocumentWithSignaturePolicyStore.save("target/test.json");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		verify(signedDocumentWithSignaturePolicyStore);
 
