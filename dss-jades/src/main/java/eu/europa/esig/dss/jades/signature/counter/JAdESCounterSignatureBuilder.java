@@ -6,6 +6,7 @@ import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.lang.JoseException;
 
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
@@ -55,7 +56,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		
 		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 		
-		addCSig(unsignedProperties, counterSignature, parameters);
+		addCSig(unsignedProperties, counterSignature, parameters.getJwsSerializationType());
 		
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject, 
 				jwsJsonSerializationObject.getJWSSerializationType());
@@ -63,13 +64,13 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void addCSig(List<Object> unsignedProperties, DSSDocument counterSignature, JAdESCounterSignatureParameters parameters) {
+	private void addCSig(List<Object> unsignedProperties, DSSDocument counterSignature, JWSSerializationType jwsSerializationType) {
 		JSONObject cSigItem = new JSONObject();
 		
 		String signatureString = new String(DSSUtils.toByteArray(counterSignature));
 		
 		Object cSig;
-		switch (parameters.getJwsSerializationType()) {
+		switch (jwsSerializationType) {
 			case COMPACT_SERIALIZATION:
 				cSig = signatureString;
 				break;
@@ -82,7 +83,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				break;
 			default:
 				throw new DSSException(String.format("The JWSSerializarionType '%s' is not supported for a Counter Signature!", 
-						parameters.getJwsSerializationType()));
+						jwsSerializationType));
 		}
 		cSigItem.put(JAdESHeaderParameterNames.C_SIG, cSig);
 		unsignedProperties.add(cSigItem);

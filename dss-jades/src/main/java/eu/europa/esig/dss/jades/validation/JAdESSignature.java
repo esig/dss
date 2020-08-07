@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
+import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
@@ -327,17 +329,34 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					}
 					
 				} else if (cSigObject instanceof Map<?, ?>) {
-					Map<String, ?> cSigMap = (Map<String, ?>) cSigObject;
+					Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;
+					Map<String, Object> unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
+					if (unprotected == null) {
+						// required for nested counter signature creation
+						unprotected = new HashMap<String, Object>();
+						cSigMap.put(JWSConstants.HEADER, unprotected);
+					}
+					
 					String jsonString = JsonUtil.toJson(cSigMap);
 					JWSJsonSerializationParser parser = new JWSJsonSerializationParser(new InMemoryDocument(jsonString.getBytes()));
 					if (parser.isSupported()) {
 						JWSJsonSerializationObject jsonSerializationObject = parser.parse();
+						/*
+						 * 5.3.2 The cSig (counter signature) JSON object
+						 * 
+						 * The cSig JSON object shall contain one counter signature of the JAdES signature where cSig is incorporated.
+						 */
 						List<JWS> jwsSignatures = jsonSerializationObject.getSignatures();
 						if (LOG.isDebugEnabled()) {
-							LOG.debug("{} JWS Serialization counter signature(s) found.", jwsSignatures.size());
+							LOG.debug("A JWS Compact counter signature found.");
 						}
-						for (JWS jws : jwsSignatures) {
+						if (jwsSignatures.size() == 1) {
+							JWS jws = jwsSignatures.iterator().next(); // only one is considered
+							jws.setUnprotected(unprotected);
 							jadesList.add(new JAdESSignature(jws));
+						} else {
+							LOG.warn("{} counter signatures found in 'cSig' element. Only one is allowed!", 
+									jwsSignatures.size());
 						}
 					}
 					

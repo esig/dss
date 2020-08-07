@@ -31,26 +31,24 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 		
 		List<AdvancedSignature> signatures = getSignatures();
-		List<DSSDocument> result = getOriginalDocumentsFromListOfSignatures(signatures, signatureId);
-		if (Utils.isCollectionEmpty(result)) {
-			for (AdvancedSignature advancedSignature : signatures) {
-				result = getOriginalDocumentsFromListOfSignatures(advancedSignature.getCounterSignatures(), signatureId);
-				if (Utils.isCollectionNotEmpty(result)) {
-					break;
+		JAdESSignature signatureById = getSignatureById(signatures, signatureId);
+		return signatureById.getOriginalDocuments();
+	}
+	
+	private JAdESSignature getSignatureById(List<AdvancedSignature> signatures, String signatureId) {
+		for (AdvancedSignature signature : signatures) {
+			if (signatureId.equals(signature.getId())) {
+				return (JAdESSignature) signature;
+			}
+			List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+			if (Utils.isCollectionNotEmpty(counterSignatures)) {
+				JAdESSignature counterSignature = getSignatureById(counterSignatures, signatureId);
+				if (counterSignature != null) {
+					return counterSignature;
 				}
 			}
 		}
-		return result;
-	}
-	
-	private List<DSSDocument> getOriginalDocumentsFromListOfSignatures(List<AdvancedSignature> signatureList, String signatureId) {
-		for (AdvancedSignature signature : signatureList) {
-			final JAdESSignature jadesSignature = (JAdESSignature) signature;
-			if (signatureId.equals(jadesSignature.getId())) {
-				return jadesSignature.getOriginalDocuments();
-			}
-		}
-		return Collections.emptyList();
+		return null;
 	}
 
 	@Override
