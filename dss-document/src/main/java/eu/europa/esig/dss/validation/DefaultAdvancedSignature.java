@@ -254,13 +254,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return getCertificateSource().getCandidatesForSigningCertificate(signingCertificateSource);
 	}
 
-	/**
-	 * This method prepares an offline CertificateVerifier. The instance is used to
-	 * know if all required revocation data are present
-	 * 
-	 * @param certificateVerifier the configured CertificateVerifier with all
-	 *                            external sources
-	 */
+	@Override
 	public void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		offlineCertificateVerifier = new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
 	}

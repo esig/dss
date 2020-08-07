@@ -2,12 +2,14 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
+import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
+import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -163,43 +168,33 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@SuppressWarnings("unchecked")
 	@Override
 	public SignaturePolicyStore getSignaturePolicyStore() {
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
-		if (Utils.isCollectionEmpty(etsiU)) {
-			return null;
-		}
-
-		for (Object item : etsiU) {
-			if (item instanceof Map) {
-				Map<?, ?> jsonObject = (Map<?, ?>) item;
-				Map<?, ?> sigPStMap = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.SIG_PST);
-				if (Utils.isMapNotEmpty(sigPStMap)) {
-					SpDocSpecification spDocSpecification = null;
-					DSSDocument policyContent = null;
-					String sigPolDocBase64 = (String) sigPStMap.get(JAdESHeaderParameterNames.SIG_POL_DOC);
-					if (Utils.isStringNotEmpty(sigPolDocBase64)) {
-						policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
-					}
-					Map<?, ?> spDocSpecificationMap = (Map<?, ?>) sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
-					if (Utils.isMapNotEmpty(spDocSpecificationMap)) {
-						String oid = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
-						String description = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.DESC);
-						String[] documentationReferences = null;
-
-						List<String> docRefs = (List<String>) spDocSpecificationMap.get(JAdESHeaderParameterNames.DOC_REFS);
-						if (Utils.isCollectionNotEmpty(docRefs)) {
-							documentationReferences = new String[docRefs.size()];
-							docRefs.toArray(documentationReferences);
-						}
-
-						spDocSpecification = new SpDocSpecification(oid, description, documentationReferences);
-					}
-
-					SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-					signaturePolicyStore.setSignaturePolicyContent(policyContent);
-					signaturePolicyStore.setSpDocSpecification(spDocSpecification);
-					return signaturePolicyStore;
-				}
+		Map<?, ?> sigPStMap = (Map<?, ?>) getUnsignedProperty(JAdESHeaderParameterNames.SIG_PST);
+		if (Utils.isMapNotEmpty(sigPStMap)) {
+			SpDocSpecification spDocSpecification = null;
+			DSSDocument policyContent = null;
+			String sigPolDocBase64 = (String) sigPStMap.get(JAdESHeaderParameterNames.SIG_POL_DOC);
+			if (Utils.isStringNotEmpty(sigPolDocBase64)) {
+				policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
 			}
+			Map<?, ?> spDocSpecificationMap = (Map<?, ?>) sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+			if (Utils.isMapNotEmpty(spDocSpecificationMap)) {
+				String oid = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
+				String description = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.DESC);
+				String[] documentationReferences = null;
+
+				List<String> docRefs = (List<String>) spDocSpecificationMap.get(JAdESHeaderParameterNames.DOC_REFS);
+				if (Utils.isCollectionNotEmpty(docRefs)) {
+					documentationReferences = new String[docRefs.size()];
+					docRefs.toArray(documentationReferences);
+				}
+
+				spDocSpecification = new SpDocSpecification(oid, description, documentationReferences);
+			}
+
+			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+			signaturePolicyStore.setSignaturePolicyContent(policyContent);
+			signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+			return signaturePolicyStore;
 		}
 		return null;
 	}
@@ -303,8 +298,56 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		// not supported
-		return Collections.emptyList();
+		List<AdvancedSignature> jadesList = extractCounterSignatures();
+		for (AdvancedSignature signature : jadesList) {
+			signature.setMasterSignature(this);
+			signature.setDetachedContents(Arrays.asList(new InMemoryDocument(getSignatureValue())));
+		}
+		return jadesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<AdvancedSignature> extractCounterSignatures() {
+		List<AdvancedSignature> jadesList = new ArrayList<>();
+		
+		List<Object> cSigObjects = getUnsignedProperties(JAdESHeaderParameterNames.C_SIG);
+		if (Utils.isCollectionNotEmpty(cSigObjects)) {
+			for (Object cSigObject : cSigObjects) {
+				if (cSigObject instanceof String) {
+					String cSigString = (String) cSigObject;
+					JWSCompactSerializationParser parser = new JWSCompactSerializationParser(new InMemoryDocument(cSigString.getBytes()));
+					if (parser.isSupported()) {
+						JWS jws = parser.parse();
+						if (jws != null) {
+							if (LOG.isDebugEnabled()) {
+								LOG.debug("A JWS Compact counter signature found.");
+							}
+							jadesList.add(new JAdESSignature(jws));
+						}
+					}
+					
+				} else if (cSigObject instanceof Map<?, ?>) {
+					Map<String, ?> cSigMap = (Map<String, ?>) cSigObject;
+					String jsonString = JsonUtil.toJson(cSigMap);
+					JWSJsonSerializationParser parser = new JWSJsonSerializationParser(new InMemoryDocument(jsonString.getBytes()));
+					if (parser.isSupported()) {
+						JWSJsonSerializationObject jsonSerializationObject = parser.parse();
+						List<JWS> jwsSignatures = jsonSerializationObject.getSignatures();
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("{} JWS Serialization counter signature(s) found.", jwsSignatures.size());
+						}
+						for (JWS jws : jwsSignatures) {
+							jadesList.add(new JAdESSignature(jws));
+						}
+					}
+					
+				} else {
+					LOG.warn("Unsupported entry of type 'cSig' found! Class : {}. The entry is skipped", cSigObject.getClass());
+				}
+			}
+		}
+		
+		return jadesList;
 	}
 
 	@Override
@@ -753,6 +796,36 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
 				computedDigest, document.getName(), expectedDigest);
 		return false;
+	}
+	
+	private Object getUnsignedProperty(String headerName) {
+		List<Object> unsignedProperties = getUnsignedProperties(headerName);
+		if (Utils.isCollectionNotEmpty(unsignedProperties)) {
+			// return the first occurrence
+			return unsignedProperties.iterator().next();
+		}
+		return null;
+	}
+	
+	private List<Object> getUnsignedProperties(String headerName) {
+		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		if (Utils.isCollectionEmpty(etsiU)) {
+			return Collections.emptyList();
+		}
+		
+		List<Object> objects = new ArrayList<>();
+		
+		for (Object item : etsiU) {
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
+				Object object = jsonObject.get(headerName);
+				if (object != null) {
+					objects.add(object);
+				}
+			}
+		}
+		
+		return objects;
 	}
 
 	public List<DSSDocument> getOriginalDocuments() {

@@ -656,7 +656,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final List<AdvancedSignature> allSignatureList = new ArrayList<>();
 		for (final AdvancedSignature signature : getSignatures()) {
 			allSignatureList.add(signature);
-			allSignatureList.addAll(signature.getCounterSignatures());			
+			appendCounterSignatures(allSignatureList, signature);
 		}
 		
 		// Signature Scope must be processed before in order to properly initialize content timestamps
@@ -664,6 +664,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		findSignatureScopes(allSignatureList);
 		
 		return allSignatureList;
+	}
+	
+	private void appendCounterSignatures(final List<AdvancedSignature> allSignatureList, final AdvancedSignature signature) {
+		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+			counterSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+			allSignatureList.add(counterSignature);
+			
+			appendCounterSignatures(allSignatureList, counterSignature);
+		}
 	}
 	
 	@Override

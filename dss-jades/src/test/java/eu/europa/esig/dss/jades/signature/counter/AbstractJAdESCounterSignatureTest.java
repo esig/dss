@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jades.signature;
+package eu.europa.esig.dss.jades.signature.counter;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,7 +29,7 @@ import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.test.signature.counter.AbstractCounterSignatureTest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -38,7 +38,8 @@ import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
+public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterSignatureTest<JAdESSignatureParameters, 
+				JAdESTimestampParameters, JAdESCounterSignatureParameters> {
 
 	@Override
 	protected List<DSSDocument> getOriginalDocuments() {
@@ -54,13 +55,6 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 
 			JWS jws = jadesSignature.getJws();
-			
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
-			if (SignatureLevel.JAdES_BASELINE_B.equals(getSignatureParameters().getSignatureLevel())) {
-				assertTrue(Utils.isCollectionEmpty(etsiU));
-			} else {
-				assertTrue(Utils.isCollectionNotEmpty(etsiU));
-			}
 			
 			try {
 				Headers headers = jws.getHeaders();
@@ -143,6 +137,11 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 
 			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+			
+			SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
+			if (signature.isCounterSignature()) {
+				continue;
+			}
 			
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
 			for (DSSDocument original : originalDocuments) {

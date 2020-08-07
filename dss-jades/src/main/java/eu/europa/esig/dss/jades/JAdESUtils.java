@@ -86,6 +86,21 @@ public class JAdESUtils {
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	
 	/**
+	 * Copied from org.jose4j.base64url.internal.apache.commons.codec.binary.Base64
+	 * 
+     * This is a copy of the STANDARD_ENCODE_TABLE above, but with + and /
+     * changed to - and _ to make the encoded Base64 results more URL-SAFE.
+     * This table is only used when the Base64's mode is set to URL-SAFE.
+     */
+    private static final byte[] URL_SAFE_ENCODE_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
+    };
+	
+	/**
 	 * Contains header names that are supported to be present in the critical attribute
 	 */
 	private static final Set<String> criticalHeaders;
@@ -201,6 +216,21 @@ public class JAdESUtils {
 	 */
 	public static boolean isUrlSafe(byte b) {
 		return 0x1f < b && b < 0x2e || 0x2e < b && b < 0x7f;
+	}
+	
+	/**
+	 * Checks if the byte is Base64Url encoded
+	 * 
+	 * @param b a byte to check
+	 * @return TRUE if the byte is Base64Url encoded, FALSE otherwise
+	 */
+	public static boolean isBase64UrlEncoded(byte b) {
+		for (byte m : URL_SAFE_ENCODE_TABLE) {
+			if (b == m) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

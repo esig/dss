@@ -27,6 +27,7 @@ public class JWSJsonSerializationGenerator {
 		this.output = output;
 	}
 
+	// TODO : change the returning type to DSSDocument
 	public byte[] generate() {
 
 		JsonObject jsonSerialization;
@@ -45,7 +46,7 @@ public class JWSJsonSerializationGenerator {
 	}
 
 	private JsonObject buildJWSJsonSerialization() {
-		if (jwsJsonSerializationObject.isFlattened()) {
+		if (JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
 			LOG.warn("A flattened signature will be transformed to a Complete JWS JSON Serialization Format!");
 		}
 

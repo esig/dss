@@ -8,6 +8,7 @@ import java.util.Map;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -32,6 +33,11 @@ public class JWSJsonSerializationParser {
 		this.document = document;
 	}
 	
+	/**
+	 * Parses the provided document and returns JWSJsonSerializationObject if applicable
+	 * 
+	 * @return {@link JWSJsonSerializationObject}
+	 */
 	public JWSJsonSerializationObject parse() {
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(document)));
@@ -49,13 +55,14 @@ public class JWSJsonSerializationParser {
 			// try to extract complete JWS JSON Serialization signatures
 			Object signaturesObject = rootStructure.get(JWSConstants.SIGNATURES);
 			if (signaturesObject != null) {
+				jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 				checkForAllowedElements(jwsJsonSerializationObject, rootStructure, 
 						JWSConstants.PAYLOAD, JWSConstants.SIGNATURES);
 				
 				extractSignatures(jwsJsonSerializationObject, signaturesObject);
 			} else {
 				// otherwise extract flattened JWS JSON Serialization signature
-				jwsJsonSerializationObject.setFlattened(true);
+				jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 				
 				checkForAllowedElements(jwsJsonSerializationObject, rootStructure, 
 						JWSConstants.PAYLOAD, JWSConstants.SIGNATURE, JWSConstants.HEADER, JWSConstants.PROTECTED);
@@ -69,6 +76,15 @@ public class JWSJsonSerializationParser {
 			throw new DSSException(String.format("Unable to parse document with name '%s'. "
 					+ "Reason : %s", document.getName(), e.getMessage()), e);
 		}
+	}
+	
+	/**
+	 * Verifies if the given document is supported by the parser
+	 * 
+	 * @return TRUE of the document is supported and can be parsed, FALSE otherwise
+	 */
+	public boolean isSupported() {
+		return JAdESUtils.isJsonDocument(document);
 	}
 
 	@SuppressWarnings("unchecked")

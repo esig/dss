@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.HTTPHeader;
@@ -20,6 +21,8 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
+import eu.europa.esig.dss.jades.signature.counter.JAdESCounterSignatureBuilder;
+import eu.europa.esig.dss.jades.signature.counter.JAdESCounterSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -32,13 +35,15 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.signature.counter.CounterSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class JAdESService extends AbstractSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> implements 
-					MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
+					MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters>,
+					CounterSignatureService<JAdESCounterSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESService.class);
 
@@ -132,6 +137,10 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
 		if (!SignaturePackaging.DETACHED.equals(signaturePackaging) && toSignDocuments.size() > 1) {
 			throw new DSSException("Not supported operation (only DETACHED are allowed for multiple document signing)!");
+		}
+		if (SignaturePackaging.DETACHED.equals(signaturePackaging) && SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism()) 
+				&& toSignDocuments.size() > 1) {
+			throw new DSSException("NO_SIG_D mechanism is not allowed for multiple documents!");
 		}
 	}
 
@@ -238,6 +247,37 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(document, "The document cannot be null");
 		JAdESSignaturePolicyStoreBuilder builder = new JAdESSignaturePolicyStoreBuilder();
 		return builder.addSignaturePolicyStore(document, signaturePolicyStore);
+	}
+
+	@Override
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		
+		JAdESCounterSignatureBuilder counterSignatureBuilder = new JAdESCounterSignatureBuilder();
+		DSSDocument signatureValueToSign = counterSignatureBuilder.getSignatureValueToBeSigned(signatureDocument, parameters);
+		
+		return getDataToSign(signatureValueToSign, parameters);
+	}
+
+	@Override
+	public DSSDocument counterSignSignature(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+
+		JAdESCounterSignatureBuilder counterSignatureBuilder = new JAdESCounterSignatureBuilder();
+		DSSDocument signatureValueToSign = counterSignatureBuilder.getSignatureValueToBeSigned(signatureDocument, parameters);
+		
+		DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
+		
+		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
+		
+		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.SIGN,
+				parameters.getSignatureLevel()));
+		counterSigned.setMimeType(signatureDocument.getMimeType());
+		
+		return counterSigned;
 	}
 
 }

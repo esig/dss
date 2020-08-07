@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -28,7 +29,22 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) {
 		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-		for (AdvancedSignature signature : getSignatures()) {
+		
+		List<AdvancedSignature> signatures = getSignatures();
+		List<DSSDocument> result = getOriginalDocumentsFromListOfSignatures(signatures, signatureId);
+		if (Utils.isCollectionEmpty(result)) {
+			for (AdvancedSignature advancedSignature : signatures) {
+				result = getOriginalDocumentsFromListOfSignatures(advancedSignature.getCounterSignatures(), signatureId);
+				if (Utils.isCollectionNotEmpty(result)) {
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	private List<DSSDocument> getOriginalDocumentsFromListOfSignatures(List<AdvancedSignature> signatureList, String signatureId) {
+		for (AdvancedSignature signature : signatureList) {
 			final JAdESSignature jadesSignature = (JAdESSignature) signature;
 			if (signatureId.equals(jadesSignature.getId())) {
 				return jadesSignature.getOriginalDocuments();

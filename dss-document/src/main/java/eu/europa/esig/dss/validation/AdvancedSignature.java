@@ -216,6 +216,15 @@ public interface AdvancedSignature extends Serializable {
 	 * @return
 	 */
 	CandidatesForSigningCertificate getCandidatesForSigningCertificate();
+	
+	/**
+	 * This method prepares an offline CertificateVerifier. The instance is used to
+	 * know if all required revocation data are present
+	 * 
+	 * @param certificateVerifier the configured CertificateVerifier with all
+	 *                            external sources
+	 */
+	void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier);
 
 	/**
 	 * This setter allows to indicate the master signature. It means that this is a countersignature.

@@ -525,6 +525,9 @@ public class JAdESLevelBaselineB {
 					// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
 					sigDParams = getSigDForObjectIdByUriHashMechanism(documentsToSign);
 					break;
+				case NO_SIG_D:
+					// do not incorporate the SigD
+					return;
 				default:
 					throw new DSSException(String.format("The 'sigD' mechanism '%s' is not supported!", parameters.getSigDMechanism()));
 			}
@@ -534,9 +537,11 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private void assertDetachedContentValid() {
-		for (DSSDocument document : documentsToSign) {
-			if (Utils.isStringEmpty(document.getName())) {
-				throw new DSSException("The signed document must have names for a detached signature!");
+		if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
+			for (DSSDocument document : documentsToSign) {
+				if (Utils.isStringEmpty(document.getName())) {
+					throw new DSSException("The signed document must have names for a detached signature!");
+				}
 			}
 		}
 	}
@@ -663,7 +668,8 @@ public class JAdESLevelBaselineB {
 	 * @return payload byte array
 	 */
 	public byte[] getPayloadBytes() {
-		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) ||
+				SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
 			return DSSUtils.toByteArray(documentsToSign.get(0));
 		} else if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
 			return getPayloadForHttpHeadersMechanism();
