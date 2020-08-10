@@ -68,7 +68,7 @@ public class JAdESNestedCounterSignatureTest extends AbstractJAdESTestValidation
 				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
-		counterSignedSignature.save("target/counterSignedSignature.json");
+		// counterSignedSignature.save("target/counterSignedSignature.json");
 		
 		SignedDocumentValidator validator = getValidator(counterSignedSignature);
 		
@@ -91,7 +91,7 @@ public class JAdESNestedCounterSignatureTest extends AbstractJAdESTestValidation
 				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument nestedCounterSignedSignature = service.counterSignSignature(counterSignedSignature, counterSignatureParameters, signatureValue);
 		
-		nestedCounterSignedSignature.save("target/nestedCounterSignature.json");
+		// nestedCounterSignedSignature.save("target/nestedCounterSignature.json");
 		
 		validator = getValidator(nestedCounterSignedSignature);
 		

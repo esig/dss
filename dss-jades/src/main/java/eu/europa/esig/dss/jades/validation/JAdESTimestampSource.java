@@ -363,6 +363,27 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		return new JAdESTimestampDataBuilder(signature);
 	}
 	
+	@Override
+	protected List<TimestampedReference> getCounterSignatureReferences(JAdESAttribute unsignedAttribute) {
+		List<TimestampedReference> cSigReferences = new ArrayList<>();
+		
+		Object cSig = unsignedAttribute.getValue();
+		if (cSig != null) {
+			JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSig, false);
+			if (counterSignature != null) {
+				cSigReferences.add(new TimestampedReference(counterSignature.getId(), TimestampedObjectType.SIGNATURE));
+				addReferences(cSigReferences, createReferencesForCertificates(counterSignature.getCertificateSource().getCertificates()));
+	
+				JAdESTimestampSource timestampSource = counterSignature.getTimestampSource();
+				addReferences(cSigReferences, timestampSource.getAllSignedDataReferences());
+				addReferences(cSigReferences, timestampSource.getEncapsulatedReferences());
+				addReferencesFromPreviousTimestamps(cSigReferences, timestampSource.getAllTimestamps());
+			}
+		}
+		
+		return cSigReferences;
+	}
+	
 	/**
 	 * Returns concatenated data for an ArchiveTimestamp
 	 * 

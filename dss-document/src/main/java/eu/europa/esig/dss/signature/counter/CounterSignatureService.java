@@ -17,7 +17,7 @@ public interface CounterSignatureService<CSP extends SerializableCounterSignatur
 	 * Retrieves the bytes of the data that need to be counter signed from {@code signatureDocument}.
 	 * {@code signatureDocument} shall be a valid signature of the same type
 	 * 
-	 * @param signature 
+	 * @param signatureDocument 
 	 *           {@link DSSDocument} representing the original signature to be counter signed
 	 * @param parameters
 	 *            set of the driving signing parameters for a counter signature

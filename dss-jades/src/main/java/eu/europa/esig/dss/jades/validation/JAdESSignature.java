@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +25,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
-import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
-import eu.europa.esig.dss.jades.JWSConstants;
-import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -308,60 +302,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return jadesList;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private List<AdvancedSignature> extractCounterSignatures() {
 		List<AdvancedSignature> jadesList = new ArrayList<>();
 		
-		List<Object> cSigObjects = getUnsignedProperties(JAdESHeaderParameterNames.C_SIG);
+		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (Object cSigObject : cSigObjects) {
-				if (cSigObject instanceof String) {
-					String cSigString = (String) cSigObject;
-					JWSCompactSerializationParser parser = new JWSCompactSerializationParser(new InMemoryDocument(cSigString.getBytes()));
-					if (parser.isSupported()) {
-						JWS jws = parser.parse();
-						if (jws != null) {
-							if (LOG.isDebugEnabled()) {
-								LOG.debug("A JWS Compact counter signature found.");
-							}
-							jadesList.add(new JAdESSignature(jws));
-						}
-					}
-					
-				} else if (cSigObject instanceof Map<?, ?>) {
-					Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;
-					Map<String, Object> unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
-					if (unprotected == null) {
-						// required for nested counter signature creation
-						unprotected = new HashMap<String, Object>();
-						cSigMap.put(JWSConstants.HEADER, unprotected);
-					}
-					
-					String jsonString = JsonUtil.toJson(cSigMap);
-					JWSJsonSerializationParser parser = new JWSJsonSerializationParser(new InMemoryDocument(jsonString.getBytes()));
-					if (parser.isSupported()) {
-						JWSJsonSerializationObject jsonSerializationObject = parser.parse();
-						/*
-						 * 5.3.2 The cSig (counter signature) JSON object
-						 * 
-						 * The cSig JSON object shall contain one counter signature of the JAdES signature where cSig is incorporated.
-						 */
-						List<JWS> jwsSignatures = jsonSerializationObject.getSignatures();
-						if (LOG.isDebugEnabled()) {
-							LOG.debug("A JWS Compact counter signature found.");
-						}
-						if (jwsSignatures.size() == 1) {
-							JWS jws = jwsSignatures.iterator().next(); // only one is considered
-							jws.setUnprotected(unprotected);
-							jadesList.add(new JAdESSignature(jws));
-						} else {
-							LOG.warn("{} counter signatures found in 'cSig' element. Only one is allowed!", 
-									jwsSignatures.size());
-						}
-					}
-					
-				} else {
-					LOG.warn("Unsupported entry of type 'cSig' found! Class : {}. The entry is skipped", cSigObject.getClass());
+				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, false);
+				if (counterSignature != null) {
+					jadesList.add(counterSignature);
 				}
 			}
 		}
@@ -818,33 +767,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private Object getUnsignedProperty(String headerName) {
-		List<Object> unsignedProperties = getUnsignedProperties(headerName);
+		List<Object> unsignedProperties = JAdESUtils.getUnsignedProperties(jws, headerName);
 		if (Utils.isCollectionNotEmpty(unsignedProperties)) {
 			// return the first occurrence
 			return unsignedProperties.iterator().next();
 		}
 		return null;
-	}
-	
-	private List<Object> getUnsignedProperties(String headerName) {
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
-		if (Utils.isCollectionEmpty(etsiU)) {
-			return Collections.emptyList();
-		}
-		
-		List<Object> objects = new ArrayList<>();
-		
-		for (Object item : etsiU) {
-			if (item instanceof Map) {
-				Map<?, ?> jsonObject = (Map<?, ?>) item;
-				Object object = jsonObject.get(headerName);
-				if (object != null) {
-					objects.add(object);
-				}
-			}
-		}
-		
-		return objects;
 	}
 
 	public List<DSSDocument> getOriginalDocuments() {

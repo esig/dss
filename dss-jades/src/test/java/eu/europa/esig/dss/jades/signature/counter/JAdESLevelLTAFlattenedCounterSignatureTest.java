@@ -13,9 +13,11 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
@@ -132,6 +134,28 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertEquals(SignatureLevel.JAdES_BASELINE_LTA, signatureWrapper.getSignatureFormat());
 		}
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(4, diagnosticData.getTimestampList().size());
+		
+		int sigTstCounter = 0;
+		int arcTstCounter = 0;
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
+			
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				++sigTstCounter;
+			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				++arcTstCounter;
+			}
+		}
+		assertEquals(2, sigTstCounter);
+		assertEquals(2, arcTstCounter);
 	}
 
 	@Override

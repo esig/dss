@@ -90,7 +90,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		final PdfSignatureDictionaryComparator revisionComparator = new PdfSignatureDictionaryComparator();
 		
 		// store all found references
-		List<TimestampedReference> references = new ArrayList<>();
+		encapsulatedReferences = new ArrayList<>();
 		
 		for (final PdfRevision pdfRevision : documentRevisions) {
 			
@@ -112,15 +112,15 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					if (Utils.isCollectionEmpty(cadesSignatureTimestamps)) {
 						addReferences(individualTimestampReferences, getSignatureTimestampReferences());
 					}
-					addReferences(individualTimestampReferences, references); // add all stored references from previous revisions
+					addReferences(individualTimestampReferences, encapsulatedReferences); // add all stored references from previous revisions
 					addReferencesFromPreviousTimestamps(individualTimestampReferences, timestampedTimestamps);
 					
 					final TimestampCertificateSource timestampCertificateSource = timestampToken.getCertificateSource();
 					certificateSource.add(timestampCertificateSource);
 					
-					addReferences(references, createReferencesForCertificates(timestampCertificateSource.getCertificates()));
+					addReferences(encapsulatedReferences, createReferencesForCertificates(timestampCertificateSource.getCertificates()));
 					// attach to a list of all references
-					addReferences(references, individualTimestampReferences);
+					addReferences(encapsulatedReferences, individualTimestampReferences);
 
 					if (revisionComparator.compare(pdfSignatureRevision.getPdfSigDictInfo(), timestampRevision.getPdfSigDictInfo()) > 0) {
 						// if a timestamp appears before the signature revision, do not create it
@@ -141,8 +141,8 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 				PdfDocDssRevision dssRevision = (PdfDocDssRevision) pdfRevision;
 				
 				// add all values present in dssRevision
-				addReferencesForCertificates(references, dssRevision);
-				addReferencesFromRevocationData(references, dssRevision);
+				addReferencesForCertificates(encapsulatedReferences, dssRevision);
+				addReferencesFromRevocationData(encapsulatedReferences, dssRevision);
 				
 			}
 		}

@@ -7,7 +7,9 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.lang.JoseException;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
@@ -21,6 +23,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	
@@ -108,20 +112,44 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		throw new DSSException(String.format("The requested JAdES Signature with id '%s' has not been found in the provided file!", signatureId));
 	}
 	
-	private JAdESSignature getSignatureOrItsCounterSignature(AdvancedSignature signature, String signatureId) {
+	private JAdESSignature getSignatureOrItsCounterSignature(JAdESSignature signature, String signatureId) {
 		if (signatureId == null || signatureId.equals(signature.getId())) {
-			return (JAdESSignature) signature;
+			return signature;
 		}
-		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
-		if (Utils.isCollectionNotEmpty(counterSignatures)) {
-			for (AdvancedSignature counterSignature : counterSignatures) {
-				JAdESSignature signatureById = getSignatureOrItsCounterSignature(counterSignature, signatureId);
-				if (signatureById != null) {
-					return signatureById;
+
+		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(signature.getJws(), JAdESHeaderParameterNames.C_SIG);
+		if (Utils.isCollectionNotEmpty(cSigObjects)) {
+			for (Object cSigObject : cSigObjects) {
+				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, true);
+				if (counterSignature != null) {
+					counterSignature.setMasterSignature(signature);
+					
+					JAdESSignature signatureById = getSignatureOrItsCounterSignature(counterSignature, signatureId);
+					if (signatureById != null) {
+						if (isTimestamped(signatureById)) {
+							throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
+									+ "The signature is timestamped by a master signature!", signatureId));
+						}
+						return signatureById;
+					}
 				}
 			}
 		}
+		
 		return null;
+	}
+	
+	private boolean isTimestamped(AdvancedSignature signature) {
+		AdvancedSignature masterSignature = signature.getMasterSignature();
+		if (masterSignature != null) {
+			for (TimestampToken timestampToken : masterSignature.getArchiveTimestamps()) {
+				if (timestampToken.getTimestampedReferences().contains(new TimestampedReference(signature.getId(), TimestampedObjectType.SIGNATURE))) {
+					return true;
+				}
+			}
+			return isTimestamped(masterSignature);
+		}
+		return false;
 	}
 
 }

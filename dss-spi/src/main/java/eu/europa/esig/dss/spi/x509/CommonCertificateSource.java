@@ -49,6 +49,8 @@ public class CommonCertificateSource implements CertificateSource {
 	private static final long serialVersionUID = -5031898106342793626L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateSource.class);
+	
+	protected final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 
 	/**
 	 * Map of entries, the key is a hash of the public key.
@@ -206,6 +208,19 @@ public class CommonCertificateSource implements CertificateSource {
 		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				if (Arrays.equals(digest.getValue(), certificateToken.getDigest(digest.getAlgorithm()))) {
+					result.add(certificateToken);
+				}
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
+				if (certificateMatcher.match(certificateToken, certificateRef)) {
 					result.add(certificateToken);
 				}
 			}

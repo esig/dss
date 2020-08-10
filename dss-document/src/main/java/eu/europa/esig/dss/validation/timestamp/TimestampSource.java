@@ -86,5 +86,12 @@ public interface TimestampSource extends Serializable {
 	 * @return {@link ListRevocationSource}
 	 */
 	ListRevocationSource<OCSP> getTimestampOCSPSources();
+	
+	/**
+	 * Returns a list of {@link TimestampedReference}s for all tokens embedded into unsigned properties of the signature
+	 * 
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	List<TimestampedReference> getEncapsulatedReferences();
 
 }
