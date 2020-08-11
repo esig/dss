@@ -369,7 +369,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		
 		Object cSig = unsignedAttribute.getValue();
 		if (cSig != null) {
-			JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSig, false);
+			JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSig, signature);
 			if (counterSignature != null) {
 				cSigReferences.add(new TimestampedReference(counterSignature.getId(), TimestampedObjectType.SIGNATURE));
 				addReferences(cSigReferences, createReferencesForCertificates(counterSignature.getCertificateSource().getCertificates()));

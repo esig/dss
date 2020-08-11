@@ -84,7 +84,7 @@ public class JAdESNestedCounterSignatureTest extends AbstractJAdESTestValidation
 		assertEquals(0, counterSignature.getCounterSignatures().size());
 		
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
-		counterSignatureParameters.setSigningSignatureId(counterSignature.getId());
+		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
 		
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(counterSignedSignature, counterSignatureParameters);
 		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),

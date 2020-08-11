@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -74,6 +75,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class JAdESUtils {
@@ -550,59 +553,51 @@ public class JAdESUtils {
 	 * Extracts a counter signature from 'cSig' value with respect to the found format
 	 * 
 	 * @param cSigObject a value of 'cSig' element
-	 * @param createUnprotectedHeader defines if the unprotected header has to be created (used for counter signature creation)
+	 * @param masterSignature {@link JAdESSignature} the master signature
 	 * @return {@link JAdESSignature}
 	 */
 	@SuppressWarnings("unchecked")
-	public static JAdESSignature extractJAdESCounterSignature(Object cSigObject, boolean createUnprotectedHeader) {
+	public static JAdESSignature extractJAdESCounterSignature(Object cSigObject, JAdESSignature masterSignature) {
+		
+		String cSigValue = null;
+		
 		if (cSigObject instanceof String) {
-			String cSigString = (String) cSigObject;
-			JWSCompactSerializationParser parser = new JWSCompactSerializationParser(new InMemoryDocument(cSigString.getBytes()));
-			if (parser.isSupported()) {
-				JWS jws = parser.parse();
-				if (jws != null) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("A JWS Compact counter signature found.");
-					}
-					return new JAdESSignature(jws);
-				}
-			}
+			cSigValue = (String) cSigObject;
 			
 		} else if (cSigObject instanceof Map<?, ?>) {
-			Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;
-			Map<String, Object> unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
-			if (unprotected == null && createUnprotectedHeader) {
-				// required for nested counter signature creation
-				unprotected = new HashMap<String, Object>();
-				cSigMap.put(JWSConstants.HEADER, unprotected);
-			}
+			Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;			
+			cSigValue = JsonUtil.toJson(cSigMap);
 			
-			String jsonString = JsonUtil.toJson(cSigMap);
-			JWSJsonSerializationParser parser = new JWSJsonSerializationParser(new InMemoryDocument(jsonString.getBytes()));
-			if (parser.isSupported()) {
-				JWSJsonSerializationObject jsonSerializationObject = parser.parse();
+		} else {
+			LOG.warn("Unsupported entry of type 'cSig' found! Class : {}. The entry is skipped", cSigObject.getClass());
+			
+		}
+		
+		if (Utils.isStringNotEmpty(cSigValue)) {
+			InMemoryDocument cSigDocument = new InMemoryDocument(cSigValue.getBytes());
+			
+			JAdESDocumentValidatorFactory factory = new JAdESDocumentValidatorFactory();
+			if (factory.isSupported(cSigDocument)) {
+				SignedDocumentValidator validator = factory.create(cSigDocument);
+				List<AdvancedSignature> signatures = validator.getSignatures();
+
 				/*
 				 * 5.3.2 The cSig (counter signature) JSON object
 				 * 
 				 * The cSig JSON object shall contain one counter signature of the JAdES signature where cSig is incorporated.
 				 */
-				List<JWS> jwsSignatures = jsonSerializationObject.getSignatures();
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("A JWS Compact counter signature found.");
-				}
-				if (jwsSignatures.size() == 1) {
-					JWS jws = jwsSignatures.iterator().next(); // only one is considered
-					jws.setUnprotected(unprotected);
-					return new JAdESSignature(jws);
-					
+				if (signatures.size() == 1) {
+					JAdESSignature signature = (JAdESSignature) signatures.iterator().next(); // only one is considered
+					signature.setMasterSignature(masterSignature);
+					signature.setDetachedContents(Arrays.asList(new InMemoryDocument(masterSignature.getSignatureValue())));
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("A JWS counter signature found with Id : '{}'", signature.getId());
+					}
+					return signature;
 				} else {
-					LOG.warn("{} counter signatures found in 'cSig' element. Only one is allowed!", 
-							jwsSignatures.size());
+					LOG.warn("{} counter signatures found in 'cSig' element. Only one is allowed!", signatures.size());
 				}
 			}
-			
-		} else {
-			LOG.warn("Unsupported entry of type 'cSig' found! Class : {}. The entry is skipped", cSigObject.getClass());
 		}
 		
 		return null;

@@ -83,7 +83,7 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	
 	protected DSSDocument counterSign(DSSDocument signatureDocument, String signatureId) {
 		CSP counterSignatureParameters = getCounterSignatureParameters();
-		counterSignatureParameters.setSigningSignatureId(signatureId);
+		counterSignatureParameters.setSignatureIdToCounterSign(signatureId);
 		
 		CounterSignatureService<CSP> counterSignatureService = getCounterSignatureService();
 		

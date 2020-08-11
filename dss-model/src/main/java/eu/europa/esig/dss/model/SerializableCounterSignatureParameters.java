@@ -7,7 +7,7 @@ public interface SerializableCounterSignatureParameters extends SerializableSign
 	 * 
 	 * @return {@link String} signature id
 	 */
-	String getSigningSignatureId();
+	String getSignatureIdToCounterSign();
 	
 	/**
 	 * Sets the Id of a signature to be counter signed
@@ -15,6 +15,6 @@ public interface SerializableCounterSignatureParameters extends SerializableSign
 	 * 
 	 * @param signatureId {@link String} id of a signature to be counter signed
 	 */
-	void setSigningSignatureId(String signatureId);
+	void setSignatureIdToCounterSign(String signatureId);
 
 }

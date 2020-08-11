@@ -11,16 +11,16 @@ public class JAdESCounterSignatureParameters extends JAdESSignatureParameters im
 	/**
 	 * Signature Id to be counter signed
 	 */
-	private String signatureId;
+	private String signatureIdToCounterSign;
 
 	@Override
-	public String getSigningSignatureId() {
-		return signatureId;
+	public String getSignatureIdToCounterSign() {
+		return signatureIdToCounterSign;
 	}
 	
 	@Override
-	public void setSigningSignatureId(String signatureId) {
-		this.signatureId = signatureId;
+	public void setSignatureIdToCounterSign(String signatureId) {
+		this.signatureIdToCounterSign = signatureId;
 	}
 	
 	@Override

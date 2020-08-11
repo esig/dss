@@ -104,7 +104,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		assertFalse(signatureWrapper.isCounterSignature());
 		
-		counterSignatureParameters.setSigningSignatureId(signatureWrapper.getId());
+		counterSignatureParameters.setSignatureIdToCounterSign(signatureWrapper.getId());
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters);
 		assertNotNull(dataToBeCounterSigned); // possible to counter sign again
 		
@@ -112,7 +112,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		assertEquals(1, counterSignatures.size());
 		SignatureWrapper counterSignature = counterSignatures.iterator().next();
 		
-		counterSignatureParameters.setSigningSignatureId(counterSignature.getId());
+		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
 		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters));
 		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
 				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());

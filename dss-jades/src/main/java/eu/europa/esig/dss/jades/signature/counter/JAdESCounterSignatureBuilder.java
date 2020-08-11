@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.jades.signature.counter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONObject;
@@ -10,6 +12,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
@@ -39,7 +42,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signatureDocument);
 		JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 		
-		JAdESSignature jadesSignature = extractSignatureById(jwsJsonSerializationObject, parameters.getSigningSignatureId());
+		JAdESSignature jadesSignature = extractSignatureById(jwsJsonSerializationObject, parameters.getSignatureIdToCounterSign());
 		return new InMemoryDocument(jadesSignature.getSignatureValue());
 	}
 	
@@ -56,7 +59,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signatureDocument);
 		JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 		
-		JAdESSignature jadesSignature = extractSignatureById(jwsJsonSerializationObject, parameters.getSigningSignatureId());
+		JAdESSignature jadesSignature = extractSignatureById(jwsJsonSerializationObject, parameters.getSignatureIdToCounterSign());
 		
 		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 		
@@ -120,9 +123,10 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(signature.getJws(), JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (Object cSigObject : cSigObjects) {
-				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, true);
+				
+				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, signature);
 				if (counterSignature != null) {
-					counterSignature.setMasterSignature(signature);
+					addUnprotectedHeader(cSigObject, counterSignature.getJws());
 					
 					JAdESSignature signatureById = getSignatureOrItsCounterSignature(counterSignature, signatureId);
 					if (signatureById != null) {
@@ -137,6 +141,19 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		}
 		
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void addUnprotectedHeader(Object cSigObject, JWS jws) {
+		if (cSigObject instanceof Map<?, ?>) {
+			Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;
+			Map<String, Object>  unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
+			if (unprotected == null) {
+				unprotected = new HashMap<String, Object>();
+				cSigMap.put(JWSConstants.HEADER, unprotected);
+			}
+			jws.setUnprotected(unprotected);
+		}
 	}
 	
 	private boolean isTimestamped(AdvancedSignature signature) {

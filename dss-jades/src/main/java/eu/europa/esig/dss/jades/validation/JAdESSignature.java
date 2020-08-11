@@ -2,7 +2,6 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -294,21 +293,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		List<AdvancedSignature> jadesList = extractCounterSignatures();
-		for (AdvancedSignature signature : jadesList) {
-			signature.setMasterSignature(this);
-			signature.setDetachedContents(Arrays.asList(new InMemoryDocument(getSignatureValue())));
-		}
-		return jadesList;
-	}
-	
-	private List<AdvancedSignature> extractCounterSignatures() {
 		List<AdvancedSignature> jadesList = new ArrayList<>();
 		
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (Object cSigObject : cSigObjects) {
-				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, false);
+				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, this);
 				if (counterSignature != null) {
 					jadesList.add(counterSignature);
 				}
