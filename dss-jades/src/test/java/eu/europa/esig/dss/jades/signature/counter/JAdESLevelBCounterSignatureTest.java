@@ -3,7 +3,9 @@ package eu.europa.esig.dss.jades.signature.counter;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Arrays;
@@ -11,6 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.jose4j.json.JsonUtil;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -113,6 +118,16 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		assertNotNull(counterJWS.getEncodedHeader());
 		assertNotNull(counterJWS.getSignatureValue());
 		assertTrue(Utils.isArrayEmpty(counterJWS.getUnverifiedPayloadBytes()));
+
+		try {
+			String jsonString = new String(JAdESUtils.fromBase64Url(counterJWS.getEncodedHeader()));
+			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
+			
+			Object cty = protectedHeaderMap.get(HeaderParameterNames.CONTENT_TYPE);
+			assertNull(cty);
+		} catch (JoseException e) {
+			fail(e);
+		}
 	}
 	
 	@Override
