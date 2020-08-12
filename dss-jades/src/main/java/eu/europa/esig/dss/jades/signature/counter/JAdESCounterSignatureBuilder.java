@@ -126,14 +126,15 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				
 				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, signature);
 				if (counterSignature != null) {
+					// check timestamp before incorporating a new property
+					if (isTimestamped(counterSignature, signatureId)) {
+						throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
+								+ "The signature is timestamped by a master signature!", signatureId));
+					}
 					addUnprotectedHeader(cSigObject, counterSignature.getJws());
 					
 					JAdESSignature signatureById = getSignatureOrItsCounterSignature(counterSignature, signatureId);
 					if (signatureById != null) {
-						if (isTimestamped(signatureById)) {
-							throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
-									+ "The signature is timestamped by a master signature!", signatureId));
-						}
 						return signatureById;
 					}
 				}
@@ -156,15 +157,14 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		}
 	}
 	
-	private boolean isTimestamped(AdvancedSignature signature) {
-		AdvancedSignature masterSignature = signature.getMasterSignature();
+	private boolean isTimestamped(AdvancedSignature masterSignature, String signatureId) {
 		if (masterSignature != null) {
 			for (TimestampToken timestampToken : masterSignature.getArchiveTimestamps()) {
-				if (timestampToken.getTimestampedReferences().contains(new TimestampedReference(signature.getId(), TimestampedObjectType.SIGNATURE))) {
+				if (timestampToken.getTimestampedReferences().contains(new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE))) {
 					return true;
 				}
 			}
-			return isTimestamped(masterSignature);
+			return isTimestamped(masterSignature.getMasterSignature(), signatureId);
 		}
 		return false;
 	}
