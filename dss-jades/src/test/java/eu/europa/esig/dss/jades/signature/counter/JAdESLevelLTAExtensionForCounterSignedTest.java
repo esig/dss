@@ -15,10 +15,14 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -30,6 +34,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -49,7 +54,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		
-		signingAlias = GOOD_USER;
+		signingAlias = SELF_SIGNED_USER;
 		
 		signatureParameters = new JAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -59,7 +64,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		
-		signingAlias = SELF_SIGNED_USER;
+		signingAlias = GOOD_USER;
 		
 		counterSignatureParameters = new JAdESCounterSignatureParameters();
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
@@ -71,14 +76,14 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 	
 	@Test
 	public void test() throws Exception {
-		signingAlias = GOOD_USER;
+		signingAlias = SELF_SIGNED_USER;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
 				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
-		signingAlias = SELF_SIGNED_USER;
+		signingAlias = GOOD_USER;
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
 		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
@@ -108,7 +113,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters);
 		assertNotNull(dataToBeCounterSigned); // possible to counter sign again
 		
-		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignatures();
+		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignaturesForMasterSignature(signatureWrapper);
 		assertEquals(1, counterSignatures.size());
 		SignatureWrapper counterSignature = counterSignatures.iterator().next();
 		
@@ -117,6 +122,16 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
 				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());
 		
+		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)
+				.stream().map(c -> c.getId()).collect(Collectors.toList());
+		for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
+			assertTrue(certificateValuesIds.contains(certificateWrapper.getId()));
+		}
+		
+		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)));
+		
+		assertTrue(counterSignature.getSigningCertificate().isRevocationDataAvailable());
 	}
 	
 	@Override

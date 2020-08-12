@@ -543,8 +543,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				}
 			}
 
-			ListCertificateSource completeCertificateSource = signature.getCompleteCertificateSource();
-			for (CertificateToken certificateToken : completeCertificateSource.getAllCertificateTokens()) {
+			for (CertificateToken certificateToken : signature.getCertificates()) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}
 			signature.prepareTimestamps(validationContext);

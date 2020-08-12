@@ -30,6 +30,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -188,27 +190,70 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ListCertificateSource getCompleteCertificateSource() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSources());
+		certificateSource.addAll(getCounterSignaturesCertificateSource());
 		return certificateSource;
 	}
 	
 	public ListCertificateSource getCertificateSourcesExceptLastArchiveTimestamp() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSourcesExceptLastArchiveTimestamp());
+		certificateSource.addAll(getCounterSignaturesCertificateSource());
 		return certificateSource;
 	}
 
 	@Override
-	public ListRevocationSource getCompleteCRLSource() {
-		ListRevocationSource crlSource = new ListRevocationSource(getCRLSource());
+	public ListRevocationSource<CRL> getCompleteCRLSource() {
+		ListRevocationSource<CRL> crlSource = new ListRevocationSource<>(getCRLSource());
 		crlSource.addAll(getTimestampSource().getTimestampCRLSources());
+		crlSource.addAll(getCounterSignaturesCRLSource());
 		return crlSource;
 	}
 
 	@Override
-	public ListRevocationSource getCompleteOCSPSource() {
-		ListRevocationSource ocspSource = new ListRevocationSource(getOCSPSource());
+	public ListRevocationSource<OCSP> getCompleteOCSPSource() {
+		ListRevocationSource<OCSP> ocspSource = new ListRevocationSource<>(getOCSPSource());
 		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
+		ocspSource.addAll(getCounterSignaturesOCSPSource());
 		return ocspSource;
+	}
+	
+	/**
+	 * Returns a merged certificate source for values incorporated within counter signatures
+	 * 
+	 * @return {@link ListCertificateSource}
+	 */
+	protected ListCertificateSource getCounterSignaturesCertificateSource() {
+		ListCertificateSource certificateSource = new ListCertificateSource();
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			certificateSource.addAll(counterSignature.getCompleteCertificateSource());
+		}
+		return certificateSource;
+	}
+
+	/**
+	 * Returns a merged CRL source for values incorporated within counter signatures
+	 * 
+	 * @return CRL {@link ListRevocationSource}
+	 */
+	protected ListRevocationSource<CRL> getCounterSignaturesCRLSource() {
+		ListRevocationSource<CRL> crlSource = new ListRevocationSource<>();
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			crlSource.addAll(counterSignature.getCompleteCRLSource());
+		}
+		return crlSource;
+	}
+
+	/**
+	 * Returns a merged OCSP source for values incorporated within counter signatures
+	 * 
+	 * @return OCSP {@link ListRevocationSource}
+	 */
+	protected ListRevocationSource<OCSP> getCounterSignaturesOCSPSource() {
+		ListRevocationSource<OCSP> crlSource = new ListRevocationSource<>();
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			crlSource.addAll(counterSignature.getCompleteOCSPSource());
+		}
+		return crlSource;
 	}
 	
 	/**
@@ -289,6 +334,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			validationContext.addCertificateTokenForVerification(certificate);
 		}
 		prepareTimestamps(validationContext);
+		prepareCounterSignatures(validationContext);
 		validationContext.validate();
 
 		validationContext.checkAllTimestampsValid();
@@ -377,12 +423,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return theBestCandidate == null ? null : theBestCandidate.getCertificateToken();
 	}
 
-	/**
-	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
-	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} to which the timestamps must be added
-	 */
 	@Override
 	public void prepareTimestamps(final ValidationContext validationContext) {
 
@@ -419,6 +459,17 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 */
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
+		}
+	}
+	
+	@Override
+	public void prepareCounterSignatures(final ValidationContext validationContext) {
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			for (CertificateToken certificateToken : counterSignature.getCertificates()) {
+				validationContext.addCertificateTokenForVerification(certificateToken);
+			}
+			counterSignature.prepareTimestamps(validationContext);
+			counterSignature.prepareCounterSignatures(validationContext);
 		}
 	}
 
