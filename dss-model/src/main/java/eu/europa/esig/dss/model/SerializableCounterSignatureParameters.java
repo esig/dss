@@ -11,7 +11,6 @@ public interface SerializableCounterSignatureParameters extends SerializableSign
 	
 	/**
 	 * Sets the Id of a signature to be counter signed
-	 * NOTE: if non signature Id is defined, counter signs the first available signature
 	 * 
 	 * @param signatureId {@link String} id of a signature to be counter signed
 	 */

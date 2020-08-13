@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jades.signature.counter;
+package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,8 +26,8 @@ import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.counter.CounterSignatureService;
 
 public class JAdESLevelBFlattenedCounterSignatureTest extends AbstractJAdESCounterSignatureTest {
 

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jades.signature.counter;
+package eu.europa.esig.dss.jades.signature;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +17,6 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
-import eu.europa.esig.dss.jades.signature.JAdESExtensionBuilder;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -101,6 +100,11 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 			throw new DSSException(String.format("Counter signature is not supported for invalid RFC 7515 files "
 					+ "(shall be a Serializable JAdES signature). Reason(s) : %s", jwsJsonSerializationObject.getErrorMessages()));
 		}
+		if (Utils.isStringEmpty(signatureId)) {
+			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
+					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
+		}
+		
 		List<JWS> jwsSignatures = jwsJsonSerializationObject.getSignatures();
 		if (Utils.isCollectionEmpty(jwsSignatures)) {
 			throw new DSSException("The provided signatureDocument does not contain JAdES Signatures!");

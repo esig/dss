@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jades.signature.counter;
+package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,7 +29,7 @@ import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.test.signature.counter.AbstractCounterSignatureTest;
+import eu.europa.esig.dss.test.signature.AbstractCounterSignatureTest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

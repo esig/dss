@@ -17,6 +17,7 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -53,6 +54,7 @@ public class JAdESLevelBDetachedTest extends AbstractJAdESTestSignature {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		return signatureParameters;
 	}

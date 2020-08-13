@@ -537,6 +537,10 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private void assertDetachedContentValid() {
+		if (parameters.getSigDMechanism() == null) {
+			throw new DSSException("The SigDMechanism is not defined for a detached signature! "
+					+ "Please use JAdESSignatureParameters.setSigDMechanism(sigDMechanism) method.");
+		}
 		if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
 			for (DSSDocument document : documentsToSign) {
 				if (Utils.isStringEmpty(document.getName())) {

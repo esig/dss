@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.signature.counter;
+package eu.europa.esig.dss.signature;
 
 import java.io.Serializable;
 

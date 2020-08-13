@@ -1,33 +1,41 @@
-package eu.europa.esig.dss.jades.signature.counter;
+package eu.europa.esig.dss.jades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public class JAdESNestedCounterSignatureTest extends AbstractJAdESTestValidation {
+public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdESTestValidation {
 	
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -62,71 +70,56 @@ public class JAdESNestedCounterSignatureTest extends AbstractJAdESTestValidation
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
 				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+
+		SignedDocumentValidator validator = getValidator(signedDocument);
+		AdvancedSignature masterSignature = validator.getSignatures().get(0);
 		
+		service.setTspSource(getGoodTsa());
+		TimestampToken contentTimestamp = service.getContentTimestamp(new InMemoryDocument(masterSignature.getSignatureValue()), counterSignatureParameters);
+		counterSignatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+		
+		counterSignatureParameters.setSignatureIdToCounterSign(masterSignature.getId());
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
 		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
 				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
-		// counterSignedSignature.save("target/counterSignedSignature.json");
+		counterSignedSignature.save("target/counterSignedSignature.json");
 		
-		SignedDocumentValidator validator = getValidator(counterSignedSignature);
+		verify(counterSignedSignature);
 		
-		List<AdvancedSignature> signatures = validator.getSignatures();
+	}
+	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+		
+		TimestampWrapper contentTst = timestampList.get(0);
+		assertEquals(TimestampType.CONTENT_TIMESTAMP, contentTst.getType());
+		assertTrue(contentTst.isMessageImprintDataFound());
+		assertTrue(contentTst.isMessageImprintDataIntact());
+		
+		assertEquals(1, contentTst.getTimestampedObjects().size());
+		List<SignerDataWrapper> timestampedSignedData = contentTst.getTimestampedSignedData();
+		assertEquals(1, timestampedSignedData.size());
+		
+		SignerDataWrapper signerDataWrapper = timestampedSignedData.get(0);
+		XmlDigestAlgoAndValue digestAlgoAndValue = signerDataWrapper.getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValue);
+		assertNotNull(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgoAndValue.getDigestValue());
+		
+		Set<SignatureWrapper> signatures = diagnosticData.getAllSignatures();
 		assertEquals(1, signatures.size());
 		
-		AdvancedSignature advancedSignature = signatures.get(0);
-		List<AdvancedSignature> counterSignatures = advancedSignature.getCounterSignatures();
-		assertEquals(1, counterSignatures.size());
+		SignatureWrapper masterSignature = signatures.iterator().next();
+		byte[] signatureValue = masterSignature.getSignatureValue();
+		assertNotNull(signatureValue);
 		
-		AdvancedSignature counterSignature = counterSignatures.get(0);
-		assertNotNull(counterSignature.getMasterSignature());
-		assertEquals(0, counterSignature.getCounterSignatures().size());
-		
-		counterSignatureParameters.bLevel().setSigningDate(new Date());
-		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
-		
-		dataToBeCounterSigned = service.getDataToBeCounterSigned(counterSignedSignature, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
-		DSSDocument nestedCounterSignedSignature = service.counterSignSignature(counterSignedSignature, counterSignatureParameters, signatureValue);
-		
-		// nestedCounterSignedSignature.save("target/nestedCounterSignature.json");
-		
-		validator = getValidator(nestedCounterSignedSignature);
-		
-		signatures = validator.getSignatures();
-		assertEquals(1, signatures.size());
-		
-		advancedSignature = signatures.get(0);
-		counterSignatures = advancedSignature.getCounterSignatures();
-		assertEquals(1, counterSignatures.size());
-		
-		counterSignature = counterSignatures.get(0);
-		assertNotNull(counterSignature.getMasterSignature());
-		assertEquals(1, counterSignature.getCounterSignatures().size());
-		
-		Reports reports = verify(nestedCounterSignedSignature);
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
-		List<SignatureWrapper> signatureWrappers = diagnosticData.getSignatures();
-		assertEquals(3, signatureWrappers.size());
-		
-		boolean rootSignatureFound = false;
-		boolean counterSignatureFound = false;
-		boolean nestedCounterSignatureFound = false;
-		for (SignatureWrapper signatureWrapper : signatureWrappers) {
-			if (!signatureWrapper.isCounterSignature()) {
-				rootSignatureFound = true;
-			} else if (signatureWrapper.getParent() != null && signatureWrapper.getParent().getParent() == null) {
-				counterSignatureFound = true;
-			} else if (signatureWrapper.getParent() != null && signatureWrapper.getParent().getParent() != null) {
-				nestedCounterSignatureFound = true;
-			}
-		}
-		assertTrue(rootSignatureFound);
-		assertTrue(counterSignatureFound);
-		assertTrue(nestedCounterSignatureFound);
+		assertArrayEquals(DSSUtils.digest(digestAlgoAndValue.getDigestMethod(), signatureValue), digestAlgoAndValue.getDigestValue());
 	}
 	
 	@Override

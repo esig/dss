@@ -1,10 +1,9 @@
-package eu.europa.esig.dss.test.signature.counter;
+package eu.europa.esig.dss.test.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -20,9 +19,8 @@ import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.signature.counter.CounterSignatureService;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -57,18 +55,13 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		AdvancedSignature signature = signatures.get(signatures.size() - 1);
 		signatureId = signature.getId();
 		
-		DSSDocument counterSigned = counterSign(signedDocument, getCounterSignatureId());
+		DSSDocument counterSigned = counterSign(signedDocument, getSignatureIdToCounterSign());
 
 		assertNotNull(counterSigned.getName());
 		assertNotNull(DSSUtils.toByteArray(counterSigned));
 		assertNotNull(counterSigned.getMimeType());
 
-		 try {
-			counterSigned.save("target/" + counterSigned.getName());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// counterSigned.save("target/" + counterSigned.getName());
 
 		byte[] byteArray = DSSUtils.toByteArray(counterSigned);
 		onDocumentSigned(byteArray);
@@ -102,7 +95,7 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);
 		
-		String counterSignatureId = getCounterSignatureId();
+		String counterSignatureId = getSignatureIdToCounterSign();
 		
 		boolean counterSignatureFound = false;
 		for (AdvancedSignature signature : signatures) {
@@ -167,7 +160,7 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		return false;
 	}
 
-	protected String getCounterSignatureId() {
+	protected String getSignatureIdToCounterSign() {
 		return signatureId;
 	}
 

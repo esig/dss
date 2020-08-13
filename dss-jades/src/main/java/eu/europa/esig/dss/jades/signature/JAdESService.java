@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -21,8 +22,6 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
-import eu.europa.esig.dss.jades.signature.counter.JAdESCounterSignatureBuilder;
-import eu.europa.esig.dss.jades.signature.counter.JAdESCounterSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -32,10 +31,10 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.signature.counter.CounterSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -252,6 +251,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		verifyAndSetCounterSignatureParameters(parameters);
 		
 		JAdESCounterSignatureBuilder counterSignatureBuilder = new JAdESCounterSignatureBuilder();
 		DSSDocument signatureValueToSign = counterSignatureBuilder.getSignatureValueToBeSigned(signatureDocument, parameters);
@@ -265,6 +265,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		verifyAndSetCounterSignatureParameters(parameters);
 
 		JAdESCounterSignatureBuilder counterSignatureBuilder = new JAdESCounterSignatureBuilder();
 		DSSDocument signatureValueToSign = counterSignatureBuilder.getSignatureValueToBeSigned(signatureDocument, parameters);
@@ -278,6 +279,26 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		
 		return counterSigned;
+	}
+	
+	private void verifyAndSetCounterSignatureParameters(JAdESCounterSignatureParameters parameters) {
+		if (parameters.getSignaturePackaging() == null) {
+			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!", 
+					parameters.getSignaturePackaging()));
+		}
+		
+		if (parameters.getSigDMechanism() == null) {
+			parameters.setSigDMechanism(SigDMechanism.NO_SIG_D);
+		} else if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
+			throw new IllegalArgumentException(String.format("The SigDMechanism '%s' is not supported by JAdES Counter Signature!", 
+					parameters.getSigDMechanism()));
+		}
+		
+		if (JWSSerializationType.JSON_SERIALIZATION.equals(parameters.getJwsSerializationType())) {
+			throw new IllegalArgumentException("The JWSSerializationType.JSON_SERIALIZATION parameter is not supported for a JAdES Counter Signature!");
+		}
 	}
 
 }
