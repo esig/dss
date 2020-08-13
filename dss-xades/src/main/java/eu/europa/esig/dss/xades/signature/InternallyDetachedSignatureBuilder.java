@@ -46,12 +46,12 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 *                            The set of parameters relating to the structure
 	 *                            and process of the creation or extension of the
 	 *                            electronic signature.
-	 * @param origDoc
+	 * @param document
 	 *                            The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public InternallyDetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
-		super(params, origDoc, certificateVerifier);
+	public InternallyDetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+		super(params, document, certificateVerifier);
 	}
 
 	@Override

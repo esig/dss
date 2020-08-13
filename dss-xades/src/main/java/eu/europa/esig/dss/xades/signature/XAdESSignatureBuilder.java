@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -69,7 +67,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
-import eu.europa.esig.dss.xades.reference.ReferenceFactory;
+import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 
 /**
  * This class implements all the necessary mechanisms to build each form of the XML signature.
@@ -87,7 +85,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	/**
 	 * This is the reference to the original document to sign
 	 */
-	protected DSSDocument detachedDocument;
+	protected DSSDocument document;
 
 	protected String keyInfoCanonicalizationMethod;
 	protected String signedInfoCanonicalizationMethod;
@@ -109,7 +107,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected Element signedDataObjectPropertiesDom;
 	protected Element unsignedSignaturePropertiesDom;
 	
-	private ReferenceFactory referenceFactory;
+	protected ReferenceBuilder referenceBuilder;
 
 	/**
 	 * id-suffixes for DOM elements
@@ -155,17 +153,18 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @param params
 	 *            The set of parameters relating to the structure and process of the creation or extension of the
 	 *            electronic signature.
-	 * @param detachedDocument
+	 * @param document
 	 *            The original document to sign.
 	 * @param certificateVerifier
 	 *            the certificate verifier with its OCSPSource,...
 	 */
-	public XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument detachedDocument, final CertificateVerifier certificateVerifier) {
+	public XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		
 		this.params = params;
-		this.detachedDocument = detachedDocument;
+		this.document = document;
 		this.deterministicId = params.getDeterministicId();
+		this.referenceBuilder = new ReferenceBuilder(params);
 		
 		setCanonicalizationMethods(params);
 	}
@@ -235,7 +234,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			// in order to ensure validity on next steps
 			params.setReferences(defaultReferences);
 		} else {
-			getReferenceFactory().checkReferencesValidity();
+			referenceBuilder.checkReferencesValidity();
 		}
 	}
 	
@@ -250,18 +249,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 						params.getSignaturePackaging()));
 			}
 		}
-	}
-	
-	/**
-	 * Returns {@code ReferenceProcessingFactory} instance
-	 * 
-	 * @return {@link ReferenceFactory}
-	 */
-	protected ReferenceFactory getReferenceFactory() {
-		if (referenceFactory == null) {
-			referenceFactory = new ReferenceFactory(params);
-		}
-		return referenceFactory;
 	}
 
 	protected void incorporateFiles() {
@@ -635,7 +622,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = dssReference.getDigestMethodAlgorithm();
 		incorporateDigestMethod(referenceDom, digestAlgorithm);
 
-		final DSSDocument documentAfterTranformations = getReferenceFactory().getTransformedReferenceContent(dssReference);
+		final DSSDocument documentAfterTranformations = referenceBuilder.getReferenceOutput(dssReference);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Reference canonicalization method  --> {}", signedInfoCanonicalizationMethod);
 		}
@@ -663,17 +650,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @return {@code List} of {@code DSSReference}
 	 */
 	private List<DSSReference> createDefaultReferences() {
-		return createReferencesForDocuments(Arrays.asList(detachedDocument));
-	}
-
-	List<DSSReference> createReferencesForDocuments(List<DSSDocument> documents) {
-		List<DSSReference> references = new ArrayList<>();
-		int referenceIndex = 1;
-		for (DSSDocument dssDocument : documents) {
-			references.add(getReferenceFactory().createDSSReferenceForDocument(dssDocument, referenceIndex));
-			referenceIndex++;
+		if (Utils.isCollectionNotEmpty(params.getDetachedContents())) {
+			return referenceBuilder.build(params.getDetachedContents());
 		}
-		return references;
+		return referenceBuilder.build(Arrays.asList(document));
 	}
 
 	/**
@@ -1200,36 +1180,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		encapsulatedTimestampElement.setTextContent(Utils.toBase64(token.getEncoded()));
 
 		timestampElement.appendChild(encapsulatedTimestampElement);
-	}
-
-	/**
-	 * Applies transforms on a node and returns the byte array to be used for a reference digest computation
-	 * 
-	 * @param reference a {@link DSSReference} to apply transforms from
-	 * @param nodeToTransform {@link Node} to apply transforms on
-	 * @return a byte array, representing a content obtained after transformations
-	 */
-	protected byte[] applyTransformations(final DSSReference reference, Node nodeToTransform) {
-		byte[] transformedReferenceBytes = null;
-		List<DSSTransform> transforms = reference.getTransforms();
-		if (Utils.isCollectionNotEmpty(transforms)) {
-			Iterator<DSSTransform> iterator = transforms.iterator();
-			while (iterator.hasNext()) {
-				DSSTransform transform = iterator.next();
-				transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform, reference.getUri());
-				if (iterator.hasNext()) {
-					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
-				}
-			}
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Reference bytes after transforms: ");
-				LOG.debug(new String(transformedReferenceBytes));
-			}
-			return transformedReferenceBytes;
-			
-		} else {
-			return DSSXMLUtils.getNodeBytes(nodeToTransform);
-		}
 	}
 	
 	protected Node getNodeToCanonicalize(Node node) {

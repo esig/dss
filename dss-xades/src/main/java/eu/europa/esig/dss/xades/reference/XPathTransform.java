@@ -35,7 +35,7 @@ public class XPathTransform extends ComplexTransform {
 	
 	protected final String xPathExpression;
 
-	public XPathTransform( String xPathExpression) {
+	public XPathTransform(String xPathExpression) {
 		this(XAdESNamespaces.XMLDSIG, Transforms.TRANSFORM_XPATH, xPathExpression);
 	}
 	

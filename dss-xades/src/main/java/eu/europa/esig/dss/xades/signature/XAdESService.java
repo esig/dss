@@ -48,7 +48,6 @@ import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
  * XAdES implementation of DocumentSignatureService
@@ -110,7 +109,6 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
 		assertMultiDocumentsAllowed(parameters);
-		setReferencesIfNeeded(toSignDocuments, parameters);
 		parameters.setDetachedContents(toSignDocuments);
 		return getDataToSign(toSignDocuments.get(0), parameters);
 	}
@@ -157,7 +155,6 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
 		assertMultiDocumentsAllowed(parameters);
-		setReferencesIfNeeded(toSignDocuments, parameters);
 		parameters.setDetachedContents(toSignDocuments);
 		return signDocument(toSignDocuments.get(0), parameters, signatureValue);
 	}
@@ -223,15 +220,6 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			return extensionLTA;
 		default:
 			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
-		}
-	}
-	
-	private void setReferencesIfNeeded(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
-		if (Utils.isCollectionEmpty(parameters.getReferences())) {
-			DSSDocument firstDoc = toSignDocuments.get(0);
-			XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
-			List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
-			parameters.setReferences(references);
 		}
 	}
 

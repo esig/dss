@@ -42,7 +42,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.ReferenceFactory;
+import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 
 /**
  * This class allows to create a XAdES content-timestamp which covers all documents (AllDataObjectsTimeStamp).
@@ -63,15 +63,15 @@ public class AllDataObjectsTimeStampBuilder {
 	}
 
 	public TimestampToken build(List<DSSDocument> documents) {
-		ReferenceFactory referenceFactory = new ReferenceFactory(signatureParameters);
+		ReferenceBuilder referenceBuilder = new ReferenceBuilder(signatureParameters);
 		
 		// Prepare references
 		List<DSSReference> references = signatureParameters.getReferences();
 		if (Utils.isCollectionEmpty(references)) {
-			references = referenceFactory.createReferencesForDocuments(documents);
+			references = referenceBuilder.build(documents);
 			signatureParameters.setReferences(references);
 		} else {
-			referenceFactory.checkReferencesValidity();
+			referenceBuilder.checkReferencesValidity();
 		}
 
 		byte[] dataToBeDigested = null;
@@ -87,7 +87,7 @@ public class AllDataObjectsTimeStampBuilder {
 		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSReference reference : references) {
-				DSSDocument referenceContent = referenceFactory.getTransformedReferenceContent(reference);
+				DSSDocument referenceContent = referenceBuilder.getReferenceOutput(reference);
 				byte[] binaries = DSSUtils.toByteArray(referenceContent);
 				// TODO : investigate canonicalization usage
 				if (DomUtils.isDOM(binaries)) {

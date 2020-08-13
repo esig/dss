@@ -32,82 +32,37 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
  * Creates, validates references and processes defined transformations 
  *
  */
-public class ReferenceFactory {
+public class ReferenceBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ReferenceFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ReferenceBuilder.class);
 	
+	/**
+	 * The used XAdESSignatureParameters
+	 */
 	private final XAdESSignatureParameters signatureParameters;
 
 	// id-suffix for ds:Object element
-	protected static final String OBJECT_ID_SUFFIX = "o-";
+	private static final String OBJECT_ID_SUFFIX = "o-";
 	// id-suffix for ds:Reference element
-	protected static final String REFERENCE_ID_SUFFIX = "r-";
+	private static final String REFERENCE_ID_SUFFIX = "r-";
 	
-	public ReferenceFactory(final XAdESSignatureParameters xadesSignatureParameters) {
+	/**
+	 * The default constructor
+	 * 
+	 * @param xadesSignatureParameters {@link XAdESSignatureParameters}
+	 */
+	public ReferenceBuilder(final XAdESSignatureParameters xadesSignatureParameters) {
 		Objects.requireNonNull(xadesSignatureParameters, "Signature parameters cannot be null!");
 		this.signatureParameters = xadesSignatureParameters;
 	}
 	
 	/**
-	 * Verifies a compatibility of defined signature parameters and reference transformations
+	 * Builds a list of references based on the configuration
+	 * 
+	 * @param documents a list of {@link DSSDocument} to create references for
+	 * @return a list of {@code DSSReference}s
 	 */
-	public void checkReferencesValidity() {
-		String referenceWrongMessage = "Reference setting is not correct! ";
-		for (DSSReference reference : signatureParameters.getReferences()) {
-			List<DSSTransform> transforms = reference.getTransforms();
-			if (Utils.isCollectionNotEmpty(transforms)) {
-				boolean incorrectUsageOfEnvelopedSignature = false;
-				for (DSSTransform transform : transforms) {
-					switch (transform.getAlgorithm()) {
-					case Transforms.TRANSFORM_BASE64_DECODE:
-						if (signatureParameters.isEmbedXML()) {
-							throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
-						} else if (signatureParameters.isManifestSignature()) {
-							throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
-						} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
-							throw new DSSException(referenceWrongMessage + 
-									String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
-						} else if (transforms.size() > 1) {
-							throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
-						}
-						break;
-					case Transforms.TRANSFORM_ENVELOPED_SIGNATURE:
-						incorrectUsageOfEnvelopedSignature = true;
-						break;
-					case Transforms.TRANSFORM_C14N11_OMIT_COMMENTS:
-					case Transforms.TRANSFORM_C14N11_WITH_COMMENTS:
-					case Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS:
-					case Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS:
-					case Transforms.TRANSFORM_C14N_OMIT_COMMENTS:
-					case Transforms.TRANSFORM_C14N_WITH_COMMENTS:
-						// enveloped signature must follow up by a canonicalization
-						incorrectUsageOfEnvelopedSignature = false;
-						break;
-					default:
-						// do nothing
-						break;
-					}
-					
-				}
-				if (incorrectUsageOfEnvelopedSignature) {
-					throw new DSSException(referenceWrongMessage + "Enveloped Signature Transform must be followed up by a Canonicalization Transform.");
-				}
-				
-			} else {
-				String uri = reference.getUri();
-				if (Utils.isStringBlank(uri) || DomUtils.isElementReference(uri)) {
-					LOG.warn("A reference with id='{}' and uri='{}' points to an XML Node, while no transforms are defined! "
-							+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
-				}
-				if (SignaturePackaging.ENVELOPED.equals(signatureParameters.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
-					throw new DSSException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
-				}
-				
-			}
-		}
-	}
-	
-	public List<DSSReference> createReferencesForDocuments(List<DSSDocument> documents) {
+	public List<DSSReference> build(List<DSSDocument> documents) {
 		List<DSSReference> references = new ArrayList<>();
 		int referenceIndex = 1;
 		for (DSSDocument dssDocument : documents) {
@@ -117,7 +72,7 @@ public class ReferenceFactory {
 		return references;
 	}
 	
-	public DSSReference createDSSReferenceForDocument(final DSSDocument document, final int index) {
+	private DSSReference createDSSReferenceForDocument(final DSSDocument document, final int index) {
 		Objects.requireNonNull(signatureParameters.getSignaturePackaging(), "SignaturePackaging must be defined!");
 		switch (signatureParameters.getSignaturePackaging()) {
 			case ENVELOPED:
@@ -236,7 +191,13 @@ public class ReferenceFactory {
 		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
 	}
 	
-	public DSSDocument getTransformedReferenceContent(DSSReference reference) {
+	/**
+	 * Returns an output content after processing the given {@code DSSReference}
+	 * 
+	 * @param reference {@link DSSReference} to process
+	 * @return {@link DSSDocument} reference output content
+	 */
+	public DSSDocument getReferenceOutput(DSSReference reference) {
 		if (reference.getContents() instanceof DigestDocument) {
 			return reference.getContents();
 		}
@@ -335,6 +296,65 @@ public class ReferenceFactory {
 			
 		} else {
 			return DSSXMLUtils.getNodeBytes(nodeToTransform);
+		}
+	}
+	
+	/**
+	 * Verifies a compatibility of defined signature parameters and reference transformations
+	 */
+	public void checkReferencesValidity() {
+		String referenceWrongMessage = "Reference setting is not correct! ";
+		for (DSSReference reference : signatureParameters.getReferences()) {
+			List<DSSTransform> transforms = reference.getTransforms();
+			if (Utils.isCollectionNotEmpty(transforms)) {
+				boolean incorrectUsageOfEnvelopedSignature = false;
+				for (DSSTransform transform : transforms) {
+					switch (transform.getAlgorithm()) {
+					case Transforms.TRANSFORM_BASE64_DECODE:
+						if (signatureParameters.isEmbedXML()) {
+							throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+						} else if (signatureParameters.isManifestSignature()) {
+							throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+						} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
+							throw new DSSException(referenceWrongMessage + 
+									String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
+						} else if (transforms.size() > 1) {
+							throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
+						}
+						break;
+					case Transforms.TRANSFORM_ENVELOPED_SIGNATURE:
+						incorrectUsageOfEnvelopedSignature = true;
+						break;
+					case Transforms.TRANSFORM_C14N11_OMIT_COMMENTS:
+					case Transforms.TRANSFORM_C14N11_WITH_COMMENTS:
+					case Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS:
+					case Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS:
+					case Transforms.TRANSFORM_C14N_OMIT_COMMENTS:
+					case Transforms.TRANSFORM_C14N_WITH_COMMENTS:
+						// enveloped signature must follow up by a canonicalization
+						incorrectUsageOfEnvelopedSignature = false;
+						break;
+					default:
+						// do nothing
+						break;
+					}
+					
+				}
+				if (incorrectUsageOfEnvelopedSignature) {
+					throw new DSSException(referenceWrongMessage + "Enveloped Signature Transform must be followed up by a Canonicalization Transform.");
+				}
+				
+			} else {
+				String uri = reference.getUri();
+				if (Utils.isStringBlank(uri) || DomUtils.isElementReference(uri)) {
+					LOG.warn("A reference with id='{}' and uri='{}' points to an XML Node, while no transforms are defined! "
+							+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
+				}
+				if (SignaturePackaging.ENVELOPED.equals(signatureParameters.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
+					throw new DSSException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
+				}
+				
+			}
 		}
 	}
 

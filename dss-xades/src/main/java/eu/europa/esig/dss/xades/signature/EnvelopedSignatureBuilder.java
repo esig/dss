@@ -42,12 +42,12 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param params
 	 *            The set of parameters relating to the structure and process of the creation or extension of the
 	 *            electronic signature.
-	 * @param origDoc
+	 * @param document
 	 *            The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public EnvelopedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
-		super(params, origDoc, certificateVerifier);
+	public EnvelopedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+		super(params, document, certificateVerifier);
 	}
 
 	/**
@@ -56,7 +56,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	@Override
 	protected Document buildRootDocumentDom() {
-		return DomUtils.buildDOM(detachedDocument);
+		return DomUtils.buildDOM(document);
 	}
 
 	@Override

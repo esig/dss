@@ -251,6 +251,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			return null;
 		}
 		
+		timestampToken.setHashCode(unsignedAttribute.getElementHashCode());
 		timestampToken.setCanonicalizationMethod(unsignedAttribute.getTimestampCanonicalizationMethod());
 		timestampToken.setTimestampIncludes(unsignedAttribute.getTimestampIncludedReferences());
 		
