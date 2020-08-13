@@ -25,9 +25,10 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -61,6 +62,17 @@ public interface MultipleDocumentsSignatureService<SP extends SerializableSignat
 	 * @return the data to be signed
 	 */
 	ToBeSigned getDataToSign(final List<DSSDocument> toSignDocuments, final SP parameters);
+
+	/**
+	 * Verifies the signature value against a {@code ToBeSigned} and a
+	 * {@code CertificateToken}
+	 * 
+	 * @param toBeSigned         the signed data
+	 * @param signatureValue     the signature value
+	 * @param signingCertificate the used certificate to create the signature value
+	 * @return true if the signature value is valid
+	 */
+	boolean isValidSignatureValue(ToBeSigned toBeSigned, SignatureValue signatureValue, CertificateToken signingCertificate);
 
 	/**
 	 * Signs the toSignDocuments with the provided signatureValue.

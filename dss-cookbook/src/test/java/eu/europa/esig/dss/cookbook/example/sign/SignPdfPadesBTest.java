@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -87,6 +89,10 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// private key and specified algorithm
 			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 			SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+
+			// Optionally or for debug purpose :
+			// Validate the signature value against the original dataToSign
+			assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, privateKey.getCertificate()));
 
 			// We invoke the xadesService to sign the document with the signature value obtained in
 			// the previous step.

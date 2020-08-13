@@ -20,9 +20,14 @@
  */
 package eu.europa.esig.dss.signature;
 
+import java.security.GeneralSecurityException;
 import java.security.Security;
+import java.security.Signature;
 import java.util.Date;
 import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -31,6 +36,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -44,6 +51,8 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureService.class);
 
 	protected TSPSource tspSource;
 
@@ -166,6 +175,23 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, TP parameters) {
 		throw new UnsupportedOperationException("Unsupported operation for this file format");
+	}
+
+	@Override
+	public boolean isValidSignatureValue(ToBeSigned toBeSigned, SignatureValue signatureValue, CertificateToken signingCertificate) {
+		Objects.requireNonNull(toBeSigned, "ToBeSigned cannot be null!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+		Objects.requireNonNull(signingCertificate, "CertificateToken cannot be null!");
+
+		try {
+			Signature signature = Signature.getInstance(signatureValue.getAlgorithm().getJCEId(), DSSSecurityProvider.getSecurityProviderName());
+			signature.initVerify(signingCertificate.getPublicKey());
+			signature.update(toBeSigned.getBytes());
+			return signature.verify(signatureValue.getValue());
+		} catch (GeneralSecurityException e) {
+			LOG.error("Unable to verify the signature value : {}", e.getMessage());
+			return false;
+		}
 	}
 
 }

@@ -137,6 +137,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
 				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 	

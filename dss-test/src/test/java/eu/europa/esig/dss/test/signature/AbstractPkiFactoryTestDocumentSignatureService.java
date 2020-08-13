@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.test.signature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -43,6 +45,7 @@ public abstract class AbstractPkiFactoryTestDocumentSignatureService<SP extends 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
 				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		return service.signDocument(toBeSigned, params, signatureValue);
 	}
 
