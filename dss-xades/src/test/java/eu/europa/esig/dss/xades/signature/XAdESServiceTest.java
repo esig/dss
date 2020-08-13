@@ -206,13 +206,18 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	@Test
 	public void contentTstTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		Exception exception = assertThrows(NullPointerException.class, () -> 
+				service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
+		assertEquals("SignaturePackaging must be defined!", exception.getMessage());
+		
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
 		
 		signatureParameters.setContentTimestampParameters(null);
 		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
 		
 		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));
+		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));
 		assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.", exception.getMessage());
 		
 		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(""));

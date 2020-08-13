@@ -346,6 +346,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		this.prettyPrint = prettyPrint;
 	}
 
+	/**
+	 * This method returns the current used XMLDSig namespace
+	 * Never returns null
+	 */
 	public DSSNamespace getXmldsigNamespace() {
 		return xmldsigNamespace;
 	}
@@ -360,6 +364,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		}
 	}
 
+	/**
+	 * This method returns the current used XAdES namespace
+	 * Never returns null
+	 */
 	public DSSNamespace getXadesNamespace() {
 		return xadesNamespace;
 	}
@@ -374,6 +382,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		}
 	}
 
+	/**
+	 * This method returns the current used XAdES 1.4.1 namespace
+	 * Never returns null
+	 */
 	public DSSNamespace getXades141Namespace() {
 		return xades141Namespace;
 	}

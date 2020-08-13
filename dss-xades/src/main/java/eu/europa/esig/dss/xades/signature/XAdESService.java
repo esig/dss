@@ -87,7 +87,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		if (tspSource == null) {
 			throw new DSSException("A TSPSource is required !");
 		}
-		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters.getContentTimestampParameters());
+		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters);
 		return builder.build(toSignDocuments);
 	}
 
@@ -110,23 +110,9 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
 		assertMultiDocumentsAllowed(parameters);
-		DSSDocument firstDoc = toSignDocuments.get(0);
-		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
-		List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
-		parameters.setReferences(references);
-		return getDataToSign(firstDoc, parameters);
-	}
-
-	/**
-	 * Only DETACHED and ENVELOPING signatures are allowed
-	 * 
-	 * @param parameters
-	 */
-	private void assertMultiDocumentsAllowed(XAdESSignatureParameters parameters) {
-		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
-		if (signaturePackaging == null || SignaturePackaging.ENVELOPED == signaturePackaging) {
-			throw new DSSException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
-		}
+		setReferencesIfNeeded(toSignDocuments, parameters);
+		parameters.setDetachedContents(toSignDocuments);
+		return getDataToSign(toSignDocuments.get(0), parameters);
 	}
 
 	@Override
@@ -171,12 +157,9 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
 		assertMultiDocumentsAllowed(parameters);
-		DSSDocument firstDoc = toSignDocuments.get(0);
-		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
-		List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
-		parameters.setReferences(references);
+		setReferencesIfNeeded(toSignDocuments, parameters);
 		parameters.setDetachedContents(toSignDocuments);
-		return signDocument(firstDoc, parameters, signatureValue);
+		return signDocument(toSignDocuments.get(0), parameters, signatureValue);
 	}
 
 	@Override
@@ -242,7 +225,35 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
 		}
 	}
+	
+	private void setReferencesIfNeeded(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
+		if (Utils.isCollectionEmpty(parameters.getReferences())) {
+			DSSDocument firstDoc = toSignDocuments.get(0);
+			XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
+			List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
+			parameters.setReferences(references);
+		}
+	}
 
+	/**
+	 * Only DETACHED and ENVELOPING signatures are allowed
+	 * 
+	 * @param parameters
+	 */
+	private void assertMultiDocumentsAllowed(XAdESSignatureParameters parameters) {
+		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
+		if (signaturePackaging == null || SignaturePackaging.ENVELOPED == signaturePackaging) {
+			throw new DSSException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
+		}
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the XAdES Signature
+	 * 
+	 * @param document {@link DSSDocument} containing a XAdES Signature to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} XAdESSignature with an incorporates SignaturePolicyStore
+	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
 		SignaturePolicyStoreBuilder builder = new SignaturePolicyStoreBuilder(certificateVerifier);
