@@ -44,6 +44,7 @@ import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,9 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
@@ -82,6 +86,8 @@ public final class DSSXMLUtils {
 	private static final Set<String> transforms;
 
 	private static final Set<String> canonicalizers;
+	
+	private static final Set<String> transformsWithNodeSetOutput;
 	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
@@ -105,6 +111,9 @@ public final class DSSXMLUtils {
 
 		canonicalizers = new HashSet<>();
 		registerDefaultCanonicalizers();
+		
+		transformsWithNodeSetOutput = new HashSet<>();
+		registerTransformsWithNodeSetOutput();
 	}
 
 	/**
@@ -135,6 +144,16 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * This method registers transforms resulting to a node-set according to XMLDSIG
+	 */
+	private static void registerTransformsWithNodeSetOutput() {
+
+		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH);
+		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH2FILTER);
+	}
+
+	/**
 	 * This class is an utility class and cannot be instantiated.
 	 */
 	private DSSXMLUtils() {
@@ -161,6 +180,19 @@ public final class DSSXMLUtils {
 	 */
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
 		final boolean added = canonicalizers.add(c14nAlgorithmURI);
+		return added;
+	}
+
+	/**
+	 * This method allows to register a transformation resulting to a node-set output.
+	 * See XMLDSIG for more information
+	 *
+	 * @param transformURI
+	 *            the URI of transform
+	 * @return true if this set did not already contain the specified element
+	 */
+	public static boolean registerTransformWithNodeSetOutput(final String transformURI) {
+		final boolean added = transformsWithNodeSetOutput.add(transformURI);
 		return added;
 	}
 	
@@ -811,6 +843,19 @@ public final class DSSXMLUtils {
 	}
 	
 	/**
+	 * XMLDSIG 4.4.3.2 The Reference Processing Model
+	 * 
+	 * A 'same-document' reference is defined as a URI-Reference that consists of 
+	 * a hash sign ('#') followed by a fragment or alternatively consists of an empty URI
+	 * 
+	 * @param referenceUri {@link String} uri of a reference to check
+	 * @return TRUE is the URI points to a same-document, FALSE otherwise
+	 */
+	public static boolean isSameDocumentReference(String referenceUri) {
+		return Utils.EMPTY_STRING.equals(referenceUri) || DomUtils.startsFromHash(referenceUri);
+	}
+	
+	/**
 	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present
 	 * NOTE: can return null (the value is optional)
 	 * 
@@ -829,6 +874,49 @@ public final class DSSXMLUtils {
 		}
 		LOG.warn("Unable to extract the public key. Reason : KeyInfo element is null");
 		return null;
+	}
+	
+	/**
+	 * Returns the expected dereferencing output for the provided {@code DSSReference}
+	 * 
+	 * @param reference {@link DSSReference} to get OutputType for
+	 * @return {@link ReferenceOutputType}
+	 */
+	public static ReferenceOutputType getReferenceOutputType(final DSSReference reference) {
+		ReferenceOutputType outputType = getDereferenceOutputType(reference.getUri());
+		if (Utils.isCollectionNotEmpty(reference.getTransforms())) {
+			for (DSSTransform transform : reference.getTransforms()) {
+				String algorithmUri = transform.getAlgorithm();
+				outputType = getTransformOutputType(algorithmUri);
+			}
+		}
+		return outputType;
+	}
+
+	/**
+	 * Returns the expected dereferencing output for the provided {@code Reference}
+	 * 
+	 * @param reference {@link Reference} to get OutputType for
+	 * @return {@link ReferenceOutputType}
+	 */
+	public static ReferenceOutputType getReferenceOutputType(final Reference reference) throws XMLSecurityException {
+		ReferenceOutputType outputType = getDereferenceOutputType(reference.getURI());
+		Transforms transforms = reference.getTransforms();
+		if (transforms != null) {
+			for (int ii = 0; ii < transforms.getLength(); ii++) {
+				Transform transform = transforms.item(ii);
+				outputType = getTransformOutputType(transform.getURI());
+			}
+		}
+		return outputType;
+	}
+	
+	private static ReferenceOutputType getDereferenceOutputType(String referenceUri) {
+		return isSameDocumentReference(referenceUri) ? ReferenceOutputType.NODE_SET : ReferenceOutputType.OCTET_STREAM;
+	}
+	
+	private static ReferenceOutputType getTransformOutputType(String algorithmUri) {
+		return transformsWithNodeSetOutput.contains(algorithmUri) ? ReferenceOutputType.NODE_SET : ReferenceOutputType.OCTET_STREAM;
 	}
 
 }

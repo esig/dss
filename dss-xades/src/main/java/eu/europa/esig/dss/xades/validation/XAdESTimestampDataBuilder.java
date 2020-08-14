@@ -50,6 +50,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 
 public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
@@ -92,7 +93,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			byte[] byteArray = outputStream.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes: {}", new String(byteArray));
+				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes:");
+				LOG.trace(new String(byteArray));
 			}
 			return new InMemoryDocument(byteArray);
 		} catch (IOException | XMLSecurityException e) {
@@ -107,8 +109,15 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getReferenceBytes(final Reference reference, final String canonicalizationMethod) throws XMLSecurityException {
+		/*
+		 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
+		 * clause 4.4.3.2;
+		 */
 		byte[] referencedBytes = reference.getReferencedBytes();
-		if (DomUtils.isDOM(referencedBytes)) {
+		/*
+		 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
+		 */
+		if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referencedBytes)) {
 			referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
 		}
 		if (LOG.isTraceEnabled()) {

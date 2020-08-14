@@ -264,7 +264,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
 		List<TimestampedReference> timestampReferences = new ArrayList<>();
 		for (Reference reference : references) {
-			if (isContentTimestampedReference(reference, includes)) {
+			if (isContentTimestampedReference(reference, includes) && Utils.isCollectionNotEmpty(signatureScopes)) {
 				for (SignatureScope signatureScope : signatureScopes) {
 					if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
 						addReference(timestampReferences, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
