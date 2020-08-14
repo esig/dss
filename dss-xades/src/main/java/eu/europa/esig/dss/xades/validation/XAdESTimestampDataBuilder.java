@@ -30,6 +30,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -49,7 +50,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 
 public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
@@ -390,10 +390,30 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return DomUtils.getElement(signature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	
+	private Element getUnsignedSignaturePropertiesCanonicalizationCopy() {
+		/*
+         * This is the work around. The issue was reported on:
+         * https://issues.apache.org/jira/browse/SANTUARIO-139.
+         * Namespaces are not added to canonicalizer for new created elements.
+         * The binaries need to be parsed at a new instance of Document
+         */
+        final byte[] canonicalizedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
+        Document recreatedDocument = DomUtils.buildDOM(canonicalizedDoc);
+        Element recreatedSignature = DomUtils.getElement(recreatedDocument, ".//*" + DomUtils.getXPathByIdAttribute(DSSXMLUtils.getIDIdentifier(signature)));
+        return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
+	}
+	
 	private void writeTimestampedUnsignedProperties(final Element unsignedSignaturePropertiesDom, TimestampToken timestampToken, 
 			String canonicalizationMethod, ByteArrayOutputStream buffer) throws IOException {
 		
-		final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
+		final NodeList unsignedProperties;
+		if (timestampToken == null) {
+			// timestamp creation
+			unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy().getChildNodes();
+		} else {
+			unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
+		}
+		
 		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
 			final Node node = unsignedProperties.item(ii);
@@ -434,39 +454,29 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * satisfy with the rules specified in clause 7.6.4.
 			 */
 			// } else
-			if (XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(localName)) {
-				// TODO: compare encoded base64
-				if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
+			if (XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(localName) && timestampToken != null) {
+				// skip the octets extraction when the current timestamp is found (validation)
+				int hashCode = unsignedSignaturePropertiesDom.getChildNodes().item(ii).hashCode();
+				if (timestampToken.getHashCode() == hashCode) {
 					break;
 				}
 				
-			} else if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(localName)) {
-				/**
-				 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This
-				 * element is specified to serve as an
-				 * optional container for validation data required for carrying a full verification of time-stamp
-				 * tokens embedded within any of the
-				 * different time-stamp containers defined in the present document. ../.. 8.1.1 Use of URI attribute
-				 * ../.. a new
-				 * xadesv141:TimeStampValidationData element SHALL be created containing the missing validation data
-				 * information and it SHALL be added as a
-				 * child of UnsignedSignatureProperties elements immediately after the respective time-stamp
-				 * certificateToken container element.
-				 */
+			// } else if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(localName)) {
+			/*
+			 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This
+			 * element is specified to serve as an
+			 * optional container for validation data required for carrying a full verification of time-stamp
+			 * tokens embedded within any of the
+			 * different time-stamp containers defined in the present document. ../.. 8.1.1 Use of URI attribute
+			 * ../.. a new
+			 * xadesv141:TimeStampValidationData element SHALL be created containing the missing validation data
+			 * information and it SHALL be added as a
+			 * child of UnsignedSignatureProperties elements immediately after the respective time-stamp
+			 * certificateToken container element.
+			 */
 			}
 			
-			byte[] canonicalizedValue;
-			if (timestampToken == null) { // Creation of the timestamp
-				/**
-				 * This is the work around for the name space problem: The issue was reported on:
-				 * https://issues.apache.org/jira/browse/SANTUARIO-139 and
-				 * considered as close. But for me (Bob) it still does not work!
-				 */
-				final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
-				canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
-			} else {
-				canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
-			}
+			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
 						new String(canonicalizedValue));
