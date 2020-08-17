@@ -327,6 +327,14 @@ public abstract class XAdESBuilder {
 	}
 	
 	/**
+	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
+	 * @return {@link DigestAlgorithm}
+	 */
+	protected DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
+		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+	}
+	
+	/**
 	 * Creates {@link DSSDocument} from the current documentDom
 	 * @return {@link DSSDocument}
 	 */

@@ -81,8 +81,8 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		CounterSignatureService<CSP> counterSignatureService = getCounterSignatureService();
 		
 		ToBeSigned dataToSign = counterSignatureService.getDataToBeCounterSigned(signatureDocument, counterSignatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, counterSignatureParameters.getDigestAlgorithm(),
+				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		return counterSignatureService.counterSignSignature(signatureDocument, counterSignatureParameters, signatureValue);
 	}
 

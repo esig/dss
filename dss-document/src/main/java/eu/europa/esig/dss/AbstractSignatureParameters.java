@@ -38,7 +38,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 @SuppressWarnings("serial")
 public abstract class AbstractSignatureParameters<TP extends SerializableTimestampParameters> extends AbstractSerializableSignatureParameters<TP> {
 
-	private String deterministicId;
+	protected String deterministicId;
 
 	/**
 	 * The documents to be signed

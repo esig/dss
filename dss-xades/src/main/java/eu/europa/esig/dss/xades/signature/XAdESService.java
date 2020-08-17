@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +36,7 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -54,7 +56,8 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
  * XAdES implementation of DocumentSignatureService
  */
 public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> 
-					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
+					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters>,
+					CounterSignatureService<XAdESCounterSignatureParameters> {
 
 	static {
 		SantuarioInitializer.init();
@@ -247,6 +250,53 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(document, "The document cannot be null");
 		SignaturePolicyStoreBuilder builder = new SignaturePolicyStoreBuilder(certificateVerifier);
 		return builder.addSignaturePolicyStore(document, signaturePolicyStore);
+	}
+
+	@Override
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		verifyAndSetCounterSignatureParameters(parameters);
+		
+		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
+		DSSDocument signatureValue = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+		
+		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
+		parameters.setReferences(Collections.singletonList(counterSignatureReference));
+		
+		return getDataToSign(signatureValue, parameters);
+	}
+
+	@Override
+	public DSSDocument counterSignSignature(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		verifyAndSetCounterSignatureParameters(parameters);
+
+		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
+		DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+
+		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
+		parameters.setReferences(Collections.singletonList(counterSignatureReference));
+		
+		DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
+		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
+		
+		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN,
+				parameters.getSignatureLevel()));
+		counterSigned.setMimeType(signatureDocument.getMimeType());
+		
+		return counterSigned;
+	}
+	
+	private void verifyAndSetCounterSignatureParameters(XAdESCounterSignatureParameters parameters) {
+		if (parameters.getSignaturePackaging() == null) {
+			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!", 
+					parameters.getSignaturePackaging()));
+		}
 	}
 
 }

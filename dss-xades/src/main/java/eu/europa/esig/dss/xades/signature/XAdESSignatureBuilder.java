@@ -638,14 +638,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		incorporateDigestValueOfReference(reference, digestAlgorithm, canonicalizedBytes);
 		
 	}
-	
-	/**
-	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
-	 * @return {@link DigestAlgorithm}
-	 */
-	protected DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
-		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
-	}
 
 	/**
 	 * This method incorporates a reference within the signedInfoDom
