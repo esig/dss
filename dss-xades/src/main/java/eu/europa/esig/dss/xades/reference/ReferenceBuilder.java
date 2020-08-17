@@ -241,7 +241,7 @@ public class ReferenceBuilder {
 			dom.appendChild(adopted);
 			return dom;
 			
-		} else if (!Utils.isStringBlank(reference.getUri()) && uri.startsWith("#") && !isXPointer(uri)) {
+		} else if (!Utils.isStringBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
 			final Document document = DomUtils.buildDOM(contents);
 			DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
 			final String targetId = DomUtils.getId(uri);

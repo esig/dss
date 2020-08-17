@@ -71,8 +71,8 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected void incorporateSignatureDom(Node parentNodeOfSignature) {
 	    if (params.getXPathElementPlacement() == null || Utils.isStringEmpty(params.getXPathLocationString())) {
-		parentNodeOfSignature.appendChild(signatureDom);
-		return;
+	    	super.incorporateSignatureDom(parentNodeOfSignature);
+	    	return;
 	    }
 
 	    switch (params.getXPathElementPlacement()) {

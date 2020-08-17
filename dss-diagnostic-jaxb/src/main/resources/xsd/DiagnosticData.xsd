@@ -636,6 +636,7 @@
 			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
 			<xs:enumeration value="SIGNATURE_PROPERTIES" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
 			<xs:enumeration value="XPOINTER" />
 			
 			<!-- CAdES -->

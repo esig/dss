@@ -123,7 +123,11 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		ensureUnsignedSignatureProperties();
 		assertSignatureValid(xadesSignature);
 		
+		Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		
 		incorporateCounterSignature(counterSignature);
+
+		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
 		
 		return createXmlDocument();
 	}

@@ -182,6 +182,8 @@ public class ValidationProcessUtils {
 			return MessageTag.ACCM_POS_KEY;
 		case SIGNATURE_PROPERTIES:
 			return MessageTag.ACCM_POS_SIGNTR_PRT;
+		case COUNTER_SIGNATURE:
+			return MessageTag.ACCM_POS_CNTR_SIG;
 		case MESSAGE_DIGEST:
 			return MessageTag.ACCM_POS_MES_DIG;
 		case CONTENT_DIGEST:

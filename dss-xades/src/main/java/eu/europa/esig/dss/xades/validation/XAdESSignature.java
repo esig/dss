@@ -818,6 +818,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.XPOINTER);
 						found = found && noDuplicateIdFound;
 						
+					} else if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
+						validation.setType(DigestMatcherType.COUNTER_SIGNATURE);
+						found = found && noDuplicateIdFound;
+						
 					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, currentSantuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
@@ -840,7 +844,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else {
 						found = found && noDuplicateIdFound;
-						
 					}
 					
 					if (found) {
@@ -853,7 +856,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				
 				if (DigestMatcherType.REFERENCE.equals(validation.getType()) || DigestMatcherType.OBJECT.equals(validation.getType()) ||
-						DigestMatcherType.MANIFEST.equals(validation.getType()) || DigestMatcherType.XPOINTER.equals(validation.getType())) {
+						DigestMatcherType.MANIFEST.equals(validation.getType()) || DigestMatcherType.XPOINTER.equals(validation.getType()) ||
+						DigestMatcherType.COUNTER_SIGNATURE.equals(validation.getType())) {
 					atLeastOneReferenceElementFound = true;
 				}
 					
@@ -977,6 +981,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
 				initDetachedSignatureResolvers(detachedContents);
+				initCounterSignatureResolver(detachedContents);
 			}
 			return santuarioSignature;
 		} catch (XMLSecurityException e) {
@@ -993,6 +998,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
 			} catch (XMLSignatureException e) {
 				LOG.warn("Unable to retrieve reference digest algorithm {}", reference.getId(), e);
+			}
+		}
+	}
+	
+	/**
+	 * Used for counter signature extension only
+	 */
+	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
+		List<Reference> currentReferences = getReferences();
+		for (Reference reference : currentReferences) {
+			if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
+				santuarioSignature.addResourceResolver(new CounterSignatureResolver(detachedContents.get(0)));
+				break;
 			}
 		}
 	}

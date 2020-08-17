@@ -283,8 +283,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
 		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
-		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN,
-				parameters.getSignatureLevel()));
+		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		
 		return counterSigned;
@@ -294,7 +293,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		if (parameters.getSignaturePackaging() == null) {
 			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
-			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!", 
+			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by XAdES Counter Signature!", 
 					parameters.getSignaturePackaging()));
 		}
 	}

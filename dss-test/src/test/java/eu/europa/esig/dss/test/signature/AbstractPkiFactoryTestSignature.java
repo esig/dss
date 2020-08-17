@@ -692,7 +692,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
-	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
 		byte[] byteArray = DSSUtils.toByteArray(doc);
 		if (toBeCanonicalized) {
 			try {
