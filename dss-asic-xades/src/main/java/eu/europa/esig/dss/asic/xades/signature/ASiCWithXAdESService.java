@@ -72,7 +72,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
 		GetDataToSignASiCWithXAdESHelper getDataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
-		return getXAdESService().getContentTimestamp(getDataToSignHelper.getSignedDocuments(), parameters);
+		XAdESSignatureParameters xadesParameters = getParameters(parameters, getDataToSignHelper);
+		return getXAdESService().getContentTimestamp(getDataToSignHelper.getSignedDocuments(), xadesParameters);
 	}
 
 	@Override
