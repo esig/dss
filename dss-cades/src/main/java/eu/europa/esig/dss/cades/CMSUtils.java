@@ -52,6 +52,7 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,12 +89,19 @@ public final class CMSUtils {
 		try {
 			return generator.generate(content, encapsulate);
 		} catch (CMSException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to generate the CMSSignedData", e);
 		}
 	}
 
-	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content)
-			throws DSSException {
+	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator, SignerInformation signerInfoToSign) {
+		try {
+			return cmsSignedDataGenerator.generateCounterSigners(signerInfoToSign);
+		} catch (CMSException e) {
+			throw new DSSException("Unable to generate the SignerInformationStore for the counter-signature", e);
+		}
+	}
+
+	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content) {
 		return generateCMSSignedData(generator, content, false);
 	}
 

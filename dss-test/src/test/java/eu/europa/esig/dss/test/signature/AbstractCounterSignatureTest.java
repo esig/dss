@@ -47,6 +47,9 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
 
+
+		// signedDocument.save("target/signed-" + signedDocument.getName());
+
 		SignedDocumentValidator validator = getValidator(signedDocument);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -61,7 +64,7 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		assertNotNull(DSSUtils.toByteArray(counterSigned));
 		assertNotNull(counterSigned.getMimeType());
 
-		// counterSigned.save("target/" + counterSigned.getName());
+		// counterSigned.save("target/counter-signed-" + counterSigned.getName());
 
 		byte[] byteArray = DSSUtils.toByteArray(counterSigned);
 		onDocumentSigned(byteArray);
@@ -70,6 +73,20 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		}
 
 		checkMimeType(counterSigned);
+
+		validator = getValidator(counterSigned);
+		List<AdvancedSignature> signatures2 = validator.getSignatures();
+
+		for (AdvancedSignature sig : signatures) {
+			boolean found = false;
+			for (AdvancedSignature sig2 : signatures2) {
+				if (Utils.areStringsEqual(sig.getId(), sig2.getId())) {
+					found = true;
+					break;
+				}
+			}
+			assertTrue(found, String.format("Signature IDs have changed (before : %s / after : %s", signatures, signatures2));
+		}
 		
 		verify(counterSigned);
 	}
@@ -95,17 +112,17 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);
 		
-		String counterSignatureId = getSignatureIdToCounterSign();
+		String counterSignedSignatureId = getSignatureIdToCounterSign();
 		
 		boolean counterSignatureFound = false;
 		for (AdvancedSignature signature : signatures) {
-			if (counterSignatureId.equals(signature.getId())) {
+			if (counterSignedSignatureId.equals(signature.getId())) {
 				List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 				assertTrue(Utils.isCollectionNotEmpty(signature.getCounterSignatures()));
 				for (AdvancedSignature counterSignature : counterSignatures) {
 					AdvancedSignature masterSignature = counterSignature.getMasterSignature();
 					assertNotNull(masterSignature);
-					assertEquals(counterSignatureId, masterSignature.getId());
+					assertEquals(counterSignedSignatureId, masterSignature.getId());
 					counterSignatureFound = true;
 				}
 			}
