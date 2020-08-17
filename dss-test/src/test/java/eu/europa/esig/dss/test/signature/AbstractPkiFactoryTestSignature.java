@@ -483,10 +483,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				if (value instanceof SACommitmentTypeIndicationType) {
 					// TODO multiple value -> multiple tag in signatureattributes ??
 					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
-					List<CommitmentType> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
-					List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
-					List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
-					assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
+					validateETSICommitment(commitment, getSignatureParameters());
 				} else if (value instanceof SASignerRoleType) {
 					SASignerRoleType signerRoles = (SASignerRoleType) value;
 					validateETSISASignerRoleType(signerRoles);
@@ -496,6 +493,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				}
 			}
 		}
+	}
+	
+	protected void validateETSICommitment(SACommitmentTypeIndicationType commitment, SerializableSignatureParameters parameters) {
+		List<CommitmentType> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
+		List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
+		List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
+		assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
 	}
 
 	protected void validateETSISASignerRoleType(SASignerRoleType signerRoles) {
@@ -538,6 +542,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
 		List<String> addressString = productionPlace.getAddressString();
 		SignerLocation signerLocation = getSignatureParameters().bLevel().getSignerLocation();
+		if (signerLocation == null) {
+			return;
+		}
 
 		String country = signerLocation.getCountry();
 		if (country != null) {

@@ -47,7 +47,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.signature.AbstractXAdESTestSignature;
 
-public abstract class AbstractRequirementChecks extends AbstractXAdESTestSignature {
+public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSignature {
 
 	private static DocumentBuilderFactory dbf;
 	private static XPath xpath;

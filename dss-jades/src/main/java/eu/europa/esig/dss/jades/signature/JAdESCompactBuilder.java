@@ -51,7 +51,7 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 	@Override
 	protected void assertConfigurationValidity(JAdESSignatureParameters signatureParameters) {
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
-		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
+		if (!(SignaturePackaging.ENVELOPING.equals(packaging)) && !(SignaturePackaging.DETACHED.equals(packaging))) {
 			throw new DSSException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);
 		}
 		SignatureLevel signatureLevel = signatureParameters.getSignatureLevel();

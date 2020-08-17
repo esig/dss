@@ -62,16 +62,21 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class JAdESUtils {
@@ -84,6 +89,21 @@ public class JAdESUtils {
 
 	/* Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	
+	/**
+	 * Copied from org.jose4j.base64url.internal.apache.commons.codec.binary.Base64
+	 * 
+     * This is a copy of the STANDARD_ENCODE_TABLE above, but with + and /
+     * changed to - and _ to make the encoded Base64 results more URL-SAFE.
+     * This table is only used when the Base64's mode is set to URL-SAFE.
+     */
+    private static final byte[] URL_SAFE_ENCODE_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
+    };
 	
 	/**
 	 * Contains header names that are supported to be present in the critical attribute
@@ -201,6 +221,21 @@ public class JAdESUtils {
 	 */
 	public static boolean isUrlSafe(byte b) {
 		return 0x1f < b && b < 0x2e || 0x2e < b && b < 0x7f;
+	}
+	
+	/**
+	 * Checks if the byte is Base64Url encoded
+	 * 
+	 * @param b a byte to check
+	 * @return TRUE if the byte is Base64Url encoded, FALSE otherwise
+	 */
+	public static boolean isBase64UrlEncoded(byte b) {
+		for (byte m : URL_SAFE_ENCODE_TABLE) {
+			if (b == m) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -459,6 +494,34 @@ public class JAdESUtils {
 		}
 		return (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 	}
+	
+	/**
+	 * Returns a list of unsigned properties matching the {@code headerName} from the {@code jws}
+	 * 
+	 * @param jws {@link JWS} to extract unsigned properties from
+	 * @param headerName {@link String} name of the unsigned header
+	 * @return a list of {@link Object}s
+	 */
+	public static List<Object> getUnsignedProperties(JWS jws, String headerName) {
+		List<Object> etsiU = getEtsiU(jws);
+		if (Utils.isCollectionEmpty(etsiU)) {
+			return Collections.emptyList();
+		}
+		
+		List<Object> objects = new ArrayList<>();
+		
+		for (Object item : etsiU) {
+			if (item instanceof Map) {
+				Map<?, ?> jsonObject = (Map<?, ?>) item;
+				Object object = jsonObject.get(headerName);
+				if (object != null) {
+					objects.add(object);
+				}
+			}
+		}
+		
+		return objects;
+	}
 
 	public static Date getDate(String dateTimeString) {
 		if (Utils.isStringNotEmpty(dateTimeString)) {
@@ -484,6 +547,60 @@ public class JAdESUtils {
 	public static String generateKid(CertificateToken signingCertificate) {
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificate);
 		return Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
+	}
+	
+	/**
+	 * Extracts a counter signature from 'cSig' value with respect to the found format
+	 * 
+	 * @param cSigObject a value of 'cSig' element
+	 * @param masterSignature {@link JAdESSignature} the master signature
+	 * @return {@link JAdESSignature}
+	 */
+	@SuppressWarnings("unchecked")
+	public static JAdESSignature extractJAdESCounterSignature(Object cSigObject, JAdESSignature masterSignature) {
+		
+		String cSigValue = null;
+		
+		if (cSigObject instanceof String) {
+			cSigValue = (String) cSigObject;
+			
+		} else if (cSigObject instanceof Map<?, ?>) {
+			Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;			
+			cSigValue = JsonUtil.toJson(cSigMap);
+			
+		} else {
+			LOG.warn("Unsupported entry of type 'cSig' found! Class : {}. The entry is skipped", cSigObject.getClass());
+			
+		}
+		
+		if (Utils.isStringNotEmpty(cSigValue)) {
+			InMemoryDocument cSigDocument = new InMemoryDocument(cSigValue.getBytes());
+			
+			JAdESDocumentValidatorFactory factory = new JAdESDocumentValidatorFactory();
+			if (factory.isSupported(cSigDocument)) {
+				SignedDocumentValidator validator = factory.create(cSigDocument);
+				List<AdvancedSignature> signatures = validator.getSignatures();
+
+				/*
+				 * 5.3.2 The cSig (counter signature) JSON object
+				 * 
+				 * The cSig JSON object shall contain one counter signature of the JAdES signature where cSig is incorporated.
+				 */
+				if (signatures.size() == 1) {
+					JAdESSignature signature = (JAdESSignature) signatures.iterator().next(); // only one is considered
+					signature.setMasterSignature(masterSignature);
+					signature.setDetachedContents(Arrays.asList(new InMemoryDocument(masterSignature.getSignatureValue())));
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("A JWS counter signature found with Id : '{}'", signature.getId());
+					}
+					return signature;
+				} else {
+					LOG.warn("{} counter signatures found in 'cSig' element. Only one is allowed!", signatures.size());
+				}
+			}
+		}
+		
+		return null;
 	}
 
 }

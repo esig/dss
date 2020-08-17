@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -51,7 +50,8 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 
 	@Override
 	public boolean isSupported(DSSDocument document) {
-		return JAdESUtils.isJsonDocument(document);
+		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(document);
+		return jwsJsonSerializationParser.isSupported();
 	}
 
 	@Override

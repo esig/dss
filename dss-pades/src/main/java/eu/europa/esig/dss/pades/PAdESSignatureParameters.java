@@ -29,7 +29,6 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters implements PAdESCommonParameters {
@@ -152,11 +151,6 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 
 	public void setImageParameters(SignatureImageParameters signatureImageParameters) {
 		this.signatureImageParameters = signatureImageParameters;
-	}
-	
-	@Override
-	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
-		LOG.warn("Cannot set a SignaturePackaging for PAdES signature. Only ENVELOPED packaging is allowed!");
 	}
 
 	public String getLocation() {

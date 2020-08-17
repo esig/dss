@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import org.jose4j.json.internal.json_simple.JSONObject;
 
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
@@ -48,11 +47,10 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		}
 
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
-				jwsJsonSerializationObject.isFlattened() ? JWSSerializationType.FLATTENED_JSON_SERIALIZATION : JWSSerializationType.JSON_SERIALIZATION);
+				jwsJsonSerializationObject.getJWSSerializationType());
 		return new InMemoryDocument(generator.generate());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore) {
 
 		// TODO refactor

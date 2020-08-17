@@ -63,7 +63,7 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	/**
 	 * Defines a used 'sigD' mechanism for a detached signature
 	 */
-	private SigDMechanism sigDMechanism = SigDMechanism.OBJECT_ID_BY_URI_HASH;
+	private SigDMechanism sigDMechanism;
 
 	@Override
 	public JAdESTimestampParameters getContentTimestampParameters() {

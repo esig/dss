@@ -125,6 +125,8 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 
 		if (SigningOperation.SIGN.equals(operation)) {
 			finalName.append("-signed");
+		} else if (SigningOperation.COUNTER_SIGN.equals(operation)) {
+			finalName.append("-counter-signed");
 		} else if (SigningOperation.TIMESTAMP.equals(operation)) {
 			finalName.append("-timestamped");
 		} else if (SigningOperation.EXTEND.equals(operation)) {

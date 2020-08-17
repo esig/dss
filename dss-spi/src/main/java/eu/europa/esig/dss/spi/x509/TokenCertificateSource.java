@@ -48,8 +48,6 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new LinkedHashMap<>();
 
 	private final Map<CertificateRef, List<CertificateRefOrigin>> certificateRefOrigins = new LinkedHashMap<>();
-	
-	private final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 
 	protected TokenCertificateSource() {
 		super();
@@ -120,11 +118,7 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	public Set<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateRef certificateRef : certificateRefs) {
-			for (CertificateToken certificateToken : certificateOrigins.keySet()) {
-				if (certificateMatcher.match(certificateToken, certificateRef)) {
-					result.add(certificateToken);
-				}
-			}
+			result.addAll(findTokensFromCertRef(certificateRef));
 		}
 		return result;
 	}

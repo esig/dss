@@ -216,6 +216,15 @@ public interface AdvancedSignature extends Serializable {
 	 * @return
 	 */
 	CandidatesForSigningCertificate getCandidatesForSigningCertificate();
+	
+	/**
+	 * This method prepares an offline CertificateVerifier. The instance is used to
+	 * know if all required revocation data are present
+	 * 
+	 * @param certificateVerifier the configured CertificateVerifier with all
+	 *                            external sources
+	 */
+	void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier);
 
 	/**
 	 * This setter allows to indicate the master signature. It means that this is a countersignature.
@@ -448,7 +457,21 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	boolean areAllSelfSignedCertificates();
 
+	/**
+	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
+	 *
+	 * @param validationContext
+	 *            {@code ValidationContext} to which the timestamps must be added
+	 */
 	void prepareTimestamps(ValidationContext validationContext);
+
+	/**
+	 * This method adds to the {@code ValidationContext} all counter signatures embedded into the current signature.
+	 *
+	 * @param validationContext
+	 *            {@code ValidationContext} to which the counter signature content must be added
+	 */
+	void prepareCounterSignatures(ValidationContext validationContext);
 
 	/**
 	 * This method allows the structure validation of the signature.

@@ -15,6 +15,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -48,6 +49,7 @@ public class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValid
 		signatureParameters.bLevel().setSigningDate(calendar.getTime());
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		signatureParameters.setSigningCertificate(getSigningCert());
 	}

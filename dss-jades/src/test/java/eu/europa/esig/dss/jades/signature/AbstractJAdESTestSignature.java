@@ -44,6 +44,7 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 	protected List<DSSDocument> getOriginalDocuments() {
 		return Collections.singletonList(getDocumentToSign());
 	}
+	
 	@Override
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);

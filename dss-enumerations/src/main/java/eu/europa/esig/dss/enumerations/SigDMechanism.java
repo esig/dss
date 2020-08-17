@@ -22,7 +22,12 @@ public enum SigDMechanism implements UriBasedEnum {
 	 * 
 	 * NOTE: the default signature creation mechanism used by DSS
 	 */
-	OBJECT_ID_BY_URI_HASH("http://uri.etsi.org/19182/ObjectIdByURIHash");
+	OBJECT_ID_BY_URI_HASH("http://uri.etsi.org/19182/ObjectIdByURIHash"),
+	
+	/*
+	 * Creates a simple DETACHED signature with omitted payload (without SigD element)
+	 */
+	NO_SIG_D("");
 	
 	private final String uri;
 	

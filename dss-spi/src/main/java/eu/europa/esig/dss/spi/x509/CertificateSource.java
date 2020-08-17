@@ -120,6 +120,14 @@ public interface CertificateSource extends Serializable {
 	 */
 	Set<CertificateToken> getBySki(byte[] ski);
 
+	/**
+	 * Returns Set of {@link CertificateToken}s for the provided {@link CertificateRef}
+	 * 
+	 * @param certificateRef a {@link CertificateRef}
+	 * @return Set of {@link CertificateToken}s
+	 */
+	Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef);
+
 	List<CertificateSourceEntity> getEntities();
 
 	/**

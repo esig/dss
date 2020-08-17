@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -28,13 +29,26 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) {
 		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-		for (AdvancedSignature signature : getSignatures()) {
-			final JAdESSignature jadesSignature = (JAdESSignature) signature;
-			if (signatureId.equals(jadesSignature.getId())) {
-				return jadesSignature.getOriginalDocuments();
+		
+		List<AdvancedSignature> signatures = getSignatures();
+		JAdESSignature signatureById = getSignatureById(signatures, signatureId);
+		return signatureById.getOriginalDocuments();
+	}
+	
+	private JAdESSignature getSignatureById(List<AdvancedSignature> signatures, String signatureId) {
+		for (AdvancedSignature signature : signatures) {
+			if (signatureId.equals(signature.getId())) {
+				return (JAdESSignature) signature;
+			}
+			List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+			if (Utils.isCollectionNotEmpty(counterSignatures)) {
+				JAdESSignature counterSignature = getSignatureById(counterSignatures, signatureId);
+				if (counterSignature != null) {
+					return counterSignature;
+				}
 			}
 		}
-		return Collections.emptyList();
+		return null;
 	}
 
 	@Override

@@ -3,10 +3,14 @@ package eu.europa.esig.dss.jades.signature;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -15,8 +19,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -81,8 +88,10 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 		String[] documentationReferences = new String[] { "http://docref.com/ref1", "http://docref.com/ref2" };
 		SpDocSpecification spDocSpec = new SpDocSpecification(SIGNATURE_POLICY_ID, SIGNATURE_POLICY_DESCRIPTION, documentationReferences);
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
+		
 		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(new InMemoryDocument(byteArray), signaturePolicyStore);
-
+		assertRequirementsValid(signedDocumentWithSignaturePolicyStore);
+		
 		verify(signedDocumentWithSignaturePolicyStore);
 
 		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator(signedDocumentWithSignaturePolicyStore);
@@ -96,6 +105,44 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 		assertEquals(SIGNATURE_POLICY_DESCRIPTION, extractedSPS.getSpDocSpecification().getDescription());
 		assertArrayEquals(documentationReferences, extractedSPS.getSpDocSpecification().getDocumentationReferences());
 		assertArrayEquals(DSSUtils.toByteArray(SIGNATURE_POLICY_CONTENT), DSSUtils.toByteArray(extractedSPS.getSignaturePolicyContent()));
+	}
+	
+	private void assertRequirementsValid(DSSDocument documentWithPolicyStore) {
+		try {
+			Map<String, Object> jsonMap = JsonUtil.parseJson(new String(DSSUtils.toByteArray(documentWithPolicyStore)));
+			List<?> signaturesList = (List<?>) jsonMap.get("signatures");
+			assertEquals(1, signaturesList.size());
+			Map<?, ?> signature = (Map<?, ?>) signaturesList.get(0);
+
+			String jsonString = new String(JAdESUtils.fromBase64Url((String) signature.get(JWSConstants.PROTECTED)));
+			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
+			
+			Map<?, ?> unprotectedHeaderMap = (Map<?, ?>) signature.get(JWSConstants.HEADER);
+			List<?> etsiU = (List<?>) unprotectedHeaderMap.get(JAdESHeaderParameterNames.ETSI_U);
+			
+			Map<?, ?> sigPSt = null;
+			for (Object etsiUItem : etsiU) {
+				sigPSt = (Map<?, ?>) ((Map<?, ?>) etsiUItem).get("sigPSt");
+				if (sigPSt != null) {
+					break;
+				}
+			}
+			assertNotNull(sigPSt);
+			
+			Map<?, ?> sigPId = (Map<?, ?>) protectedHeaderMap.get("sigPId");
+			assertNotNull(sigPId);
+			assertNotNull(sigPId.get("id"));
+			Map<?, ?> hashAV = (Map<?, ?>) sigPId.get("hashAV");
+			if (hashAV != null) {
+				String digAlg = (String) hashAV.get("digAlg");
+				assertNotNull(digAlg);
+				String digVal = (String) hashAV.get("digVal");
+				assertNotNull(digVal);
+			}
+			
+		} catch (JoseException e) {
+			fail(e);
+		}
 	}
 
 	@Override

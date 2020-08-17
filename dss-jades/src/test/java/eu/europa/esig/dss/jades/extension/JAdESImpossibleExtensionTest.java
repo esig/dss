@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -53,6 +54,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
 		
 		ToBeSigned dataToSign = service.getDataToSign(digestDocument, parameters);

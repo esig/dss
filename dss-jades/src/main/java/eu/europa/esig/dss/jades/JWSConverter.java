@@ -24,7 +24,7 @@ public final class JWSConverter {
 
 		JWSJsonSerializationObject jwsJsonSerializationObject = new JWSJsonSerializationObject();
 		jwsJsonSerializationObject.getSignatures().add(jws);
-		jwsJsonSerializationObject.setFlattened(true);
+		jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 		jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
 
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,

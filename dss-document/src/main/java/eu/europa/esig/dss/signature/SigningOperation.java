@@ -26,6 +26,11 @@ public enum SigningOperation {
 	 * Signature creation
 	 */
 	SIGN,
+	
+	/**
+	 * Counter signature creation
+	 */
+	COUNTER_SIGN,
 
 	/**
 	 * Timestamp creation
