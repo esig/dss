@@ -53,10 +53,10 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	 * @return {@link DSSDocument} extracted and canonicalized SignatureValue
 	 */
 	public DSSDocument getCanonicalizedSignatureValue(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
+		params = parameters;
 		documentDom = DomUtils.buildDOM(signatureDocument);
 		
-		xadesSignature = extractSignatureById(documentDom, parameters.getSignatureIdToCounterSign());
-		assertSignatureValid(xadesSignature);
+		xadesSignature = extractSignatureById(documentDom, parameters);
 
 		Element signatureValueElement = getSignatureValueElement(xadesSignature);
 		byte[] canonicalizedSignatureValue = DSSXMLUtils.canonicalizeSubtree(
@@ -80,7 +80,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	public DSSReference buildCounterSignatureDSSReference(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		documentDom = DomUtils.buildDOM(signatureDocument);
 		
-		xadesSignature = extractSignatureById(documentDom, parameters.getSignatureIdToCounterSign());
+		xadesSignature = extractSignatureById(documentDom, parameters);
 		xadesPaths = xadesSignature.getXAdESPaths();
 		
 		DSSReference reference = new DSSReference();
@@ -115,13 +115,13 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		params = parameters;
 		documentDom = DomUtils.buildDOM(signatureDocument);
 		
-		xadesSignature = extractSignatureById(documentDom, parameters.getSignatureIdToCounterSign());
+		xadesSignature = extractSignatureById(documentDom, parameters);
+		
 		currentSignatureDom = xadesSignature.getSignatureElement();
 		xadesPaths = xadesSignature.getXAdESPaths();
 
 		ensureUnsignedProperties();
 		ensureUnsignedSignatureProperties();
-		assertSignatureValid(xadesSignature);
 		
 		Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 		
@@ -151,8 +151,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		counterSignatureElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), COUNTER_SIGNATURE_PREFIX + params.getDeterministicId());		
 	}
 	
-	private XAdESSignature extractSignatureById(Document documentDom, String signatureId) {
-		if (Utils.isStringEmpty(signatureId)) {
+	private XAdESSignature extractSignatureById(Document documentDom, XAdESCounterSignatureParameters parameters) {
+		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
@@ -165,14 +165,16 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			Element signatureDom = (Element) signatureNodeList.item(ii);
 			XAdESSignature signature = new XAdESSignature(signatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
+			signature.setDetachedContents(parameters.getDetachedContents());
 			
-			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById(signature, signatureId);
+			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById(signature, parameters.getSignatureIdToCounterSign());
 			if (signatureById != null) {
 				return signatureById;
 			}
 		}
 		
-		throw new DSSException(String.format("A signature with Id '%s' has not been found in the file! Unable to counter sign.", signatureId));
+		throw new DSSException(String.format("A signature with Id '%s' has not been found in the file! Unable to counter sign.", 
+				parameters.getSignatureIdToCounterSign()));
 	}
 	
 	private XAdESSignature getSignatureOrItsCounterSignatureById(XAdESSignature signature, String signatureId) {

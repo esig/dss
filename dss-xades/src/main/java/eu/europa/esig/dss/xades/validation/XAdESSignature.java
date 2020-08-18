@@ -1003,12 +1003,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	/**
-	 * Used for counter signature extension only
+	 * Used for a counter signature extension only
 	 */
 	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
 		List<Reference> currentReferences = getReferences();
 		for (Reference reference : currentReferences) {
 			if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
+				// only one SignatureValue document shall be provided
 				santuarioSignature.addResourceResolver(new CounterSignatureResolver(detachedContents.get(0)));
 				break;
 			}

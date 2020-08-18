@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -30,7 +31,7 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 
 	@Override
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
-		Node node = resolveNode(context);
+		Node node = resolveNode(context.attr);
 		
 		if (node != null) {
 			return createFromNode(node);
@@ -52,28 +53,33 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 
 	@Override
 	public boolean engineCanResolveURI(ResourceResolverContext context) {
-		return resolveNode(context) != null;
+		Attr uriAttr = context.attr;
+		return uriAttr != null && ( DomUtils.isXPointerQuery(uriAttr.getNodeValue()) || DomUtils.isElementReference(uriAttr.getNodeValue()) ) 
+				&& resolveNode(uriAttr) != null;
 	}
 	
-	private Node resolveNode(ResourceResolverContext context) {
-		Attr uriAttr = context.attr;
+	private Node resolveNode(Attr uriAttr) {
 		if (uriAttr == null) {
 			return null;
 		}
 		
 		String uriValue = DSSUtils.decodeUrl(uriAttr.getNodeValue());
-		
+			
 		Document documentDom = DomUtils.buildDOM(document);
 		Node node = DomUtils.getNode(documentDom, XMLDSigPaths.ALL_SIGNATURE_VALUES_PATH + DomUtils.getXPathByIdAttribute(uriValue));
 		
-		if (node == null && isXPointerSlash(uriValue)) {
+		if (node == null && isXPointerSlash(uriValue) && XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(documentDom.getLocalName())) {
 			node = documentDom;
 		} else if (node == null && DomUtils.isXPointerQuery(uriValue)) {
 			String xPointerId = DomUtils.getXPointerId(uriValue);
 			node = DomUtils.getNode(documentDom, XMLDSigPaths.ALL_SIGNATURE_VALUES_PATH + DomUtils.getXPathByIdAttribute(xPointerId));
 		}
 		
-		return node;
+		if (node != null) {
+			return node;
+		}
+		
+		return null;
 	}
 
 }

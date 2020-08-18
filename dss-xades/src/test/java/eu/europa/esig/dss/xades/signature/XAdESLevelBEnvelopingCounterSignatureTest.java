@@ -26,7 +26,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESLevelBCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
+public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
 	private XAdESService service;
 	private DSSDocument documentToSign;

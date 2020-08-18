@@ -45,14 +45,14 @@ public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP
 
 	@Override
 	protected DSSDocument sign() {
-		List<DSSDocument> toBeSigneds = getDocumentsToSign();
+		List<DSSDocument> toBeSigned = getDocumentsToSign();
 		SP params = getSignatureParameters();
 		MultipleDocumentsSignatureService<SP, TP> service = getService();
 
-		ToBeSigned dataToSign = service.getDataToSign(toBeSigneds, params);
+		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
 		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
-		return service.signDocument(toBeSigneds, params, signatureValue);
+		return service.signDocument(toBeSigned, params, signatureValue);
 	}
 
 }

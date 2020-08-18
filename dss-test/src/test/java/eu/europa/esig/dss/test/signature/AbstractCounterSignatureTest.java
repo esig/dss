@@ -24,10 +24,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
-import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
-import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
 
@@ -115,26 +112,9 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	
 	@Override
 	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
-		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		for (Object signatureAttributeObj : signatureAttributeObjects) {
-			if (signatureAttributeObj instanceof JAXBElement) {
-				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
-				Object value = jaxbElement.getValue();
-				
-				if (value instanceof SACommitmentTypeIndicationType) {
-					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
-					SerializableSignatureParameters signatureParameters = hasCounterSignature(signatureAttributes) ? 
-							getSignatureParameters() : getCounterSignatureParameters();
-					validateETSICommitment(commitment, signatureParameters);
-				} else if (value instanceof SASignerRoleType) {
-					SASignerRoleType signerRoles = (SASignerRoleType) value;
-					validateETSISASignerRoleType(signerRoles);
-				} else if (value instanceof SASignatureProductionPlaceType) {
-					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
-					validateETSISASignatureProductionPlaceType(productionPlace);
-				}
-			}
-		}
+		SerializableSignatureParameters signatureParameters = hasCounterSignature(signatureAttributes) ? 
+				getSignatureParameters() : getCounterSignatureParameters();
+		super.validateETSISignatureAttributes(signatureAttributes, signatureParameters);
 	}
 	
 	protected boolean hasCounterSignature(SignatureAttributesType signatureAttributes) {

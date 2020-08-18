@@ -134,7 +134,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		} else {
 			profile = new XAdESLevelBaselineB(certificateVerifier);
 		}
-		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue.getValue());
+		
+		DSSDocument result = profile.signDocument(toSignDocument, parameters, signatureValue.getValue());
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
@@ -142,17 +143,14 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 				detachedContents.add(toSignDocument);
 				parameters.setDetachedContents(detachedContents);
 			}
-			final DSSDocument dssExtendedDocument = extension.extendSignatures(signedDoc, parameters);
-			// The deterministic id is reset between two consecutive signing operations. It prevents having two
-			// signatures with the same Id within the same document.
-			parameters.reinitDeterministicId();
-			dssExtendedDocument.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-			return dssExtendedDocument;
+			result = extension.extendSignatures(result, parameters);
 		}
 
+		// The deterministic id is reset between two consecutive signing operations. It prevents having two
+		// signatures with the same Id within the same document.
 		parameters.reinitDeterministicId();
-		signedDoc.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-		return signedDoc;
+		result.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		return result;
 	}
 
 	@Override
@@ -258,7 +256,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		verifyAndSetCounterSignatureParameters(parameters);
 		
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
-		DSSDocument signatureValue = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+		final DSSDocument signatureValue = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
 		
 		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
 		parameters.setReferences(Collections.singletonList(counterSignatureReference));
@@ -275,14 +273,16 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		verifyAndSetCounterSignatureParameters(parameters);
 
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
-		DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+		final DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+		parameters.setDetachedContents(Arrays.asList(signatureValueToSign));
 
 		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
 		parameters.setReferences(Collections.singletonList(counterSignatureReference));
 		
-		DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
-		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
+		final DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
+		final DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
+		parameters.reinitDeterministicId();
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		

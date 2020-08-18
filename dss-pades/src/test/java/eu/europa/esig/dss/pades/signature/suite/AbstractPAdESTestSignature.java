@@ -49,6 +49,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -252,9 +253,10 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	@Override
-	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
+	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace, SerializableSignatureParameters parameters) {
+		PAdESSignatureParameters padesSignatureParameters = (PAdESSignatureParameters) parameters;
+		String signerLocation = padesSignatureParameters.getLocation();
 		List<String> addressString = productionPlace.getAddressString();
-		String signerLocation = getSignatureParameters().getLocation();
 		if (signerLocation != null) {
 			assertTrue(addressString.contains(signerLocation));
 		} else {
