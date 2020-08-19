@@ -108,9 +108,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected SignatureIdentifier signatureIdentifier;
 	
 	/**
-	 * Build and defines {@code signatureIdentifier} value
+	 * Returns a builder to define and build a signature Id
+	 * 
+	 * @return {@link SignatureIdentifierBuilder}
 	 */
-	protected abstract SignatureIdentifier buildSignatureIdentifier();
+	protected abstract SignatureIdentifierBuilder getSignatureIdentifierBuilder();
 
 	@Override
 	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {
@@ -155,7 +157,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public SignatureIdentifier getDSSId() {
 		if (signatureIdentifier == null) {
-			signatureIdentifier = buildSignatureIdentifier();
+			signatureIdentifier = getSignatureIdentifierBuilder().build();
 		}
 		return signatureIdentifier;
 	}
