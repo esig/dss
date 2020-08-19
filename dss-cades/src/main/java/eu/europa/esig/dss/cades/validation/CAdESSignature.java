@@ -107,7 +107,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -728,16 +727,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return false;
 	}
 	
-	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
+	private List<ReferenceValidation> getManifestEntryValidation() {
 		List<ReferenceValidation> manifestEntryValidations = new ArrayList<>();
-		ManifestFile manifest = getSignedManifest(originalDocument, messageDigest);
-		if (manifest == null) {
+		if (manifestFile == null) {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("No related manifest file found for a signature with name [{}]", getSignatureFilename());
 			}
 			return manifestEntryValidations;
 		}
-		for (ManifestEntry entry : manifest.getEntries()) {
+		for (ManifestEntry entry : manifestFile.getEntries()) {
 			ReferenceValidation entryValidation = new ReferenceValidation();
 			entryValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
 			entryValidation.setName(entry.getFileName());
@@ -748,20 +746,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		
 		return manifestEntryValidations;
-	}
-	
-	private ManifestFile getSignedManifest(final DSSDocument originalDocument, final Digest messageDigest) {
-		if (Utils.isCollectionNotEmpty(manifestFiles)) {
-			DigestAlgorithm digestAlgorithm = messageDigest.getAlgorithm() != null ? messageDigest.getAlgorithm() : DigestAlgorithm.SHA256;
-			String digestValue = originalDocument.getDigest(digestAlgorithm);
-			
-			for (ManifestFile manifestFile : manifestFiles) {
-				if (digestValue.equals(manifestFile.getDigestBase64String(digestAlgorithm))) {
-					return manifestFile;
-				}
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -788,9 +772,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			messageDigestValidation.setFound(true);
 			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
 
-			// get references to documents contained in the manifest file (for ASiC-E container)
-			messageDigestValidation.getDependentValidations()
-					.addAll(getManifestEntryValidation(originalDocument, messageDigest));
+			if (manifestFile != null && 
+					Utils.toBase64(messageDigest.getValue()).equals(manifestFile.getDigestBase64String(messageDigest.getAlgorithm()))) {
+				messageDigestValidation.setName(manifestFile.getFilename());
+				// get references to documents contained in the manifest file (for ASiC-E container)
+				messageDigestValidation.getDependentValidations()
+						.addAll(getManifestEntryValidation());
+			}
 		} else {
 			LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
 		}

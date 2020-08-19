@@ -52,8 +52,7 @@ public abstract class AbstractSignatureScopeFinder<T extends AdvancedSignature> 
 	}
     
 	protected boolean isASiCEArchive(AdvancedSignature advancedSignature) {
-		return Utils.isCollectionNotEmpty(advancedSignature.getManifestedDocuments()) && 
-				Utils.isCollectionNotEmpty(advancedSignature.getContainerContents());
+		return Utils.isCollectionNotEmpty(advancedSignature.getManifestedDocuments());
 	}
 
 }
