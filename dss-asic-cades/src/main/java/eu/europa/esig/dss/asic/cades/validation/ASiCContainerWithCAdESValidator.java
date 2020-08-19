@@ -84,7 +84,14 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				cadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 				cadesValidator.setDetachedContents(getSignedDocuments(signature));
 				cadesValidator.setContainerContents(getArchiveDocuments());
-				cadesValidator.setManifestFiles(getManifestFiles());
+				
+				DSSDocument signatureManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), signature.getName());
+				if (signatureManifest != null) {
+					ManifestFile manifestFile = toValidatedManifestFile(signatureManifest);
+					cadesValidator.setManifestFile(manifestFile);
+					cadesValidator.setManifestedDocuments(getManifestedDocuments(manifestFile));
+				}
+				
 				signatureValidators.add(cadesValidator);
 			}
 		}
@@ -99,7 +106,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				// ASiCArchiveManifest file
 				DSSDocument archiveManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), timestamp.getName());
 				if (archiveManifest != null) {
-					ManifestFile validatedManifestFile = getValidatedManifestFile(archiveManifest);
+					ManifestFile validatedManifestFile = toValidatedManifestFile(archiveManifest);
 					if (validatedManifestFile != null) {
 						ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp,
 								getTimestampType(validatedManifestFile), validatedManifestFile, getAllDocuments());
@@ -191,7 +198,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return null;
 	}
 	
-	private ManifestFile getValidatedManifestFile(DSSDocument manifest) {
+	private ManifestFile toValidatedManifestFile(DSSDocument manifest) {
 		List<ManifestFile> manifestFiles = getManifestFiles();
 		if (Utils.isCollectionNotEmpty(manifestFiles)) {
 			for (ManifestFile manifestFile : manifestFiles) {
@@ -292,19 +299,23 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				return Collections.emptyList();
 			}
 			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
-			List<ManifestEntry> entries = manifestFile.getEntries();
-			List<DSSDocument> signedDocuments = getAllDocuments();
-			
-			List<DSSDocument> result = new ArrayList<>();
-			for (ManifestEntry entry : entries) {
-				for (DSSDocument signedDocument : signedDocuments) {
-					if (Utils.areStringsEqual(entry.getFileName(), signedDocument.getName())) {
-						result.add(signedDocument);
-					}
+			return getManifestedDocuments(manifestFile);
+		}
+	}
+	
+	private List<DSSDocument> getManifestedDocuments(ManifestFile manifestFile) {
+		List<ManifestEntry> entries = manifestFile.getEntries();
+		List<DSSDocument> signedDocuments = getAllDocuments();
+		
+		List<DSSDocument> result = new ArrayList<>();
+		for (ManifestEntry entry : entries) {
+			for (DSSDocument signedDocument : signedDocuments) {
+				if (Utils.areStringsEqual(entry.getFileName(), signedDocument.getName())) {
+					result.add(signedDocument);
 				}
 			}
-			return result;
 		}
+		return result;
 	}
 
 }

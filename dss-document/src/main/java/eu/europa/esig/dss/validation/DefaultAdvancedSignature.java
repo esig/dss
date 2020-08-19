@@ -55,14 +55,19 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected List<DSSDocument> detachedContents;
 
 	/**
-	 * In case of a ASiC signature this is the archive or manifest content.
+	 * In case of a ASiC-S signature this is the archive or manifest content.
 	 */
 	private List<DSSDocument> containerContents;
 	
 	/**
-	 * In case of a ASiC-E signature this is the list of found manifest files.
+	 * In case of a ASiC-E signature this is the found related manifest file.
 	 */
-	protected List<ManifestFile> manifestFiles;
+	protected ManifestFile manifestFile;
+
+	/**
+	 * In case of a ASiC-E signature this is the archive or manifest content.
+	 */
+	private List<DSSDocument> manifestedDocuments;
 
 	/**
 	 * This variable contains a list of reference validations (reference tag for
@@ -108,9 +113,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected SignatureIdentifier signatureIdentifier;
 	
 	/**
-	 * Build and defines {@code signatureIdentifier} value
+	 * Returns a builder to define and build a signature Id
+	 * 
+	 * @return {@link SignatureIdentifierBuilder}
 	 */
-	protected abstract SignatureIdentifier buildSignatureIdentifier();
+	protected abstract SignatureIdentifierBuilder getSignatureIdentifierBuilder();
 
 	@Override
 	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {
@@ -148,14 +155,32 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public void setManifestFiles(List<ManifestFile> manifestFiles) {
-		this.manifestFiles = manifestFiles;
+	public ManifestFile getManifestFile() {
+		return manifestFile;
+	}
+	
+	@Override
+	public void setManifestFile(ManifestFile manifestFile) {
+		this.manifestFile = manifestFile;
+	}
+
+	@Override
+	public List<DSSDocument> getManifestedDocuments() {
+		if (Utils.isCollectionNotEmpty(manifestedDocuments)) {
+			return manifestedDocuments;
+		}
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public void setManifestedDocuments(List<DSSDocument> manifestedDocuments) {
+		this.manifestedDocuments = manifestedDocuments;
 	}
 	
 	@Override
 	public SignatureIdentifier getDSSId() {
 		if (signatureIdentifier == null) {
-			signatureIdentifier = buildSignatureIdentifier();
+			signatureIdentifier = getSignatureIdentifierBuilder().build();
 		}
 		return signatureIdentifier;
 	}
@@ -163,27 +188,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public String getId() {
 		return getDSSId().asXmlId();
-	}
-
-	@Override
-	public List<DSSDocument> getManifestedDocuments() {
-		if (Utils.isCollectionEmpty(manifestFiles) || Utils.isCollectionEmpty(containerContents)) {
-			return Collections.emptyList();
-		}
-		List<DSSDocument> foundManifestedDocuments = new ArrayList<>();
-		for (ManifestFile manifestFile : manifestFiles) {
-			if (Utils.areStringsEqual(manifestFile.getSignatureFilename(), signatureFilename)) {
-				for (DSSDocument document : containerContents) {
-					for (ManifestEntry entry : manifestFile.getEntries()) {
-						if (Utils.areStringsEqual(entry.getFileName(), document.getName())) {
-							foundManifestedDocuments.add(document);
-						}
-					}
-				}
-				break;
-			}
-		}
-		return foundManifestedDocuments;
 	}
 	
 	@Override
