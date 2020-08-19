@@ -9,6 +9,7 @@ import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.ManifestFile;
 
 public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
@@ -19,10 +20,12 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	@Override
 	protected void writeParams(ByteArrayOutputStream baos) throws IOException {
 		super.writeParams(baos);
-		writeString(baos, getSignerInformationValue((CAdESSignature) signature));
+		writeString(baos, getSignerInformationValue());
+		writeString(baos, getManifestFilename());
 	}
 	
-	private String getSignerInformationValue(CAdESSignature cadesSignature) {
+	private String getSignerInformationValue() {
+		CAdESSignature cadesSignature = (CAdESSignature) signature;
 		Integer uniqueInteger = getUniqueIntegerIfNeeded(cadesSignature);
 		String masterSignatureId = getMasterSignatureId(cadesSignature);
 		
@@ -64,6 +67,14 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 		AdvancedSignature masterSignature = cadesSignature.getMasterSignature();
 		if (masterSignature != null) {
 			return masterSignature.getId();
+		}
+		return null;
+	}
+	
+	private String getManifestFilename() {
+		ManifestFile manifestFile = signature.getManifestFile();
+		if (manifestFile != null) {
+			return manifestFile.getFilename();
 		}
 		return null;
 	}

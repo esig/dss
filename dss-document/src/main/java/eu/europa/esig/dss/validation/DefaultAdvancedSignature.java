@@ -155,6 +155,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
+	public ManifestFile getManifestFile() {
+		return manifestFile;
+	}
+	
+	@Override
 	public void setManifestFile(ManifestFile manifestFile) {
 		this.manifestFile = manifestFile;
 	}

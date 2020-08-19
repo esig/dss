@@ -92,6 +92,13 @@ public interface AdvancedSignature extends Serializable {
 	void setContainerContents(final List<DSSDocument> containerContents);
 
 	/**
+	 * This method returns a related {@code ManifestFile} in the case of ASiC-E signature.
+	 *
+	 * @return manifestFile {@link ManifestFile}
+	 */
+	ManifestFile getManifestFile();
+
+	/**
 	 * This method allows to set a manifest file in the case of ASiC-E signature.
 	 *
 	 * @param manifestFile
