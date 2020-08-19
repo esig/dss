@@ -53,6 +53,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
+	
+	private List<ManifestFile> manifestFiles;
 
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
 		this.document = document;
