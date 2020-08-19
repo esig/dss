@@ -49,7 +49,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	 * Extract a canonicalized SignatureValue element from the provided XAdES signature
 	 * 
 	 * @param signatureDocument {@link DSSDocument} to be counter-signed
-	 * @param parameters {@link JXAdESCounterSignatureParameters}
+	 * @param parameters {@link XAdESCounterSignatureParameters}
 	 * @return {@link DSSDocument} extracted and canonicalized SignatureValue
 	 */
 	public DSSDocument getCanonicalizedSignatureValue(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
@@ -165,7 +165,6 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			Element signatureDom = (Element) signatureNodeList.item(ii);
 			XAdESSignature signature = new XAdESSignature(signatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
-			signature.setDetachedContents(parameters.getDetachedContents());
 			
 			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById(signature, parameters.getSignatureIdToCounterSign());
 			if (signatureById != null) {

@@ -65,7 +65,6 @@ public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends Abstr
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-//		signatureParameters.setDetachedContents(documentsToSign);
 		return signatureParameters;
 	}
 

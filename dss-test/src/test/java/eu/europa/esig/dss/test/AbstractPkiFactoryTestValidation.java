@@ -115,6 +115,7 @@ import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SACertIDType;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
+import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
@@ -1156,6 +1157,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				} else if (value instanceof SASigPolicyIdentifierType) {
 					SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
 					validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
+				} else if (value instanceof SACounterSignatureType) {
+					SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
+					validateETSISACounterSignatureType(saCounterSignature);
 				} else if ("ByteRange".equals(jaxbElement.getName().getLocalPart())) {
 					assertTrue(value instanceof List<?>);
 					List<?> byteArray = (List<?>) value;
@@ -1210,6 +1214,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void validateETSISASigPolicyIdentifierType(SASigPolicyIdentifierType saSigPolicyIdentifier) {
 		assertNotNull(saSigPolicyIdentifier);
+	}
+	
+	protected void validateETSISACounterSignatureType(SACounterSignatureType saCounterSignature) {
+		assertNotNull(saCounterSignature);
+		assertNotNull(saCounterSignature.getCounterSignature());
 	}
 
 	protected void validateETSIByteArray(List<?> byteArray) {
@@ -1462,7 +1471,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
-			if (diagnosticData.isBLevelTechnicallyValid(signatureId)) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
+			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && !signatureWrapper.isCounterSignature()) {
 				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
 			}
