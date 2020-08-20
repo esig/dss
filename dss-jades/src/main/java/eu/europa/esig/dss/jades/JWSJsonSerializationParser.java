@@ -155,6 +155,7 @@ public class JWSJsonSerializationParser {
 				signature.setPayloadBytes(JAdESUtils.fromBase64Url(jwsJsonSerializationObject.getPayload()));
 			}
 
+			signature.setJwsJsonSerializationObject(jwsJsonSerializationObject);
 			jwsJsonSerializationObject.getSignatures().add(signature);
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to build a signature. Reason : [%s]", e.getMessage()), e);

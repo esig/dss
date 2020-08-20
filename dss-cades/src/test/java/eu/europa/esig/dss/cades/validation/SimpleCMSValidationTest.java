@@ -1,5 +1,10 @@
 package eu.europa.esig.dss.cades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -73,6 +78,21 @@ public class SimpleCMSValidationTest extends AbstractCAdESTestValidation {
 		validator.setSigningCertificateSource(commonCertificateSource);
 		
 		return validator;
+	}
+	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		
+		assertNotNull(signature.getSigningCertificate());
+		assertNull(signature.getSigningCertificateReference());		
+	}
+	
+	@Override
+	protected void checkSigningDate(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNull(signature.getClaimedSigningTime());
 	}
 
 }

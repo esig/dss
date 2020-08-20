@@ -40,7 +40,8 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 	 */
 	protected byte[] buildBinaries() {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			writeParams(baos);
+			writeSignedProperties(baos);
+			writeSignaturePosition(baos);
 			return baos.toByteArray();
 			
 		} catch (IOException e) {
@@ -49,12 +50,12 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 	}
 	
 	/**
-	 * Write params of a signature to teh given {@code ByteArrayOutputStream}
+	 * Write signed properties of a signature to the given {@code ByteArrayOutputStream}
 	 * 
 	 * @param baos {@link ByteArrayOutputStream} to enrich with the basic signature parameters
 	 * @throws IOException if in exception has been thrown
 	 */
-	protected void writeParams(ByteArrayOutputStream baos) throws IOException {
+	protected void writeSignedProperties(ByteArrayOutputStream baos) throws IOException {
 		writeSigningTime(baos, signature.getSigningTime());
 		writeSigningCertificateRefs(baos, signature.getCertificateSource().getSigningCertificateRefs());
 		writeSignatureValue(baos, signature.getSignatureValue());
@@ -101,5 +102,44 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 			dos.flush();
 		}
 	}
+	
+	protected void writeSignaturePosition(ByteArrayOutputStream baos) throws IOException {
+		writeString(baos, getPositionId());
+	}
+
+	/**
+	 * Returns Id repesenting a current signature position in a file,
+	 * considering its pre-siblings, master signatures when present
+	 * 
+	 * @return {@link String} position id
+	 */
+	protected String getPositionId() {
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		AdvancedSignature masterSignature = signature.getMasterSignature();
+		if (masterSignature != null) {
+			stringBuilder.append(masterSignature.getId());
+			stringBuilder.append(getCounterSignaturePosition(masterSignature));
+		} else {
+			stringBuilder.append(getSignatureFilePosition());
+		}
+		
+		return stringBuilder.toString();
+	}
+	
+	/**
+	 * Returns a current counter signature position in its master signature
+	 * 
+	 * @param masterSignature {@link AdvancedSignature} to analyze
+	 * @return counter signature position
+	 */
+	protected abstract Object getCounterSignaturePosition(AdvancedSignature masterSignature);
+	
+	/**
+	 * Returns a position of a signature in the provided file
+	 * 
+	 * @return signature position in a file
+	 */
+	protected abstract Object getSignatureFilePosition();
 
 }

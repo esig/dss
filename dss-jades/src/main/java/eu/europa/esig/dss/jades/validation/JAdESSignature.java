@@ -62,6 +62,13 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	/** Defines if the validating signature is detached */
 	private final boolean isDetached;
+	
+	/**
+	 * The 'cSig' object embedding the current signature
+	 * 
+	 * NOTE: used for counter signatures only
+	 */
+	private Object masterCSigObject;
 
 	public JAdESSignature(JWS jws) {
 		this.jws = jws;
@@ -110,6 +117,24 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean isDetachedSignature() {
 		return isDetached;
+	}
+
+	/**
+	 * Gets a 'cSig' object embedding the current signature
+	 * 
+	 * @return {@link Object} 'cSig' embedding the current signature
+	 */
+	public Object getMasterCSigObject() {
+		return masterCSigObject;
+	}
+
+	/**
+	 * Sets a 'cSig' object embedding the current signature
+	 * 
+	 * @param masterCSigObject {@link Object} 'cSig' embedding the current signature
+	 */
+	public void setMasterCSigObject(Object masterCSigObject) {
+		this.masterCSigObject = masterCSigObject;
 	}
 
 	@Override

@@ -131,8 +131,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(signature.getJws(), JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
-			for (Object cSigObject : cSigObjects) {
+			for (int ii = 0; ii < cSigObjects.size(); ii++)  {
 				
+				Object cSigObject = cSigObjects.get(ii);
 				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, signature);
 				if (counterSignature != null) {
 					// check timestamp before incorporating a new property

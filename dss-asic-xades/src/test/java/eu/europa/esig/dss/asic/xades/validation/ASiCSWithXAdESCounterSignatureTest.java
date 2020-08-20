@@ -54,11 +54,20 @@ public class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		super.verifyOriginalDocuments(validator, diagnosticData);
 		
+		assertEquals(2, validator.getSignatures().size());
 		for (AdvancedSignature advancedSignature : validator.getSignatures()) {
-			assertEquals(1, validator.getOriginalDocuments(advancedSignature).size());
+			if (advancedSignature.isCounterSignature()) {
+				assertEquals(0, validator.getOriginalDocuments(advancedSignature).size());
+			} else {
+				assertEquals(1, validator.getOriginalDocuments(advancedSignature).size());
+			}
 		}
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
+			if (signatureWrapper.isCounterSignature()) {
+				assertEquals(0, validator.getOriginalDocuments(signatureWrapper.getId()).size());
+			} else {
+				assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
+			}
 		}
 	}
 
