@@ -65,11 +65,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected ManifestFile manifestFile;
 
 	/**
-	 * In case of a ASiC-E signature this is the archive or manifest content.
-	 */
-	private List<DSSDocument> manifestedDocuments;
-
-	/**
 	 * This variable contains a list of reference validations (reference tag for
 	 * XAdES or message-digest for CAdES)
 	 */
@@ -162,19 +157,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public void setManifestFile(ManifestFile manifestFile) {
 		this.manifestFile = manifestFile;
-	}
-
-	@Override
-	public List<DSSDocument> getManifestedDocuments() {
-		if (Utils.isCollectionNotEmpty(manifestedDocuments)) {
-			return manifestedDocuments;
-		}
-		return Collections.emptyList();
-	}
-	
-	@Override
-	public void setManifestedDocuments(List<DSSDocument> manifestedDocuments) {
-		this.manifestedDocuments = manifestedDocuments;
 	}
 	
 	@Override

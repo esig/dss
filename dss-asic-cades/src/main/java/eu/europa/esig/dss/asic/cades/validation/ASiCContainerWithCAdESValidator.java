@@ -89,7 +89,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				if (signatureManifest != null) {
 					ManifestFile manifestFile = toValidatedManifestFile(signatureManifest);
 					cadesValidator.setManifestFile(manifestFile);
-					cadesValidator.setManifestedDocuments(getManifestedDocuments(manifestFile));
 				}
 				
 				signatureValidators.add(cadesValidator);

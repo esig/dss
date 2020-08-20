@@ -107,20 +107,6 @@ public interface AdvancedSignature extends Serializable {
 	void setManifestFile(ManifestFile manifestFile);
 
 	/**
-	 * @return in case of ASiC container returns a list of {@link DSSDocument}s contained in 
-	 * 				the related signature {@code manifestFile}
-	 */
-	List<DSSDocument> getManifestedDocuments();
-	
-	/**
-	 * Sets a list of a documents listed in the related {@code manifestFile} (ASiC)
-	 * 
-	 * @param manifestedDocuments
-	 *            a list of {@link DSSDocument} referenced in the related manifest
-	 */
-	void setManifestedDocuments(List<DSSDocument> manifestedDocuments);
-
-	/**
 	 * Set a certificate source which allows to find the signing certificate by kid
 	 * or certificate's digest
 	 * 
