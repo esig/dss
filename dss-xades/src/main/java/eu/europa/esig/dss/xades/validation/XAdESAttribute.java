@@ -64,6 +64,15 @@ public class XAdESAttribute implements ISignatureAttribute {
 	}
 	
 	/**
+	 * Returns the current {@code Element}
+	 * 
+	 * @return {@link Element}
+	 */
+	public final Element getElement() {
+		return element;
+	}
+	
+	/**
 	 * Returns namespae of the element
 	 * @return {@link String} namespace
 	 */

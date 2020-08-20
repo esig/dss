@@ -26,9 +26,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 
@@ -137,7 +134,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, signature);
 				if (counterSignature != null) {
 					// check timestamp before incorporating a new property
-					if (isTimestamped(counterSignature, signatureId)) {
+					if (signature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {
 						throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
 								+ "The signature is timestamped by a master signature!", signatureId));
 					}
@@ -173,18 +170,6 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 			cSigMap.put(JWSConstants.HEADER, unprotected);
 		}
 		jws.setUnprotected(unprotected);
-	}
-	
-	private boolean isTimestamped(AdvancedSignature masterSignature, String signatureId) {
-		if (masterSignature != null) {
-			for (TimestampToken timestampToken : masterSignature.getArchiveTimestamps()) {
-				if (timestampToken.getTimestampedReferences().contains(new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE))) {
-					return true;
-				}
-			}
-			return isTimestamped(masterSignature.getMasterSignature(), signatureId);
-		}
-		return false;
 	}
 
 }

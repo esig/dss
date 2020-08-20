@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jades.signature;
+package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,13 +22,10 @@ import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -38,41 +35,41 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValidation {
+public class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTestValidation {
 	
-	private JAdESService service;
+	private XAdESService service;
 	private DSSDocument documentToSign;
-	private JAdESSignatureParameters signatureParameters;
-	private JAdESCounterSignatureParameters counterSignatureParameters;
+	private XAdESSignatureParameters signatureParameters;
+	private XAdESCounterSignatureParameters counterSignatureParameters;
 	
 	private String signingAlias;
 	
 	@BeforeEach
 	public void init() {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
-		service = new JAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		
 		signingAlias = SELF_SIGNED_USER;
 		
-		signatureParameters = new JAdESSignatureParameters();
+		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		
 		signingAlias = GOOD_USER;
 		
-		counterSignatureParameters = new JAdESCounterSignatureParameters();
+		counterSignatureParameters = new XAdESCounterSignatureParameters();
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
-		counterSignatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-		counterSignatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
+		counterSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 	}
 	
 	@Test
@@ -89,7 +86,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		SignedDocumentValidator validator = getValidator(signedDocument);
 		String mainSignatureId = validator.getSignatures().get(0).getId();
 		
-		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
+		counterSignatureParameters.setSignatureIdToCounterSign(validator.getSignatures().get(0).getId());
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
 		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
@@ -97,23 +94,23 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		validator = getValidator(counterSignedSignature);
+		assertEquals(1, validator.getSignatures().size());
 		assertEquals(mainSignatureId, validator.getSignatures().get(0).getId());
 		assertEquals(1, validator.getSignatures().get(0).getCounterSignatures().size());
 		
 		String counterSignatureId = validator.getSignatures().get(0).getCounterSignatures().get(0).getId();
 		assertNotEquals(mainSignatureId, counterSignatureId);
 		
-		// counterSignedSignature.save("target/counterSignedSignature.json");
+		// counterSignedSignature.save("target/counterSignedSignature.xml");
 		
-		signatureParameters = new JAdESSignatureParameters();
-		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
-		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
-		DSSDocument ltaJAdES = service.extendDocument(counterSignedSignature, signatureParameters);
+		DSSDocument ltaXAdES = service.extendDocument(counterSignedSignature, signatureParameters);
 		
-		// ltaJAdES.save("target/ltaJAdES.json");
+		// ltaXAdES.save("target/ltaXAdES.xml");
 		
-		Reports reports = verify(ltaJAdES);
+		Reports reports = verify(ltaXAdES);
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
@@ -122,17 +119,19 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(mainSignatureId);
 		assertNotNull(signatureWrapper);
 		assertFalse(signatureWrapper.isCounterSignature());
-		assertEquals(SignatureLevel.JAdES_BASELINE_LTA, signatureWrapper.getSignatureFormat());
+		assertEquals(SignatureLevel.XAdES_BASELINE_LTA, signatureWrapper.getSignatureFormat());
 		
 		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignaturesForMasterSignature(signatureWrapper);
 		assertEquals(1, counterSignatures.size());
 		
 		SignatureWrapper counterSignature = counterSignatures.iterator().next();
 		assertEquals(counterSignatureId, counterSignature.getId());
-		assertEquals(SignatureLevel.JAdES_BASELINE_B, counterSignature.getSignatureFormat());
+		assertEquals(SignatureLevel.XAdES_BASELINE_B, counterSignature.getSignatureFormat());
 		
-		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters));
+		// impossible to counter sign an extended signature
+		counterSignatureParameters.bLevel().setSigningDate(new Date());
+		counterSignatureParameters.setSignatureIdToCounterSign(counterSignatureId);
+		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters));
 		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
 				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());
 		
@@ -149,10 +148,10 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		
 		// possible to counter sign the main signature again
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
-		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters);
+		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters);
 		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
 				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
-		counterSignedSignature = service.counterSignSignature(ltaJAdES, counterSignatureParameters, signatureValue);
+		counterSignedSignature = service.counterSignSignature(ltaXAdES, counterSignatureParameters, signatureValue);
 		assertNotNull(counterSignedSignature);
 		
 		validator = getValidator(counterSignedSignature);
@@ -180,8 +179,11 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		super.checkTimestamps(diagnosticData);
 		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signature.isCounterSignature());
+		
 		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignatures();
-		assertEquals(1, counterSignatures.size());
+		assertTrue(Utils.isCollectionNotEmpty(counterSignatures));
 		SignatureWrapper counterSignature = counterSignatures.iterator().next();
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();

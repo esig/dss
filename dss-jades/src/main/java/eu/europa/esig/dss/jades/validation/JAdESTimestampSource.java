@@ -29,21 +29,19 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 @SuppressWarnings("serial")
-public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute> {
+public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature, JAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampSource.class);
 
-	private final JAdESSignature signature;
-
 	public JAdESTimestampSource(JAdESSignature signature) {
 		super(signature);
-		this.signature = signature;
 	}
 
 	@Override
@@ -164,7 +162,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	@Override
 	public List<TimestampedReference> getSignatureTimestampReferences() {
 		// JAdES SigTst covers only the signature value
-		return Arrays.asList(new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE));
+		return Arrays.asList(new TimestampedReference(signature.getId(), TimestampedObjectType.SIGNATURE));
 	}
 
 	@Override
@@ -382,6 +380,15 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 		}
 		
 		return cSigReferences;
+	}
+
+	@Override
+	protected AdvancedSignature getCounterSignature(JAdESAttribute unsignedAttribute) {
+		Object cSig = unsignedAttribute.getValue();
+		if (cSig != null) {
+			return JAdESUtils.extractJAdESCounterSignature(cSig, signature);
+		}
+		return null;
 	}
 	
 	/**

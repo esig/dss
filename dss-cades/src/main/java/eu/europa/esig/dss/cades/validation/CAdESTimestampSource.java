@@ -54,8 +54,6 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +66,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
@@ -79,11 +76,15 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CMSCRLSource;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
@@ -92,37 +93,30 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 @SuppressWarnings("serial")
-public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
+public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature, CAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
 	
-	protected final transient SignerInformation signerInformation;
-	
-	protected final transient CMSSignedData cmsSignedData;
-	protected final transient List<DSSDocument> detachedDocuments;
-	
 	public CAdESTimestampSource(final CAdESSignature signature) {
 		super(signature);
-		this.cmsSignedData = signature.getCmsSignedData();
-		this.detachedDocuments = signature.getDetachedContents();
-		this.signerInformation = signature.getSignerInformation();
 	}
 
 	@Override
 	protected CAdESTimestampDataBuilder getTimestampDataBuilder() {
 		CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
-				cmsSignedData, certificateSource.getAllCertificateTokens());
-		return new CAdESTimestampDataBuilder(cmsSignedData, signerInformation, detachedDocuments, timestampExtractor);
+				signature.getCmsSignedData(), certificateSource.getAllCertificateTokens());
+		return new CAdESTimestampDataBuilder(signature.getCmsSignedData(), signature.getSignerInformation(), 
+				signature.getDetachedContents(), timestampExtractor);
 	}
 
 	@Override
 	protected SignatureProperties<CAdESAttribute> getSignedSignatureProperties() {
-		return CAdESSignedAttributes.build(signerInformation);
+		return CAdESSignedAttributes.build(signature.getSignerInformation());
 	}
 
 	@Override
 	protected SignatureProperties<CAdESAttribute> getUnsignedSignatureProperties() {
-		return CAdESUnsignedAttributes.build(signerInformation);
+		return CAdESUnsignedAttributes.build(signature.getSignerInformation());
 	}
 
 	@Override
@@ -280,6 +274,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	private List<TimestampedReference> getSignedDataCertificateReferences(final ASN1Sequence atsHashIndex, final DigestAlgorithm digestAlgorithm,
 			final String timestampId) {
 		List<TimestampedReference> references = new ArrayList<>();
+		
+		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
 		if (signatureCertificateSource instanceof CMSCertificateSource) {
 			ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
 			List<DEROctetString> certsHashList = DSSASN1Utils.getDEROctetStrings(certsHashIndex);
@@ -303,6 +299,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		// get CRL references
 		ASN1Sequence crlsHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
 		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
+		
+		OfflineCRLSource signatureCRLSource = signature.getCRLSource();
 		if (signatureCRLSource instanceof CMSCRLSource) {
 			CMSCRLSource cmsCRLSource = (CMSCRLSource) signatureCRLSource;
 			for (EncapsulatedRevocationTokenIdentifier<CRL> token : cmsCRLSource.getCMSSignedDataRevocationBinaries()) {
@@ -326,6 +324,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	private List<TimestampedReference> getSignedDataOCSPReferences(List<DEROctetString> crlsHashList, final DigestAlgorithm digestAlgorithm,
 			final String timestampId) {
 		List<TimestampedReference> references = new ArrayList<>();
+		
+		OfflineOCSPSource signatureOCSPSource = signature.getOCSPSource();
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
 			CMSOCSPSource cmsOCSPSource = (CMSOCSPSource) signatureOCSPSource;
 			for (EncapsulatedRevocationTokenIdentifier<OCSP> token : cmsOCSPSource.getCMSSignedDataRevocationBinaries()) {
@@ -351,19 +351,26 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	@Override
 	protected List<TimestampedReference> getSignatureSignedDataReferences() {
 		List<TimestampedReference> references = new ArrayList<>();
+		
+		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
 		if (signatureCertificateSource instanceof CMSCertificateSource) {
 			addReferences(references, createReferencesForCertificates(signatureCertificateSource.getSignedDataCertificates()));
 		}
+		
+		OfflineCRLSource signatureCRLSource = signature.getCRLSource();
 		if (signatureCRLSource instanceof CMSCRLSource) {
 			for (EncapsulatedRevocationTokenIdentifier<CRL> token : ((CMSCRLSource) signatureCRLSource).getCMSSignedDataRevocationBinaries()) {
 				addReference(references, token, TimestampedObjectType.REVOCATION);
 			}
 		}
+		
+		OfflineOCSPSource signatureOCSPSource = signature.getOCSPSource();
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
 			for (EncapsulatedRevocationTokenIdentifier<OCSP> token : ((CMSOCSPSource) signatureOCSPSource).getCMSSignedDataRevocationBinaries()) {
 				addReference(references, token, TimestampedObjectType.REVOCATION);
 			}
 		}
+		
 		return references;
 	}
 	
@@ -517,6 +524,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
 
+	}
+
+	@Override
+	protected AdvancedSignature getCounterSignature(CAdESAttribute unsignedAttribute) {
+		// TODO : implement within DSS-2180
+		return null;
 	}
 
 }

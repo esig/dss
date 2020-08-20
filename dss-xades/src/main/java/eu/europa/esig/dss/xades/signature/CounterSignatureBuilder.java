@@ -15,6 +15,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -184,6 +185,11 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
 			XAdESSignature counterSignatureById = getSignatureOrItsCounterSignatureById((XAdESSignature) counterSignature, signatureId);
 			if (counterSignatureById != null) {
+				// check if not timestamped
+				if (signature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {
+					throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
+							+ "The signature is timestamped by a master signature!", signatureId));
+				}
 				return counterSignatureById;
 			}
 		}

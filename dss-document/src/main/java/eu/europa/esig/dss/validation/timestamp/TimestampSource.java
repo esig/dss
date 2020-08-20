@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.timestamp;
 import java.io.Serializable;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
@@ -93,5 +94,21 @@ public interface TimestampSource extends Serializable {
 	 * @return a list of {@link TimestampedReference}s
 	 */
 	List<TimestampedReference> getEncapsulatedReferences();
+	
+	/**
+	 * Returns a list of {@link TimestampedReference}s obtained from the {@code signatureScopes}
+	 * 
+	 * @return list of {@link TimestampedReference}s
+	 */
+	List<TimestampedReference> getAllSignedDataReferences();
+	
+	/**
+	 * Checks if a tokenId with the given Id is covered by the timestamp source
+	 * 
+	 * @param tokenId {@link String} Id of the token to check
+	 * @param objectType {@link TimestampedObjectType} defining the type of the token
+	 * @return TRUE if the token if covered by the timestamp source, FALSE otherwise
+	 */
+	boolean isTimestamped(String tokenId, TimestampedObjectType objectType);
 
 }

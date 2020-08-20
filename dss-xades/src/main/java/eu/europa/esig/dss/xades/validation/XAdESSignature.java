@@ -257,6 +257,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 	}
+	
+	public List<XAdESPaths> getXAdESPathsHolders() {
+		return xadesPathsHolders;
+	}
 
 	public XAdESPaths getXAdESPaths() {
 		return xadesPaths;
@@ -1048,45 +1052,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		final NodeList counterSignatures = DomUtils.getNodeList(signatureElement, xadesPaths.getCounterSignaturePath());
 		if (counterSignatures != null && counterSignatures.getLength() > 0) {
 			for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
-				final Element currentCounterSignatureElement = (Element) counterSignatures.item(ii);
-				final NodeList counterSignaturesList = DomUtils.getNodeList(currentCounterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
-				if (counterSignaturesList != null && counterSignaturesList.getLength() > 0) {
-					for (int jj = 0; jj < counterSignaturesList.getLength(); jj++) {
-						// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
-						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders);
-						if (isCounterSignature(xadesCounterSignature)) {
-							xadesCounterSignature.setMasterSignature(this);
-							xadesList.add(xadesCounterSignature);
-						}
-					}
+				XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature((Element) counterSignatures.item(ii), this);
+				if (counterSignature != null) {
+					xadesList.add(counterSignature);
 				}
 			}
 		}
 		return xadesList;
-	}
-
-	/**
-	 * This method verifies whether a given signature is a countersignature.
-	 *
-	 * From ETSI TS 101 903 V1.4.2: - The signature's ds:SignedInfo element MUST contain one ds:Reference element
-	 * referencing the ds:Signature element of the
-	 * embedding and countersigned XAdES signature - The content of the ds:DigestValue in the aforementioned
-	 * ds:Reference element of the countersignature MUST
-	 * be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e. including the
-	 * starting and closing tags) of the
-	 * embedding and countersigned XAdES signature.
-	 *
-	 * @param xadesCounterSignature
-	 * @return
-	 */
-	private boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
-		final List<Reference> references = xadesCounterSignature.getReferences();
-		for (final Reference reference : references) {
-			if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	@Override

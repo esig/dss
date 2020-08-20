@@ -42,7 +42,9 @@ import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
@@ -75,7 +77,8 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 
 	@Override
 	protected PAdESTimestampDataBuilder getTimestampDataBuilder() {
-		PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(documentRevisions, signerInformation, detachedDocuments);
+		PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(
+				documentRevisions, signature.getSignerInformation(), signature.getDetachedContents());
 		padesTimestampDataBuilder.setSignatureTimestamps(getSignatureTimestamps());
 		return padesTimestampDataBuilder;
 	}
@@ -159,6 +162,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	public List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> signatureTimestampReferences = super.getSignatureTimestampReferences();
 		// timestamp covers inner signature, therefore it covers certificates included into the signature's KeyInfo
+		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
 		addReferences(signatureTimestampReferences, createReferencesForCertificates(signatureCertificateSource.getSignedDataCertificates()));
 		return signatureTimestampReferences;
 	}
@@ -272,6 +276,12 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	@Override
 	protected ArchiveTimestampType getArchiveTimestampType(CAdESAttribute unsignedAttribute) {
 		return ArchiveTimestampType.PAdES;
+	}
+	
+	@Override
+	protected AdvancedSignature getCounterSignature(CAdESAttribute unsignedAttribute) {
+		// not supported in PAdES
+		return null;
 	}
 	
 }

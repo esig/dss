@@ -69,6 +69,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 /**
@@ -843,6 +844,68 @@ public final class DSSXMLUtils {
 		}
 		LOG.warn("Unable to extract the public key. Reason : KeyInfo element is null");
 		return null;
+	}
+	
+	/**
+	 * Creates and returns a counter signature found in the {@code counterSignatureElement}
+	 * 
+	 * @param counterSignatureElement {@link Element} {@code <ds:CounterSignature>} element
+	 * @param masterSignature {@link XAdESSignature} master signature containing the counter signature
+	 * @return
+	 */
+	public static XAdESSignature createCounterSignature(Element counterSignatureElement, XAdESSignature masterSignature) {
+		try {
+			/*
+			 * 5.2.7.2 Enveloped countersignatures: the CounterSignature qualifying property
+			 * 
+			 * The CounterSignature qualifying property shall contain one countersignature 
+			 * of the XAdES signature where CounterSignature is incorporated. 
+			 */
+			final Node counterSignatureNode = DomUtils.getNode(counterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
+			
+			// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
+			final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignatureNode, masterSignature.getXAdESPathsHolders());
+			if (isCounterSignature(xadesCounterSignature)) {
+				xadesCounterSignature.setMasterSignature(masterSignature);
+				return xadesCounterSignature;
+			}
+			
+		} catch (Exception e) {
+			String errorMessage = "An error occurred during counter signature extraction. The element entry is skipped. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
+		}
+		
+		return null;
+	}
+	
+
+
+	/**
+	 * This method verifies whether a given signature is a countersignature.
+	 *
+	 * From ETSI TS 101 903 V1.4.2: - The signature's ds:SignedInfo element MUST contain one ds:Reference element
+	 * referencing the ds:Signature element of the
+	 * embedding and countersigned XAdES signature - The content of the ds:DigestValue in the aforementioned
+	 * ds:Reference element of the countersignature MUST
+	 * be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e. including the
+	 * starting and closing tags) of the
+	 * embedding and countersigned XAdES signature.
+	 *
+	 * @param xadesCounterSignature {@link XAdESSignature} a signature extracted from {@code <ds:CounterSignature>} element
+	 * @return TRUE if the current XAdES Signature contains a coutner signature reference, FALSE otherwise
+	 */
+	private static boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
+		final List<Reference> references = xadesCounterSignature.getReferences();
+		for (final Reference reference : references) {
+			if (DSSXMLUtils.isCounterSignature(reference, xadesCounterSignature.getXAdESPaths())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
