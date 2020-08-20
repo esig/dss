@@ -8,11 +8,20 @@ import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 
 import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.model.DSSException;
 
 public class JWS extends JsonWebSignature {
 
+	/**
+	 * The unprotected header map
+	 */
 	private Map<String, Object> unprotected;
+	
+	/**
+	 * The parent {@code JWSJsonSerializationObject}
+	 */
+	private JWSJsonSerializationObject jwsJsonSerializationObject;
 
 	/**
 	 * The default constructor creating an empty JsonWebSignature
@@ -101,6 +110,14 @@ public class JWS extends JsonWebSignature {
 
 	public Map<String, Object> getUnprotected() {
 		return unprotected;
+	}
+
+	public JWSJsonSerializationObject getJwsJsonSerializationObject() {
+		return jwsJsonSerializationObject;
+	}
+
+	public void setJwsJsonSerializationObject(JWSJsonSerializationObject jwsJsonSerializationObject) {
+		this.jwsJsonSerializationObject = jwsJsonSerializationObject;
 	}
 	
 	/**

@@ -20,24 +20,17 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 /**
  * This class handles the specifics of the internally detached XML signature.
@@ -53,12 +46,12 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 *                            The set of parameters relating to the structure
 	 *                            and process of the creation or extension of the
 	 *                            electronic signature.
-	 * @param origDoc
+	 * @param document
 	 *                            The original document to sign.
 	 * @param certificateVerifier
 	 */
-	public InternallyDetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
-		super(params, origDoc, certificateVerifier);
+	public InternallyDetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+		super(params, document, certificateVerifier);
 	}
 
 	@Override
@@ -82,27 +75,6 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	}
 
 	@Override
-	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
-		final DSSReference reference = new DSSReference();
-		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
-
-		Document dom = DomUtils.buildDOM(document);
-		String identifier = DSSXMLUtils.getIDIdentifier(dom.getDocumentElement());
-		Objects.requireNonNull(identifier, "ID not defined on the root xml element");
-		reference.setUri("#" + identifier);
-
-		reference.setContents(document);
-		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
-		reference.setDigestMethodAlgorithm(digestAlgorithm);
-
-		List<DSSTransform> dssTransformList = new ArrayList<>();
-		CanonicalizationTransform canonicalization = new CanonicalizationTransform(getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
-		dssTransformList.add(canonicalization);
-		reference.setTransforms(dssTransformList);
-		return reference;
-	}
-
-	@Override
 	protected void incorporateFiles() {
 		List<DSSReference> references = params.getReferences();
 		for (DSSReference ref : references) {
@@ -111,14 +83,6 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 			Node adopted = documentDom.importNode(root, true);
 			documentDom.getDocumentElement().appendChild(adopted);
 		}
-	}
-
-	@Override
-	protected DSSDocument transformReference(final DSSReference reference) {
-		DSSDocument contents = reference.getContents();
-		Document dom = DomUtils.buildDOM(contents);
-		Element root = dom.getDocumentElement();
-		return new InMemoryDocument(applyTransformations(reference, root));
 	}
 
 }

@@ -11,7 +11,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -59,8 +58,8 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
 
 			xadesPaths = xadesSignature.getXAdESPaths();
-
-			final String currentSignatureId = currentSignatureDom.getAttribute(XMLDSigAttribute.ID.getAttributeName());
+			
+			final String currentSignatureId = xadesSignature.getDAIdentifier();
 
 			ensureUnsignedProperties();
 			ensureUnsignedSignatureProperties();

@@ -114,14 +114,6 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *            a {@code ManifestFile} to set
 	 */
 	void setManifestFile(final ManifestFile manifestFile);
-	
-	/**
-	 * Sets a list of {@code DSSDocument} referenced by the related {@code manifestFile}
-	 * 
-	 * @param manifestedDocuments 
-	 * 			  a list of {@link DSSDocument} signed by a {@code manifestFile}
-	 */
-	void setManifestedDocuments(final List<DSSDocument> manifestedDocuments);
 
 	/**
 	 * This method allows to define the signing certificate. It is useful in the

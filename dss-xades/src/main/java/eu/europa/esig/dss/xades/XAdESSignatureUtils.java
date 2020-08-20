@@ -127,8 +127,7 @@ public final class XAdESSignatureUtils {
 				return false;
 			}
 		// if type refers to object or manifest - it is a document
-		} else if (DSSXMLUtils.isObjectReferenceType(referenceType) || DSSXMLUtils.isManifestReferenceType(referenceType) ||
-				DSSXMLUtils.isCounterSignatureReferenceType(referenceType)) {
+		} else if (DSSXMLUtils.isObjectReferenceType(referenceType) || DSSXMLUtils.isManifestReferenceType(referenceType)) {
 			return true;
 		// otherwise not a document
 		} else {

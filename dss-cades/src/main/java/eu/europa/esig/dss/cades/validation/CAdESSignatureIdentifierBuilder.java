@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
@@ -18,57 +17,9 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	}
 	
 	@Override
-	protected void writeParams(ByteArrayOutputStream baos) throws IOException {
-		super.writeParams(baos);
-		writeString(baos, getSignerInformationValue());
+	protected void writeSignedProperties(ByteArrayOutputStream baos) throws IOException {
+		super.writeSignedProperties(baos);
 		writeString(baos, getManifestFilename());
-	}
-	
-	private String getSignerInformationValue() {
-		CAdESSignature cadesSignature = (CAdESSignature) signature;
-		Integer uniqueInteger = getUniqueIntegerIfNeeded(cadesSignature);
-		String masterSignatureId = getMasterSignatureId(cadesSignature);
-		
-		return masterSignatureId != null ? uniqueInteger.toString() + "-" + masterSignatureId : uniqueInteger.toString();
-	}
-	
-	/**
-	 * Returns the related position of {@code this.signerInformation} in the cmsSignedData
-	 * among signers with the same SID
-	 * 
-	 * @param cadesSignature {@link CAdESSignature}
-	 * @return integer identifier
-	 */
-	private int getUniqueIntegerIfNeeded(CAdESSignature cadesSignature) {
-		Collection<SignerInformation> signerInformations;
-		SignerId signerId = cadesSignature.getSignerId();
-		if (cadesSignature.isCounterSignature()) {
-			signerInformations = cadesSignature.getSignerInformation().getCounterSignatures().getSigners(signerId);
-		} else {
-			signerInformations = cadesSignature.getCmsSignedData().getSignerInfos().getSigners(signerId);
-		}
-		int counter = 0;
-		for (SignerInformation currentSignerInformation : signerInformations) {
-			if (cadesSignature.getSignerInformation() == currentSignerInformation) {
-				break;
-			}
-			counter++;
-		}
-		return counter;
-	}
-	
-	/**
-	 * Returns Id of the {@code masterSignature} if exists, otherwise returns NULL
-	 * 
-	 * @param cadesSignature {@link CAdESSignature}
-	 * @return {@link String} masterSignature id
-	 */
-	private String getMasterSignatureId(CAdESSignature cadesSignature) {
-		AdvancedSignature masterSignature = cadesSignature.getMasterSignature();
-		if (masterSignature != null) {
-			return masterSignature.getId();
-		}
-		return null;
 	}
 	
 	private String getManifestFilename() {
@@ -77,6 +28,34 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 			return manifestFile.getFilename();
 		}
 		return null;
+	}
+
+	@Override
+	protected Integer getCounterSignaturePosition(AdvancedSignature masterSignature) {
+		CAdESSignature cadesSignature = (CAdESSignature) signature;
+		CAdESSignature cadesMasterSignature = (CAdESSignature) masterSignature;
+		SignerInformation masterSignerInformation = cadesMasterSignature.getSignerInformation();
+		
+		return count(masterSignerInformation.getCounterSignatures().getSigners(), cadesSignature.getSignerInformation());
+	}
+
+	@Override
+	protected Integer getSignatureFilePosition() {
+		CAdESSignature cadesSignature = (CAdESSignature) signature;
+		
+		return count(cadesSignature.getCmsSignedData().getSignerInfos().getSigners(), cadesSignature.getSignerInformation());
+	}
+	
+	private Integer count(Collection<SignerInformation> signerInformationStore, SignerInformation currentSignerInformation) {
+		int counter = 0;
+		for (SignerInformation signerInformation : signerInformationStore) {
+			if (currentSignerInformation == signerInformation) {
+				break;
+			}
+			counter++;
+		}
+		
+		return counter;
 	}
 
 }

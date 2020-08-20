@@ -51,6 +51,8 @@ public class XMLDSigPaths extends AbstractPaths {
 	public static final String SIGNATURE_VALUE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE_VALUE);
 
 	public static final String SIGNATURE_VALUE_ID_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE_VALUE, XMLDSigAttribute.ID);
+	
+	public static final String ALL_SIGNATURE_VALUES_PATH = all(XMLDSigElement.SIGNATURE_VALUE);
 
 	public static final String KEY_INFO_PATH = fromCurrentPosition(XMLDSigElement.KEY_INFO);
 

@@ -719,6 +719,35 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Return a unique id for a counter signature.
+	 *
+	 * @param signingTime
+	 *            the signing time
+	 * @param id
+	 *            the token identifier
+	 * @param masterSignatureId
+	 *            id of a signature to be counter signed
+	 * @return a unique string
+	 */
+	public static String getCounterSignatureDeterministicId(final Date signingTime, TokenIdentifier id, String masterSignatureId) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
+			if (signingTime != null) {
+				dos.writeLong(signingTime.getTime());
+			}
+			if (id != null) {
+				dos.writeChars(id.asXmlId());
+			}
+			if (masterSignatureId != null) {
+				dos.writeChars(masterSignatureId);
+			}
+			dos.flush();
+			return "id-" + getMD5Digest(baos.toByteArray());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
 	 * Returns a Hex encoded of the MD5 digest of binaries
 	 *
 	 * @param bytes
