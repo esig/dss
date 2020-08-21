@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.ws.signature.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -252,6 +254,54 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
 		validate(iMD, null);
+	}
+
+	@Test
+	public void testWithSignatureFieldId() throws Exception {
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		parameters.setSignatureFieldId("signature-test");
+
+		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample-with-empty-signature-fields.pdf"));
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
+
+		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocument, parameters);
+		assertNotNull(dataToSign);
+		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+		RemoteDocument signedDocument = signatureService.signDocument(toSignDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+		assertNotNull(signedDocument);
+
+		DSSDocument document = new InMemoryDocument(signedDocument.getBytes());
+		DiagnosticData diagnosticData = validate(document, null);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(1, signature.getSignatureFieldNames().size());
+		assertEquals("signature-test", signature.getSignatureFieldNames().get(0));
+		
+		parameters.setSignatureFieldId(null);
+		
+		dataToSign = signatureService.getDataToSign(signedDocument, parameters);
+		assertNotNull(dataToSign);
+		signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+		RemoteDocument signedTwiceDocument = signatureService.signDocument(signedDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+		assertNotNull(signedTwiceDocument);
+
+		document = new InMemoryDocument(signedTwiceDocument.getBytes());
+		diagnosticData = validate(document, null);
+		
+		assertEquals(2, diagnosticData.getSignatures().size());
+		assertEquals("signature-test", diagnosticData.getSignatures().get(0).getSignatureFieldNames().get(0));
+		assertNotEquals("signature-test", diagnosticData.getSignatures().get(1).getSignatureFieldNames().get(0));
+		assertNotEquals("signature-test2", diagnosticData.getSignatures().get(1).getSignatureFieldNames().get(0));
+
+		parameters.setSignatureFieldId("signature-test");
+
+		Exception exception = assertThrows(DSSException.class,() -> signatureService.getDataToSign(signedTwiceDocument, parameters));
+		assertEquals("The signature field 'signature-test' can not be signed since its already signed.", exception.getMessage());
 	}
 
 	@Test

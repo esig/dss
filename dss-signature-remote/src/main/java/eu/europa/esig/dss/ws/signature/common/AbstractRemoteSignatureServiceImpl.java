@@ -124,6 +124,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
 		padesParams.setContentSize(9472 * 2); // double reserved space for signature
 		padesParams.setImageParameters(toImageParameters(remoteParameters.getImageParameters()));
+		padesParams.setSignatureFieldId(remoteParameters.getSignatureFieldId());
 		return padesParams;
 	}
 	

@@ -133,6 +133,11 @@ public class RemoteSignatureParameters implements Serializable {
 	 * PAdES: The image information to be included.
 	 */
 	private RemoteSignatureImageParameters imageParameters;
+	
+	/**
+	 * PAdES: defines a custom signatureFieldId to sign
+	 */
+	private String signatureFieldId;
 
 	public RemoteSignatureParameters() {
 	}
@@ -455,19 +460,37 @@ public class RemoteSignatureParameters implements Serializable {
 	/**
 	 * Get the image information to be included (PAdES).
 	 *
-	 * @return the image information to be included.
+	 * @return {@link RemoteSignatureImageParameters} the image information to be included.
 	 */
 	public RemoteSignatureImageParameters getImageParameters() {
 		return this.imageParameters;
 	}
 
 	/**
-	 * 	Set the image information to be included (PAdES).
+	 * Set the image information to be included (PAdES).
 	 *
-	 * @param imageParameters the image information to be included.
+	 * @param imageParameters {@link RemoteSignatureImageParameters} the image information to be included.
 	 */
 	public void setImageParameters(final RemoteSignatureImageParameters imageParameters) {
 		this.imageParameters = imageParameters;
+	}
+
+	/**
+	 * Get the signature field id to create a signature into
+	 *
+	 * @return {@link String} signature field Id
+	 */
+	public String getSignatureFieldId() {
+		return signatureFieldId;
+	}
+
+	/**
+	 * Set the signature field id to create a signature into
+	 *
+	 * @param signatureFieldId {@link String} signature field Id
+	 */
+	public void setSignatureFieldId(String signatureFieldId) {
+		this.signatureFieldId = signatureFieldId;
 	}
 
 	@Override
@@ -476,7 +499,8 @@ public class RemoteSignatureParameters implements Serializable {
 				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
 				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", maskGenerationFunction=" 
 				+ maskGenerationFunction + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" 
-				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters + "]";
+				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters + ", signatureFieldId="
+				+ signatureFieldId + "]";
 	}
 
 	@Override
@@ -484,19 +508,26 @@ public class RemoteSignatureParameters implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
+		result = prime * result + ((asicContainerType == null) ? 0 : asicContainerType.hashCode());
 		result = prime * result + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
+		result = prime * result + ((certificateChain == null) ? 0 : certificateChain.hashCode());
 		result = prime * result + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
+		result = prime * result + ((contentTimestamps == null) ? 0 : contentTimestamps.hashCode());
+		result = prime * result + ((detachedContents == null) ? 0 : detachedContents.hashCode());
 		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
 		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
+		result = prime * result + ((imageParameters == null) ? 0 : imageParameters.hashCode());
+		result = prime * result + ((jwsSerializationType == null) ? 0 : jwsSerializationType.hashCode());
 		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
 		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
 		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
 		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
+		result = prime * result + ((signatureFieldId == null) ? 0 : signatureFieldId.hashCode());
 		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
 		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
 		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
-		result = prime * result + ((imageParameters == null) ? 0 : imageParameters.hashCode());
+		result = prime * result + ((signingCertificate == null) ? 0 : signingCertificate.hashCode());
 		return result;
 	}
 
@@ -519,11 +550,21 @@ public class RemoteSignatureParameters implements Serializable {
 		} else if (!archiveTimestampParameters.equals(other.archiveTimestampParameters)) {
 			return false;
 		}
+		if (asicContainerType != other.asicContainerType) {
+			return false;
+		}
 		if (bLevelParams == null) {
 			if (other.bLevelParams != null) {
 				return false;
 			}
 		} else if (!bLevelParams.equals(other.bLevelParams)) {
+			return false;
+		}
+		if (certificateChain == null) {
+			if (other.certificateChain != null) {
+				return false;
+			}
+		} else if (!certificateChain.equals(other.certificateChain)) {
 			return false;
 		}
 		if (contentTimestampParameters == null) {
@@ -533,11 +574,18 @@ public class RemoteSignatureParameters implements Serializable {
 		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
 			return false;
 		}
-		if (imageParameters == null) {
-			if (other.imageParameters != null) {
+		if (contentTimestamps == null) {
+			if (other.contentTimestamps != null) {
 				return false;
 			}
-		} else if (!imageParameters.equals(other.imageParameters)) {
+		} else if (!contentTimestamps.equals(other.contentTimestamps)) {
+			return false;
+		}
+		if (detachedContents == null) {
+			if (other.detachedContents != null) {
+				return false;
+			}
+		} else if (!detachedContents.equals(other.detachedContents)) {
 			return false;
 		}
 		if (digestAlgorithm != other.digestAlgorithm) {
@@ -547,6 +595,16 @@ public class RemoteSignatureParameters implements Serializable {
 			return false;
 		}
 		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
+			return false;
+		}
+		if (imageParameters == null) {
+			if (other.imageParameters != null) {
+				return false;
+			}
+		} else if (!imageParameters.equals(other.imageParameters)) {
+			return false;
+		}
+		if (jwsSerializationType != other.jwsSerializationType) {
 			return false;
 		}
 		if (maskGenerationFunction != other.maskGenerationFunction) {
@@ -561,6 +619,13 @@ public class RemoteSignatureParameters implements Serializable {
 		if (signatureAlgorithm != other.signatureAlgorithm) {
 			return false;
 		}
+		if (signatureFieldId == null) {
+			if (other.signatureFieldId != null) {
+				return false;
+			}
+		} else if (!signatureFieldId.equals(other.signatureFieldId)) {
+			return false;
+		}
 		if (signatureLevel != other.signatureLevel) {
 			return false;
 		}
@@ -572,6 +637,13 @@ public class RemoteSignatureParameters implements Serializable {
 				return false;
 			}
 		} else if (!signatureTimestampParameters.equals(other.signatureTimestampParameters)) {
+			return false;
+		}
+		if (signingCertificate == null) {
+			if (other.signingCertificate != null) {
+				return false;
+			}
+		} else if (!signingCertificate.equals(other.signingCertificate)) {
 			return false;
 		}
 		return true;
