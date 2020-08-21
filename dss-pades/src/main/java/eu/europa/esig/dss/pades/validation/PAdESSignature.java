@@ -142,7 +142,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
+	public List<AdvancedSignature> extractCounterSignatures() {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}

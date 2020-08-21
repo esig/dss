@@ -57,6 +57,15 @@ public class CAdESAttribute implements ISignatureAttribute {
 	}
 	
 	/**
+	 * Returns attribute values set
+	 * 
+	 * @return {@link ASN1Set}
+	 */
+	public ASN1Set getAttrValues() {
+		return attribute.getAttrValues();
+	}
+	
+	/**
 	 * Returns a list of {@link ASN1Primitive} values found in the attribute
 	 * @return list of {@link ASN1Primitive}
 	 */

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.xml.security.signature.Reference;
@@ -465,8 +466,12 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature
 	}
 
 	@Override
-	protected AdvancedSignature getCounterSignature(XAdESAttribute unsignedAttribute) {
-		return DSSXMLUtils.createCounterSignature(unsignedAttribute.getElement(), signature);
+	protected List<AdvancedSignature> getCounterSignatures(XAdESAttribute unsignedAttribute) {
+		XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature(unsignedAttribute.getElement(), signature);
+		if (counterSignature != null) {
+			return Collections.singletonList(counterSignature);
+		}
+		return Collections.emptyList();
 	}
 
 }

@@ -138,7 +138,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 				
 			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
-				assertEquals(3, timestampWrapper.getTimestampedCertificates().size());
+				assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
 				assertEquals(1, timestampWrapper.getTimestampedOrphanCertificates().size());
 				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());

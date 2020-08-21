@@ -317,7 +317,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
+	public List<AdvancedSignature> extractCounterSignatures() {
 		List<AdvancedSignature> jadesList = new ArrayList<>();
 		
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);

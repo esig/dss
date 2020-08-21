@@ -95,6 +95,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected TimestampSource signatureTimestampSource;
 
 	private AdvancedSignature masterSignature;
+	
+	private List<AdvancedSignature> counterSignatures;
 
 	protected SignaturePolicy signaturePolicy;
 
@@ -359,6 +361,21 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean isCounterSignature() {
 		return masterSignature != null;
 	}
+	
+	@Override
+	public List<AdvancedSignature> getCounterSignatures() {
+		if (counterSignatures == null) {
+			counterSignatures = extractCounterSignatures(); 
+		}
+		return counterSignatures;
+	}
+
+	/**
+	 * Extracts counter signatures from the current signature
+	 * 
+	 * @return a list of {@link AdvancedSignature} counter signatures
+	 */
+	protected abstract List<AdvancedSignature> extractCounterSignatures();
 
 	@Override
 	public SignatureCryptographicVerification getSignatureCryptographicVerification() {

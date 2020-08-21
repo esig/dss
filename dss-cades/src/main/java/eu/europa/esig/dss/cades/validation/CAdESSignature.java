@@ -976,19 +976,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
+	public List<AdvancedSignature> extractCounterSignatures() {
 		final List<AdvancedSignature> countersignatures = new ArrayList<>();
-		recursiveCollect(countersignatures, signerInformation, this);
-		return countersignatures;
-	}
-
-	private void recursiveCollect(List<AdvancedSignature> collector, SignerInformation currentSignerInformation, AdvancedSignature master) {
-		for (final SignerInformation counterSignerInformation : currentSignerInformation.getCounterSignatures()) {
+		for (final SignerInformation counterSignerInformation : signerInformation.getCounterSignatures()) {
 			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-			countersignature.setMasterSignature(master);
-			collector.add(countersignature);
-			recursiveCollect(collector, counterSignerInformation, countersignature);
+			countersignature.setMasterSignature(this);
+			countersignatures.add(countersignature);
 		}
+		return countersignatures;
 	}
 
 	public DSSDocument getOriginalDocument() throws DSSException {
