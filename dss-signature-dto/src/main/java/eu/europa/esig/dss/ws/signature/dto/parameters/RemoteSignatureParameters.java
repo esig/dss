@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -72,6 +73,11 @@ public class RemoteSignatureParameters implements Serializable {
 	 * JAdES JWS Serialization Type
 	 */
 	private JWSSerializationType jwsSerializationType;
+
+	/**
+	 * JAdES SigDMechanism for a DETACHED packaging
+	 */
+	private SigDMechanism sigDMechanism;
 
 	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
@@ -211,6 +217,26 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public void setJwsSerializationType(JWSSerializationType jwsSerializationType) {
 		this.jwsSerializationType = jwsSerializationType;
+	}
+
+	/**
+	 * Gets {@code SigDMechanism}
+	 * NOTE: used only for JAdES with DETACHED packaging
+	 * 
+	 * @return {@link SigDMechanism}
+	 */
+	public SigDMechanism getSigDMechanism() {
+		return sigDMechanism;
+	}
+
+	/**
+	 * Sets {@code SigDMechanism}
+	 * NOTE: used only for JAdES with DETACHED packaging
+	 * 
+	 * @param sigDMechanism {@link SigDMechanism} to use
+	 */
+	public void setSigDMechanism(SigDMechanism sigDMechanism) {
+		this.sigDMechanism = sigDMechanism;
 	}
 
 	/**

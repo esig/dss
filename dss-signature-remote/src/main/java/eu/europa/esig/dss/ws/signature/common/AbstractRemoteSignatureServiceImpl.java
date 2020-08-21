@@ -133,6 +133,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		if (remoteParameters.getJwsSerializationType() != null) {
 			jadesParameters.setJwsSerializationType(remoteParameters.getJwsSerializationType());
 		}
+		jadesParameters.setSigDMechanism(remoteParameters.getSigDMechanism());
 		return jadesParameters;
 	}
 
