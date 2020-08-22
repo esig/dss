@@ -976,14 +976,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
-		if (countersignatures == null) {
-			countersignatures = new ArrayList<>();
-			for (final SignerInformation counterSignerInformation : signerInformation.getCounterSignatures()) {
-				final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-				countersignature.setMasterSignature(this);
-				countersignatures.add(countersignature);
-			}
+	public List<AdvancedSignature> extractCounterSignatures() {
+		final List<AdvancedSignature> countersignatures = new ArrayList<>();
+		for (final SignerInformation counterSignerInformation : signerInformation.getCounterSignatures()) {
+			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
+			countersignature.setMasterSignature(this);
+			countersignatures.add(countersignature);
 		}
 		return countersignatures;
 	}

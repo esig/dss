@@ -34,14 +34,19 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocat
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
+import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.esf.CrlListID;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
@@ -89,6 +94,7 @@ import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
@@ -241,7 +247,10 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	
 	@Override
 	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
-		return getSignedDataReferences(timestampToken);
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
+		timestampedReferences.addAll(getSignedDataReferences(timestampToken));
+		timestampedReferences.addAll(getUnsignedCounterSignatureAttributesReferences(timestampToken));
+		return timestampedReferences;
 	}
 	
 	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
@@ -346,6 +355,20 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 			}
 		}
 		return references;
+	}
+	
+	protected List<TimestampedReference> getUnsignedCounterSignatureAttributesReferences(TimestampToken timestampToken) {
+		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+		
+		if (ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType()) ||
+				ArchiveTimestampType.CAdES.equals(timestampToken.getArchiveTimestampType())) {
+			// in case of ArchiveTimestampV2 or another earlier form of archive timestamp
+			// all UnsignedProperties is covered
+			return getCounterSignaturesReferences(counterSignatures);
+		}
+		
+		// for ArchiveTimestampV3 process in its physical order (see {@code getCounterSignatures()})
+		return Collections.emptyList();
 	}
 	
 	@Override
@@ -523,13 +546,58 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 		for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
-
 	}
 
 	@Override
-	protected AdvancedSignature getCounterSignature(CAdESAttribute unsignedAttribute) {
-		// TODO : implement within DSS-2180
-		return null;
+	protected List<AdvancedSignature> getCounterSignatures(CAdESAttribute unsignedAttribute) {
+		// In case of CAdES the counter signature is added depending on the ATS version type
+		// see {@code getUnsignedCounterSignatureAttributesReferences()} for ATSv2
+		
+		List<AdvancedSignature> cadesResult = new ArrayList<>();
+		
+		// unable to build a SignerInformation with BC (protected constructor)
+		// extract all found CounterSignatures and compare with a found SignerInfo(s)
+		List<AdvancedSignature> allCounterSignatures = signature.getCounterSignatures();
+		
+		ASN1Set attrValues = unsignedAttribute.getAttrValues();
+		for (Enumeration en = attrValues.getObjects(); en.hasMoreElements();)
+        {
+            SignerInfo si = SignerInfo.getInstance(en.nextElement());
+            byte[] encodedSI = DSSASN1Utils.getDEREncoded(si);
+            
+            for (AdvancedSignature counterSignature : allCounterSignatures) {
+            	CAdESSignature cadesCounterSignature = (CAdESSignature) counterSignature;
+            	SignerInfo signerInfo = cadesCounterSignature.getSignerInformation().toASN1Structure();
+            	byte[] encodedSignerInfo = DSSASN1Utils.getDEREncoded(signerInfo);
+            	
+            	if (Arrays.equals(encodedSI, encodedSignerInfo)) {
+            		cadesResult.add(counterSignature);
+            	}
+            }
+        }
+		
+		return cadesResult;
+	}
+	
+	@Override
+	protected List<TimestampedReference> getCounterSignatureReferences(AdvancedSignature counterSignature) {
+		/*
+		 * The reason to override:
+		 * CAdES counter signature does not have a private SignedData certificates/revocations
+		 */
+		List<TimestampedReference> counterSigReferences = new ArrayList<>();
+		
+		counterSigReferences.add(new TimestampedReference(counterSignature.getId(), TimestampedObjectType.SIGNATURE));
+		
+		List<CertificateRef> signingCertificateRefs = counterSignature.getCertificateSource().getSigningCertificateRefs();
+		addReferences(counterSigReferences, getTimestampedCertificateRefs(signingCertificateRefs, certificateSource));
+		
+		TimestampSource counterSignatureTimestampSource = counterSignature.getTimestampSource();
+		addReferences(counterSigReferences, counterSignatureTimestampSource.getSignerDataReferences());
+		addReferences(counterSigReferences, counterSignatureTimestampSource.getUnsignedPropertiesReferences());
+		addReferencesFromPreviousTimestamps(counterSigReferences, counterSignatureTimestampSource.getAllTimestamps());
+		
+		return counterSigReferences;
 	}
 
 }

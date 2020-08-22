@@ -85,11 +85,13 @@ public class PAdESMultiSignedDocRevocTest extends AbstractPAdESTestValidation {
 		List<TimestampWrapper> timestamps= diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(2, timestamps.size()); // one timestamp is skipped because of /Type /Sig (see DSS-1899)
-		
-		assertEquals(5, timestamps.get(0).getTimestampedObjects().size());
+
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(0).getType());
-		assertEquals(5, timestamps.get(1).getTimestampedObjects().size());
+		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
+		assertEquals(1, timestamps.get(0).getTimestampedCertificates().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(1).getType());
+		assertEquals(3, timestamps.get(1).getTimestampedObjects().size());
+		assertEquals(1, timestamps.get(1).getTimestampedCertificates().size());
 	}
 
 }

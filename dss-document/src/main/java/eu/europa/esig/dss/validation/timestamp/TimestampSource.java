@@ -93,14 +93,14 @@ public interface TimestampSource extends Serializable {
 	 * 
 	 * @return a list of {@link TimestampedReference}s
 	 */
-	List<TimestampedReference> getEncapsulatedReferences();
+	List<TimestampedReference> getUnsignedPropertiesReferences();
 	
 	/**
 	 * Returns a list of {@link TimestampedReference}s obtained from the {@code signatureScopes}
 	 * 
 	 * @return list of {@link TimestampedReference}s
 	 */
-	List<TimestampedReference> getAllSignedDataReferences();
+	List<TimestampedReference> getSignerDataReferences();
 	
 	/**
 	 * Checks if a tokenId with the given Id is covered by the timestamp source
