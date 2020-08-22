@@ -298,8 +298,9 @@ public class CAdESService extends
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
 
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
-				signerInfoGeneratorBuilder, null);
+				signerInfoGeneratorBuilder, cmsSignedData);
 		CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInfoToSign);
 		return new ToBeSigned(customContentSigner.getOutputStream().toByteArray());
 	}
@@ -314,8 +315,8 @@ public class CAdESService extends
 
 		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
-		CMSSignedData updatedMaster = counterSignatureBuilder.recursivelyAddCounterSignature(originalCMSSignedData, originalCMSSignedData.getSignerInfos(),
-				parameters, signatureValue);
+		CMSSignedData updatedMaster = counterSignatureBuilder.recursivelyAddCounterSignature(originalCMSSignedData, parameters, signatureValue);
+
 		CMSSignedDocument counterSigned = new CMSSignedDocument(updatedMaster);
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());

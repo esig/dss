@@ -2,28 +2,39 @@ package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdESSignatureParameters, CAdESTimestampParameters> {
 
 	private String signingAlias;
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		DSSDocument doc = new InMemoryDocument("Hello".getBytes());
 
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
@@ -31,9 +42,11 @@ public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdE
 		signingAlias = GOOD_USER;
 
 		CAdESSignatureParameters parameters = new CAdESSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		parameters.setSigningCertificate(getSigningCert());
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+//		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
 		ToBeSigned dataToSign = service.getDataToSign(doc, parameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, parameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -47,34 +60,53 @@ public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdE
 		String mainSignatureId = signatures.iterator().next().getId();
 
 		// 1st counter-signature (on main signature)
-		signingAlias = EE_GOOD_USER;
+		signingAlias = GOOD_USER_WITH_PSEUDO;
 
 		CAdESCounterSignatureParameters counterSignatureParameters = new CAdESCounterSignatureParameters();
-		counterSignatureParameters.setSigningCertificate(getSigningCert());
+		CertificateToken firstCounterSigner = getSigningCert();
+		counterSignatureParameters.setSigningCertificate(firstCounterSigner);
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
-		counterSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+
+		// Doesn't work, digest algorithm is not part of the SignedData.digestAlgorithms
+		// (not added in
+		// org.bouncycastle.cms.CMSSignedData.replaceSigners(CMSSignedData,
+		// SignerInformationStore) for counter-signatures)
+		// ticket to be created
+		// RFC 5652 : The collection is intended to list the message digest algorithms
+		// employed by all of the signers, in any order, to facilitate one-pass
+		// signature verification.
+		// +
+		// eu.europa.esig.dss.cades.validation.CAdESSignature.getMessageDigestReferenceValidation(DSSDocument,
+		// byte[]) only considers the first one
+//		counterSignatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA384);
+//		counterSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
 		SignatureValue counterSignatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedDocument = service.counterSignSignature(signedDocument, counterSignatureParameters, counterSignatureValue);
 
+//		counterSignedDocument.save("target/test1cc.p7s");
+
+		verify(counterSignedDocument);
+
 		// 2nd counter-signature (on main signature)
-		signingAlias = GOOD_USER_WITH_PSEUDO;
+		signingAlias = EE_GOOD_USER;
 
 		counterSignatureParameters = new CAdESCounterSignatureParameters();
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
-		counterSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA384);
 
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(counterSignedDocument, counterSignatureParameters);
 		counterSignatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument secondCounterSignedDocument = service.counterSignSignature(counterSignedDocument, counterSignatureParameters, counterSignatureValue);
 
+//		secondCounterSignedDocument.save("target/test2cc.p7s");
+
 		verify(secondCounterSignedDocument);
 
-		validator = getValidator(signedDocument);
+		validator = getValidator(secondCounterSignedDocument);
 		signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 		AdvancedSignature mainSignature = signatures.iterator().next();
@@ -85,44 +117,80 @@ public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdE
 			assertNotNull(advancedSignature.getMasterSignature());
 			assertEquals(mainSignatureId, advancedSignature.getMasterSignature().getId());
 		}
-		String firstCounterSignatureId = counterSignatures.get(0).getId();
+		AdvancedSignature firstCounterSignature = counterSignatures.get(0);
+		String firstCounterSignatureId = firstCounterSignature.getId();
+
+		// order is not guaranteed
+		// assertEquals(firstCounterSigner,
+		// firstCounterSignature.getSigningCertificateToken());
 
 		// 3rd counter-signature (on 1st counter-signature)
 		signingAlias = GOOD_USER_WITH_CRL_AND_OCSP;
 
-		counterSignatureParameters = new CAdESCounterSignatureParameters();
-		counterSignatureParameters.setSigningCertificate(getSigningCert());
-		counterSignatureParameters.setCertificateChain(getCertificateChain());
-		counterSignatureParameters.setSignatureIdToCounterSign(firstCounterSignatureId);
+		final CAdESCounterSignatureParameters counterSignatureParametersForCounterSignature = new CAdESCounterSignatureParameters();
+		counterSignatureParametersForCounterSignature.setSigningCertificate(getSigningCert());
+		counterSignatureParametersForCounterSignature.setCertificateChain(getCertificateChain());
+		counterSignatureParametersForCounterSignature.setSignatureIdToCounterSign(firstCounterSignatureId);
 
-		dataToBeCounterSigned = service.getDataToBeCounterSigned(secondCounterSignedDocument, counterSignatureParameters);
-		counterSignatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument thirdCounterSignedDocument = service.counterSignSignature(secondCounterSignedDocument, counterSignatureParameters, counterSignatureValue);
+		dataToBeCounterSigned = service.getDataToBeCounterSigned(secondCounterSignedDocument, counterSignatureParametersForCounterSignature);
+		final SignatureValue counterCounterSignatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParametersForCounterSignature
+				.getDigestAlgorithm(), getPrivateKeyEntry());
 
-		verify(thirdCounterSignedDocument);
+		// see https://github.com/bcgit/bc-java/issues/769
+		assertThrows(UnsupportedOperationException.class,
+				() -> service.counterSignSignature(secondCounterSignedDocument, counterSignatureParametersForCounterSignature, counterCounterSignatureValue));
 
-		validator = getValidator(signedDocument);
-		signatures = validator.getSignatures();
-		assertEquals(1, signatures.size());
-		mainSignature = signatures.iterator().next();
-		assertEquals(mainSignatureId, mainSignature.getId());
-		counterSignatures = mainSignature.getCounterSignatures();
-		assertEquals(2, counterSignatures.size());
-		for (AdvancedSignature counterSignatureLevel1 : counterSignatures) {
-			assertNotNull(counterSignatureLevel1.getMasterSignature());
-			assertEquals(mainSignatureId, counterSignatureLevel1.getMasterSignature().getId());
-			if (counterSignatureLevel1.getId().equals(firstCounterSignatureId)) {
-				List<AdvancedSignature> counterSignaturesLevel2 = counterSignatureLevel1.getCounterSignatures();
-				assertEquals(1, counterSignaturesLevel2.size());
-				assertEquals(firstCounterSignatureId, counterSignaturesLevel2.get(0).getMasterSignature().getId());
-			}
-		}
+//		thirdCounterSignedDocument.save("target/third.p7s");
+//
+//		verify(thirdCounterSignedDocument);
+//
+//		validator = getValidator(thirdCounterSignedDocument);
+//		signatures = validator.getSignatures();
+//		assertEquals(1, signatures.size());
+//		mainSignature = signatures.iterator().next();
+//		assertEquals(mainSignatureId, mainSignature.getId());
+//		counterSignatures = mainSignature.getCounterSignatures();
+//		assertEquals(2, counterSignatures.size());
+//		for (AdvancedSignature counterSignatureLevel1 : counterSignatures) {
+//			assertNotNull(counterSignatureLevel1.getMasterSignature());
+//			assertEquals(mainSignatureId, counterSignatureLevel1.getMasterSignature().getId());
+//			if (counterSignatureLevel1.getId().equals(firstCounterSignatureId)) {
+//				List<AdvancedSignature> counterSignaturesLevel2 = counterSignatureLevel1.getCounterSignatures();
+//				assertEquals(1, counterSignaturesLevel2.size());
+//				assertEquals(firstCounterSignatureId, counterSignaturesLevel2.get(0).getMasterSignature().getId());
+//			}
+//		}
 
 	}
 
 	@Override
 	protected String getSigningAlias() {
 		return signingAlias;
+	}
+
+	@Override
+	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNotNull(signatureWrapper.getSignatureValue());
+		}
+	}
+
+	@Override
+	protected void checkReportsSignatureIdentifier(Reports reports) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+
+			if (!Indication.NO_SIGNATURE_FOUND.equals(signatureValidationReport.getSignatureValidationStatus().getMainIndication())) {
+				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+
+				SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+				assertNotNull(signatureIdentifier);
+
+				assertNotNull(signatureIdentifier.getSignatureValue());
+				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+			}
+		}
 	}
 
 }

@@ -94,6 +94,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	// Cached {@code TimestampSource}
 	protected TimestampSource signatureTimestampSource;
 
+	// Cached {@code AdvancedSignature}
+	protected List<AdvancedSignature> countersignatures;
+
 	private AdvancedSignature masterSignature;
 
 	protected SignaturePolicy signaturePolicy;

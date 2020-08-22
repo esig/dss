@@ -1,15 +1,20 @@
 package eu.europa.esig.dss.cades.signature;
 
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
@@ -19,6 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -31,40 +39,85 @@ public class CAdESCounterSignatureBuilder {
 		this.certificateVerifier = certificateVerifier;
 	}
 
-	public CMSSignedData recursivelyAddCounterSignature(CMSSignedData originalCMSSignedData,
-			SignerInformationStore signerInfos, CAdESCounterSignatureParameters parameters, SignatureValue signatureValue) {
-		for (SignerInformation signerInformation : signerInfos.getSigners()) {
-			CAdESSignature cades = new CAdESSignature(originalCMSSignedData, signerInformation);
-			if (Utils.areStringsEqual(cades.getId(), parameters.getSignatureIdToCounterSign())) {
-
-				SignerInformationStore counterSignatureSignerInfoStore = generateCounterSignature(signerInformation, parameters, signatureValue);
-
-				return addCounterSignature(originalCMSSignedData, signerInformation, counterSignatureSignerInfoStore);
-			} else if (signerInformation.getCounterSignatures().size() > 0) {
-				return recursivelyAddCounterSignature(originalCMSSignedData, signerInformation.getCounterSignatures(), parameters, signatureValue);
-			}
-		}
-		throw new DSSException(String.format("(Counter-)signature with id '%s' is not found", parameters.getSignatureIdToCounterSign()));
-	}
-
-	private CMSSignedData addCounterSignature(CMSSignedData originalCMSSignedData, SignerInformation signerInformation,
-			SignerInformationStore counterSignatureSignerInfoStore) {
-		Collection<SignerInformation> signerInformationCollection = originalCMSSignedData.getSignerInfos().getSigners();
-		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
-		for (SignerInformation currentSignerInfo : signerInformationCollection) {
-			if (currentSignerInfo.equals(signerInformation)) {
-				newSignerInformationList.add(SignerInformation.addCounterSigners(signerInformation, counterSignatureSignerInfoStore));
-			} else {
-				newSignerInformationList.add(currentSignerInfo);
-			}
-		}
-
-		SignerInformationStore signerInformationStore = new SignerInformationStore(newSignerInformationList);
-		return CMSSignedData.replaceSigners(originalCMSSignedData, signerInformationStore);
-	}
-
-	private SignerInformationStore generateCounterSignature(SignerInformation signerInformation, CAdESCounterSignatureParameters parameters,
+	public CMSSignedData recursivelyAddCounterSignature(CMSSignedData originalCMSSignedData, CAdESCounterSignatureParameters parameters,
 			SignatureValue signatureValue) {
+
+		final List<SignerInformation> updatedSignerInfo = getUpdatedSignerInformations(originalCMSSignedData, originalCMSSignedData.getSignerInfos(),
+				parameters, signatureValue, null);
+
+		if (Utils.isCollectionNotEmpty(updatedSignerInfo)) {
+			CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
+			return addNewCertificates(updatedCMSSignedData, originalCMSSignedData, parameters);
+		} else {
+			throw new DSSException("No updated signed info");
+		}
+	}
+
+	private List<SignerInformation> getUpdatedSignerInformations(CMSSignedData originalCMSSignedData, SignerInformationStore signerInformationStore,
+			CAdESCounterSignatureParameters parameters, SignatureValue signatureValue, CAdESSignature masterSignature) {
+
+		List<SignerInformation> result = new LinkedList<>();
+		for (SignerInformation signerInformation : signerInformationStore) {
+			CAdESSignature cades = new CAdESSignature(originalCMSSignedData, signerInformation);
+			cades.setMasterSignature(masterSignature);
+			if (Utils.areStringsEqual(cades.getId(), parameters.getSignatureIdToCounterSign())) {
+				if (masterSignature != null) {
+					throw new UnsupportedOperationException("Cannot recursively add a counter-signature");
+				}
+
+				SignerInformationStore counterSignatureSignerInfoStore = generateCounterSignature(originalCMSSignedData, signerInformation, parameters,
+						signatureValue);
+
+				result.add(SignerInformation.addCounterSigners(signerInformation, counterSignatureSignerInfoStore));
+
+			} else if (signerInformation.getCounterSignatures().size() > 0) {
+				List<SignerInformation> updatedSignerInformations = getUpdatedSignerInformations(originalCMSSignedData,
+						signerInformation.getCounterSignatures(), parameters, signatureValue, cades);
+				result.add(SignerInformation.addCounterSigners(signerInformation, new SignerInformationStore(updatedSignerInformations)));
+			} else {
+				result.add(signerInformation);
+			}
+		}
+
+		return result;
+	}
+
+	private CMSSignedData addNewCertificates(CMSSignedData updatedCMSSignedData, CMSSignedData originalCMSSignedData,
+			CAdESCounterSignatureParameters parameters) {
+		final List<CertificateToken> certificateTokens = new LinkedList<>();
+		Store<X509CertificateHolder> certificatesStore = originalCMSSignedData.getCertificates();
+		final Collection<X509CertificateHolder> certificatesMatches = certificatesStore.getMatches(null);
+		for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
+			final CertificateToken token = DSSASN1Utils.getCertificate(certificatesMatch);
+			if (!certificateTokens.contains(token)) {
+				certificateTokens.add(token);
+			}
+		}
+
+		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
+		List<CertificateToken> newCertificates = certificateSelectors.getCertificates();
+		for (CertificateToken certificateToken : newCertificates) {
+			if (!certificateTokens.contains(certificateToken)) {
+				certificateTokens.add(certificateToken);
+			}
+		}
+
+		final Collection<X509Certificate> certs = new ArrayList<>();
+		for (final CertificateToken certificateInChain : certificateTokens) {
+			certs.add(certificateInChain.getCertificate());
+		}
+
+		try {
+			JcaCertStore jcaCertStore = new JcaCertStore(certs);
+			return CMSSignedData.replaceCertificatesAndCRLs(updatedCMSSignedData, jcaCertStore, originalCMSSignedData.getAttributeCertificates(),
+					originalCMSSignedData.getCRLs());
+		} catch (Exception e) {
+			throw new DSSException("Unable to create the JcaCertStore", e);
+		}
+	}
+
+	private SignerInformationStore generateCounterSignature(CMSSignedData originalCMSSignedData, SignerInformation signerInformation,
+			CAdESCounterSignatureParameters parameters, SignatureValue signatureValue) {
 		CMSSignedDataBuilder builder = new CMSSignedDataBuilder(certificateVerifier);
 
 		SignatureAlgorithm signatureAlgorithm = signatureValue.getAlgorithm();
@@ -98,7 +151,7 @@ public class CAdESCounterSignatureBuilder {
 				if (dssId.equals(advancedSignature.getId())) {
 					return (CAdESSignature) advancedSignature;
 				}
-				findSignatureRecursive(advancedSignature.getCounterSignatures(), dssId);
+				return findSignatureRecursive(advancedSignature.getCounterSignatures(), dssId);
 			}
 		}
 		return null;
