@@ -14,10 +14,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -109,6 +111,26 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 				assertEquals(0, commitmentTypeIndications.size());
 			}
 		}
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+		
+		boolean counterSignatureFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.isCounterSignature()) {
+				List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+				assertEquals(1, signatureScopes.size());
+				
+				XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+				assertEquals(SignatureScopeType.COUNTER_SIGNATURE, xmlSignatureScope.getScope());
+				assertEquals(signatureWrapper.getParent().getId(), xmlSignatureScope.getName());
+				
+				counterSignatureFound = true;
+			}
+		}
+		assertTrue(counterSignatureFound);
 	}
 
 	@Override

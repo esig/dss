@@ -134,6 +134,7 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		super.validateETSISignatureAttributes(signatureAttributes, signatureParameters);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	protected boolean hasCounterSignature(SignatureAttributesType signatureAttributes) {
 		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
 		for (Object signatureAttributeObj : signatureAttributeObjects) {

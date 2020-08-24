@@ -42,6 +42,10 @@ public abstract class AbstractSignatureScopeFinder<T extends AdvancedSignature> 
 		return defaultDigestAlgorithm;
 	}
 	
+	protected Digest getDigest(DSSDocument document) {
+		return new Digest(defaultDigestAlgorithm, Utils.fromBase64(document.getDigest(defaultDigestAlgorithm)));
+	}
+	
 	protected Digest getDigest(byte[] dataBytes) {
 		return new Digest(defaultDigestAlgorithm, DSSUtils.digest(defaultDigestAlgorithm, dataBytes));
 	}

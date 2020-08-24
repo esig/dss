@@ -33,5 +33,8 @@ public enum SignatureScopeType {
 	
 	/* The signature covers its bounded archive */
 	ARCHIVED,
+	
+	/* The signature counter signs its master signature */
+	COUNTER_SIGNATURE,
 
 }

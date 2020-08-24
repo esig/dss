@@ -1,14 +1,22 @@
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -60,6 +68,26 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+		
+		boolean counterSignatureFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.isCounterSignature()) {
+				List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+				assertEquals(1, signatureScopes.size());
+				
+				XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+				assertEquals(SignatureScopeType.COUNTER_SIGNATURE, xmlSignatureScope.getScope());
+				assertEquals(signatureWrapper.getParent().getId(), xmlSignatureScope.getName());
+				
+				counterSignatureFound = true;
+			}
+		}
+		assertTrue(counterSignatureFound);
 	}
 
 	@Override

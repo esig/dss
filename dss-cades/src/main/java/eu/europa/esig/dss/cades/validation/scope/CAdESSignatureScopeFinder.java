@@ -31,10 +31,10 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -50,7 +50,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         	ReferenceValidation reference = referenceValidations.iterator().next(); // only one Reference is allowed in CAdES
         	if (reference.isIntact()) {
                 DSSDocument originalDocument = getOriginalDocument(cadesSignature);
-                return getSignatureScopeFromOriginalDocument(originalDocument);
+                return getSignatureScopeFromOriginalDocument(cadesSignature, originalDocument);
         	} else if (reference.isFound()) {
                 return getSignatureScopeFromReferenceValidation(reference);
         	}
@@ -58,21 +58,25 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
     	return Collections.emptyList();
     }
     
-    protected List<SignatureScope> getSignatureScopeFromOriginalDocument(DSSDocument originalDocument) {
+    protected List<SignatureScope> getSignatureScopeFromOriginalDocument(final CAdESSignature cadesSignature, DSSDocument originalDocument) {
         List<SignatureScope> result = new ArrayList<>();
         if (originalDocument == null) {
         	return result;
         }
         
         String fileName = originalDocument.getName();
-        if (originalDocument instanceof DigestDocument) {
+        if (cadesSignature.isCounterSignature()) {
+    		return Collections.singletonList(new CounterSignatureScope(cadesSignature.getMasterSignature().getId(), 
+    				getDigest(originalDocument) ));
+    		
+        } else if (originalDocument instanceof DigestDocument) {
         	DigestDocument digestDocument = (DigestDocument) originalDocument;
             result.add(new DigestSignatureScope(fileName != null ? fileName : "Digest document", 
             		digestDocument.getExistingDigest()));
             
         } else {
 			result.add(new FullSignatureScope(fileName != null ? fileName : "Full document", 
-					DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
+					getDigest(originalDocument)));
         }
         
         return result;

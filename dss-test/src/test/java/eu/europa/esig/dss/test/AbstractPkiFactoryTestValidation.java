@@ -85,6 +85,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -750,6 +751,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			boolean hasCounterSignatureScope = false;
+			
 			assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getSignatureScopes()));
 			for (XmlSignatureScope signatureScope : signatureWrapper.getSignatureScopes()) {
 				assertNotNull(signatureScope.getScope());
@@ -757,7 +760,14 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertNotNull(signatureScope.getSignerData().getDigestAlgoAndValue());
 				assertNotNull(signatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod());
 				assertNotNull(signatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
+				
+				if (SignatureScopeType.COUNTER_SIGNATURE.equals(signatureScope.getScope())) {
+					assertEquals(signatureWrapper.getParent().getId(), signatureScope.getName());
+					hasCounterSignatureScope = true;
+				}
 			}
+			
+			assertEquals(signatureWrapper.isCounterSignature(), hasCounterSignatureScope);
 		}
 	}
 

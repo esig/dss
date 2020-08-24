@@ -1045,7 +1045,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return a list containing the countersignatures embedded in the XAdES signature document
 	 */
 	@Override
-	public List<AdvancedSignature> extractCounterSignatures() {
+	protected List<AdvancedSignature> extractCounterSignatures() {
 		final List<AdvancedSignature> xadesList = new ArrayList<>();
 
 		// see ETSI TS 101 903 V1.4.2 (2010-12) pp. 38/39/40

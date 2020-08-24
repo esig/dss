@@ -491,6 +491,7 @@
 			<xs:enumeration value="PARTIAL" />
 			<xs:enumeration value="DIGEST" />
 			<xs:enumeration value="ARCHIVED" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	

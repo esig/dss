@@ -976,7 +976,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> extractCounterSignatures() {
+	protected List<AdvancedSignature> extractCounterSignatures() {
 		final List<AdvancedSignature> countersignatures = new ArrayList<>();
 		for (final SignerInformation counterSignerInformation : signerInformation.getCounterSignatures()) {
 			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);

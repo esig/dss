@@ -50,8 +50,7 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         if (isASiCSArchive(cadesSignature, originalDocument)) {
 			result.add(new ContainerSignatureScope(originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
 			for (DSSDocument archivedDocument : cadesSignature.getContainerContents()) {
-				result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
-						DSSUtils.getDigest(getDefaultDigestAlgorithm(), archivedDocument)));
+				result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), getDigest(archivedDocument)));
 			}
 			
         } else if (isASiCEArchive(cadesSignature)) {
@@ -66,7 +65,7 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         	}
         	
         } else {
-        	return getSignatureScopeFromOriginalDocument(originalDocument);
+        	return getSignatureScopeFromOriginalDocument(cadesSignature, originalDocument);
         }
         return result;
     }
