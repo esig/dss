@@ -42,6 +42,10 @@ public abstract class AbstractSignatureScopeFinder<T extends AdvancedSignature> 
 		return defaultDigestAlgorithm;
 	}
 	
+	protected Digest getDigest(DSSDocument document) {
+		return new Digest(defaultDigestAlgorithm, Utils.fromBase64(document.getDigest(defaultDigestAlgorithm)));
+	}
+	
 	protected Digest getDigest(byte[] dataBytes) {
 		return new Digest(defaultDigestAlgorithm, DSSUtils.digest(defaultDigestAlgorithm, dataBytes));
 	}
@@ -52,8 +56,7 @@ public abstract class AbstractSignatureScopeFinder<T extends AdvancedSignature> 
 	}
     
 	protected boolean isASiCEArchive(AdvancedSignature advancedSignature) {
-		return Utils.isCollectionNotEmpty(advancedSignature.getManifestedDocuments()) && 
-				Utils.isCollectionNotEmpty(advancedSignature.getContainerContents());
+		return advancedSignature.getManifestFile() != null;
 	}
 
 }

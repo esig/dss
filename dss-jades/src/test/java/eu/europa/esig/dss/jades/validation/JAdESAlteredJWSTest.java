@@ -11,6 +11,8 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class JAdESAlteredJWSTest extends AbstractJAdESTestValidation {
 
@@ -34,6 +36,17 @@ public class JAdESAlteredJWSTest extends AbstractJAdESTestValidation {
 		assertFalse(signature.isSignatureValid());
 		
 		assertFalse(signature.isBLevelTechnicallyValid());
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(0, signature.getSignatureScopes().size()); // no valid data found
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

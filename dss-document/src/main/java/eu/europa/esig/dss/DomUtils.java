@@ -82,8 +82,9 @@ public final class DomUtils {
 	
 	private static final String TRANSFORMER_METHOD_VALUE = "xml";
 
-	private static final String XP_OPEN = "xpointer(";
 	private static final String XNS_OPEN = "xmlns(";
+	private static final String XP_OPEN = "xpointer(";
+	private static final String XP_WITH_ID_OPEN = "#xpointer(id(";
 
 	private static final byte[] xmlPreamble = new byte[] { '<' };
 	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
@@ -667,6 +668,27 @@ public final class DomUtils {
 		}
 		return true;
 	}
+	
+	/**
+     * Method getXPointerId
+     * See {@code org.apache.xml.security.utils.resolver.implementations.ResolverXPointer}
+     *
+     * @param uri
+     * @return xpointerId to search.
+     */
+    public static String getXPointerId(String uri) {
+        if (uri.startsWith(XP_WITH_ID_OPEN) && uri.endsWith("))")) {
+            String idPlusDelim = uri.substring(XP_WITH_ID_OPEN.length(), uri.length() - 2);
+
+            int idLen = idPlusDelim.length() -1;
+            if (idPlusDelim.charAt(0) == '"' && idPlusDelim.charAt(idLen) == '"'
+                || idPlusDelim.charAt(0) == '\'' && idPlusDelim.charAt(idLen) == '\'') {
+                return idPlusDelim.substring(1, idLen);
+            }
+        }
+
+        return null;
+    }
 
 	public static Element createElementNS(Document documentDom, DSSNamespace namespace, DSSElement element) {
 		StringBuffer elementSB = new StringBuffer();

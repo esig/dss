@@ -274,7 +274,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
-		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.SIGN,
+		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN,
 				parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		

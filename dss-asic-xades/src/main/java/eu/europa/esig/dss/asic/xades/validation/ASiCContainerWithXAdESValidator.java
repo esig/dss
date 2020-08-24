@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -125,7 +126,10 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		XAdESSignature xadesignature = (XAdESSignature) advancedSignature;
 		List<DSSDocument> retrievedDocs = XAdESSignatureUtils.getSignerDocuments(xadesignature);
-		return extractArchiveDocuments(retrievedDocs);
+		if (Utils.isCollectionNotEmpty(retrievedDocs)) {
+			return extractArchiveDocuments(retrievedDocs);
+		}
+		return Collections.emptyList();
 	}
 	
 	private List<DSSDocument> extractArchiveDocuments(List<DSSDocument> retrievedDocs) {

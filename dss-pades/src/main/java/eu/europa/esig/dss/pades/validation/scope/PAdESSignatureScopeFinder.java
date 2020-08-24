@@ -28,7 +28,6 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -56,8 +55,7 @@ public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdE
 	
 	private Digest getOriginalPdfDigest(final PdfCMSRevision pdfRevision) {
 		DSSDocument originalDocument = PAdESUtils.getOriginalPDF(pdfRevision);
-		return new Digest(getDefaultDigestAlgorithm(), 
-				DSSUtils.digest(getDefaultDigestAlgorithm(), originalDocument));
+		return getDigest(originalDocument);
 	}
 	
 }

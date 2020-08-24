@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -113,8 +112,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		documentDom = DomUtils.buildDOM(dssDocument);
 
-		final NodeList signatureNodeList = documentDom.getElementsByTagNameNS(XMLNS,
-				XMLDSigElement.SIGNATURE.getTagName());
+		final NodeList signatureNodeList = DomUtils.getNodeList(documentDom, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 		if (signatureNodeList.getLength() == 0) {
 			throw new DSSException("There is no signature to extend!");
 		}
@@ -131,15 +129,17 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			currentSignatureDom = (Element) signatureNodeList.item(ii);
+			
 			final String currentSignatureId = currentSignatureDom.getAttribute(XMLDSigAttribute.ID.getAttributeName());
 			if ((signatureId != null) && !signatureId.equals(currentSignatureId)) {
-
 				continue;
 			}
+			
 			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
 			xadesSignature.setDetachedContents(params.getDetachedContents());
 			xadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 			extendSignatureTag();
+			
 		}
 		return createXmlDocument();
 	}

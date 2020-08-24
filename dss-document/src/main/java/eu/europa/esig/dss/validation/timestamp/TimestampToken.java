@@ -649,19 +649,19 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Used only with XAdES timestamps.
+	 * Sets timestamp's element hash code (XAdES, JAdES)
 	 *
 	 * @param hashCode
-	 *            the hash code of the DOM element containing the timestamp
+	 *            the hash code of the element containing the timestamp
 	 */
 	public void setHashCode(final int hashCode) {
 		this.hashCode = hashCode;
 	}
 
 	/**
-	 * Used only with XAdES timestamps.
+	 * Gets timestamp's element hash code (XAdES, JAdES)
 	 *
-	 * @return the hash code of the DOM element containing the timestamp
+	 * @return the hash code of the element containing the timestamp
 	 */
 	public int getHashCode() {
 		return hashCode;

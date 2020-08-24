@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifier;
+import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
@@ -62,6 +62,13 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	/** Defines if the validating signature is detached */
 	private final boolean isDetached;
+	
+	/**
+	 * The 'cSig' object embedding the current signature
+	 * 
+	 * NOTE: used for counter signatures only
+	 */
+	private Object masterCSigObject;
 
 	public JAdESSignature(JWS jws) {
 		this.jws = jws;
@@ -110,6 +117,24 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean isDetachedSignature() {
 		return isDetached;
+	}
+
+	/**
+	 * Gets a 'cSig' object embedding the current signature
+	 * 
+	 * @return {@link Object} 'cSig' embedding the current signature
+	 */
+	public Object getMasterCSigObject() {
+		return masterCSigObject;
+	}
+
+	/**
+	 * Sets a 'cSig' object embedding the current signature
+	 * 
+	 * @param masterCSigObject {@link Object} 'cSig' embedding the current signature
+	 */
+	public void setMasterCSigObject(Object masterCSigObject) {
+		this.masterCSigObject = masterCSigObject;
 	}
 
 	@Override
@@ -292,7 +317,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
+	protected List<AdvancedSignature> extractCounterSignatures() {
 		List<AdvancedSignature> jadesList = new ArrayList<>();
 		
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
@@ -374,8 +399,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected SignatureIdentifier buildSignatureIdentifier() {
-		return new JAdESSignatureIdentifier(this);
+	protected SignatureIdentifierBuilder getSignatureIdentifierBuilder() {
+		return new JAdESSignatureIdentifierBuilder(this);
 	}
 
 	@Override

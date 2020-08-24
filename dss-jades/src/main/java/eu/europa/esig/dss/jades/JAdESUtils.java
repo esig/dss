@@ -589,6 +589,7 @@ public class JAdESUtils {
 				if (signatures.size() == 1) {
 					JAdESSignature signature = (JAdESSignature) signatures.iterator().next(); // only one is considered
 					signature.setMasterSignature(masterSignature);
+					signature.setMasterCSigObject(cSigObject);
 					signature.setDetachedContents(Arrays.asList(new InMemoryDocument(masterSignature.getSignatureValue())));
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("A JWS counter signature found with Id : '{}'", signature.getId());

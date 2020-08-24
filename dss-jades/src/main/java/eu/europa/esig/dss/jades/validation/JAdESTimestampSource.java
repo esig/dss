@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.jades.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +15,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -29,21 +27,19 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 @SuppressWarnings("serial")
-public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute> {
+public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature, JAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampSource.class);
 
-	private final JAdESSignature signature;
-
 	public JAdESTimestampSource(JAdESSignature signature) {
 		super(signature);
-		this.signature = signature;
 	}
 
 	@Override
@@ -159,12 +155,6 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	@Override
 	protected boolean isAttributeRevocationValues(JAdESAttribute unsignedAttribute) {
 		return JAdESHeaderParameterNames.AR_VALS.equals(unsignedAttribute.getHeaderName());
-	}
-	
-	@Override
-	public List<TimestampedReference> getSignatureTimestampReferences() {
-		// JAdES SigTst covers only the signature value
-		return Arrays.asList(new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE));
 	}
 
 	@Override
@@ -364,24 +354,15 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESAttribute
 	}
 	
 	@Override
-	protected List<TimestampedReference> getCounterSignatureReferences(JAdESAttribute unsignedAttribute) {
-		List<TimestampedReference> cSigReferences = new ArrayList<>();
-		
+	protected List<AdvancedSignature> getCounterSignatures(JAdESAttribute unsignedAttribute) {
 		Object cSig = unsignedAttribute.getValue();
 		if (cSig != null) {
 			JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSig, signature);
 			if (counterSignature != null) {
-				cSigReferences.add(new TimestampedReference(counterSignature.getId(), TimestampedObjectType.SIGNATURE));
-				addReferences(cSigReferences, createReferencesForCertificates(counterSignature.getCertificateSource().getCertificates()));
-	
-				JAdESTimestampSource timestampSource = counterSignature.getTimestampSource();
-				addReferences(cSigReferences, timestampSource.getAllSignedDataReferences());
-				addReferences(cSigReferences, timestampSource.getEncapsulatedReferences());
-				addReferencesFromPreviousTimestamps(cSigReferences, timestampSource.getAllTimestamps());
+				return Collections.singletonList(counterSignature);
 			}
 		}
-		
-		return cSigReferences;
+		return Collections.emptyList();
 	}
 	
 	/**

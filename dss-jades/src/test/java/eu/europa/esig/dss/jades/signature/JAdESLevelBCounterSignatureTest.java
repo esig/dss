@@ -22,10 +22,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
@@ -127,6 +129,26 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		} catch (JoseException e) {
 			fail(e);
 		}
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+		
+		boolean counterSignatureFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.isCounterSignature()) {
+				List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+				assertEquals(1, signatureScopes.size());
+				
+				XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+				assertEquals(SignatureScopeType.COUNTER_SIGNATURE, xmlSignatureScope.getScope());
+				assertEquals(signatureWrapper.getParent().getId(), xmlSignatureScope.getName());
+				
+				counterSignatureFound = true;
+			}
+		}
+		assertTrue(counterSignatureFound);
 	}
 	
 	@Override

@@ -30,15 +30,14 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.operator.DigestCalculatorProvider;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -52,6 +51,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -63,11 +63,11 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 /**
  * CAdES implementation of DocumentSignatureService
  */
-public class CAdESService extends AbstractSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
+public class CAdESService extends
+		AbstractSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> 
+		implements CounterSignatureService<CAdESCounterSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
-
-	private final CMSSignedDataBuilder cmsSignedDataBuilder;
 
 	/**
 	 * This is the constructor to create an instance of the {@code CAdESService}. A certificate verifier must be
@@ -79,7 +79,6 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 */
 	public CAdESService(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
-		cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		LOG.debug("+ CAdESService created");
 	}
 
@@ -98,7 +97,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
@@ -108,8 +107,9 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
-		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument, parameters);
+		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 
@@ -125,8 +125,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, SignatureValue signatureValue) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
@@ -137,7 +136,9 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument, parameters);
+		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
+
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
@@ -163,16 +164,6 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		parameters.reinitDeterministicId();
 		return signature;
-	}
-
-	private DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument, CAdESSignatureParameters parameters) {
-		DigestAlgorithm referenceDigestAlgorithm = parameters.getReferenceDigestAlgorithm();
-		if (referenceDigestAlgorithm != null) {
-			return new CustomMessageDigestCalculatorProvider(referenceDigestAlgorithm, toSignDocument.getDigest(referenceDigestAlgorithm));
-		} else if (toSignDocument instanceof DigestDocument) {
-			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
-		}
-		return new BcDigestCalculatorProvider();
 	}
 
 	@Override
@@ -281,10 +272,56 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 * @throws DSSException
 	 *             if the packaging is not supported for this kind of signature
 	 */
-	private void assertSignaturePackaging(final SignaturePackaging packaging) throws DSSException {
+	private void assertSignaturePackaging(final SignaturePackaging packaging) {
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging: " + packaging);
 		}
 	}
+
+	@Override
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, CAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "parameters cannot be null!");
+		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
+		assertSigningDateInCertificateValidityRange(parameters);
+
+		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		SignerInformation signerInfoToSign = counterSignatureBuilder.getSignerInformationToBeSigned(signatureDocument,
+				parameters.getSignatureIdToCounterSign());
+
+		InMemoryDocument toSignDocument = new InMemoryDocument(signerInfoToSign.getSignature());
+
+		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
+		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
+
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
+
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
+		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
+				signerInfoGeneratorBuilder, cmsSignedData);
+		CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInfoToSign);
+		return new ToBeSigned(customContentSigner.getOutputStream().toByteArray());
+	}
+
+	@Override
+	public DSSDocument counterSignSignature(DSSDocument signatureDocument, CAdESCounterSignatureParameters parameters, SignatureValue signatureValue) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "parameters cannot be null!");
+		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
+		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		assertSigningDateInCertificateValidityRange(parameters);
+
+		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
+		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		CMSSignedData updatedMaster = counterSignatureBuilder.recursivelyAddCounterSignature(originalCMSSignedData, parameters, signatureValue);
+
+		CMSSignedDocument counterSigned = new CMSSignedDocument(updatedMaster);
+		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
+		counterSigned.setMimeType(signatureDocument.getMimeType());
+		return counterSigned;
+	}
+
 
 }

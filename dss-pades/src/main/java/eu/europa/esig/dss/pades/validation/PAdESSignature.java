@@ -44,7 +44,7 @@ import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifier;
+import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 
 /**
@@ -142,14 +142,14 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
+	protected List<AdvancedSignature> extractCounterSignatures() {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
 
 	@Override
-	public SignatureIdentifier buildSignatureIdentifier() {
-		return new PAdESSignatureIdentifier(this);
+	protected SignatureIdentifierBuilder getSignatureIdentifierBuilder() {
+		return new PAdESSignatureIdentifierBuilder(this);
 	}
 
 	/**

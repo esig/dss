@@ -79,30 +79,32 @@ public interface AdvancedSignature extends Serializable {
 	void setDetachedContents(final List<DSSDocument> detachedContents);
 	
 	/**
-	 * @return in case of ASiC signature returns a list of container documents
+	 * @return in case of ASiC-S signature returns a list of an archive container documents
 	 */
 	List<DSSDocument> getContainerContents();
 	
 	/**
-	 * This method allows to set the container contents in the case of ASiC signature.
+	 * This method allows to set the archive container contents in the case of ASiC-S signature.
 	 *
 	 * @param containerContents
-	 *            {@code List} of {@code DSSDocument} representing the container contents.
+	 *            {@code List} of {@code DSSDocument} representing the archive container contents.
 	 */
 	void setContainerContents(final List<DSSDocument> containerContents);
 
 	/**
-	 * This method allows to set the manifest files in the case of ASiC-E signature.
+	 * This method returns a related {@code ManifestFile} in the case of ASiC-E signature.
 	 *
-	 * @param manifestFiles
-	 *            {@code List} of {@code ManifestFile}s
+	 * @return manifestFile {@link ManifestFile}
 	 */
-	void setManifestFiles(List<ManifestFile> manifestFiles);
+	ManifestFile getManifestFile();
 
 	/**
-	 * @return in case of ASiC-E signature returns a list of {@link DSSDocument}s contained in the related signature manifest
+	 * This method allows to set a manifest file in the case of ASiC-E signature.
+	 *
+	 * @param manifestFile
+	 *            {@code ManifestFile}
 	 */
-	List<DSSDocument> getManifestedDocuments();
+	void setManifestFile(ManifestFile manifestFile);
 
 	/**
 	 * Set a certificate source which allows to find the signing certificate by kid

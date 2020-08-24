@@ -47,6 +47,7 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);
 		

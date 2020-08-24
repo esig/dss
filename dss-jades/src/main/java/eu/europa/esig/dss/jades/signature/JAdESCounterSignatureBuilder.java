@@ -7,6 +7,8 @@ import java.util.Map;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.lang.JoseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -24,11 +26,10 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESCounterSignatureBuilder.class);
 	
 	/**
 	 * Extract SignatureValue binaries from the provided JAdES signature
@@ -118,7 +119,8 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		}
 		throw new DSSException(String.format("The requested JAdES Signature with id '%s' has not been found in the provided file!", signatureId));
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private JAdESSignature getSignatureOrItsCounterSignature(JAdESSignature signature, String signatureId) {
 		if (signatureId == null || signatureId.equals(signature.getId())) {
 			return signature;
@@ -126,16 +128,28 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(signature.getJws(), JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
-			for (Object cSigObject : cSigObjects) {
+			for (int ii = 0; ii < cSigObjects.size(); ii++)  {
 				
+				Object cSigObject = cSigObjects.get(ii);
 				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, signature);
 				if (counterSignature != null) {
 					// check timestamp before incorporating a new property
-					if (isTimestamped(counterSignature, signatureId)) {
+					if (signature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {
 						throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
 								+ "The signature is timestamped by a master signature!", signatureId));
 					}
-					addUnprotectedHeader(cSigObject, counterSignature.getJws());
+
+					if (cSigObject instanceof Map<?, ?>) {
+						addUnprotectedHeader((Map<String, Object>) cSigObject, counterSignature.getJws());
+					} else {
+						String errorMessage = String.format("Unable to extend a Compact JAdES Signature with id '%s'", signatureId);
+						if (signatureId.equals(counterSignature.getId())) {
+							throw new DSSException(errorMessage);
+						} else {
+							LOG.warn("{}. The signature is skipped.", errorMessage);
+							continue;
+						}
+					}
 					
 					JAdESSignature signatureById = getSignatureOrItsCounterSignature(counterSignature, signatureId);
 					if (signatureById != null) {
@@ -149,28 +163,13 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void addUnprotectedHeader(Object cSigObject, JWS jws) {
-		if (cSigObject instanceof Map<?, ?>) {
-			Map<String, Object> cSigMap = (Map<String, Object>) cSigObject;
-			Map<String, Object>  unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
-			if (unprotected == null) {
-				unprotected = new HashMap<String, Object>();
-				cSigMap.put(JWSConstants.HEADER, unprotected);
-			}
-			jws.setUnprotected(unprotected);
+	private void addUnprotectedHeader(Map<String, Object> cSigMap, JWS jws) {
+		Map<String, Object> unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
+		if (unprotected == null) {
+			unprotected = new HashMap<String, Object>();
+			cSigMap.put(JWSConstants.HEADER, unprotected);
 		}
-	}
-	
-	private boolean isTimestamped(AdvancedSignature masterSignature, String signatureId) {
-		if (masterSignature != null) {
-			for (TimestampToken timestampToken : masterSignature.getArchiveTimestamps()) {
-				if (timestampToken.getTimestampedReferences().contains(new TimestampedReference(signatureId, TimestampedObjectType.SIGNATURE))) {
-					return true;
-				}
-			}
-			return isTimestamped(masterSignature.getMasterSignature(), signatureId);
-		}
-		return false;
+		jws.setUnprotected(unprotected);
 	}
 
 }

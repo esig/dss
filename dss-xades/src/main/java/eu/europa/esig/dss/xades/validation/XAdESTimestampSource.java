@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.xml.security.signature.Reference;
@@ -48,36 +49,34 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 
 @SuppressWarnings("serial")
-public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute> {
+public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature, XAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
 	
 	private final transient Element signatureElement;
 	private final XAdESPaths xadesPaths;
-
-	private transient List<Reference> references;
-	private List<ReferenceValidation> referenceValidations;
 	
 	private transient XAdESTimestampDataBuilder timestampDataBuilder;
 	
 	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
 			final XAdESPaths xadesPaths) {
 		super(signature);
-		this.references = signature.getReferences();
-		this.referenceValidations = signature.getReferenceValidations();
 		this.signatureElement = signatureElement;
 		this.xadesPaths = xadesPaths;
 	}
@@ -95,7 +94,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected XAdESTimestampDataBuilder getTimestampDataBuilder() {
 		if (timestampDataBuilder == null) {
-			timestampDataBuilder = new XAdESTimestampDataBuilder(signatureElement, references, xadesPaths);
+			timestampDataBuilder = new XAdESTimestampDataBuilder(signatureElement, signature.getReferences(), xadesPaths);
 		}
 		return timestampDataBuilder;
 	}
@@ -263,9 +262,9 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(XAdESAttribute signedAttribute) {
 		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
 		List<TimestampedReference> timestampReferences = new ArrayList<>();
-		for (Reference reference : references) {
+		for (Reference reference : signature.getReferences()) {
 			if (isContentTimestampedReference(reference, includes)) {
-				for (SignatureScope signatureScope : signatureScopes) {
+				for (SignatureScope signatureScope : signature.getSignatureScopes()) {
 					if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
 						addReference(timestampReferences, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
 					}
@@ -299,10 +298,12 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 	
 	protected List<TimestampedReference> getKeyInfoReferences() {
+		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
 		return createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates());
 	}
 
 	private boolean isKeyInfoCovered() {
+		List<ReferenceValidation> referenceValidations = signature.getReferenceValidations();
 		if (Utils.isCollectionNotEmpty(referenceValidations)) {
 			for (ReferenceValidation referenceValidation : referenceValidations) {
 				if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
@@ -462,6 +463,15 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			return ArchiveTimestampType.XAdES_141;
 		}
 		return ArchiveTimestampType.XAdES;
+	}
+
+	@Override
+	protected List<AdvancedSignature> getCounterSignatures(XAdESAttribute unsignedAttribute) {
+		XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature(unsignedAttribute.getElement(), signature);
+		if (counterSignature != null) {
+			return Collections.singletonList(counterSignature);
+		}
+		return Collections.emptyList();
 	}
 
 }

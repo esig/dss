@@ -233,19 +233,24 @@ public class CAdESLevelBaselineB {
 
 			final DERUTF8String country = signerLocationParameter.getCountry() == null ? null : new DERUTF8String(signerLocationParameter.getCountry());
 			final DERUTF8String locality = signerLocationParameter.getLocality() == null ? null : new DERUTF8String(signerLocationParameter.getLocality());
-			final ASN1EncodableVector postalAddress = new ASN1EncodableVector();
-			final List<String> postalAddressParameter = signerLocationParameter.getPostalAddress();
-			if (postalAddressParameter != null) {
-				for (final String addressLine : postalAddressParameter) {
-					postalAddress.add(new DERUTF8String(addressLine));
-				}
-			}
-			final DERSequence derSequencePostalAddress = new DERSequence(postalAddress);
+			final DERSequence derSequencePostalAddress = getPostalAddressSequence(signerLocationParameter.getPostalAddress());
 			final SignerLocation signerLocation = new SignerLocation(country, locality, derSequencePostalAddress);
 			final DERSet attrValues = new DERSet(signerLocation);
 			final Attribute attribute = new Attribute(id_aa_ets_signerLocation, attrValues);
 			signedAttributes.add(attribute);
 		}
+	}
+
+	private DERSequence getPostalAddressSequence(final List<String> postalAddressParameter) {
+		DERSequence derSequencePostalAddress = null;
+		if (Utils.isCollectionNotEmpty(postalAddressParameter)) {
+			final ASN1EncodableVector postalAddress = new ASN1EncodableVector();
+			for (final String addressLine : postalAddressParameter) {
+				postalAddress.add(new DERUTF8String(addressLine));
+			}
+			derSequencePostalAddress = new DERSequence(postalAddress);
+		}
+		return derSequencePostalAddress;
 	}
 
 	/**

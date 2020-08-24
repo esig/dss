@@ -105,9 +105,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected List<DSSDocument> containerContents;
 	
 	/**
-	 * List of all found {@link ManifestFile}s
+	 * A related {@link ManifestFile} to the provided {@code document}
 	 */
-	protected List<ManifestFile> manifestFiles;
+	protected ManifestFile manifestFile;
 
 	/**
 	 * Certificate source to find signing certificate
@@ -241,8 +241,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 	
 	@Override
-	public void setManifestFiles(List<ManifestFile> manifestFiles) {
-		this.manifestFiles = manifestFiles;
+	public void setManifestFile(ManifestFile manifestFile) {
+		this.manifestFile = manifestFile;
 	}
 
 	/**

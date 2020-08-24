@@ -2,6 +2,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -86,12 +87,21 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		signingAlias = GOOD_USER;
 
 		SignedDocumentValidator validator = getValidator(signedDocument);
-		counterSignatureParameters.setSignatureIdToCounterSign(validator.getSignatures().get(0).getId());
+		String mainSignatureId = validator.getSignatures().get(0).getId();
+		
+		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
 		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
 				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
+		
+		validator = getValidator(counterSignedSignature);
+		assertEquals(mainSignatureId, validator.getSignatures().get(0).getId());
+		assertEquals(1, validator.getSignatures().get(0).getCounterSignatures().size());
+		
+		String counterSignatureId = validator.getSignatures().get(0).getCounterSignatures().get(0).getId();
+		assertNotEquals(mainSignatureId, counterSignatureId);
 		
 		// counterSignedSignature.save("target/counterSignedSignature.json");
 		
@@ -109,16 +119,17 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(2, signatures.size());
 		
-		SignatureWrapper signatureWrapper = signatures.get(0);
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(mainSignatureId);
+		assertNotNull(signatureWrapper);
 		assertFalse(signatureWrapper.isCounterSignature());
-		
-		counterSignatureParameters.setSignatureIdToCounterSign(signatureWrapper.getId());
-		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters);
-		assertNotNull(dataToBeCounterSigned); // possible to counter sign again
+		assertEquals(SignatureLevel.JAdES_BASELINE_LTA, signatureWrapper.getSignatureFormat());
 		
 		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignaturesForMasterSignature(signatureWrapper);
 		assertEquals(1, counterSignatures.size());
+		
 		SignatureWrapper counterSignature = counterSignatures.iterator().next();
+		assertEquals(counterSignatureId, counterSignature.getId());
+		assertEquals(SignatureLevel.JAdES_BASELINE_B, counterSignature.getSignatureFormat());
 		
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
 		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters));
@@ -135,6 +146,23 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)));
 		
 		assertTrue(counterSignature.getSigningCertificate().isRevocationDataAvailable());
+		
+		// possible to counter sign the main signature again
+		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
+		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters);
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
+				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		counterSignedSignature = service.counterSignSignature(ltaJAdES, counterSignatureParameters, signatureValue);
+		assertNotNull(counterSignedSignature);
+		
+		validator = getValidator(counterSignedSignature);
+		assertEquals(1, validator.getSignatures().size());
+		
+		AdvancedSignature mainSignature = validator.getSignatures().get(0);
+		assertEquals(mainSignatureId, mainSignature.getId());
+		
+		assertEquals(2, mainSignature.getCounterSignatures().size());
+		assertEquals(counterSignatureId, mainSignature.getCounterSignatures().get(0).getId());
 	}
 	
 	@Override

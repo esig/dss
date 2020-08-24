@@ -17,6 +17,9 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -121,6 +124,19 @@ public class JAdESLevelBDetachedTest extends AbstractJAdESTestSignature {
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		return Arrays.asList(documentToSign);
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+		
+		assertEquals(1, diagnosticData.getOriginalSignerDocuments().size());
+		
+		SignerDataWrapper signerData = diagnosticData.getOriginalSignerDocuments().get(0);
+		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValue);
+		
+		assertEquals(documentToSign.getDigest(digestAlgoAndValue.getDigestMethod()), Utils.toBase64(digestAlgoAndValue.getDigestValue()));
 	}
 
 	@Override

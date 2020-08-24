@@ -36,7 +36,6 @@ import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +77,7 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifier;
+import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
@@ -257,6 +256,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				this.xadesNamespace = new DSSNamespace(namespaceURI, prefix);
 			}
 		}
+	}
+	
+	public List<XAdESPaths> getXAdESPathsHolders() {
+		return xadesPathsHolders;
 	}
 
 	public XAdESPaths getXAdESPaths() {
@@ -818,6 +821,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.XPOINTER);
 						found = found && noDuplicateIdFound;
 						
+					} else if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
+						validation.setType(DigestMatcherType.COUNTER_SIGNATURE);
+						found = found && noDuplicateIdFound;
+						
 					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, currentSantuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
@@ -840,7 +847,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else {
 						found = found && noDuplicateIdFound;
-						
 					}
 					
 					if (found) {
@@ -853,7 +859,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				
 				if (DigestMatcherType.REFERENCE.equals(validation.getType()) || DigestMatcherType.OBJECT.equals(validation.getType()) ||
-						DigestMatcherType.MANIFEST.equals(validation.getType()) || DigestMatcherType.XPOINTER.equals(validation.getType())) {
+						DigestMatcherType.MANIFEST.equals(validation.getType()) || DigestMatcherType.XPOINTER.equals(validation.getType()) ||
+						DigestMatcherType.COUNTER_SIGNATURE.equals(validation.getType())) {
 					atLeastOneReferenceElementFound = true;
 				}
 					
@@ -977,6 +984,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
 				initDetachedSignatureResolvers(detachedContents);
+				initCounterSignatureResolver(detachedContents);
 			}
 			return santuarioSignature;
 		} catch (XMLSecurityException e) {
@@ -985,14 +993,35 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
+		List<DigestAlgorithm> usedReferenceDigestAlgos = getUsedReferenceDigestAlgos();
+		for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
+			santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
+		}
+	}
+	
+	private List<DigestAlgorithm> getUsedReferenceDigestAlgos() {
+		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
+		NodeList referenceNodeList = DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
+		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+			Element referenceElement = (Element) referenceNodeList.item(ii);
+			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
+			if (digest != null) {
+				digestAlgorithms.add(digest.getAlgorithm());
+			}
+		}
+		return digestAlgorithms;
+	}
+	
+	/**
+	 * Used for a counter signature extension only
+	 */
+	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
 		List<Reference> currentReferences = getReferences();
 		for (Reference reference : currentReferences) {
-			try {
-				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI());
-				santuarioSignature
-						.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
-			} catch (XMLSignatureException e) {
-				LOG.warn("Unable to retrieve reference digest algorithm {}", reference.getId(), e);
+			if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
+				// only one SignatureValue document shall be provided
+				santuarioSignature.addResourceResolver(new CounterSignatureResolver(detachedContents.get(0)));
+				break;
 			}
 		}
 	}
@@ -1016,57 +1045,25 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return a list containing the countersignatures embedded in the XAdES signature document
 	 */
 	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
+	protected List<AdvancedSignature> extractCounterSignatures() {
 		final List<AdvancedSignature> xadesList = new ArrayList<>();
 
 		// see ETSI TS 101 903 V1.4.2 (2010-12) pp. 38/39/40
 		final NodeList counterSignatures = DomUtils.getNodeList(signatureElement, xadesPaths.getCounterSignaturePath());
 		if (counterSignatures != null && counterSignatures.getLength() > 0) {
 			for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
-				final Element currentCounterSignatureElement = (Element) counterSignatures.item(ii);
-				final NodeList counterSignaturesList = DomUtils.getNodeList(currentCounterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
-				if (counterSignaturesList != null && counterSignaturesList.getLength() > 0) {
-					for (int jj = 0; jj < counterSignaturesList.getLength(); jj++) {
-						// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
-						final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignaturesList.item(jj), xadesPathsHolders);
-						if (isCounterSignature(xadesCounterSignature)) {
-							xadesCounterSignature.setMasterSignature(this);
-							xadesList.add(xadesCounterSignature);
-						}
-					}
+				XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature((Element) counterSignatures.item(ii), this);
+				if (counterSignature != null) {
+					xadesList.add(counterSignature);
 				}
 			}
 		}
 		return xadesList;
 	}
-
-	/**
-	 * This method verifies whether a given signature is a countersignature.
-	 *
-	 * From ETSI TS 101 903 V1.4.2: - The signature's ds:SignedInfo element MUST contain one ds:Reference element
-	 * referencing the ds:Signature element of the
-	 * embedding and countersigned XAdES signature - The content of the ds:DigestValue in the aforementioned
-	 * ds:Reference element of the countersignature MUST
-	 * be the base-64 encoded digest of the complete (and canonicalized) ds:SignatureValue element (i.e. including the
-	 * starting and closing tags) of the
-	 * embedding and countersigned XAdES signature.
-	 *
-	 * @param xadesCounterSignature
-	 * @return
-	 */
-	private boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
-		final List<Reference> references = xadesCounterSignature.getReferences();
-		for (final Reference reference : references) {
-			if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	@Override
-	protected SignatureIdentifier buildSignatureIdentifier() {
-		return new XAdESSignatureIdentifier(this);
+	protected SignatureIdentifierBuilder getSignatureIdentifierBuilder() {
+		return new XAdESSignatureIdentiferBuilder(this);
 	}
 	
 	@Override

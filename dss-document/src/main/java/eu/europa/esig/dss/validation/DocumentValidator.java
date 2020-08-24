@@ -100,7 +100,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setDetachedContents(final List<DSSDocument> detachedContent);
 
 	/**
-	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC signatures.
+	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC-S signatures.
 	 *
 	 * @param archiveContents
 	 *            the {@code List} of {@code DSSDocument} to set
@@ -108,12 +108,12 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setContainerContents(final List<DSSDocument> archiveContents);
 
 	/**
-	 * Sets the {@code List} of {@code ManifestFile}s found in the signature file.
+	 * Sets a related {@code ManifestFile} to the document to be validated.
 	 *
-	 * @param manifestFiles
-	 *            the {@code List} of {@code ManifestFile} to set
+	 * @param manifestFile
+	 *            a {@code ManifestFile} to set
 	 */
-	void setManifestFiles(final List<ManifestFile> manifestFiles);
+	void setManifestFile(final ManifestFile manifestFile);
 
 	/**
 	 * This method allows to define the signing certificate. It is useful in the

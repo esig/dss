@@ -108,7 +108,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 				}
 				cadesSignature.setDetachedContents(detachedContents);
 				cadesSignature.setContainerContents(containerContents);
-				cadesSignature.setManifestFiles(manifestFiles);
+				cadesSignature.setManifestFile(manifestFile);
 				cadesSignature.setSigningCertificateSource(signingCertificateSource);
 				cadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 				signatures.add(cadesSignature);

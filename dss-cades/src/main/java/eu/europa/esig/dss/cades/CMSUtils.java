@@ -52,9 +52,14 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
+import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -88,12 +93,19 @@ public final class CMSUtils {
 		try {
 			return generator.generate(content, encapsulate);
 		} catch (CMSException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to generate the CMSSignedData", e);
 		}
 	}
 
-	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content)
-			throws DSSException {
+	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator, SignerInformation signerInfoToSign) {
+		try {
+			return cmsSignedDataGenerator.generateCounterSigners(signerInfoToSign);
+		} catch (CMSException e) {
+			throw new DSSException("Unable to generate the SignerInformationStore for the counter-signature", e);
+		}
+	}
+
+	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content) {
 		return generateCMSSignedData(generator, content, false);
 	}
 
@@ -282,6 +294,15 @@ public final class CMSUtils {
 			content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
 		}
 		return content;
+	}
+
+	public static DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument, DigestAlgorithm digestAlgorithm) {
+		if (digestAlgorithm != null) {
+			return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigest(digestAlgorithm));
+		} else if (toSignDocument instanceof DigestDocument) {
+			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
+		}
+		return new BcDigestCalculatorProvider();
 	}
 
 }

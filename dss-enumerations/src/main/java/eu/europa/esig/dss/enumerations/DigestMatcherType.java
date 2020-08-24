@@ -45,6 +45,9 @@ public enum DigestMatcherType {
 	
 	/** XAdES and ASiC CAdES*/
 	MANIFEST_ENTRY,
+	
+	/** XAdES signed SignatureValue (counter signature) */
+	COUNTER_SIGNATURE,
 
 	/** CAdES */
 	MESSAGE_DIGEST, 

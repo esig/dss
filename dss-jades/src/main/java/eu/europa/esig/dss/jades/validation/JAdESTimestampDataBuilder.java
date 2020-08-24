@@ -7,7 +7,6 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.jose4j.json.internal.json_simple.JSONValue;
-import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,11 +54,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getBase64UrlEncodedPayload() {
-		try {
-			return JAdESUtils.toBase64Url(signature.getJws().getPayloadBytes()).getBytes();
-		} catch (JoseException e) {
-			throw new DSSException("Unable to extract the payload", e);
-		}
+		return JAdESUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
 	}
 	
 	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean archiveTst) {
