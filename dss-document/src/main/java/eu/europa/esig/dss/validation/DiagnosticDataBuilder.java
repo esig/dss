@@ -28,11 +28,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
@@ -155,8 +153,6 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampTokenComparator;
@@ -178,6 +174,7 @@ public class DiagnosticDataBuilder {
 	private Set<RevocationToken<Revocation>> usedRevocations;
 	private Set<TimestampToken> usedTimestamps;
 	private ListCertificateSource trustedCertSources = new ListCertificateSource();
+	private SignaturePolicyProvider signaturePolicyProvider;
 	private Date validationDate;
 	
 	// Merged revocation data sources;
@@ -282,6 +279,18 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedTimestamps(Set<TimestampToken> usedTimestamps) {
 		this.usedTimestamps = usedTimestamps;
+		return this;
+	}
+
+	/**
+	 * This method allows to set the {@code SignaturePolicyProvider}
+	 * 
+	 * @param signaturePolicyProvider
+	 *                       {@link SignaturePolicyProvider}
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder signaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
+		this.signaturePolicyProvider = signaturePolicyProvider;
 		return this;
 	}
 
@@ -1622,74 +1631,15 @@ public class DiagnosticDataBuilder {
 	 * 
 	 */
 	private XmlPolicy getXmlPolicy(AdvancedSignature signature) {
-		SignaturePolicy signaturePolicy = signature.getPolicyId();
+		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
 		if (signaturePolicy == null) {
 			return null;
 		}
-
-		final XmlPolicy xmlPolicy = new XmlPolicy();
-
-		xmlPolicy.setId(signaturePolicy.getIdentifier());
-		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
-		xmlPolicy.setDescription(signaturePolicy.getDescription());
-		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
-		xmlPolicy.setNotice(signaturePolicy.getNotice());
-		xmlPolicy.setZeroHash(signaturePolicy.isZeroHash());
 		
-		List<String> transformsDescription = signaturePolicy.getTransformsDescription();
-		if (Utils.isCollectionNotEmpty(transformsDescription)) {
-			xmlPolicy.setTransformations(transformsDescription);
-		}
-
-		final Digest digest = signaturePolicy.getDigest();
-		if (digest != null) {
-			xmlPolicy.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(digest));
-		}
-
-		try {
-			SignaturePolicyValidator validator = null;
-			ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
-			Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
-
-			if (validatorOptions.hasNext()) {
-				for (SignaturePolicyValidator signaturePolicyValidator : loader) {
-					signaturePolicyValidator.setSignature(signature);
-					if (signaturePolicyValidator.canValidate()) {
-						validator = signaturePolicyValidator;
-						break;
-					}
-				}
-			}
-
-			if (validator == null) {
-				// if not empty and no other implementation is found for ASN1 signature policies
-				validator = new BasicASNSignaturePolicyValidator();
-				validator.setSignature(signature);
-			}
-
-			validator.validate();
-			xmlPolicy.setAsn1Processable(validator.isAsn1Processable());
-			if (!signaturePolicy.isZeroHash()) {
-				xmlPolicy.setDigestAlgorithmsEqual(validator.isDigestAlgorithmsEqual());
-			}
-			xmlPolicy.setIdentified(validator.isIdentified());
-			xmlPolicy.setStatus(validator.isStatus());
-			if (Utils.isStringNotBlank(validator.getProcessingErrors())) {
-				xmlPolicy.setProcessingError(validator.getProcessingErrors());
-			}
-		} catch (Exception e) {
-			// When any error (communication) we just set the status to false
-			xmlPolicy.setStatus(false);
-			xmlPolicy.setProcessingError(e.getMessage());
-			// Do nothing
-			String errorMessage = "An error occurred during validation a signature policy with id '{}'. Reason : [{}]";
-			if (LOG.isDebugEnabled()) {
-				LOG.error(errorMessage, signaturePolicy.getIdentifier(), e.getMessage(), e);
-			} else {
-				LOG.error(errorMessage, signaturePolicy.getIdentifier(), e.getMessage());
-			}
-		}
-		return xmlPolicy;
+		XmlPolicyBuilder xmlPolicyBuilder = new XmlPolicyBuilder(signaturePolicy);
+		xmlPolicyBuilder.setSignaturePolicyProvider(signaturePolicyProvider);
+		xmlPolicyBuilder.setSignaturePolicyStore(signature.getSignaturePolicyStore());
+		return xmlPolicyBuilder.build();
 	}
 
 	private XmlSignaturePolicyStore getXmlSignaturePolicyStore(AdvancedSignature signature) {
@@ -1700,7 +1650,7 @@ public class DiagnosticDataBuilder {
 		XmlSignaturePolicyStore xmlSignaturePolicyStore = new XmlSignaturePolicyStore();
 		SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
 		if (spDocSpecification != null) {
-			xmlSignaturePolicyStore.setId(spDocSpecification.getOid());
+			xmlSignaturePolicyStore.setId(spDocSpecification.getId());
 			xmlSignaturePolicyStore.setDescription(spDocSpecification.getDescription());
 			String[] documentationReferences = spDocSpecification.getDocumentationReferences();
 			if (Utils.isArrayNotEmpty(documentationReferences)) {
@@ -1708,7 +1658,7 @@ public class DiagnosticDataBuilder {
 			}
 		}
 		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
-		SignaturePolicy signaturePolicy = signature.getPolicyId();
+		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
 		if (signaturePolicyContent != null && signaturePolicy != null) {
 			Digest digest = signaturePolicy.getDigest();
 			Digest contentDigest = DSSUtils.getDigest(digest.getAlgorithm(), signaturePolicyContent);

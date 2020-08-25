@@ -247,7 +247,9 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
 		SignaturePolicyStoreBuilder builder = new SignaturePolicyStoreBuilder(certificateVerifier);
-		return builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		DSSDocument documentWithSignaturePolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		documentWithSignaturePolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
+		return documentWithSignaturePolicyStore;
 	}
 
 	@Override

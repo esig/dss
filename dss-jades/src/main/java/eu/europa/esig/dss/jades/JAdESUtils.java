@@ -306,41 +306,12 @@ public class JAdESUtils {
 	/**
 	 * Creates an 'oid' LinkedJSONObject according to EN 119-182 ch. 5.4.1 The oId data type
 	 * 
-	 * @param uri {@link String} URI defining the object.
-	 * @return 'oid' {@link JsonObject}
-	 */
-	public static JsonObject getOidObject(String uri) {
-		return getOidObject(uri, null, null);
-	}
-	
-	/**
-	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
-	 * Returns NULL if non of them is present
-	 * 
-	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
-	 * @return {@link String} URI
-	 */
-	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
-		/*
-		 * TS 119 182-1 : 5.4.1 The oId data type
-		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
-		 */
-		String uri = objectIdentifier.getUri();
-		if (uri == null && objectIdentifier.getOid() != null) {
-			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
-		}
-		return uri;
-	}
-
-	/**
-	 * Creates an 'oid' LinkedJSONObject according to EN 119-182 ch. 5.4.1 The oId data type
-	 * 
 	 * @param objectIdentifier {@link ObjectIdentifier} to create an 'oid' from
 	 * @return 'oid' {@link JsonObject}
 	 */
 	public static JsonObject getOidObject(ObjectIdentifier objectIdentifier) {
-		return getOidObject(getUriOrUrnOid(objectIdentifier), objectIdentifier.getDescription(), 
-				Arrays.asList(objectIdentifier.getDocumentationReferences()));
+		return getOidObject(DSSUtils.getUriOrUrnOid(objectIdentifier), objectIdentifier.getDescription(), 
+				objectIdentifier.getDocumentationReferences());
 	}
 
 	/**
@@ -348,11 +319,11 @@ public class JAdESUtils {
 	 * 
 	 * @param uri {@link String} URI defining the object. The property is REQUIRED.
 	 * @param desc {@link String} the object description. The property is OPTIONAL.
-	 * @param docRefs a list of {@link String} URIs containing any other additional information about the object. 
+	 * @param docRefs an array of {@link String} URIs containing any other additional information about the object. 
 	 * 				The property is OPTIONAL.
 	 * @return 'oid' {@link JsonObject}
 	 */
-	public static JsonObject getOidObject(String uri, String desc, List<String> docRefs) {
+	public static JsonObject getOidObject(String uri, String desc, String[] docRefs) {
 		Objects.requireNonNull(uri, "uri must be defined!");
 		
 		Map<String, Object> oidParams = new LinkedHashMap<>();
@@ -360,8 +331,8 @@ public class JAdESUtils {
 		if (Utils.isStringNotEmpty(desc)) {
 			oidParams.put(JAdESHeaderParameterNames.DESC, desc);
 		}
-		if (Utils.isCollectionNotEmpty(docRefs)) {
-			oidParams.put(JAdESHeaderParameterNames.DOC_REFS, new JSONArray(docRefs));
+		if (docRefs != null) {
+			oidParams.put(JAdESHeaderParameterNames.DOC_REFS, new JSONArray(Arrays.asList(docRefs)));
 		}
 		
 		return new JsonObject(oidParams);

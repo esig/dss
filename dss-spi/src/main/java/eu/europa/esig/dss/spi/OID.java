@@ -64,6 +64,12 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_aa_ets_signerAttrV2 = id_etsi_signer_attributes.branch("1");
 
 	/**
+	 * id-aa-ets-sigPolicyStore OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) 
+	 * etsi(0) cades(19122) attributes(1) 3 }
+	 */
+	public static final ASN1ObjectIdentifier id_aa_ets_sigPolicyStore = id_etsi_signer_attributes.branch("3");
+
+	/**
 	 * id-aa-ATSHashIndex-v2 OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4)
      * etsi(0) cades(19122) attributes(1) 4 } 
 	 */

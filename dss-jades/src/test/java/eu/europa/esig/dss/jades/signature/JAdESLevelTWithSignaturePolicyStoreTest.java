@@ -2,7 +2,9 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -25,7 +27,6 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSignature {
@@ -42,6 +44,7 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
 	private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
 	private static final DSSDocument SIGNATURE_POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
+	private static final String[] DOCUMENTATION_REFERENCES = new String[] { "http://docref.com/ref1", "http://docref.com/ref2" };
 
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -71,8 +74,27 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 	}
 	
 	@Override
+	protected DSSDocument sign() {
+		DSSDocument signedDocument = super.sign();
+		
+		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+		signaturePolicyStore.setSignaturePolicyContent(SIGNATURE_POLICY_CONTENT);
+		SpDocSpecification spDocSpec = new SpDocSpecification();
+		spDocSpec.setId("urn:oid:" + SIGNATURE_POLICY_ID);
+		spDocSpec.setDescription(SIGNATURE_POLICY_DESCRIPTION);
+		spDocSpec.setDocumentationReferences(DOCUMENTATION_REFERENCES);
+		signaturePolicyStore.setSpDocSpecification(spDocSpec);
+		
+		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
+		assertNotNull(signedDocumentWithSignaturePolicyStore);
+		
+		return signedDocumentWithSignaturePolicyStore;
+	}
+	
+	@Override
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		super.verifyDiagnosticData(diagnosticData);
+		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(HTTP_SPURI_TEST, signature.getPolicyUrl());
 		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
@@ -82,28 +104,22 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
-
-		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-		signaturePolicyStore.setSignaturePolicyContent(SIGNATURE_POLICY_CONTENT);
-		String[] documentationReferences = new String[] { "http://docref.com/ref1", "http://docref.com/ref2" };
-		SpDocSpecification spDocSpec = new SpDocSpecification(SIGNATURE_POLICY_ID, SIGNATURE_POLICY_DESCRIPTION, documentationReferences);
-		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 		
-		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(new InMemoryDocument(byteArray), signaturePolicyStore);
+		DSSDocument signedDocumentWithSignaturePolicyStore = new InMemoryDocument(byteArray);
 		assertRequirementsValid(signedDocumentWithSignaturePolicyStore);
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
 		
-		verify(signedDocumentWithSignaturePolicyStore);
-
-		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator(signedDocumentWithSignaturePolicyStore);
-
-		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 		JAdESSignature jadesSignature = (JAdESSignature) signatures.get(0);
 		SignaturePolicyStore extractedSPS = jadesSignature.getSignaturePolicyStore();
 		assertNotNull(extractedSPS);
 		assertNotNull(extractedSPS.getSpDocSpecification());
 		assertEquals(SIGNATURE_POLICY_DESCRIPTION, extractedSPS.getSpDocSpecification().getDescription());
-		assertArrayEquals(documentationReferences, extractedSPS.getSpDocSpecification().getDocumentationReferences());
+		assertArrayEquals(DOCUMENTATION_REFERENCES, extractedSPS.getSpDocSpecification().getDocumentationReferences());
 		assertArrayEquals(DSSUtils.toByteArray(SIGNATURE_POLICY_CONTENT), DSSUtils.toByteArray(extractedSPS.getSignaturePolicyContent()));
 	}
 	
@@ -143,6 +159,39 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 		} catch (JoseException e) {
 			fail(e);
 		}
+	}
+	
+	@Override
+	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyIdentifier(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signature.isPolicyPresent());
+		
+		assertEquals(HTTP_SPURI_TEST, signature.getPolicyUrl());
+		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
+		assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyDescription());
+		
+		assertFalse(signature.isPolicyAsn1Processable());
+		assertTrue(signature.isPolicyIdentified());
+		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
+	}
+	
+	@Override
+	protected void checkSignaturePolicyStore(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyStore(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyStoreId());
+		assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyStoreDescription());
+		assertEquals(2, signature.getPolicyStoreDocumentationReferences().size());
+		assertEquals(DOCUMENTATION_REFERENCES[0], signature.getPolicyStoreDocumentationReferences().get(0));
+		assertEquals(DOCUMENTATION_REFERENCES[1], signature.getPolicyStoreDocumentationReferences().get(1));
+		
+		assertNotNull(signature.getPolicyStoreDigestAlgoAndValue());
+		assertNotNull(signature.getPolicyStoreDigestAlgoAndValue().getDigestMethod());
+		assertTrue(Utils.isArrayNotEmpty(signature.getPolicyStoreDigestAlgoAndValue().getDigestValue()));
 	}
 
 	@Override

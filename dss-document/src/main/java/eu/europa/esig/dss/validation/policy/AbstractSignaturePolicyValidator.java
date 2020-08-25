@@ -29,7 +29,7 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
 
 public abstract class AbstractSignaturePolicyValidator implements SignaturePolicyValidator {
 
-	private AdvancedSignature signature;
+	private SignaturePolicy signaturePolicy;
 	private boolean identified = false;
 	private boolean status = false;
 	private boolean asn1Processable = false;
@@ -37,12 +37,18 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 	private Map<String, String> errors = new HashMap<>();
 
 	protected SignaturePolicy getSignaturePolicy() {
-		return signature.getPolicyId();
+		return signaturePolicy;
 	}
 
 	@Override
+	@Deprecated
 	public void setSignature(AdvancedSignature signature) {
-		this.signature = signature;
+		this.signaturePolicy = signature.getSignaturePolicy();
+	}
+	
+	@Override
+	public void setSignaturePolicy(SignaturePolicy signaturePolicy) {
+		this.signaturePolicy = signaturePolicy;
 	}
 
 	protected void setIdentified(boolean identified) {

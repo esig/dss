@@ -26,6 +26,7 @@ import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
@@ -40,7 +41,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification(), "SpDocSpecification must be provided");
-		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getOid(), "OID for SpDocSpecification must be provided");
+		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getId(), "ID (OID or URI) for SpDocSpecification must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSignaturePolicyContent(), "Signature policy content must be provided");
 
 		params = new XAdESSignatureParameters();
@@ -73,18 +74,24 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 					byte[] computedDigest = Utils.fromBase64(signaturePolicyStore.getSignaturePolicyContent().getDigest(digest.getAlgorithm()));
 					if (Arrays.equals(digest.getValue(), computedDigest)) {
 
-						SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
-
 						Element signaturePolicyStoreElement = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(),
 								XAdES141Element.SIGNATURE_POLICY_STORE);
+						
+						if (signaturePolicyStore.getId() != null) {
+							signaturePolicyStoreElement.setAttribute(XAdES141Attribute.ID.getAttributeName(), signaturePolicyStore.getId());
+						}
+
+						SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
 
 						Element spDocSpecElement = DomUtils.addElement(documentDom, signaturePolicyStoreElement, getXades141Namespace(),
 								XAdES141Element.SP_DOC_SPECIFICATION);
 
 						Element identifierElement = DomUtils.addElement(documentDom, spDocSpecElement,
 								getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier());
-						identifierElement.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), spDocSpecification.getQualifier().getValue());
-						DomUtils.setTextNode(documentDom, identifierElement, DSSUtils.OID_NAMESPACE_PREFIX + spDocSpecification.getOid());
+						if (spDocSpecification.getQualifier() != null) {
+							identifierElement.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), spDocSpecification.getQualifier().getValue());
+						}
+						DomUtils.setTextNode(documentDom, identifierElement, spDocSpecification.getId());
 
 						if (Utils.isStringNotEmpty(spDocSpecification.getDescription())) {
 							Element descriptionElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),

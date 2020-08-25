@@ -24,6 +24,7 @@ import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
 import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
@@ -227,6 +228,11 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	@Override
 	protected boolean isCounterSignature(CAdESAttribute unsignedAttribute) {
 		return CMSAttributes.counterSignature.equals(unsignedAttribute.getASN1Oid());
+	}
+	
+	@Override
+	protected boolean isSignaturePolicyStore(CAdESAttribute unsignedAttribute) {
+		return id_aa_ets_sigPolicyStore.equals(unsignedAttribute.getASN1Oid());
 	}
 
 	@Override
@@ -549,6 +555,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	protected List<AdvancedSignature> getCounterSignatures(CAdESAttribute unsignedAttribute) {
 		// In case of CAdES the counter signature is added depending on the ATS version type
 		// see {@code getUnsignedCounterSignatureAttributesReferences()} for ATSv2

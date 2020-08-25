@@ -255,7 +255,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void checkSignaturePolicy(List<AdvancedSignature> signatures) {
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (AdvancedSignature signature : signatures) {
-				SignaturePolicy signaturePolicy = signature.getPolicyId();
+				SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
 				if (signaturePolicy != null) {
 					List<SignaturePolicyValidator> validators = new ArrayList<SignaturePolicyValidator>();
 					
@@ -382,6 +382,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkSignedAssertions(diagnosticData);
 		checkSignatureIdentifier(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
+		checkSignaturePolicyStore(diagnosticData);
 		checkSignatureDigestReference(diagnosticData);
 		checkDTBSR(diagnosticData);
 		checkSignatureInformationStore(diagnosticData);
@@ -803,6 +804,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
 		// not implemented by default
+	}
+	
+	protected void checkSignaturePolicyStore(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			String policyStoreId = signatureWrapper.getPolicyStoreId();
+			if (Utils.isStringNotEmpty(policyStoreId)) {
+				XmlDigestAlgoAndValue digestAlgoAndValue = signatureWrapper.getPolicyStoreDigestAlgoAndValue();
+				assertNotNull(digestAlgoAndValue);
+				assertNotNull(digestAlgoAndValue.getDigestMethod());
+				assertTrue(Utils.isArrayNotEmpty(digestAlgoAndValue.getDigestValue()));
+			}
+		}
 	}
 
 	protected void checkSignatureDigestReference(DiagnosticData diagnosticData) {

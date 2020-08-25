@@ -275,7 +275,7 @@ public interface AdvancedSignature extends Serializable {
 	 *
 	 * @return {@code SignaturePolicy}
 	 */
-	SignaturePolicy getPolicyId();
+	SignaturePolicy getSignaturePolicy();
 
 	/**
 	 * Returns the Signature Policy Store from the signature
@@ -481,8 +481,6 @@ public interface AdvancedSignature extends Serializable {
 	void validateStructure();
 
 	String getStructureValidationResult();
-
-	void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector);
 
 	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
 
