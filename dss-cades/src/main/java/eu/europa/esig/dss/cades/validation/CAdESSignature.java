@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
@@ -94,6 +95,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
@@ -263,6 +266,32 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		
 		return signaturePolicy;
+	}
+	
+	@Override
+	public SignaturePolicyStore getSignaturePolicyStore() {
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		Attribute sigPolicyStore = unsignedAttributes.get(id_aa_ets_sigPolicyStore);
+		if (sigPolicyStore != null) {
+			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+			SpDocSpecification spDocSpecification = new SpDocSpecification();
+			
+			ASN1Sequence sequence = ASN1Sequence.getInstance(sigPolicyStore.getAttrValues().getObjectAt(0));
+
+			ASN1Encodable spDocSpec = sequence.getObjectAt(0);
+			spDocSpecification.setId(spDocSpec.toString());
+			
+			try {
+				ASN1OctetString spDocument = DEROctetString.getInstance(sequence.getObjectAt(1));
+				signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
+			} catch (DSSException e) {
+				LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyLocalURI' is not supported!");
+			}
+			
+			signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+			return signaturePolicyStore;
+		}
+		return null;
 	}
 
 	private boolean isZeroHash(byte[] hashValue) {

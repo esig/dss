@@ -98,18 +98,10 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	
 	private boolean includesATSv2(CMSSignedData cmsSignedData) {
 		SignerInformation signerInformation = cmsSignedData.getSignerInfos().iterator().next();
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
-		for (final Attribute attribute : attributes) {
-			if (DSSASN1Utils.isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2)) {
-				return true;
-			}
-		}
-		return false;
+		return CMSUtils.containsATSTv2(signerInformation);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
 			final CAdESSignatureParameters parameters) throws DSSException {
 		/*

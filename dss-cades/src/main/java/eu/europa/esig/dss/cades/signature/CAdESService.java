@@ -47,6 +47,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -276,6 +277,25 @@ public class CAdESService extends
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging: " + packaging);
 		}
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the XAdES Signature
+	 * 
+	 * @param document {@link DSSDocument} containing a XAdES Signature to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} XAdESSignature with an incorporates SignaturePolicyStore
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(document, "The document cannot be null");
+		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
+		
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
+		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(cmsSignedData, signaturePolicyStore);
+		
+		CMSSignedDocument documentWithPolicyStore = new CMSSignedDocument(newCmsSignedData);
+		documentWithPolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
+		return documentWithPolicyStore;
 	}
 
 	@Override

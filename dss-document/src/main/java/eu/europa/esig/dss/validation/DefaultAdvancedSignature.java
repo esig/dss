@@ -28,7 +28,6 @@ import java.util.Set;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -389,11 +388,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			signerRoles.addAll(signedAssertionSignerRoles);
 		}
 		return signerRoles;
-	}
-
-	@Override
-	public SignaturePolicyStore getSignaturePolicyStore() {
-		return null;
 	}
 
 	@Override
