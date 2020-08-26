@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 
@@ -102,6 +104,12 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 			stringBuilder.setLength(stringBuilder.length() - 1);
 		}
 		return stringBuilder.toString();
+	}
+	
+	@Override
+	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
+		// not implemented by default
+		return null;
 	}
 
 }

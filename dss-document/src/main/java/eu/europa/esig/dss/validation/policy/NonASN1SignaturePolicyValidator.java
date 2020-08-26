@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import java.util.Arrays;
-
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -52,20 +52,27 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 		Digest digest = signaturePolicy.getDigest();
 		
 		if (digest != null) {
-			byte[] recalculatedDigestValue = DSSUtils.digest(digest.getAlgorithm(), signaturePolicy.getPolicyContent());
-			if (Arrays.equals(digest.getValue(), recalculatedDigestValue)) {
+			Digest recalculatedDigest = getComputedDigest(digest.getAlgorithm());
+			if (digest.equals(recalculatedDigest)) {
 				setStatus(true);
 				setDigestAlgorithmsEqual(true);
 			} else {
 				addError("general",
 						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-								+ Utils.toBase64(recalculatedDigestValue) + ").");
+								+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
 			}
 			
 		} else {
 			addError("general", "The policy digest value is not defined.");
 		}
 
+	}
+	
+	@Override
+	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
+		SignaturePolicy signaturePolicy = getSignaturePolicy();
+		DSSDocument policyContent = signaturePolicy.getPolicyContent();
+		return DSSUtils.getDigest(digestAlgorithm, policyContent);
 	}
 
 }

@@ -100,15 +100,14 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 				} else {
 					setDigestAlgorithmsEqual(true);
 				}
-
-				byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
-
-				boolean equal = Arrays.equals(digest.getValue(), recalculatedDigestValue);
+				
+				Digest recalculatedDigest = getComputedDigest(signPolicyHashAlgFromPolicy);
+				boolean equal = digest.equals(recalculatedDigest);
 				setStatus(equal);
 				if (!equal) {
 					addError("general",
 							"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-									+ Utils.toBase64(recalculatedDigestValue) + ").");
+									+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
 					return;
 				}
 
@@ -140,6 +139,14 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 			return DSSASN1Utils.isASN1SequenceTag(firstByte);
 		}
 		return false;
+	}
+	
+	@Override
+	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
+		SignaturePolicy signaturePolicy = getSignaturePolicy();
+		DSSDocument policyContent = signaturePolicy.getPolicyContent();
+		byte[] asn1SignaturePolicyDigest = DSSASN1Utils.getAsn1SignaturePolicyDigest(digestAlgorithm, DSSUtils.toByteArray(policyContent));
+		return new Digest(digestAlgorithm, asn1SignaturePolicyDigest);
 	}
 
 }

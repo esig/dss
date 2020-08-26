@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -174,9 +175,16 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 		assertEquals(1, signature.getPolicyStoreDocumentationReferences().size());
 		assertEquals(SIGNATURE_POLICY_DOCUMENTATION, signature.getPolicyStoreDocumentationReferences().get(0));
 		
-		assertNotNull(signature.getPolicyStoreDigestAlgoAndValue());
+		XmlDigestAlgoAndValue policyStoreDigestAlgoAndValue = signature.getPolicyStoreDigestAlgoAndValue();
+		assertNotNull(policyStoreDigestAlgoAndValue);
 		assertNotNull(signature.getPolicyStoreDigestAlgoAndValue().getDigestMethod());
-		assertTrue(Utils.isArrayNotEmpty(signature.getPolicyStoreDigestAlgoAndValue().getDigestValue()));
+		assertTrue(Utils.isArrayNotEmpty(policyStoreDigestAlgoAndValue.getDigestValue()));
+		
+		XmlDigestAlgoAndValue policyDigestAlgoAndValue = signature.getPolicyDigestAlgoAndValue();
+		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
+		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
+		
+		assertEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
 	}
 
 	@Override

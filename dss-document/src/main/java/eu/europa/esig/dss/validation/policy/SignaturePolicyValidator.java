@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 
@@ -94,5 +96,13 @@ public interface SignaturePolicyValidator {
 	 * @return a list of {@link String} error messages
 	 */
 	String getProcessingErrors();
+	
+	/**
+	 * Returns {@code Digest} on the computed SignaturePolicy's content
+	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @return {@link Digest}
+	 */
+	Digest getComputedDigest(DigestAlgorithm digestAlgorithm);
 
 }

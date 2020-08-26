@@ -1,24 +1,25 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 
 /**
  * The class is used to validate a {@code SignaturePolicy} and build a {@code XmlPolicy}
@@ -32,6 +33,10 @@ public class XmlPolicyBuilder {
 	
 	private SignaturePolicyProvider signaturePolicyProvider;
 	private SignaturePolicyStore signaturePolicyStore;
+	
+	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
+	
+	private SignaturePolicyValidator validator;
 	
 	/**
 	 * The default constructor
@@ -59,6 +64,16 @@ public class XmlPolicyBuilder {
 	 */
 	public void setSignaturePolicyStore(SignaturePolicyStore signaturePolicyStore) {
 		this.signaturePolicyStore = signaturePolicyStore;
+	}
+	
+	/**
+	 * Sets a default {@code DigestAlgorithm} to compute a signature policy store digest,
+	 * when SignaturePolicyIdentifier is not present
+	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
+	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.defaultDigestAlgorithm = digestAlgorithm;
 	}
 	
 	/**
@@ -136,27 +151,42 @@ public class XmlPolicyBuilder {
 		throw new DSSException("Unable to extact a SignaturePolicy content. SignaturePolicyStore or SignaturePolicyProvider shall be provided.");
 	}
 	
-	private SignaturePolicyValidator getValidator(SignaturePolicy signaturePolicy) {
-		SignaturePolicyValidator validator = null;
-		ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
-		Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
-
-		if (validatorOptions.hasNext()) {
-			for (SignaturePolicyValidator signaturePolicyValidator : loader) {
-				signaturePolicyValidator.setSignaturePolicy(signaturePolicy);
-				if (signaturePolicyValidator.canValidate()) {
-					validator = signaturePolicyValidator;
-					break;
-				}
+	/**
+	 * Builds an {@code XmlSignaturePolicyStore}
+	 * 
+	 * @return {@link XmlSignaturePolicyStore}
+	 */
+	public XmlSignaturePolicyStore buildSignaturePolicyStore() {
+		if (signaturePolicyStore == null) {
+			return null;
+		}
+		XmlSignaturePolicyStore xmlSignaturePolicyStore = new XmlSignaturePolicyStore();
+		SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
+		if (spDocSpecification != null) {
+			xmlSignaturePolicyStore.setId(spDocSpecification.getId());
+			xmlSignaturePolicyStore.setDescription(spDocSpecification.getDescription());
+			String[] documentationReferences = spDocSpecification.getDocumentationReferences();
+			if (Utils.isArrayNotEmpty(documentationReferences)) {
+				xmlSignaturePolicyStore.setDocumentationReferences(Arrays.asList(documentationReferences));
 			}
 		}
-
-		if (validator == null) {
-			// if not empty and no other implementation is found for ASN1 signature policies
-			validator = new BasicASNSignaturePolicyValidator();
-			validator.setSignaturePolicy(signaturePolicy);
+		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
+		if (signaturePolicyContent != null) {
+			DigestAlgorithm digestAlgorithm = defaultDigestAlgorithm;
+			if (signaturePolicy != null && signaturePolicy.getDigest() != null) {
+				digestAlgorithm = signaturePolicy.getDigest().getAlgorithm();
+			}
+			SignaturePolicyValidator validator = getValidator(signaturePolicy);
+			Digest recalculatedDigest = validator.getComputedDigest(digestAlgorithm);
+			xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest.getAlgorithm(), recalculatedDigest.getValue()));
 		}
-		
+		return xmlSignaturePolicyStore;
+	}
+	
+	private SignaturePolicyValidator getValidator(SignaturePolicy signaturePolicy) {
+		if (validator == null) {
+			validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
+		}
 		return validator;
 	}
 

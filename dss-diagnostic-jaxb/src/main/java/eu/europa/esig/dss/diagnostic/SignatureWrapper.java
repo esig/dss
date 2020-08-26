@@ -274,6 +274,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return false;
 	}
+
+	public XmlDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getDigestAlgoAndValue();
+		}
+		return null;
+	}
 	
 	public String getPolicyStoreId() {
 		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();

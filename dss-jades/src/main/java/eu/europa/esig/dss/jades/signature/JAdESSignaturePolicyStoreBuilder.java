@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.jose4j.json.internal.json_simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESUtils;
@@ -26,8 +27,12 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 
 public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignaturePolicyStoreBuilder.class);
 
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");
@@ -56,8 +61,11 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		SignaturePolicy policyId = jadesSignature.getSignaturePolicy();
 		if (policyId != null && policyId.getDigest() != null) {
 			Digest expectedDigest = policyId.getDigest();
-			byte[] computedDigest = Utils.fromBase64(signaturePolicyStore.getSignaturePolicyContent().getDigest(expectedDigest.getAlgorithm()));
-			if (Arrays.equals(expectedDigest.getValue(), computedDigest)) {
+			policyId.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
+			
+			SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(policyId).loadValidator();
+			Digest computedDigest = validator.getComputedDigest(expectedDigest.getAlgorithm());
+			if (expectedDigest.equals(computedDigest)) {
 
 				List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
@@ -75,6 +83,8 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 
 				JSONObject sigPolicyStoreItem = new JSONObject(sigPolicyStoreMap);
 				unsignedProperties.add(sigPolicyStoreItem);
+			} else {
+				LOG.warn("Signature policy's digest doesn't match the document {} for signature {}", expectedDigest, jadesSignature.getId());
 			}
 		}
 	}

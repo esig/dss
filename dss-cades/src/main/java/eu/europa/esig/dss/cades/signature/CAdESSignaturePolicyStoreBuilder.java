@@ -20,10 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 
 public class CAdESSignaturePolicyStoreBuilder {
 
@@ -41,7 +46,27 @@ public class CAdESSignaturePolicyStoreBuilder {
 		
 		for (SignerInformation signerInformation : signerInformationCollection) {
 			asserSignaturePolicyStoreExtensionPossible(signerInformation);
-			final SignerInformation newSignerInformation = addSignaturePolicyStore(signerInformation, signaturePolicyStore);
+			SignerInformation newSignerInformation = signerInformation;
+			
+			CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+			SignaturePolicy signaturePolicy = cadesSignature.getSignaturePolicy();
+			if (signaturePolicy != null) {
+				Digest expectedDigest = signaturePolicy.getDigest();
+				if (expectedDigest != null) {
+					signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
+					SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
+					Digest computedDigest = validator.getComputedDigest(expectedDigest.getAlgorithm());
+					if (expectedDigest.equals(computedDigest)) {
+						newSignerInformation = addSignaturePolicyStore(signerInformation, signaturePolicyStore);
+					} else {
+						LOG.warn("Signature policy's digest doesn't match the document {} for signature {}", expectedDigest, cadesSignature.getId());
+					}
+				} else {
+					LOG.warn("SignaturePolicyIdentifier Digest is not found for a signature with id {}", cadesSignature.getId());
+				}
+			} else {
+				LOG.warn("SignaturePolicyIdentifier is not defined for a signature with id {}", cadesSignature.getId());
+			}
 			newSignerInformationList.add(newSignerInformation);
 		}
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);

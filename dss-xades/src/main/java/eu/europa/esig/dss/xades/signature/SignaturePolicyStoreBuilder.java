@@ -20,7 +20,9 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
@@ -64,15 +66,16 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 			ensureUnsignedProperties();
 			ensureUnsignedSignatureProperties();
-			assertSignatureValid(xadesSignature);
 
-			Element signaturePolicyIdentifierElement = DomUtils.getElement(currentSignatureDom, xadesPaths.getSignaturePolicyIdentifier());
-			if (signaturePolicyIdentifierElement != null) {
-				final Digest digest = DSSXMLUtils
-						.getDigestAndValue(DomUtils.getElement(signaturePolicyIdentifierElement, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue()));
+			SignaturePolicy signaturePolicy = xadesSignature.getSignaturePolicy();
+			if (signaturePolicy != null) {
+				final Digest digest = signaturePolicy.getDigest();
 				if (digest != null) {
-					byte[] computedDigest = Utils.fromBase64(signaturePolicyStore.getSignaturePolicyContent().getDigest(digest.getAlgorithm()));
-					if (Arrays.equals(digest.getValue(), computedDigest)) {
+					signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
+					
+					SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
+					Digest computedDigest = validator.getComputedDigest(digest.getAlgorithm());
+					if (digest.equals(computedDigest)) {
 
 						Element signaturePolicyStoreElement = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(),
 								XAdES141Element.SIGNATURE_POLICY_STORE);
