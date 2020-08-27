@@ -283,6 +283,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 	
+	/**
+	 * Checks if a SignaturePolicyStore unsigned property is present
+	 * 
+	 * @return TRUE if SignaturePolicyStore is present, FALSE otherwise
+	 */
+	public boolean isPolicyStorePresent() {
+		return signature.getSignaturePolicyStore() != null;
+	}
+	
 	public String getPolicyStoreId() {
 		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
 		if (policyStore != null) {
@@ -482,10 +491,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Checks if a SignaturePolicyIdentifier is present
+	 * 
+	 * @return TRUE if a SignaturePolicyIdentifier is found, FALSE otherwise
+	 */
 	public boolean isPolicyPresent() {
 		return signature.getPolicy() != null;
 	}
 
+	/**
+	 * Returns an error string occurred during a SignaturePolicy proceeding, when applicable
+	 * 
+	 * @return {@link String} representing a policy validation error message, empty when no errors found
+	 */
 	public String getPolicyProcessingError() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {

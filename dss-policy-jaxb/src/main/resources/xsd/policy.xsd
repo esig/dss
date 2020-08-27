@@ -137,6 +137,11 @@
 					<xsd:documentation>Checks the availability of the signature policy (PDF resource,...)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SignaturePolicyStorePresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of a SignaturePolicyStore as an unsigned attribute, containing a policy content</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PolicyHashMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the hash value for the given signature policy</xsd:documentation>
