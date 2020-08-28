@@ -65,15 +65,12 @@ import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
  * from the XL profile.
  *
  */
-public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
+public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
 
-	private final CAdESLevelBaselineLT cadesProfileLT;
-
-	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-		super(tspSource, onlyLastSigner);
-		cadesProfileLT = new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastSigner);
+	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
+		super(tspSource, certificateVerifier);
 	}
 
 	@Override
@@ -91,19 +88,18 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		 *   SignedData.certificates, or SignedData.crls as applicable.
 		 */
 		if (!includesATSv2(cmsSignedData)) {
-			cmsSignedData = cadesProfileLT.extendCMSSignatures(cmsSignedData, parameters);
+			for (SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
+				cmsSignedData = super.extendCMSSignedData(cmsSignedData, signerInformation, parameters);
+			}
 		}
 		return cmsSignedData;
 	}
-	
-	private boolean includesATSv2(CMSSignedData cmsSignedData) {
-		SignerInformation signerInformation = cmsSignedData.getSignerInfos().iterator().next();
-		return CMSUtils.containsATSTv2(signerInformation);
-	}
 
 	@Override
-	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
+	protected SignerInformation extendSignerInformation(CMSSignedData cmsSignedData, SignerInformation signerInformation,
 			final CAdESSignatureParameters parameters) throws DSSException {
+		signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
+		
 		/*
 		 * If non ATSv2 is present, then the root SignedData is extended in {@code preExtendCMSSignedData(cmsSignedData, parameters)} method
 		 */
@@ -121,7 +117,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 			try {
 				// add missing validation data to the previous (last) ArchiveTimestamp
 				CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-				ValidationDataForInclusionBuilder validationDataForInclusionBuilder = cadesProfileLT.getValidationDataForInclusionBuilder(cadesSignature)
+				ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature)
 						.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
 						.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
 						.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
@@ -139,12 +135,19 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 	
+	@Override
+	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation,
+			CAdESSignatureParameters parameters) {
+		// post extension is not required for LTA level
+		return cmsSignedData;
+	}
+	
 	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final ValidationDataForInclusion validationDataForInclusion,
 			final List<DSSDocument> detachedContents) throws IOException, CMSException, TSPException {
 		TimeStampToken timestampTokenToExtend = getLastArchiveTimestamp(unsignedAttributes);
 		if (timestampTokenToExtend != null) {
 			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
-			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.extendWithValidationData(
+			CMSSignedData extendedTimestampCMSSignedData = extendWithValidationData(
 					timestampCMSSignedData, validationDataForInclusion, detachedContents);
 					
 			unsignedAttributes = replaceTimeStampAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
@@ -245,6 +248,15 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		} else {
 			return id_aa_ATSHashIndexV3;
 		}
+	}
+	
+	private boolean includesATSv2(CMSSignedData cmsSignedData) {
+		for (SignerInformation signerInformation : cmsSignedData.getSignerInfos()) {
+			if (CMSUtils.containsATSTv2(signerInformation)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

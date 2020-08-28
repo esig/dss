@@ -42,26 +42,24 @@ import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
  *
  */
 
-public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
+public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 
 	private final CertificateVerifier certificateVerifier;
-	private final CAdESLevelBaselineT cadesProfileT;
 
-	public CAdESLevelBaselineLT(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-		super(tspSource, onlyLastSigner);
+	public CAdESLevelBaselineLT(TSPSource tspSource, CertificateVerifier certificateVerifier) {
+		super(tspSource);
 		this.certificateVerifier = certificateVerifier;
-		cadesProfileT = new CAdESLevelBaselineT(tspSource, onlyLastSigner);
 	}
 
 	@Override
-	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
+	protected SignerInformation extendSignerInformation(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException {
 		// add a LT level or replace an existing LT level
 		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 
 		// add T level if needed
 		if (Utils.isCollectionEmpty(cadesSignature.getSignatureTimestamps())) {
-			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
+			signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
 			cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		}
 		// check if the resulted signature can be extended
@@ -71,11 +69,11 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	}
 
 	@Override
-	public CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
-		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, detachedContents);
+	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
+		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature);
 		ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
-		return extendWithValidationData(cmsSignedData, validationDataForInclusion, detachedContents);
+		return extendWithValidationData(cmsSignedData, validationDataForInclusion, parameters.getDetachedContents());
 	}
 	
 	/**
