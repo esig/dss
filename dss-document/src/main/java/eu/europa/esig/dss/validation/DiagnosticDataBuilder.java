@@ -394,10 +394,9 @@ public class DiagnosticDataBuilder {
 			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
 			linkSignaturesAndTimestamps(signatures);
 		}
-		
-		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
-			diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
-		}
+
+		buildOrphanRevocationTokensFromCommonSources(); // necessary to collect all data from DSS PDF revisions
+		diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
 		
 		// timestamped objects must be linked after building of orphan tokens
 		if (Utils.isCollectionNotEmpty(usedTimestamps)) {
@@ -916,15 +915,13 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private XmlOrphanTokens buildXmlOrphanTokens() {
-		XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
-		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap)) {
+		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
+			XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
 			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
-		}
-		buildOrphanRevocationTokensFromCommonSources(); // necessary to collect all data from DSS PDF revisions
-		if (Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
 			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
+			return xmlOrphanTokens;
 		}
-		return xmlOrphanTokens;
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
