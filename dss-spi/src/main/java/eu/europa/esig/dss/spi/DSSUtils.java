@@ -1068,6 +1068,20 @@ public final class DSSUtils {
 	}
 	
 	/**
+	 * Checks if the given {@code oid} is a valid OID
+	 * Ex.: 1.3.6.1.4.1.343 -> valid
+	 *      25.25 -> invalid
+	 *      http://sample.com -> invalid
+	 * Source: regexr.com/38m0v (OID Validator)
+	 * 
+	 * @param oid {@link String} oid to verify
+	 * @return TRUE if the string is a valid OID code, FALSE otherwise
+	 */
+	public static boolean isOidCode(String oid) {
+		return oid != null && oid.matches("^([0-2])((\\.0)|(\\.[1-9][0-9]*))*$");
+	}
+	
+	/**
 	 * Keeps only code of the oid string
 	 * e.g. "urn:oid:1.2.3" to "1.2.3"
 	 * 

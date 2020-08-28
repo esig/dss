@@ -272,24 +272,28 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public SignaturePolicyStore getSignaturePolicyStore() {
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		Attribute sigPolicyStore = unsignedAttributes.get(id_aa_ets_sigPolicyStore);
-		if (sigPolicyStore != null) {
+		if (sigPolicyStore != null && sigPolicyStore.getAttrValues().size() > 0) {
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 			SpDocSpecification spDocSpecification = new SpDocSpecification();
 			
 			ASN1Sequence sequence = ASN1Sequence.getInstance(sigPolicyStore.getAttrValues().getObjectAt(0));
-
-			ASN1Encodable spDocSpec = sequence.getObjectAt(0);
-			spDocSpecification.setId(spDocSpec.toString());
 			
-			try {
-				ASN1OctetString spDocument = DEROctetString.getInstance(sequence.getObjectAt(1));
-				signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
-			} catch (DSSException e) {
-				LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyLocalURI' is not supported!");
+			if (sequence.size() == 2) {
+				ASN1Encodable spDocSpec = sequence.getObjectAt(0);
+				spDocSpecification.setId(spDocSpec.toString());
+				
+				try {
+					ASN1OctetString spDocument = DEROctetString.getInstance(sequence.getObjectAt(1));
+					signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
+				} catch (Exception e) {
+					LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
+				}
+				
+				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+				return signaturePolicyStore;
+			} else {
+				LOG.warn("Unable to extact a SignaturePolicyStore. The element shall contain two attributes.");
 			}
-			
-			signaturePolicyStore.setSpDocSpecification(spDocSpecification);
-			return signaturePolicyStore;
 		}
 		return null;
 	}

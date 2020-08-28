@@ -45,7 +45,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		
 		for (SignerInformation signerInformation : signerInformationCollection) {
-			asserSignaturePolicyStoreExtensionPossible(signerInformation);
+			assertSignaturePolicyStoreExtensionPossible(signerInformation);
 			SignerInformation newSignerInformation = signerInformation;
 			
 			CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
@@ -108,18 +108,15 @@ public class CAdESSignaturePolicyStoreBuilder {
 	 */
 	private ASN1Primitive getSPDocSpecificationId(String oidOrUri) {
 		ASN1Primitive spDocSpecification = null;
-		try {
+		if (DSSUtils.isOidCode(oidOrUri)) {
 			spDocSpecification = new ASN1ObjectIdentifier(oidOrUri);
-		} catch (IllegalArgumentException e) {
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("{}. Set SPDocSpecification as an uri...");
-			}
+		} else {
 			spDocSpecification = new DERIA5String(oidOrUri);
 		}
 		return spDocSpecification;
 	}
 	
-	private void asserSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {
+	private void assertSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {
 		if (CMSUtils.containsATSTv2(signerInformation)) {
 			throw new DSSException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
 		}
