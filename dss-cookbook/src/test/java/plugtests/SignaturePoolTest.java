@@ -532,7 +532,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 				DigestMatcherType type = digestMatcher.getType();
 				if (!DigestMatcherType.KEY_INFO.equals(type) && !DigestMatcherType.REFERENCE.equals(type) && 
 						!DigestMatcherType.SIGNED_PROPERTIES.equals(type) && !DigestMatcherType.XPOINTER.equals(type) && 
-						!DigestMatcherType.SIGNATURE_PROPERTIES.equals(type)) {
+						!DigestMatcherType.SIGNATURE_PROPERTIES.equals(type) && !DigestMatcherType.COUNTER_SIGNATURE.equals(type)) {
 					containsDocumentDigestMatcher = true;
 					break;
 				}
