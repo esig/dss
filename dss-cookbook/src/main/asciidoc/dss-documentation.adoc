@@ -1147,7 +1147,7 @@ Below is an example of code to perform a PAdES-BASELINE-B type signature:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
 ----
 
-In order too add a timestamp to the signature (PAdES-T or LTA), a TSP source must be provided to the service.
+In order to add a timestamp to the signature (PAdES-T or LTA), a TSP source must be provided to the service.
 
 To create PAdES-BASELINE-B level with additional options: signature policy identifier and optionally a commitment type indication, please observe the following example in code 5.
 
