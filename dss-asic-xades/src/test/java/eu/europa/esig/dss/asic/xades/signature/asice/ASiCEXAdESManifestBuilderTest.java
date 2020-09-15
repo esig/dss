@@ -34,9 +34,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
-public class ASiCEWithXAdESManifestBuilderTest {
+public class ASiCEXAdESManifestBuilderTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestBuilderTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ASiCEXAdESManifestBuilderTest.class);
 
 	@Test
 	public void test() {

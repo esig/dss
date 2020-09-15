@@ -253,6 +253,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	@Override
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		verifyAndSetCounterSignatureParameters(parameters);
 		
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);

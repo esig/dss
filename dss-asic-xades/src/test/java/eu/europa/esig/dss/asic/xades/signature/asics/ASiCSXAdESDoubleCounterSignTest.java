@@ -1,51 +1,54 @@
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.xades.signature.AbstractASiCXAdESCounterSignatureTest;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
-public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignatureTest {
+public class ASiCSXAdESDoubleCounterSignTest extends AbstractASiCXAdESCounterSignatureTest {
 
-	private XAdESService service;
+	private ASiCWithXAdESService service;
 	private DSSDocument documentToSign;
 
 	private Date signingDate;
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 		signingDate = new Date();
 	}
 
 	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
-		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
+		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(signingDate);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		return signatureParameters;
 	}
 
@@ -64,7 +67,7 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 		DSSDocument counterSigned = super.counterSign(signatureDocument, signatureId);
 		return super.counterSign(counterSigned, signatureId);
 	}
-	
+
 	@Override
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(3, diagnosticData.getSignatures().size());
@@ -100,7 +103,7 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

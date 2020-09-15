@@ -44,7 +44,6 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
 
-
 		// signedDocument.save("target/signed-" + signedDocument.getName());
 
 		SignedDocumentValidator validator = getValidator(signedDocument);

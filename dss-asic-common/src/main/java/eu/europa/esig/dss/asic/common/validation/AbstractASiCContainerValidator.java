@@ -137,10 +137,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 		List<DocumentValidator> currentValidators = getSignatureValidators();
 		for (DocumentValidator signatureValidator : currentValidators) {
+			List<AdvancedSignature> signatures = signatureValidator.getSignatures();
+			
 			List<AdvancedSignature> currentValidatorSignatures = new ArrayList<>();
-			for (AdvancedSignature advancedSignature : signatureValidator.getSignatures()) {
+			for (AdvancedSignature advancedSignature : signatures) {
 				currentValidatorSignatures.add(advancedSignature);
-				currentValidatorSignatures.addAll(advancedSignature.getCounterSignatures());
+				appendCounterSignatures(currentValidatorSignatures, advancedSignature);
 			}
 
 			// XML/CMS validator
@@ -160,17 +162,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		for (DocumentValidator validator : getSignatureValidators()) {
 			for (final AdvancedSignature advancedSignature : validator.getSignatures()) {
 				signatureList.add(advancedSignature);
-				appendCounterSignatures(signatureList, advancedSignature);
 			}
 		}
 		return signatureList;
-	}
-	
-	private void appendCounterSignatures(final List<AdvancedSignature> signatureList, final AdvancedSignature advancedSignature) {
-		for (AdvancedSignature counterSignature : advancedSignature.getCounterSignatures()) {
-			signatureList.add(counterSignature);
-			appendCounterSignatures(signatureList, counterSignature);
-		}
 	}
 
 	protected abstract List<DocumentValidator> getSignatureValidators();

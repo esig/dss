@@ -166,6 +166,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			Element signatureDom = (Element) signatureNodeList.item(ii);
 			XAdESSignature signature = new XAdESSignature(signatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
+			signature.setDetachedContents(parameters.getDetachedContents());
 			
 			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById(signature, parameters.getSignatureIdToCounterSign());
 			if (signatureById != null) {

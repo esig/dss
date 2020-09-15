@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import eu.europa.esig.dss.alert.exception.AlertException;
-import eu.europa.esig.dss.asic.xades.extension.AbstractASiCwithXAdESTestExtension;
+import eu.europa.esig.dss.asic.xades.extension.AbstractASiCWithXAdESTestExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class ASiCeExtensionWithXAdESBToLTUnknownTest extends AbstractASiCwithXAdESTestExtension {
+public class ASiCeExtensionWithXAdESBToLTUnknownTest extends AbstractASiCWithXAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
