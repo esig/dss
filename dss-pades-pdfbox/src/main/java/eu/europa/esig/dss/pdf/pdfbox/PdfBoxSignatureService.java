@@ -231,7 +231,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private PDSignature createSignatureDictionary(final PAdESCommonParameters parameters, PDDocument pdDocument) {
+	protected PDSignature createSignatureDictionary(final PAdESCommonParameters parameters, PDDocument pdDocument) {
 
 		PDSignature signature;
 		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
