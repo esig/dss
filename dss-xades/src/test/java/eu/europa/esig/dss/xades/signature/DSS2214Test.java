@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 
@@ -9,6 +12,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -49,10 +53,13 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 	@Override
 	protected Reports verify(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = getValidator(signedDocument);
+		// revocation data are needed for this test
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument(getModifiedValidationPolicy());
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertNotEquals(0, diagnosticData.getAllRevocationData().size());
 
 		verifyDiagnosticData(diagnosticData);
 
@@ -62,6 +69,8 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
+
+		assertEquals(SubIndication.NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		verifyDetailedReport(detailedReport);

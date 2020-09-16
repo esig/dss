@@ -81,7 +81,8 @@ public class ValidationProcessUtils {
 	public static CertificateRevocationWrapper getLatestAcceptableRevocationData(CertificateWrapper certificate, XmlBasicBuildingBlocks bbb) {
 		if (bbb != null && bbb.getXCV() != null) {
 			for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
-				if (certificate.getId().equals(subXCV.getId()) && subXCV.getRFC() != null) {
+				// rfc.getId can be null if no revocation data is available
+				if (certificate.getId().equals(subXCV.getId()) && (subXCV.getRFC() != null) && (subXCV.getRFC().getId() != null)) {
 					return certificate.getRevocationDataById(subXCV.getRFC().getId());
 				}
 			}
