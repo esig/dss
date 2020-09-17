@@ -130,7 +130,7 @@ public abstract class ASiCCounterSignatureHelper {
 	}
 	
 	private boolean containsSignatureToBeCounterSigned(AdvancedSignature signature, String signatureId) {
-		if (signatureId.equals(signature.getId())) {
+		if (signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier())) {
 			return true;
 		}
 		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
