@@ -1054,8 +1054,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
 				XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature((Element) counterSignatures.item(ii), this);
 				if (counterSignature != null) {
-					counterSignature.setSignatureFilename(getSignatureFilename());
-					counterSignature.setMasterSignature(this);
 					xadesList.add(counterSignature);
 				}
 			}

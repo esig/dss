@@ -36,7 +36,7 @@ public class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/containerWithCounterSig.asics");
+		return new FileDocument("src/test/resources/validation/container-with-counter-signature.asics");
 	}
 	
 	@Override
