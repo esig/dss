@@ -37,7 +37,6 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
@@ -82,8 +81,12 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				cadesValidator.setCertificateVerifier(certificateVerifier);
 				cadesValidator.setProcessExecutor(processExecutor);
 				cadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
-				cadesValidator.setDetachedContents(getSignedDocuments(signature));
 				cadesValidator.setContainerContents(getArchiveDocuments());
+				
+				DSSDocument signedDocument = ASiCWithCAdESExtractResultUtils.getSignedDocument(extractResult, signature.getName());
+				if (signedDocument != null) {
+					cadesValidator.setDetachedContents(Collections.singletonList(signedDocument));
+				}
 				
 				DSSDocument signatureManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), signature.getName());
 				if (signatureManifest != null) {
@@ -181,7 +184,8 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			ManifestFile coveredManifest = manifestBasedTimestampValidator.getCoveredManifest();
 			for (ManifestEntry entry : coveredManifest.getEntries()) {
 				for (AdvancedSignature advancedSignature : allSignatures) {
-					if (Utils.areStringsEqual(entry.getFileName(), advancedSignature.getSignatureFilename())) {
+					if (Utils.areStringsEqual(entry.getFileName(), advancedSignature.getSignatureFilename()) &&
+							!advancedSignature.isCounterSignature()) {
 						CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
 						timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
 						
@@ -224,25 +228,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			}
 		}
 		return false;
-	}
-
-	private List<DSSDocument> getSignedDocuments(DSSDocument signature) {
-		ASiCContainerType type = getContainerType();
-		if (ASiCContainerType.ASiC_S.equals(type)) {
-			return getSignedDocuments(); // Collection size should be equal 1
-		} else if (ASiCContainerType.ASiC_E.equals(type)) {
-			// the manifest file is signed
-			// we need first to check the manifest file and its digests
-			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getManifestDocuments(), signature.getName());
-			if (linkedManifest != null) {
-				return Arrays.asList(linkedManifest);
-			} else {
-				return Collections.singletonList(new InMemoryDocument(new byte[] {})); // Force CAdES validation with empty content
-			}
-		} else {
-			LOG.warn("Unknown asic container type (returns all signed documents)");
-			return getAllDocuments();
-		}
 	}
 
 	@Override

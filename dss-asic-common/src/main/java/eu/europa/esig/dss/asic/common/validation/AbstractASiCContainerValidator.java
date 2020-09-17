@@ -51,8 +51,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DocumentValidator> timestampValidators;
 
 	protected ASiCExtractResult extractResult;
-
-	private ASiCContainerType containerType;
 	
 	private List<ManifestFile> manifestFiles;
 
@@ -63,18 +61,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected void analyseEntries() {
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor();
 		extractResult = extractor.extract();
-		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), extractResult.getZipComment(),
-				extractResult.getSignedDocuments());
-		if (ASiCContainerType.ASiC_S.equals(containerType)) {
-			extractResult.setContainerDocuments(getArchiveDocuments(extractResult.getSignedDocuments()));
-		}
 	}
 
 	protected abstract AbstractASiCContainerExtractor getArchiveExtractor();
-
-	public ASiCContainerType getContainerType() {
-		return containerType;
-	}
 	
 	@Override
 	protected DiagnosticDataBuilder getDiagnosticDataBuilderConfiguration(final ValidationContext validationContext, List<AdvancedSignature> signatures,
@@ -90,7 +79,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 */
 	protected ContainerInfo getContainerInfo() {
 		ContainerInfo containerInfo = new ContainerInfo();
-		containerInfo.setContainerType(containerType);
+		containerInfo.setContainerType(extractResult.getContainerType());
 		containerInfo.setZipComment(extractResult.getZipComment());
 
 		DSSDocument mimeTypeDocument = extractResult.getMimeTypeDocument();
@@ -164,10 +153,15 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 				signatureList.add(advancedSignature);
 			}
 		}
+		
 		return signatureList;
 	}
 
 	protected abstract List<DocumentValidator> getSignatureValidators();
+	
+	public ASiCContainerType getContainerType() {
+		return extractResult.getContainerType();
+	}
 
 	public List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();
@@ -214,17 +208,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			manifestFiles = getManifestFilesDecriptions();
 		}
 		return manifestFiles;
-	}
-	
-	private List<DSSDocument> getArchiveDocuments(List<DSSDocument> foundDocuments) {
-		List<DSSDocument> archiveDocuments = new ArrayList<>();
-		for (DSSDocument document : foundDocuments) {
-			if (ASiCUtils.isASiCSArchive(document)) {
-				archiveDocuments.addAll(ASiCUtils.getPackageZipContent(document));
-				break; // only one "package.zip" is possible
-			}
-		}
-		return archiveDocuments;
 	}
 
 	protected List<DSSDocument> getSignedDocumentsASiCS(List<DSSDocument> retrievedDocs) {

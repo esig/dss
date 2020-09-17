@@ -81,7 +81,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	 * @param parameters
 	 *            set of driving signing parameters
 	 */
-	protected void assertSigningDateInCertificateValidityRange(final SP parameters) {
+	protected void assertSigningDateInCertificateValidityRange(final SerializableSignatureParameters parameters) {
 		if (parameters.getSigningCertificate() == null) {
 			if (parameters.isGenerateTBSWithoutCertificate()) {
 				return;

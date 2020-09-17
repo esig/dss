@@ -236,5 +236,12 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 			zos.setComment(ASiCUtils.MIME_TYPE_COMMENT + ASiCUtils.getMimeTypeString(asicParameters));
 		}
 	}
+	
+	protected void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper, CSP parameters) {
+		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
+			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
+					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
+		}
+	}
 
 }

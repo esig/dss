@@ -136,7 +136,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 	
 	private boolean isCounterSignature(final CAdESSignature masterSignature, final String signatureId) {
-		for (final SignerInformation counterSignerInformation : masterSignature.getSignerInformation().getCounterSignatures()) {
+		for (final SignerInformation counterSignerInformation : masterSignature.getCounterSignatureStore()) {
 			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
 			countersignature.setMasterSignature(masterSignature);
 			if (Utils.areStringsEqual(countersignature.getId(), signatureId) || isCounterSignature(countersignature, signatureId)) {

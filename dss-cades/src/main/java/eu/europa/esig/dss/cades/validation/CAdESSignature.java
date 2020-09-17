@@ -73,6 +73,7 @@ import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,6 +135,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private final CMSSignedData cmsSignedData;
 
 	private final SignerInformation signerInformation;
+	
+	/**
+	 * NOTE: The value shall be cached in order to properly compute a unique identifier for counter signatures
+	 */
+	private SignerInformationStore counterSignaturesStore;
 
 	/**
 	 * The default constructor for CAdESSignature.
@@ -977,13 +983,26 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	protected List<AdvancedSignature> extractCounterSignatures() {
-		final List<AdvancedSignature> countersignatures = new ArrayList<>();
-		for (final SignerInformation counterSignerInformation : signerInformation.getCounterSignatures()) {
-			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-			countersignature.setMasterSignature(this);
-			countersignatures.add(countersignature);
+		final List<AdvancedSignature> cadesList = new ArrayList<>();
+		for (final SignerInformation counterSignerInformation : getCounterSignatureStore()) {
+			final CAdESSignature counterSignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
+			counterSignature.setSignatureFilename(getSignatureFilename());
+			counterSignature.setMasterSignature(this);
+			cadesList.add(counterSignature);
 		}
-		return countersignatures;
+		return cadesList;
+	}
+	
+	/**
+	 * Returns a SignerInformationStore containing counter signatures
+	 * 
+	 * @return {@link SignerInformationStore}
+	 */
+	protected SignerInformationStore getCounterSignatureStore() {
+		if (counterSignaturesStore == null) {
+			counterSignaturesStore = signerInformation.getCounterSignatures();
+		}
+		return counterSignaturesStore;
 	}
 
 	public DSSDocument getOriginalDocument() {

@@ -34,9 +34,8 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	protected Integer getCounterSignaturePosition(AdvancedSignature masterSignature) {
 		CAdESSignature cadesSignature = (CAdESSignature) signature;
 		CAdESSignature cadesMasterSignature = (CAdESSignature) masterSignature;
-		SignerInformation masterSignerInformation = cadesMasterSignature.getSignerInformation();
 		
-		return count(masterSignerInformation.getCounterSignatures().getSigners(), cadesSignature.getSignerInformation());
+		return count(cadesMasterSignature.getCounterSignatureStore().getSigners(), cadesSignature.getSignerInformation());
 	}
 
 	@Override

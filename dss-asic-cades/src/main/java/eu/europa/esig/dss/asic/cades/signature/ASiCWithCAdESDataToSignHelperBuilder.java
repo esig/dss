@@ -45,14 +45,14 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 	 * 
 	 * @param operation {@link SigningOperation}
 	 * @param documents a list of {@link DSSDocument}s to get a helper from
-	 * @param parameters {@link ASiCWithXAdESSignatureParameters}
-	 * @return {@link GetDataToSignASiCWithXAdESHelper}
+	 * @param parameters {@link ASiCWithCAdESCommonParameters}
+	 * @return {@link GetDataToSignASiCWithCAdESHelper}
 	 */
 	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(SigningOperation operation, List<DSSDocument> documents,
 			ASiCWithCAdESCommonParameters parameters) {
 		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
 			DSSDocument archiveDocument = documents.get(0);
-			if (ASiCUtils.isZip(documents.get(0))) {
+			if (ASiCUtils.isAsic(archiveDocument)) {
 				return fromZipArchive(operation, archiveDocument, parameters);
 			}
 		}

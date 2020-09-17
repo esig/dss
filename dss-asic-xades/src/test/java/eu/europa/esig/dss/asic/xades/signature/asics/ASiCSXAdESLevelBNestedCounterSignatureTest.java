@@ -30,7 +30,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
-public class ASiCSXAdESLevelBNestedCoutnerSignatureTest extends AbstractASiCWithXAdESTestValidation {
+public class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
 
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESService service;

@@ -250,29 +250,12 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		XAdESService xadesService = getXAdESService();
 		DSSDocument counterSignedSignature = xadesService.counterSignSignature(signatureDocument, parameters, signatureValue);
 		counterSignedSignature.setName(signatureDocument.getName());
-
-		List<DSSDocument> newSignaturesList = new ArrayList<>();
-		for (DSSDocument signature : counterSignatureHelper.getSignatureDocuments()) {
-			if (signatureDocument.getName().equals(signature.getName())) {
-				newSignaturesList.add(counterSignedSignature);
-			} else {
-				newSignaturesList.add(signature);
-			}
-		}
+		
+		List<DSSDocument> newSignaturesList = counterSignatureHelper.getUpdatedSignatureDocumentsList(counterSignedSignature);
 		
 		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList);
 		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		return resultArchive;
-	}
-	
-	private void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper, XAdESCounterSignatureParameters parameters) {
-		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
-			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
-					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
-		}
-		
-		List<DSSDocument> signedDocuments = counterSignatureHelper.getAllDocuments();
-		parameters.setDetachedContents(signedDocuments);
 	}
 
 }

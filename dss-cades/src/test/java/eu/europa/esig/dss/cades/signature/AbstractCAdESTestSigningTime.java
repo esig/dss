@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
@@ -102,7 +103,7 @@ public abstract class AbstractCAdESTestSigningTime extends AbstractCAdESTestSign
 		}
 		
 		@Override
-		protected void assertSigningDateInCertificateValidityRange(final CAdESSignatureParameters parameters) {
+		protected void assertSigningDateInCertificateValidityRange(final SerializableSignatureParameters parameters) {
 			// do nothing
 		}
 		

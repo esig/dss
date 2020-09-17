@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.asic.common.signature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.ManifestFile;
 
 public abstract class ASiCCounterSignatureHelper {
 
@@ -37,6 +39,7 @@ public abstract class ASiCCounterSignatureHelper {
 			List<DSSDocument> signatureDocuments = getSignatureDocuments();
 			for (DSSDocument signatureDocument : signatureDocuments) {
 				if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
+					checkCounterSignaturePossible(signatureDocument);
 					return signatureDocument;
 				}
 			}
@@ -60,16 +63,26 @@ public abstract class ASiCCounterSignatureHelper {
 	}
 	
 	/**
-	 * Returns a list if all documents contained in the container
+	 * Returns a list if detached documents for a signature with a given filename
 	 * 
+	 * @param signatureFilename {@link String} a signature filename
 	 * @return a list of {@link DSSDocument}s
 	 */
-	public List<DSSDocument> getAllDocuments() {
-		ASiCExtractResult extractResult = getASiCExtractResult();
-		return extractResult.getAllDocuments();
+	protected abstract List<DSSDocument> getDetachedDocuments(String signatureFilename);
+	
+	/**
+	 * Returns a related manifest file for a signature with the given filename
+	 * NOTE: used for ASiC with CAdES only
+	 * 
+	 * @param signatureFilename {@link String} a signature filename
+	 * @return {@link ManifestFile} representing a related manifest file
+	 */
+	public ManifestFile getManifestFile(String signatureFilename) {
+		// not applicable by default
+		return null;
 	}
 	
-	private ASiCExtractResult getASiCExtractResult() {
+	protected ASiCExtractResult getASiCExtractResult() {
 		if (extractResult == null) {
 			AbstractASiCContainerExtractor extractor = getASiCContainerExtractor();
 			extractResult = extractor.extract();
@@ -95,12 +108,16 @@ public abstract class ASiCCounterSignatureHelper {
 	private boolean containsSignatureToBeCounterSigned(DSSDocument signatureDocument, String signatureId) {
 		try {
 			DocumentValidator validator = getDocumentValidator(signatureDocument);
+			validator.setDetachedContents(getDetachedDocuments(signatureDocument.getName()));
+			validator.setManifestFile(getManifestFile(signatureDocument.getName()));
+			
 			List<AdvancedSignature> signatures = validator.getSignatures();
 			for (AdvancedSignature signature : signatures) {
 				if (containsSignatureToBeCounterSigned(signature, signatureId)) {
 					return true;
 				}
 			}
+			
 		} catch (Exception e) {
 			String errorMessage = "Unable to verify a file with name '{}'. Reason : {}";
 			if (LOG.isDebugEnabled()) {
@@ -122,6 +139,34 @@ public abstract class ASiCCounterSignatureHelper {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * This method verifies if a signatureDocument can be counter signed
+	 * Throws an exception when an extension is not possible
+	 * 
+	 * @param signatureDocument {@link DSSDocument} to verify
+	 */
+	protected void checkCounterSignaturePossible(DSSDocument signatureDocument) {
+		// do nothing by default
+	}
+	
+	/**
+	 * Returns a list of all signature files with a replaced {@code updatedSignatureDocument}
+	 * 
+	 * @param updatedSignatureDocument {@link DSSDocument} a signature document to be updated in a list of signatures
+	 * @return a list of {@link DSSDocument} signatures
+	 */
+	public List<DSSDocument> getUpdatedSignatureDocumentsList(DSSDocument updatedSignatureDocument) {
+		List<DSSDocument> newSignaturesList = new ArrayList<>();
+		for (DSSDocument signature : getSignatureDocuments()) {
+			if (updatedSignatureDocument.getName().equals(signature.getName())) {
+				newSignaturesList.add(updatedSignatureDocument);
+			} else {
+				newSignaturesList.add(signature);
+			}
+		}
+		return newSignaturesList;
 	}
 
 }

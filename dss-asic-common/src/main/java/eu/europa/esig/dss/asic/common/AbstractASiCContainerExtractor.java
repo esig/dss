@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.common;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -29,6 +30,7 @@ import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -67,6 +69,11 @@ public abstract class AbstractASiCContainerExtractor {
 		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {	
 			result = zipParsing(containerSize, asicInputStream);
 			result.setRootContainer(asicContainer);
+			
+			setContainerType(result);
+			if (ASiCContainerType.ASiC_S.equals(result.getContainerType())) {
+				result.setContainerDocuments(getArchiveDocuments(result.getSignedDocuments()));
+			}
 
 			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
 				LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
@@ -169,5 +176,22 @@ public abstract class AbstractASiCContainerExtractor {
 	protected abstract boolean isAllowedTimestamp(String entryName);
 
 	protected abstract boolean isAllowedSignature(String entryName);
+	
+	private void setContainerType(ASiCExtractResult result) {
+		ASiCContainerType containerType = ASiCUtils.getContainerType(asicContainer, result.getMimeTypeDocument(), 
+				result.getZipComment(), result.getSignedDocuments());
+		result.setContainerType(containerType);
+	}
+	
+	private List<DSSDocument> getArchiveDocuments(List<DSSDocument> foundDocuments) {
+		List<DSSDocument> archiveDocuments = new ArrayList<>();
+		for (DSSDocument document : foundDocuments) {
+			if (ASiCUtils.isASiCSArchive(document)) {
+				archiveDocuments.addAll(ASiCUtils.getPackageZipContent(document));
+				break; // only one "package.zip" is possible
+			}
+		}
+		return archiveDocuments;
+	}
 
 }

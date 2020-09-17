@@ -51,7 +51,7 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 	public static GetDataToSignASiCWithXAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
 		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
 			DSSDocument archiveDocument = documents.get(0);
-			if (ASiCUtils.isZip(documents.get(0))) {
+			if (ASiCUtils.isZip(archiveDocument)) {
 				return fromZipArchive(archiveDocument, parameters);
 			}
 		}
