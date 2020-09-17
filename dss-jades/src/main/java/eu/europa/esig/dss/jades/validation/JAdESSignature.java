@@ -325,6 +325,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			for (Object cSigObject : cSigObjects) {
 				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, this);
 				if (counterSignature != null) {
+					counterSignature.setSignatureFilename(getSignatureFilename());
 					jadesList.add(counterSignature);
 				}
 			}

@@ -30,6 +30,7 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 			signatures = new ArrayList<>();
 			JWSCompactSerializationParser parser = new JWSCompactSerializationParser(document);
 			JAdESSignature jadesSignature = new JAdESSignature(parser.parse());
+			jadesSignature.setSignatureFilename(document.getName());
 			jadesSignature.setSigningCertificateSource(signingCertificateSource);
 			jadesSignature.setDetachedContents(detachedContents);
 			jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);

@@ -242,10 +242,22 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the JAdES Signature
+	 * 
+	 * @param document {@link DSSDocument} containing a JAdES Signature to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} JAdESSignature with an incorporates SignaturePolicyStore
+	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
+		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+		
 		JAdESSignaturePolicyStoreBuilder builder = new JAdESSignaturePolicyStoreBuilder();
-		return builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		DSSDocument signatureWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		signatureWithPolicyStore.setName(getFinalFileName(document, SigningOperation.ADD_SIG_POLICY_STORE));
+		signatureWithPolicyStore.setMimeType(document.getMimeType());
+		return signatureWithPolicyStore;
 	}
 
 	@Override
