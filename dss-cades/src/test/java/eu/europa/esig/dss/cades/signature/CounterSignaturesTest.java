@@ -66,6 +66,7 @@ public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdE
 		CertificateToken firstCounterSigner = getSigningCert();
 		counterSignatureParameters.setSigningCertificate(firstCounterSigner);
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
+		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 
 		// Doesn't work, digest algorithm is not part of the SignedData.digestAlgorithms
@@ -96,6 +97,7 @@ public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdE
 		counterSignatureParameters = new CAdESCounterSignatureParameters();
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
+		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(counterSignedDocument, counterSignatureParameters);
@@ -130,16 +132,14 @@ public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation<CAdE
 		final CAdESCounterSignatureParameters counterSignatureParametersForCounterSignature = new CAdESCounterSignatureParameters();
 		counterSignatureParametersForCounterSignature.setSigningCertificate(getSigningCert());
 		counterSignatureParametersForCounterSignature.setCertificateChain(getCertificateChain());
+		counterSignatureParametersForCounterSignature.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParametersForCounterSignature.setSignatureIdToCounterSign(firstCounterSignatureId);
 
-		dataToBeCounterSigned = service.getDataToBeCounterSigned(secondCounterSignedDocument, counterSignatureParametersForCounterSignature);
-		final SignatureValue counterCounterSignatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParametersForCounterSignature
-				.getDigestAlgorithm(), getPrivateKeyEntry());
-
 		// see https://github.com/bcgit/bc-java/issues/769
-		assertThrows(UnsupportedOperationException.class,
-				() -> service.counterSignSignature(secondCounterSignedDocument, counterSignatureParametersForCounterSignature, counterCounterSignatureValue));
-
+		Exception exception = assertThrows(UnsupportedOperationException.class,
+				() -> service.getDataToBeCounterSigned(secondCounterSignedDocument, counterSignatureParametersForCounterSignature));
+		assertEquals("Nested counter signatures are not supported with CAdES!", exception.getMessage());
+		
 //		thirdCounterSignedDocument.save("target/third.p7s");
 //
 //		verify(thirdCounterSignedDocument);

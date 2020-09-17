@@ -30,7 +30,6 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -133,9 +132,8 @@ public class ASiCSCAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 		// impossible to counter sign an extended signature
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignatureId);
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
-		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
-				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
+		assertEquals(String.format("Nested counter signatures are not supported with CAdES!", counterSignature.getId()), exception.getMessage());
 		
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)

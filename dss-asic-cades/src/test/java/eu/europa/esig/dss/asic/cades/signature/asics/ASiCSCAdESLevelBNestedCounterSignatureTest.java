@@ -1,9 +1,8 @@
-package eu.europa.esig.dss.asic.xades.signature.asics;
+package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import java.util.List;
@@ -11,11 +10,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
-import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.asic.xades.validation.AbstractASiCWithXAdESTestValidation;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
+import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -24,37 +22,34 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
-public class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
+public class ASiCSCAdESLevelBNestedCounterSignatureTest extends AbstractASiCWithCAdESTestValidation {
 
 	private DSSDocument documentToSign;
-	private ASiCWithXAdESService service;
-	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private XAdESCounterSignatureParameters counterSignatureParameters;
+	private ASiCWithCAdESService service;
+	private ASiCWithCAdESSignatureParameters signatureParameters;
+	private CAdESCounterSignatureParameters counterSignatureParameters;
 	
 	@BeforeEach
 	public void init() {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 		
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		
-		signatureParameters = new ASiCWithXAdESSignatureParameters();
+		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		
-		counterSignatureParameters = new XAdESCounterSignatureParameters();
+		counterSignatureParameters = new CAdESCounterSignatureParameters();
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
-		counterSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 	}
 	
 	@Test
@@ -93,59 +88,9 @@ public class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWith
 		
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
-		
-		dataToBeCounterSigned = service.getDataToBeCounterSigned(counterSignedSignature, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
-		DSSDocument nestedCounterSignedSignature = service.counterSignSignature(counterSignedSignature, counterSignatureParameters, signatureValue);
-		
-		// nestedCounterSignedSignature.save("target/nestedCounterSignature.scs");
-		
-		validator = getValidator(nestedCounterSignedSignature);
-		
-		signatures = validator.getSignatures();
-		assertEquals(1, signatures.size());
-		
-		advancedSignature = signatures.get(0);
-		counterSignatures = advancedSignature.getCounterSignatures();
-		assertEquals(1, counterSignatures.size());
-		
-		counterSignature = counterSignatures.get(0);
-		assertNotNull(counterSignature.getMasterSignature());
-		assertEquals(1, counterSignature.getCounterSignatures().size());
-		
-		Reports reports = verify(nestedCounterSignedSignature);
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
-		List<SignatureWrapper> signatureWrappers = diagnosticData.getSignatures();
-		assertEquals(3, signatureWrappers.size());
-		
-		boolean rootSignatureFound = false;
-		boolean counterSignatureFound = false;
-		boolean nestedCounterSignatureFound = false;
-		for (SignatureWrapper signatureWrapper : signatureWrappers) {
-			if (!signatureWrapper.isCounterSignature()) {
-				rootSignatureFound = true;
-			} else if (signatureWrapper.getParent() != null && signatureWrapper.getParent().getParent() == null) {
-				counterSignatureFound = true;
-			} else if (signatureWrapper.getParent() != null && signatureWrapper.getParent().getParent() != null) {
-				nestedCounterSignatureFound = true;
-			}
-		}
-		assertTrue(rootSignatureFound);
-		assertTrue(counterSignatureFound);
-		assertTrue(nestedCounterSignatureFound);
-	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		List<String> signatureIdList = diagnosticData.getSignatureIdList();
-		for (String signatureId : signatureIdList) {
-			if (!diagnosticData.getSignatureById(signatureId).isCounterSignature() && diagnosticData.isBLevelTechnicallyValid(signatureId)) {
-				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
-				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
-			}
-		}
+
+		exception = assertThrows(UnsupportedOperationException.class, () -> service.getDataToBeCounterSigned(counterSignedSignature, counterSignatureParameters));
+		assertEquals("Nested counter signatures are not supported with CAdES!", exception.getMessage());
 	}
 	
 	@Override

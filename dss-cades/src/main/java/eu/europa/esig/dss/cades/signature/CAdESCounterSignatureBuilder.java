@@ -29,7 +29,6 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -232,10 +231,8 @@ public class CAdESCounterSignatureBuilder {
 				
 				CAdESSignature counterSignatureById = findSignatureRecursive(advancedSignature.getCounterSignatures(), signatureId);
 				if (counterSignatureById != null) {
-					if (advancedSignature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {
-						throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
-								+ "The signature is timestamped by a master signature!", signatureId));
-					}
+					// TODO : add a nested counter signature support + check if a master signature is not timestamped
+					throw new UnsupportedOperationException("Nested counter signatures are not supported with CAdES!");
 				}
 				return counterSignatureById;
 			}

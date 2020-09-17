@@ -63,7 +63,6 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfCreation));
 		return signatureParameters;
 	}
-	
 
 	@Override
 	protected DSSDocument getDocumentToSign() {
