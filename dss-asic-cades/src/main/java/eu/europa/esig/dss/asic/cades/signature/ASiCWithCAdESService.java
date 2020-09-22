@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +37,18 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESArchiveManifestBuilder;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESExtractResultUtils;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureBuilder;
+import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -68,7 +74,8 @@ import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 @SuppressWarnings("serial")
-public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
+public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters, 
+						CAdESCounterSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
 
@@ -129,8 +136,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
 
 		// Archive Timestamp in case of ASiC-E is not embedded into the CAdES signature
-		boolean addASiCArchiveManifest = isAddASiCEArchiveManifest(parameters);
-		if (isAddASiCEArchiveManifest(parameters)) {
+		boolean addASiCArchiveManifest = isAddASiCEArchiveManifest(parameters.getSignatureLevel(), parameters.aSiC().getContainerType());
+		if (addASiCArchiveManifest) {
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		}
 
@@ -268,7 +275,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 
-		boolean addASiCEArchiveManifest = isAddASiCEArchiveManifest(parameters);
+		boolean addASiCEArchiveManifest = isAddASiCEArchiveManifest(parameters.getSignatureLevel(), containerType);
 		if (addASiCEArchiveManifest) {
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		}
@@ -301,18 +308,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	private boolean isCoveredByArchiveManifest(DSSDocument signature) {
-		List<DSSDocument> archiveManifests = getEmbeddedArchiveManifests();
-		if (Utils.isCollectionNotEmpty(archiveManifests)) {
-			for (DSSDocument archiveManifest : archiveManifests) {
-				ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
-				for (ManifestEntry entry : manifestFile.getEntries()) {
-					if (signature.getName() != null && signature.getName().equals(entry.getFileName())) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
+		return ASiCWithCAdESExtractResultUtils.isCoveredByManifest(archiveContent, signature.getName());
 	}
 
 	private DSSDocument extendSignatureDocument(DSSDocument signature, CAdESSignatureParameters cadesParameters, ASiCContainerType containerType) {
@@ -518,13 +514,71 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return cadesParameters;
 	}
 
-	private boolean isAddASiCEArchiveManifest(ASiCWithCAdESSignatureParameters parameters) {
-		return SignatureLevel.CAdES_BASELINE_LTA == parameters.getSignatureLevel() && ASiCContainerType.ASiC_E == parameters.aSiC().getContainerType();
+	private boolean isAddASiCEArchiveManifest(SignatureLevel signatureLevel, ASiCContainerType containerType) {
+		return SignatureLevel.CAdES_BASELINE_LTA == signatureLevel && ASiCContainerType.ASiC_E == containerType;
 	}
 
 	@Override
 	protected String getExpectedSignatureExtension() {
 		return ".p7s";
+	}
+
+	@Override
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument asicContainer, CAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		assertSigningDateInCertificateValidityRange(parameters);
+
+		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
+		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		
+		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
+
+		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		counterSignatureBuilder.setManifestFile(counterSignatureHelper.getManifestFile(signatureDocument.getName()));
+		
+		SignerInformation signerInfoToCounterSign = counterSignatureBuilder.getSignerInformationToBeCounterSigned(signatureDocument, parameters);
+
+		CAdESService cadesService = getCAdESService();
+		return cadesService.getDataToBeCounterSigned(signatureDocument, signerInfoToCounterSign, parameters);
+	}
+
+	@Override
+	public DSSDocument counterSignSignature(DSSDocument asicContainer, CAdESCounterSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		
+		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
+		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		
+		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
+
+		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
+		
+		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		counterSignatureBuilder.setManifestFile(counterSignatureHelper.getManifestFile(signatureDocument.getName()));
+		
+		CMSSignedDocument counterSignedSignature = counterSignatureBuilder.addCounterSignature(originalCMSSignedData, parameters, signatureValue);
+		counterSignedSignature.setName(signatureDocument.getName());
+		
+		List<DSSDocument> newSignaturesList = counterSignatureHelper.getUpdatedSignatureDocumentsList(counterSignedSignature);
+		
+		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList);
+		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		return resultArchive;
+	}
+	
+	@Override
+	protected void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper,
+			CAdESCounterSignatureParameters parameters) {
+		super.verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+
+		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
+			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "
+					+ "Please, use CAdES-BASELINE-B", parameters.getSignatureLevel()));
+		}
 	}
 
 }

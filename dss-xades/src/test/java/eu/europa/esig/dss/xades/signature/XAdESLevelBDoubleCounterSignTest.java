@@ -20,7 +20,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
@@ -93,11 +92,6 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 				assertTrue(diagnosticData.isBLevelTechnicallyValid(signature.getId()));
 			}
 		}
-	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		// no valid signatures found
 	}
 
 	@Override

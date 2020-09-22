@@ -81,7 +81,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	 * @param parameters
 	 *            set of driving signing parameters
 	 */
-	protected void assertSigningDateInCertificateValidityRange(final SP parameters) {
+	protected void assertSigningDateInCertificateValidityRange(final SerializableSignatureParameters parameters) {
 		if (parameters.getSigningCertificate() == null) {
 			if (parameters.isGenerateTBSWithoutCertificate()) {
 				return;
@@ -124,15 +124,25 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		} else {
 			finalName.append("document");
 		}
-
-		if (SigningOperation.SIGN.equals(operation)) {
-			finalName.append("-signed");
-		} else if (SigningOperation.COUNTER_SIGN.equals(operation)) {
-			finalName.append("-counter-signed");
-		} else if (SigningOperation.TIMESTAMP.equals(operation)) {
-			finalName.append("-timestamped");
-		} else if (SigningOperation.EXTEND.equals(operation)) {
-			finalName.append("-extended");
+		
+		switch (operation) {
+			case SIGN:
+				finalName.append("-signed");
+				break;
+			case COUNTER_SIGN:
+				finalName.append("-counter-signed");
+				break;
+			case TIMESTAMP:
+				finalName.append("-timestamped");
+				break;
+			case EXTEND:
+				finalName.append("-extended");
+				break;
+			case ADD_SIG_POLICY_STORE:
+				finalName.append("-sig-policy-store");
+				break;
+			default:
+				throw new DSSException(String.format("The following operation '%s' is not supported!", operation));
 		}
 
 		if (level != null) {
@@ -170,6 +180,10 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			}
 		}
 		return Utils.EMPTY_STRING;
+	}
+	
+	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation) {
+		return getFinalFileName(originalFile, operation, null);
 	}
 
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {

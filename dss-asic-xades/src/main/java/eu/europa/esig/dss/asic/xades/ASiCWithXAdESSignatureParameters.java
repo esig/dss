@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.asic.xades;
 
 import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.enumerations.SignatureForm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
@@ -36,14 +34,6 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 
 	public ASiCParameters aSiC() {
 		return asicParams;
-	}
-
-	@Override
-	public void setSignatureLevel(SignatureLevel signatureLevel) {
-		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
-			throw new IllegalArgumentException("Only XAdES form is allowed !");
-		}
-		super.setSignatureLevel(signatureLevel);
 	}
 
 }

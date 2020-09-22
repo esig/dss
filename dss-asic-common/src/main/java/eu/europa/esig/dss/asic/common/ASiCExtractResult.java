@@ -23,10 +23,12 @@ package eu.europa.esig.dss.asic.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 
 public class ASiCExtractResult {
 
+	private ASiCContainerType containerType;
 	private String zipComment;
 	private DSSDocument mimeTypeDocument;
 	private List<DSSDocument> allDocuments = new ArrayList<>();
@@ -38,6 +40,14 @@ public class ASiCExtractResult {
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<>();
 	private List<DSSDocument> containerDocuments = new ArrayList<>(); // List of documents inside a ZIP container (for ASiC-S signatures)
 	private DSSDocument rootContainer; // For OpenDocument
+
+	public ASiCContainerType getContainerType() {
+		return containerType;
+	}
+
+	public void setContainerType(ASiCContainerType containerType) {
+		this.containerType = containerType;
+	}
 
 	public String getZipComment() {
 		return zipComment;

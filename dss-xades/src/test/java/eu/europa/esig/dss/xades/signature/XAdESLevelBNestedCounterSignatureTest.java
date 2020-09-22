@@ -97,7 +97,7 @@ public class XAdESLevelBNestedCounterSignatureTest extends AbstractXAdESTestVali
 				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument nestedCounterSignedSignature = service.counterSignSignature(counterSignedSignature, counterSignatureParameters, signatureValue);
 		
-		 nestedCounterSignedSignature.save("target/nestedCounterSignature.xml");
+		// nestedCounterSignedSignature.save("target/nestedCounterSignature.xml");
 		
 		validator = getValidator(nestedCounterSignedSignature);
 		

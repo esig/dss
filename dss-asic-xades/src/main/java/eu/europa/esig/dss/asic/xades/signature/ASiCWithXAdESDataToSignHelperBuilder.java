@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
+import java.util.Arrays;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
@@ -32,65 +33,71 @@ import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignOpenDocument;
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromArchive;
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromFiles;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCWithXAdESDataToSignHelperBuilder {
 
 	private ASiCWithXAdESDataToSignHelperBuilder() {
 	}
 
-	public static GetDataToSignASiCWithXAdESHelper getGetDataToSignHelper(List<DSSDocument> documents,
-			ASiCWithXAdESSignatureParameters parameters) {
-
-		BLevelParameters bLevel = parameters.bLevel();
-
-		boolean zip = ASiCUtils.isArchive(documents);
-		boolean signedAsic = ASiCUtils.isAsic(documents);
-		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
-
-		if (zip) {
-			DSSDocument archiveDoc = documents.get(0);
-			ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(archiveDoc);
-			ASiCExtractResult extract = extractor.extract();
-			
-			boolean openDocument = ASiCUtils.isOpenDocument(extract.getMimeTypeDocument());
-			if (openDocument) {
-				return new DataToSignOpenDocument(extract.getSignedDocuments(),
-						extract.getSignatureDocuments(), extract.getManifestDocuments(), extract.getMimeTypeDocument(), extract.getRootContainer());
-			} else if (signedAsic) {
-				if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".xml")) {
-					throw new UnsupportedOperationException("Container type doesn't match");
-				}
-
-				ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc, extract.getMimeTypeDocument(), extract.getZipComment(),
-						extract.getSignedDocuments());
-
-				if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
-					return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(),
-							extract.getSignatureDocuments(), extract.getManifestDocuments(), parameters.aSiC());
-				} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
-					return new DataToSignASiCSWithXAdESFromArchive(extract.getSignatureDocuments(),
-							extract.getSignedDocuments(), parameters.aSiC());
-				} else {
-					throw new UnsupportedOperationException(
-							String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
-				}
-
-			} else {
-				return fromFiles(documents, parameters, bLevel, asice);
+	/**
+	 * Gets a {@code GetDataToSignASiCWithXAdESHelper} from the given list of documents and defined parameters
+	 * 
+	 * @param documents a list of {@link DSSDocument}s to get a helper from
+	 * @param parameters {@link ASiCWithXAdESSignatureParameters}
+	 * @return {@link GetDataToSignASiCWithXAdESHelper}
+	 */
+	public static GetDataToSignASiCWithXAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
+		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
+			DSSDocument archiveDocument = documents.get(0);
+			if (ASiCUtils.isZip(archiveDocument)) {
+				return fromZipArchive(archiveDocument, parameters);
 			}
+		}
+		return fromFiles(documents, parameters);
+	}
+	
+	private static GetDataToSignASiCWithXAdESHelper fromZipArchive(DSSDocument archiveDocument, ASiCWithXAdESSignatureParameters parameters) {
+
+		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
+		
+		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(archiveDocument);
+		ASiCExtractResult extract = extractor.extract();
+		
+		if (ASiCUtils.isOpenDocument(extract.getMimeTypeDocument())) {
+			return new DataToSignOpenDocument(extract.getSignedDocuments(), extract.getSignatureDocuments(), 
+					extract.getManifestDocuments(), extract.getMimeTypeDocument(), extract.getRootContainer());
+			
+		} else if (ASiCUtils.isAsic(archiveDocument)) {
+			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDocument, ".xml")) {
+				throw new UnsupportedOperationException("Container type doesn't match");
+			}
+
+			ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDocument, extract.getMimeTypeDocument(), 
+					extract.getZipComment(), extract.getSignedDocuments());
+
+			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
+				return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(),
+						extract.getSignatureDocuments(), extract.getManifestDocuments(), parameters.aSiC());
+			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
+				return new DataToSignASiCSWithXAdESFromArchive(extract.getSignatureDocuments(),
+						extract.getSignedDocuments(), parameters.aSiC());
+			} else {
+				throw new UnsupportedOperationException(
+						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
+			}
+
 		} else {
-			return fromFiles(documents, parameters, bLevel, asice);
+			return fromFiles(Arrays.asList(archiveDocument), parameters);
 		}
 	}
 
-	private static GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents,
-			ASiCWithXAdESSignatureParameters parameters, BLevelParameters bLevel, boolean asice) {
-		if (asice) {
+	private static GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
+		if (ASiCUtils.isASiCE(parameters.aSiC())) {
 			return new DataToSignASiCEWithXAdESFromFiles(documents, parameters.aSiC());
 		} else {
-			return new DataToSignASiCSWithXAdESFromFiles(documents, bLevel.getSigningDate(), parameters.aSiC());
+			return new DataToSignASiCSWithXAdESFromFiles(documents, parameters.bLevel().getSigningDate(), parameters.aSiC());
 		}
 	}
 

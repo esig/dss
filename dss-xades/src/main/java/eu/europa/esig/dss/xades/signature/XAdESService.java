@@ -246,15 +246,19 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
+		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+		
 		SignaturePolicyStoreBuilder builder = new SignaturePolicyStoreBuilder(certificateVerifier);
-		DSSDocument documentWithSignaturePolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
-		documentWithSignaturePolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
-		return documentWithSignaturePolicyStore;
+		DSSDocument signatureWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		signatureWithPolicyStore.setName(getFinalFileName(document, SigningOperation.ADD_SIG_POLICY_STORE));
+		signatureWithPolicyStore.setMimeType(document.getMimeType());
+		return signatureWithPolicyStore;
 	}
 
 	@Override
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		verifyAndSetCounterSignatureParameters(parameters);
 		
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);

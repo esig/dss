@@ -36,6 +36,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
 import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
+import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -52,10 +53,12 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 @SuppressWarnings("serial")
-public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
+public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters, 
+					XAdESCounterSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);
 
@@ -216,6 +219,43 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	@Override
 	protected String getExpectedSignatureExtension() {
 		return ".xml";
+	}
+
+	@Override
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument asicContainer, XAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
+		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
+		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		
+		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
+		
+		XAdESService xadesService = getXAdESService();
+		return xadesService.getDataToBeCounterSigned(signatureDocument, parameters);
+	}
+
+	@Override
+	public DSSDocument counterSignSignature(DSSDocument asicContainer, XAdESCounterSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		
+		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
+		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		
+		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
+		
+		XAdESService xadesService = getXAdESService();
+		DSSDocument counterSignedSignature = xadesService.counterSignSignature(signatureDocument, parameters, signatureValue);
+		counterSignedSignature.setName(signatureDocument.getName());
+		
+		List<DSSDocument> newSignaturesList = counterSignatureHelper.getUpdatedSignatureDocumentsList(counterSignedSignature);
+		
+		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList);
+		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		return resultArchive;
 	}
 
 }

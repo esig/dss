@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -78,7 +79,7 @@ public final class XAdESSignatureUtils {
 			List<Element> signatureObjects = signature.getSignatureObjects();
 			for (Element sigObject : signatureObjects) {
 				Node referencedObject = sigObject;
-				String objectId = sigObject.getAttribute("Id");
+				String objectId = sigObject.getAttribute(XMLDSigAttribute.ID.getAttributeName());
 				if (Utils.endsWithIgnoreCase(reference.getURI(), objectId)) {
 					if (reference.typeIsReferenceToObject() && sigObject.hasChildNodes()) {
 						referencedObject = sigObject.getFirstChild();

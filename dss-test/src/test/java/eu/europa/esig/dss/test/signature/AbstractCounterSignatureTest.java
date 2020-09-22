@@ -44,7 +44,6 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 	public void signAndVerify() {
 		final DSSDocument signedDocument = sign();
 
-
 		// signedDocument.save("target/signed-" + signedDocument.getName());
 
 		SignedDocumentValidator validator = getValidator(signedDocument);
@@ -113,13 +112,14 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 		
 		boolean counterSignatureFound = false;
 		for (AdvancedSignature signature : signatures) {
-			if (counterSignedSignatureId.equals(signature.getId())) {
+			if (counterSignedSignatureId.equals(signature.getId()) || counterSignedSignatureId.equals(signature.getDAIdentifier())) {
 				List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 				assertTrue(Utils.isCollectionNotEmpty(signature.getCounterSignatures()));
 				for (AdvancedSignature counterSignature : counterSignatures) {
 					AdvancedSignature masterSignature = counterSignature.getMasterSignature();
 					assertNotNull(masterSignature);
-					assertEquals(counterSignedSignatureId, masterSignature.getId());
+					assertTrue(counterSignedSignatureId.equals(masterSignature.getId()) || 
+							counterSignedSignatureId.equals(masterSignature.getDAIdentifier()));
 					counterSignatureFound = true;
 				}
 			}

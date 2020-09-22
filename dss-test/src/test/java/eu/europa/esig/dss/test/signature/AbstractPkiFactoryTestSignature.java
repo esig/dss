@@ -93,6 +93,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
@@ -140,6 +141,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 	protected void checkMimeType(DSSDocument signedDocument) {
 		assertEquals(getExpectedMime(), signedDocument.getMimeType());
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+		
+		for (AdvancedSignature signature : signatures) {
+			assertNotNull(signature.getSignatureFilename());
+		}
 	}
 
 	@Override
@@ -660,6 +670,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
+			
+			SignatureWrapper signatureById = diagnosticData.getSignatureById(signatureId);
+			if (signatureById.isCounterSignature()) {
+				continue;
+			}
 
 			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));

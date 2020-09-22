@@ -41,6 +41,11 @@ public enum SigningOperation {
 	 * Extension process (eg : signature basic (B-P-B) to signature with timestamp
 	 * (B-P-T))
 	 */
-	EXTEND;
+	EXTEND,
+	
+	/**
+	 * The signature policy store addition
+	 */
+	ADD_SIG_POLICY_STORE;
 
 }

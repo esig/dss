@@ -23,6 +23,8 @@ package eu.europa.esig.dss.asic.xades.validation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,7 +36,7 @@ public class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/containerWithCounterSig.asics");
+		return new FileDocument("src/test/resources/validation/container-with-counter-signature.asics");
 	}
 	
 	@Override
@@ -54,14 +56,15 @@ public class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		super.verifyOriginalDocuments(validator, diagnosticData);
 		
-		assertEquals(2, validator.getSignatures().size());
-		for (AdvancedSignature advancedSignature : validator.getSignatures()) {
-			if (advancedSignature.isCounterSignature()) {
-				assertEquals(0, validator.getOriginalDocuments(advancedSignature).size());
-			} else {
-				assertEquals(1, validator.getOriginalDocuments(advancedSignature).size());
-			}
-		}
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+		AdvancedSignature advancedSignature = signatures.get(0);
+		assertEquals(1, validator.getOriginalDocuments(advancedSignature).size());
+		
+		List<AdvancedSignature> counterSignatures = advancedSignature.getCounterSignatures();
+		assertEquals(1, counterSignatures.size());
+		assertEquals(0, validator.getOriginalDocuments(counterSignatures.get(0)).size());
+		
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			if (signatureWrapper.isCounterSignature()) {
 				assertEquals(0, validator.getOriginalDocuments(signatureWrapper.getId()).size());

@@ -666,7 +666,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return allSignatureList;
 	}
 	
-	private void appendCounterSignatures(final List<AdvancedSignature> allSignatureList, final AdvancedSignature signature) {
+	protected void appendCounterSignatures(final List<AdvancedSignature> allSignatureList, final AdvancedSignature signature) {
 		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
 			counterSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 			allSignatureList.add(counterSignature);

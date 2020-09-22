@@ -176,19 +176,18 @@ public final class ASiCUtils {
 		return false;
 	}
 
-	public static boolean isArchive(List<DSSDocument> docs) {
-		if (Utils.collectionSize(docs) == 1) {
-			return isZip(docs.get(0));
-		}
-		return false;
-	}
-
-	public static boolean isZip(DSSDocument dssDocument) {
-		if (dssDocument == null) {
+	/**
+	 * Checks if the {@code document} is a ZIP container
+	 * 
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the {@code DSSDocument} is a ZIP container, FALSE otherwise
+	 */
+	public static boolean isZip(DSSDocument document) {
+		if (document == null) {
 			return false;
 		}
 		byte[] preamble = new byte[2];
-		try (InputStream is = dssDocument.openStream()) {
+		try (InputStream is = document.openStream()) {
 			int r = is.read(preamble, 0, 2);
 			if (r != 2) {
 				return false;
@@ -295,15 +294,19 @@ public final class ASiCUtils {
 		return zeroPad.substring(numStr.length()) + numStr;
 	}
 
-	public static boolean isAsic(List<DSSDocument> documents) {
-		if (ASiCUtils.isArchive(documents)) {
-			DSSDocument archive = documents.get(0);
-			boolean cades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "p7s");
-			boolean xades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "xml");
-			boolean timestamp = ASiCUtils.isArchiveContainsCorrectTimestamp(archive);
+	/**
+	 * Checks if the {@code document} is an ASiC container
+	 * 
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is an ASiC container, FALSE otherwise
+	 */
+	public static boolean isAsic(DSSDocument document) {
+		if (isZip(document)) {
+			boolean cades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(document, "p7s");
+			boolean xades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(document, "xml");
+			boolean timestamp = ASiCUtils.isArchiveContainsCorrectTimestamp(document);
 			return cades || xades || timestamp;
 		}
-
 		return false;
 	}
 	

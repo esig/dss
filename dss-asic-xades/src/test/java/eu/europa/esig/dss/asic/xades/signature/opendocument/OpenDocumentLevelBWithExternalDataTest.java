@@ -64,13 +64,6 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 		args.add(Arguments.of(new FileDocument(file)));
 		return args.stream();
 	}
-
-	@Override
-	@ParameterizedTest(name = "Validation {index} : {0}")
-	@MethodSource("data")
-	public void init(DSSDocument fileToTest) {
-		super.init(fileToTest);
-	}
 	
 	@BeforeEach
 	public void init() {
@@ -85,6 +78,13 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void test(DSSDocument fileToTest) {
+		super.test(fileToTest);
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
 		counterSignatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		counterSignatureParameters.setSignatureLevel(getOriginalSignatureLevel());
+		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParameters.setSignatureIdToCounterSign(signatures.get(0).getId());
 		
 		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(document, counterSignatureParameters));

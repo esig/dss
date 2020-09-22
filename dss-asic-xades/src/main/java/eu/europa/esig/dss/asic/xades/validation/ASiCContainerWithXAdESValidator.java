@@ -103,7 +103,6 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) {
-		List<DSSDocument> result = new ArrayList<>();
 		List<DSSDocument> potentials;
 		if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
 			potentials = OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult);
@@ -119,7 +118,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 				return extractArchiveDocuments(retrievedDocs);
 			}
 		}
-		return result;
+		return Collections.emptyList();
 	}
 	
 	@Override

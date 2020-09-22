@@ -326,12 +326,25 @@ public class CAdESService extends
 		Objects.requireNonNull(parameters, "parameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
 		assertSigningDateInCertificateValidityRange(parameters);
+		assertCounterSignaturePossible(parameters);
 
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
-		SignerInformation signerInfoToSign = counterSignatureBuilder.getSignerInformationToBeSigned(signatureDocument,
-				parameters.getSignatureIdToCounterSign());
-
-		InMemoryDocument toSignDocument = new InMemoryDocument(signerInfoToSign.getSignature());
+		SignerInformation signerInfoToCounterSign = counterSignatureBuilder.getSignerInformationToBeCounterSigned(signatureDocument, parameters);
+		
+		return getDataToBeCounterSigned(signatureDocument, signerInfoToCounterSign, parameters);
+	}
+	
+	/**
+	 * Returns a data toBeSigned for a counter signature on the given {@code signerInfoToCounterSign}
+	 * 
+	 * @param signatureDocument {@link DSSDocument} containing a signature to be counter signed
+	 * @param signerInfoToCounterSign {@link SignerInformation} to counter sign
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link ToBeSigned}
+	 */
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, SignerInformation signerInfoToCounterSign, 
+			CAdESSignatureParameters parameters) {
+		InMemoryDocument toSignDocument = new InMemoryDocument(signerInfoToCounterSign.getSignature());
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
@@ -343,7 +356,7 @@ public class CAdESService extends
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, cmsSignedData);
-		CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInfoToSign);
+		CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInfoToCounterSign);
 		return new ToBeSigned(customContentSigner.getOutputStream().toByteArray());
 	}
 
@@ -354,16 +367,23 @@ public class CAdESService extends
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		assertSigningDateInCertificateValidityRange(parameters);
+		assertCounterSignaturePossible(parameters);
 
 		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
+		
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
-		CMSSignedData updatedMaster = counterSignatureBuilder.recursivelyAddCounterSignature(originalCMSSignedData, parameters, signatureValue);
-
-		CMSSignedDocument counterSigned = new CMSSignedDocument(updatedMaster);
+		CMSSignedDocument counterSigned = counterSignatureBuilder.addCounterSignature(originalCMSSignedData, parameters, signatureValue);
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
+		
 		return counterSigned;
 	}
 
+	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {
+		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
+			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "
+					+ "Please, use CAdES-BASELINE-B", parameters.getSignatureLevel()));
+		}
+	}
 
 }

@@ -1131,6 +1131,8 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 		addReferences(externalTimestamp.getTimestampedReferences(), getSignatureSignedDataReferences());
 		// add references from previously added timestamps
 		addReferencesFromPreviousTimestamps(externalTimestamp.getTimestampedReferences(), getAllTimestamps());
+		// add existing counter signatures
+		addReferences(externalTimestamp.getTimestampedReferences(), getCounterSignatureReferences(signature));
 		// populate timestamp certificate source with values present in the timestamp
 		populateSources(externalTimestamp);
 	}

@@ -51,7 +51,7 @@ import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public abstract class AbstractASiCwithXAdESTestExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
+public abstract class AbstractASiCWithXAdESTestExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {

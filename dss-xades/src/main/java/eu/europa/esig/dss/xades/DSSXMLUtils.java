@@ -865,6 +865,8 @@ public final class DSSXMLUtils {
 			
 			// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
 			final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignatureNode, masterSignature.getXAdESPathsHolders());
+			xadesCounterSignature.setSignatureFilename(masterSignature.getSignatureFilename());
+			xadesCounterSignature.setDetachedContents(masterSignature.getDetachedContents());
 			if (isCounterSignature(xadesCounterSignature)) {
 				xadesCounterSignature.setMasterSignature(masterSignature);
 				return xadesCounterSignature;

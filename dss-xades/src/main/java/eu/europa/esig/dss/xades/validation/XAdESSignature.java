@@ -1017,9 +1017,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 	
+	private NodeList getReferenceNodeList() {
+		return DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
+	}
+	
 	private List<DigestAlgorithm> getUsedReferenceDigestAlgos() {
 		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
-		NodeList referenceNodeList = DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
+		NodeList referenceNodeList = getReferenceNodeList();
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
 			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
@@ -1034,14 +1038,43 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Used for a counter signature extension only
 	 */
 	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
-		List<Reference> currentReferences = getReferences();
-		for (Reference reference : currentReferences) {
-			if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
-				// only one SignatureValue document shall be provided
-				santuarioSignature.addResourceResolver(new CounterSignatureResolver(detachedContents.get(0)));
-				break;
+		for (String type : getUsedReferenceTypes()) {
+			if (xadesPaths.getCounterSignatureUri().equals(type)) {
+				for (DSSDocument document : detachedContents) {
+					// only one SignatureValue document shall be provided
+					if (isDetachedSignatureValueDocument(document)) {
+						santuarioSignature.addResourceResolver(new CounterSignatureResolver(document));
+						break;
+					}
+				}
 			}
 		}
+	}
+	
+	private boolean isDetachedSignatureValueDocument(DSSDocument detachedContents) {
+		try {
+			Document document = DomUtils.buildDOM(detachedContents);
+			if (document != null) {
+				Node node = document.getChildNodes().item(0);
+				return XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(node.getLocalName());
+			}
+		} catch (Exception e) {
+			// continue
+		}
+		return false;
+	}
+	
+	private List<String> getUsedReferenceTypes() {
+		List<String> referenceTypes = new ArrayList<>();
+		NodeList referenceNodeList = getReferenceNodeList();
+		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+			Element referenceElement = (Element) referenceNodeList.item(ii);
+			String type = referenceElement.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
+			if (Utils.isStringNotEmpty(type)) {
+				referenceTypes.add(type);
+			}
+		}
+		return referenceTypes;
 	}
 
 	/**

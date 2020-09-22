@@ -3,9 +3,15 @@ package eu.europa.esig.dss.cades.signature;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSSignedData;
@@ -14,6 +20,8 @@ import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.util.CollectionStore;
+import org.bouncycastle.util.Encodable;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -30,16 +38,50 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ManifestFile;
 
 public class CAdESCounterSignatureBuilder {
 
 	private final CertificateVerifier certificateVerifier;
+	
+	/** Represents a signature detached contents */
+	private List<DSSDocument> detachedContents;
+	
+	/** A signature signed manifest. Used for ASiC */
+	private ManifestFile manifestFile;
 
 	public CAdESCounterSignatureBuilder(CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
 
-	public CMSSignedData recursivelyAddCounterSignature(CMSSignedData originalCMSSignedData, CAdESCounterSignatureParameters parameters,
+	/**
+	 * Sets detached contents
+	 * 
+	 * @param detachedContents a list of {@link DSSDocument}
+	 */
+	public void setDetachedContents(List<DSSDocument> detachedContents) {
+		this.detachedContents = detachedContents;
+	}
+
+	/**
+	 * Sets a signed manifest file
+	 * NOTE: ASiC only
+	 * 
+	 * @param manifestFile {@link ManifestFile}
+	 */
+	public void setManifestFile(ManifestFile manifestFile) {
+		this.manifestFile = manifestFile;
+	}
+
+	/**
+	 * Adds a counter signature the provided CMSSignedData
+	 * 
+	 * @param originalCMSSignedData {@link CMSSignedData} to add a counter signature into
+	 * @param parameters {@link CAdESCounterSignatureParameters}
+	 * @param signatureValue {@link SignatureValue}
+	 * @return {@link CMSSignedDocument} with an added counter signature
+	 */
+	public CMSSignedDocument addCounterSignature(CMSSignedData originalCMSSignedData, CAdESCounterSignatureParameters parameters,
 			SignatureValue signatureValue) {
 
 		final List<SignerInformation> updatedSignerInfo = getUpdatedSignerInformations(originalCMSSignedData, originalCMSSignedData.getSignerInfos(),
@@ -47,7 +89,8 @@ public class CAdESCounterSignatureBuilder {
 
 		if (Utils.isCollectionNotEmpty(updatedSignerInfo)) {
 			CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
-			return addNewCertificates(updatedCMSSignedData, originalCMSSignedData, parameters);
+			updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, originalCMSSignedData, parameters);
+			return new CMSSignedDocument(updatedCMSSignedData);
 		} else {
 			throw new DSSException("No updated signed info");
 		}
@@ -60,6 +103,9 @@ public class CAdESCounterSignatureBuilder {
 		for (SignerInformation signerInformation : signerInformationStore) {
 			CAdESSignature cades = new CAdESSignature(originalCMSSignedData, signerInformation);
 			cades.setMasterSignature(masterSignature);
+			cades.setDetachedContents(parameters.getDetachedContents());
+			cades.setManifestFile(manifestFile);
+			
 			if (Utils.areStringsEqual(cades.getId(), parameters.getSignatureIdToCounterSign())) {
 				if (masterSignature != null) {
 					throw new UnsupportedOperationException("Cannot recursively add a counter-signature");
@@ -75,6 +121,7 @@ public class CAdESCounterSignatureBuilder {
 				List<SignerInformation> updatedSignerInformations = getUpdatedSignerInformations(originalCMSSignedData,
 						signerInformation.getCounterSignatures(), parameters, signatureValue, cades);
 				result.add(SignerInformation.addCounterSigners(signerInformation, new SignerInformationStore(updatedSignerInformations)));
+				
 			} else {
 				result.add(signerInformation);
 			}
@@ -83,6 +130,7 @@ public class CAdESCounterSignatureBuilder {
 		return result;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private CMSSignedData addNewCertificates(CMSSignedData updatedCMSSignedData, CMSSignedData originalCMSSignedData,
 			CAdESCounterSignatureParameters parameters) {
 		final List<CertificateToken> certificateTokens = new LinkedList<>();
@@ -107,11 +155,22 @@ public class CAdESCounterSignatureBuilder {
 		for (final CertificateToken certificateInChain : certificateTokens) {
 			certs.add(certificateInChain.getCertificate());
 		}
+		
+		Store<X509CRLHolder> crlsStore = originalCMSSignedData.getCRLs();
+		final Collection<Encodable> crls = new HashSet<>(crlsStore.getMatches(null));
+		Store ocspBasicStore = originalCMSSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		for (Object ocsp : ocspBasicStore.getMatches(null)) {
+			crls.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
+		}
+		Store ocspResponseStore = originalCMSSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		for (Object ocsp : ocspResponseStore.getMatches(null)) {
+			crls.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
+		}
 
 		try {
 			JcaCertStore jcaCertStore = new JcaCertStore(certs);
 			return CMSSignedData.replaceCertificatesAndCRLs(updatedCMSSignedData, jcaCertStore, originalCMSSignedData.getAttributeCertificates(),
-					originalCMSSignedData.getCRLs());
+					new CollectionStore(crls));
 		} catch (Exception e) {
 			throw new DSSException("Unable to create the JcaCertStore", e);
 		}
@@ -132,29 +191,45 @@ public class CAdESCounterSignatureBuilder {
 		return CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInformation);
 	}
 
-	public SignerInformation getSignerInformationToBeSigned(DSSDocument signatureDocument, String signatureIdToCounterSign) {
-		CAdESSignature cadesSignature = getSignatureById(signatureDocument, signatureIdToCounterSign);
+	/**
+	 * Returns a {@code SignerInformation} to be counter signed
+	 * 
+	 * @param signatureDocument {@link DSSDocument} to find the related signature
+	 * @param parameters {@link CAdESCounterSignatureParameters}
+	 * @return {@link SignerInformation}
+	 */
+	public SignerInformation getSignerInformationToBeCounterSigned(DSSDocument signatureDocument, CAdESCounterSignatureParameters parameters) {
+		CAdESSignature cadesSignature = getSignatureById(signatureDocument, parameters);
 		if (cadesSignature == null) {
-			throw new DSSException(String.format("CAdESSignature not found with the given dss id '%s'", signatureIdToCounterSign));
+			throw new DSSException(String.format("CAdESSignature not found with the given dss id '%s'", parameters.getSignatureIdToCounterSign()));
 		}
 		return cadesSignature.getSignerInformation();
 	}
 
-	private CAdESSignature getSignatureById(DSSDocument signatureDocument, String dssId) {
+	private CAdESSignature getSignatureById(DSSDocument signatureDocument, CAdESCounterSignatureParameters parameters) {
 		CMSDocumentValidator validator = new CMSDocumentValidator(signatureDocument);
+		validator.setDetachedContents(parameters.getDetachedContents());
+		validator.setManifestFile(manifestFile);
+		
 		List<AdvancedSignature> signatures = validator.getSignatures();
-		return findSignatureRecursive(signatures, dssId);
+		return findSignatureRecursive(signatures, parameters.getSignatureIdToCounterSign());
 	}
 
-	private CAdESSignature findSignatureRecursive(List<AdvancedSignature> signatures, String dssId) {
+	private CAdESSignature findSignatureRecursive(List<AdvancedSignature> signatures, String signatureId) {
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (AdvancedSignature advancedSignature : signatures) {
-				if (dssId.equals(advancedSignature.getId())) {
+				if (signatureId.equals(advancedSignature.getId())) {
 					CAdESSignature cades = (CAdESSignature) advancedSignature;
 					assertCounterSignaturePossible(cades.getSignerInformation());
 					return cades;
 				}
-				return findSignatureRecursive(advancedSignature.getCounterSignatures(), dssId);
+				
+				CAdESSignature counterSignatureById = findSignatureRecursive(advancedSignature.getCounterSignatures(), signatureId);
+				if (counterSignatureById != null) {
+					// TODO : add a nested counter signature support + check if a master signature is not timestamped
+					throw new UnsupportedOperationException("Nested counter signatures are not supported with CAdES!");
+				}
+				return counterSignatureById;
 			}
 		}
 		return null;
