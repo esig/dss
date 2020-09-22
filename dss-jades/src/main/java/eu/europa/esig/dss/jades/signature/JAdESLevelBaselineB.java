@@ -463,7 +463,7 @@ public class JAdESLevelBaselineB {
 			
 			Map<String, Object> sigPIdParams = new LinkedHashMap<>();
 			
-			JsonObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), null);
+			JsonObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), signaturePolicy.getDocumentationReferences());
 			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
 			
 			if ((signaturePolicy.getDigestValue() != null) && (signaturePolicy.getDigestAlgorithm() != null)) {

@@ -430,8 +430,12 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 				addReferences(unsignedPropertiesReferences, counterSignatureReferences);
 				continue;
 
+			} else if (isSignaturePolicyStore(unsignedAttribute)) {
+				// not processed
+				continue;
+				
 			} else {
-				LOG.warn("The unsigned attribute with a name [{}] is not supported", unsignedAttribute);
+				LOG.warn("The unsigned attribute with a name [{}] is not supported in TimestampSource processing", unsignedAttribute);
 				continue;
 			}
 			
@@ -591,6 +595,16 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 	 *         otherwise
 	 */
 	protected abstract boolean isCounterSignature(SignatureAttribute unsignedAttribute);
+
+	/**
+	 * Determines if the given {@code unsignedAttribute} is an instance of
+	 * "signature-policy-store" element
+	 * 
+	 * @param unsignedAttribute {@link SignatureAttribute} to process
+	 * @return TRUE if the {@code unsignedAttribute} is a Counter signature, FALSE
+	 *         otherwise
+	 */
+	protected abstract boolean isSignaturePolicyStore(SignatureAttribute unsignedAttribute);
 
 	/**
 	 * Creates a timestamp token from the provided {@code signatureAttribute}

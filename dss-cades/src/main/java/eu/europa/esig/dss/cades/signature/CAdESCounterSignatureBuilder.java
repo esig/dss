@@ -19,7 +19,6 @@ import org.bouncycastle.util.Store;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -31,7 +30,6 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class CAdESCounterSignatureBuilder {
 
@@ -66,9 +64,7 @@ public class CAdESCounterSignatureBuilder {
 				if (masterSignature != null) {
 					throw new UnsupportedOperationException("Cannot recursively add a counter-signature");
 				}
-				if (containsATSTv2(cades)) {
-					throw new DSSException("Cannot add a counter signature to a CAdES containing an archiveTimestampV2");
-				}
+				assertCounterSignaturePossible(signerInformation);
 
 				SignerInformationStore counterSignatureSignerInfoStore = generateCounterSignature(originalCMSSignedData, signerInformation, parameters,
 						signatureValue);
@@ -154,10 +150,9 @@ public class CAdESCounterSignatureBuilder {
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (AdvancedSignature advancedSignature : signatures) {
 				if (dssId.equals(advancedSignature.getId())) {
-					if (containsATSTv2(advancedSignature)) {
-						throw new DSSException("Cannot add a counter signature to a CAdES containing an archiveTimestampV2");
-					}
-					return (CAdESSignature) advancedSignature;
+					CAdESSignature cades = (CAdESSignature) advancedSignature;
+					assertCounterSignaturePossible(cades.getSignerInformation());
+					return cades;
 				}
 				return findSignatureRecursive(advancedSignature.getCounterSignatures(), dssId);
 			}
@@ -165,14 +160,10 @@ public class CAdESCounterSignatureBuilder {
 		return null;
 	}
 	
-	private boolean containsATSTv2(AdvancedSignature signature) {
-		List<TimestampToken> archiveTimestamps = signature.getArchiveTimestamps();
-		for (TimestampToken timestampToken : archiveTimestamps) {
-			if (ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType())) {
-				return true;
-			}
+	private void assertCounterSignaturePossible(SignerInformation signerInformation) {
+		if (CMSUtils.containsATSTv2(signerInformation)) {
+			throw new DSSException("Cannot add a counter signature to a CAdES containing an archiveTimestampV2");
 		}
-		return false;
 	}
 
 }

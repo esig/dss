@@ -37,6 +37,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
@@ -274,6 +275,55 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	public XmlDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getDigestAlgoAndValue();
+		}
+		return null;
+	}
+	
+	/**
+	 * Checks if a SignaturePolicyStore unsigned property is present
+	 * 
+	 * @return TRUE if SignaturePolicyStore is present, FALSE otherwise
+	 */
+	public boolean isPolicyStorePresent() {
+		return signature.getSignaturePolicyStore() != null;
+	}
+	
+	public String getPolicyStoreId() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getId();
+		}
+		return null;
+	}
+	
+	public String getPolicyStoreDescription() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getDescription();
+		}
+		return null;
+	}
+	
+	public XmlDigestAlgoAndValue getPolicyStoreDigestAlgoAndValue() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getDigestAlgoAndValue();
+		}
+		return null;
+	}
+	
+	public List<String> getPolicyStoreDocumentationReferences() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getDocumentationReferences();
+		}
+		return null;
+	}
+
 	public boolean isBLevelTechnicallyValid() {
 		return isSignatureValid();
 	}
@@ -441,10 +491,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Checks if a SignaturePolicyIdentifier is present
+	 * 
+	 * @return TRUE if a SignaturePolicyIdentifier is found, FALSE otherwise
+	 */
 	public boolean isPolicyPresent() {
 		return signature.getPolicy() != null;
 	}
 
+	/**
+	 * Returns an error string occurred during a SignaturePolicy proceeding, when applicable
+	 * 
+	 * @return {@link String} representing a policy validation error message, empty when no errors found
+	 */
 	public String getPolicyProcessingError() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
@@ -527,6 +587,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.isStatus() != null && policy.isStatus();
+		}
+		return false;
+	}
+
+	public boolean isPolicyDigestAlgorithmsEqual() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isDigestAlgorithmsEqual() != null && policy.isDigestAlgorithmsEqual();
 		}
 		return false;
 	}

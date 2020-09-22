@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,7 +33,9 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -48,7 +51,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSignature {
 
@@ -56,6 +58,7 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
 	private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
 	private static final String SIGNATURE_POLICY_DOCUMENTATION = "http://nowina.lu/signature-policy.pdf";
+	private static final String OPTIONAL_ID = "mySignaturePolicyStore";
 
 	private static DSSDocument POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
 
@@ -68,7 +71,7 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		Policy signaturePolicy = new Policy();
-		signaturePolicy.setId(SIGNATURE_POLICY_ID);
+		signaturePolicy.setId("urn:oid:" + SIGNATURE_POLICY_ID);
 		signaturePolicy.setDescription(SIGNATURE_POLICY_DESCRIPTION);
 		signaturePolicy.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION, Utils.EMPTY_STRING); // empty is permitted as URI
 
@@ -85,12 +88,32 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+	
+	@Override
+	protected DSSDocument sign() {
+		DSSDocument signedDocument = super.sign();
 
+		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+		signaturePolicyStore.setId(OPTIONAL_ID);
+		signaturePolicyStore.setSignaturePolicyContent(POLICY_CONTENT);
+		String[] documentationReferences = new String[] { SIGNATURE_POLICY_DOCUMENTATION };
+		SpDocSpecification spDocSpec = new SpDocSpecification();
+		spDocSpec.setId("urn:oid:" + SIGNATURE_POLICY_ID);
+		spDocSpec.setDescription(SIGNATURE_POLICY_DESCRIPTION);
+		spDocSpec.setDocumentationReferences(documentationReferences);
+		spDocSpec.setQualifier(ObjectIdentifierQualifier.OID_AS_URN);
+		signaturePolicyStore.setSpDocSpecification(spDocSpec);
+		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
+		assertNotNull(signedDocumentWithSignaturePolicyStore);
+		
+		return signedDocumentWithSignaturePolicyStore;
 	}
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
+		
 		String xmlContent = new String(byteArray);
 		assertTrue(xmlContent.contains("description"));
 		assertTrue(xmlContent.contains(":DocumentationReferences>"));
@@ -99,38 +122,69 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));
 		assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
 		
-		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-		signaturePolicyStore.setSignaturePolicyContent(POLICY_CONTENT);
-		String[] documentationReferences = new String[] { SIGNATURE_POLICY_DOCUMENTATION };
-		SpDocSpecification spDocSpec = new SpDocSpecification(SIGNATURE_POLICY_ID, SIGNATURE_POLICY_DESCRIPTION,
-				documentationReferences);
-		signaturePolicyStore.setSpDocSpecification(spDocSpec);
-		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(new InMemoryDocument(byteArray), signaturePolicyStore);
-
-		verify(signedDocumentWithSignaturePolicyStore);
-		
-		XMLDocumentValidator validator = new XMLDocumentValidator(signedDocumentWithSignaturePolicyStore);
-
-		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertTrue(xmlContent.contains(":SignaturePolicyStore"));
+		assertTrue(xmlContent.contains(":SPDocSpecification"));
+		assertTrue(xmlContent.contains(":SignaturePolicyDocument"));
+		assertTrue(xmlContent.contains(OPTIONAL_ID));
+		assertTrue(xmlContent.contains(ObjectIdentifierQualifier.OID_AS_URN.getValue()));
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
 		assertEquals(1, signatures.size());
+		
 		XAdESSignature xadesSignature = (XAdESSignature) signatures.get(0);
 		SignaturePolicyStore extractedSPS = xadesSignature.getSignaturePolicyStore();
 		assertNotNull(extractedSPS);
+		assertEquals(OPTIONAL_ID, extractedSPS.getId());
 		assertNotNull(extractedSPS.getSpDocSpecification());
+		assertEquals(SIGNATURE_POLICY_ID, extractedSPS.getSpDocSpecification().getId());
+		assertEquals(ObjectIdentifierQualifier.OID_AS_URN, extractedSPS.getSpDocSpecification().getQualifier());
 		assertEquals(SIGNATURE_POLICY_DESCRIPTION, extractedSPS.getSpDocSpecification().getDescription());
-		assertArrayEquals(documentationReferences, extractedSPS.getSpDocSpecification().getDocumentationReferences());
+		assertArrayEquals(new String[] { SIGNATURE_POLICY_DOCUMENTATION }, extractedSPS.getSpDocSpecification().getDocumentationReferences());
 		assertArrayEquals(DSSUtils.toByteArray(POLICY_CONTENT), DSSUtils.toByteArray(extractedSPS.getSignaturePolicyContent()));
 	}
 	
 	@Override
-	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
-		super.verifyDiagnosticData(diagnosticData);
+	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyIdentifier(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signature.isPolicyPresent());
+		
 		assertEquals(HTTP_SPURI_TEST, signature.getPolicyUrl());
 		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
 		assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyDescription());
 		assertEquals(SIGNATURE_POLICY_DOCUMENTATION, signature.getPolicyDocumentationReferences().get(0));
 		assertEquals(Utils.EMPTY_STRING, signature.getPolicyDocumentationReferences().get(1));
+		
+		assertFalse(signature.isPolicyAsn1Processable());
+		assertTrue(signature.isPolicyIdentified());
+		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
+	}
+	
+	@Override
+	protected void checkSignaturePolicyStore(DiagnosticData diagnosticData) {
+		super.checkSignaturePolicyStore(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyStoreId());
+		assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyStoreDescription());
+		assertEquals(1, signature.getPolicyStoreDocumentationReferences().size());
+		assertEquals(SIGNATURE_POLICY_DOCUMENTATION, signature.getPolicyStoreDocumentationReferences().get(0));
+		
+		XmlDigestAlgoAndValue policyStoreDigestAlgoAndValue = signature.getPolicyStoreDigestAlgoAndValue();
+		assertNotNull(policyStoreDigestAlgoAndValue);
+		assertNotNull(signature.getPolicyStoreDigestAlgoAndValue().getDigestMethod());
+		assertTrue(Utils.isArrayNotEmpty(policyStoreDigestAlgoAndValue.getDigestValue()));
+		
+		XmlDigestAlgoAndValue policyDigestAlgoAndValue = signature.getPolicyDigestAlgoAndValue();
+		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
+		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
+		
+		assertEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
 	}
 
 	@Override

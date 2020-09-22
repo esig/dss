@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,12 +48,12 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
-import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -157,9 +158,11 @@ public class CAdESService extends
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(signatureLevel)) {
-			// true: Only the last signature will be extended
-			final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, true);
-			signature = extension.extendSignatures(signature, parameters);
+			// Only the last signature will be extended
+			final SignerInformation newSignerInformation = getNewSignerInformation(originalCmsSignedData, cmsSignedData);
+			final CAdESSignatureExtension extension = getExtensionProfile(parameters);
+			CMSSignedData extendedCMSSignature = extension.extendCMSSignatures(cmsSignedData, newSignerInformation, parameters);
+			signature = new CMSSignedDocument(extendedCMSSignature);
 		}
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		parameters.reinitDeterministicId();
@@ -171,7 +174,7 @@ public class CAdESService extends
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		// false: All signature are extended
-		final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, false);
+		final CAdESSignatureExtension extension = getExtensionProfile(parameters);
 		final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
 		dssDocument.setName(getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 		return dssDocument;
@@ -219,24 +222,44 @@ public class CAdESService extends
 		final byte[] documentBytes = (byte[]) signedContent.getContent();
 		return new InMemoryDocument(documentBytes);
 	}
+	
+	private SignerInformation getNewSignerInformation(CMSSignedData originalSignedData, CMSSignedData cmsSignedData) {
+		Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+		if (originalSignedData != null) {
+			for (SignerInformation signerInformation : signers) {
+				if (!containsSignerInfo(originalSignedData, signerInformation)) {
+					return signerInformation;
+				}
+			}
+		}
+		// return the first one if originalSignedData is null (single signature creation)
+		return signers.iterator().next();
+	}
+	
+	private boolean containsSignerInfo(CMSSignedData signedData, SignerInformation signerInformationToFind) {
+		for (SignerInformation signerInformation : signedData.getSignerInfos()) {
+			if (signerInformationToFind.toASN1Structure() == signerInformation.toASN1Structure()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @param parameters
 	 *            set of driving signing parameters
-	 * @param onlyLastCMSSignature
-	 *            indicates if only the last CSM signature should be extended
-	 * @return {@code SignatureExtension} related to the predefine profile
+	 * @return {@code CAdESSignatureExtension} related to the predefine profile
 	 */
-	private SignatureExtension<CAdESSignatureParameters> getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
+	private CAdESSignatureExtension getExtensionProfile(final CAdESSignatureParameters parameters) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		switch (signatureLevel) {
 			case CAdES_BASELINE_T:
-				return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
+				return new CAdESLevelBaselineT(tspSource);
 			case CAdES_BASELINE_LT:
-				return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
+				return new CAdESLevelBaselineLT(tspSource, certificateVerifier);
 			case CAdES_BASELINE_LTA:
-				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
+				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
 			default:
 				throw new DSSException("Unsupported signature format : " + signatureLevel);
 		}
@@ -276,6 +299,25 @@ public class CAdESService extends
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging: " + packaging);
 		}
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the XAdES Signature
+	 * 
+	 * @param document {@link DSSDocument} containing a XAdES Signature to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} XAdESSignature with an incorporates SignaturePolicyStore
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(document, "The document cannot be null");
+		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
+		
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
+		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(cmsSignedData, signaturePolicyStore);
+		
+		CMSSignedDocument documentWithPolicyStore = new CMSSignedDocument(newCmsSignedData);
+		documentWithPolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
+		return documentWithPolicyStore;
 	}
 
 	@Override

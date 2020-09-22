@@ -115,6 +115,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getSignaturePolicyStorePresentConstraint(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getSignaturePolicyStorePresent();
+		}
+		return null;
+	}
 
 	@Override
 	public LevelConstraint getSignaturePolicyPolicyHashValid(Context context) {

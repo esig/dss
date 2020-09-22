@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.xades.validation.policy;
 
-import java.util.Arrays;
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
@@ -10,6 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -35,8 +34,30 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 		setIdentified(true);
 
 		SignaturePolicy signaturePolicy = getSignaturePolicy();
-		DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		Digest digest = signaturePolicy.getDigest();
+		
+		if (digest != null) {
+			Digest recalculatedDigest = getComputedDigest(digest.getAlgorithm());
+			if (recalculatedDigest != null) {
+				if (digest.equals(recalculatedDigest)) {
+					setStatus(true);
+					setDigestAlgorithmsEqual(true);
+				} else {
+					addError("general",
+							"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
+									+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
+				}
+			}
+			
+		} else {
+			addError("general", "The policy digest value is not defined.");
+		}
+	}
+	
+	@Override
+	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
+		SignaturePolicy signaturePolicy = getSignaturePolicy();
+		DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		
 		byte[] bytesToBeDigested = null;
 		Element transformsNode = signaturePolicy.getTransforms();
@@ -49,29 +70,19 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 	
 				XMLSignatureInput xmlSignatureInputOut = transforms.performTransforms(xmlSignatureInput);
 				bytesToBeDigested = xmlSignatureInputOut.getBytes();
+				
 			} catch (Exception e) {
-				String errorMessage  = String.format("Unable to perform transforms on an XML Policy. Reason : %s", e.getMessage());
+				String errorMessage = String.format("Unable to perform transforms on an XML Policy. Reason : %s", e.getMessage());
 				LOG.warn(errorMessage, e);
 				addError("xmlProcessing", errorMessage);
+				return null;
 			}
+			
 		} else {
 			bytesToBeDigested = DSSUtils.toByteArray(policyContent);
 		}
 		
-		if (digest != null && bytesToBeDigested != null) {
-			byte[] recalculatedDigestValue = DSSUtils.digest(digest.getAlgorithm(), bytesToBeDigested);
-			if (Arrays.equals(digest.getValue(), recalculatedDigestValue)) {
-				setStatus(true);
-				setDigestAlgorithmsEqual(true);
-			} else {
-				addError("general",
-						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-								+ Utils.toBase64(recalculatedDigestValue) + ").");
-			}
-			
-		} else {
-			addError("general", "The policy digest value is not defined.");
-		}
+		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, bytesToBeDigested));
 	}
 
 }

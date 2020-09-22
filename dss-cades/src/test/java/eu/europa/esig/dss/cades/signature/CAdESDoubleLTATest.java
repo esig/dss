@@ -77,7 +77,6 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 	public void doubleLTA() throws DSSException, CMSException {
 		DSSDocument signed = sign();
 		Reports reports = verify(signed);
-		// reports.print();
 
 		DiagnosticData diagnosticData1 = reports.getDiagnosticData();
 
@@ -87,7 +86,6 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 
 		DSSDocument doubleLtaDoc = service.extendDocument(signed, parameters);
 		reports = verify(doubleLtaDoc);
-		// reports.print();
 
 		DiagnosticData diagnosticData2 = reports.getDiagnosticData();
 

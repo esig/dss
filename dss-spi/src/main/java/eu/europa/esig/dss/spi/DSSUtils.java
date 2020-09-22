@@ -76,6 +76,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -1067,6 +1068,20 @@ public final class DSSUtils {
 	}
 	
 	/**
+	 * Checks if the given {@code oid} is a valid OID
+	 * Ex.: 1.3.6.1.4.1.343 -> valid
+	 *      25.25 -> invalid
+	 *      http://sample.com -> invalid
+	 * Source: regexr.com/38m0v (OID Validator)
+	 * 
+	 * @param oid {@link String} oid to verify
+	 * @return TRUE if the string is a valid OID code, FALSE otherwise
+	 */
+	public static boolean isOidCode(String oid) {
+		return oid != null && oid.matches("^([0-2])((\\.0)|(\\.[1-9][0-9]*))*$");
+	}
+	
+	/**
 	 * Keeps only code of the oid string
 	 * e.g. "urn:oid:1.2.3" to "1.2.3"
 	 * 
@@ -1078,6 +1093,48 @@ public final class DSSUtils {
 			return null;
 		}
 		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
+	}
+	
+	/**
+	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
+	 * Returns NULL if non of them is present
+	 * 
+	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
+	 * @return {@link String} URI
+	 */
+	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
+		/*
+		 * TS 119 182-1 : 5.4.1 The oId data type
+		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
+		 */
+		String uri = objectIdentifier.getUri();
+		if (uri == null && objectIdentifier.getOid() != null) {
+			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
+		}
+		return uri;
+	}
+	
+	/**
+	 * Normalizes and retrieves a {@code String} identifier
+	 * Examples:
+	 *          "http://website.com" --> "http://website.com"
+	 *          "urn:oid:1.2.3" --> "1.2.3"
+	 *          "1.2.3" --> "1.2.3"
+	 * 
+	 * @param oidOrUriString {@link String} identifier
+	 * @return {@link String}
+	 */
+	public static String getObjectIdentifier(String oidOrUriString) {
+		String policyIdString = oidOrUriString;
+		if (Utils.isStringNotEmpty(oidOrUriString)) {
+			policyIdString = policyIdString.replaceAll("\n", "");
+			policyIdString = policyIdString.trim();
+			if (isUrnOid(policyIdString)) {
+				// urn:oid:1.2.3 --> 1.2.3
+				policyIdString = getOidCode(policyIdString);
+			}
+		}
+		return policyIdString;
 	}
 	
 	/**

@@ -34,6 +34,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifierCheck;
+import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyStoreCheck;
+import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyZeroHashCheck;
 
 /**
  * 5.2.4 Validation context initialization This building block initializes the
@@ -68,11 +70,17 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 		ChainItem<XmlVCI> item = firstItem = signaturePolicyIdentifier(signaturePolicyConstraint);
 
 		if (signature.isPolicyPresent() && (!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId()))) {
+			
 			item = item.setNextItem(signaturePolicyIdentified());
+			
+			item = item.setNextItem(signaturePolicyStorePresent());
 
 			if (!signature.isPolicyZeroHash()) {
 				item = item.setNextItem(signaturePolicyHashValid());
+			} else {
+				item = item.setNextItem(signaturePolicyZeroHash());
 			}
+			
 		}
 
 	}
@@ -86,9 +94,18 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 		return new SignaturePolicyIdentifiedCheck(i18nProvider, result, signature, constraint);
 	}
 
+	private ChainItem<XmlVCI> signaturePolicyStorePresent() {
+		LevelConstraint constraint = validationPolicy.getSignaturePolicyStorePresentConstraint(context);
+		return new SignaturePolicyStoreCheck(i18nProvider, result, signature, constraint);
+	}
+
 	private ChainItem<XmlVCI> signaturePolicyHashValid() {
 		LevelConstraint constraint = validationPolicy.getSignaturePolicyPolicyHashValid(context);
 		return new SignaturePolicyHashValidCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlVCI> signaturePolicyZeroHash() {
+		return new SignaturePolicyZeroHashCheck(i18nProvider, result, signature, getWarnLevelConstraint());
 	}
 
 }

@@ -71,7 +71,7 @@ public enum ObjectIdentifierQualifier {
                 return c;
             }
         }
-        throw new IllegalArgumentException(v);
+        return null;
     }
 
 }

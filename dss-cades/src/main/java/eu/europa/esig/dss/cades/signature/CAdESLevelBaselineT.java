@@ -41,12 +41,12 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
-	public CAdESLevelBaselineT(TSPSource tspSource, boolean onlyLastCMSSignature) {
-		super(tspSource, onlyLastCMSSignature);
+	public CAdESLevelBaselineT(TSPSource tspSource) {
+		super(tspSource);
 	}
 
 	@Override
-	protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
+	protected SignerInformation extendSignerInformation(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException {
 		final CAdESSignature cadesSignature = newCAdESSignature(signedData, signerInformation, parameters.getDetachedContents());
 		assertExtendSignaturePossible(cadesSignature);

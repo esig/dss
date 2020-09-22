@@ -111,11 +111,13 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			originalName = originalFile.getName();
 		}
 
+		String originalExtension = Utils.EMPTY_STRING;
 		if (Utils.isStringNotEmpty(originalName)) {
 			int dotPosition = originalName.lastIndexOf('.');
 			if (dotPosition > 0) {
 				// remove extension
 				finalName.append(originalName.substring(0, dotPosition));
+				originalExtension = originalName.substring(dotPosition + 1);
 			} else {
 				finalName.append(originalName);
 			}
@@ -139,7 +141,8 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		}
 
 		String extension = getFileExtensionString(level, containerMimeType);
-		if (extension != null) {
+		extension = Utils.isStringNotBlank(extension) ? extension : originalExtension;
+		if (Utils.isStringNotBlank(extension)) {
 			finalName.append('.');
 			finalName.append(extension);
 		}
@@ -165,9 +168,8 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 				default:
 					throw new DSSException("Unable to generate a full document name");
 			}
-		} else {
-			return "pdf";
 		}
+		return Utils.EMPTY_STRING;
 	}
 
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {

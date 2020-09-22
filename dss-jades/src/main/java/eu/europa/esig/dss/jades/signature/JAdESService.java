@@ -245,7 +245,12 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
 		JAdESSignaturePolicyStoreBuilder builder = new JAdESSignaturePolicyStoreBuilder();
-		return builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		DSSDocument documentWithSignaturePolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		
+		documentWithSignaturePolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
+		documentWithSignaturePolicyStore.setMimeType(document.getMimeType());
+		
+		return documentWithSignaturePolicyStore;
 	}
 
 	@Override

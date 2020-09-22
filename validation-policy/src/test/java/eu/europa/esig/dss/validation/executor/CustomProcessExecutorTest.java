@@ -55,6 +55,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
@@ -3382,6 +3383,113 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void signaturePolicyStoreTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_signature_policy_store.xml"));
+		assertNotNull(diagnosticData);
+		
+		ValidationPolicy policy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		signatureConstraints.setSignaturePolicyStorePresent(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(policy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void signaturePolicyStoreNotFoundTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_signature_policy_store.xml"));
+		assertNotNull(diagnosticData);
+		
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.setSignaturePolicyStore(null);
+		
+		ValidationPolicy policy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		signatureConstraints.setSignaturePolicyStorePresent(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(policy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, bbb.getConclusion().getIndication());
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, bbb.getConclusion().getSubIndication());
+		
+		XmlVCI vci = bbb.getVCI();
+		assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, vci.getConclusion().getSubIndication());
+		
+		boolean signaturePolicyStoreCheckExecuted = false;
+		for (XmlConstraint constraint : vci.getConstraint()) {
+			if (MessageTag.BBB_VCI_ISPSUPP.name().equals(constraint.getName().getNameId())) {
+				signaturePolicyStoreCheckExecuted = true;
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+			}
+		}
+		assertTrue(signaturePolicyStoreCheckExecuted);
+	}
+	
+	@Test
+	public void zeroHashPolicyCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_zero_hash_policy.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+		
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, bbb.getConclusion().getIndication());
+		
+		XmlVCI vci = bbb.getVCI();
+		assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
+		
+		boolean zeroHashPolicyCheckExecuted = false;
+		for (XmlConstraint constraint : vci.getConstraint()) {
+			if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getNameId())) {
+				zeroHashPolicyCheckExecuted = true;
+			}
+			assertEquals(XmlStatus.OK, constraint.getStatus());
+		}
+		assertTrue(zeroHashPolicyCheckExecuted);
 	}
 
 	@Test

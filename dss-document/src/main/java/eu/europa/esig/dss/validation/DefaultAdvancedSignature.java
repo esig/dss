@@ -28,7 +28,6 @@ import java.util.Set;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -364,21 +363,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean isCounterSignature() {
 		return masterSignature != null;
 	}
-	
-	@Override
-	public List<AdvancedSignature> getCounterSignatures() {
-		if (counterSignatures == null) {
-			counterSignatures = extractCounterSignatures(); 
-		}
-		return counterSignatures;
-	}
-
-	/**
-	 * Extracts counter signatures from the current signature
-	 * 
-	 * @return a list of {@link AdvancedSignature} counter signatures
-	 */
-	protected abstract List<AdvancedSignature> extractCounterSignatures();
 
 	@Override
 	public SignatureCryptographicVerification getSignatureCryptographicVerification() {
@@ -404,11 +388,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			signerRoles.addAll(signedAssertionSignerRoles);
 		}
 		return signerRoles;
-	}
-
-	@Override
-	public SignaturePolicyStore getSignaturePolicyStore() {
-		return null;
 	}
 
 	@Override
@@ -486,11 +465,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public String getStructureValidationResult() {
 		return structureValidation;
-	}
-
-	@Override
-	public SignaturePolicy getPolicyId() {
-		return signaturePolicy;
 	}
 	
 	@Override

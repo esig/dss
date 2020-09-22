@@ -399,6 +399,21 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
+	public void isOidCode() {
+		assertFalse(DSSUtils.isOidCode(null));
+		assertFalse(DSSUtils.isOidCode(""));
+		assertFalse(DSSUtils.isOidCode("aurn:oid:1.2.3.4"));
+		assertFalse(DSSUtils.isOidCode("http://sample.com"));
+		assertFalse(DSSUtils.isOidCode("25.25"));
+		assertFalse(DSSUtils.isOidCode("0.4.00.1733.2"));
+		assertTrue(DSSUtils.isOidCode("1.2.3.4"));
+		assertTrue(DSSUtils.isOidCode("1.3.6.1.4.1.343"));
+		assertTrue(DSSUtils.isOidCode("0.4.0.1733.2"));
+		assertTrue(DSSUtils.isOidCode("0.4.0.19122.1"));
+		assertTrue(DSSUtils.isOidCode("2.16.840.1.113883.3.3190.100"));
+	}
+	
+	@Test
 	public void getOidCodeTest() {
 		assertEquals(null, DSSUtils.getOidCode(null));
 		assertEquals("", DSSUtils.getOidCode(""));

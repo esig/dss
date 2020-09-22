@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
@@ -94,6 +95,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
@@ -113,7 +116,6 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 
@@ -202,21 +204,25 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
+	public SignaturePolicy getSignaturePolicy() {
+		if (signaturePolicy != null) {
+			return signaturePolicy;
+		}
+		
 		final Attribute attribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
 		if (attribute == null) {
-			return;
+			return null;
 		}
 
 		final ASN1Encodable attrValue = attribute.getAttrValues().getObjectAt(0);
 		if (attrValue instanceof DERNull) {
 			signaturePolicy = new SignaturePolicy();
-			return;
+			return signaturePolicy;
 		}
 
 		final SignaturePolicyId sigPolicy = SignaturePolicyId.getInstance(attrValue);
 		if (sigPolicy == null) {
-			return;
+			return null;
 		}
 
 		final String policyId = sigPolicy.getSigPolicyId().getId();
@@ -238,9 +244,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		final SigPolicyQualifiers sigPolicyQualifiers = sigPolicy.getSigPolicyQualifiers();
-		if (sigPolicyQualifiers == null) {
-			signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicyById(policyId));
-		} else {
+		if (sigPolicyQualifiers != null) {
 			for (int ii = 0; ii < sigPolicyQualifiers.size(); ii++) {
 				try {
 					final SigPolicyQualifierInfo policyQualifierInfo = sigPolicyQualifiers.getInfoAt(ii);
@@ -251,7 +255,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						signaturePolicy.setNotice(policyQualifierInfoValue);
 					} else if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
 						signaturePolicy.setUrl(policyQualifierInfoValue);
-						signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicyByUrl(policyQualifierInfoValue));
 					} else {
 						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
 								policyQualifierInfoValue);
@@ -260,11 +263,39 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					LOG.error("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
 				}
 			}
-			if (signaturePolicy.getPolicyContent() != null) {
-				// Updates the OID based cached values
-				signaturePolicyProvider.getSignaturePoliciesById().put(policyId, signaturePolicy.getPolicyContent());
+		}
+		
+		return signaturePolicy;
+	}
+	
+	@Override
+	public SignaturePolicyStore getSignaturePolicyStore() {
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		Attribute sigPolicyStore = unsignedAttributes.get(id_aa_ets_sigPolicyStore);
+		if (sigPolicyStore != null && sigPolicyStore.getAttrValues().size() > 0) {
+			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+			SpDocSpecification spDocSpecification = new SpDocSpecification();
+			
+			ASN1Sequence sequence = ASN1Sequence.getInstance(sigPolicyStore.getAttrValues().getObjectAt(0));
+			
+			if (sequence.size() == 2) {
+				ASN1Encodable spDocSpec = sequence.getObjectAt(0);
+				spDocSpecification.setId(spDocSpec.toString());
+				
+				try {
+					ASN1OctetString spDocument = DEROctetString.getInstance(sequence.getObjectAt(1));
+					signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
+				} catch (Exception e) {
+					LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
+				}
+				
+				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+				return signaturePolicyStore;
+			} else {
+				LOG.warn("Unable to extact a SignaturePolicyStore. The element shall contain two attributes.");
 			}
 		}
+		return null;
 	}
 
 	private boolean isZeroHash(byte[] hashValue) {
@@ -976,8 +1007,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected List<AdvancedSignature> extractCounterSignatures() {
-		final List<AdvancedSignature> countersignatures = new ArrayList<>();
+	public List<AdvancedSignature> getCounterSignatures() {
+		if (countersignatures != null) {
+			return countersignatures;
+		}
+		
+		countersignatures = new ArrayList<>();
 		for (final SignerInformation counterSignerInformation : signerInformation.getCounterSignatures()) {
 			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
 			countersignature.setMasterSignature(this);

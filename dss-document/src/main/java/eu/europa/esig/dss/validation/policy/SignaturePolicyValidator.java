@@ -20,25 +20,89 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignaturePolicy;
 
 public interface SignaturePolicyValidator {
 
+	/**
+	 * Sets the {@code AdvancedSignature} containing a {@code SignaturePolicy} to validate
+	 * 
+	 * NOTE: Deprecated, please use:
+	 * {@code 
+	 * 		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
+	 * 		SignaturePolicyValidator.setSignaturePolicy(signaturePolicy);
+	 * }
+	 * 
+	 * @param signature {@link AdvancedSignature}
+	 */
+	@Deprecated
 	void setSignature(AdvancedSignature signature);
+	
+	/**
+	 * Sets {@code SignaturePolicy} to validate
+	 * 
+	 * @param signaturePolicy {@link SignaturePolicy}
+	 */
+	void setSignaturePolicy(SignaturePolicy signaturePolicy);
 
+	/**
+	 * Checks if the SignaturePolicy can be validated
+	 * 
+	 * @return TRUE if the {@code SignaturePolicy} can be validated, FALSE otherwise
+	 */
 	boolean canValidate();
 
+	/**
+	 * Runs the validation
+	 */
 	void validate();
 
-	// Validation results
+	/* ===== Validation results ===== */
+	
+	/**
+	 * Gets if the {@code SignaturePolicy} has been identified
+	 * 
+	 * @return TRUE if the signature policy has been identified, FALSE otherwise
+	 */
 	boolean isIdentified();
 
+	/**
+	 * Gets if the {@code SignaturePolicy} is valid
+	 * 
+	 * @return TRUE if the signature policy is valid, FALSE otherwise
+	 */
 	boolean isStatus();
 
+	/**
+	 * Gets if the {@code SignaturePolicy} is ASN.1 processable
+	 * 
+	 * @return TRUE if the signature policy is ASN.1, FALSE otherwise
+	 */
 	boolean isAsn1Processable();
 
+	/**
+	 * Gets if digest value incorporated in the signature equals to the digest of the SignaturePolicy content
+	 * 
+	 * @return TRUE if the digests equal, FALSE otherwise
+	 */
 	boolean isDigestAlgorithmsEqual();
 
+	/**
+	 * Returns a list of errors occurred during the {@code SignaturePolicy} validation process when applicable
+	 * 
+	 * @return a list of {@link String} error messages
+	 */
 	String getProcessingErrors();
+	
+	/**
+	 * Returns {@code Digest} on the computed SignaturePolicy's content
+	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @return {@link Digest}
+	 */
+	Digest getComputedDigest(DigestAlgorithm digestAlgorithm);
 
 }

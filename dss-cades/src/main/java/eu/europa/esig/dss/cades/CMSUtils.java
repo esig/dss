@@ -69,6 +69,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class CMSUtils {
@@ -303,6 +304,23 @@ public final class CMSUtils {
 			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
 		}
 		return new BcDigestCalculatorProvider();
+	}
+
+	/**
+	 * Checks if the given {@code SignerInformation}'s unsignedProperties contain an archive-time-stamp (ATSv2) element
+	 * 
+	 * @param signerInformation {@link SignerInformation} to check
+	 * @return TRUE if the signerInformation contains an ATSv2, FALSE otherwise
+	 */
+	public static boolean containsATSTv2(SignerInformation signerInformation) {
+		AttributeTable unsignedAttributes = getUnsignedAttributes(signerInformation);
+		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
+		for (final Attribute attribute : attributes) {
+			if (DSSASN1Utils.isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

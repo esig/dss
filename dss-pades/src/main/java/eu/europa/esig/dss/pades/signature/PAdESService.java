@@ -197,7 +197,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		if (signatureLevel != SignatureLevel.PAdES_BASELINE_B) {
 			// use an embedded timestamp
-			CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource, false);
+			CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource);
 			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
 		}
 

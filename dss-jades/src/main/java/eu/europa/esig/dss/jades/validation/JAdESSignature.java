@@ -47,7 +47,6 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 
@@ -198,17 +197,21 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			}
 			Map<?, ?> spDocSpecificationMap = (Map<?, ?>) sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
 			if (Utils.isMapNotEmpty(spDocSpecificationMap)) {
-				String oid = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
+				spDocSpecification = new SpDocSpecification();
+				
+				String id = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
+				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+				
 				String description = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.DESC);
+				spDocSpecification.setDescription(description);
+				
 				String[] documentationReferences = null;
-
 				List<String> docRefs = (List<String>) spDocSpecificationMap.get(JAdESHeaderParameterNames.DOC_REFS);
 				if (Utils.isCollectionNotEmpty(docRefs)) {
 					documentationReferences = new String[docRefs.size()];
 					docRefs.toArray(documentationReferences);
 				}
-
-				spDocSpecification = new SpDocSpecification(oid, description, documentationReferences);
+				spDocSpecification.setDocumentationReferences(documentationReferences);
 			}
 
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
@@ -317,20 +320,23 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected List<AdvancedSignature> extractCounterSignatures() {
-		List<AdvancedSignature> jadesList = new ArrayList<>();
+	public List<AdvancedSignature> getCounterSignatures() {
+		if (countersignatures != null) {
+			return countersignatures;
+		}
+		
+		countersignatures = new ArrayList<>();
 		
 		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (Object cSigObject : cSigObjects) {
 				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, this);
 				if (counterSignature != null) {
-					jadesList.add(counterSignature);
+					countersignatures.add(counterSignature);
 				}
 			}
 		}
-		
-		return jadesList;
+		return countersignatures;
 	}
 
 	@Override
@@ -341,13 +347,17 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector) {
+	public SignaturePolicy getSignaturePolicy() {
+		if (signaturePolicy != null) {
+			return signaturePolicy;
+		}
+		
 		Map<String, Object> sigPolicy = (Map<String, Object>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PID);
 		if (Utils.isMapNotEmpty(sigPolicy)) {
 			Map<String, Object> policyId = (Map<String, Object>) sigPolicy.get(JAdESHeaderParameterNames.ID);
 			String id = (String) policyId.get(JAdESHeaderParameterNames.ID);
 
-			signaturePolicy = new SignaturePolicy(DSSUtils.getOidCode(id));
+			signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifier(id));
 			signaturePolicy.setDescription((String) policyId.get(JAdESHeaderParameterNames.DESC));
 			signaturePolicy.setDigest(JAdESUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
 
@@ -356,6 +366,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicy.setUrl(getSPUri(qualifiers));
 			}
 		}
+		return signaturePolicy;
 	}
 
 	@SuppressWarnings("unchecked")

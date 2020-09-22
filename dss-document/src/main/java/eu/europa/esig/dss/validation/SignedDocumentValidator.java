@@ -422,6 +422,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStategy(tokenExtractionStategy)
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes()).trustedCertificateSources(certificateVerifier.getTrustedCertSources())
+				.signaturePolicyProvider(getSignaturePolicyProvider())
 				.validationDate(getValidationTime()).foundSignatures(signatures)
 				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
 	}
@@ -692,7 +693,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSignatureIntegrity();
 			signature.validateStructure();
-			signature.checkSignaturePolicy(getSignaturePolicyProvider());
 		}
 	}
 

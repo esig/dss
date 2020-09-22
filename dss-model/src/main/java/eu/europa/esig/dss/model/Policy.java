@@ -187,7 +187,7 @@ public class Policy implements Serializable {
 	/**
 	 * Checks if the object's data is not filled
 	 * 
-	 * @return TRUE if the POlicy object does not have filled data, FALSE otherwiese
+	 * @return TRUE if the Policy object does not have filled data, FALSE otherwise
 	 */
 	public boolean isEmpty() {
 		if (id != null && !id.isEmpty()) {

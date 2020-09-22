@@ -62,8 +62,30 @@ public interface ValidationPolicy {
 	 */
 	MultiValuesConstraint getSignaturePolicyConstraint(Context context);
 
+	/**
+	 * Indicates if the signature policy validation should be processed.
+	 * If SignaturePolicyIdentifier found, but not relevant SignaturePolicy is retrieved, the check fails.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@link LevelConstraint} if SignaturePolicy shall be identified
+	 */
 	LevelConstraint getSignaturePolicyIdentifiedConstraint(Context context);
 
+	/**
+	 * Indicates if a SignaturePolicyStore unsigned attribute, containing a used policy binaries,
+	 * presence shall be checked
+	 * 
+	 * @param context {@link Context}
+	 * @return {@link LevelConstraint} if SignaturePolicyStore presence shall be checked
+	 */
+	LevelConstraint getSignaturePolicyStorePresentConstraint(Context context);
+
+	/**
+	 * Indicates if digest present in a SignaturePolicyIdentifier shall match to the extracted policy content
+	 * 
+	 * @param context {@link Context}
+	 * @return {@link LevelConstraint} if SignaturePolicyIdentifier digest shall match
+	 */
 	LevelConstraint getSignaturePolicyPolicyHashValid(Context context);
 
 	/**
