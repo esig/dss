@@ -170,6 +170,24 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 
 		signAndValidate();
 	}
+	
+	@Test
+	public void dss2227Test() throws IOException {
+		String signature = "Signature 1\nSignature 12345";
+
+	    SignatureImageParameters imageParams = new SignatureImageParameters();
+	    imageParams.setWidth(100);
+	    imageParams.setHeight(100);
+
+	    SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+	    textParameters.setSignerTextPosition(SignerTextPosition.TOP);
+	    textParameters.setText(signature);
+	    imageParams.setTextParameters(textParameters);
+	    
+	    signatureParameters.setImageParameters(imageParams);
+
+		signAndValidate();
+	}
 
 	private void signAndValidate() throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
