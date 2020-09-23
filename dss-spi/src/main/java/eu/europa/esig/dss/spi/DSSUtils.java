@@ -1069,9 +1069,9 @@ public final class DSSUtils {
 	
 	/**
 	 * Checks if the given {@code oid} is a valid OID
-	 * Ex.: 1.3.6.1.4.1.343 -> valid
-	 *      25.25 -> invalid
-	 *      http://sample.com -> invalid
+	 * Ex.: 1.3.6.1.4.1.343 = valid
+	 *      25.25 = invalid
+	 *      http://sample.com = invalid
 	 * Source: regexr.com/38m0v (OID Validator)
 	 * 
 	 * @param oid {@link String} oid to verify
@@ -1117,9 +1117,9 @@ public final class DSSUtils {
 	/**
 	 * Normalizes and retrieves a {@code String} identifier
 	 * Examples:
-	 *          "http://website.com" --> "http://website.com"
-	 *          "urn:oid:1.2.3" --> "1.2.3"
-	 *          "1.2.3" --> "1.2.3"
+	 *      "http://website.com" = "http://website.com"
+	 *      "urn:oid:1.2.3" = "1.2.3"
+	 *      "1.2.3" = "1.2.3"
 	 * 
 	 * @param oidOrUriString {@link String} identifier
 	 * @return {@link String}
