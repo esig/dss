@@ -140,7 +140,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 					if (imageParameters.getHeight() == 0) {
 						height = Math.max(height, textHeight);
 					}
-					dimensionAndPosition.setTextX(toDpiPagePoint(imageWidth, dimensionAndPosition.getxDpi()));
+					dimensionAndPosition.setTextX(toDpiPagePoint(width - textWidth, dimensionAndPosition.getxDpi()));
 					textImageVerticalAlignment(height, imageHeight, textHeight);
 					break;
 				case TOP:
@@ -152,7 +152,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 					} else {
 						imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 					}
-					dimensionAndPosition.setTextY(toDpiPagePoint(imageHeight, dimensionAndPosition.getyDpi()));
+					dimensionAndPosition.setTextY(toDpiPagePoint(height - textHeight, dimensionAndPosition.getyDpi()));
 					textImageHorizontalAlignment(width, imageWidth, textWidth);
 					break;
 				case BOTTOM:

@@ -45,7 +45,6 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-
 public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;

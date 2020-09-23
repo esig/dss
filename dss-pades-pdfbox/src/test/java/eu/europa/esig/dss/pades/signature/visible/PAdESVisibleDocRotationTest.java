@@ -18,42 +18,39 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible.suite;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+package eu.europa.esig.dss.pades.signature.visible;
 
 import java.io.IOException;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PAdESVisibleDocRotationTest extends PKIFactoryAccess {
+@Tag("slow")
+public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 
-	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
+	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+	
+	private String testName;
 
 	@BeforeEach
-	public void init() throws Exception {
+	public void init(TestInfo testInfo) {
+		testName = testInfo.getTestMethod().get().getName();
+		
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/rotate90-rotated.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -74,10 +71,10 @@ public class PAdESVisibleDocRotationTest extends PKIFactoryAccess {
 		imageParameters.setyAxis(100);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate();
+		drawAndCompareVisually();
 	}
 	
-//	@Test
+	@Test
 	public void testHorizontalAlignment() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
@@ -85,10 +82,10 @@ public class PAdESVisibleDocRotationTest extends PKIFactoryAccess {
 		imageParameters.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.CENTER);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate();
+		drawAndCompareVisually();
 	}
 	
-//	@Test
+	@Test
 	public void testVerticalAlignment() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
@@ -96,31 +93,31 @@ public class PAdESVisibleDocRotationTest extends PKIFactoryAccess {
 		imageParameters.setAlignmentVertical(VisualSignatureAlignmentVertical.BOTTOM);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate();
-	}
-
-	private void signAndValidate() throws IOException {
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
-		 signedDocument.save("target/test.pdf");
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+		drawAndCompareVisually();
 	}
 
 	private DSSDocument getPngPicture() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG);
+	}
+
+	@Override
+	protected String getTestName() {
+		return testName;
+	}
+
+	@Override
+	protected PAdESService getService() {
+		return service;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
 	}
 
 }

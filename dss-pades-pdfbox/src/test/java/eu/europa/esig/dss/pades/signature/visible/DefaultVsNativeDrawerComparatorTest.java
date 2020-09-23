@@ -23,17 +23,12 @@ package eu.europa.esig.dss.pades.signature.visible;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -51,33 +46,24 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSJavaFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PdfScreenshotUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 @Tag("slow")
-public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
+public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
 	private String testName;
-	
-	/**
-	 * The degree of similarity between generated and original images
-	 */
-	private static final float SIMILARITY_LIMIT = 0.987f;
 	
 	@BeforeEach
 	public void init(TestInfo testInfo) {
@@ -538,6 +524,11 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		compareDoc("/visualSignature/test_-270.pdf");
 	}
 	
+	private void compareDoc(String docPath) throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream(docPath));
+		drawAndCompareVisually();
+	}
+	
 	@Test
 	public void simpleTest() throws IOException {
 		initPdfATest();
@@ -702,72 +693,25 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 	}
-	
-	private void compareDoc(String docPath) throws IOException {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream(docPath));
-		drawAndCompareVisually();
-	}
-	
-	private void drawAndCompareVisually() throws IOException {
-		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		DSSDocument defaultDrawerPdf = sign(testName + "_default");
-		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-		DSSDocument nativeDrawerPdf = sign(testName + "_native");
-		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
-		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
-	}
-	
-	private void drawAndCompareExplicitly() throws IOException {
-		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		DSSDocument defaultDrawerPdf = sign("default");
-		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-		DSSDocument nativeDrawerPdf = sign("native");
-		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
-		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
-		assertTrue(PdfScreenshotUtils.areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
-	}
-	
-	private DSSDocument sign(String docName) throws IOException {
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument document = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		// document.save("target/" + docName + ".pdf");
-		return document;
-	}
-	
-	private void compareAnnotations(DSSDocument doc1, DSSDocument doc2) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream(); 
-				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
-			assertEquals(pdDoc1.getNumberOfPages(), pdDoc2.getNumberOfPages());
-			for (int i = 0; i < pdDoc1.getNumberOfPages(); i++) {
-				PDPage page1 = pdDoc1.getPage(i);
-				PDPage page2 = pdDoc2.getPage(i);
-				assertEquals(page1.getRotation(), page2.getRotation());
-				assertEquals(page1.getAnnotations().size(), page2.getAnnotations().size());
-				for (int j = 0; j < page1.getAnnotations().size(); j++) {
-					PDRectangle rect1 = page1.getAnnotations().get(j).getRectangle();
-					PDRectangle rect2 = page2.getAnnotations().get(j).getRectangle();
-					// assert max 2% difference, due to different text size computation
-					// NOTE: must be non-negative
-					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), Math.abs(rect1.getLowerLeftX()) / 50);
-					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), Math.abs(rect1.getLowerLeftY()) / 50);
-					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), Math.abs(rect1.getUpperRightX()) / 50);
-					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), Math.abs(rect1.getUpperRightY()) / 50);
-				}
-			}
-		}
-	}
-	
-	private void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream();
-				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
-			PdfScreenshotUtils.checkPdfSimilarity(pdDoc1, pdDoc2, SIMILARITY_LIMIT);
-		}
+
+	@Override
+	protected String getTestName() {
+		return testName;
 	}
 
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+	protected PAdESService getService() {
+		return service;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
 	}
 	
 }
