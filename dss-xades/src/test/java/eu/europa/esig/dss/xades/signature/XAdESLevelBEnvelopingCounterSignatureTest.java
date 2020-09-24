@@ -9,7 +9,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -27,6 +31,8 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 
 public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
@@ -66,6 +72,25 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfCreation));
 		return signatureParameters;
+	}
+	
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+		
+		Document document = DomUtils.buildDOM(byteArray);
+		NodeList counterSignaturesList = DomUtils.getNodeList(document, XAdES132Paths.all(XAdES132Element.COUNTER_SIGNATURE));
+		assertEquals(1, counterSignaturesList.getLength());
+		
+		Node counterSignature = counterSignaturesList.item(0);
+		NodeList signedDataObjectPropsList = DomUtils.getNodeList(counterSignature, XAdES132Paths.allFromCurrentPosition(XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES));
+		assertEquals(1, signedDataObjectPropsList.getLength());
+		
+		NodeList commitmentTypeIndicationList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Paths.allFromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_INDICATION));
+		assertEquals(1, commitmentTypeIndicationList.getLength());
+		
+		NodeList dataObjectFormatList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Paths.allFromCurrentPosition(XAdES132Element.DATA_OBJECT_FORMAT));
+		assertEquals(0, dataObjectFormatList.getLength());
 	}
 	
 	@Override

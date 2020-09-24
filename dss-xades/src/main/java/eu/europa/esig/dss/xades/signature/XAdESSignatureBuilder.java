@@ -857,16 +857,25 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateSignedDataObjectProperties() {
-
-		signedDataObjectPropertiesDom = DomUtils.addElement(documentDom, signedPropertiesDom, getXadesNamespace(),
-				getCurrentXAdESElements().getElementSignedDataObjectProperties());
-
+		
 		incorporateDataObjectFormat();
-
 		incorporateCommitmentTypeIndications();
-
 		incorporateContentTimestamps();
 	}
+	
+	private Element getSignedDataObjectPropertiesDom() {
+		/*
+		 * 4.3.5 The SignedDataObjectProperties container 
+		 * 
+		 * A XAdES signature shall not incorporate an empty SignedDataObjectProperties element.
+		 */
+		if (signedDataObjectPropertiesDom == null) {
+			signedDataObjectPropertiesDom = DomUtils.addElement(documentDom, signedPropertiesDom, getXadesNamespace(),
+					getCurrentXAdESElements().getElementSignedDataObjectProperties());
+		}
+		return signedDataObjectPropertiesDom;
+	}
+	
 	/**
 	 * This method incorporates the SignedDataObjectProperties DOM element like :
 	 * 
@@ -882,10 +891,25 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateDataObjectFormat() {
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
+			
+			if (xadesPaths.getCounterSignatureUri().equals(reference.getType())) {
+				/*
+				 * 6.3 Requirements on XAdES signature's elements, qualifying properties and services
+				 * 
+				 * k) Requirement for DataObjectFormat. One DataObjectFormat shall be generated for each signed data
+				 * object, except the SignedProperties element, and except if the signature is a baseline signature
+				 * countersigning a signature. If the signature is a baseline signature countersigning another signature, and if it
+				 * only signs its own signed properties and the countersigned signature, then it shall not include any
+				 * DataObjectFormat signed property. If the signature is a baseline signature countersigning another signature
+				 * and if it signs its own signed properties, the countersigned signature, and other data object(s), then it shall
+				 * include one DataObjectFormat signed property for each of these other signed data object(s) aforementioned. 
+				 */
+				continue;
+			}
 
 			final String dataObjectFormatObjectReference = "#" + reference.getId();
 
-			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, 
+			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
 					getXadesNamespace(), getCurrentXAdESElements().getElementDataObjectFormat());
 			dataObjectFormatDom.setAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName(), dataObjectFormatObjectReference);
 
@@ -926,12 +950,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			final String timestampId = TIMESTAMP_SUFFIX + contentTimestamp.getDSSIdAsString();
 			final TimestampType timeStampType = contentTimestamp.getTimeStampType();
 			if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-				Element allDataObjectsTimestampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, 
+				Element allDataObjectsTimestampDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
 						getXadesNamespace(), getCurrentXAdESElements().getElementAllDataObjectsTimeStamp());
 				allDataObjectsTimestampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), timestampId);
 				addTimestamp(allDataObjectsTimestampDom, contentTimestamp);
 			} else if (TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-				Element individualDataObjectsTimestampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, 
+				Element individualDataObjectsTimestampDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
 						getXadesNamespace(), getCurrentXAdESElements().getElementIndividualDataObjectsTimeStamp());
 				individualDataObjectsTimestampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), timestampId);
 				addTimestamp(individualDataObjectsTimestampDom, contentTimestamp);
@@ -1061,7 +1085,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
 			for (final CommitmentType commitmentTypeIndication : commitmentTypeIndications) {
-				final Element commitmentTypeIndicationDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, 
+				final Element commitmentTypeIndicationDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
 						getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeIndication());
 
 				final Element commitmentTypeIdDom = DomUtils.addElement(documentDom, commitmentTypeIndicationDom, 
