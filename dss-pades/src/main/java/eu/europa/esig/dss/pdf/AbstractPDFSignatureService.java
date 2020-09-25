@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -36,6 +38,9 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
+import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -61,6 +66,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
+	 * This variable set the behavior to follow in case of overlapping a new signature field 
+	 * with existing annotations.
+	 * 
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnSignatureFieldOverlap = new ExceptionOnStatusAlert();
+
+	/**
 	 * Constructor for the PDFSignatureService
 	 * 
 	 * @param serviceMode
@@ -72,6 +85,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
 		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
+	}
+
+	@Override
+	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
+		Objects.requireNonNull(alertOnSignatureFieldOverlap, "StatusAlert cannot be null!");
+		this.alertOnSignatureFieldOverlap = alertOnSignatureFieldOverlap;
 	}
 
 	protected boolean isDocumentTimestampLayer() {
@@ -369,6 +388,43 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	protected String getTokenDigest(Token token) {
 		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
+	}
+	
+	/**
+	 * Checks if the two given rectangles overlap each other, and alerts when true
+	 * 
+	 * @param rect1 {@link Rectangle2D}
+	 * @param rect2 {@link Rectangle2D}
+	 */
+	protected void checkSignatureFieldOverlap(Rectangle2D rect1, Rectangle2D rect2) {
+		if (isOverlap(rect1, rect2)) {
+			alertOnSignatureFieldOverlap();
+		}
+	}
+	
+	/**
+	 * Checks if the two given rectangles overlap each other
+	 * 
+	 * @param rect1 {@link Rectangle2D}
+	 * @param rect2 {@link Rectangle2D}
+	 * @return TRUE if the rectangles overlap each other
+	 */
+	private boolean isOverlap(Rectangle2D rect1, Rectangle2D rect2) {
+		if (rect1.getMinX() > rect2.getMaxX() || rect2.getMinX() > rect1.getMaxX()) {
+			return false;
+		}
+		if (rect1.getMinY() > rect2.getMaxY() || rect2.getMinY() > rect1.getMaxY()) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Executes the alert {@code alertOnSignatureFieldOverlap}
+	 */
+	protected void alertOnSignatureFieldOverlap() {
+		String alertMessage = "The new signature field position overlaps with an existing annotation!";
+		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
 	}
 
 }

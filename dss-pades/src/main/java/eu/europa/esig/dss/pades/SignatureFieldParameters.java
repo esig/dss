@@ -30,8 +30,8 @@ public class SignatureFieldParameters implements Serializable {
 
 	/* Signature field name (optional) */
 	private String name;
-	/* Page number where the signature field is added (0 based) */
-	private int page = 0;
+	/* Page number where the signature field is added */
+	private int page = PAdESUtils.DEFAULT_FIRST_PAGE;
 	/* Coordinate X where to add the signature field (origin is bottom/left corner) */
 	private float originX;
 	/* Coordinate Y where to add the signature field (origin is bottom/left corner) */

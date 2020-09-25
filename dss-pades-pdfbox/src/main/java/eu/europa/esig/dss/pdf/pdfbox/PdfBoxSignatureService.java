@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +51,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -68,6 +70,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
@@ -80,6 +83,7 @@ import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -203,16 +207,24 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				return signatureBytes;
 			}
 		};
-
-		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
+		
+		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, parameters); // can be null
+		final PDSignature pdSignature = createSignatureDictionary(pdDocument, pdSignatureField, parameters);
+		
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getContentSize());
 
 			SignatureImageParameters imageParameters = parameters.getImageParameters();
 			if (imageParameters != null && signatureDrawerFactory != null) {
-				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory
-						.getSignatureDrawer(imageParameters);
+				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
+				
+				if (pdSignatureField == null) {
+					// check signature field position only for new annotations
+					SignatureFieldBox signatureFieldBox = signatureDrawer.buildSignatureFieldBox();
+					checkSignatureFieldPosition(pdDocument, signatureFieldBox.getRectangle(), imageParameters.getPage());
+				}
+				
 				signatureDrawer.draw();
 			}
 
@@ -230,16 +242,33 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException(e);
 		}
 	}
-
-	private PDSignature createSignatureDictionary(final PAdESCommonParameters parameters, PDDocument pdDocument) {
-
-		PDSignature signature;
+	
+	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final PAdESCommonParameters parameters) {
+		String targetFieldId = parameters.getFieldId();
 		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
-			signature = findExistingSignature(pdDocument, parameters.getFieldId());
-		} else {
-			signature = new PDSignature();
+			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
+			if (acroForm != null) {
+				PDSignatureField signatureField = (PDSignatureField) acroForm.getField(targetFieldId);
+				if (signatureField != null) {
+					PDSignature signature = signatureField.getSignature();
+					if (signature != null) {
+						throw new DSSException(
+								"The signature field '" + targetFieldId + "' can not be signed since its already signed.");
+					}
+					return signatureField;
+				}
+			}
+			throw new DSSException("The signature field '" + targetFieldId + "' does not exist.");
 		}
+		return null;
+	}
 
+	private PDSignature createSignatureDictionary(final PDDocument pdDocument, PDSignatureField pdSignatureField, final PAdESCommonParameters parameters) {
+		final PDSignature signature = new PDSignature();
+		if (pdSignatureField != null) {
+			pdSignatureField.getCOSObject().setItem(COSName.V, signature);
+		}
+		
 		COSName currentType = COSName.getPDFName(getType());
 		signature.setType(currentType);
 
@@ -285,27 +314,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			cal.setTime(signingDate);
 			signature.setSignDate(cal);
 		}
-
+		
 		return signature;
-	}
-
-	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
-		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
-		if (acroForm != null) {
-			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
-			if (signatureField != null) {
-				PDSignature signature = signatureField.getSignature();
-				if (signature == null) {
-					signature = new PDSignature();
-					signatureField.getCOSObject().setItem(COSName.V, signature);
-					return signature;
-				} else {
-					throw new DSSException(
-							"The signature field '" + sigFieldName + "' can not be signed since its already signed.");
-				}
-			}
-		}
-		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
 	}
 
 	private boolean containsFilledSignature(PDDocument pdDocument) {
@@ -321,6 +331,41 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			LOG.warn("Cannot read the existing signature(s)", e);
 			return false;
 		}
+	}
+	
+	private void checkSignatureFieldPosition(PDDocument pdDocument, Rectangle2D signatureFieldRectangle, int pageNumber) throws IOException {
+		if (signatureFieldRectangle.getWidth() == 0 || signatureFieldRectangle.getHeight() == 0) {
+			// invisible
+			return;
+		}
+		
+		PDPage page = pdDocument.getPage(pageNumber - PAdESUtils.DEFAULT_FIRST_PAGE);
+
+		// re-define YAxis (start from TOP)
+		PDRectangle pageMediaBox = page.getMediaBox();
+		signatureFieldRectangle.setRect(
+				signatureFieldRectangle.getX(), 
+				pageMediaBox.getHeight() - signatureFieldRectangle.getY() - signatureFieldRectangle.getHeight(), 
+				pageMediaBox.getWidth(),
+				pageMediaBox.getHeight()
+		);
+		
+		List<PDAnnotation> annotations = page.getAnnotations();
+		for (PDAnnotation annotation : annotations) {
+			PDRectangle pdRect = annotation.getRectangle();
+			if (pdRect != null) {
+				Rectangle2D rectangle = toJavaRectangle(pdRect);
+				checkSignatureFieldOverlap(signatureFieldRectangle, rectangle);
+			}
+		}
+	}
+	
+	private Rectangle2D toJavaRectangle(PDRectangle pdRect) {
+		float x = pdRect.getLowerLeftX();
+		float y = pdRect.getLowerLeftY();
+		float width = (pdRect.getUpperRightX() - pdRect.getLowerLeftX());
+		float height = (pdRect.getUpperRightY() - pdRect.getLowerLeftY());
+		return new Rectangle2D.Float(x, y, width, height);
 	}
 
 	/**
@@ -527,21 +572,28 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
-			throw new DSSException("Unable to determine signature fields", e);
+			throw new DSSException(String.format("Unable to determine signature fields. Reason : %s", e.getMessage()), e);
 		}
 		return result;
 	}
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-		
 		checkDocumentPermissions(document, pwd);
 		
 		try (InputStream is = document.openStream();
 				PDDocument pdfDoc = PDDocument.load(is, pwd);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-			PDPage page = pdfDoc.getPage(parameters.getPage());
+			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
+				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
+			}
+			
+			Rectangle2D signatureFieldRect = new Rectangle2D.Float(parameters.getOriginX(), parameters.getOriginY(), 
+					parameters.getWidth(), parameters.getHeight());
+			checkSignatureFieldPosition(pdfDoc, signatureFieldRect, parameters.getPage());
+
+			PDPage page = pdfDoc.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
 
 			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
 			catalog.getCOSObject().setNeedToBeUpdated(true);
@@ -562,10 +614,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (Utils.isStringNotBlank(parameters.getName())) {
 				signatureField.setPartialName(parameters.getName());
 			}
+			
+			PDRectangle pageMediaBox = page.getMediaBox();
+			// start counting from TOP of the page
+			PDRectangle rect = new PDRectangle(parameters.getOriginX(), pageMediaBox.getHeight() - parameters.getOriginY() - parameters.getHeight(), 
+					parameters.getWidth(), parameters.getHeight());
 
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
-			PDRectangle rect = new PDRectangle(parameters.getOriginX(), parameters.getOriginY(), parameters.getWidth(),
-					parameters.getHeight());
 			widget.setRectangle(rect);
 			widget.setPage(page);
 			page.getAnnotations().add(widget);
@@ -580,8 +635,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			return new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
 
-		} catch (Exception e) {
-			throw new DSSException("Unable to add a new signature fields", e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to add a new signature field. Reason : %s", e.getMessage()), e);
 		}
 	}
 

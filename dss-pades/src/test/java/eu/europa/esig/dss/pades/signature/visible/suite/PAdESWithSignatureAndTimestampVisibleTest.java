@@ -59,12 +59,16 @@ public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTest
 		signatureParameters.setImageParameters(signatureImageParameters);
 
 		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
+		timestampImageParameters.setxAxis(100);
+		timestampImageParameters.setyAxis(25);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
+		textParameters.setText("Timestamp");
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		timestampImageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(timestampImageParameters);
+		
+		PAdESTimestampParameters archiveTimestampParameters = signatureParameters.getArchiveTimestampParameters();
+		archiveTimestampParameters.setImageParameters(timestampImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

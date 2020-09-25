@@ -35,8 +35,6 @@ import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
  */
 public class SignatureImageParameters implements Serializable {
 
-	private static final int DEFAULT_PAGE = 1;
-
 	private static final int NO_SCALING = 100;
 
 	/**
@@ -45,10 +43,10 @@ public class SignatureImageParameters implements Serializable {
 	private DSSDocument image;
 
 	/**
-	 * This variable defines the page where the image will appear (1st page by
-	 * default)
+	 * This variable defines the page where the image will appear
+	 * Default : 1st page
 	 */
-	private int page = DEFAULT_PAGE;
+	private int page = PAdESUtils.DEFAULT_FIRST_PAGE;
 
 	/**
 	 * This variable defines the position of the image in the PDF page (X axis)
@@ -60,7 +58,7 @@ public class SignatureImageParameters implements Serializable {
 	 */
 	private float yAxis;
         
-        /**
+    /**
 	 * This variable defines the width (in pixel) of the image in the PDF page
 	 */
 	private int width;

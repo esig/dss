@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -48,6 +49,12 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
 		super.init(signatureFieldId, parameters, appearance);
 		this.iTextFont = initFont();
+	}
+
+	@Override
+	public SignatureFieldBox buildSignatureFieldBox() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

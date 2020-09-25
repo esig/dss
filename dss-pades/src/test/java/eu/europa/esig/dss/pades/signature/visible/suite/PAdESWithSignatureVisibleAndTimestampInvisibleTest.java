@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.suite;
+package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import java.awt.Color;
 import java.util.Date;
@@ -34,6 +34,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESWithSignatureVisibleAndTimestampInvisibleTest extends AbstractPAdESTestSignature {
@@ -60,7 +61,7 @@ public class PAdESWithSignatureVisibleAndTimestampInvisibleTest extends Abstract
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);
 
-		service = new PAdESService(getOfflineCertificateVerifier());
+		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 

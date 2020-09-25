@@ -35,6 +35,7 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -263,7 +264,159 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 		assertThrows(DSSException.class, () -> signAndValidate(documentToSign));
-
+	}
+	
+	@Test
+	public void fieldsOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+		
+		parameters.setName("signature2");
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void differentPagesTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/empty-two-pages.pdf"));
+		
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		parameters.setPage(1);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+		
+		parameters.setName("signature2");
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+		
+		parameters.setPage(2);
+		DSSDocument withTwoFields = service.addNewSignatureField(withFirstField, parameters);
+		
+		assertEquals(2, service.getAvailableSignatureFields(withTwoFields).size());
+	}
+	
+	@Test
+	public void fieldInsideAnotherTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+		
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(25);
+		parametersTwo.setOriginY(25);
+		parametersTwo.setHeight(50);
+		parametersTwo.setWidth(50);
+		parametersTwo.setName("signature2");
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void oneCornerOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+		
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(75);
+		parametersTwo.setOriginY(75);
+		parametersTwo.setHeight(100);
+		parametersTwo.setWidth(100);
+		parametersTwo.setName("signature2");
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void twoCornersOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+		
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(75);
+		parametersTwo.setOriginY(25);
+		parametersTwo.setHeight(50);
+		parametersTwo.setWidth(50);
+		parametersTwo.setName("signature2");
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void sameEdgeTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+		
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(100);
+		parametersTwo.setOriginY(0);
+		parametersTwo.setHeight(100);
+		parametersTwo.setWidth(100);
+		parametersTwo.setName("signature2");
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+		
+		parametersTwo.setOriginX(101);
+		DSSDocument withTwoFields = service.addNewSignatureField(withFirstField, parametersTwo);
+		
+		assertEquals(2, service.getAvailableSignatureFields(withTwoFields).size());
+	}
+	
+	@Test
+	public void annotationOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(150);
+		parametersOne.setOriginY(150);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {

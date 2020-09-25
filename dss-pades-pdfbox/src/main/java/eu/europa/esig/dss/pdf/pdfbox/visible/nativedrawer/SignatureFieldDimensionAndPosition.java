@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
+import java.awt.geom.Rectangle2D;
+
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 
-public class SignatureFieldDimensionAndPosition {
+public class SignatureFieldDimensionAndPosition implements SignatureFieldBox {
 	
 	private float boxX = 0;
 	private float boxY = 0;
@@ -191,6 +194,11 @@ public class SignatureFieldDimensionAndPosition {
 		// minus, because PDF starts to count from bottom
 		this.textY -= CommonDrawerUtils.toDpiAxisPoint(padding / CommonDrawerUtils.getTextScaleFactor(getyDpi()), getyDpi()) * 
 				CommonDrawerUtils.getTextScaleFactor(imageDpi);
+	}
+
+	@Override
+	public Rectangle2D getRectangle() {
+		return new Rectangle2D.Float(boxX, boxY, boxWidth, boxHeight);
 	}
 	
 }

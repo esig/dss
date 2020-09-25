@@ -30,6 +30,14 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 
 public interface PdfBoxSignatureDrawer extends SignatureDrawer {
 
+	/**
+	 * Initializes the drawer
+	 * 
+	 * @param parameters {@link SignatureImageParameters}
+	 * @param document {@link PDDocument}
+	 * @param signatureOptions {@link SignatureOptions}
+	 * @throws IOException if an exception occurs
+	 */
 	void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException;
 
 }

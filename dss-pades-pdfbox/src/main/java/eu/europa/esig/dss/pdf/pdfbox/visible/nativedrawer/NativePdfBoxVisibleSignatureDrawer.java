@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
@@ -68,6 +69,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private static final Logger LOG = LoggerFactory.getLogger(NativePdfBoxVisibleSignatureDrawer.class);
 	
 	private PDFont pdFont;
+	
+	private SignatureFieldDimensionAndPosition dimensionAndPosition;
 	
 	private static final float OPAQUE_VALUE = 0xff;
 	
@@ -98,13 +101,22 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 	
 	@Override
+	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() throws IOException {
+		if (dimensionAndPosition == null) {
+			PDPage originalPage = document.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = 
+					new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage, pdFont);
+			dimensionAndPosition = dimensionAndPositionBuilder.build();
+		}
+		return dimensionAndPosition;
+	}
+	
+	@Override
 	public void draw() throws IOException {
 		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
-			PDPage originalPage = document.getPage(parameters.getPage() - 1);
-			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = 
-					new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage, pdFont);
-			SignatureFieldDimensionAndPosition dimensionAndPosition = dimensionAndPositionBuilder.build();
+			PDPage originalPage = document.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 			// create a new page
 			PDPage page = new PDPage(originalPage.getMediaBox());
 			doc.addPage(page);

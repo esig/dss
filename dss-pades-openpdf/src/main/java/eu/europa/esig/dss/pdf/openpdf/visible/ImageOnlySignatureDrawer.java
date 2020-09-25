@@ -32,10 +32,17 @@ import com.lowagie.text.pdf.PdfTemplate;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
+
+	@Override
+	public SignatureFieldBox buildSignatureFieldBox() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public void draw() throws IOException {

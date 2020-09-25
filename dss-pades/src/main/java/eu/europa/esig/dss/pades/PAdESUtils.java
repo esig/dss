@@ -46,6 +46,11 @@ import eu.europa.esig.dss.validation.PdfRevision;
 public final class PAdESUtils {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
+
+	/**
+	 * Defines a number of a first page in a document
+	 */
+	public static final int DEFAULT_FIRST_PAGE = 1;
 	
 	/**
 	 * Returns the original signed content for the {@code padesSignature}

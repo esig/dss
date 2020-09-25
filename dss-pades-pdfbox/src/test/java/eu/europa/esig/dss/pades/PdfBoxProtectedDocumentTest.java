@@ -140,7 +140,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		assertEquals(0, signatureFields.size());
 		
 		SignatureFieldParameters signatureFieldParameters = new SignatureFieldParameters();
-		signatureFieldParameters.setPage(0);
+		signatureFieldParameters.setPage(1);
 		String firstFieldName = "SignatureField1";
 		signatureFieldParameters.setName(firstFieldName);
 		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
