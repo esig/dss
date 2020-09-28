@@ -183,9 +183,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.setCryptoDictionary(dic);
 
 		SignatureImageParameters sip = parameters.getImageParameters();
-		if (sip != null && signatureDrawerFactory != null) {
-			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) signatureDrawerFactory
-					.getSignatureDrawer(sip);
+		if (sip != null) {
+			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(sip);
 			signatureDrawer.init(parameters.getFieldId(), sip, sap);
 			signatureDrawer.draw();
 		}

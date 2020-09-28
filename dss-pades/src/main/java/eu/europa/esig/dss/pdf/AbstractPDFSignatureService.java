@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -49,8 +48,13 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pdf.visible.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -62,8 +66,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
-	protected final PDFServiceMode serviceMode;
-	protected final SignatureDrawerFactory signatureDrawerFactory;
+	private final PDFServiceMode serviceMode;
+	private final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
 	 * This variable set the behavior to follow in case of overlapping a new signature field 
@@ -83,14 +87,36 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *                               the factory of {@code SignatureDrawer}
 	 */
 	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
+		Objects.requireNonNull(serviceMode, "The PDFServiceMode shall be defined!");
+		Objects.requireNonNull(signatureDrawerFactory, "The SignatureDrawerFactory shall be defined!");
 		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
 	}
 
-	@Override
+	/**
+	 * Sets alert on a signature field overlap with existing fields or/and annotations
+	 * 
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * 
+	 * @param alertOnSignatureFieldOverlap {@link StatusAlert} to execute
+	 */
 	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
 		Objects.requireNonNull(alertOnSignatureFieldOverlap, "StatusAlert cannot be null!");
 		this.alertOnSignatureFieldOverlap = alertOnSignatureFieldOverlap;
+	}
+	
+	/**
+	 * Returns a SignatureDrawer initialized from a provided {@code signatureDrawerFactory}
+	 * 
+	 * @param imageParameters {@link SignatureImageParameters} to use
+	 * @return {@link SignatureDrawer}
+	 */
+	protected SignatureDrawer loadSignatureDrawer(SignatureImageParameters imageParameters) {
+		SignatureDrawer signatureDrawer = signatureDrawerFactory.getSignatureDrawer(imageParameters);
+		if (signatureDrawer == null) {
+			throw new DSSException("SignatureDrawer shall be defined for the used SignatureDrawerFactory!");
+		}
+		return signatureDrawer;
 	}
 
 	protected boolean isDocumentTimestampLayer() {
@@ -110,7 +136,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * This method checks if the document is not encrypted or with limited edition
 	 * rights
 	 * 
-	 * @param toSignDocument the document which will be modified
+	 * @param toSignDocument {@link DSSDocument} the document which will be modified
 	 * @param pwd {@link String} password protection phrase used to encrypt the document
 	 */
 	protected abstract void checkDocumentPermissions(final DSSDocument toSignDocument, final String pwd);
@@ -391,32 +417,34 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 	
 	/**
-	 * Checks if the two given rectangles overlap each other, and alerts when true
+	 * Returns a SignatureFieldBox. Used for a SignatureField position validation.
 	 * 
-	 * @param rect1 {@link Rectangle2D}
-	 * @param rect2 {@link Rectangle2D}
+	 * @param signatureDrawer {@link SignatureDrawer}
+	 * @return {@link SignatureFieldBox}
+	 * @throws IOException if an exception occurs
 	 */
-	protected void checkSignatureFieldOverlap(Rectangle2D rect1, Rectangle2D rect2) {
-		if (isOverlap(rect1, rect2)) {
-			alertOnSignatureFieldOverlap();
+	protected SignatureFieldBox buildSignatureFieldBox(SignatureDrawer signatureDrawer) throws IOException {
+		if (signatureDrawer instanceof SignatureFieldBoxBuilder) {
+			SignatureFieldBoxBuilder signatureFieldBoxBuilder = (SignatureFieldBoxBuilder) signatureDrawer;
+			return signatureFieldBoxBuilder.buildSignatureFieldBox();
 		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("The used SignatureDrawer shall be an instance of VisibleSignatureFieldBoxBuilder "
+					+ "in order to verify a SignatureField position!");
+		}
+		return null;
 	}
 	
 	/**
-	 * Checks if the two given rectangles overlap each other
+	 * Checks if the two given {@code AnnotationBox}es overlap each other, and alerts when true
 	 * 
-	 * @param rect1 {@link Rectangle2D}
-	 * @param rect2 {@link Rectangle2D}
-	 * @return TRUE if the rectangles overlap each other
+	 * @param annotation1 {@link AnnotationBox}
+	 * @param annotation2 {@link AnnotationBox}
 	 */
-	private boolean isOverlap(Rectangle2D rect1, Rectangle2D rect2) {
-		if (rect1.getMinX() > rect2.getMaxX() || rect2.getMinX() > rect1.getMaxX()) {
-			return false;
+	protected void checkSignatureFieldOverlap(AnnotationBox annotation1, AnnotationBox annotation2) {
+		if (annotation1.isOverlap(annotation2)) {
+			alertOnSignatureFieldOverlap();
 		}
-		if (rect1.getMinY() > rect2.getMaxY() || rect2.getMinY() > rect1.getMaxY()) {
-			return false;
-		}
-		return true;
 	}
 	
 	/**

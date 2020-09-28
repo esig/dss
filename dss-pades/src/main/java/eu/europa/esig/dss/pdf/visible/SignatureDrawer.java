@@ -27,14 +27,6 @@ import java.io.IOException;
  *
  */
 public interface SignatureDrawer {
-	
-	/**
-	 * Builds a {@code SignatureFieldBox}, defining signature field position and dimension
-	 * 
-	 * @return {@link SignatureFieldBox}
-	 * @throws IOException if an exception occurs
-	 */
-	SignatureFieldBox buildSignatureFieldBox() throws IOException;
 
 	/**
 	 * Draw the visible signature

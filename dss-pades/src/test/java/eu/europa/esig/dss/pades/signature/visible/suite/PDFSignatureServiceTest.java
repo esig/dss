@@ -14,18 +14,18 @@ import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 
 public class PDFSignatureServiceTest {
 	
-	private PDFSignatureService service;
+	private AbstractPDFSignatureService service;
 	
 	@BeforeEach
 	public void init() {
 		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
-		service = pdfObjFactory.newPAdESSignatureService();
+		service = (AbstractPDFSignatureService) pdfObjFactory.newPAdESSignatureService();
 	}
 	
 	@Test

@@ -63,14 +63,11 @@ public class SignatureImageParameters implements Serializable {
 	 */
 	private int width;
 
-
 	/**
 	  * This variable defines the height (in pixel) of the image in the PDF page
 	 */
 	private int height;
         
-        
-
 	/**
 	 * This variable defines a percent to zoom the image (100% means no scaling).
 	 * Note: This do not touch zooming of the text representation.

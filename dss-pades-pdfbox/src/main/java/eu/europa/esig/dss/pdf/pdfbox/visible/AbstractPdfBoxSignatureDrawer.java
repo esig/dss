@@ -34,9 +34,10 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer {
+public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer, SignatureFieldBoxBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPdfBoxSignatureDrawer.class);
 
@@ -63,7 +64,8 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	}
 	
 	/**
-	 * Method to check if the target image's colro space is present in the document's catalog
+	 * Method to check if the target image's color space is present in the document's catalog
+	 * 
 	 * @param pdDocument {@link PDDocument} to check color profiles in
 	 * @param image {@link DSSDocument} image
 	 * @throws IOException in case of image reading error
@@ -88,6 +90,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	
 	/**
 	 * Returns color space name for the provided image
+	 * 
 	 * @param image {@link DSSDocument} to get color space name for
 	 * @return {@link String} color space name
 	 * @throws IOException in case of image reading error

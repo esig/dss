@@ -1,14 +1,16 @@
 package eu.europa.esig.dss.pdf.visible;
 
-import java.awt.geom.Rectangle2D;
-
+/**
+ * Defines a SignatureField position and dimension
+ *
+ */
 public interface SignatureFieldBox {
 	
 	/**
-	 * Returns a signature field Rectangle, defining field position and dimension
+	 * Creates an {@code AnnotationBox} from the SignatureFieldBox
 	 * 
-	 * @return {@link Rectangle2D}
+	 * @return {@link AnnotationBox}
 	 */
-	Rectangle2D getRectangle();
+	public AnnotationBox toAnnotationBox();
 
 }

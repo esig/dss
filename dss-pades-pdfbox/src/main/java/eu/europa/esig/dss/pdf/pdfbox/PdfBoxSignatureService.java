@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,6 +82,7 @@ import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.visible.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -173,7 +173,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
 			final PAdESCommonParameters parameters) {
-		
 		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -215,14 +214,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			options.setPreferredSignatureSize(parameters.getContentSize());
 
 			SignatureImageParameters imageParameters = parameters.getImageParameters();
-			if (imageParameters != null && signatureDrawerFactory != null) {
-				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(imageParameters);
+			if (imageParameters != null) {
+				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) loadSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
 				
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
-					SignatureFieldBox signatureFieldBox = signatureDrawer.buildSignatureFieldBox();
-					checkSignatureFieldPosition(pdDocument, signatureFieldBox.getRectangle(), imageParameters.getPage());
+					checkVisibleSignatureFieldBoxPosition(signatureDrawer, pdDocument, imageParameters);
 				}
 				
 				signatureDrawer.draw();
@@ -333,8 +331,17 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 	
-	private void checkSignatureFieldPosition(PDDocument pdDocument, Rectangle2D signatureFieldRectangle, int pageNumber) throws IOException {
-		if (signatureFieldRectangle.getWidth() == 0 || signatureFieldRectangle.getHeight() == 0) {
+	private void checkVisibleSignatureFieldBoxPosition(PdfBoxSignatureDrawer signatureDrawer, PDDocument pdDocument, 
+			SignatureImageParameters imageParameters) throws IOException {
+		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
+		if (signatureFieldBox != null) {
+			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
+			checkSignatureFieldPosition(pdDocument, signatureFieldAnnotation, imageParameters.getPage());
+		}
+	}
+	
+	private void checkSignatureFieldPosition(PDDocument pdDocument, AnnotationBox signatureFieldAnnotation, int pageNumber) throws IOException {
+		if (signatureFieldAnnotation.getWidth() == 0 || signatureFieldAnnotation.getHeight() == 0) {
 			// invisible
 			return;
 		}
@@ -342,30 +349,20 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		PDPage page = pdDocument.getPage(pageNumber - PAdESUtils.DEFAULT_FIRST_PAGE);
 
 		// re-define YAxis (start from TOP)
-		PDRectangle pageMediaBox = page.getMediaBox();
-		signatureFieldRectangle.setRect(
-				signatureFieldRectangle.getX(), 
-				pageMediaBox.getHeight() - signatureFieldRectangle.getY() - signatureFieldRectangle.getHeight(), 
-				signatureFieldRectangle.getWidth(),
-				signatureFieldRectangle.getHeight()
-		);
+		signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(page.getMediaBox().getHeight());
 		
 		List<PDAnnotation> annotations = page.getAnnotations();
 		for (PDAnnotation annotation : annotations) {
 			PDRectangle pdRect = annotation.getRectangle();
 			if (pdRect != null) {
-				Rectangle2D rectangle = toJavaRectangle(pdRect);
-				checkSignatureFieldOverlap(signatureFieldRectangle, rectangle);
+				AnnotationBox annotationBox = toAnnotationBox(pdRect);
+				checkSignatureFieldOverlap(signatureFieldAnnotation, annotationBox);
 			}
 		}
 	}
 	
-	private Rectangle2D toJavaRectangle(PDRectangle pdRect) {
-		float x = pdRect.getLowerLeftX();
-		float y = pdRect.getLowerLeftY();
-		float width = (pdRect.getUpperRightX() - pdRect.getLowerLeftX());
-		float height = (pdRect.getUpperRightY() - pdRect.getLowerLeftY());
-		return new Rectangle2D.Float(x, y, width, height);
+	private AnnotationBox toAnnotationBox(PDRectangle pdRect) {
+		return new AnnotationBox(pdRect.getLowerLeftX(), pdRect.getLowerLeftY(), pdRect.getUpperRightX(), pdRect.getUpperRightY());
 	}
 
 	/**
@@ -589,9 +586,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 			
-			Rectangle2D signatureFieldRect = new Rectangle2D.Float(parameters.getOriginX(), parameters.getOriginY(), 
-					parameters.getWidth(), parameters.getHeight());
-			checkSignatureFieldPosition(pdfDoc, signatureFieldRect, parameters.getPage());
+			AnnotationBox annotationBox = new AnnotationBox(parameters.getOriginX(), parameters.getOriginY(), 
+					parameters.getOriginX() + parameters.getWidth(), parameters.getOriginY() + parameters.getHeight());
+			checkSignatureFieldPosition(pdfDoc, annotationBox, parameters.getPage());
 
 			PDPage page = pdfDoc.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
 

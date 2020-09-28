@@ -20,8 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import java.awt.geom.Rectangle2D;
-
+import eu.europa.esig.dss.pdf.visible.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
@@ -197,8 +196,8 @@ public class SignatureFieldDimensionAndPosition implements SignatureFieldBox {
 	}
 
 	@Override
-	public Rectangle2D getRectangle() {
-		return new Rectangle2D.Float(boxX, boxY, boxWidth, boxHeight);
+	public AnnotationBox toAnnotationBox() {
+		return new AnnotationBox(boxX, boxY, boxX + boxWidth, boxY + boxHeight);
 	}
 	
 }

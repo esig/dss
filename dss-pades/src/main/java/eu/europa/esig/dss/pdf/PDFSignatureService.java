@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.List;
 
-import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
@@ -147,14 +146,5 @@ public interface PDFSignatureService {
 	 * @return the pdf document with the new added signature field
 	 */
 	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, final String pwd);
-	
-	/**
-	 * Sets alert on a signature field overlap with existing fields or/and annotations
-	 * 
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 * 
-	 * @param alertOnSignatureFieldOverlap {@link StatusAlert} to execute
-	 */
-	void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap);
 
 }
