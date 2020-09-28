@@ -418,6 +418,67 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parametersOne));
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 	}
+	
+	@Test
+	public void fieldOverCommentTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void fieldOverTextNoteTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(100);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void fieldOverDrawingTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(300);
+		parametersOne.setOriginY(25);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+	
+	@Test
+	public void fieldOverShapeTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+		
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setName("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(200);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(400);
+		DSSDocument document = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(document);
+	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);

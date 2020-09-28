@@ -346,8 +346,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		signatureFieldRectangle.setRect(
 				signatureFieldRectangle.getX(), 
 				pageMediaBox.getHeight() - signatureFieldRectangle.getY() - signatureFieldRectangle.getHeight(), 
-				pageMediaBox.getWidth(),
-				pageMediaBox.getHeight()
+				signatureFieldRectangle.getWidth(),
+				signatureFieldRectangle.getHeight()
 		);
 		
 		List<PDAnnotation> annotations = page.getAnnotations();
