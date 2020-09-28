@@ -20,14 +20,11 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,8 +57,10 @@ public class DetectionModificationAfterSignTest {
 		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
-		BufferedImage differenceImage = PdfScreenshotUtils.getDifferenceImage(dssDocument, expected);
-		ImageIO.write(differenceImage, "PNG", new File("target/diff.png"));
+		// BufferedImage differenceImage = PdfScreenshotUtils.getDifferenceImage(dssDocument, expected);
+		// ImageIO.write(differenceImage, "PNG", new File("target/diff.png"));
+		
+		assertFalse(PdfScreenshotUtils.areVisuallyEqual(dssDocument, expected));
 	}
 
 }

@@ -46,7 +46,7 @@ public class PdfScreenshotUtils {
 	 */
 	private static final int CHECK_RESOLUTION = 1;
 	
-	private static final int DPI = 144;
+	private static final float DPI = 144;
 
 	// https://stackoverflow.com/questions/25022578/highlight-differences-between-images
 	public static BufferedImage getDifferenceImage(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
@@ -74,7 +74,7 @@ public class PdfScreenshotUtils {
 	private static BufferedImage getRendering(DSSDocument dssDoc) throws IOException {
 		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
 			PDFRenderer renderer = new PDFRenderer(doc);
-			return renderer.renderImage(0);
+			return renderer.renderImageWithDPI(0, DPI);
 		}
 	}
 	
