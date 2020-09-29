@@ -335,21 +335,20 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			SignatureImageParameters imageParameters) throws IOException {
 		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldBox != null) {
+			PDPage page = pdDocument.getPage(imageParameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			
 			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
-			checkSignatureFieldPosition(pdDocument, signatureFieldAnnotation, imageParameters.getPage());
+			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(page.getMediaBox().getHeight());
+			
+			checkSignatureFieldPosition(page, signatureFieldAnnotation);
 		}
 	}
 	
-	private void checkSignatureFieldPosition(PDDocument pdDocument, AnnotationBox signatureFieldAnnotation, int pageNumber) throws IOException {
+	private void checkSignatureFieldPosition(PDPage page, AnnotationBox signatureFieldAnnotation) throws IOException {
 		if (signatureFieldAnnotation.getWidth() == 0 || signatureFieldAnnotation.getHeight() == 0) {
 			// invisible
 			return;
 		}
-		
-		PDPage page = pdDocument.getPage(pageNumber - PAdESUtils.DEFAULT_FIRST_PAGE);
-
-		// re-define YAxis (start from TOP)
-		signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(page.getMediaBox().getHeight());
 		
 		List<PDAnnotation> annotations = page.getAnnotations();
 		for (PDAnnotation annotation : annotations) {
@@ -586,11 +585,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 			
+			PDPage page = pdfDoc.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			PDRectangle pageMediaBox = page.getMediaBox();
+			
 			AnnotationBox annotationBox = new AnnotationBox(parameters.getOriginX(), parameters.getOriginY(), 
 					parameters.getOriginX() + parameters.getWidth(), parameters.getOriginY() + parameters.getHeight());
-			checkSignatureFieldPosition(pdfDoc, annotationBox, parameters.getPage());
-
-			PDPage page = pdfDoc.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			annotationBox = annotationBox.flipVertically(pageMediaBox.getHeight());
+			
+			checkSignatureFieldPosition(page, annotationBox);
 
 			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
 			catalog.getCOSObject().setNeedToBeUpdated(true);
@@ -612,10 +614,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				signatureField.setPartialName(parameters.getName());
 			}
 			
-			PDRectangle pageMediaBox = page.getMediaBox();
 			// start counting from TOP of the page
-			PDRectangle rect = new PDRectangle(parameters.getOriginX(), pageMediaBox.getHeight() - parameters.getOriginY() - parameters.getHeight(), 
-					parameters.getWidth(), parameters.getHeight());
+			PDRectangle rect = new PDRectangle(annotationBox.getMinX(), annotationBox.getMinY(),
+					annotationBox.getWidth(), annotationBox.getHeight());
 
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
 			widget.setRectangle(rect);

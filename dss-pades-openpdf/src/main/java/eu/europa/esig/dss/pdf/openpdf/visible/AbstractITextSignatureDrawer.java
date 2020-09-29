@@ -22,9 +22,11 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import java.io.IOException;
 
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 
 public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer, SignatureFieldBoxBuilder {
@@ -38,6 +40,23 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		this.signatureFieldId = signatureFieldId;
 		this.parameters = parameters;
 		this.appearance = appearance;
+	}
+	
+	/**
+	 * Transforms the given {@code appearenceRectangle} to a {@code com.lowagie.text.Rectangle} 
+	 * with the given page size
+	 * 
+	 * @param appearenceRectangle {@link AppearenceRectangle}
+	 * @return {@link com.lowagie.text.Rectangle}
+	 */
+	protected Rectangle toITextRectangle(AppearenceRectangle appearenceRectangle) {
+		Rectangle pageRectangle = appearance.getStamper().getReader().getPageSize(parameters.getPage());
+		float pageHeight = pageRectangle.getHeight();
+		
+		AnnotationBox annotationBox = appearenceRectangle.toAnnotationBox();
+		annotationBox = annotationBox.flipVertically(pageHeight);
+		
+		return new Rectangle(annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 	}
 
 }
