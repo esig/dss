@@ -50,7 +50,7 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	 * @return {@link com.lowagie.text.Rectangle}
 	 */
 	protected Rectangle toITextRectangle(AppearenceRectangle appearenceRectangle) {
-		Rectangle pageRectangle = appearance.getStamper().getReader().getPageSize(parameters.getPage());
+		Rectangle pageRectangle = appearance.getStamper().getReader().getPageSize(parameters.getFieldParameters().getPage());
 		float pageHeight = pageRectangle.getHeight();
 		
 		AnnotationBox annotationBox = appearenceRectangle.toAnnotationBox();

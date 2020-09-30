@@ -49,6 +49,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PdfScreenshotUtils;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -193,8 +194,10 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"), "signature-pen.png"));
 		signatureParameters.setImageParameters(signatureImageParameters);
 		
-		signatureImageParameters.setWidth(300);
-		signatureImageParameters.setHeight(200);
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setWidth(300);
+		fieldParameters.setHeight(200);
+		signatureImageParameters.setFieldParameters(fieldParameters);
 
 		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 		checkImageSimilarityPdf("rotate90", "rotate90_top-left-signed.pdf");
@@ -380,8 +383,12 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		textParameters.setFont(font);
 		imageParameters.setTextParameters(textParameters);
 		imageParameters.setBackgroundColor(TRANSPARENT);
-		imageParameters.setxAxis(10);
-		imageParameters.setyAxis(20);
+		
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(10);
+		fieldParameters.setOriginY(20);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		signatureParameters.bLevel().setSigningDate(new Date());
 

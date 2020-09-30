@@ -207,20 +207,21 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 		};
 		
-		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, parameters); // can be null
+		SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters); // can be null
 		final PDSignature pdSignature = createSignatureDictionary(pdDocument, pdSignatureField, parameters);
 		
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getContentSize());
 
 			SignatureImageParameters imageParameters = parameters.getImageParameters();
-			if (imageParameters != null) {
+			if (!imageParameters.isEmpty()) {
 				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) loadSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
 				
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
-					checkVisibleSignatureFieldBoxPosition(signatureDrawer, pdDocument, imageParameters);
+					checkVisibleSignatureFieldBoxPosition(signatureDrawer, pdDocument, fieldParameters);
 				}
 				
 				signatureDrawer.draw();
@@ -241,9 +242,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 	
-	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final PAdESCommonParameters parameters) {
-		String targetFieldId = parameters.getFieldId();
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
+	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final SignatureFieldParameters fieldParameters) {
+		String targetFieldId = fieldParameters.getFieldId();
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(targetFieldId)) {
 			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
 			if (acroForm != null) {
 				PDSignatureField signatureField = (PDSignatureField) acroForm.getField(targetFieldId);
@@ -332,10 +333,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	private void checkVisibleSignatureFieldBoxPosition(PdfBoxSignatureDrawer signatureDrawer, PDDocument pdDocument, 
-			SignatureImageParameters imageParameters) throws IOException {
+			SignatureFieldParameters fieldParameters) throws IOException {
 		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldBox != null) {
-			PDPage page = pdDocument.getPage(imageParameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			PDPage page = pdDocument.getPage(fieldParameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
 			
 			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
 			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(page.getMediaBox().getHeight());
@@ -588,8 +589,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			PDPage page = pdfDoc.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
 			PDRectangle pageMediaBox = page.getMediaBox();
 			
-			AnnotationBox annotationBox = new AnnotationBox(parameters.getOriginX(), parameters.getOriginY(), 
-					parameters.getOriginX() + parameters.getWidth(), parameters.getOriginY() + parameters.getHeight());
+			AnnotationBox annotationBox = new AnnotationBox(parameters);
 			annotationBox = annotationBox.flipVertically(pageMediaBox.getHeight());
 			
 			checkSignatureFieldPosition(page, annotationBox);
@@ -610,8 +610,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
-			if (Utils.isStringNotBlank(parameters.getName())) {
-				signatureField.setPartialName(parameters.getName());
+			if (Utils.isStringNotBlank(parameters.getFieldId())) {
+				signatureField.setPartialName(parameters.getFieldId());
 			}
 			
 			// start counting from TOP of the page

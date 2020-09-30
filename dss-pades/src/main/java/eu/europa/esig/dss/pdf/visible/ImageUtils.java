@@ -45,6 +45,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -205,8 +206,9 @@ public class ImageUtils {
 	 * @return {@link Dimension}
 	 */
 	public static Dimension getImageDimension(SignatureImageParameters imageParameters) {
-		float width = imageParameters.getWidth();
-		float height = imageParameters.getHeight();
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		float width = fieldParameters.getWidth();
+		float height = fieldParameters.getHeight();
 		float scaleFactor = getScaleFactor(imageParameters.getZoom());
 		if (width == 0 && height == 0) {
 			try {

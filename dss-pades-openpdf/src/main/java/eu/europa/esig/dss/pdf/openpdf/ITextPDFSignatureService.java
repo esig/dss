@@ -137,10 +137,23 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 		PdfSignatureAppearance sap = stp.getSignatureAppearance();
 		sap.setAcro6Layers(true);
-
-		Item fieldItem = findExistingSignatureField(reader, parameters);
-		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
 		
+		SignatureImageParameters sip = parameters.getImageParameters();
+		SignatureFieldParameters fieldParameters = sip.getFieldParameters();
+
+		Item fieldItem = findExistingSignatureField(reader, fieldParameters);
+		if (!sip.isEmpty()) {
+			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(sip);
+			signatureDrawer.init(sip.getFieldParameters().getFieldId(), sip, sap);
+			
+			if (fieldItem == null) {
+				checkVisibleSignatureFieldBoxPosition(signatureDrawer, reader, fieldParameters);
+			}
+			
+			signatureDrawer.draw();
+		}
+
+		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
 		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
 			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
 			
@@ -157,18 +170,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 		sap.setCryptoDictionary(signatureDictionary);
 
-		SignatureImageParameters sip = parameters.getImageParameters();
-		if (sip != null) {
-			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(sip);
-			signatureDrawer.init(parameters.getFieldId(), sip, sap);
-			
-			if (fieldItem == null) {
-				checkVisibleSignatureFieldBoxPosition(signatureDrawer, reader, parameters.getImageParameters());
-			}
-			
-			signatureDrawer.draw();
-		}
-
 		int csize = parameters.getContentSize();
 		HashMap exc = new HashMap();
 		exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
@@ -178,8 +179,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return stp;
 	}
 	
-	private Item findExistingSignatureField(PdfReader reader, PAdESCommonParameters parameters) {
-		String signatureFieldId = parameters.getFieldId();
+	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {
+		String signatureFieldId = fieldParameters.getFieldId();
 		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(signatureFieldId)) {
 			AcroFields acroFields = reader.getAcroFields();
 			List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
@@ -264,12 +265,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	private void checkVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer, 
-			PdfReader reader, SignatureImageParameters imageParameters) throws IOException {
+			PdfReader reader, SignatureFieldParameters fieldParameters) throws IOException {
 		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldBox != null) {
 			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
-			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(reader.getPageSize(imageParameters.getPage()).getHeight());
-			checkSignatureFieldPosition(reader, signatureFieldAnnotation, imageParameters.getPage());
+			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(reader.getPageSize(fieldParameters.getPage()).getHeight());
+			checkSignatureFieldPosition(reader, signatureFieldAnnotation, fieldParameters.getPage());
 		}
 	}
 
@@ -482,13 +483,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			
-			AnnotationBox annotationBox = new AnnotationBox(parameters.getOriginX(), parameters.getOriginY(), 
-					parameters.getOriginX() + parameters.getWidth(), parameters.getOriginY() + parameters.getHeight());
+			AnnotationBox annotationBox = new AnnotationBox(parameters);
 			annotationBox = annotationBox.flipVertically(reader.getPageSize(parameters.getPage()).getHeight());
 			
 			checkSignatureFieldPosition(reader, annotationBox, parameters.getPage());
 			
-			stp.addSignature(parameters.getName(), parameters.getPage(), 
+			stp.addSignature(parameters.getFieldId(), parameters.getPage(), 
 					annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 
 			stp.close();

@@ -57,21 +57,24 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 	public void signatureOverlapTest() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		signatureParameters.setImageParameters(imageParameters);
-		
 		imageParameters.setImage(image);
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		documentToSign = signAndValidate();
 
-		imageParameters.setxAxis(150);
-		imageParameters.setyAxis(150);
+		fieldParameters.setOriginX(150);
+		fieldParameters.setOriginY(150);
 		Exception exception = assertThrows(AlertException.class, () -> signAndValidate());
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 		
-		imageParameters.setxAxis(300);
-		imageParameters.setyAxis(100);
+		fieldParameters.setOriginX(300);
+		fieldParameters.setOriginY(100);
 		documentToSign = signAndValidate();
 		assertNotNull(documentToSign);
 	}
@@ -80,17 +83,23 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 	public void signatureAndTimestampOverlapTest() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		signatureParameters.setImageParameters(imageParameters);
-		
 		imageParameters.setImage(image);
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		documentToSign = signAndValidate();
 		
 		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
-		timestampImageParameters.setxAxis(150);
-		timestampImageParameters.setyAxis(100);
+		SignatureFieldParameters timestampFieldParameters = new SignatureFieldParameters();
+		timestampFieldParameters.setOriginX(150);
+		timestampFieldParameters.setOriginY(100);
+		timestampImageParameters.setFieldParameters(timestampFieldParameters);
+		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Timestamp");
 		textParameters.setTextColor(Color.GREEN);
@@ -103,7 +112,7 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 		Exception exception = assertThrows(AlertException.class, () -> service.timestamp(documentToSign, timestampParameters));
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 		
-		timestampImageParameters.setxAxis(300);
+		timestampFieldParameters.setOriginX(300);
 		documentToSign = service.timestamp(documentToSign, timestampParameters);
 		
 		Reports reports = verify(documentToSign);
@@ -112,7 +121,7 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 		assertEquals(1, diagnosticData.getTimestampList().size());
 		
 		// new signature over a timestamp
-		imageParameters.setxAxis(350);
+		fieldParameters.setOriginX(350);
 		exception = assertThrows(AlertException.class, () -> signAndValidate());
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 	}
@@ -124,22 +133,25 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 		signatureFieldParameters.setOriginY(100);
 		signatureFieldParameters.setWidth(100);
 		signatureFieldParameters.setHeight(100);
-		signatureFieldParameters.setName("signature1");
+		signatureFieldParameters.setFieldId("signature1");
 		
 		documentToSign = service.addNewSignatureField(documentToSign, signatureFieldParameters);
 		
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		signatureParameters.setImageParameters(imageParameters);
-		
 		imageParameters.setImage(image);
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		Exception exception = assertThrows(AlertException.class, () -> signAndValidate());
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 		
-		signatureParameters.setSignatureFieldId("signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument signed = signAndValidate();
 		assertNotNull(signed);
 	}

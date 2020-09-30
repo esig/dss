@@ -75,7 +75,7 @@ public class ITextProtectedDocumentTest extends AbstractPAdESTestValidation {
 		
 		SignatureFieldParameters signatureFieldParameters = new SignatureFieldParameters();
 		signatureFieldParameters.setPage(0);
-		signatureFieldParameters.setName("SignatureField1");
+		signatureFieldParameters.setFieldId("SignatureField1");
 		assertThrows(ProtectedDocumentException.class, () -> service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase));
 	}
 

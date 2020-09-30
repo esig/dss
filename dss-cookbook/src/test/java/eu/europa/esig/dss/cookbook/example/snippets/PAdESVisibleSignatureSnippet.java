@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
@@ -44,17 +45,6 @@ public class PAdESVisibleSignatureSnippet {
 		
 		// Object containing a list of visible signature parameters
 		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
-		
-		// Allows defining of a specific page in a PDF document where the signature must be placed. 
-		// The counting of pages starts from 1 (the first page) 
-		// (the default value = 1).
-		signatureImageParameters.setPage(1);
-		
-		// Absolute positioning functions, allowing to specify a margin between 
-		// the left page side and the top page side respectively, and
-		// a signature field (if no rotation and alignment is applied).
-		signatureImageParameters.setxAxis(10);
-		signatureImageParameters.setyAxis(10);
 		
 		// Allows alignment of a signature field horizontally to a page. Allows the following values:
 		/* _NONE_ (_DEFAULT value._ None alignment is applied, coordinates are counted from the left page side);
@@ -78,26 +68,41 @@ public class PAdESVisibleSignatureSnippet {
 		   _ROTATE_270_ (Rotates a signature field for a 270&#176; clockwise. Coordinates' origin begins from the bottom left page corner). */
 		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 		
-		padesSignatureParameters.setImageParameters(signatureImageParameters);
-		
-		// end::positioning[]
-		
-		// tag::dimensions[]
-		
-		// Allows specifying of a precise signature field's width in pixels. 
-		// If not defined, the default image/text width will be used.
-		signatureImageParameters.setWidth(100);
-		
-		// Allows specifying of a precise signature field's height in pixels. 
-		// If not defined, the default image/text height will be used.
-		signatureImageParameters.setHeight(125);
-		
 		// Defines a zoom of the image. The value is applied to width and height of a signature field. 
 		// The value must be defined in percentage (default value is 100, no zoom is applied).
 		signatureImageParameters.setZoom(50);
 		
 		// Specifies a background color for a signature field.
 		signatureImageParameters.setBackgroundColor(Color.GREEN);
+		
+		padesSignatureParameters.setImageParameters(signatureImageParameters);
+		
+		// end::positioning[]
+		
+		// tag::dimensions[]
+		
+		// Object containing a list of signature field parameters
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		signatureImageParameters.setFieldParameters(fieldParameters);
+		
+		// Allows defining of a specific page in a PDF document where the signature must be placed. 
+		// The counting of pages starts from 1 (the first page) 
+		// (the default value = 1).
+		fieldParameters.setPage(1);
+		
+		// Absolute positioning functions, allowing to specify a margin between 
+		// the left page side and the top page side respectively, and
+		// a signature field (if no rotation and alignment is applied).
+		fieldParameters.setOriginX(10);
+		fieldParameters.setOriginY(10);
+		
+		// Allows specifying of a precise signature field's width in pixels. 
+		// If not defined, the default image/text width will be used.
+		fieldParameters.setWidth(100);
+		
+		// Allows specifying of a precise signature field's height in pixels. 
+		// If not defined, the default image/text height will be used.
+		fieldParameters.setHeight(125);
 		
 		// end::dimensions[]
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

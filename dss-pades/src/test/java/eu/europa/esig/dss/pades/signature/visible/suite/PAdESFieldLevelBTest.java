@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
@@ -50,11 +51,13 @@ public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
-		signatureParameters.setSignatureFieldId("Signature1");
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
 		signatureParameters.setImageParameters(imageParameters);
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		imageParameters.setFieldParameters(fieldParameters);
+		fieldParameters.setFieldId("Signature1");
 
 		service = new PAdESService(getOfflineCertificateVerifier());
 	}

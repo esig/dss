@@ -22,9 +22,6 @@ package eu.europa.esig.dss.pades;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -33,14 +30,11 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters implements PAdESCommonParameters {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignatureParameters.class);
-
 	private static final long serialVersionUID = -1632557456487796227L;
 
 	private String reason;
 	private String contactInfo;
 	private String location;
-	private String signatureFieldId;
 
 	private int signatureSize = 9472; // default value in pdfbox
 
@@ -146,7 +140,10 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 
 	@Override
 	public SignatureImageParameters getImageParameters() {
-		return this.signatureImageParameters;
+		if (signatureImageParameters == null) {
+			signatureImageParameters = new SignatureImageParameters();
+		}
+		return signatureImageParameters;
 	}
 
 	public void setImageParameters(SignatureImageParameters signatureImageParameters) {
@@ -160,19 +157,17 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	
-	@Override
-	public String getFieldId() {
-		return this.signatureFieldId;
-	}
 
 	/**
 	 * The id/name of the signature field which should be signed
 	 * 
-	 * @param signatureFieldId
+	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setSignatureFieldId(signatureFieldId)}
+	 * 
+	 * @param signatureFieldId {@link String} id of a signature field to be used
 	 */
+	@Deprecated
 	public void setSignatureFieldId(String signatureFieldId) {
-		this.signatureFieldId = signatureFieldId;
+		getImageParameters().getFieldParameters().setFieldId(signatureFieldId);
 	}
 
 	@Override

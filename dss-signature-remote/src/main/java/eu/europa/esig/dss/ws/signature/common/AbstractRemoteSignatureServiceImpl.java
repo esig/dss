@@ -51,6 +51,7 @@ import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
@@ -60,6 +61,7 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureFieldParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageTextParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
@@ -124,7 +126,6 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
 		padesParams.setContentSize(9472 * 2); // double reserved space for signature
 		padesParams.setImageParameters(toImageParameters(remoteParameters.getImageParameters()));
-		padesParams.setSignatureFieldId(remoteParameters.getSignatureFieldId());
 		return padesParams;
 	}
 	
@@ -293,42 +294,52 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 		// dpi
 		imageParameters.setDpi(remoteImageParameters.getDpi());
-		// height
-		if (remoteImageParameters.getHeight() != null) {
-			imageParameters.setHeight(remoteImageParameters.getHeight());
-		}
 		// image
 		if (remoteImageParameters.getImage() != null && remoteImageParameters.getImage().getBytes() != null && remoteImageParameters.getImage().getName() != null) {
 			imageParameters.setImage(new InMemoryDocument(remoteImageParameters.getImage().getBytes(), remoteImageParameters.getImage().getName()));
-		}
-		// page
-		if (remoteImageParameters.getPage() != null) {
-			imageParameters.setPage(remoteImageParameters.getPage());
 		}
 		// rotation
 		if (remoteImageParameters.getRotation() != null) {
 			imageParameters.setRotation(remoteImageParameters.getRotation());
 		}
+		// fieldParameters
+		imageParameters.setFieldParameters(toFieldParameters(remoteImageParameters.getFieldParameters()));
 		// textParameters
-		imageParameters.setTextParameters(this.toTextParameters(remoteImageParameters.getTextParameters()));
-		// width
-		if (remoteImageParameters.getWidth() != null) {
-			imageParameters.setWidth(remoteImageParameters.getWidth());
-		}
-		// xAxis
-		if (remoteImageParameters.getxAxis() != null) {
-			imageParameters.setxAxis(remoteImageParameters.getxAxis());
-		}
-		// yAxis
-		if (remoteImageParameters.getyAxis() != null) {
-			imageParameters.setyAxis(remoteImageParameters.getyAxis());
-		}
+		imageParameters.setTextParameters(toTextParameters(remoteImageParameters.getTextParameters()));
 		// zoom
 		if (remoteImageParameters.getZoom() != null) {
 			imageParameters.setZoom(remoteImageParameters.getZoom());
 		}
 
 		return imageParameters;
+	}
+	
+	private SignatureFieldParameters toFieldParameters(final RemoteSignatureFieldParameters remoteFieldParameters) {
+		if (remoteFieldParameters == null) {
+			return null;
+		}
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		if (remoteFieldParameters.getFieldId() != null) {
+			fieldParameters.setFieldId(remoteFieldParameters.getFieldId());
+		}
+		if (remoteFieldParameters.getPage() != null) {
+			fieldParameters.setPage(remoteFieldParameters.getPage());
+		}
+		if (remoteFieldParameters.getOriginX() != null) {
+			fieldParameters.setOriginX(remoteFieldParameters.getOriginX());
+		}
+		if (remoteFieldParameters.getOriginY() != null) {
+			fieldParameters.setOriginY(remoteFieldParameters.getOriginY());
+		}
+		if (remoteFieldParameters.getWidth() != null) {
+			fieldParameters.setWidth(remoteFieldParameters.getWidth());
+		}
+		if (remoteFieldParameters.getHeight() != null) {
+			fieldParameters.setHeight(remoteFieldParameters.getHeight());
+		}
+		
+		return fieldParameters;
 	}
 
 	private SignatureImageTextParameters toTextParameters(final RemoteSignatureImageTextParameters remoteTextParameters){

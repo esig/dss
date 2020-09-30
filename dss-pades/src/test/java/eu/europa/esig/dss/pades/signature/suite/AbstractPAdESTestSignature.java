@@ -111,7 +111,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		int availableSignatureFieldsNumber = availableSignatureFields.size();
 
 		if ((originalSignatureFieldsNumber > 0)) {
-			if (originalSignatureFields.contains(getSignatureParameters().getFieldId())) {
+			if (originalSignatureFields.contains(getSignatureParameters().getImageParameters().getFieldParameters().getFieldId())) {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber - 1);
 			} else {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber);

@@ -61,16 +61,15 @@ public class PAdESVisibleSignWithSignatureFieldTest extends PKIFactoryAccess {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
 
 		service = new PAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Test
 	public void testImageSign() throws IOException {
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		signatureParameters.setImageParameters(imageParameters);
 		signAndValidate();
 	}
 

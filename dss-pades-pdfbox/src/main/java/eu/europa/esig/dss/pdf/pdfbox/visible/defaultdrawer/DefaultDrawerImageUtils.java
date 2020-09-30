@@ -48,12 +48,12 @@ import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 public class DefaultDrawerImageUtils {
 
@@ -66,7 +66,7 @@ public class DefaultDrawerImageUtils {
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 		DSSDocument image = imageParameters.getImage();
 		
-		if (textParamaters != null && Utils.isStringNotEmpty(textParamaters.getText())) {
+		if (!textParamaters.isEmpty()) {
 			BufferedImage scaledImage = null;
 			ImageAndResolution imageAndResolution = null;
 			if (image != null) {
@@ -75,10 +75,11 @@ public class DefaultDrawerImageUtils {
 			}
 			
 			BufferedImage buffImg = ImageTextWriter.createTextImage(imageParameters);
-			if (scaledImage != null && (imageParameters.getWidth() != 0 || imageParameters.getHeight() != 0)) {
-				int textWidth = imageParameters.getWidth() == 0 ? buffImg.getWidth() : (int)(imageAndResolution.toXPoint(buffImg.getWidth()) *
+			SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+			if (scaledImage != null && (fieldParameters.getWidth() != 0 || fieldParameters.getHeight() != 0)) {
+				int textWidth = fieldParameters.getWidth() == 0 ? buffImg.getWidth() : (int)(imageAndResolution.toXPoint(buffImg.getWidth()) *
 						CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi()));
-				int textHeight = imageParameters.getHeight() == 0 ? buffImg.getHeight() : (int)(imageAndResolution.toYPoint(buffImg.getHeight()) *
+				int textHeight = fieldParameters.getHeight() == 0 ? buffImg.getHeight() : (int)(imageAndResolution.toYPoint(buffImg.getHeight()) *
 						CommonDrawerUtils.getTextScaleFactor(imageParameters.getDpi()));
 				buffImg = sizeImage(buffImg, textWidth, textHeight);
 			}
@@ -92,19 +93,19 @@ public class DefaultDrawerImageUtils {
 				SignerTextPosition signerNamePosition = textParamaters.getSignerTextPosition();
 				switch (signerNamePosition) {
 					case LEFT:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, false);
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, false);
 						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
 						break;
 					case RIGHT:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, false);
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, false);
 						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
 						break;
 					case TOP:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, true);
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, true);
 						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextHorizontalAlignment());
 						break;
 					case BOTTOM:
-						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, imageAndResolution, true);
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, true);
 						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextHorizontalAlignment());
 						break;
 					default:
@@ -122,8 +123,11 @@ public class DefaultDrawerImageUtils {
 	private static BufferedImage createEmptyImage(final SignatureImageParameters imageParameters, final int textWidth, final int textHeight) {
 		int width = 0;
 		int height = 0;
-		int fieldWidth = (int)CommonDrawerUtils.computeProperSize(imageParameters.getWidth(), imageParameters.getDpi());
-		int fieldHeight = (int)CommonDrawerUtils.computeProperSize(imageParameters.getHeight(), imageParameters.getDpi());
+		
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		int fieldWidth = (int)CommonDrawerUtils.computeProperSize(fieldParameters.getWidth(), imageParameters.getDpi());
+		int fieldHeight = (int)CommonDrawerUtils.computeProperSize(fieldParameters.getHeight(), imageParameters.getDpi());
+		
 		SignerTextPosition signerNamePosition = imageParameters.getTextParameters().getSignerTextPosition();
 		switch (signerNamePosition) {
 			case LEFT:
@@ -186,24 +190,24 @@ public class DefaultDrawerImageUtils {
 	}
 	
 	private static BufferedImage writeImageToSignatureField(BufferedImage image, BufferedImage textImage, 
-			SignatureImageParameters imageParameters, ImageAndResolution imageAndResolution, boolean verticalAlignment) {
+			SignatureFieldParameters fieldParameters, ImageAndResolution imageAndResolution, boolean verticalAlignment) {
 		if (image == null) {
 			return null;
 		} else if (textImage == null) {
 			return image;
 		}
 		
-		int imageWidth = imageParameters.getWidth() == 0 ? image.getWidth() : imageParameters.getWidth();
-		int imageHeight = imageParameters.getHeight() == 0 ? image.getHeight() : imageParameters.getHeight();
+		int imageWidth = fieldParameters.getWidth() == 0 ? image.getWidth() : (int)fieldParameters.getWidth();
+		int imageHeight = fieldParameters.getHeight() == 0 ? image.getHeight() : (int)fieldParameters.getHeight();
 		
-		if (imageParameters.getWidth() != 0) {
+		if (fieldParameters.getWidth() != 0) {
 			int boxWidth = (int)CommonDrawerUtils.computeProperSize(imageWidth, CommonDrawerUtils.getTextDpi());
 			if (imageAndResolution != null) {
 				boxWidth *= CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getxDpi());
 			}
 			imageWidth = verticalAlignment ? boxWidth : boxWidth - textImage.getWidth();
 		}
-		if (imageParameters.getHeight() != 0) {
+		if (fieldParameters.getHeight() != 0) {
 			int boxHeight = (int)CommonDrawerUtils.computeProperSize(imageHeight, CommonDrawerUtils.getTextDpi());
 			if (imageAndResolution != null) {
 				boxHeight *= CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getyDpi());

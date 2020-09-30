@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.lowagie.text.Image;
 
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
@@ -22,8 +23,9 @@ public class ImageOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangl
 	public AppearenceRectangle build() throws IOException {
 		float zoom = ImageUtils.getScaleFactor(imageParameters.getZoom());
 		
-		int width = imageParameters.getWidth();
-		int height = imageParameters.getHeight();
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		float width = fieldParameters.getWidth();
+		float height = fieldParameters.getHeight();
 		
 		ImageAndResolution ires = ImageUtils.readDisplayMetadata(imageParameters.getImage());
 		if (width == 0) {
@@ -36,10 +38,10 @@ public class ImageOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangl
 		height *= zoom;
 		
 		return new AppearenceRectangle(
-				imageParameters.getxAxis(), 
-				imageParameters.getyAxis(), 
-				imageParameters.getxAxis() + width, 
-				imageParameters.getyAxis() + height
+				fieldParameters.getOriginX(),
+				fieldParameters.getOriginY(),
+				fieldParameters.getOriginX() + width, 
+				fieldParameters.getOriginY() + height
 				);
 	}
 

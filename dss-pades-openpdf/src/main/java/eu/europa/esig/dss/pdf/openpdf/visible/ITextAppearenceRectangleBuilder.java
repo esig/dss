@@ -10,7 +10,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
  */
 public abstract class ITextAppearenceRectangleBuilder {
 	
-	protected SignatureImageParameters imageParameters;
+	protected final SignatureImageParameters imageParameters;
 	
 	/**
 	 * The default constructor

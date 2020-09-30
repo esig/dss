@@ -53,7 +53,7 @@ public class PDFBoxSignatureFieldTest {
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
 		parameters.setPage(1);
-		parameters.setName("signature-test");
+		parameters.setFieldId("signature-test");
 		parameters.setOriginX(50);
 		parameters.setOriginY(50);
 		parameters.setWidth(200);
@@ -67,7 +67,7 @@ public class PDFBoxSignatureFieldTest {
 
 		parameters = new SignatureFieldParameters();
 		parameters.setPage(1);
-		parameters.setName("signature-test2");
+		parameters.setFieldId("signature-test2");
 		parameters.setOriginX(300);
 		parameters.setOriginY(50);
 		parameters.setWidth(50);
@@ -85,7 +85,7 @@ public class PDFBoxSignatureFieldTest {
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
 		parameters.setPage(10);
-		parameters.setName("signature-test");
+		parameters.setFieldId("signature-test");
 		parameters.setOriginX(50);
 		parameters.setOriginY(50);
 		parameters.setWidth(200);

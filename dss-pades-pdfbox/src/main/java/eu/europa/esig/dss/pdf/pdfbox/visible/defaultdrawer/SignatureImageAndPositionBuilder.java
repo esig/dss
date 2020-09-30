@@ -30,6 +30,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
@@ -46,7 +48,7 @@ public final class SignatureImageAndPositionBuilder {
 			
 			BufferedImage visualImageSignature = ImageUtils.read(is);
 			
-			PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
+			PDPage pdPage = doc.getPages().get(signatureImageParameters.getFieldParameters().getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
 
 			int rotate = ImageRotationUtils.getRotation(signatureImageParameters.getRotation(), pdPage);
 			if (rotate != ImageRotationUtils.ANGLE_360) {
@@ -115,7 +117,8 @@ public final class SignatureImageAndPositionBuilder {
     }
     
     private float processWidth(boolean swapDimensions, ImageAndResolution ires, BufferedImage visualImageSignature, SignatureImageParameters signatureImageParameters) {
-    	float width = swapDimensions ? signatureImageParameters.getHeight() : signatureImageParameters.getWidth();
+    	SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
+    	float width = swapDimensions ? fieldParameters.getHeight() : fieldParameters.getWidth();
         if (width == 0) {
         	width = visualImageSignature.getWidth();
         	width = swapDimensions ? ires.toYPoint(width) : ires.toXPoint(width);
@@ -124,7 +127,8 @@ public final class SignatureImageAndPositionBuilder {
     }
     
     private float processHeight(boolean swapDimensions, ImageAndResolution ires, BufferedImage visualImageSignature, SignatureImageParameters signatureImageParameters) {
-    	float height = swapDimensions ? signatureImageParameters.getWidth() : signatureImageParameters.getHeight();
+    	SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
+    	float height = swapDimensions ? fieldParameters.getWidth() : fieldParameters.getHeight();
         if (height == 0) {
         	height = visualImageSignature.getHeight();
         	height = swapDimensions ? ires.toXPoint(height) : ires.toYPoint(height);
@@ -138,19 +142,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processXAngle90(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
-
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
+    	
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
-
         switch (alignmentVertical) {
             case TOP:
             case NONE:
-                x = mediaBox.getWidth() - width - signatureImageParameters.getyAxis();
+                x = mediaBox.getWidth() - width - fieldParameters.getOriginY();
                 break;
             case MIDDLE:
                 x = (mediaBox.getWidth() - width) / 2;
                 break;
             case BOTTOM:
-                x = signatureImageParameters.getyAxis();
+                x = fieldParameters.getOriginY();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
@@ -161,19 +165,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processXAngle180(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
-
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
+        
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
-
         switch (alignmentHorizontal) {
             case LEFT:
             case NONE:
-                x = mediaBox.getWidth() - width - signatureImageParameters.getxAxis();
+                x = mediaBox.getWidth() - width - fieldParameters.getOriginX();
                 break;
             case CENTER:
                 x = (mediaBox.getWidth() - width) / 2;
                 break;
             case RIGHT:
-                x = signatureImageParameters.getxAxis();
+                x = fieldParameters.getOriginX();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -184,19 +188,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processXAngle270(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
-
         switch (alignmentVertical) {
             case TOP:
             case NONE:
-                x = signatureImageParameters.getyAxis();
+                x = fieldParameters.getOriginY();
                 break;
             case MIDDLE:
                 x = (mediaBox.getWidth() - width) / 2;
                 break;
             case BOTTOM:
-                x = mediaBox.getWidth() - width - signatureImageParameters.getyAxis();
+                x = mediaBox.getWidth() - width - fieldParameters.getOriginY();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
@@ -207,19 +211,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processXAngle360(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float width) {
         float x;
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
-
         switch (alignmentHorizontal) {
             case LEFT:
             case NONE:
-                x = signatureImageParameters.getxAxis();
+                x = fieldParameters.getOriginX();
                 break;
             case CENTER:
                 x = (mediaBox.getWidth() - width) / 2;
                 break;
             case RIGHT:
-                x = mediaBox.getWidth() - width - signatureImageParameters.getxAxis();
+                x = mediaBox.getWidth() - width - fieldParameters.getOriginX();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -230,19 +234,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processYAngle90(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
-
         switch (alignmentHorizontal) {
             case LEFT:
             case NONE:
-                y = signatureImageParameters.getxAxis();
+                y = fieldParameters.getOriginX();
                 break;
             case CENTER:
                 y = (mediaBox.getHeight() - height) / 2;
                 break;
             case RIGHT:
-                y = mediaBox.getHeight() - height - signatureImageParameters.getxAxis();
+                y = mediaBox.getHeight() - height - fieldParameters.getOriginX();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -253,19 +257,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processYAngle180(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
-
         switch (alignmentVertical) {
             case TOP:
             case NONE:
-                y = mediaBox.getHeight() - height - signatureImageParameters.getyAxis();
+                y = mediaBox.getHeight() - height - fieldParameters.getOriginY();
                 break;
             case MIDDLE:
                 y = (mediaBox.getHeight() - height) / 2;
                 break;
             case BOTTOM:
-                y = signatureImageParameters.getyAxis();
+                y = fieldParameters.getOriginY();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
@@ -276,19 +280,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processYAngle270(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
 		VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
-
         switch (alignmentHorizontal) {
             case LEFT:
             case NONE:
-                y = mediaBox.getHeight() - height - signatureImageParameters.getxAxis();
+                y = mediaBox.getHeight() - height - fieldParameters.getOriginX();
                 break;
             case CENTER:
                 y = (mediaBox.getHeight() - height) / 2;
                 break;
             case RIGHT:
-                y = signatureImageParameters.getxAxis();
+                y = fieldParameters.getOriginX();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -299,19 +303,19 @@ public final class SignatureImageAndPositionBuilder {
 
     private float processYAngle360(PDRectangle mediaBox, SignatureImageParameters signatureImageParameters, float height) {
         float y;
+        SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
 		VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
-
         switch (alignmentVertical) {
             case TOP:
             case NONE:
-                y = signatureImageParameters.getyAxis();
+                y = fieldParameters.getOriginY();
                 break;
             case MIDDLE:
                 y = (mediaBox.getHeight() - height) / 2;
                 break;
             case BOTTOM:
-                y = mediaBox.getHeight() - height - signatureImageParameters.getyAxis();
+                y = mediaBox.getHeight() - height - fieldParameters.getOriginY();
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());

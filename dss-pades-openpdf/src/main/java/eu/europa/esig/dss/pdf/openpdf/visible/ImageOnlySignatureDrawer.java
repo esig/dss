@@ -29,6 +29,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -58,8 +59,9 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		Image image = getImage();
 
-		float width = parameters.getWidth();
-		float height = parameters.getHeight();
+		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
+		float width = fieldParameters.getWidth();
+		float height = fieldParameters.getHeight();
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
@@ -77,7 +79,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			width = iTextRectangle.getWidth();
 			height = iTextRectangle.getHeight();
 			
-			appearance.setVisibleSignature(iTextRectangle, parameters.getPage());
+			appearance.setVisibleSignature(iTextRectangle, fieldParameters.getPage());
 		}
 		
 		image.scaleAbsolute(width, height);

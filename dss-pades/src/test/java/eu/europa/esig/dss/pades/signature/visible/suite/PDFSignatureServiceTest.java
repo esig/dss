@@ -33,7 +33,7 @@ public class PDFSignatureServiceTest {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 		
 		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
-		parametersOne.setName("signature1");
+		parametersOne.setFieldId("signature1");
 		parametersOne.setOriginX(0);
 		parametersOne.setOriginY(0);
 		parametersOne.setHeight(100);
@@ -46,7 +46,7 @@ public class PDFSignatureServiceTest {
 		parametersTwo.setOriginY(25);
 		parametersTwo.setHeight(100);
 		parametersTwo.setWidth(100);
-		parametersTwo.setName("signature2");
+		parametersTwo.setFieldId("signature2");
 		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parametersTwo));
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 	

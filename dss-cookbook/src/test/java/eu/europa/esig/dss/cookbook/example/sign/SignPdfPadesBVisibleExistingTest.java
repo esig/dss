@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.DSSJavaFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -81,9 +82,6 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 
 			// Initialize visual signature
 			SignatureImageParameters imageParameters = new SignatureImageParameters();
-			// the origin is the left and top corner of the page
-			imageParameters.setxAxis(200);
-			imageParameters.setyAxis(500);
 			// Initialize text to generate for visual signature
 			// tag::font[]
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -94,9 +92,14 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 			textParameters.setText("My visual signature");
 			imageParameters.setTextParameters(textParameters);
 			// end::font[]
-			parameters.setImageParameters(imageParameters);
 
-			parameters.setSignatureFieldId("ExistingSignatureField");
+			// initialize signature field parameters
+			SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+			fieldParameters.setOriginX(200);
+			fieldParameters.setOriginY(500);
+			fieldParameters.setFieldId("ExistingSignatureField");
+			
+			parameters.setImageParameters(imageParameters);
 
 			// Create common certificate verifier
 			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

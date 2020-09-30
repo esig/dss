@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
@@ -40,21 +39,13 @@ public class RemoteSignatureImageParameters implements Serializable {
 
     private Integer dpi;
 
-    private Integer height;
-
     private RemoteDocument image;
 
-    private Integer page;
-
 	private VisualSignatureRotation rotation;
+	
+	private RemoteSignatureFieldParameters fieldParameters;
 
     private RemoteSignatureImageTextParameters textParameters;
-
-    private Integer width;
-
-    private Float xAxis;
-
-    private Float yAxis;
 
     private Integer zoom;
 
@@ -90,14 +81,6 @@ public class RemoteSignatureImageParameters implements Serializable {
         this.dpi = dpi;
     }
 
-    public Integer getHeight() {
-        return this.height;
-    }
-
-    public void setHeight(final Integer height) {
-        this.height = height;
-    }
-
     public RemoteDocument getImage() {
         return this.image;
     }
@@ -106,20 +89,20 @@ public class RemoteSignatureImageParameters implements Serializable {
         this.image = image;
     }
 
+	public RemoteSignatureFieldParameters getFieldParameters() {
+		return fieldParameters;
+	}
+
+	public void setFieldParameters(RemoteSignatureFieldParameters fieldParameters) {
+		this.fieldParameters = fieldParameters;
+	}
+
     public RemoteSignatureImageTextParameters getTextParameters() {
         return this.textParameters;
     }
 
     public void setTextParameters(final RemoteSignatureImageTextParameters textParameters) {
         this.textParameters = textParameters;
-    }
-
-    public Integer getPage() {
-        return this.page;
-    }
-
-    public void setPage(final Integer page) {
-        this.page = page;
     }
 
 	public VisualSignatureRotation getRotation() {
@@ -130,30 +113,6 @@ public class RemoteSignatureImageParameters implements Serializable {
         this.rotation = rotation;
     }
 
-    public Integer getWidth() {
-        return this.width;
-    }
-
-    public void setWidth(final Integer width) {
-        this.width = width;
-    }
-
-    public Float getxAxis() {
-        return this.xAxis;
-    }
-
-    public void setxAxis(final Float xAxis) {
-        this.xAxis = xAxis;
-    }
-
-    public Float getyAxis() {
-        return this.yAxis;
-    }
-
-    public void setyAxis(final Float yAxis) {
-        this.yAxis = yAxis;
-    }
-
     public Integer getZoom() {
         return this.zoom;
     }
@@ -162,54 +121,94 @@ public class RemoteSignatureImageParameters implements Serializable {
         this.zoom = zoom;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final RemoteSignatureImageParameters that = (RemoteSignatureImageParameters) o;
-        return Objects.equals(alignmentHorizontal, that.alignmentHorizontal) &&
-                Objects.equals(alignmentVertical, that.alignmentVertical) &&
-				Objects.equals(backgroundColor, that.backgroundColor) &&
-                Objects.equals(dpi, that.dpi) &&
-                Objects.equals(height, that.height) &&
-                Objects.equals(image, that.image) &&
-                Objects.equals(page, that.page) &&
-                Objects.equals(rotation, that.rotation) &&
-                Objects.equals(textParameters, that.textParameters) &&
-                Objects.equals(width, that.width) &&
-                Objects.equals(xAxis, that.xAxis) &&
-                Objects.equals(yAxis, that.yAxis) &&
-                Objects.equals(zoom, that.zoom);
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((alignmentHorizontal == null) ? 0 : alignmentHorizontal.hashCode());
+		result = prime * result + ((alignmentVertical == null) ? 0 : alignmentVertical.hashCode());
+		result = prime * result + ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
+		result = prime * result + ((dpi == null) ? 0 : dpi.hashCode());
+		result = prime * result + ((fieldParameters == null) ? 0 : fieldParameters.hashCode());
+		result = prime * result + ((image == null) ? 0 : image.hashCode());
+		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+		result = prime * result + ((textParameters == null) ? 0 : textParameters.hashCode());
+		result = prime * result + ((zoom == null) ? 0 : zoom.hashCode());
+		return result;
+	}
 
-    @Override
-    public int hashCode() {
-		return Objects.hash(alignmentHorizontal, alignmentVertical, dpi, height, image, page, rotation, textParameters, width, xAxis, yAxis, zoom,
-				backgroundColor);
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		RemoteSignatureImageParameters other = (RemoteSignatureImageParameters) obj;
+		if (alignmentHorizontal != other.alignmentHorizontal) {
+			return false;
+		}
+		if (alignmentVertical != other.alignmentVertical) {
+			return false;
+		}
+		if (backgroundColor == null) {
+			if (other.backgroundColor != null) {
+				return false;
+			}
+		} else if (!backgroundColor.equals(other.backgroundColor)) {
+			return false;
+		}
+		if (dpi == null) {
+			if (other.dpi != null) {
+				return false;
+			}
+		} else if (!dpi.equals(other.dpi)) {
+			return false;
+		}
+		if (fieldParameters == null) {
+			if (other.fieldParameters != null) {
+				return false;
+			}
+		} else if (!fieldParameters.equals(other.fieldParameters)) {
+			return false;
+		}
+		if (image == null) {
+			if (other.image != null) {
+				return false;
+			}
+		} else if (!image.equals(other.image)) {
+			return false;
+		}
+		if (rotation != other.rotation) {
+			return false;
+		}
+		if (textParameters == null) {
+			if (other.textParameters != null) {
+				return false;
+			}
+		} else if (!textParameters.equals(other.textParameters)) {
+			return false;
+		}
+		if (zoom == null) {
+			if (other.zoom != null) {
+				return false;
+			}
+		} else if (!zoom.equals(other.zoom)) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "RemoteSignatureImageParameters{" +
-                "alignmentHorizontal='" + alignmentHorizontal + '\'' +
-                ", alignmentVertical='" + alignmentVertical + '\'' +
-				", backgroundColor=" + backgroundColor
-				+
-                ", dpi=" + dpi +
-                ", height=" + height +
-                ", image=" + image +
-                ", page=" + page +
-                ", rotation='" + rotation + '\'' +
-                ", textParameters=" + textParameters +
-                ", width=" + width +
-                ", xAxis=" + xAxis +
-                ", yAxis=" + yAxis +
-                ", zoom=" + zoom +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "RemoteSignatureImageParameters [alignmentHorizontal=" + alignmentHorizontal + ", alignmentVertical="
+				+ alignmentVertical + ", backgroundColor=" + backgroundColor + ", dpi=" + dpi + ", image=" + image
+				+ ", rotation=" + rotation + ", fieldParameters=" + fieldParameters + ", textParameters="
+				+ textParameters + ", zoom=" + zoom + "]";
+	}
 
 }

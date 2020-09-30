@@ -26,6 +26,7 @@ import java.io.Serializable;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class allows to custom text generation in the PAdES visible signature
@@ -33,6 +34,8 @@ import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
  */
 public class SignatureImageTextParameters implements Serializable {
 
+	private static final long serialVersionUID = 727438728149346847L;
+	
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 	private static final float DEFAULT_PADDING = 5f;
 	private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
@@ -217,6 +220,23 @@ public class SignatureImageTextParameters implements Serializable {
 	 */
 	public void setText(String text) {
 		this.text = text;
+	}
+	
+	/**
+	 * Checks if the text property is set for the parameters
+	 * 
+	 * @return TRUE if the text is defined, FALSE otherwise
+	 */
+	public boolean isEmpty() {
+		return Utils.isStringEmpty(text);
+	}
+
+	@Override
+	public String toString() {
+		return "SignatureImageTextParameters [signerTextPosition=" + signerTextPosition
+				+ ", signerTextVerticalAlignment=" + signerTextVerticalAlignment + ", signerTextHorizontalAlignment="
+				+ signerTextHorizontalAlignment + ", text=" + text + ", padding=" + padding
+				+ ", textColor=" + textColor + ", backgroundColor=" + backgroundColor + "]";
 	}
 
 }

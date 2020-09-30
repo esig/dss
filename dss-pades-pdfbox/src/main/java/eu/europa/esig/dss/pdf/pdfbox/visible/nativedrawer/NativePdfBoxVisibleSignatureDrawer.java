@@ -62,7 +62,6 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
 
@@ -77,7 +76,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
 		super.init(parameters, document, signatureOptions);
-		if (parameters.getTextParameters() != null) {
+		if (!parameters.getTextParameters().isEmpty()) {
 			this.pdFont = initFont();
 		}
 	}
@@ -103,7 +102,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	@Override
 	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() throws IOException {
 		if (dimensionAndPosition == null) {
-			PDPage originalPage = document.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			PDPage originalPage = document.getPage(parameters.getFieldParameters().getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
 			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = 
 					new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage, pdFont);
 			dimensionAndPosition = dimensionAndPositionBuilder.build();
@@ -115,7 +114,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	public void draw() throws IOException {
 		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
-			PDPage originalPage = document.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
+			int pageNumber = parameters.getFieldParameters().getPage() - PAdESUtils.DEFAULT_FIRST_PAGE;
+			PDPage originalPage = document.getPage(pageNumber);
 			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 			// create a new page
 			PDPage page = new PDPage(originalPage.getMediaBox());
@@ -160,7 +160,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray()))
             {
         		signatureOptions.setVisualSignature(bais);
-        		signatureOptions.setPage(parameters.getPage() - 1);
+        		signatureOptions.setPage(pageNumber);
             }
             
         }
@@ -236,14 +236,15 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	    		// divide to scale factor, because PdfBox due to the matrix transformation also changes position parameters of the image
 	    		float xAxis = dimensionAndPosition.getImageX();
-	    		if (parameters.getTextParameters() != null)
-	    			xAxis *= dimensionAndPosition.getxDpiRatio();
 	    		float yAxis = dimensionAndPosition.getImageY();
-	    		if (parameters.getTextParameters() != null)
+	    		float width = dimensionAndPosition.getImageWidth();
+	    		float height = dimensionAndPosition.getImageHeight();
+	    		if (!parameters.getTextParameters().isEmpty()) {
+	    			xAxis *= dimensionAndPosition.getxDpiRatio();
 	    			yAxis *= dimensionAndPosition.getyDpiRatio();
-	    		
-	    		float width = getWidth(dimensionAndPosition);
-	    		float height = getHeight(dimensionAndPosition);
+	            	width *= dimensionAndPosition.getxDpiRatio();
+	            	height *= dimensionAndPosition.getyDpiRatio();
+	    		}
 	    				
 		        cs.drawImage(imageXObject, xAxis, yAxis, width, height);
 				cs.transform(Matrix.getRotateInstance(((double) 360 - ImageRotationUtils.getRotation(parameters.getRotation())), width, height));
@@ -251,22 +252,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	            cs.restoreGraphicsState();
 			}
     	}
-	}
-	
-	private float getWidth(SignatureFieldDimensionAndPosition dimensionAndPosition) {
-        float width = dimensionAndPosition.getImageWidth();
-        if (parameters.getTextParameters() != null) {
-        	width *= dimensionAndPosition.getxDpiRatio();
-        }
-        return width;
-	}
-	
-	private float getHeight(SignatureFieldDimensionAndPosition dimensionAndPosition) {
-        float height = dimensionAndPosition.getImageHeight();
-        if (parameters.getTextParameters() != null) {
-        	height *= dimensionAndPosition.getyDpiRatio();
-        }
-        return height;
 	}
 	
 	/**
@@ -283,7 +268,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private void setText(PDPageContentStream cs, SignatureFieldDimensionAndPosition dimensionAndPosition, 
 			SignatureImageParameters parameters) throws IOException {
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
-    	if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
+    	if (!textParameters.isEmpty()) {
     		setTextBackground(cs, textParameters, dimensionAndPosition);
     		DSSFont dssFont = textParameters.getFont();
             float fontSize = dssFont.getSize();

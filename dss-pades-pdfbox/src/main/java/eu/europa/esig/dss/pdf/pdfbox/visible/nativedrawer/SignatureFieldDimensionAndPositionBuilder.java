@@ -33,13 +33,13 @@ import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 public class SignatureFieldDimensionAndPositionBuilder {
 
@@ -91,9 +91,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		double imageWidth = imageAndDimension.getWidth();
 		double imageHeight = imageAndDimension.getHeight();
 		
-		if (imageParameters.getWidth() == 0)
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		if (fieldParameters.getWidth() == 0)
 			imageWidth *= CommonDrawerUtils.getPageScaleFactor(dimensionAndPosition.getxDpi());
-		if (imageParameters.getHeight() == 0)
+		if (fieldParameters.getHeight() == 0)
 			imageHeight *= CommonDrawerUtils.getPageScaleFactor(dimensionAndPosition.getyDpi());
 		
 		double width = imageWidth;
@@ -101,7 +102,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// if text is present
-		if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
+		if (!textParameters.isEmpty()) {
 			
 			// adds an empty space
 			imageWidth = toDpiTextPoint(imageWidth, dimensionAndPosition.getxDpi());
@@ -118,36 +119,36 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				textHeight /= CommonDrawerUtils.getTextScaleFactor(dimensionAndPosition.getyDpi());
 			}
 			
-			switch (imageParameters.getTextParameters().getSignerTextPosition()) {
+			switch (textParameters.getSignerTextPosition()) {
 				case LEFT:
-					if (imageParameters.getWidth() == 0) {
+					if (fieldParameters.getWidth() == 0) {
 						width += imageParameters.getImage() != null || width == 0 ? textWidth : 0;
 					} else {
 						imageWidth -= imageParameters.getImage() != null || width == 0 ? textWidth : 0;
 					}
-					if (imageParameters.getHeight() == 0) {
+					if (fieldParameters.getHeight() == 0) {
 						height = Math.max(height, textHeight);
 					}
 					dimensionAndPosition.setImageX((float)(width - imageWidth));
 					textImageVerticalAlignment(height, imageHeight, textHeight);
 					break;
 				case RIGHT:
-					if (imageParameters.getWidth() == 0) {
+					if (fieldParameters.getWidth() == 0) {
 						width += imageParameters.getImage() != null || width == 0 ? textWidth : 0;
 					} else {
 						imageWidth -= imageParameters.getImage() != null || width == 0 ? textWidth : 0;
 					}
-					if (imageParameters.getHeight() == 0) {
+					if (fieldParameters.getHeight() == 0) {
 						height = Math.max(height, textHeight);
 					}
 					dimensionAndPosition.setTextX(toDpiPagePoint(width - textWidth, dimensionAndPosition.getxDpi()));
 					textImageVerticalAlignment(height, imageHeight, textHeight);
 					break;
 				case TOP:
-					if (imageParameters.getWidth() == 0) {
+					if (fieldParameters.getWidth() == 0) {
 						width = Math.max(width, textWidth);
 					}
-					if (imageParameters.getHeight() == 0) {
+					if (fieldParameters.getHeight() == 0) {
 						height += imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 					} else {
 						imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
@@ -156,10 +157,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 					textImageHorizontalAlignment(width, imageWidth, textWidth);
 					break;
 				case BOTTOM:
-					if (imageParameters.getWidth() == 0) {
+					if (fieldParameters.getWidth() == 0) {
 						width = Math.max(width, textWidth);
 					}
-					if (imageParameters.getHeight() == 0) {
+					if (fieldParameters.getHeight() == 0) {
 						height += imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 					} else {
 						imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
@@ -244,22 +245,24 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void alignHorizontally() {
-		VisualSignatureAlignmentHorizontal alignmentHorizontal = imageParameters.getVisualSignatureAlignmentHorizontal();
 		float boxWidth = dimensionAndPosition.getBoxWidth();
 		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
 			boxWidth = dimensionAndPosition.getBoxHeight();
 		}
 		float boxX;
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		
+		VisualSignatureAlignmentHorizontal alignmentHorizontal = imageParameters.getVisualSignatureAlignmentHorizontal();
 		switch (alignmentHorizontal) {
 			case LEFT:
 			case NONE:
-				boxX = imageParameters.getxAxis();
+				boxX = fieldParameters.getOriginX();
 				break;
 			case CENTER:
 				boxX = (pageMediaBox.getWidth() - boxWidth) / 2;
 				break;
 			case RIGHT:
-				boxX = pageMediaBox.getWidth() - boxWidth - imageParameters.getxAxis();
+				boxX = pageMediaBox.getWidth() - boxWidth - fieldParameters.getOriginX();
 				break;
 			default:
 				throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal);
@@ -268,22 +271,24 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void alignVertically() {
-		VisualSignatureAlignmentVertical alignmentVertical = imageParameters.getVisualSignatureAlignmentVertical();
 		float boxHeight = dimensionAndPosition.getBoxHeight();
 		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
 			boxHeight = dimensionAndPosition.getBoxWidth();
 		}
 		float boxY;
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		
+		VisualSignatureAlignmentVertical alignmentVertical = imageParameters.getVisualSignatureAlignmentVertical();
 		switch (alignmentVertical) {
 		case TOP:
 		case NONE:
-			boxY = imageParameters.getyAxis();
+			boxY = fieldParameters.getOriginY();
 			break;
 		case MIDDLE:
 			boxY = (pageMediaBox.getHeight() - boxHeight) / 2;
 			break;
 		case BOTTOM:
-			boxY = pageMediaBox.getHeight() - boxHeight - imageParameters.getyAxis();
+			boxY = pageMediaBox.getHeight() - boxHeight - fieldParameters.getOriginY();
 			break;
 		default:
 			throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical);

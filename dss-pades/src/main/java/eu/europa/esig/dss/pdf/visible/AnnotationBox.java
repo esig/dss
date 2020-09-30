@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.pdf.visible;
 
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+
 /**
  * This class defines a PDF annotation dimension and position (note, shape, signature field, etc.)
  *
@@ -28,6 +30,16 @@ public class AnnotationBox {
 		this.minY = minY;
 		this.maxX = maxX;
 		this.maxY = maxY;
+	}
+	
+	/**
+	 * The constructor to instantiate {@code AnnotationBox} from {@code SignatureFieldParameters}
+	 * 
+	 * @param fieldParameters {@link SignatureFieldParameters}
+	 */
+	public AnnotationBox(final SignatureFieldParameters fieldParameters) {
+		this(fieldParameters.getOriginX(), fieldParameters.getOriginY(), 
+				fieldParameters.getOriginX() + fieldParameters.getWidth(), fieldParameters.getOriginY() + fieldParameters.getHeight());
 	}
 
 	/**

@@ -81,7 +81,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			AppearenceRectangle appearenceRectangle = buildSignatureFieldBox();
 			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
 			
-			appearance.setVisibleSignature(iTextRectangle, parameters.getPage()); // defines signature field borders
+			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders
 			showText(iTextFontMetrics, iTextRectangle);
 		}
 

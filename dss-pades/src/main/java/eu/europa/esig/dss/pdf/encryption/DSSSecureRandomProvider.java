@@ -94,10 +94,6 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 			if (digestAlgorithm != null) {
 				baos.write(digestAlgorithm.getName().getBytes());
 			}
-			String fieldId = parameters.getFieldId();
-			if (fieldId != null) {
-				baos.write(fieldId.getBytes());
-			}
 			String filter = parameters.getFilter();
 			if (filter != null) {
 				baos.write(filter.getBytes());

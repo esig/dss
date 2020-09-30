@@ -45,6 +45,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -88,8 +89,12 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	public void testGeneratedImageOnly() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(100);
+	    fieldParameters.setOriginY(100);
+	    imageParameters.setFieldParameters(fieldParameters);
+	    
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -99,8 +104,12 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	public void testGeneratedImageOnlyPNG() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(100);
+	    fieldParameters.setOriginY(100);
+	    imageParameters.setFieldParameters(fieldParameters);
+	    
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -110,10 +119,14 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	public void testGeneratedImageOnlyPNGWithSize() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
-		imageParameters.setWidth(50);
-		imageParameters.setHeight(50);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(100);
+	    fieldParameters.setOriginY(100);
+	    fieldParameters.setWidth(50);
+	    fieldParameters.setHeight(50);
+	    imageParameters.setFieldParameters(fieldParameters);
+	    
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -123,8 +136,12 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	public void testGeneratedImageOnlyPngUnZoom() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(100);
+	    fieldParameters.setOriginY(100);
+	    imageParameters.setFieldParameters(fieldParameters);
+	    
 		imageParameters.setZoom(50); // reduces 50%
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -135,8 +152,12 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	public void testCMYKPicture() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getCMYKPicture());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(100);
+	    fieldParameters.setOriginY(100);
+	    imageParameters.setFieldParameters(fieldParameters);
+	    
 		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
@@ -150,8 +171,11 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	    imageParams.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.LEFT);
 	    imageParams.setAlignmentVertical(VisualSignatureAlignmentVertical.TOP);
 	    imageParams.setRotation(VisualSignatureRotation.AUTOMATIC);
-	    imageParams.setxAxis(71);
-	    imageParams.setyAxis(71);
+	    
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(71);
+	    fieldParameters.setOriginY(71);
+	    imageParams.setFieldParameters(fieldParameters);
 
 	    SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 	    DSSFileFont fileFont = DSSFileFont.initializeDefault();
@@ -176,8 +200,10 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		String signature = "Signature 1\nSignature 12345";
 
 	    SignatureImageParameters imageParams = new SignatureImageParameters();
-	    imageParams.setWidth(100);
-	    imageParams.setHeight(100);
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setWidth(100);
+	    fieldParameters.setHeight(100);
+	    imageParams.setFieldParameters(fieldParameters);
 
 	    SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 	    textParameters.setSignerTextPosition(SignerTextPosition.TOP);
