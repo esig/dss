@@ -19,6 +19,13 @@
 		<module-name>jpms_dss_jades</module-name>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -29,7 +36,14 @@
 			<groupId>org.bitbucket.b_c</groupId>
 			<artifactId>jose4j</artifactId>
 		</dependency>
-			
+	
+		<dependency>
+			<groupId>com.github.everit-org.json-schema</groupId>
+			<artifactId>org.everit.json.schema</artifactId>
+			<version>1.12.1</version>
+			<scope>test</scope>
+		</dependency>
+				
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-test</artifactId>
