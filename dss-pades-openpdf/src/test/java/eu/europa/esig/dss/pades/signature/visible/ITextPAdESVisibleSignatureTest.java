@@ -31,6 +31,7 @@ import eu.europa.esig.dss.pades.signature.visible.suite.PAdESSignatureFieldTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignWithSignatureFieldTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureWithJavaFontTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleWithOverlappingFieldsTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleZoomRotationTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureAndTimestampVisibleTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureInvisibleAndTimestampVisibleTest;
@@ -41,7 +42,8 @@ import eu.europa.esig.dss.pades.signature.visible.suite.PDFSignatureServiceTest;
 @SelectClasses(value = { PAdESSignatureFieldTest.class, PAdESVisibleSignatureTest.class, PAdESFieldLevelBTest.class, PAdESWithSignatureAndTimestampVisibleTest.class,
 		PAdESWithSignatureVisibleAndTimestampInvisibleTest.class, PAdESWithSignatureInvisibleAndTimestampVisibleTest.class, 
 		PAdESVisibleSignatureWithJavaFontTest.class, PAdESNonLatinCharactersSignatureTest.class, PAdESVisibleZoomRotationTest.class, 
-		PAdESVisibleSignWithSignatureFieldTest.class, PDFSignatureServiceTest.class, PAdESMultipleVisibleSignaturesTest.class })
+		PAdESVisibleSignWithSignatureFieldTest.class, PDFSignatureServiceTest.class, PAdESMultipleVisibleSignaturesTest.class,
+		PAdESVisibleWithOverlappingFieldsTest.class })
 public class ITextPAdESVisibleSignatureTest {
 
 }

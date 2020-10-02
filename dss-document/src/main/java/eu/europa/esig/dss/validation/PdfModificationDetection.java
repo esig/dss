@@ -1,0 +1,25 @@
+package eu.europa.esig.dss.validation;
+
+import java.util.List;
+
+/**
+ * The interface contains a necessary information about a PDF visual or structure modifications
+ *
+ */
+public interface PdfModificationDetection {
+	
+	/**
+	 * Returns information about annotations overlapping
+	 * 
+	 * @return a list of {@link PdfModification}s
+	 */
+	List<PdfModification> getAnnotationOverlaps();
+	
+	/**
+	 * Returns information if any modifications have been detected
+	 * 
+	 * @return TRUE if any modifications have been detected, FALSE otherwise
+	 */
+	boolean areModificationsDetected();
+
+}

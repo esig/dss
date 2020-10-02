@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import java.awt.image.BufferedImage;
 
-import eu.europa.esig.dss.pdf.visible.AnnotationBox;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 
 public class SignatureImageAndPosition implements SignatureFieldBox {

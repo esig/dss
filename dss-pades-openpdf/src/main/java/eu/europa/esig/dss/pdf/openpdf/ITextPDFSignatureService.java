@@ -42,7 +42,6 @@ import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
@@ -65,6 +64,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
@@ -73,9 +73,6 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
-import eu.europa.esig.dss.pdf.visible.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
-import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -147,7 +144,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			signatureDrawer.init(sip.getFieldParameters().getFieldId(), sip, sap);
 			
 			if (fieldItem == null) {
-				checkVisibleSignatureFieldBoxPosition(signatureDrawer, reader, fieldParameters);
+				checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
 			}
 			
 			signatureDrawer.draw();
@@ -262,59 +259,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		} catch (IOException e) {
 			throw new DSSException("Unable to generate the fileId", e);
 		}
-	}
-	
-	private void checkVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer, 
-			PdfReader reader, SignatureFieldParameters fieldParameters) throws IOException {
-		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
-		if (signatureFieldBox != null) {
-			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
-			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(reader.getPageSize(fieldParameters.getPage()).getHeight());
-			checkSignatureFieldPosition(reader, signatureFieldAnnotation, fieldParameters.getPage());
-		}
-	}
-
-	private void checkSignatureFieldPosition(PdfReader reader, AnnotationBox signatureFieldAnnotation, int page) {
-		PdfDictionary pageDictionary = reader.getPageN(page);
-		PdfArray annots = pageDictionary.getAsArray(PdfName.ANNOTS);
-		if (annots != null) {
-			for (PdfObject pdfObject : annots.getElements()) {
-				AnnotationBox annotationBox = getPdfAnnotationBox(pdfObject);
-				if (annotationBox != null) {
-					checkSignatureFieldOverlap(signatureFieldAnnotation, annotationBox);
-				}
-			}
-		}
-	}
-	
-	private AnnotationBox getPdfAnnotationBox(PdfObject pdfObject) {
-		if (pdfObject.isIndirect()) {
-			pdfObject = PdfReader.getPdfObject(pdfObject);
-		}
-		if (pdfObject.isDictionary()) {
-			PdfDictionary annotDict = (PdfDictionary) pdfObject;
-			PdfArray annotRect = annotDict.getAsArray(PdfName.RECT);
-			if (annotRect.size() == 4) {
-				PdfNumber pdfNumber0 = annotRect.getAsNumber(0);
-				PdfNumber pdfNumber1 = annotRect.getAsNumber(1);
-				PdfNumber pdfNumber2 = annotRect.getAsNumber(2);
-				PdfNumber pdfNumber3 = annotRect.getAsNumber(3);
-				if (pdfNumber0 != null && pdfNumber1 != null && pdfNumber2 != null && pdfNumber3 != null) {
-					return new AnnotationBox(
-							pdfNumber0.intValue(), 
-							pdfNumber1.intValue(), 
-							pdfNumber2.intValue(), 
-							pdfNumber3.intValue());
-				} else {
-					LOG.debug("Wrong type of an array entry found in RECT dictionary. Skip the annotation.");
-				}
-				
-			} else {
-				LOG.debug("Annotation RECT contains wrong amount of elements. 4 entries is expected.");
-			}
-			
-		}
-		return null;
 	}
 
 	@Override
@@ -483,10 +427,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			
-			AnnotationBox annotationBox = new AnnotationBox(parameters);
-			annotationBox = annotationBox.flipVertically(reader.getPageSize(parameters.getPage()).getHeight());
-			
-			checkSignatureFieldPosition(reader, annotationBox, parameters.getPage());
+			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
 			
 			stp.addSignature(parameters.getFieldId(), parameters.getPage(), 
 					annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());

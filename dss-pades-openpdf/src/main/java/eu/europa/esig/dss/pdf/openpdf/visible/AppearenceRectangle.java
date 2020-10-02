@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import eu.europa.esig.dss.pdf.visible.AnnotationBox;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 
 public class AppearenceRectangle implements SignatureFieldBox {

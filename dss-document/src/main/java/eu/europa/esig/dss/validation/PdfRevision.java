@@ -41,5 +41,12 @@ public interface PdfRevision {
 	 * @return list of {@link String} field names
 	 */
 	List<String> getFieldNames();
+	
+	/**
+	 * Returns an information about changes made in the document
+	 * 
+	 * @return {@link PdfModificationDetection}
+	 */
+	PdfModificationDetection getModificationDetection();
 
 }

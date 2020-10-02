@@ -39,6 +39,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfModificationDetectionCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
@@ -82,7 +83,11 @@ public class FormatChecking extends Chain<XmlFC> {
 		
 		// PAdES only
 		if (signature.getPDFRevision() != null) {
+			
 			item = item.setNextItem(signerInformationStoreCheck());
+			
+			item = item.setNextItem(pdfModificationDetectionCheck());
+			
 		}
 
 		if (diagnosticData.isContainerInfoPresent()) {
@@ -125,6 +130,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> signerInformationStoreCheck() {
 		LevelConstraint constraint = policy.getSignerInformationStoreConstraint(context);
 		return new SignerInformationStoreCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfModificationDetectionCheck() {
+		LevelConstraint constraint = policy.getPdfModificationDetectionConstraint(context);
+		return new PdfModificationDetectionCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

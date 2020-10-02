@@ -231,6 +231,7 @@
 		<xs:sequence>
 			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+			<xs:element name="ModificationDetection" type="ModificationDetection" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -248,6 +249,17 @@
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ModificationDetection">
+		<xs:sequence>
+			<xs:element name="AnnotationOverlap" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="VisualDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Modification">
+		<xs:attribute name="Page" type="xs:integer" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="Certificate">

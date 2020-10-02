@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf.openpdf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +32,21 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
+import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
+import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -100,6 +106,15 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		} catch (BadPasswordException e) {
             throw new InvalidPasswordException(e.getMessage());
 		}
+	}
+	
+	/**
+	 * The constructor to directly instantiate the {@code ITextDocumentReader}
+	 * 
+	 * @param pdfReader {@link PdfReader}
+	 */
+	public ITextDocumentReader(final PdfReader pdfReader) {
+		this.pdfReader = pdfReader;
 	}
 
 	@Override
@@ -163,6 +178,66 @@ public class ITextDocumentReader implements PdfDocumentReader {
 			return acroFields.signatureCoversWholeDocument(fieldNames.get(0));
 		}
 		throw new DSSException("Not applicable use of the method isSignatureCoversWholeDocument. The requested signatureDictionary does not exist!");
+	}
+
+	@Override
+	public int getPageNumber() {
+		return pdfReader.getNumberOfPages();
+	}
+
+	@Override
+	public AnnotationBox getPageBox(int page) {
+		Rectangle pageRectangle = pdfReader.getPageSize(page);
+		return new AnnotationBox(0, 0, pageRectangle.getWidth(), pageRectangle.getHeight());
+	}
+
+	@Override
+	public List<AnnotationBox> getAnnotationBoxes(int page) {
+		PdfDictionary pageDictionary = pdfReader.getPageN(page);
+		
+		PdfArray annots = pageDictionary.getAsArray(PdfName.ANNOTS);
+		if (annots != null) {
+			List<AnnotationBox> annotationBoxes = new ArrayList<>(); 
+			for (PdfObject pdfObject : annots.getElements()) {
+				AnnotationBox annotationBox = getPdfAnnotationBox(pdfObject);
+				if (annotationBox != null) {
+					annotationBoxes.add(annotationBox);
+				}
+			}
+			return annotationBoxes;
+			
+		}
+		return Collections.emptyList();
+	}
+	
+	private AnnotationBox getPdfAnnotationBox(PdfObject pdfObject) {
+		if (pdfObject.isIndirect()) {
+			pdfObject = PdfReader.getPdfObject(pdfObject);
+		}
+		if (pdfObject.isDictionary()) {
+			PdfDictionary annotDict = (PdfDictionary) pdfObject;
+			PdfArray annotRect = annotDict.getAsArray(PdfName.RECT);
+			if (annotRect.size() == 4) {
+				PdfNumber pdfNumber0 = annotRect.getAsNumber(0);
+				PdfNumber pdfNumber1 = annotRect.getAsNumber(1);
+				PdfNumber pdfNumber2 = annotRect.getAsNumber(2);
+				PdfNumber pdfNumber3 = annotRect.getAsNumber(3);
+				if (pdfNumber0 != null && pdfNumber1 != null && pdfNumber2 != null && pdfNumber3 != null) {
+					return new AnnotationBox(
+							pdfNumber0.intValue(), 
+							pdfNumber1.intValue(), 
+							pdfNumber2.intValue(), 
+							pdfNumber3.intValue());
+				} else {
+					LOG.debug("Wrong type of an array entry found in RECT dictionary. Skip the annotation.");
+				}
+				
+			} else {
+				LOG.debug("Annotation RECT contains wrong amount of elements. 4 entries is expected.");
+			}
+			
+		}
+		return null;
 	}
 
 }

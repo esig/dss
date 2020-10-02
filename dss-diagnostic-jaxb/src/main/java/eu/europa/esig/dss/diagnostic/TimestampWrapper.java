@@ -346,6 +346,21 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getPDFRevision();
 	}
 	
+	public boolean arePdfModificationsDetected() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		return arePdfModificationsDetected(pdfRevision);
+	}
+	
+	public List<BigInteger> getPdfAnnotationsOverlapConcernedPages() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		return getPdfAnnotationsOverlapConcernedPages(pdfRevision);
+	}
+	
+	public List<BigInteger> getPdfVisualDifferenceConcernedPages() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		return getPdfVisualDifferenceConcernedPages(pdfRevision);
+	}
+	
 	/**
 	 * Returns the first signature field name
 	 * 

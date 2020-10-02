@@ -32,12 +32,17 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -99,6 +104,15 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		} catch (InvalidPasswordException e) {
             throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		}
+	}
+
+	/**
+	 * The constructor to directly instantiate the {@code PdfBoxDocumentReader}
+	 * 
+	 * @param pdDocument {@link PDDocument}
+	 */
+	public PdfBoxDocumentReader(final PDDocument pdDocument) {
+		this.pdDocument = pdDocument;
 	}
 
 	@Override
@@ -176,6 +190,46 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	@Override
 	public void close() throws IOException {
 		pdDocument.close();
+	}
+
+	@Override
+	public int getPageNumber() {
+		return pdDocument.getNumberOfPages();
+	}
+
+	@Override
+	public AnnotationBox getPageBox(int page) {
+		PDPage pdPage = getPDPage(page);
+		PDRectangle mediaBox = pdPage.getMediaBox();
+		return new AnnotationBox(0, 0, mediaBox.getWidth(), mediaBox.getHeight());
+	}
+
+	@Override
+	public List<AnnotationBox> getAnnotationBoxes(int page) throws IOException {
+		List<AnnotationBox> annotationBoxes = new ArrayList<>();
+		PDPage pdPage = getPDPage(page);
+		List<PDAnnotation> annotations = pdPage.getAnnotations();
+		for (PDAnnotation annotation : annotations) {
+			PDRectangle pdRect = annotation.getRectangle();
+			if (pdRect != null) {
+				annotationBoxes.add(toAnnotationBox(pdRect));
+			}
+		}
+		return annotationBoxes;
+	}
+	
+	/**
+	 * Returns a {@code PDPage}
+	 * 
+	 * @param page number
+	 * @return {@link PDPage}
+	 */
+	public PDPage getPDPage(int page) {
+		return pdDocument.getPage(page - PAdESUtils.DEFAULT_FIRST_PAGE);
+	}
+	
+	private AnnotationBox toAnnotationBox(PDRectangle pdRect) {
+		return new AnnotationBox(pdRect.getLowerLeftX(), pdRect.getLowerLeftY(), pdRect.getUpperRightX(), pdRect.getUpperRightY());
 	}
 
 }

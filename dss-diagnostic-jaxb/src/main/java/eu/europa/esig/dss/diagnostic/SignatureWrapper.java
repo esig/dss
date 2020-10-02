@@ -609,6 +609,21 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getPDFRevision();
 	}
 	
+	public boolean arePdfModificationsDetected() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return arePdfModificationsDetected(pdfRevision);
+	}
+	
+	public List<BigInteger> getPdfAnnotationsOverlapConcernedPages() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return getPdfAnnotationsOverlapConcernedPages(pdfRevision);
+	}
+	
+	public List<BigInteger> getPdfVisualDifferenceConcernedPages() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return getPdfVisualDifferenceConcernedPages(pdfRevision);
+	}
+	
 	/**
 	 * Returns the first signature field name
 	 * 

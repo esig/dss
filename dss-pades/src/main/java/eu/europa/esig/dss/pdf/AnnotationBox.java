@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.visible;
+package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 
@@ -112,10 +112,10 @@ public class AnnotationBox {
 	 * @return TRUE when the current objects overlaps {@code box}, FALSE otherwise
 	 */
 	public boolean isOverlap(AnnotationBox box) {
-		if (this.getMinX() > box.getMaxX() || box.getMinX() > this.getMaxX()) {
+		if (this.getMinX() >= box.getMaxX() || box.getMinX() >= this.getMaxX()) {
 			return false;
 		}
-		if (this.getMinY() > box.getMaxY() || box.getMinY() > this.getMaxY()) {
+		if (this.getMinY() >= box.getMaxY() || box.getMinY() >= this.getMaxY()) {
 			return false;
 		}
 		return true;

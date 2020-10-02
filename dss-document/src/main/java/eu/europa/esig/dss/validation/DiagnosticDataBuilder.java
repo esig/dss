@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +59,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
@@ -795,6 +798,7 @@ public class DiagnosticDataBuilder {
 			XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
 			xmlPDFRevision.getSignatureFieldName().addAll(pdfRevision.getFieldNames());
 			xmlPDFRevision.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(pdfRevision.getPdfSigDictInfo()));
+			xmlPDFRevision.setModificationDetection(getXmlModificationDetection(pdfRevision.getModificationDetection()));
 			return xmlPDFRevision;
 		}
 		return null;
@@ -846,6 +850,34 @@ public class DiagnosticDataBuilder {
 			return pdfSignatureDictionary;
 		}
 		return null;
+	}
+	
+	private XmlModificationDetection getXmlModificationDetection(PdfModificationDetection modificationDetection) {
+		if (modificationDetection != null && modificationDetection.areModificationsDetected()) {
+			XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
+			
+			List<PdfModification> annotationOverlaps = modificationDetection.getAnnotationOverlaps();
+			xmlModificationDetection.getAnnotationOverlap().addAll(getXmlModifications(annotationOverlaps));
+			
+			return xmlModificationDetection;
+		}
+		return null;
+	}
+	
+	private List<XmlModification> getXmlModifications(List<PdfModification> modifications) {
+		List<XmlModification> xmlModifications = new ArrayList<>();
+		if (Utils.isCollectionNotEmpty(modifications)) {
+			for (PdfModification pdfModification : modifications) {
+				xmlModifications.add(getXmlModification(pdfModification));
+			}
+		}
+		return xmlModifications;
+	}
+	
+	private XmlModification getXmlModification(PdfModification pdfModification) {
+		XmlModification xmlModification = new XmlModification();
+		xmlModification.setPage(BigInteger.valueOf(pdfModification.getPage()));
+		return xmlModification;
 	}
 
 	private XmlSignatureDigestReference getXmlSignatureDigestReference(AdvancedSignature signature) {
@@ -933,7 +965,6 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void buildOrphanRevocationTokensFromCommonSources() {
 		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : commonCRLSource.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();

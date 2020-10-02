@@ -92,6 +92,7 @@ public interface ValidationPolicy {
 	 * Indicates if the structural validation should be checked. If StructuralValidation element is absent within the
 	 * constraint file then null is returned.
 	 *
+	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if StructuralValidation element is present in the constraint file, null
 	 *         otherwise.
 	 */
@@ -408,6 +409,16 @@ public interface ValidationPolicy {
 	 *         the constraint file, null otherwise.
 	 */
 	LevelConstraint getSignerInformationStoreConstraint(Context context);
+	
+	/**
+	 * Indicates if a PDF modification detection should be proceeded. If PdfModificationDetection element is absent within
+	 * the constraint file then null is returned.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfModificationDetection element is present in the constraint file, null
+	 *         otherwise.
+	 */
+	LevelConstraint getPdfModificationDetectionConstraint(Context context);
 
 	/**
 	 * This constraint checks if the certificate is not expired on best-signature-time

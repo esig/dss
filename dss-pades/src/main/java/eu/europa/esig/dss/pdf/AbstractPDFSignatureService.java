@@ -50,7 +50,6 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
-import eu.europa.esig.dss.pdf.visible.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
@@ -179,7 +178,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						previousRevisionDssDict = getDSSDictionaryPresentInRevision(extractBeforeSignatureValue(byteRange, signedContent), pwd);
 					}
 					
-					PdfRevision newRevision = null;
+					PdfCMSRevision newRevision = null;
 	
 					if (isDocTimestamp(signatureDictionary)) {
 						// if there is a DSS dictionary before -> Archive timestamp
@@ -209,6 +208,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					
 					// add signature/ timestamp revision
 					if (newRevision != null) {
+						PdfModificationDetector modificationDetector = new PdfModificationDetector(reader);
+						newRevision.setModificationDetection(modificationDetector.analizeDocument());
+						
 						result.add(newRevision);
 					}
 					
@@ -417,6 +419,26 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 	
 	/**
+	 * Checks validity of the SignatureField position
+	 * 
+	 * @param signatureDrawer {@link SignatureDrawer}
+	 * @param documentReader {@link PdfDocumentReader}
+	 * @param fieldParameters {@link SignatureFieldParameters}
+	 * @throws IOException if an exception occurs
+	 */
+	protected void checkVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer, PdfDocumentReader documentReader, 
+			SignatureFieldParameters fieldParameters) throws IOException {
+		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
+		if (signatureFieldBox != null) {
+			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
+			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
+			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(pageBox.getHeight());
+
+			checkSignatureFieldBoxOverlap(documentReader, signatureFieldAnnotation, fieldParameters.getPage());
+		}
+	}
+	
+	/**
 	 * Returns a SignatureFieldBox. Used for a SignatureField position validation.
 	 * 
 	 * @param signatureDrawer {@link SignatureDrawer}
@@ -436,13 +458,26 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 	
 	/**
-	 * Checks if the two given {@code AnnotationBox}es overlap each other, and alerts when true
+	 * Checks if the signatureFieldBox overlaps with any existing annotations on the given page
 	 * 
-	 * @param annotation1 {@link AnnotationBox}
-	 * @param annotation2 {@link AnnotationBox}
+	 * @param reader {@link PdfDocumentReader} to be validated
+	 * @param parameters {@link SignatureFieldParameters}
+	 * @return {@link AnnotationBox} computed signature field box
+	 * @throws IOException if an exception occurs
 	 */
-	protected void checkSignatureFieldOverlap(AnnotationBox annotation1, AnnotationBox annotation2) {
-		if (annotation1.isOverlap(annotation2)) {
+	protected AnnotationBox checkVisibleSignatureFieldBoxPosition(final PdfDocumentReader reader, SignatureFieldParameters parameters) throws IOException {
+		AnnotationBox annotationBox = new AnnotationBox(parameters);
+		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
+		annotationBox = annotationBox.flipVertically(pageBox.getHeight());
+		
+		checkSignatureFieldBoxOverlap(reader, annotationBox, parameters.getPage());
+		
+		return annotationBox;
+	}
+	
+	private void checkSignatureFieldBoxOverlap(final PdfDocumentReader reader, final AnnotationBox signatureFieldBox, int page) throws IOException {
+		List<AnnotationBox> annotationBoxes = reader.getAnnotationBoxes(page);
+		if (PdfModificationDetector.isAnnotationBoxOverlapping(signatureFieldBox, annotationBoxes)) {
 			alertOnSignatureFieldOverlap();
 		}
 	}
@@ -450,7 +485,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	/**
 	 * Executes the alert {@code alertOnSignatureFieldOverlap}
 	 */
-	protected void alertOnSignatureFieldOverlap() {
+	private void alertOnSignatureFieldOverlap() {
 		String alertMessage = "The new signature field position overlaps with an existing annotation!";
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
 	}

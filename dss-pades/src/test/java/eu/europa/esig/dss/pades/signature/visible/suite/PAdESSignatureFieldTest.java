@@ -396,13 +396,14 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		parametersTwo.setHeight(100);
 		parametersTwo.setWidth(100);
 		parametersTwo.setFieldId("signature2");
+		DSSDocument withSecondField = service.addNewSignatureField(withFirstField, parametersTwo);
+		assertNotNull(withSecondField);
+		
+		assertEquals(2, service.getAvailableSignatureFields(withSecondField).size());
+		
+		parametersTwo.setOriginX(99);
 		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(withFirstField, parametersTwo));
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
-		
-		parametersTwo.setOriginX(101);
-		DSSDocument withTwoFields = service.addNewSignatureField(withFirstField, parametersTwo);
-		
-		assertEquals(2, service.getAvailableSignatureFields(withTwoFields).size());
 	}
 	
 	@Test

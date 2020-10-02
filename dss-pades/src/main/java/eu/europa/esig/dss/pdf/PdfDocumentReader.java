@@ -52,5 +52,29 @@ public interface PdfDocumentReader extends Closeable {
 	 * @return TRUE if the signature covers the whole document, false otherwise
 	 */
 	boolean isSignatureCoversWholeDocument(PdfSignatureDictionary signatureDictionary);
+	
+	/**
+	 * Returns an amount of pages found in the document
+	 * 
+	 * @return page number
+	 */
+	int getPageNumber();
+	
+	/**
+	 * Returns a page box dimensions
+	 * 
+	 * @param page number
+	 * @return {@link AnnotationBox} representing page dimensions
+	 */
+	AnnotationBox getPageBox(int page);
+	
+	/**
+	 * Retrieves all annotations found in the document
+	 * 
+	 * @param page number
+	 * @return a list of {@link AnnotationBox}es associated with the given page
+	 * @throws IOException if an exception occurs
+	 */
+	List<AnnotationBox> getAnnotationBoxes(int page) throws IOException;
 
 }

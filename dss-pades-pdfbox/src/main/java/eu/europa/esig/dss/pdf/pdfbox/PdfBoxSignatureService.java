@@ -50,7 +50,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -69,11 +68,11 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
@@ -82,8 +81,6 @@ import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
-import eu.europa.esig.dss.pdf.visible.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -221,7 +218,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
-					checkVisibleSignatureFieldBoxPosition(signatureDrawer, pdDocument, fieldParameters);
+					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
 				}
 				
 				signatureDrawer.draw();
@@ -330,39 +327,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			LOG.warn("Cannot read the existing signature(s)", e);
 			return false;
 		}
-	}
-	
-	private void checkVisibleSignatureFieldBoxPosition(PdfBoxSignatureDrawer signatureDrawer, PDDocument pdDocument, 
-			SignatureFieldParameters fieldParameters) throws IOException {
-		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
-		if (signatureFieldBox != null) {
-			PDPage page = pdDocument.getPage(fieldParameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
-			
-			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
-			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(page.getMediaBox().getHeight());
-			
-			checkSignatureFieldPosition(page, signatureFieldAnnotation);
-		}
-	}
-	
-	private void checkSignatureFieldPosition(PDPage page, AnnotationBox signatureFieldAnnotation) throws IOException {
-		if (signatureFieldAnnotation.getWidth() == 0 || signatureFieldAnnotation.getHeight() == 0) {
-			// invisible
-			return;
-		}
-		
-		List<PDAnnotation> annotations = page.getAnnotations();
-		for (PDAnnotation annotation : annotations) {
-			PDRectangle pdRect = annotation.getRectangle();
-			if (pdRect != null) {
-				AnnotationBox annotationBox = toAnnotationBox(pdRect);
-				checkSignatureFieldOverlap(signatureFieldAnnotation, annotationBox);
-			}
-		}
-	}
-	
-	private AnnotationBox toAnnotationBox(PDRectangle pdRect) {
-		return new AnnotationBox(pdRect.getLowerLeftX(), pdRect.getLowerLeftY(), pdRect.getUpperRightX(), pdRect.getUpperRightY());
 	}
 
 	/**
@@ -586,13 +550,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 			
-			PDPage page = pdfDoc.getPage(parameters.getPage() - PAdESUtils.DEFAULT_FIRST_PAGE);
-			PDRectangle pageMediaBox = page.getMediaBox();
-			
-			AnnotationBox annotationBox = new AnnotationBox(parameters);
-			annotationBox = annotationBox.flipVertically(pageMediaBox.getHeight());
-			
-			checkSignatureFieldPosition(page, annotationBox);
+			PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(pdfDoc);
 
 			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
 			catalog.getCOSObject().setNeedToBeUpdated(true);
@@ -613,11 +571,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (Utils.isStringNotBlank(parameters.getFieldId())) {
 				signatureField.setPartialName(parameters.getFieldId());
 			}
+
+			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(pdfBoxDocumentReader, parameters);
 			
 			// start counting from TOP of the page
 			PDRectangle rect = new PDRectangle(annotationBox.getMinX(), annotationBox.getMinY(),
 					annotationBox.getWidth(), annotationBox.getHeight());
 
+			PDPage page = pdfBoxDocumentReader.getPDPage(parameters.getPage());
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
 			widget.setRectangle(rect);
 			widget.setPage(page);

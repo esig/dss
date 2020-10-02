@@ -26,7 +26,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.visible.AnnotationBox;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 
 public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer, SignatureFieldBoxBuilder {
