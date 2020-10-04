@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.NonceSource;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -156,7 +156,7 @@ public class OnlineTSPSource implements TSPSource {
 
 			// Call the communications layer
 			if (dataLoader == null) {
-				dataLoader = new NativeHTTPDataLoader();
+				dataLoader = new TimestampDataLoader();
 			}
 			byte[] respBytes = dataLoader.post(tspServer, requestBytes);
 
