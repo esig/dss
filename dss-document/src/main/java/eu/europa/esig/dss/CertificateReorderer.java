@@ -170,7 +170,7 @@ public class CertificateReorderer {
 			if (identifiedSigningCerts.contains(signingCertificate)) {
 				selectedSigningCert = signingCertificate;
 			} else {
-				throw new DSSException("No pertinent paramaters");
+				throw new DSSException("Unable to determine a signing certificate : No pertinent input parameters");
 			}
 		}
 		return selectedSigningCert;
