@@ -207,6 +207,10 @@ public class CertificateReorderer {
 	 * @return the identified signing certificates
 	 */
 	private List<CertificateToken> getSigningCertificates(List<CertificateToken> certificates) {
+		if (Utils.isCollectionEmpty(certificates)) {
+			throw new DSSException("No signing certificate found");
+		}
+		
 		List<CertificateToken> potentialSigners = new ArrayList<>();
 		for (CertificateToken signer : certificates) {
 			boolean isSigner = false;
@@ -224,7 +228,7 @@ public class CertificateReorderer {
 		}
 
 		if (Utils.isCollectionEmpty(potentialSigners)) {
-			throw new DSSException("No signing certificate found");
+			throw new DSSException("The certificate chain contains only bridge certificates");
 		}
 
 		return potentialSigners;
