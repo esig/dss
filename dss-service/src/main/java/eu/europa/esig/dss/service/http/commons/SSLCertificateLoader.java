@@ -49,6 +49,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The data loader which includes server webpage certificates to the response context
@@ -90,11 +91,12 @@ public class SSLCertificateLoader implements Serializable {
      * @throws DSSException in case if an exception occurs
      */
     public List<CertificateToken> getCertificates(final String urlString) throws DSSException {
-    	if (Protocol.isHttpUrl(urlString)) {
-			Certificate[] httpGetCertificates = httpGetCertificates(urlString);
+    	final String trimmedUrl = Utils.trim(urlString);
+    	if (Protocol.isHttpUrl(trimmedUrl)) {
+			Certificate[] httpGetCertificates = httpGetCertificates(trimmedUrl);
 			return toCertificateTokens(httpGetCertificates);
     	}
-		throw new DSSException("DSS framework only supports HTTP(S) certificate extraction");
+		throw new DSSException(String.format("DSS framework supports only HTTP(S) certificate extraction. Obtained URL : '%s'", urlString));
     }
     
     private Certificate[] httpGetCertificates(final String url) throws DSSException {
