@@ -1128,7 +1128,7 @@ public final class DSSUtils {
 		String policyIdString = oidOrUriString;
 		if (Utils.isStringNotEmpty(oidOrUriString)) {
 			policyIdString = policyIdString.replaceAll("\n", "");
-			policyIdString = policyIdString.trim();
+			policyIdString = Utils.trim(policyIdString);
 			if (isUrnOid(policyIdString)) {
 				// urn:oid:1.2.3 --> 1.2.3
 				policyIdString = getOidCode(policyIdString);

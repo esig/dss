@@ -365,7 +365,7 @@ public final class DomUtils {
 		try {
 			final XPathExpression xPathExpression = createXPathExpression(xPathString);
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
-			return string.trim();
+			return Utils.trim(string);
 		} catch (XPathExpressionException e) {
 			throw new DSSException(e);
 		}

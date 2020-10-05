@@ -392,7 +392,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPURI());
 				if (policyUrl != null) {
-					policyUrlString = policyUrl.getTextContent().trim();
+					policyUrlString = policyUrl.getTextContent();
+					policyUrlString = Utils.trim(policyUrlString);
 				}
 
 				final Element policyDescription = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDescription());

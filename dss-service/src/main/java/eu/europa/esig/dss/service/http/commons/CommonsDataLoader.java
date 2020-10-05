@@ -286,7 +286,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 	
 	protected synchronized HttpGet getHttpRequest(String url) throws URISyntaxException {
-		final URI uri = new URI(url.trim());
+		final URI uri = new URI(Utils.trim(url));
 		HttpGet httpRequest = new HttpGet(uri);
 		if (contentType != null) {
 			httpRequest.setHeader(CONTENT_TYPE, contentType);
@@ -597,7 +597,7 @@ public class CommonsDataLoader implements DataLoader {
 		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
 		try {
-			final URI uri = URI.create(url.trim());
+			final URI uri = URI.create(Utils.trim(url));
 			httpRequest = new HttpPost(uri);
 
 			// The length for the InputStreamEntity is needed, because some receivers (on the other side) need this

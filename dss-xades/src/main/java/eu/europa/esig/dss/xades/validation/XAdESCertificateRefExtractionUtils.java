@@ -29,8 +29,8 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -77,7 +77,7 @@ public final class XAdESCertificateRefExtractionUtils {
 		final Element serialNumberEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
 		if (serialNumberEl != null) {
 			final String serialNumberText = serialNumberEl.getTextContent();
-			certificateIdentifier.setSerialNumber(new BigInteger(serialNumberText.trim()));
+			certificateIdentifier.setSerialNumber(new BigInteger(Utils.trim(serialNumberText)));
 		}
 
 		return certificateIdentifier;

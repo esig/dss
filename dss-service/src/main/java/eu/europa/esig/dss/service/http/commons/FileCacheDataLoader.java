@@ -219,14 +219,14 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 
 	protected boolean isNetworkProtocol(final String urlString) {
-		final String normalizedUrl = urlString.trim().toLowerCase();
+		final String normalizedUrl = Utils.trim(urlString).toLowerCase();
 		return Protocol.isHttpUrl(normalizedUrl) || Protocol.isLdapUrl(normalizedUrl) || Protocol.isFtpUrl(normalizedUrl);
 	}
 
 	private byte[] getLocalFileContent(final String urlString) throws DSSException {
 		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 		// TODO usage ??
-		final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
+		final String resourcePath = resourceLoader.getAbsoluteResourceFolder(Utils.trim(urlString));
 		if (resourcePath != null) {
 			final File fileResource = new File(resourcePath);
 			return DSSUtils.toByteArray(fileResource);
@@ -237,7 +237,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 	private File getCacheFile(final String fileName) {
 
-		final String trimmedFileName = fileName.trim();
+		final String trimmedFileName = Utils.trim(fileName);
 		if ((toIgnored != null) && toIgnored.contains(trimmedFileName)) {
 
 			throw new DSSException("Part of urls to ignore.");
