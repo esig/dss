@@ -2632,8 +2632,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setDiagnosticData(diagnosticData);
 		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
-		LevelConstraint pdfModificationDetection = basicSignatureConstraints.getPdfModificationDetection();
-		pdfModificationDetection.setLevel(Level.FAIL);
+		LevelConstraint pdfAnnotationOverlap = basicSignatureConstraints.getPdfAnnotationOverlap();
+		pdfAnnotationOverlap.setLevel(Level.FAIL);
 		executor.setValidationPolicy(defaultPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
@@ -2645,8 +2645,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(signatureId));
 			
 			List<String> errors = simpleReport.getErrors(signatureId);
-			String annotationOverlappingMessage = i18nProvider.getMessage(MessageTag.BBB_FC_IPMD_AO_ANS, "[1]");
-			assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IPMD_ANS, annotationOverlappingMessage)));
+			assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IAOD_ANS, "[1]")));
 		}
 	}
 
@@ -2659,8 +2658,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setDiagnosticData(diagnosticData);
 		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
-		LevelConstraint pdfModificationDetection = basicSignatureConstraints.getPdfModificationDetection();
-		pdfModificationDetection.setLevel(Level.WARN);
+		LevelConstraint pdfAnnotationOverlap = basicSignatureConstraints.getPdfAnnotationOverlap();
+		pdfAnnotationOverlap.setLevel(Level.WARN);
 		executor.setValidationPolicy(defaultPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
@@ -2671,8 +2670,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(signatureId));
 			
 			List<String> warnings = simpleReport.getWarnings(signatureId);
-			String annotationOverlappingMessage = i18nProvider.getMessage(MessageTag.BBB_FC_IPMD_AO_ANS, "[1]");
-			assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IPMD_ANS, annotationOverlappingMessage)));
+			assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IAOD_ANS, "[1]")));
 		}
 	}
 	

@@ -411,14 +411,14 @@ public interface ValidationPolicy {
 	LevelConstraint getSignerInformationStoreConstraint(Context context);
 	
 	/**
-	 * Indicates if a PDF modification detection should be proceeded. If PdfModificationDetection element is absent within
+	 * Indicates if a PDF annotation overlapping check should be proceeded. If PdfAnnotationOverlap element is absent within
 	 * the constraint file then null is returned.
 	 * 
 	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if PdfModificationDetection element is present in the constraint file, null
+	 * @return {@code LevelConstraint} if PdfAnnotationOverlap element is present in the constraint file, null
 	 *         otherwise.
 	 */
-	LevelConstraint getPdfModificationDetectionConstraint(Context context);
+	LevelConstraint getPdfAnnotationOverlapConstraint(Context context);
 
 	/**
 	 * This constraint checks if the certificate is not expired on best-signature-time

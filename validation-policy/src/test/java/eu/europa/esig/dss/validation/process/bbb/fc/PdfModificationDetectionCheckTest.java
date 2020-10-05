@@ -18,7 +18,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfModificationDetectionCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
 
 public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 
@@ -33,7 +33,7 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfModificationDetectionCheck pmdc = new PdfModificationDetectionCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		pmdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -56,7 +56,7 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfModificationDetectionCheck pmdc = new PdfModificationDetectionCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		pmdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -79,7 +79,7 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfModificationDetectionCheck pmdc = new PdfModificationDetectionCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		pmdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -104,7 +104,7 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfModificationDetectionCheck pmdc = new PdfModificationDetectionCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		pmdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

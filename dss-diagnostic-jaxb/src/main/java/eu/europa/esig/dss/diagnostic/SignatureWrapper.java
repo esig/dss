@@ -609,16 +609,31 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getPDFRevision();
 	}
 	
+	/**
+	 * Checks if any visual modifications detected in the PDF
+	 * 
+	 * @return TRUE if modifications detected in a PDF, FALSE otherwise
+	 */
 	public boolean arePdfModificationsDetected() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		return arePdfModificationsDetected(pdfRevision);
 	}
 	
+	/**
+	 * Returns a list of PDF annotation overlap concerned pages
+	 * 
+	 * @return a list of page numbers
+	 */
 	public List<BigInteger> getPdfAnnotationsOverlapConcernedPages() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		return getPdfAnnotationsOverlapConcernedPages(pdfRevision);
 	}
-	
+
+	/**
+	 * Returns a list of PDF visual difference concerned pages
+	 * 
+	 * @return a list of page numbers
+	 */
 	public List<BigInteger> getPdfVisualDifferenceConcernedPages() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		return getPdfVisualDifferenceConcernedPages(pdfRevision);

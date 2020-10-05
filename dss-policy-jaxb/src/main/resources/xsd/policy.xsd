@@ -401,9 +401,9 @@
 					<xsd:documentation>Checks if CMS Signed Data Signer Information Store has only one signer information</xsd:documentation> <!-- PAdES only (!) -->
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="PdfModificationDetection" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="PdfAnnotationOverlap" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if any modifications occur in a PDF file (manual validation is still recommended)</xsd:documentation>
+					<xsd:documentation>Checks if the document contains any annotation overlaps</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
