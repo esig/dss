@@ -24,9 +24,9 @@ public abstract class ITextAppearenceRectangleBuilder {
 	/**
 	 * Builds and returns {@code AppearenceRectangle}
 	 * 
-	 * @return {@link AppearenceRectangle}
+	 * @return {@link ITextVisualSignatureAppearence}
 	 * @throws IOException if an exception occurs
 	 */
-	public abstract AppearenceRectangle build() throws IOException;
+	public abstract ITextVisualSignatureAppearence build() throws IOException;
 
 }

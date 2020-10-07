@@ -104,6 +104,16 @@ public class AnnotationBox {
 	public AnnotationBox flipVertically(float pageHeight) {
 		return new AnnotationBox(minX, pageHeight - maxY, maxX, pageHeight - minY);
 	}
+
+	/**
+	 * Checks if the current {@code AnnotationBox} overlaps with the given {@code pdfAnnotation}
+	 * 
+	 * @param pdfAnnotation {@link PdfAnnotation} to check against
+	 * @return TRUE when the current objects overlaps the annotation, FALSE otherwise
+	 */
+	public boolean isOverlap(PdfAnnotation pdfAnnotation) {
+		return isOverlap(pdfAnnotation.getAnnotationBox());
+	}
 	
 	/**
 	 * Checks if the current {@code AnnotationBox} overlaps with the given {@code box}
@@ -119,6 +129,49 @@ public class AnnotationBox {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(maxX);
+		result = prime * result + Float.floatToIntBits(maxY);
+		result = prime * result + Float.floatToIntBits(minX);
+		result = prime * result + Float.floatToIntBits(minY);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AnnotationBox other = (AnnotationBox) obj;
+		if (Float.floatToIntBits(maxX) != Float.floatToIntBits(other.maxX)) {
+			return false;
+		}
+		if (Float.floatToIntBits(maxY) != Float.floatToIntBits(other.maxY)) {
+			return false;
+		}
+		if (Float.floatToIntBits(minX) != Float.floatToIntBits(other.minX)) {
+			return false;
+		}
+		if (Float.floatToIntBits(minY) != Float.floatToIntBits(other.minY)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "AnnotationBox [minX=" + minX + ", maxX=" + maxX + ", minY=" + minY + ", maxY=" + maxY + "]";
 	}
 
 }

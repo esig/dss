@@ -20,7 +20,7 @@ public class ImageOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangl
 	}
 
 	@Override
-	public AppearenceRectangle build() throws IOException {
+	public ITextVisualSignatureAppearence build() throws IOException {
 		float zoom = ImageUtils.getScaleFactor(imageParameters.getZoom());
 		
 		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
@@ -37,7 +37,7 @@ public class ImageOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangl
 		width *= zoom;
 		height *= zoom;
 		
-		return new AppearenceRectangle(
+		return new ITextVisualSignatureAppearence(
 				fieldParameters.getOriginX(),
 				fieldParameters.getOriginY(),
 				fieldParameters.getOriginX() + width, 

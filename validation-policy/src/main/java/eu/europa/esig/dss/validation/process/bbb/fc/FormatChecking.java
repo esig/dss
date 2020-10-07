@@ -40,6 +40,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
@@ -88,6 +89,8 @@ public class FormatChecking extends Chain<XmlFC> {
 			
 			item = item.setNextItem(pdfAnnotationOverlapCheck());
 			
+			item = item.setNextItem(pdfVisualDifferenceCheck());
+			
 		}
 
 		if (diagnosticData.isContainerInfoPresent()) {
@@ -135,6 +138,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> pdfAnnotationOverlapCheck() {
 		LevelConstraint constraint = policy.getPdfAnnotationOverlapConstraint(context);
 		return new PdfAnnotationOverlapCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfVisualDifferenceCheck() {
+		LevelConstraint constraint = policy.getPdfVisualDifferenceConstraint(context);
+		return new PdfVisualDifferenceCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

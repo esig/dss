@@ -20,26 +20,24 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PdfScreenshotUtils;
+import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class DetectionModificationAfterSignTest {
+public class DetectionModificationAfterSignTest extends PKIFactoryAccess {
 
 	@Test
 	public void testWithModification() throws IOException {
@@ -60,8 +58,15 @@ public class DetectionModificationAfterSignTest {
 		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
-		BufferedImage differenceImage = PdfScreenshotUtils.getDifferenceImage(dssDocument, expected);
-		ImageIO.write(differenceImage, "PNG", new File("target/diff.png"));
+		PAdESService padesService = new PAdESService(getOfflineCertificateVerifier());
+		DSSDocument subtractionImage = padesService.getSubtractionImage(dssDocument, expected, 1);
+		assertNotNull(subtractionImage);
+		// subtractionImage.save("target/diff.png");
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return null;
 	}
 
 }

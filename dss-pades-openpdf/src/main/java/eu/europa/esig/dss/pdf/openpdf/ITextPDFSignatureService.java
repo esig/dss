@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfModification;
 
 /**
  * Implementation of PDFSignatureService using iText
@@ -449,6 +451,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
         }
         return password;
     }
+    
+	@Override
+	public DSSDocument getSubtractionImage(DSSDocument document1, String passwordDocument1, int pageDocument1,
+			DSSDocument document2, String passwordDocument2, int pageDocument2) {
+		throw new DSSException("The implementation does not support the PDF screenshot rendering!");
+	}
 
 	@Override
 	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException {
@@ -458,6 +466,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException {
 		return new ITextDocumentReader(binaries, getPasswordBinary(passwordProtection));
+	}
+
+	@Override
+	protected List<PdfModification> getVisualDifferences(PdfDocumentReader reader, byte[] signedContent, String pwd) {
+		// not supported
+		return Collections.emptyList();
 	}
 
 }

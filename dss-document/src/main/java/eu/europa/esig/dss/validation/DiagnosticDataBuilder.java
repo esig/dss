@@ -857,7 +857,14 @@ public class DiagnosticDataBuilder {
 			XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 			
 			List<PdfModification> annotationOverlaps = modificationDetection.getAnnotationOverlaps();
-			xmlModificationDetection.getAnnotationOverlap().addAll(getXmlModifications(annotationOverlaps));
+			if (Utils.isCollectionNotEmpty(annotationOverlaps)) {
+				xmlModificationDetection.getAnnotationOverlap().addAll(getXmlModifications(annotationOverlaps));
+			}
+			
+			List<PdfModification> visualDifferences = modificationDetection.getVisualDifferences();
+			if (Utils.isCollectionNotEmpty(visualDifferences)) {
+				xmlModificationDetection.getVisualDifference().addAll(getXmlModifications(visualDifferences));
+			}
 			
 			return xmlModificationDetection;
 		}

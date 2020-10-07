@@ -18,9 +18,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
 
-public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
+public class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void valid() throws Exception {
@@ -33,12 +33,35 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
-		pmdc.execute();
+		PdfVisualDifferenceCheck pvdc = new PdfVisualDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		pvdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void fail() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		
+		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
+		xmlModificationDetection.getVisualDifference().add(getXmlModification(1));
+		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
+
+		sig.setPDFRevision(xmlPDFRevision);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		PdfVisualDifferenceCheck pvdc = new PdfVisualDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		pvdc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}
 
 	@Test
@@ -56,35 +79,12 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
-		pmdc.execute();
+		PdfVisualDifferenceCheck pvdc = new PdfVisualDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		pvdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
-		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
-	}
-
-	@Test
-	public void visualDifference() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
-		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
-		xmlModificationDetection.getVisualDifference().add(getXmlModification(1));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
-
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-
-		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
-		pmdc.execute();
-
-		List<XmlConstraint> constraints = result.getConstraint();
-		assertEquals(1, constraints.size());
-		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
 	}
 
 	@Test
@@ -104,8 +104,8 @@ public class PdfModificationDetectionCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck pmdc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
-		pmdc.execute();
+		PdfVisualDifferenceCheck pvdc = new PdfVisualDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		pvdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

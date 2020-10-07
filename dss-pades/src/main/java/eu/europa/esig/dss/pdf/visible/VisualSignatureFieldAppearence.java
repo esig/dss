@@ -3,16 +3,16 @@ package eu.europa.esig.dss.pdf.visible;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 
 /**
- * Defines a SignatureField position and dimension
+ * Contains information about a visual SignatureField appearance
  *
  */
-public interface SignatureFieldBox {
+public interface VisualSignatureFieldAppearence {
 	
 	/**
 	 * Creates an {@code AnnotationBox} from the SignatureFieldBox
 	 * 
 	 * @return {@link AnnotationBox}
 	 */
-	public AnnotationBox toAnnotationBox();
+	public AnnotationBox getAnnotationBox();
 
 }

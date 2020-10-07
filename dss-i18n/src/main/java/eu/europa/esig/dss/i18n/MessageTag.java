@@ -43,6 +43,9 @@ public enum MessageTag {
 	BBB_FC_IAOD,
 	BBB_FC_IAOD_ANS,
 	
+	BBB_FC_IVDBSFR,
+	BBB_FC_IVDBSFR_ANS,
+	
 	BBB_FC_IECTF,
 	BBB_FC_IECTF_ANS,
 

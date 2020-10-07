@@ -19,7 +19,7 @@ public class TextOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangle
 	}
 
 	@Override
-	public AppearenceRectangle build() {
+	public ITextVisualSignatureAppearence build() {
 		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
 		float width = fieldParameters.getWidth();
 		float height = fieldParameters.getHeight();
@@ -31,7 +31,7 @@ public class TextOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangle
 			height = dimension.height;
 		}
 		
-		return new AppearenceRectangle(
+		return new ITextVisualSignatureAppearence(
 				fieldParameters.getOriginX(),
 				fieldParameters.getOriginY(),
 				fieldParameters.getOriginX() + width, 

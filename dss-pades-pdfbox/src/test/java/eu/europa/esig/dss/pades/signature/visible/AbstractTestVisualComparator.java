@@ -2,25 +2,37 @@ package eu.europa.esig.dss.pades.signature.visible;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PdfScreenshotUtils;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
+	
+	/**
+	 * Comparison resolution: step in pixels in horizontal and vertical directions.
+	 */
+	private static final int CHECK_RESOLUTION = 1;
+	
+	private static final int DPI = 144;
 	
 	/**
 	 * The degree of similarity between generated and original images
@@ -48,7 +60,26 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
-		assertTrue(PdfScreenshotUtils.areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
+		
+		assertTrue(areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
+	}
+	
+	public static boolean areVisuallyEqual(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
+		BufferedImage img1 = getRendering(dssDoc1);
+		BufferedImage img2 = getRendering(dssDoc2);
+		if (PAdESUtils.imageDimensionsEqual(img1, img2)) {
+			BufferedImage outImg = new BufferedImage(img1.getWidth(), img1.getHeight(), BufferedImage.TYPE_INT_RGB);
+			int diffAmount = PAdESUtils.drawSubtractionImage(img1, img2, outImg);
+			return diffAmount == 0;
+		}
+		return false;
+	}
+
+	private static BufferedImage getRendering(DSSDocument dssDoc) throws IOException {
+		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
+			PDFRenderer renderer = new PDFRenderer(doc);
+			return renderer.renderImage(0);
+		}
 	}
 	
 	protected DSSDocument sign(String docName) throws IOException {
@@ -82,10 +113,71 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		}
 	}
 	
-	private void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
+	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
+		compareVisualSimilarity(doc1, doc2, SIMILARITY_LIMIT);
+	}
+	
+	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarityLevel) throws IOException {
 		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream();
 				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
-			PdfScreenshotUtils.checkPdfSimilarity(pdDoc1, pdDoc2, SIMILARITY_LIMIT);
+			checkPdfSimilarity(pdDoc1, pdDoc2, similarityLevel);
+		}
+	}
+	
+	protected void checkPdfSimilarity(PDDocument document1, PDDocument document2, float minSimilarity) throws IOException {
+		PDPageTree samplePageTree = document1.getPages();
+		PDPageTree checkPageTree = document2.getPages();
+
+		assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
+
+		PDFRenderer sampleRenderer = new PDFRenderer(document1);
+		PDFRenderer checkRenderer = new PDFRenderer(document2);
+
+		for (int pageNumber = 0; pageNumber < checkPageTree.getCount(); pageNumber++) {
+			BufferedImage sampleImage = sampleRenderer.renderImageWithDPI(pageNumber, DPI);
+			BufferedImage checkImage = checkRenderer.renderImageWithDPI(pageNumber, DPI);
+			
+            // ImageIO.write(sampleImage, "png", new File("target\\sampleImage.png"));
+            // ImageIO.write(checkImage, "png", new File("target\\checkImage.png"));
+            
+			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
+			assertTrue(checkSimilarity >= minSimilarity, "The image similarity " + checkSimilarity + " is lower the allowed limit " + minSimilarity);
+		}
+	}
+	
+	protected float checkImageSimilarity(BufferedImage sampleImage, BufferedImage checkImage, int resolution) {
+		try {
+			int width = sampleImage.getWidth();
+			int height = sampleImage.getHeight();
+			int checkWidth = checkImage.getWidth();
+			int checkHeight = checkImage.getHeight();
+			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
+				fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+			}
+			if (width != checkWidth || height != checkHeight) {
+				fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+			}
+
+			int matchingPixels = 0;
+			int checkedPixels = 0;
+			for (int y = 0; y < height; y += resolution) {
+				for (int x = 0; x < width; x += resolution) {
+					int sampleRGB = sampleImage.getRGB(x, y);
+					int checkRGB = checkImage.getRGB(x, y);
+
+					if (sampleRGB == checkRGB) {
+						matchingPixels++;
+					} else {
+						checkImage.setRGB(x, y, Color.RED.getRGB());
+					}
+
+					checkedPixels++;
+				}
+			}
+
+			return (float) matchingPixels / checkedPixels;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
 	}
 

@@ -23,9 +23,9 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearence;
 
-public class SignatureFieldDimensionAndPosition implements SignatureFieldBox {
+public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearence {
 	
 	private float boxX = 0;
 	private float boxY = 0;
@@ -196,7 +196,7 @@ public class SignatureFieldDimensionAndPosition implements SignatureFieldBox {
 	}
 
 	@Override
-	public AnnotationBox toAnnotationBox() {
+	public AnnotationBox getAnnotationBox() {
 		return new AnnotationBox(boxX, boxY, boxX + boxWidth, boxY + boxHeight);
 	}
 	

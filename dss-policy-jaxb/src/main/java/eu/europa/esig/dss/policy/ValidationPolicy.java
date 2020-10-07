@@ -419,6 +419,16 @@ public interface ValidationPolicy {
 	 *         otherwise.
 	 */
 	LevelConstraint getPdfAnnotationOverlapConstraint(Context context);
+	
+	/**
+	 * Indicates if a PDF visual difference check should be proceeded. If PdfVisualDifference element is absent within
+	 * the constraint file then null is returned.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfVisualDifference element is present in the constraint file, null
+	 *         otherwise.
+	 */
+	LevelConstraint getPdfVisualDifferenceConstraint(Context context);
 
 	/**
 	 * This constraint checks if the certificate is not expired on best-signature-time

@@ -160,6 +160,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getPdfVisualDifferenceConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getPdfVisualDifference();
+		}
+		return null;
+	}
 
 	@Override
 	public LevelConstraint getStructuralValidationConstraint(Context context) {

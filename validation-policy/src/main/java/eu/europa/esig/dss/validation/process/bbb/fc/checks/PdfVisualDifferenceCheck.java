@@ -14,11 +14,11 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class PdfAnnotationOverlapCheck extends ChainItem<XmlFC> {
+public class PdfVisualDifferenceCheck extends ChainItem<XmlFC> {
 
 	private final SignatureWrapper signature;
 
-	public PdfAnnotationOverlapCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
+	public PdfVisualDifferenceCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.signature = signature;
@@ -26,23 +26,23 @@ public class PdfAnnotationOverlapCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		return Utils.isCollectionEmpty(signature.getPdfAnnotationsOverlapConcernedPages());
+		return Utils.isCollectionEmpty(signature.getPdfVisualDifferenceConcernedPages());
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_FC_IAOD;
+		return MessageTag.BBB_FC_IVDBSFR;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_FC_IAOD_ANS;
+		return MessageTag.BBB_FC_IVDBSFR_ANS;
 	}
 	
 	@Override
 	protected XmlName buildErrorMessage() {
-		List<BigInteger> annotationsOverlapPages = signature.getPdfAnnotationsOverlapConcernedPages();
-		return buildXmlName(getErrorMessageTag(), annotationsOverlapPages.toString());
+		List<BigInteger> visualDifferencePages = signature.getPdfVisualDifferenceConcernedPages();
+		return buildXmlName(getErrorMessageTag(), visualDifferencePages.toString());
 	}
 
 	@Override

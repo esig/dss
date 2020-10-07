@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -37,12 +38,14 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -193,7 +196,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	public int getPageNumber() {
+	public int getNumberOfPages() {
 		return pdDocument.getNumberOfPages();
 	}
 
@@ -205,17 +208,21 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	public List<AnnotationBox> getAnnotationBoxes(int page) throws IOException {
-		List<AnnotationBox> annotationBoxes = new ArrayList<>();
-		PDPage pdPage = getPDPage(page);
-		List<PDAnnotation> annotations = pdPage.getAnnotations();
-		for (PDAnnotation annotation : annotations) {
-			PDRectangle pdRect = annotation.getRectangle();
-			if (pdRect != null) {
-				annotationBoxes.add(toAnnotationBox(pdRect));
+	public List<PdfAnnotation> getPdfAnnotations(int page) throws IOException {
+		List<PdfAnnotation> annotations = new ArrayList<>();
+		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
+		for (PDAnnotation pdAnnotation : pdAnnotations) {
+			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
+			if (pdfAnnotation != null) {
+				annotations.add(pdfAnnotation);
 			}
 		}
-		return annotationBoxes;
+		return annotations;
+	}
+	
+	private List<PDAnnotation> getPageAnnotations(int page) throws IOException {
+		PDPage pdPage = getPDPage(page);
+		return pdPage.getAnnotations();
 	}
 	
 	/**
@@ -228,8 +235,45 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		return pdDocument.getPage(page - PAdESUtils.DEFAULT_FIRST_PAGE);
 	}
 	
-	private AnnotationBox toAnnotationBox(PDRectangle pdRect) {
-		return new AnnotationBox(pdRect.getLowerLeftX(), pdRect.getLowerLeftY(), pdRect.getUpperRightX(), pdRect.getUpperRightY());
+	private PdfAnnotation toPdfAnnotation(PDAnnotation pdAnnotation) {
+		PDRectangle pdRect = pdAnnotation.getRectangle();
+		if (pdRect != null) {
+			AnnotationBox annotationBox = new AnnotationBox(
+					pdRect.getLowerLeftX(), pdRect.getLowerLeftY(), pdRect.getUpperRightX(), pdRect.getUpperRightY());
+			PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
+			pdfAnnotation.setName(getSignatureFieldName(pdAnnotation));
+			pdfAnnotation.setSigned(isSigned(pdAnnotation));
+			return pdfAnnotation;
+		}
+		return null;
+	}
+	
+	private String getSignatureFieldName(PDAnnotation pdAnnotation) {
+		return pdAnnotation.getCOSObject().getString(COSName.T);
+	}
+	
+	private boolean isSigned(PDAnnotation pdAnnotation) {
+		COSObject sigDicObject = pdAnnotation.getCOSObject().getCOSObject(COSName.V);
+		return sigDicObject != null;
+	}
+
+	@Override
+	public BufferedImage generateImageScreenshot(int page) throws IOException {
+		PDFRenderer renderer = new PDFRenderer(pdDocument);
+		return renderer.renderImage(page - PAdESUtils.DEFAULT_FIRST_PAGE);
+	}
+
+	@Override
+	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations)
+			throws IOException {
+		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
+		for (PDAnnotation pdAnnotation : pdAnnotations) {
+			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
+			if (annotations.contains(pdfAnnotation)) {
+				pdAnnotation.setHidden(true);
+			}
+		}
+		return generateImageScreenshot(page);
 	}
 
 }

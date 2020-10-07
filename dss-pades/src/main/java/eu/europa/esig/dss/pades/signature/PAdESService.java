@@ -274,6 +274,50 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
 		return pdfSignatureService.addNewSignatureField(document, parameters, passwordProtection);
 	}
+	
+	/**
+	 * This method returns an image representing a subtraction result 
+	 * between {@code document1} and {@code document2} for the given page number
+	 * 
+	 * NOTE: the method is supported only with PdfBox implementation
+	 * 
+	 * @param document1
+	 *            {@link DSSDocument}
+	 * @param document2
+	 *            {@link DSSDocument}
+	 * @param page
+	 *            page number
+	 * @return {@link DSSDocument} subtraction result
+	 */
+	public DSSDocument getSubtractionImage(DSSDocument document1, DSSDocument document2, int page) {
+		return getSubtractionImage(document1, null, page, document2, null, page);
+	}
+
+	/**
+	 * This method returns an image representing a subtraction result 
+	 * between {@code document1} and {@code document2} for the defined pages
+	 * 
+	 * NOTE: the method is supported only with PdfBox implementation
+	 * 
+	 * @param document1
+	 *            {@link DSSDocument} the first document
+	 * @param passwordDocument1
+	 *            {@link String} a password protection for the {@code document1} when applicable (can be null)
+	 * @param pageDocument1
+	 *            page number identifying a page of the {@code document1} to be proceeded
+	 * @param document2 
+	 *            {@link DSSDocument} the second document
+	 * @param passwordDocument2
+	 *            {@link String} a password protection for the {@code document2} when applicable (can be null)
+	 * @param pageDocument2
+	 *            page number identifying a page of the {@code document2} to be proceeded
+	 * @return {@link DSSDocument} subtraction result
+	 */
+	public DSSDocument getSubtractionImage(DSSDocument document1, String passwordDocument1, int pageDocument1,
+			DSSDocument document2, String passwordDocument2, int pageDocument2) {
+		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		return pdfSignatureService.getSubtractionImage(document1, passwordDocument1, pageDocument1, document2, passwordDocument2, pageDocument2);
+	}
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {

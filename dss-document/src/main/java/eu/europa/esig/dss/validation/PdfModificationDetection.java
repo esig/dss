@@ -16,6 +16,13 @@ public interface PdfModificationDetection {
 	List<PdfModification> getAnnotationOverlaps();
 	
 	/**
+	 * Returns information about pages with visual differences between signed and final revisions
+	 * 
+	 * @return a list of {@link PdfModification}s
+	 */
+	List<PdfModification> getVisualDifferences();
+	
+	/**
 	 * Returns information if any modifications have been detected
 	 * 
 	 * @return TRUE if any modifications have been detected, FALSE otherwise

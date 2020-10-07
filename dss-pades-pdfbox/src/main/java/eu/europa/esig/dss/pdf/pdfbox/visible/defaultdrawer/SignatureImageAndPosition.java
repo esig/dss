@@ -23,9 +23,9 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 import java.awt.image.BufferedImage;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearence;
 
-public class SignatureImageAndPosition implements SignatureFieldBox {
+public class SignatureImageAndPosition implements VisualSignatureFieldAppearence {
 
     private final float x;
     private final float y;
@@ -63,7 +63,7 @@ public class SignatureImageAndPosition implements SignatureFieldBox {
     }
 
 	@Override
-	public AnnotationBox toAnnotationBox() {
+	public AnnotationBox getAnnotationBox() {
 		return new AnnotationBox(x, y, x + width, y + height);
 	}
     

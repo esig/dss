@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -68,6 +71,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
@@ -596,6 +600,29 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to add a new signature field. Reason : %s", e.getMessage()), e);
+		}
+	}
+
+	@Override
+	public DSSDocument getSubtractionImage(DSSDocument document1, String passwordDocument1, int pageDocument1,
+			DSSDocument document2, String passwordDocument2, int pageDocument2) {
+		try (PdfDocumentReader reader1 = loadPdfDocumentReader(document1, passwordDocument1);
+				PdfDocumentReader reader2 = loadPdfDocumentReader(document2, passwordDocument2);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
+			BufferedImage screenshot1 = reader1.generateImageScreenshot(pageDocument1);
+			BufferedImage screenshot2 = reader2.generateImageScreenshot(pageDocument2);
+			
+			int width = screenshot1.getWidth() > screenshot2.getWidth() ? screenshot1.getWidth() : screenshot2.getWidth();
+			int height = screenshot1.getHeight() > screenshot2.getHeight() ? screenshot1.getHeight() : screenshot2.getHeight();
+			
+			BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			PAdESUtils.drawSubtractionImage(screenshot1, screenshot2, output);
+			
+			ImageIO.write(output, "png", baos);
+			return new InMemoryDocument(baos.toByteArray(), "subtraction.png", MimeType.PNG);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to build a subtraction image result. Reason : %s", e.getMessage()), e);
 		}
 	}
 

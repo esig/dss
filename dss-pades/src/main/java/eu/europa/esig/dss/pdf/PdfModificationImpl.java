@@ -2,11 +2,11 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.validation.PdfModification;
 
-public class PdfAnnotationOverlap implements PdfModification {
+public class PdfModificationImpl implements PdfModification {
 	
 	private final int page;
 	
-	public PdfAnnotationOverlap(int page) {
+	public PdfModificationImpl(int page) {
 		this.page = page;
 	}
 

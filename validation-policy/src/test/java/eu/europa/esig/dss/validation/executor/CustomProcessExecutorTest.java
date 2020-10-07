@@ -2625,7 +2625,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	@Test
 	public void padesFieldsOverlappingFailTest() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data-pdf-fields-overlap.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_pdf_fields_overlap.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -2651,7 +2651,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	@Test
 	public void padesFieldsOverlappingWarnTest() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data-pdf-fields-overlap.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_pdf_fields_overlap.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -2671,6 +2671,57 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			
 			List<String> warnings = simpleReport.getWarnings(signatureId);
 			assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IAOD_ANS, "[1]")));
+		}
+	}
+
+	@Test
+	public void padesVisualDifferenceFailTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_pdf_visual_difference.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
+		LevelConstraint pdfVisualDifference = basicSignatureConstraints.getPdfVisualDifference();
+		pdfVisualDifference.setLevel(Level.FAIL);
+		executor.setValidationPolicy(defaultPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		for (String signatureId : simpleReport.getSignatureIdList()) {
+			assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(signatureId));
+			assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(signatureId));
+			
+			List<String> errors = simpleReport.getErrors(signatureId);
+			assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IVDBSFR_ANS, "[1]")));
+		}
+	}
+
+	@Test
+	public void padesVisualDifferenceWarnTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_pdf_visual_difference.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
+		LevelConstraint pdfVisualDifference = basicSignatureConstraints.getPdfVisualDifference();
+		pdfVisualDifference.setLevel(Level.WARN);
+		executor.setValidationPolicy(defaultPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		for (String signatureId : simpleReport.getSignatureIdList()) {
+			assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(signatureId));
+			
+			List<String> warnings = simpleReport.getWarnings(signatureId);
+			assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IVDBSFR_ANS, "[1]")));
 		}
 	}
 	

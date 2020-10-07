@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -52,12 +54,13 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
-import eu.europa.esig.dss.pdf.visible.SignatureFieldBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearence;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.validation.PdfModification;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
@@ -75,6 +78,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnSignatureFieldOverlap = new ExceptionOnStatusAlert();
+	
+	/**
+	 * This variable sets the maximal amount of pages in a PDF to execute visual screenshot comparison for
+	 * Example: for value 10, the visual comparison will be executed for a PDF containing 10 and less pages
+	 * 
+	 * Default : 10 pages
+	 */
+	private int maximalPagesAmountForVisualComparison = 10;
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -102,6 +113,21 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
 		Objects.requireNonNull(alertOnSignatureFieldOverlap, "StatusAlert cannot be null!");
 		this.alertOnSignatureFieldOverlap = alertOnSignatureFieldOverlap;
+	}
+
+	/**
+	 * Sets a maximal pages amount in a PDF to process a visual screenshot comparison
+	 * Example: for value 10, the visual comparison will be executed for a PDF containing 10 and less pages
+	 * 
+	 * NOTE: In order to disable visual comparison check set the pages amount to 0 (zero)
+	 * 
+	 * Default : 10 pages
+	 * 
+	 * 
+	 * @param pagesAmount the amount of the pages to execute visual comparison for
+	 */
+	public void setMaximalPagesAmountForVisualComparison(int pagesAmount) {
+		this.maximalPagesAmountForVisualComparison = pagesAmount;
 	}
 	
 	/**
@@ -208,8 +234,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					
 					// add signature/ timestamp revision
 					if (newRevision != null) {
-						PdfModificationDetector modificationDetector = new PdfModificationDetector(reader);
-						newRevision.setModificationDetection(modificationDetector.analizeDocument());
+						PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
+						
+						pdfModificationDetection.setAnnotationOverlaps(PdfModificationDetectionUtils.getAnnotationOverlaps(reader));
+						pdfModificationDetection.setVisualDifferences(getVisualDifferences(reader, signedContent, pwd));
+
+						newRevision.setModificationDetection(pdfModificationDetection);
 						
 						result.add(newRevision);
 					}
@@ -224,7 +254,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					if (LOG.isDebugEnabled()) {
 						LOG.error(errorMessage, fieldNames, e.getMessage(), e);
 					} else {
-						LOG.error(errorMessage, fieldNames, e.getMessage() );
+						LOG.error(errorMessage, fieldNames, e.getMessage());
 					}
 					
 				}
@@ -254,6 +284,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		return addNewSignatureField(document, parameters, null);
+	}
+	
+	@Override
+	public DSSDocument getSubtractionImage(DSSDocument document1, DSSDocument document2, int page) {
+		return getSubtractionImage(document1, null, page, document2, null, page);
 	}
 	
 	/**
@@ -428,9 +463,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	protected void checkVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer, PdfDocumentReader documentReader, 
 			SignatureFieldParameters fieldParameters) throws IOException {
-		SignatureFieldBox signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
+		VisualSignatureFieldAppearence signatureFieldBox = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldBox != null) {
-			AnnotationBox signatureFieldAnnotation = signatureFieldBox.toAnnotationBox();
+			AnnotationBox signatureFieldAnnotation = signatureFieldBox.getAnnotationBox();
 			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
 			signatureFieldAnnotation = signatureFieldAnnotation.flipVertically(pageBox.getHeight());
 
@@ -442,10 +477,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Returns a SignatureFieldBox. Used for a SignatureField position validation.
 	 * 
 	 * @param signatureDrawer {@link SignatureDrawer}
-	 * @return {@link SignatureFieldBox}
+	 * @return {@link VisualSignatureFieldAppearence}
 	 * @throws IOException if an exception occurs
 	 */
-	protected SignatureFieldBox buildSignatureFieldBox(SignatureDrawer signatureDrawer) throws IOException {
+	protected VisualSignatureFieldAppearence buildSignatureFieldBox(SignatureDrawer signatureDrawer) throws IOException {
 		if (signatureDrawer instanceof SignatureFieldBoxBuilder) {
 			SignatureFieldBoxBuilder signatureFieldBoxBuilder = (SignatureFieldBoxBuilder) signatureDrawer;
 			return signatureFieldBoxBuilder.buildSignatureFieldBox();
@@ -476,8 +511,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 	
 	private void checkSignatureFieldBoxOverlap(final PdfDocumentReader reader, final AnnotationBox signatureFieldBox, int page) throws IOException {
-		List<AnnotationBox> annotationBoxes = reader.getAnnotationBoxes(page);
-		if (PdfModificationDetector.isAnnotationBoxOverlapping(signatureFieldBox, annotationBoxes)) {
+		List<PdfAnnotation> pdfAnnotations = reader.getPdfAnnotations(page);
+		if (PdfModificationDetectionUtils.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
 			alertOnSignatureFieldOverlap();
 		}
 	}
@@ -488,6 +523,34 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	private void alertOnSignatureFieldOverlap() {
 		String alertMessage = "The new signature field position overlaps with an existing annotation!";
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
+	}
+
+	/**
+	 * Returns a list of visual differences between the provided PDF and the signed content
+	 * 
+	 * @param reader {@link PdfDocumentReader} for the input PDF document
+	 * @param signedContent signed binaries
+	 * @param pwd {@link String} password phrase when applicable
+	 * @return a list of {@link PdfModification}s
+	 */
+	protected List<PdfModification> getVisualDifferences(PdfDocumentReader reader, byte[] signedContent, String pwd) {
+		int pagesAmount = reader.getNumberOfPages();
+		if (maximalPagesAmountForVisualComparison >= pagesAmount) {
+			try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(new InMemoryDocument(signedContent), pwd)) {
+				return PdfModificationDetectionUtils.getVisualDifferences(signedRevisionReader, reader);
+			} catch (Exception e) {
+				String errorMessage = "Unable to perform a visual revision comparison. Reason : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.error(errorMessage, e.getMessage(), e);
+				} else {
+					LOG.error(errorMessage, e.getMessage());
+				}
+			}
+		} else {
+			LOG.debug("The provided document contains {} pages, while the limit for a visual comparison is set to {}.", 
+					pagesAmount, maximalPagesAmountForVisualComparison);
+		}
+		return Collections.emptyList();
 	}
 
 }
