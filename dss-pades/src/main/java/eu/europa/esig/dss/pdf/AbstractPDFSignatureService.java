@@ -286,11 +286,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return addNewSignatureField(document, parameters, null);
 	}
 	
-	@Override
-	public DSSDocument getSubtractionImage(DSSDocument document1, DSSDocument document2, int page) {
-		return getSubtractionImage(document1, null, page, document2, null, page);
-	}
-	
 	/**
 	 * Loads {@code PdfDocumentReader} instance
 	 * 

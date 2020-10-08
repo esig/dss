@@ -35,7 +35,7 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class PdfBoxUtilsTest {
+public class PdfBoxDocumentReaderTest {
 
 	private static final String FILE = "/validation/doc-firmado-LT.pdf";
 

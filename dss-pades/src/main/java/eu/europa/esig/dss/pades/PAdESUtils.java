@@ -238,9 +238,8 @@ public final class PAdESUtils {
 		int diffAmount = 0;
 		int diff; // Defines current pixel color difference
 		int result; // Stores output pixel
-		for (int i = 0; i < img1.getHeight(); i++) {
-			
-			for (int j = 0; j < img1.getWidth(); j++) {
+		for (int i = 0; i < img1.getHeight() && i < img2.getHeight(); i++) {
+			for (int j = 0; j < img1.getWidth() && j < img2.getWidth(); j++) {
 				int rgb1 = img1.getRGB(j, i);
 				int rgb2 = img2.getRGB(j, i);
 				int r1 = (rgb1 >> 16) & 0xff;
@@ -269,7 +268,6 @@ public final class PAdESUtils {
 					outImg.setRGB(j, i, result);
 				}
 			}
-			
 		}
 		return diffAmount;
 	}

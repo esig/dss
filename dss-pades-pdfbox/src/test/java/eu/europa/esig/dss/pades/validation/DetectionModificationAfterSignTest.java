@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -58,8 +58,7 @@ public class DetectionModificationAfterSignTest extends PKIFactoryAccess {
 		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
-		PAdESService padesService = new PAdESService(getOfflineCertificateVerifier());
-		DSSDocument subtractionImage = padesService.getSubtractionImage(dssDocument, expected, 1);
+		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(dssDocument, expected, 1);
 		assertNotNull(subtractionImage);
 		// subtractionImage.save("target/diff.png");
 	}

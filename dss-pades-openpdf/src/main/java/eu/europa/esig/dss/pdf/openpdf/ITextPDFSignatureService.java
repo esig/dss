@@ -451,12 +451,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
         }
         return password;
     }
-    
-	@Override
-	public DSSDocument getSubtractionImage(DSSDocument document1, String passwordDocument1, int pageDocument1,
-			DSSDocument document2, String passwordDocument2, int pageDocument2) {
-		throw new DSSException("The implementation does not support the PDF screenshot rendering!");
-	}
 
 	@Override
 	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException {
