@@ -80,9 +80,11 @@ public class PdfModificationDetectionUtils {
 	 */
 	public static List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader, 
 			PdfDocumentReader finalRevisionReader) throws IOException {
-		List<PdfModification> visualDifferences = getPagesDifference(signedRevisionReader, finalRevisionReader);
+		List<PdfModification> visualDifferences = new ArrayList<>();
 		
-		for (int pageNumber = 1; pageNumber <= signedRevisionReader.getNumberOfPages(); pageNumber++) {
+		for (int pageNumber = 1; pageNumber <= signedRevisionReader.getNumberOfPages()
+				&& pageNumber <= finalRevisionReader.getNumberOfPages(); pageNumber++) {
+			
 			BufferedImage signedScreenshot = signedRevisionReader.generateImageScreenshot(pageNumber);
 			
 			List<PdfAnnotation> signedAnnotations = signedRevisionReader.getPdfAnnotations(pageNumber);
@@ -101,8 +103,14 @@ public class PdfModificationDetectionUtils {
 		return visualDifferences;
 	}
 	
-	private static List<PdfModification> getPagesDifference(final PdfDocumentReader signedRevisionReader, 
-			PdfDocumentReader finalRevisionReader) {
+	/**
+	 * Returns a list of missing/added pages between signed and final revisions
+	 * 
+	 * @param signedRevisionReader {@link PdfDocumentReader} for the signed (covered) revision content
+	 * @param finalRevisionReader {@link PdfDocumentReader} for the originally provided document
+	 * @return a list of {@link PdfModification}s
+	 */
+	public static List<PdfModification> getPagesDifferences(final PdfDocumentReader signedRevisionReader, final PdfDocumentReader finalRevisionReader) {
 		int signedPages = signedRevisionReader.getNumberOfPages();
 		int finalPages = finalRevisionReader.getNumberOfPages();
 		
@@ -110,7 +118,7 @@ public class PdfModificationDetectionUtils {
 		int minNumberOfPages = signedPages > finalPages ? finalPages : signedPages;
 
 		List<PdfModification> missingPages = new ArrayList<>();
-		for (int ii = maxNumberOfPages; maxNumberOfPages > minNumberOfPages; ii--) {
+		for (int ii = maxNumberOfPages; ii > minNumberOfPages; ii--) {
 			missingPages.add(new PdfModificationImpl(ii));
 		}
 		

@@ -866,6 +866,11 @@ public class DiagnosticDataBuilder {
 				xmlModificationDetection.getVisualDifference().addAll(getXmlModifications(visualDifferences));
 			}
 			
+			List<PdfModification> pageDifferences = modificationDetection.getPageDifferences();
+			if (Utils.isCollectionNotEmpty(pageDifferences)) {
+				xmlModificationDetection.getPageDifference().addAll(getXmlModifications(pageDifferences));
+			}
+			
 			return xmlModificationDetection;
 		}
 		return null;

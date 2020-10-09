@@ -245,6 +245,17 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return Collections.emptyList();
 	}
 	
+	protected List<BigInteger> getPdfPageDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				List<XmlModification> pageDifference = modificationDetection.getPageDifference();
+				return getConcernedPages(pageDifference);
+			}
+		}
+		return Collections.emptyList();
+	}
+	
 	private List<BigInteger> getConcernedPages(List<XmlModification> xmlModifications) {
 		List<BigInteger> pages = new ArrayList<>();
 		for (XmlModification modification : xmlModifications) {

@@ -638,6 +638,16 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		return getPdfVisualDifferenceConcernedPages(pdfRevision);
 	}
+
+	/**
+	 * Returns a list of pages missing/added to the final revision in a comparison with a signed one
+	 * 
+	 * @return a list of page numbers
+	 */
+	public List<BigInteger> getPdfPageDifferenceConcernedPages() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return getPdfPageDifferenceConcernedPages(pdfRevision);
+	}
 	
 	/**
 	 * Returns the first signature field name

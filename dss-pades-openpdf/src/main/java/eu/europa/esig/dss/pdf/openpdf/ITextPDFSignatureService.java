@@ -463,7 +463,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected List<PdfModification> getVisualDifferences(PdfDocumentReader reader, byte[] signedContent, String pwd) {
+	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
+			final PdfDocumentReader finalRevisionReader) throws IOException {
 		// not supported
 		return Collections.emptyList();
 	}

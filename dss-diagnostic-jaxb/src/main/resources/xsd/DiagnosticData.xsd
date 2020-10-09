@@ -255,6 +255,7 @@
 		<xs:sequence>
 			<xs:element name="AnnotationOverlap" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="VisualDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="PageDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	

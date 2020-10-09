@@ -61,6 +61,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.PdfModification;
+import eu.europa.esig.dss.validation.PdfModificationDetection;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
@@ -234,13 +235,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					
 					// add signature/ timestamp revision
 					if (newRevision != null) {
-						PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
-						
-						pdfModificationDetection.setAnnotationOverlaps(PdfModificationDetectionUtils.getAnnotationOverlaps(reader));
-						pdfModificationDetection.setVisualDifferences(getVisualDifferences(reader, signedContent, pwd));
-
-						newRevision.setModificationDetection(pdfModificationDetection);
-						
+						newRevision.setModificationDetection(getPdfModificationDetection(reader, signedContent, pwd));
 						result.add(newRevision);
 					}
 					
@@ -519,28 +514,49 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		String alertMessage = "The new signature field position overlaps with an existing annotation!";
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
 	}
+	
+	/**
+	 * Proceeds PDF modification detection
+	 * 
+	 * @param finalRevisionReader {@link PdfDocumentReader} the reader for the final PDF content
+	 * @param signedContent a byte array representing a signed revision content
+	 * @param pwd {@link String} password protection
+	 * @return {@link PdfModificationDetection}
+	 */
+	protected PdfModificationDetection getPdfModificationDetection(final PdfDocumentReader finalRevisionReader, byte[] signedContent, String pwd) {
+		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(new InMemoryDocument(signedContent), pwd)) {
+			PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
+			
+			pdfModificationDetection.setAnnotationOverlaps(PdfModificationDetectionUtils.getAnnotationOverlaps(finalRevisionReader));
+			pdfModificationDetection.setPageDifferences(PdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
+			pdfModificationDetection.setVisualDifferences(getVisualDifferences(signedRevisionReader, finalRevisionReader));
+			
+			return pdfModificationDetection;
+			
+		} catch (Exception e) {
+			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.error(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.error(errorMessage, e.getMessage());
+			}
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Returns a list of visual differences between the provided PDF and the signed content
 	 * 
-	 * @param reader {@link PdfDocumentReader} for the input PDF document
-	 * @param signedContent signed binaries
-	 * @param pwd {@link String} password phrase when applicable
+	 * @param signedRevisionReader {@link PdfDocumentReader} for the signed revision content
+	 * @param finalRevisionReader {@link PdfDocumentReader} for the input PDF document
 	 * @return a list of {@link PdfModification}s
 	 */
-	protected List<PdfModification> getVisualDifferences(PdfDocumentReader reader, byte[] signedContent, String pwd) {
-		int pagesAmount = reader.getNumberOfPages();
+	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader, 
+			final PdfDocumentReader finalRevisionReader) throws IOException {
+		int pagesAmount = finalRevisionReader.getNumberOfPages();
 		if (maximalPagesAmountForVisualComparison >= pagesAmount) {
-			try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(new InMemoryDocument(signedContent), pwd)) {
-				return PdfModificationDetectionUtils.getVisualDifferences(signedRevisionReader, reader);
-			} catch (Exception e) {
-				String errorMessage = "Unable to perform a visual revision comparison. Reason : {}";
-				if (LOG.isDebugEnabled()) {
-					LOG.error(errorMessage, e.getMessage(), e);
-				} else {
-					LOG.error(errorMessage, e.getMessage());
-				}
-			}
+			return PdfModificationDetectionUtils.getVisualDifferences(signedRevisionReader, finalRevisionReader);
 		} else {
 			LOG.debug("The provided document contains {} pages, while the limit for a visual comparison is set to {}.", 
 					pagesAmount, maximalPagesAmountForVisualComparison);

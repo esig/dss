@@ -351,14 +351,34 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return arePdfModificationsDetected(pdfRevision);
 	}
 	
+	/**
+	 * Returns a list of PDF annotation overlap concerned pages
+	 * 
+	 * @return a list of page numbers
+	 */
 	public List<BigInteger> getPdfAnnotationsOverlapConcernedPages() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		return getPdfAnnotationsOverlapConcernedPages(pdfRevision);
 	}
 	
+	/**
+	 * Returns a list of PDF visual difference concerned pages
+	 * 
+	 * @return a list of page numbers
+	 */
 	public List<BigInteger> getPdfVisualDifferenceConcernedPages() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		return getPdfVisualDifferenceConcernedPages(pdfRevision);
+	}
+
+	/**
+	 * Returns a list of pages missing/added to the final revision in a comparison with a signed one
+	 * 
+	 * @return a list of page numbers
+	 */
+	public List<BigInteger> getPdfPageDifferenceConcernedPages() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		return getPdfPageDifferenceConcernedPages(pdfRevision);
 	}
 	
 	/**

@@ -411,6 +411,16 @@ public interface ValidationPolicy {
 	LevelConstraint getSignerInformationStoreConstraint(Context context);
 	
 	/**
+	 * Indicates if a PDF page difference check should be proceeded. If PdfPageDifference element is absent within
+	 * the constraint file then null is returned.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfPageDifference element is present in the constraint file, null
+	 *         otherwise.
+	 */
+	LevelConstraint getPdfPageDifferenceConstraint(Context context);
+	
+	/**
 	 * Indicates if a PDF annotation overlapping check should be proceeded. If PdfAnnotationOverlap element is absent within
 	 * the constraint file then null is returned.
 	 * 

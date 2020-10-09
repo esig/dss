@@ -40,6 +40,9 @@ public enum MessageTag {
 	BBB_FC_IOSIP,
 	BBB_FC_IOSIP_ANS,
 	
+	BBB_FC_DSFREAP,
+	BBB_FC_DSFREAP_ANS,
+	
 	BBB_FC_IAOD,
 	BBB_FC_IAOD_ANS,
 	

@@ -23,6 +23,13 @@ public interface PdfModificationDetection {
 	List<PdfModification> getVisualDifferences();
 	
 	/**
+	 * Returns information if there are missing/added pages between the signed and final revisions
+	 * 
+	 * @return a list of {@link PdfModification}s
+	 */
+	List<PdfModification> getPageDifferences();
+	
+	/**
 	 * Returns information if any modifications have been detected
 	 * 
 	 * @return TRUE if any modifications have been detected, FALSE otherwise
