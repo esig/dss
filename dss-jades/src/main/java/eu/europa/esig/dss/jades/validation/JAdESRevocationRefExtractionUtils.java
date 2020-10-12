@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
@@ -32,14 +32,14 @@ public final class JAdESRevocationRefExtractionUtils {
 		Map<?, ?> ocspId = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.OCSP_ID);
 		if (Utils.isMapNotEmpty(ocspId)) {
 
-			producedAt = JAdESUtils.getDate((String) ocspId.get(JAdESHeaderParameterNames.PRODUCED_AT));
+			producedAt = DSSJsonUtils.getDate((String) ocspId.get(JAdESHeaderParameterNames.PRODUCED_AT));
 
 			responderId = getResponderId(ocspId);
 		}
 
 		Map<?, ?> digAlgVal = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.DIG_ALG_VAL);
 
-		Digest digest = JAdESUtils.getDigest(digAlgVal);
+		Digest digest = DSSJsonUtils.getDigest(digAlgVal);
 		if (digest != null) {
 			return new OCSPRef(digest, producedAt, responderId);
 		} else {
@@ -87,7 +87,7 @@ public final class JAdESRevocationRefExtractionUtils {
 
 			String issueTimeStr = (String) crlId.get(JAdESHeaderParameterNames.ISSUE_TIME);
 			if (Utils.isStringNotEmpty(issueTimeStr)) {
-				crlIssuedTime = JAdESUtils.getDate(issueTimeStr);
+				crlIssuedTime = DSSJsonUtils.getDate(issueTimeStr);
 			}
 
 			String crlNumberString = (String) crlId.get(JAdESHeaderParameterNames.NUMBER);
@@ -98,7 +98,7 @@ public final class JAdESRevocationRefExtractionUtils {
 
 		Map<?, ?> digAlgVal = (Map<?, ?>) item.get(JAdESHeaderParameterNames.DIG_ALG_VAL);
 
-		Digest digest = JAdESUtils.getDigest(digAlgVal);
+		Digest digest = DSSJsonUtils.getDigest(digAlgVal);
 		if (digest != null) {
 			CRLRef crlRef = new CRLRef(digest);
 			crlRef.setCrlIssuer(crlIssuer);

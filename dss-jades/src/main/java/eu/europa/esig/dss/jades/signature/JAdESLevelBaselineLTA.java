@@ -15,7 +15,7 @@ import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -131,7 +131,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		String canonicalizationMethod = params.getCanonicalizationMethod();
 		JAdESArchiveTimestampType jadesArchiveTimestampType = params.getArchiveTimestampType();
 
-		JsonObject tstContainer = JAdESUtils.getTstContainer(Collections.singletonList(timestampBinary), canonicalizationMethod);
+		JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary), canonicalizationMethod);
 		arcTst.put(JAdESHeaderParameterNames.TST_CONTAINER, tstContainer);
 		
 		arcTst.put(JAdESHeaderParameterNames.TIMESTAMPED, jadesArchiveTimestampType.getValue());
@@ -177,7 +177,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		String errorMessage = "Unsupported 'etsiU' container structure! Extension is not possible.";
 		
 		Boolean base64UrlEncoded = null;
-		List<Object> etsiU = JAdESUtils.getEtsiU(jadesSignature.getJws());
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jadesSignature.getJws());
 		for (Object unsignedProperty : etsiU) {
 			boolean currentObjectBase64UrlEncoded = false;
 			
@@ -189,7 +189,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 				throw new DSSException(errorMessage);
 			}
 			Object propertyValue = propertyMap.values().iterator().next();
-			if (propertyValue instanceof String && JAdESUtils.isBase64UrlEncoded((String)propertyValue)) {
+			if (propertyValue instanceof String && DSSJsonUtils.isBase64UrlEncoded((String)propertyValue)) {
 				currentObjectBase64UrlEncoded = true;
 			}
 			if (base64UrlEncoded == null) {

@@ -23,7 +23,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -57,7 +57,7 @@ public class JAdESLevelLTFlattenedSerializationTest extends AbstractJAdESTestSig
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		
-		assertTrue(JAdESUtils.isJsonDocument(new InMemoryDocument(byteArray)));
+		assertTrue(DSSJsonUtils.isJsonDocument(new InMemoryDocument(byteArray)));
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(byteArray));
 			
@@ -66,15 +66,15 @@ public class JAdESLevelLTFlattenedSerializationTest extends AbstractJAdESTestSig
 			
 			String payload = (String) rootStructure.get(firstEntryName);
 			assertNotNull(payload);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(payload)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(payload)));
 			
 			String header = (String) rootStructure.get(JWSConstants.PROTECTED);
 			assertNotNull(header);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(header)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(header)));
 			
 			String signatureValue = (String) rootStructure.get(JWSConstants.SIGNATURE);
 			assertNotNull(signatureValue);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(signatureValue)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(signatureValue)));
 			
 			Map<String, Object> unprotected = (Map<String, Object>) rootStructure.get(JWSConstants.HEADER);
 			assertTrue(Utils.isMapNotEmpty(unprotected));

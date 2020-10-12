@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -89,7 +89,7 @@ public class JAdESLevelBDetachedTest extends AbstractJAdESTestSignature {
 	
 	private void assertRequirementsValid(String encodedHeader) {
 		try {
-			String jsonString = new String(JAdESUtils.fromBase64Url(encodedHeader));
+			String jsonString = new String(DSSJsonUtils.fromBase64Url(encodedHeader));
 			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
 			
 			Object cty = protectedHeaderMap.get(HeaderParameterNames.CONTENT_TYPE);

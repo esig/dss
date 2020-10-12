@@ -16,10 +16,10 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -90,7 +90,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			} else {
 				documentBinaries = DSSUtils.toByteArray(document);
 			}
-			String base64UrlEncodedDoc = JAdESUtils.toBase64Url(documentBinaries);
+			String base64UrlEncodedDoc = DSSJsonUtils.toBase64Url(documentBinaries);
 			concatenationResult = DSSUtils.concatenate(concatenationResult, base64UrlEncodedDoc.getBytes());
 		}
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
@@ -178,14 +178,14 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 				// check if the document contains JWS signature(s)
 				if (documentsToSign.size() == 1) {
 					DSSDocument documentToSign = documentsToSign.get(0);
-					if (JAdESUtils.isJsonDocument(documentToSign)) {
+					if (DSSJsonUtils.isJsonDocument(documentToSign)) {
 						JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(documentToSign);
 						
 						JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {
 							if (!jwsJsonSerializationObject.isValid()) {
 								throw new DSSException(String.format("JWS Serialization is not supported for invalid RFC 7515 files. "
-										+ "Reason(s) : %s", jwsJsonSerializationObject.getErrorMessages()));
+										+ "Reason(s) : %s", jwsJsonSerializationObject.getStructuralValidationError()));
 							}
 							
 							return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);

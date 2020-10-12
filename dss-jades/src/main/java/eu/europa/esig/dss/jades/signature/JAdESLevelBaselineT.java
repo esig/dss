@@ -11,7 +11,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
@@ -92,7 +92,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 			byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, jadesSignature.getSignatureValue());
 			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
 			
-			JsonObject tstContainer = JAdESUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
+			JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
 	
 			JSONObject sigTstItem = new JSONObject();
 			sigTstItem.put(JAdESHeaderParameterNames.SIG_TST, tstContainer);

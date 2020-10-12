@@ -16,7 +16,7 @@ import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -54,7 +54,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getBase64UrlEncodedPayload() {
-		return JAdESUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
+		return DSSJsonUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
 	}
 	
 	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean archiveTst) {
@@ -91,7 +91,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				byte[] documentOctets = null;
 				if (document instanceof HTTPHeader) {
 					HTTPHeader httpHeader = (HTTPHeader) document;
-					if (JAdESUtils.HTTP_HEADER_DIGEST.equals(httpHeader.getName()) && archiveTst) {
+					if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(httpHeader.getName()) && archiveTst) {
 						if (httpHeader instanceof HTTPHeaderDigest) {
 							HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) httpHeader;
 							DSSDocument messageBodyDocument = httpHeaderDigest.getMessageBodyDocument();
@@ -108,7 +108,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					documentOctets = DSSUtils.toByteArray(document);
 				}
 				
-				String base64UrlEncoded = JAdESUtils.toBase64Url(documentOctets);
+				String base64UrlEncoded = DSSJsonUtils.toBase64Url(documentOctets);
 				baos.write(base64UrlEncoded.getBytes());
 			}
 			
@@ -165,7 +165,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 *    
 			 * NOTE: there is a difference in processing base64url encoded values and clear incorporation
 			 */
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			
 			boolean separate = false;
 			
@@ -198,8 +198,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					baos.write('.');
 				}
 				
-				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
 				}
@@ -275,7 +275,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * 
 			 * NOTE: there is a difference in processing base64url encoded values and clear incorporation
 			 */
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			
 			boolean separate = false;
 			
@@ -292,8 +292,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					baos.write('.');
 				}
 				
-				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
 				}
@@ -418,7 +418,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * NOTE: There is a difference in computation depending on base64Url value
 			 */
 			
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			
 			/*
 			 * a) the xVals JSON array shall be incorporated, base64url encoded, 
@@ -466,8 +466,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					break;
 				}
 				
-				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
 				}
@@ -499,7 +499,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 */
 	@SuppressWarnings("unchecked")
 	private byte[] getPreviousArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
-		List<Object> etsiU = JAdESUtils.getEtsiU(signature.getJws());
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
 		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 		

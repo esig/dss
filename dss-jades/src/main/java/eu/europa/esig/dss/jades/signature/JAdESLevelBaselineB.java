@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -131,7 +131,7 @@ public class JAdESLevelBaselineB {
 		 * value.
 		 */
 		String mimeTypeString = mimeType.getMimeTypeString();
-		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurance(mimeTypeString, JAdESUtils.MIME_TYPE_APPLICATION_PREFIX);
+		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurance(mimeTypeString, DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX);
 		if (!shortMimeTypeString.contains("/")) {
 			return shortMimeTypeString;
 		} else {
@@ -147,7 +147,7 @@ public class JAdESLevelBaselineB {
 		if (parameters.getSigningCertificate() == null) {
 			return;
 		}
-		addHeader(HeaderParameterNames.KEY_ID, JAdESUtils.generateKid(parameters.getSigningCertificate()));
+		addHeader(HeaderParameterNames.KEY_ID, DSSJsonUtils.generateKid(parameters.getSigningCertificate()));
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class JAdESLevelBaselineB {
 		List<JsonObject> digAndValues = new ArrayList<>();
 		for (CertificateToken certificateToken : certificates) {
 			byte[] digestValue = certificateToken.getDigest(digestAlgorithm);
-			JsonObject digAndVal = JAdESUtils.getDigAlgValObject(digestValue, digestAlgorithm);
+			JsonObject digAndVal = DSSJsonUtils.getDigAlgValObject(digestValue, digestAlgorithm);
 			digAndValues.add(digAndVal);
 		}
 		addHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
@@ -227,7 +227,7 @@ public class JAdESLevelBaselineB {
 		 * occur as Header Parameter names within the JOSE Header in the "crit"
 		 * list. Producers MUST NOT use the empty list "[]" as the "crit" value.
 		 */
-		Set<String> criticalHeaderExceptions = JAdESUtils.getCriticalHeaderExceptions();
+		Set<String> criticalHeaderExceptions = DSSJsonUtils.getCriticalHeaderExceptions();
 		
 		List<String> criticalHeaderNames = new ArrayList<>();
 		for (String header : signedProperties.keySet()) {
@@ -285,7 +285,7 @@ public class JAdESLevelBaselineB {
 			// see RFC 7797 (only for compact format not detached payload shall be uri-safe)
 			if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
 					JWSSerializationType.COMPACT_SERIALIZATION.equals(parameters.getJwsSerializationType()) &&
-					Utils.isArrayNotEmpty(payloadBytes) && !JAdESUtils.isUrlSafePayload(new String(payloadBytes))) {
+					Utils.isArrayNotEmpty(payloadBytes) && !DSSJsonUtils.isUrlSafePayload(new String(payloadBytes))) {
 				throw new DSSException("The payload contains not URL-safe characters! "
 						+ "With Unencoded Payload ('b64' = false) only ASCII characters in ranges %x20-2D and %x2F-7E are allowed!");
 			}
@@ -317,7 +317,7 @@ public class JAdESLevelBaselineB {
 					+ "All indications except the first one are omitted.");
 		}
 		CommitmentType commitmentType = parameters.bLevel().getCommitmentTypeIndications().iterator().next();
-		JsonObject oidObject = JAdESUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
+		JsonObject oidObject = DSSJsonUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
 		
 		Map<String, Object> srCmParams = new LinkedHashMap<>();
 		srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
@@ -433,7 +433,7 @@ public class JAdESLevelBaselineB {
 		
 		// canonicalization shall be null for content timestamps (see 5.2.6)
 		List<TimestampBinary> contentTimestampBinaries = toTimestampBinaries(parameters.getContentTimestamps());
-		JsonObject tstContainer = JAdESUtils.getTstContainer(contentTimestampBinaries, null); 
+		JsonObject tstContainer = DSSJsonUtils.getTstContainer(contentTimestampBinaries, null); 
 		addHeader(JAdESHeaderParameterNames.ADO_TST, tstContainer);
 	}
 	
@@ -463,11 +463,11 @@ public class JAdESLevelBaselineB {
 			
 			Map<String, Object> sigPIdParams = new LinkedHashMap<>();
 			
-			JsonObject oid = JAdESUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), signaturePolicy.getDocumentationReferences());
+			JsonObject oid = DSSJsonUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), signaturePolicy.getDocumentationReferences());
 			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
 			
 			if ((signaturePolicy.getDigestValue() != null) && (signaturePolicy.getDigestAlgorithm() != null)) {
-				JsonObject digAlgVal = JAdESUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
+				JsonObject digAlgVal = DSSJsonUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
 				sigPIdParams.put(JAdESHeaderParameterNames.HASH_AV, digAlgVal);
 			}
 
@@ -688,7 +688,7 @@ public class JAdESLevelBaselineB {
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		assertHttpHeadersConfigurationIsValid();
 		
-		List<HTTPHeader> httpHeaders = JAdESUtils.toHTTPHeaders(documentsToSign);
+		List<HTTPHeader> httpHeaders = DSSJsonUtils.toHTTPHeaders(documentsToSign);
 		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
 		
 		return httpHeadersPayloadBuilder.build();
@@ -702,7 +702,7 @@ public class JAdESLevelBaselineB {
                     throw new DSSException("The documents to sign must have "
                             + "a type of HTTPHeader for 'sigD' HttpHeaders mechanism!");
 				}
-				if (JAdESUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
 					if (digestDocumentFound) {                        
 						throw new DSSException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
 					}
@@ -714,7 +714,7 @@ public class JAdESLevelBaselineB {
 	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
 		try {
-			return JAdESUtils.concatenateDSSDocuments(documentsToSign);
+			return DSSJsonUtils.concatenateDSSDocuments(documentsToSign);
 		} catch (IOException e) {
 			throw new DSSException(String.format("An exception occurred during building a payload! Reason : %s", e.getMessage()), e);
 		}

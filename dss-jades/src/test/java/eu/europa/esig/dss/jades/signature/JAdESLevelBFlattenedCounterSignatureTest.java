@@ -18,7 +18,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.signature.JAdESService;
@@ -70,7 +70,7 @@ public class JAdESLevelBFlattenedCounterSignatureTest extends AbstractJAdESCount
 		assertEquals(1, jwsSignatures.size());
 		
 		JWS jws = jwsSignatures.iterator().next();
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		assertEquals(1, etsiU.size());
 		
 		Map<?, ?> item = (Map<?, ?>) etsiU.iterator().next();

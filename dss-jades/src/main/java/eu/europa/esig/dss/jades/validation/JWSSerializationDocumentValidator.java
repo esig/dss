@@ -61,9 +61,6 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			
 			JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(document);
 			JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-			if (!jwsJsonSerializationObject.isValid()) {
-				LOG.warn("The file parsing finished with the following errors : {}", jwsJsonSerializationObject.getErrorMessages());
-			}
 			
 			List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
 			LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));

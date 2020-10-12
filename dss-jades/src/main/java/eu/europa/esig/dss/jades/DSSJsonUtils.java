@@ -78,10 +78,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.jws.JAdESUtils;
 
-public class JAdESUtils {
+/**
+ * Utility class for working with JSON objects
+ *
+ */
+public class DSSJsonUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JAdESUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DSSJsonUtils.class);
 	
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
 	
@@ -131,7 +136,7 @@ public class JAdESUtils {
 				PBES2_SALT_INPUT, PBES2_ITERATION_COUNT, ENCRYPTION_METHOD, ZIP ).collect(Collectors.toSet());
 	}
 	
-	private JAdESUtils() {
+	private DSSJsonUtils() {
 	}
 	
 	/**
@@ -573,6 +578,32 @@ public class JAdESUtils {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Validates {@code JWS} against a JAdES schema (ETSI TS 119 182-1)
+	 * 
+	 * @param jws {@link JWS} to validate
+	 * @return {@link String} containing validation errors, empty string ("") if no error occurred
+	 */
+	public static String validateAgainstJAdESSchema(JWS jws) {
+		StringBuilder builder = new StringBuilder();
+		
+		String headerJson = jws.getHeaders().getFullHeaderAsJsonString();
+		String errors = JAdESUtils.getInstance().validateAgainstJWSProtectedHeaderSchema(headerJson);
+		builder.append(errors);
+		
+		Map<String, Object> unprotected = jws.getUnprotected();
+		if (Utils.isMapNotEmpty(unprotected)) {
+			String unprotectedJson = JsonUtil.toJson(unprotected);
+			errors = JAdESUtils.getInstance().validateAgainstJWSUnprotectedHeaderSchema(unprotectedJson);
+			if (Utils.isStringNotEmpty(errors)) {
+				builder.append("; ");
+				builder.append(errors);
+			}
+		}
+		
+		return builder.toString();
 	}
 
 }

@@ -17,7 +17,7 @@ import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -49,7 +49,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 
 	@Override
 	protected SignatureProperties<JAdESAttribute> getUnsignedSignatureProperties() {
-		List<Object> etsiU = JAdESUtils.getEtsiU(signature.getJws());
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
 		return new JAdESUnsignedProperties(etsiU);
 	}
 
@@ -362,7 +362,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	protected List<AdvancedSignature> getCounterSignatures(JAdESAttribute unsignedAttribute) {
 		Object cSig = unsignedAttribute.getValue();
 		if (cSig != null) {
-			JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSig, signature);
+			JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSig, signature);
 			if (counterSignature != null) {
 				return Collections.singletonList(counterSignature);
 			}

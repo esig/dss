@@ -16,19 +16,19 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JAdESUtilsTest {
+public class DSSJsonUtilsTest {
 	
 	@Test
 	public void isUrlSafePayloadTest() {
-		assertTrue(JAdESUtils.isUrlSafePayload(""));
-		assertTrue(JAdESUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9"));
-		assertTrue(JAdESUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9???!!!"));
-		assertTrue(JAdESUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb yBXb3JsZCEiDQp9"));
-		assertFalse(JAdESUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb.yBXb3JsZCEiDQp9"));
-		assertFalse(JAdESUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb\nyBXb3JsZCEiDQp9"));
-		assertFalse(JAdESUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb\ryBXb3JsZCEiDQp9"));
-		assertFalse(JAdESUtils.isUrlSafePayload("."));
-		assertFalse(JAdESUtils.isUrlSafePayload("..."));
+		assertTrue(DSSJsonUtils.isUrlSafePayload(""));
+		assertTrue(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9"));
+		assertTrue(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9???!!!"));
+		assertTrue(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb yBXb3JsZCEiDQp9"));
+		assertFalse(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb.yBXb3JsZCEiDQp9"));
+		assertFalse(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb\nyBXb3JsZCEiDQp9"));
+		assertFalse(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb\ryBXb3JsZCEiDQp9"));
+		assertFalse(DSSJsonUtils.isUrlSafePayload("."));
+		assertFalse(DSSJsonUtils.isUrlSafePayload("..."));
 	}
 	
 	@Test
@@ -67,13 +67,13 @@ public class JAdESUtilsTest {
 	@Test
 	public void isJSONDocumentTest() {
 		FileDocument jsonDoc = new FileDocument("src/test/resources/sample.json");
-		assertTrue(JAdESUtils.isJsonDocument(jsonDoc));
-		assertTrue(JAdESUtils.isJsonDocument(new FileDocument("src/test/resources/validation/jades-lta.json")));
-		assertFalse(JAdESUtils.isJsonDocument(new FileDocument("src/test/resources/validation/simple-detached.json"))); // compact serialization JAdES
-		assertFalse(JAdESUtils.isJsonDocument(new FileDocument("src/test/resources/sample.png")));
-		assertFalse(JAdESUtils.isJsonDocument(new InMemoryDocument("Hello World!".getBytes())));
-		assertFalse(JAdESUtils.isJsonDocument(new HTTPHeader("header", "ByeWorld!")));
-		assertFalse(JAdESUtils.isJsonDocument(new DigestDocument(DigestAlgorithm.SHA1, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA1, jsonDoc)))));
+		assertTrue(DSSJsonUtils.isJsonDocument(jsonDoc));
+		assertTrue(DSSJsonUtils.isJsonDocument(new FileDocument("src/test/resources/validation/jades-lta.json")));
+		assertFalse(DSSJsonUtils.isJsonDocument(new FileDocument("src/test/resources/validation/simple-detached.json"))); // compact serialization JAdES
+		assertFalse(DSSJsonUtils.isJsonDocument(new FileDocument("src/test/resources/sample.png")));
+		assertFalse(DSSJsonUtils.isJsonDocument(new InMemoryDocument("Hello World!".getBytes())));
+		assertFalse(DSSJsonUtils.isJsonDocument(new HTTPHeader("header", "ByeWorld!")));
+		assertFalse(DSSJsonUtils.isJsonDocument(new DigestDocument(DigestAlgorithm.SHA1, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA1, jsonDoc)))));
 	}
 
 }

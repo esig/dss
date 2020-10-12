@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -55,7 +55,7 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 
 			JWS jws = jadesSignature.getJws();
 			
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			if (SignatureLevel.JAdES_BASELINE_B.equals(getSignatureParameters().getSignatureLevel())) {
 				assertTrue(Utils.isCollectionEmpty(etsiU));
 			} else {
@@ -69,8 +69,8 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 				Set<String> keySet = signedHeaders.keySet();
 				assertTrue(Utils.isCollectionNotEmpty(keySet));
 				for (String signedPropertyName : keySet) {
-					assertTrue(JAdESUtils.getSupportedCriticalHeaders().contains(signedPropertyName) || 
-							JAdESUtils.getCriticalHeaderExceptions().contains(signedPropertyName));
+					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) || 
+							DSSJsonUtils.getCriticalHeaderExceptions().contains(signedPropertyName));
 				}
 				
 				Object crit = signedHeaders.get(HeaderParameterNames.CRITICAL);
@@ -79,8 +79,8 @@ public abstract class AbstractJAdESTestSignature extends AbstractPkiFactoryTestD
 				List<String> critArray = (List<String>) crit;
 				assertTrue(Utils.isCollectionNotEmpty(critArray));
 				for (String critItem : critArray) {
-					assertTrue(JAdESUtils.getSupportedCriticalHeaders().contains(critItem));
-					assertFalse(JAdESUtils.getCriticalHeaderExceptions().contains(critItem));
+					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(critItem));
+					assertFalse(DSSJsonUtils.getCriticalHeaderExceptions().contains(critItem));
 				}
 				
 			} catch (JoseException e) {

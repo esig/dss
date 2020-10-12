@@ -36,7 +36,7 @@ import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -178,7 +178,7 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 	
 	@SuppressWarnings("unchecked")
 	private void checkOnSigned(DSSDocument document, int expectedArcTsts) {
-		assertTrue(JAdESUtils.isJsonDocument(document));
+		assertTrue(DSSJsonUtils.isJsonDocument(document));
 		try {
 			byte[] binaries = DSSUtils.toByteArray(document);
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(binaries));
@@ -188,15 +188,15 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 			
 			String payload = (String) rootStructure.get(firstEntryName);
 			assertNotNull(payload);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(payload)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(payload)));
 			
 			String header = (String) rootStructure.get(JWSConstants.PROTECTED);
 			assertNotNull(header);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(header)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(header)));
 			
 			String signatureValue = (String) rootStructure.get(JWSConstants.SIGNATURE);
 			assertNotNull(signatureValue);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(signatureValue)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(signatureValue)));
 			
 			Map<String, Object> unprotected = (Map<String, Object>) rootStructure.get(JWSConstants.HEADER);
 			assertTrue(Utils.isMapNotEmpty(unprotected));

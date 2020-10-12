@@ -32,7 +32,7 @@ import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.HTTPHeaderMessageBodySignatureScope;
 import eu.europa.esig.dss.jades.HTTPHeaderSignatureScope;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -174,7 +174,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 			if (document instanceof HTTPHeader) {
 				httpHeaders.add((HTTPHeader) document);
 				
-				if (JAdESUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
 					digestHttpHeader = (HTTPHeader) document;
 				}
 			}

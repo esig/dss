@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
@@ -99,7 +99,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	private JAdESSignature extractSignatureById(JWSJsonSerializationObject jwsJsonSerializationObject, String signatureId) {
 		if (!jwsJsonSerializationObject.isValid()) {
 			throw new DSSException(String.format("Counter signature is not supported for invalid RFC 7515 files "
-					+ "(shall be a Serializable JAdES signature). Reason(s) : %s", jwsJsonSerializationObject.getErrorMessages()));
+					+ "(shall be a Serializable JAdES signature). Reason(s) : %s", jwsJsonSerializationObject.getStructuralValidationError()));
 		}
 		if (Utils.isStringEmpty(signatureId)) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
@@ -126,12 +126,12 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 			return signature;
 		}
 
-		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(signature.getJws(), JAdESHeaderParameterNames.C_SIG);
+		List<Object> cSigObjects = DSSJsonUtils.getUnsignedProperties(signature.getJws(), JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (int ii = 0; ii < cSigObjects.size(); ii++)  {
 				
 				Object cSigObject = cSigObjects.get(ii);
-				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, signature);
+				JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSigObject, signature);
 				if (counterSignature != null) {
 					// check timestamp before incorporating a new property
 					if (signature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {

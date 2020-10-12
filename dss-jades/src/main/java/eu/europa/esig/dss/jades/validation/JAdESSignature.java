@@ -21,9 +21,9 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -106,7 +106,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public Date getSigningTime() {
 		String signingTimeStr = jws.getHeaders().getStringHeaderValue(JAdESHeaderParameterNames.SIG_T);
-		return JAdESUtils.getDate(signingTimeStr);
+		return DSSJsonUtils.getDate(signingTimeStr);
 	}
 
 	/**
@@ -327,10 +327,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		
 		countersignatures = new ArrayList<>();
 		
-		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
+		List<Object> cSigObjects = DSSJsonUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (Object cSigObject : cSigObjects) {
-				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, this);
+				JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSigObject, this);
 				if (counterSignature != null) {
 					counterSignature.setSignatureFilename(getSignatureFilename());
 					countersignatures.add(counterSignature);
@@ -360,7 +360,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 			signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifier(id));
 			signaturePolicy.setDescription((String) policyId.get(JAdESHeaderParameterNames.DESC));
-			signaturePolicy.setDigest(JAdESUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
+			signaturePolicy.setDigest(DSSJsonUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
 
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
@@ -393,7 +393,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		String encodedHeader = jws.getEncodedHeader();
 		String payload = jws.isRfc7797UnencodedPayload() ? jws.getUnverifiedPayload() : jws.getEncodedPayload();
 		String encodedSignature = jws.getEncodedSignature();
-		byte[] signatureReferenceBytes = JAdESUtils.concatenate(encodedHeader, payload, encodedSignature).getBytes();
+		byte[] signatureReferenceBytes = DSSJsonUtils.concatenate(encodedHeader, payload, encodedSignature).getBytes();
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureReferenceBytes);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
@@ -512,14 +512,14 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					}
 					
 					String payload = jws.getSignedPayload();
-					String headerAndPayloadResult = JAdESUtils.concatenate(encodedHeader, payload);
+					String headerAndPayloadResult = DSSJsonUtils.concatenate(encodedHeader, payload);
 					// The data to sign by RFC 7515 shall be ASCII-encoded
-					byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadResult);
+					byte[] dataToSign = DSSJsonUtils.getAsciiBytes(headerAndPayloadResult);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
 					signatureValueReferenceValidation.setDigest(digest);
 	
-					jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
+					jws.setKnownCriticalHeaders(DSSJsonUtils.getSupportedCriticalHeaders());
 					jws.setDoKeyValidation(false); // restrict on key size,...
 	
 					CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
@@ -600,7 +600,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		 * "Signing HTTP Messages" [17].
 		 */
 		List<DSSDocument> documentsByUri = getSignedDocumentsByUri(false);
-		List<HTTPHeader> httpHeaders = JAdESUtils.toHTTPHeaders(documentsByUri);
+		List<HTTPHeader> httpHeaders = DSSJsonUtils.toHTTPHeaders(documentsByUri);
 		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
 		
 		return httpHeadersPayloadBuilder.build();
@@ -619,7 +619,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			return DSSUtils.toByteArray(signedDocumentsByUri.get(0));
 		} else {
 			try {
-				return JAdESUtils.concatenateDSSDocuments(signedDocumentsByUri);
+				return DSSJsonUtils.concatenateDSSDocuments(signedDocumentsByUri);
 			} catch (IOException e) {
 				throw new DSSException(String.format("Unable to build a payload for detached signature with ObjectIdByURI mechanism. "
 						+ "Reason : %s", e.getMessage()), e); 
@@ -794,7 +794,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private Object getUnsignedProperty(String headerName) {
-		List<Object> unsignedProperties = JAdESUtils.getUnsignedProperties(jws, headerName);
+		List<Object> unsignedProperties = DSSJsonUtils.getUnsignedProperties(jws, headerName);
 		if (Utils.isCollectionNotEmpty(unsignedProperties)) {
 			// return the first occurrence
 			return unsignedProperties.iterator().next();
@@ -862,6 +862,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private boolean hasBProfile() {
 		return getSigningTime() != null && getSignatureAlgorithm() != null;
+	}
+	
+	@Override
+	protected String validateStructure() {
+		return DSSJsonUtils.validateAgainstJAdESSchema(jws);
 	}
 
 }

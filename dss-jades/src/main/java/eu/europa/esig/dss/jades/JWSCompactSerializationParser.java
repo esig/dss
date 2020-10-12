@@ -55,9 +55,9 @@ public class JWSCompactSerializationParser {
 					if (separatorCounter > NUMBER_DOTS) {
 						return false;
 					}
-				} else if (JAdESUtils.isBase64UrlEncoded(currentByte)) {
+				} else if (DSSJsonUtils.isBase64UrlEncoded(currentByte)) {
 					// continue
-				} else if (separatorCounter == 1 && JAdESUtils.isUrlSafe(currentByte)) {
+				} else if (separatorCounter == 1 && DSSJsonUtils.isUrlSafe(currentByte)) {
 					// continue (payload can be not Base64Url encoded)
 				} else {
 					return false;

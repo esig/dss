@@ -19,7 +19,7 @@ public class JWSJsonSerializationObject {
 	private JWSSerializationType jwsSerializationType;
 	
 	/** A list of parsing errors if occurred */
-	private List<String> errors = new ArrayList<>();
+	private String structuralValidationError;
 
 	public String getPayload() {
 		if (payload == null) {
@@ -56,16 +56,16 @@ public class JWSJsonSerializationObject {
 		this.jwsSerializationType = jwsSerializationType;
 	}
 	
-	public void addErrorMessage(String error) {
-		errors.add(error);
+	public String getStructuralValidationError() {
+		return structuralValidationError;
 	}
 	
-	public String getErrorMessages() {
-		return String.join("; ", errors);
+	public void setStructuralValidationError(String structuralValidationError) {
+		this.structuralValidationError = structuralValidationError;
 	}
 	
 	public boolean isValid() {
-		return Utils.isCollectionEmpty(errors);
+		return Utils.isStringNotEmpty(structuralValidationError);
 	}
 
 }

@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.signature.AbstractJAdESTestSignature;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -84,14 +84,14 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 	
 	protected void checkPayload(String payload) {
 		assertNotNull(payload);
-		assertTrue(JAdESUtils.isBase64UrlEncoded(payload));
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded(payload));
 	}
 	
 	protected void checkProtectedHeader(String protectedHeader) throws Exception {
 		assertNotNull(protectedHeader);
-		assertTrue(JAdESUtils.isBase64UrlEncoded(protectedHeader));
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded(protectedHeader));
 		
-		String jsonString = new String(JAdESUtils.fromBase64Url(protectedHeader));
+		String jsonString = new String(DSSJsonUtils.fromBase64Url(protectedHeader));
 		Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
 		
 		checkSigningCertificate(protectedHeaderMap);
@@ -159,7 +159,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 
 	protected void checkSignatureValue(String signatureValue) {
 		assertNotNull(signatureValue);
-		assertTrue(JAdESUtils.isBase64UrlEncoded(signatureValue));
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded(signatureValue));
 	}
 	
 	protected void checkUnprotectedHeader(Map<?, ?> unprotectedHeaderMap) throws Exception {	
