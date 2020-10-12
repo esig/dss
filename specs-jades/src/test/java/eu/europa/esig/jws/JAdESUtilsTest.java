@@ -2,6 +2,7 @@ package eu.europa.esig.jws;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.util.Base64;
@@ -9,8 +10,6 @@ import java.util.Base64;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.jws.JAdESUtils;
 
 public class JAdESUtilsTest {
 	
@@ -47,6 +46,31 @@ public class JAdESUtilsTest {
 		
 		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
 		assertEquals("", errors);
+	}
+	
+	@Test
+	public void jsonFlattenedInvalidTest() {
+		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta-invalid.json");
+		JSONObject jws = jadesUtils.parseJson(is);
+		
+		String errors = jadesUtils.validateAgainstJWSSchema(jws);
+		assertTrue(errors.contains("evilPayload"));
+
+		String protectedBase64 = jws.getString("protected");
+		assertNotNull(protectedBase64);
+		
+		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64);
+		String protectedString = new String(decodedProtected);
+		
+		errors = jadesUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
+		assertTrue(errors.contains("x5t"));
+
+		JSONObject header = jws.getJSONObject("header");
+		assertNotNull(header);
+		
+		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
+		assertTrue(errors.contains("x509Cert"));
+		assertTrue(errors.contains("kid"));
 	}
 
 }

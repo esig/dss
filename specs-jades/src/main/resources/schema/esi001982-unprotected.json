@@ -121,6 +121,8 @@
 			"minItems": 1
 	    }
 		
-	}
+	},
+	
+	"additionalProperties": false
 	
 }
