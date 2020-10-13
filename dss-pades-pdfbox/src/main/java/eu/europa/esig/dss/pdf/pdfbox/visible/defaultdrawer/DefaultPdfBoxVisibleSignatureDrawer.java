@@ -27,12 +27,12 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleS
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
-	
+
 	private SignatureImageAndPosition signatureImageAndPosition;
 
 	@Override
@@ -48,22 +48,23 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 	@Override
 	public void draw() throws IOException {
 		SignatureImageAndPosition signatureImageAndPosition = buildSignatureFieldBox();
-		
+
 		int page = parameters.getFieldParameters().getPage();
-		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document, signatureImageAndPosition.getSignatureImage(), page);
+		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document,
+				signatureImageAndPosition.getSignatureImage(), page);
 
 		visibleSig.xAxis(signatureImageAndPosition.getX());
 		visibleSig.yAxis(signatureImageAndPosition.getY());
 		visibleSig.width(signatureImageAndPosition.getWidth());
 		visibleSig.height(signatureImageAndPosition.getHeight());
-		
+
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true);
 		signatureProperties.setPdVisibleSignature(visibleSig);
 		signatureProperties.buildSignature();
-		
+
 		signatureOptions.setVisualSignature(signatureProperties);
-		signatureOptions.setPage(page - PAdESUtils.DEFAULT_FIRST_PAGE); // DSS-1138
+		signatureOptions.setPage(page - ImageUtils.DEFAULT_FIRST_PAGE); // DSS-1138
 	}
 
 	@Override

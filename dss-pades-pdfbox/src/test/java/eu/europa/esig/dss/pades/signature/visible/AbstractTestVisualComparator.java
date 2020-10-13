@@ -19,31 +19,35 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
-	
+
 	/**
 	 * Comparison resolution: step in pixels in horizontal and vertical directions.
 	 */
 	private static final int CHECK_RESOLUTION = 1;
-	
+
 	private static final int DPI = 144;
-	
+
 	/**
 	 * The degree of similarity between generated and original images
 	 */
 	private static final float SIMILARITY_LIMIT = 0.987f;
-	
+
 	protected abstract String getTestName();
+
 	protected abstract PAdESService getService();
+
 	protected abstract DSSDocument getDocumentToSign();
+
 	protected abstract PAdESSignatureParameters getSignatureParameters();
-	
+
 	protected void drawAndCompareVisually() throws IOException {
 		getService().setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign(getTestName() + "_default");
@@ -52,7 +56,7 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 	}
-	
+
 	protected void drawAndCompareExplicitly() throws IOException {
 		getService().setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign("default");
@@ -60,43 +64,43 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
-		
+
 		assertTrue(areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
 	}
-	
+
 	public static boolean areVisuallyEqual(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
 		BufferedImage img1 = getRendering(dssDoc1);
 		BufferedImage img2 = getRendering(dssDoc2);
-		if (PAdESUtils.imageDimensionsEqual(img1, img2)) {
+		if (ImageUtils.imageDimensionsEqual(img1, img2)) {
 			BufferedImage outImg = new BufferedImage(img1.getWidth(), img1.getHeight(), BufferedImage.TYPE_INT_RGB);
-			int diffAmount = PAdESUtils.drawSubtractionImage(img1, img2, outImg);
+			int diffAmount = ImageUtils.drawSubtractionImage(img1, img2, outImg);
 			return diffAmount == 0;
 		}
 		return false;
 	}
 
 	private static BufferedImage getRendering(DSSDocument dssDoc) throws IOException {
-		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
-			PDFRenderer renderer = new PDFRenderer(doc);
-			return renderer.renderImage(0);
+		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(dssDoc)) {
+			return reader.generateImageScreenshot(1);
 		}
 	}
-	
+
 	protected DSSDocument sign(String docName) throws IOException {
 		ToBeSigned dataToSign = getService().getDataToSign(getDocumentToSign(), getSignatureParameters());
-		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
+				getPrivateKeyEntry());
 		DSSDocument document = getService().signDocument(getDocumentToSign(), getSignatureParameters(), signatureValue);
 		// document.save("target/" + docName + ".pdf");
 		return document;
 	}
-	
+
 	protected void compareAnnotations(DSSDocument doc1, DSSDocument doc2) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream(); 
-				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
-			assertEquals(pdDoc1.getNumberOfPages(), pdDoc2.getNumberOfPages());
-			for (int i = 0; i < pdDoc1.getNumberOfPages(); i++) {
-				PDPage page1 = pdDoc1.getPage(i);
-				PDPage page2 = pdDoc2.getPage(i);
+		try (PdfBoxDocumentReader reader1 = new PdfBoxDocumentReader(doc1);
+				PdfBoxDocumentReader reader2 = new PdfBoxDocumentReader(doc2);) {
+			assertEquals(reader1.getNumberOfPages(), reader2.getNumberOfPages());
+			for (int i = 1; i <= reader1.getNumberOfPages(); i++) {
+				PDPage page1 = reader1.getPDPage(i);
+				PDPage page2 = reader2.getPDPage(i);
 				assertEquals(page1.getRotation(), page2.getRotation());
 				assertEquals(page1.getAnnotations().size(), page2.getAnnotations().size());
 				for (int j = 0; j < page1.getAnnotations().size(); j++) {
@@ -112,19 +116,23 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 			}
 		}
 	}
-	
+
 	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
 		compareVisualSimilarity(doc1, doc2, SIMILARITY_LIMIT);
 	}
-	
-	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarityLevel) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream();
-				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
+
+	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarityLevel)
+			throws IOException {
+		try (InputStream is1 = doc1.openStream();
+				InputStream is2 = doc2.openStream();
+				PDDocument pdDoc1 = PDDocument.load(is1);
+				PDDocument pdDoc2 = PDDocument.load(is2);) {
 			checkPdfSimilarity(pdDoc1, pdDoc2, similarityLevel);
 		}
 	}
-	
-	protected void checkPdfSimilarity(PDDocument document1, PDDocument document2, float minSimilarity) throws IOException {
+
+	protected void checkPdfSimilarity(PDDocument document1, PDDocument document2, float minSimilarity)
+			throws IOException {
 		PDPageTree samplePageTree = document1.getPages();
 		PDPageTree checkPageTree = document2.getPages();
 
@@ -136,15 +144,16 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		for (int pageNumber = 0; pageNumber < checkPageTree.getCount(); pageNumber++) {
 			BufferedImage sampleImage = sampleRenderer.renderImageWithDPI(pageNumber, DPI);
 			BufferedImage checkImage = checkRenderer.renderImageWithDPI(pageNumber, DPI);
-			
-            // ImageIO.write(sampleImage, "png", new File("target\\sampleImage.png"));
-            // ImageIO.write(checkImage, "png", new File("target\\checkImage.png"));
-            
+
+			// ImageIO.write(sampleImage, "png", new File("target\\sampleImage.png"));
+			// ImageIO.write(checkImage, "png", new File("target\\checkImage.png"));
+
 			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
-			assertTrue(checkSimilarity >= minSimilarity, "The image similarity " + checkSimilarity + " is lower the allowed limit " + minSimilarity);
+			assertTrue(checkSimilarity >= minSimilarity,
+					"The image similarity " + checkSimilarity + " is lower the allowed limit " + minSimilarity);
 		}
 	}
-	
+
 	protected float checkImageSimilarity(BufferedImage sampleImage, BufferedImage checkImage, int resolution) {
 		try {
 			int width = sampleImage.getWidth();
@@ -152,10 +161,12 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 			int checkWidth = checkImage.getWidth();
 			int checkHeight = checkImage.getHeight();
 			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
-				fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+				fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth,
+						checkHeight));
 			}
 			if (width != checkWidth || height != checkHeight) {
-				fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+				fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth,
+						checkHeight));
 			}
 
 			int matchingPixels = 0;

@@ -99,9 +99,12 @@ public class AnnotationBox {
 	/**
 	 * Creates a new {@code AnnotationBox} mirrored vertically relatively to the given {@code pageHeight}
 	 * 
+	 * The basis for the method: in used pdf implementations the Y origin is bottom based, 
+	 * while in DSS parameters is top-based
+	 * 
 	 * @param pageHeight the height of a page the annotation box will be created on
 	 */
-	public AnnotationBox flipVertically(float pageHeight) {
+	public AnnotationBox toPdfPageCoordinates(float pageHeight) {
 		return new AnnotationBox(minX, pageHeight - maxY, maxX, pageHeight - minY);
 	}
 

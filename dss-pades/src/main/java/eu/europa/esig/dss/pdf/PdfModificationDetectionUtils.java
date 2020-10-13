@@ -9,7 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.PdfModification;
 
@@ -20,10 +20,10 @@ import eu.europa.esig.dss.validation.PdfModification;
 public class PdfModificationDetectionUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfModificationDetectionUtils.class);
-	
+
 	private PdfModificationDetectionUtils() {
 	}
-	
+
 	/**
 	 * Returns a list of found annotation overlaps
 	 * 
@@ -33,7 +33,7 @@ public class PdfModificationDetectionUtils {
 	 */
 	public static List<PdfModification> getAnnotationOverlaps(PdfDocumentReader reader) throws IOException {
 		List<PdfModification> annotationOverlaps = new ArrayList<>();
-		
+
 		for (int pageNumber = 1; pageNumber <= reader.getNumberOfPages(); pageNumber++) {
 			List<PdfAnnotation> pdfAnnotations = reader.getPdfAnnotations(pageNumber);
 			Iterator<PdfAnnotation> iterator = pdfAnnotations.iterator();
@@ -46,16 +46,18 @@ public class PdfModificationDetectionUtils {
 				}
 			}
 		}
-		
+
 		return annotationOverlaps;
 	}
-	
+
 	/**
-	 * Checks if the given {@code annotationBox} overlaps with {@code otherAnnotations}
+	 * Checks if the given {@code annotationBox} overlaps with
+	 * {@code otherAnnotations}
 	 * 
-	 * @param annotationBox {@link AnnotationBox} to check
+	 * @param annotationBox  {@link AnnotationBox} to check
 	 * @param pdfAnnotations a list of {@link PdfAnnotation} to validate against
-	 * @return TRUE when {@code annotationBox} overlaps with at least one element from {@code otherAnnotations} list, FALSE otherwise
+	 * @return TRUE when {@code annotationBox} overlaps with at least one element
+	 *         from {@code otherAnnotations} list, FALSE otherwise
 	 */
 	public static boolean isAnnotationBoxOverlapping(AnnotationBox annotationBox, List<PdfAnnotation> pdfAnnotations) {
 		if (annotationBox.getWidth() == 0 || annotationBox.getHeight() == 0) {
@@ -69,51 +71,59 @@ public class PdfModificationDetectionUtils {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Returns a list of visual differences found between signed and final revisions excluding newly created annotations
+	 * Returns a list of visual differences found between signed and final revisions
+	 * excluding newly created annotations
 	 * 
-	 * @param signedRevisionReader {@link PdfDocumentReader} for the signed (covered) revision content
-	 * @param finalRevisionReader {@link PdfDocumentReader} for the originally provided document
+	 * @param signedRevisionReader {@link PdfDocumentReader} for the signed
+	 *                             (covered) revision content
+	 * @param finalRevisionReader  {@link PdfDocumentReader} for the originally
+	 *                             provided document
 	 * @return a list of {@link PdfModification}s
 	 * @throws IOException if an exception occurs
 	 */
-	public static List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader, 
+	public static List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
 			PdfDocumentReader finalRevisionReader) throws IOException {
 		List<PdfModification> visualDifferences = new ArrayList<>();
-		
+
 		for (int pageNumber = 1; pageNumber <= signedRevisionReader.getNumberOfPages()
 				&& pageNumber <= finalRevisionReader.getNumberOfPages(); pageNumber++) {
-			
+
 			BufferedImage signedScreenshot = signedRevisionReader.generateImageScreenshot(pageNumber);
-			
+
 			List<PdfAnnotation> signedAnnotations = signedRevisionReader.getPdfAnnotations(pageNumber);
 			List<PdfAnnotation> finalAnnotations = finalRevisionReader.getPdfAnnotations(pageNumber);
-			
+
 			List<PdfAnnotation> addedAnnotations = getUpdatedAnnotations(signedAnnotations, finalAnnotations);
-			BufferedImage finalScreenshot = finalRevisionReader.generateImageScreenshotWithoutAnnotations(pageNumber, addedAnnotations);
-			
-			if (!PAdESUtils.imagesEqual(signedScreenshot, finalScreenshot)) {	            
-				LOG.warn("A visual difference found on page {} between a signed revision and the final document!", pageNumber);
+			BufferedImage finalScreenshot = finalRevisionReader.generateImageScreenshotWithoutAnnotations(pageNumber,
+					addedAnnotations);
+
+			if (!ImageUtils.imagesEqual(signedScreenshot, finalScreenshot)) {
+				LOG.warn("A visual difference found on page {} between a signed revision and the final document!",
+						pageNumber);
 				visualDifferences.add(new PdfModificationImpl(pageNumber));
 			}
-			
+
 		}
-		
+
 		return visualDifferences;
 	}
-	
+
 	/**
 	 * Returns a list of missing/added pages between signed and final revisions
 	 * 
-	 * @param signedRevisionReader {@link PdfDocumentReader} for the signed (covered) revision content
-	 * @param finalRevisionReader {@link PdfDocumentReader} for the originally provided document
+	 * @param signedRevisionReader {@link PdfDocumentReader} for the signed
+	 *                             (covered) revision content
+	 * @param finalRevisionReader  {@link PdfDocumentReader} for the originally
+	 *                             provided document
 	 * @return a list of {@link PdfModification}s
 	 */
-	public static List<PdfModification> getPagesDifferences(final PdfDocumentReader signedRevisionReader, final PdfDocumentReader finalRevisionReader) {
+	public static List<PdfModification> getPagesDifferences(final PdfDocumentReader signedRevisionReader,
+			final PdfDocumentReader finalRevisionReader) {
 		int signedPages = signedRevisionReader.getNumberOfPages();
 		int finalPages = finalRevisionReader.getNumberOfPages();
-		
+
 		int maxNumberOfPages = signedPages > finalPages ? signedPages : finalPages;
 		int minNumberOfPages = signedPages > finalPages ? finalPages : signedPages;
 
@@ -121,15 +131,17 @@ public class PdfModificationDetectionUtils {
 		for (int ii = maxNumberOfPages; ii > minNumberOfPages; ii--) {
 			missingPages.add(new PdfModificationImpl(ii));
 		}
-		
+
 		if (Utils.isCollectionNotEmpty(missingPages)) {
-			LOG.warn("The provided PDF file contains {} additional pages against the signed revision!", maxNumberOfPages - minNumberOfPages);
+			LOG.warn("The provided PDF file contains {} additional pages against the signed revision!",
+					maxNumberOfPages - minNumberOfPages);
 		}
-		
+
 		return missingPages;
 	}
-	
-	private static List<PdfAnnotation> getUpdatedAnnotations(List<PdfAnnotation> signedAnnotations, List<PdfAnnotation> finalAnnotations) {
+
+	private static List<PdfAnnotation> getUpdatedAnnotations(List<PdfAnnotation> signedAnnotations,
+			List<PdfAnnotation> finalAnnotations) {
 		List<PdfAnnotation> updatesAnnotations = new ArrayList<>();
 		for (PdfAnnotation annotationBox : finalAnnotations) {
 			if (!signedAnnotations.contains(annotationBox)) {

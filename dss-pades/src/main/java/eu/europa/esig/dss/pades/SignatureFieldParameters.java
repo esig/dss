@@ -22,28 +22,30 @@ package eu.europa.esig.dss.pades;
 
 import java.io.Serializable;
 
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+
 /**
  * Parameters which allow to create a new signature field in a PDF document
  */
 public class SignatureFieldParameters implements Serializable {
 
 	private static final long serialVersionUID = 4032195150617714778L;
-	
+
 	/** Signature field id/name (optional) */
 	private String fieldId;
-	
+
 	/** Page number where the signature field is added */
-	private int page = PAdESUtils.DEFAULT_FIRST_PAGE;
-	
-	/** Coordinate X where to add the signature field (origin is bottom/left corner) */
+	private int page = ImageUtils.DEFAULT_FIRST_PAGE;
+
+	/** Coordinate X where to add the signature field (origin is top/left corner) */
 	private float originX;
-	
-	/** Coordinate Y where to add the signature field (origin is bottom/left corner) */
+
+	/** Coordinate Y where to add the signature field (origin is top/left corner) */
 	private float originY;
-	
+
 	/** Signature field width */
 	private float width;
-	
+
 	/** Signature field height */
 	private float height;
 
@@ -86,36 +88,36 @@ public class SignatureFieldParameters implements Serializable {
 	}
 
 	/**
-	 * Gets a lower left X coordinate
+	 * Gets an upper left X coordinate
 	 * 
-	 * @return lower left X coordinate
+	 * @return upper left X coordinate
 	 */
 	public float getOriginX() {
 		return originX;
 	}
 
 	/**
-	 * Sets a lower left X coordinate of the signature field
+	 * Sets a upper left X coordinate of the signature field
 	 * 
-	 * @param originX lower left X coordinate
+	 * @param originX upper left X coordinate
 	 */
 	public void setOriginX(float originX) {
 		this.originX = originX;
 	}
 
 	/**
-	 * Gets a lower left Y coordinate
+	 * Gets a upper left Y coordinate
 	 * 
-	 * @return lower left Y coordinate
+	 * @return upper left Y coordinate
 	 */
 	public float getOriginY() {
 		return originY;
 	}
 
 	/**
-	 * Sets a lower left Y coordinate of the signature field
+	 * Sets a upper left Y coordinate of the signature field
 	 * 
-	 * @param originY lower left Y coordinate
+	 * @param originY upper left Y coordinate
 	 */
 	public void setOriginY(float originY) {
 		this.originY = originY;

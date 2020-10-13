@@ -54,7 +54,7 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		float pageHeight = pageRectangle.getHeight();
 		
 		AnnotationBox annotationBox = appearenceRectangle.getAnnotationBox();
-		annotationBox = annotationBox.flipVertically(pageHeight);
+		annotationBox = annotationBox.toPdfPageCoordinates(pageHeight);
 		
 		return new Rectangle(annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 	}

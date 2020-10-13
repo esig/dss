@@ -191,7 +191,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	@Override
 	public AnnotationBox getPageBox(int page) {
 		Rectangle pageRectangle = pdfReader.getPageSize(page);
-		return new AnnotationBox(0, 0, pageRectangle.getWidth(), pageRectangle.getHeight());
+		return new AnnotationBox(pageRectangle.getLeft(), pageRectangle.getBottom(), pageRectangle.getRight(), pageRectangle.getTop());
 	}
 
 	@Override
@@ -274,15 +274,13 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public BufferedImage generateImageScreenshot(int page) {
-		// not supported
-		return null;
+		throw new DSSException("The image generation is not supported with OpenPDF implementation!");
 	}
 
 	@Override
 	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations)
 			throws IOException {
-		// not supported
-		return null;
+		throw new DSSException("The image generation is not supported with OpenPDF implementation!");
 	}
 
 }
