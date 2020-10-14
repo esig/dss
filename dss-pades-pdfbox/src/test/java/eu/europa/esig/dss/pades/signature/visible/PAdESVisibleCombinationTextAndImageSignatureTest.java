@@ -38,6 +38,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -70,8 +71,11 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	public void testGeneratedImagePNGWithText() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -87,8 +91,11 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	public void testGeneratedImagePNGWithTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -104,8 +111,12 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	public void testGeneratedImageAndTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(300);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(200);
+		fieldParameters.setOriginY(300);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
@@ -143,14 +154,18 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 		imageParameters.getTextParameters().setBackgroundColor(transparent);
 		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
 		imageParameters.setBackgroundColor(transparent);
-		imageParameters.setxAxis(10);
-		imageParameters.setyAxis(10);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(10);
+		fieldParameters.setOriginY(10);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		drawAndCompareVisually();
 
 		// image and text on right and horizontal align is center with transparent colors with big image
 		imageParameters.setImage(getPngPicture());
-		imageParameters.setWidth(500);
-		imageParameters.setHeight(250);
+		fieldParameters.setWidth(500);
+		fieldParameters.setHeight(250);
 		drawAndCompareVisually();
 		
 		// image and text on right and horizontal align is center with transparent colors with big image and vertical
@@ -176,8 +191,12 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	private SignatureImageParameters createSignatureImageParameters() {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(300);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(200);
+		fieldParameters.setOriginY(300);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setTextColor(Color.BLUE);

@@ -39,6 +39,9 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
@@ -82,7 +85,15 @@ public class FormatChecking extends Chain<XmlFC> {
 		
 		// PAdES only
 		if (signature.getPDFRevision() != null) {
+			
 			item = item.setNextItem(signerInformationStoreCheck());
+			
+			item = item.setNextItem(pdfPageDifferenceCheck());
+			
+			item = item.setNextItem(pdfAnnotationOverlapCheck());
+			
+			item = item.setNextItem(pdfVisualDifferenceCheck());
+			
 		}
 
 		if (diagnosticData.isContainerInfoPresent()) {
@@ -125,6 +136,21 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> signerInformationStoreCheck() {
 		LevelConstraint constraint = policy.getSignerInformationStoreConstraint(context);
 		return new SignerInformationStoreCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfPageDifferenceCheck() {
+		LevelConstraint constraint = policy.getPdfPageDifferenceConstraint(context);
+		return new PdfPageDifferenceCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfAnnotationOverlapCheck() {
+		LevelConstraint constraint = policy.getPdfAnnotationOverlapConstraint(context);
+		return new PdfAnnotationOverlapCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfVisualDifferenceCheck() {
+		LevelConstraint constraint = policy.getPdfVisualDifferenceConstraint(context);
+		return new PdfVisualDifferenceCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

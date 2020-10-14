@@ -50,7 +50,7 @@ public class DSS1444Test {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
 			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
 			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
-			assertEquals("Cannot analyze signatures : null", exception.getMessage());
+			assertTrue(exception.getMessage().contains("Cannot analyze signatures :"));
 		}
 	}
 
@@ -66,7 +66,7 @@ public class DSS1444Test {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
 			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
 			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
-			assertEquals("Cannot analyze signatures : null", exception.getMessage());
+			assertTrue(exception.getMessage().contains("Cannot analyze signatures :"));
 		}
 	}
 

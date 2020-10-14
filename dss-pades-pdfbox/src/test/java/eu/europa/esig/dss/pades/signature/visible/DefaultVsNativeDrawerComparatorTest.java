@@ -49,6 +49,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSJavaFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -123,8 +124,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareExplicitly();
 	}
@@ -134,8 +139,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareExplicitly();
 	}
@@ -145,8 +154,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		imageParameters.setAlignmentVertical(VisualSignatureAlignmentVertical.BOTTOM);
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareExplicitly();
@@ -196,8 +209,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -214,8 +230,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -233,8 +252,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -251,11 +273,14 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
-		imageParameters.setHeight(100);
-		imageParameters.setWidth(300);
 		imageParameters.setDpi(144);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setHeight(100);
+		fieldParameters.setWidth(300);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -272,9 +297,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
 		imageParameters.setDpi(144);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -291,8 +319,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -309,10 +340,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(150);
-		imageParameters.setyAxis(150);
-		imageParameters.setWidth(300);
-		imageParameters.setHeight(200);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(150);
+		fieldParameters.setOriginY(150);
+		fieldParameters.setWidth(300);
+		fieldParameters.setHeight(200);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -329,8 +363,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(300);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(200);
+		fieldParameters.setOriginY(300);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
@@ -348,8 +386,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -367,8 +408,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(300);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(200);
+		fieldParameters.setOriginY(300);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setTextColor(Color.BLUE);
@@ -404,8 +449,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
 		imageParameters.getTextParameters().setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		imageParameters.setBackgroundColor(transparent);
-		imageParameters.setxAxis(10);
-		imageParameters.setyAxis(10);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(10);
+		fieldParameters.setOriginY(10);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		imageParameters.getTextParameters().setSignerTextVerticalAlignment(SignerTextVerticalAlignment.BOTTOM);
 		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareVisually();
@@ -434,8 +483,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
 		imageParameters.getTextParameters().setPadding(50);
 		imageParameters.setBackgroundColor(transparent);
-		imageParameters.setxAxis(150);
-		imageParameters.setyAxis(30);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(150);
+		fieldParameters.setOriginY(30);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		// with dpi
 		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
@@ -499,8 +551,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		textParameters.setFont(font);
 		imageParameters.setTextParameters(textParameters);
 		imageParameters.setBackgroundColor(new Color(0, 0, 1, 0.25f));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		signatureParameters.setImageParameters(imageParameters);
 		
 		testRotation(VisualSignatureRotation.NONE);
@@ -534,8 +590,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -547,10 +606,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(20);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(150);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -562,10 +624,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(300);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(300);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
@@ -578,10 +643,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(300);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(300);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setZoom(150);
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
@@ -595,9 +663,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(20);
 		imageParameters.setDpi(300);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -609,10 +680,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(20);
 		imageParameters.setDpi(300);
 		imageParameters.setZoom(50);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(20);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -623,16 +697,18 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	public void textExplicitFieldSizeTest() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setxAxis(50);
-		imageParameters.setyAxis(50);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(50);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(250);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Signature");
 		textParameters.setSignerTextVerticalAlignment(SignerTextVerticalAlignment.TOP);
 		imageParameters.setTextParameters(textParameters);
-		
-		imageParameters.setWidth(250);
-		imageParameters.setHeight(100);
 
 		signatureParameters.setImageParameters(imageParameters);
 
@@ -643,15 +719,18 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	public void textExplicitSizeWithZoomTest() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setxAxis(50);
-		imageParameters.setyAxis(50);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(50);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(250);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Signature");
 		imageParameters.setTextParameters(textParameters);
 		
-		imageParameters.setWidth(250);
-		imageParameters.setHeight(100);
 		imageParameters.setZoom(50);
 
 		signatureParameters.setImageParameters(imageParameters);
@@ -663,8 +742,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	public void textWithDpiTest() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setxAxis(50);
-		imageParameters.setyAxis(50);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(50);
+		fieldParameters.setOriginY(50);
+		imageParameters.setFieldParameters(fieldParameters);
 		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Signature");
@@ -681,8 +763,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	public void testWithCMYKImage() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setxAxis(50);
-		imageParameters.setyAxis(50);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(50);
+		fieldParameters.setOriginY(50);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/cmyk.jpg"), "cmyk.jpg", MimeType.JPEG));
 
 		signatureParameters.setImageParameters(imageParameters);

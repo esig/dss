@@ -92,6 +92,7 @@ public interface ValidationPolicy {
 	 * Indicates if the structural validation should be checked. If StructuralValidation element is absent within the
 	 * constraint file then null is returned.
 	 *
+	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if StructuralValidation element is present in the constraint file, null
 	 *         otherwise.
 	 */
@@ -408,6 +409,36 @@ public interface ValidationPolicy {
 	 *         the constraint file, null otherwise.
 	 */
 	LevelConstraint getSignerInformationStoreConstraint(Context context);
+	
+	/**
+	 * Indicates if a PDF page difference check should be proceeded. If PdfPageDifference element is absent within
+	 * the constraint file then null is returned.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfPageDifference element is present in the constraint file, null
+	 *         otherwise.
+	 */
+	LevelConstraint getPdfPageDifferenceConstraint(Context context);
+	
+	/**
+	 * Indicates if a PDF annotation overlapping check should be proceeded. If PdfAnnotationOverlap element is absent within
+	 * the constraint file then null is returned.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfAnnotationOverlap element is present in the constraint file, null
+	 *         otherwise.
+	 */
+	LevelConstraint getPdfAnnotationOverlapConstraint(Context context);
+	
+	/**
+	 * Indicates if a PDF visual difference check should be proceeded. If PdfVisualDifference element is absent within
+	 * the constraint file then null is returned.
+	 * 
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfVisualDifference element is present in the constraint file, null
+	 *         otherwise.
+	 */
+	LevelConstraint getPdfVisualDifferenceConstraint(Context context);
 
 	/**
 	 * This constraint checks if the certificate is not expired on best-signature-time

@@ -59,13 +59,13 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  * Validation of PDF document.
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
-	
+
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
 	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
-	
+
 	private List<PdfRevision> documentRevisions;
-	
+
 	private String passwordProtection;
 
 	PDFDocumentValidator() {
@@ -83,53 +83,54 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	public boolean isSupported(DSSDocument dssDocument) {
 		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
 	}
-	
+
 	/**
 	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
 	 * 
-	 * @param pdfObjFactory
-	 *                      the implementation to be used.
+	 * @param pdfObjFactory the implementation to be used.
 	 */
 	public void setPdfObjFactory(IPdfObjFactory pdfObjFactory) {
 		Objects.requireNonNull(pdfObjFactory, "PdfObjFactory is null");
 		this.pdfObjectFactory = pdfObjFactory;
 	}
-	
+
 	/**
 	 * Specify the used password for the encrypted document
+	 * 
 	 * @param pwd the used password
 	 */
 	public void setPasswordProtection(String pwd) {
 		this.passwordProtection = pwd;
 	}
-	
+
 	@Override
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
-		
+
 		List<AdvancedSignature> allSignatures = getAllSignatures();
 		List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
 		List<PdfDssDict> dssDictionaries = getDssDictionaries();
 
 		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps, dssDictionaries);
-		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps, dssDictionaries);
-		ListCertificateSource listCertificateSource = mergeCertificateSource(allSignatures, detachedTimestamps, dssDictionaries);
+		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps,
+				dssDictionaries);
+		ListCertificateSource listCertificateSource = mergeCertificateSource(allSignatures, detachedTimestamps,
+				dssDictionaries);
 
 		prepareCertificateVerifier(listCRLSource, listOCSPSource, listCertificateSource);
-		
+
 		prepareSignatureValidationContext(validationContext, allSignatures);
-        prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
-        populateFromDssDictionaries(validationContext, dssDictionaries);
-		
+		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
+		populateFromDssDictionaries(validationContext, dssDictionaries);
+
 		if (!skipValidationContextExecution) {
 			validateContext(validationContext);
 		}
-		
+
 		return getDiagnosticDataBuilderConfiguration(validationContext, allSignatures, listCRLSource, listOCSPSource);
 	}
-	
+
 	protected ListRevocationSource<CRL> mergeCRLSources(Collection<AdvancedSignature> allSignatures,
-			Collection<TimestampToken> timestampTokens, 
-			Collection<PdfDssDict> dssDictionaries) {
+			Collection<TimestampToken> timestampTokens, Collection<PdfDssDict> dssDictionaries) {
 		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, timestampTokens);
 		if (Utils.isCollectionNotEmpty(dssDictionaries)) {
 			for (PdfDssDict dssDictionary : dssDictionaries) {
@@ -138,10 +139,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		}
 		return listCRLSource;
 	}
- 	
+
 	protected ListRevocationSource<OCSP> mergeOCSPSources(Collection<AdvancedSignature> allSignatures,
-			Collection<TimestampToken> timestampTokens,
-			Collection<PdfDssDict> dssDictionaries) {
+			Collection<TimestampToken> timestampTokens, Collection<PdfDssDict> dssDictionaries) {
 		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, timestampTokens);
 		if (Utils.isCollectionNotEmpty(dssDictionaries)) {
 			for (PdfDssDict dssDictionary : dssDictionaries) {
@@ -150,7 +150,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		}
 		return listOCSPSource;
 	}
-	
+
 	protected void populateFromDssDictionaries(final ValidationContext validationContext, List<PdfDssDict> dssDicts) {
 		for (PdfDssDict dssDict : dssDicts) {
 			for (CertificateToken certificateToken : dssDict.getCERTs().values()) {
@@ -159,8 +159,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		}
 	}
 
-	protected ListCertificateSource mergeCertificateSource(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps,
-			List<PdfDssDict> dssDictionaries) {
+	protected ListCertificateSource mergeCertificateSource(final Collection<AdvancedSignature> allSignatureList,
+			Collection<TimestampToken> detachedTimestamps, List<PdfDssDict> dssDictionaries) {
 		ListCertificateSource allCertificatesSource = mergeCertificateSource(allSignatureList, detachedTimestamps);
 		// TODO dssDictionaries
 		return allCertificatesSource;
@@ -169,7 +169,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatures = new ArrayList<>();
-		
+
 		for (PdfRevision pdfRevision : getRevisions()) {
 			if (pdfRevision instanceof PdfSignatureRevision) {
 				PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) pdfRevision;
@@ -179,11 +179,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 					padesSignature.setSigningCertificateSource(signingCertificateSource);
 					padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 					signatures.add(padesSignature);
-					
+
 				} catch (Exception e) {
-					throw new DSSException(String.format("Unable to collect a signature. Reason : [%s]", e.getMessage()), e);
+					throw new DSSException(
+							String.format("Unable to collect a signature. Reason : [%s]", e.getMessage()), e);
 				}
-				
+
 			}
 		}
 		Collections.reverse(signatures);
@@ -193,39 +194,42 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public List<TimestampToken> getDetachedTimestamps() {
 		final List<TimestampToken> timestamps = new ArrayList<>();
-		
+
 		for (PdfRevision pdfRevision : getRevisions()) {
 			if (pdfRevision instanceof PdfDocTimestampRevision) {
 				PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
 				try {
-					TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision, 
+					TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision,
 							TimestampType.CONTENT_TIMESTAMP, TimestampLocation.DOC_TIMESTAMP);
 					timestampToken.setFileName(document.getName());
 					timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getRevisionCoveredBytes()));
-					
+
 					PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
 					signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-					timestampToken.setTimestampScopes(Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
-					
+					timestampToken.setTimestampScopes(
+							Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
+
 					timestamps.add(timestampToken);
-						
+
 				} catch (Exception e) {
-					throw new DSSException(String.format("Unable to collect a timestamp. Reason : [%s]", e.getMessage()), e);
+					throw new DSSException(
+							String.format("Unable to collect a timestamp. Reason : [%s]", e.getMessage()), e);
 				}
-				
+
 			}
 		}
 		Collections.reverse(timestamps);
 		return timestamps;
 	}
-	
+
 	/**
 	 * Returns a list of found DSS Dictionaries across different revisions
+	 * 
 	 * @return list of {@link PdfDssDict}s
 	 */
 	public List<PdfDssDict> getDssDictionaries() {
 		List<PdfDssDict> docDssRevisions = new ArrayList<>();
-		
+
 		for (PdfRevision pdfRevision : getRevisions()) {
 			if (pdfRevision instanceof PdfDocDssRevision) {
 				PdfDocDssRevision dssRevision = (PdfDocDssRevision) pdfRevision;
@@ -235,7 +239,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		Collections.reverse(docDssRevisions);
 		return docDssRevisions;
 	}
-	
+
 	protected List<PdfRevision> getRevisions() {
 		if (documentRevisions == null) {
 			PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
@@ -255,7 +259,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		}
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		PAdESSignature padesSignature = (PAdESSignature) advancedSignature;

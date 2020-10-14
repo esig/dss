@@ -41,6 +41,9 @@
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SignerInformationStore Level="FAIL" />
+			<PdfPageDifference Level="FAIL" />
+			<PdfAnnotationOverlap Level="WARN" />
+			<PdfVisualDifference Level="WARN" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
 <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
 <!-- 			</TrustedServiceTypeIdentifier> -->

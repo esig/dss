@@ -36,7 +36,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class PAdESSignatureFieldTest {
+public class PDFBoxSignatureFieldTest {
 
 	private PAdESService padesService = new PAdESService(new CommonCertificateVerifier());
 
@@ -52,8 +52,8 @@ public class PAdESSignatureFieldTest {
 		assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setPage(0);
-		parameters.setName("signature-test");
+		parameters.setPage(1);
+		parameters.setFieldId("signature-test");
 		parameters.setOriginX(50);
 		parameters.setOriginY(50);
 		parameters.setWidth(200);
@@ -66,10 +66,10 @@ public class PAdESSignatureFieldTest {
 		assertTrue(availableSignatureFields.contains("signature-test"));
 
 		parameters = new SignatureFieldParameters();
-		parameters.setPage(0);
-		parameters.setName("signature-test2");
-		parameters.setOriginX(100);
-		parameters.setOriginY(100);
+		parameters.setPage(1);
+		parameters.setFieldId("signature-test2");
+		parameters.setOriginX(300);
+		parameters.setOriginY(50);
 		parameters.setWidth(50);
 		parameters.setHeight(50);
 
@@ -85,7 +85,7 @@ public class PAdESSignatureFieldTest {
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
 		parameters.setPage(10);
-		parameters.setName("signature-test");
+		parameters.setFieldId("signature-test");
 		parameters.setOriginX(50);
 		parameters.setOriginY(50);
 		parameters.setWidth(200);
@@ -93,7 +93,7 @@ public class PAdESSignatureFieldTest {
 
 		Exception exception = assertThrows(DSSException.class,
 				() -> padesService.addNewSignatureField(document, parameters));
-		assertEquals("Unable to add a new signature fields", exception.getMessage());
+		assertEquals("The page number '10' does not exist in the file!", exception.getMessage());
 	}
 
 }

@@ -35,6 +35,7 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -81,7 +82,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 	@Test
 	public void testGeneratedTextOnly() throws IOException {
 
-		signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 		signAndValidate(documentToSign);
@@ -94,7 +95,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setName("test");
+		parameters.setFieldId("test");
 		parameters.setOriginX(10);
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
@@ -104,41 +105,41 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		// Sign twice
 
-		signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
 
 		DSSDocument doc2 = signAndValidate(doc);
 		assertNotNull(doc2);
 
-		signatureParameters.setSignatureFieldId("test");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("test");
 
 		DSSDocument doc3 = signAndValidate(doc2);
 		assertNotNull(doc3);
 	}
-	
+
 	@Test
 	public void testSignTwoFields() throws IOException {
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-		
+
 		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
 		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
-		
+
 		// add first field
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setName("signature1");
+		parameters.setFieldId("signature1");
 		parameters.setOriginX(10);
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
 		parameters.setWidth(50);
 		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(withFirstField);
-		
+
 		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
 		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
 
 		// add second field
 		parameters = new SignatureFieldParameters();
-		parameters.setName("signature2");
+		parameters.setFieldId("signature2");
 		parameters.setOriginX(100);
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
@@ -148,36 +149,36 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		assertEquals(4, countStringOccurance(secondField, "startxref"));
 		assertEquals(4, countStringOccurance(secondField, "%%EOF"));
-		
+
 		// sign first field
-		signatureParameters.setSignatureFieldId("signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument firstSigned = signAndValidate(secondField);
 		assertNotNull(firstSigned);
-		
+
 		assertEquals(5, countStringOccurance(firstSigned, "startxref"));
 		assertEquals(5, countStringOccurance(firstSigned, "%%EOF"));
 
 		// sign second field
-		signatureParameters.setSignatureFieldId("signature2");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
 		DSSDocument secondSigned = signAndValidate(firstSigned);
 		assertNotNull(secondSigned);
-		
+
 		assertEquals(6, countStringOccurance(secondSigned, "startxref"));
 		assertEquals(6, countStringOccurance(secondSigned, "%%EOF"));
-		
+
 	}
-	
+
 	@Test
 	public void createAndSignConsequently() throws IOException {
-		
+
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
 		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
 		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
-		
+
 		// add field and sign
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setName("signature1");
+		parameters.setFieldId("signature1");
 		parameters.setOriginX(10);
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
@@ -188,16 +189,16 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
 		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
 
-		signatureParameters.setSignatureFieldId("signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument firstSigned = signAndValidate(withFirstField);
 		assertNotNull(firstSigned);
 
 		assertEquals(4, countStringOccurance(firstSigned, "startxref"));
 		assertEquals(4, countStringOccurance(firstSigned, "%%EOF"));
-		
+
 		// add a new field and second sign
 		parameters = new SignatureFieldParameters();
-		parameters.setName("signature2");
+		parameters.setFieldId("signature2");
 		parameters.setOriginX(100);
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
@@ -208,7 +209,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertEquals(5, countStringOccurance(secondField, "startxref"));
 		assertEquals(5, countStringOccurance(secondField, "%%EOF"));
 
-		signatureParameters.setSignatureFieldId("signature2");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
 		DSSDocument secondSigned = signAndValidate(secondField);
 		assertNotNull(secondSigned);
 
@@ -216,39 +217,39 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertEquals(6, countStringOccurance(secondSigned, "%%EOF"));
 
 	}
-	
+
 	@Test
 	public void createFieldInEmptyDocument() throws IOException {
-		
+
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
-		
+
 		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
 		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
-		
+
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setName("signature1");
+		parameters.setFieldId("signature1");
 		parameters.setOriginX(10);
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
 		parameters.setWidth(50);
 		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(withFirstField);
-		
+
 		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
 		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
 
-		signatureParameters.setSignatureFieldId("signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument firstSigned = signAndValidate(withFirstField);
 		assertNotNull(firstSigned);
-		
+
 		assertEquals(4, countStringOccurance(firstSigned, "startxref"));
 		assertEquals(4, countStringOccurance(firstSigned, "%%EOF"));
-		
+
 	}
 
 	@Test
 	public void testSignTwiceSameField() throws IOException {
-		signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 		DSSDocument doc = signAndValidate(documentToSign);
@@ -259,16 +260,242 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 	@Test
 	public void testFieldNotFound() throws IOException {
-		signatureParameters.setSignatureFieldId("not-found");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("not-found");
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 		assertThrows(DSSException.class, () -> signAndValidate(documentToSign));
+	}
 
+	@Test
+	public void fieldsOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+
+		parameters.setFieldId("signature2");
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(withFirstField, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void differentPagesTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/empty-two-pages.pdf"));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		parameters.setPage(1);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+
+		parameters.setFieldId("signature2");
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(withFirstField, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parameters.setPage(2);
+		DSSDocument withTwoFields = service.addNewSignatureField(withFirstField, parameters);
+
+		assertEquals(2, service.getAvailableSignatureFields(withTwoFields).size());
+	}
+
+	@Test
+	public void fieldInsideAnotherTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(25);
+		parametersTwo.setOriginY(25);
+		parametersTwo.setHeight(50);
+		parametersTwo.setWidth(50);
+		parametersTwo.setFieldId("signature2");
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void oneCornerOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(75);
+		parametersTwo.setOriginY(75);
+		parametersTwo.setHeight(100);
+		parametersTwo.setWidth(100);
+		parametersTwo.setFieldId("signature2");
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void twoCornersOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(75);
+		parametersTwo.setOriginY(25);
+		parametersTwo.setHeight(50);
+		parametersTwo.setWidth(50);
+		parametersTwo.setFieldId("signature2");
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void sameEdgeTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(100);
+		parametersTwo.setOriginY(0);
+		parametersTwo.setHeight(100);
+		parametersTwo.setWidth(100);
+		parametersTwo.setFieldId("signature2");
+		DSSDocument withSecondField = service.addNewSignatureField(withFirstField, parametersTwo);
+		assertNotNull(withSecondField);
+
+		assertEquals(2, service.getAvailableSignatureFields(withSecondField).size());
+
+		parametersTwo.setOriginX(99);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(withFirstField, parametersTwo));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void annotationOverlapTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(150);
+		parametersOne.setOriginY(150);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void fieldOverCommentTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void fieldOverTextNoteTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(100);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void fieldOverDrawingTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(300);
+		parametersOne.setOriginY(25);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void fieldOverShapeTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(200);
+		parametersOne.setHeight(50);
+		parametersOne.setWidth(50);
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(documentToSign, parametersOne));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(400);
+		DSSDocument document = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(document);
 	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// signedDocument.save("target/test.pdf");
@@ -290,16 +517,17 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 				assertTrue(digestMatcher.isDataIntact());
 			}
 		}
-		
+
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
 		return signedDocument;
 	}
-	
+
 	private int countStringOccurance(DSSDocument document, String textToCheck) {
 		int counter = 0;
 		String line;
-		try (InputStream is = document.openStream(); InputStreamReader isr = new InputStreamReader(is);
+		try (InputStream is = document.openStream();
+				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr)) {
 			while ((line = br.readLine()) != null) {
 				if (line.contains(textToCheck)) {

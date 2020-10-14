@@ -139,11 +139,6 @@ public class RemoteSignatureParameters implements Serializable {
 	 * PAdES: The image information to be included.
 	 */
 	private RemoteSignatureImageParameters imageParameters;
-	
-	/**
-	 * PAdES: defines a custom signatureFieldId to sign
-	 */
-	private String signatureFieldId;
 
 	public RemoteSignatureParameters() {
 	}
@@ -501,32 +496,13 @@ public class RemoteSignatureParameters implements Serializable {
 		this.imageParameters = imageParameters;
 	}
 
-	/**
-	 * Get the signature field id to create a signature into
-	 *
-	 * @return {@link String} signature field Id
-	 */
-	public String getSignatureFieldId() {
-		return signatureFieldId;
-	}
-
-	/**
-	 * Set the signature field id to create a signature into
-	 *
-	 * @param signatureFieldId {@link String} signature field Id
-	 */
-	public void setSignatureFieldId(String signatureFieldId) {
-		this.signatureFieldId = signatureFieldId;
-	}
-
 	@Override
 	public String toString() {
 		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel + ", generateTBSWithoutCertificate="
 				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
 				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", maskGenerationFunction=" 
 				+ maskGenerationFunction + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" 
-				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters + ", signatureFieldId="
-				+ signatureFieldId + "]";
+				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters  + "]";
 	}
 
 	@Override
@@ -549,7 +525,6 @@ public class RemoteSignatureParameters implements Serializable {
 		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
 		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
 		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
-		result = prime * result + ((signatureFieldId == null) ? 0 : signatureFieldId.hashCode());
 		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
 		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
 		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
@@ -643,13 +618,6 @@ public class RemoteSignatureParameters implements Serializable {
 			return false;
 		}
 		if (signatureAlgorithm != other.signatureAlgorithm) {
-			return false;
-		}
-		if (signatureFieldId == null) {
-			if (other.signatureFieldId != null) {
-				return false;
-			}
-		} else if (!signatureFieldId.equals(other.signatureFieldId)) {
 			return false;
 		}
 		if (signatureLevel != other.signatureLevel) {

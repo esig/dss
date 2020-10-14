@@ -35,11 +35,6 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	protected Date timestampDate = new Date();
 	
 	/**
-	 * This attribute used to define a field ID where the timestamp must be placed to
-	 */
-	private String timestampFieldId;
-	
-	/**
 	 * This attribute define a length of a reserved space for the timestamp inside a /Contents attribute
 	 * 
 	 * Default value is 9472 (from PDFBox)
@@ -101,6 +96,9 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 
 	@Override
 	public SignatureImageParameters getImageParameters() {
+		if (timestampImageParameters == null) {
+			timestampImageParameters = new SignatureImageParameters();
+		}
 		return timestampImageParameters;
 	}
 
@@ -125,13 +123,16 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampDate;
 	}
 
-	@Override
-	public String getFieldId() {
-		return timestampFieldId;
-	}
-
+	/**
+	 * Sets signature field id where the timestamp will be placed on
+	 * 
+	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setFieldId()}
+	 * 
+	 * @param timestampFieldId
+	 */
+	@Deprecated
 	public void setFieldId(String timestampFieldId) {
-		this.timestampFieldId = timestampFieldId;
+		getImageParameters().getFieldParameters().setFieldId(timestampFieldId);
 	}
 
 	@Override

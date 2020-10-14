@@ -29,6 +29,14 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 
 public interface ITextSignatureDrawer extends SignatureDrawer {
 
+	/**
+	 * Initializes the drawer
+	 * 
+	 * @param signatureFieldId {@link String}
+	 * @param parameters {@link SignatureImageParameters}
+	 * @param appearance {@link PdfSignatureAppearance}
+	 * @throws IOException if an exception occurs
+	 */
 	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException;
 
 }

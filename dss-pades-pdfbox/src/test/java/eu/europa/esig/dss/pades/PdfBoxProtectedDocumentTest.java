@@ -140,16 +140,16 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		assertEquals(0, signatureFields.size());
 		
 		SignatureFieldParameters signatureFieldParameters = new SignatureFieldParameters();
-		signatureFieldParameters.setPage(0);
+		signatureFieldParameters.setPage(1);
 		String firstFieldName = "SignatureField1";
-		signatureFieldParameters.setName(firstFieldName);
+		signatureFieldParameters.setFieldId(firstFieldName);
 		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
 		
 		signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
 		assertEquals(1, signatureFields.size());
 
 		String secondFieldName = "SignatureField2";
-		signatureFieldParameters.setName(secondFieldName);
+		signatureFieldParameters.setFieldId(secondFieldName);
 		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
 		
 		signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
@@ -164,7 +164,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setPasswordProtection(correctProtectionPhrase);
-		signatureParameters.setSignatureFieldId(firstFieldName);
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(firstFieldName);
 		
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),

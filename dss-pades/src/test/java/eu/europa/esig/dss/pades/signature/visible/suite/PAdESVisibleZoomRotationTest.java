@@ -38,6 +38,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -68,10 +69,14 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	public void testNoTransformations() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getRedBox());
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(300);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(20);
+	    fieldParameters.setOriginY(50);
+	    fieldParameters.setWidth(100);
+	    fieldParameters.setHeight(300);
+	    imageParameters.setFieldParameters(fieldParameters);
+	    
 		signatureParameters.setImageParameters(imageParameters);
 		
 		signAndValidate();
@@ -81,10 +86,13 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	public void testZoomOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getRedBox());
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(300);
+		
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(20);
+	    fieldParameters.setOriginY(50);
+	    fieldParameters.setWidth(100);
+	    fieldParameters.setHeight(300);
+	    imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setZoom(200);
 		signatureParameters.setImageParameters(imageParameters);
@@ -96,10 +104,13 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	public void testRotationOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getRedBox());
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(300);
+
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(20);
+	    fieldParameters.setOriginY(50);
+	    fieldParameters.setWidth(100);
+	    fieldParameters.setHeight(300);
+	    imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
@@ -111,10 +122,13 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	public void testZoomAndRotation() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getRedBox());
-		imageParameters.setxAxis(20);
-		imageParameters.setyAxis(50);
-		imageParameters.setWidth(100);
-		imageParameters.setHeight(300);
+
+	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+	    fieldParameters.setOriginX(20);
+	    fieldParameters.setOriginY(50);
+	    fieldParameters.setWidth(100);
+	    fieldParameters.setHeight(300);
+	    imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setZoom(200);
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);

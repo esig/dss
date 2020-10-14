@@ -22,11 +22,14 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import java.io.IOException;
 
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 
-public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer {
+public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer, SignatureFieldBoxBuilder {
 
 	protected String signatureFieldId;
 	protected SignatureImageParameters parameters;
@@ -37,6 +40,23 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		this.signatureFieldId = signatureFieldId;
 		this.parameters = parameters;
 		this.appearance = appearance;
+	}
+	
+	/**
+	 * Transforms the given {@code appearenceRectangle} to a {@code com.lowagie.text.Rectangle} 
+	 * with the given page size
+	 * 
+	 * @param appearenceRectangle {@link ITextVisualSignatureAppearence}
+	 * @return {@link com.lowagie.text.Rectangle}
+	 */
+	protected Rectangle toITextRectangle(ITextVisualSignatureAppearence appearenceRectangle) {
+		Rectangle pageRectangle = appearance.getStamper().getReader().getPageSize(parameters.getFieldParameters().getPage());
+		float pageHeight = pageRectangle.getHeight();
+		
+		AnnotationBox annotationBox = appearenceRectangle.getAnnotationBox();
+		annotationBox = annotationBox.toPdfPageCoordinates(pageHeight);
+		
+		return new Rectangle(annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 	}
 
 }

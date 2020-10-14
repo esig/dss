@@ -151,6 +151,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getPdfPageDifferenceConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getPdfPageDifference();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getPdfAnnotationOverlapConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getPdfAnnotationOverlap();
+		}
+		return null;
+	}
+	
+	@Override
+	public LevelConstraint getPdfVisualDifferenceConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getPdfVisualDifference();
+		}
+		return null;
+	}
 
 	@Override
 	public LevelConstraint getStructuralValidationConstraint(Context context) {

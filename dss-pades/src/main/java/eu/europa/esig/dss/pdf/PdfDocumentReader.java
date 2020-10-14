@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
@@ -52,5 +53,48 @@ public interface PdfDocumentReader extends Closeable {
 	 * @return TRUE if the signature covers the whole document, false otherwise
 	 */
 	boolean isSignatureCoversWholeDocument(PdfSignatureDictionary signatureDictionary);
+	
+	/**
+	 * Returns an amount of pages found in the document
+	 * 
+	 * @return number of pages
+	 */
+	int getNumberOfPages();
+	
+	/**
+	 * Returns a page box dimensions
+	 * 
+	 * @param page number
+	 * @return {@link AnnotationBox} representing page dimensions
+	 */
+	AnnotationBox getPageBox(int page);
+	
+	/**
+	 * Retrieves all annotations found in the document
+	 * 
+	 * @param page number
+	 * @return a list of {@link PdfAnnotation}s associated with the given page
+	 * @throws IOException if an exception occurs
+	 */
+	List<PdfAnnotation> getPdfAnnotations(int page) throws IOException;
+	
+	/**
+	 * Generates the image screenshot for the given page of the PDF
+	 * 
+	 * @param page number to be generated
+	 * @return {@link BufferedImage} screenshot for the given page
+	 * @throws IOException if an exception occurs
+	 */
+	BufferedImage generateImageScreenshot(int page) throws IOException;
+	
+	/**
+	 * Generates the image screenshot by hiding the given list of {@code annotationBoxes}
+	 * 
+	 * @param page number to be generated
+	 * @param addedAnnotations a list of {@link PdfAnnotation}s to be hidden
+	 * @return {@link BufferedImage} screenshot for the given page
+	 * @throws IOException if an exception occurs
+	 */
+	BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> addedAnnotations) throws IOException;
 
 }

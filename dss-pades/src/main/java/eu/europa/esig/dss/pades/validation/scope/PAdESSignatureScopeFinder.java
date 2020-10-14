@@ -33,7 +33,8 @@ import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
- * The classes finds a signer data for a PAdESSignature / PdfSignatureOrDocTimestampInfo instance
+ * The classes finds a signer data for a PAdESSignature /
+ * PdfSignatureOrDocTimestampInfo instance
  *
  */
 public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdESSignature> {
@@ -42,20 +43,20 @@ public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdE
 	public List<SignatureScope> findSignatureScope(final PAdESSignature pAdESSignature) {
 		return Arrays.asList(findSignatureScope(pAdESSignature.getPdfRevision()));
 	}
-	
+
 	public SignatureScope findSignatureScope(final PdfCMSRevision pdfRevision) {
-			
+
 		if (pdfRevision.areAllOriginalBytesCovered()) {
 			return new FullSignatureScope("Full PDF", getOriginalPdfDigest(pdfRevision));
 		} else {
-			return new PdfByteRangeSignatureScope("Partial PDF", pdfRevision.getByteRange(), 
+			return new PdfByteRangeSignatureScope("Partial PDF", pdfRevision.getByteRange(),
 					getOriginalPdfDigest(pdfRevision));
 		}
 	}
-	
+
 	private Digest getOriginalPdfDigest(final PdfCMSRevision pdfRevision) {
 		DSSDocument originalDocument = PAdESUtils.getOriginalPDF(pdfRevision);
 		return getDigest(originalDocument);
 	}
-	
+
 }

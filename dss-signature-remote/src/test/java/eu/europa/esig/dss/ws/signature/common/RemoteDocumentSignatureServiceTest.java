@@ -62,6 +62,7 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureFieldParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageTextParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
@@ -225,11 +226,13 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		imageParameters.setRotation(VisualSignatureRotation.NONE);
 		imageParameters.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.NONE);
 		imageParameters.setAlignmentVertical(VisualSignatureAlignmentVertical.MIDDLE);
-		imageParameters.setPage(1);
-		imageParameters.setxAxis(200.F);
-		imageParameters.setyAxis(100.F);
-		imageParameters.setWidth(130);
-		imageParameters.setHeight(50);
+		
+		RemoteSignatureFieldParameters fieldParameters = new RemoteSignatureFieldParameters();
+		fieldParameters.setPage(1);
+		fieldParameters.setOriginX(200.F);
+		fieldParameters.setOriginY(100.F);
+		fieldParameters.setWidth(130.F);
+		fieldParameters.setHeight(50.F);
 
 		RemoteSignatureImageTextParameters textParameters = new RemoteSignatureImageTextParameters();
 		textParameters.setText("Signature");
@@ -259,11 +262,16 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 	@Test
 	public void testWithSignatureFieldId() throws Exception {
+		RemoteSignatureImageParameters imageParameters = new RemoteSignatureImageParameters();
+		RemoteSignatureFieldParameters fieldParameters = new RemoteSignatureFieldParameters();
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		parameters.setSignatureFieldId("signature-test");
+		parameters.setImageParameters(imageParameters);
+		fieldParameters.setFieldId("signature-test");
 
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample-with-empty-signature-fields.pdf"));
 		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
@@ -281,8 +289,8 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(1, signature.getSignatureFieldNames().size());
 		assertEquals("signature-test", signature.getSignatureFieldNames().get(0));
-		
-		parameters.setSignatureFieldId(null);
+
+		fieldParameters.setFieldId(null);
 		
 		dataToSign = signatureService.getDataToSign(signedDocument, parameters);
 		assertNotNull(dataToSign);
@@ -299,7 +307,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		assertNotEquals("signature-test", diagnosticData.getSignatures().get(1).getSignatureFieldNames().get(0));
 		assertNotEquals("signature-test2", diagnosticData.getSignatures().get(1).getSignatureFieldNames().get(0));
 
-		parameters.setSignatureFieldId("signature-test");
+		fieldParameters.setFieldId("signature-test");
 
 		Exception exception = assertThrows(DSSException.class,() -> signatureService.getDataToSign(signedTwiceDocument, parameters));
 		assertEquals("The signature field 'signature-test' can not be signed since its already signed.", exception.getMessage());

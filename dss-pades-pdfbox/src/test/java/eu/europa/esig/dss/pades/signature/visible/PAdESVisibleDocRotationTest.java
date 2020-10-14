@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 
@@ -67,8 +68,12 @@ public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 		imageParameters.setZoom(50);
-		imageParameters.setxAxis(100);
-		imageParameters.setyAxis(100);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+		
 		signatureParameters.setImageParameters(imageParameters);
 
 		drawAndCompareVisually();

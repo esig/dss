@@ -28,6 +28,7 @@ import org.bouncycastle.cms.CMSSignedData;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.validation.PdfModificationDetection;
 import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
@@ -43,6 +44,8 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private final boolean coverAllOriginalBytes;
 	
 	private final List<String> signatureFieldNames;
+	
+	private PdfModificationDetection modificationDetection;
 
 	/**
 	 *
@@ -97,6 +100,15 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	
 	public CMSSignedData getCMSSignedData() {
 		return signatureDictionary.getCMSSignedData();
+	}
+
+	@Override
+	public PdfModificationDetection getModificationDetection() {
+		return modificationDetection;
+	}
+
+	public void setModificationDetection(PdfModificationDetection modificationDetection) {
+		this.modificationDetection = modificationDetection;
 	}
 
 }

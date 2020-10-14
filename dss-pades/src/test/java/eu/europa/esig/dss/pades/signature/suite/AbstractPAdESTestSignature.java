@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -111,7 +112,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		int availableSignatureFieldsNumber = availableSignatureFields.size();
 
 		if ((originalSignatureFieldsNumber > 0)) {
-			if (originalSignatureFields.contains(getSignatureParameters().getFieldId())) {
+			if (originalSignatureFields.contains(getSignatureParameters().getImageParameters().getFieldParameters().getFieldId())) {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber - 1);
 			} else {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber);
@@ -179,6 +180,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(signature.getFilter());
 			assertNotNull(signature.getSubFilter());
 			assertNotNull(signature.getSignatureByteRange());
+			
+			assertFalse(signature.arePdfModificationsDetected());
 		}
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
@@ -190,7 +193,9 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 				assertNotNull(timestamp.getSignatureDictionaryType());
 				assertNotNull(timestamp.getFilter());
 				assertNotNull(timestamp.getSubFilter());
-				assertNotNull(timestamp.getSignatureByteRange());
+				assertNotNull(timestamp.getSignatureByteRange());		
+				
+				assertFalse(timestamp.arePdfModificationsDetected());
 			}
 		}
 	}
