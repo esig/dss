@@ -18,8 +18,8 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -48,6 +48,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		extractX5T();
 		extractX5TS256();
 		extractX5TO();
+		extractSigX5Ts();
 
 		// certificate chain
 		extractX5C();
@@ -75,19 +76,30 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX5TO() {
-		List<?> x5to = (List<?>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
-		if (Utils.isCollectionNotEmpty(x5to)) {
-			for (Object item : x5to) {
+		Map<?, ?> x5TO = (Map<?, ?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
+		extractX5TO(x5TO);
+	}
+
+	private void extractX5TO(Map<?, ?> x5TO) {
+		if (x5TO != null) {
+			CertificateRef certRef = new CertificateRef();
+			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+			certRef.setCertDigest(DSSJsonUtils.getDigest(x5TO));
+
+			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+		}
+	}
+
+	private void extractSigX5Ts() {
+		List<?> sigX5ts = (List<?>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_X5T_S);
+		if (Utils.isCollectionNotEmpty(sigX5ts)) {
+			for (Object item : sigX5ts) {
 				if (item instanceof Map<?, ?>) {
-					Map<?, ?> digestValueAndAlgo = (Map<?, ?>) item;
-
-					CertificateRef certRef = new CertificateRef();
-					certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-					certRef.setCertDigest(DSSJsonUtils.getDigest(digestValueAndAlgo));
-
-					addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+					Map<?, ?> x5TO = (Map<?, ?>) item;
+					extractX5TO(x5TO);
 				} else {
-					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.X5T_O, item.getClass());
+					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.SIG_X5T_S, item.getClass());
 				}
 			}
 		}

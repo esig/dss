@@ -149,8 +149,8 @@ public class JWSJsonSerializationParser {
 	
 	private String validateJWSStructure(String jsonDocument) {
 		String validationErrors = JAdESUtils.getInstance().validateAgainstJWSSchema(jsonDocument);
-		if (Utils.isStringNotEmpty(validationErrors)) {
-			LOG.warn("The provided JSON file failed against JWS Schema : {}", validationErrors);
+		if (LOG.isDebugEnabled() && Utils.isStringNotEmpty(validationErrors)) {
+			LOG.debug("The provided JSON file failed against JWS Schema : {}", validationErrors);
 		}
 		return validationErrors;
 	}

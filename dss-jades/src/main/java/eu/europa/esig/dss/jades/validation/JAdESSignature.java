@@ -174,11 +174,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PL);
 		if (signaturePlace != null) {
 			SignatureProductionPlace result = new SignatureProductionPlace();
-			result.setCity((String) signaturePlace.get(JAdESHeaderParameterNames.CITY));
-			result.setStreetAddress((String) signaturePlace.get(JAdESHeaderParameterNames.STR_ADDR));
-			result.setPostalCode((String) signaturePlace.get(JAdESHeaderParameterNames.POST_CODE));
-			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.STAT_PROV));
-			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.COUNTRY));
+			result.setCity((String) signaturePlace.get(JAdESHeaderParameterNames.ADDRESS_LOCALITY));
+			result.setStreetAddress((String) signaturePlace.get(JAdESHeaderParameterNames.STREET_ADDRESS));
+			result.setPostOfficeBoxNumber((String) signaturePlace.get(JAdESHeaderParameterNames.POST_OFFICE_BOX_NUMBER));
+			result.setPostalCode((String) signaturePlace.get(JAdESHeaderParameterNames.POSTAL_CODE));
+			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.ADDRESS_REGION));
+			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.ADDRESS_COUNTRY));
 			return result;
 		}
 		return null;
@@ -226,18 +227,26 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<CommitmentTypeIndication> getCommitmentTypeIndications() {
 		List<CommitmentTypeIndication> result = new ArrayList<>();
-		Map<?, ?> signedCommitment = (Map<?, ?>) jws.getHeaders()
-				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CM);
-		if (signedCommitment != null) {
-			Map<? ,?> commIdMap = (Map<? ,?>) signedCommitment.get(JAdESHeaderParameterNames.COMM_ID);
-			String uri = (String) commIdMap.get(JAdESHeaderParameterNames.ID);
-			if (Utils.isStringNotBlank(uri)) {
-				CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
-				commitmentTypeIndication.setDescription((String) commIdMap.get(JAdESHeaderParameterNames.DESC));
-				commitmentTypeIndication.setDocumentReferences((List<String>) commIdMap.get(JAdESHeaderParameterNames.DOC_REFS));
-				result.add(commitmentTypeIndication);
-			} else {
-				LOG.warn("Id parameter in the OID with the value '{}' is not conformant! The entry is skipped.", uri);
+		List<?> signedCommitments = (List<?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CMS);
+		if (Utils.isCollectionNotEmpty(signedCommitments)) {
+			for (Object signedCommitment : signedCommitments) {
+				if (signedCommitment instanceof Map<?, ?>) {
+					Map<?, ?> signedCommitmentMap = (Map<?, ?>) signedCommitment;
+					Map<?, ?> commIdMap = (Map<?, ?>) signedCommitmentMap.get(JAdESHeaderParameterNames.COMM_ID);
+					String uri = (String) commIdMap.get(JAdESHeaderParameterNames.ID);
+					if (Utils.isStringNotBlank(uri)) {
+						CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
+						commitmentTypeIndication.setDescription((String) commIdMap.get(JAdESHeaderParameterNames.DESC));
+						commitmentTypeIndication.setDocumentReferences((List<String>) commIdMap.get(JAdESHeaderParameterNames.DOC_REFS));
+						result.add(commitmentTypeIndication);
+					} else {
+						LOG.warn("Id parameter in the OID with the value '{}' is not conformant! The entry is skipped.", uri);
+					}
+				} else {
+					LOG.warn("Unable to extract a SignerCommitment. An object is expected as an item in 'srCms' map! "
+							+ "The entry is skipped.");
+				}
 			}
 		}
 		return result;

@@ -5,8 +5,9 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_D;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PID;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PL;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_T;
+import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_X5T_S;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_ATS;
-import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CM;
+import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CMS;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 import static org.jose4j.jwx.HeaderParameterNames.AGREEMENT_PARTY_U_INFO;
 import static org.jose4j.jwx.HeaderParameterNames.AGREEMENT_PARTY_V_INFO;
@@ -123,7 +124,7 @@ public class DSSJsonUtils {
 	static {
 		criticalHeaders = Stream.of(
 				/* JAdES EN 119-812 constraints */
-				SIG_T, X5T_O, SR_CM, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
+				SIG_T, X5T_O, SIG_X5T_S, SR_CMS, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
 				/* RFC7797 'b64' */
 				BASE64URL_ENCODE_PAYLOAD ).collect(Collectors.toSet());
 		
@@ -188,16 +189,36 @@ public class DSSJsonUtils {
 	 */
 	public static boolean isBase64UrlEncoded(String str) {
 		try {
-			byte[] decoded = Base64Url.decode(str);
-			return Utils.isArrayNotEmpty(decoded);
+			Base64Url.decode(str);
+			for (byte b : str.getBytes()) {
+				if (!isBase64UrlEncoded(b)) {
+					return false;
+				}
+			}
+			return true;
 		} catch (Exception e) {
 			return false;
 		}
 	}
 	
 	/**
-	 * Checks if the payload is JWS URL safe
-	 * See RFC 7797 : 5.2. Unencoded JWS Compact Serialization Payload
+	 * Checks if the byte is Base64Url encoded
+	 * 
+	 * @param b a byte to check
+	 * @return TRUE if the byte is Base64Url encoded, FALSE otherwise
+	 */
+	public static boolean isBase64UrlEncoded(byte b) {
+		for (byte m : URL_SAFE_ENCODE_TABLE) {
+			if (b == m) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the payload is JWS URL safe See RFC 7797 : 5.2. Unencoded JWS
+	 * Compact Serialization Payload
 	 * 
 	 * @param payloadString {@link String} representing a payload
 	 * @return TRUE if the payload is URL safe, FALSE otherwise
@@ -226,21 +247,6 @@ public class DSSJsonUtils {
 	 */
 	public static boolean isUrlSafe(byte b) {
 		return 0x1f < b && b < 0x2e || 0x2e < b && b < 0x7f;
-	}
-	
-	/**
-	 * Checks if the byte is Base64Url encoded
-	 * 
-	 * @param b a byte to check
-	 * @return TRUE if the byte is Base64Url encoded, FALSE otherwise
-	 */
-	public static boolean isBase64UrlEncoded(byte b) {
-		for (byte m : URL_SAFE_ENCODE_TABLE) {
-			if (b == m) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -286,7 +292,7 @@ public class DSSJsonUtils {
 		
 		Map<String, Object> digAlgValParams = new LinkedHashMap<>();
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getUri());
-		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, Utils.toBase64(digestValue));
+		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, DSSJsonUtils.toBase64Url(digestValue));
 		
 		return new JsonObject(digAlgValParams);
 	}
@@ -302,7 +308,7 @@ public class DSSJsonUtils {
 			String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
 			String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
 			if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
-				return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));
+				return new Digest(DigestAlgorithm.forXML(digestAlgoURI), DSSJsonUtils.fromBase64Url(digestValueBase64));
 			}
 		}
 		return null;
@@ -336,7 +342,7 @@ public class DSSJsonUtils {
 		if (Utils.isStringNotEmpty(desc)) {
 			oidParams.put(JAdESHeaderParameterNames.DESC, desc);
 		}
-		if (docRefs != null) {
+		if (Utils.isArrayNotEmpty(docRefs)) {
 			oidParams.put(JAdESHeaderParameterNames.DOC_REFS, new JSONArray(Arrays.asList(docRefs)));
 		}
 		

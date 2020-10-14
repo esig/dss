@@ -2,7 +2,6 @@ package eu.europa.esig.dss.jades.signature;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -23,10 +22,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -82,7 +81,8 @@ public class JAdESLevelBaselineB {
 		
 		// EN 119-182 headers
 		incorporateSigningTime();
-		incorporateSignerCommitment();
+		incorporateX509CertificateDigests();
+		incorporateSignerCommitments();
 		incorporateSignatureProductionPlace();
 		incorporateSignerRoles();
 		incorporateContentTimestamps();
@@ -162,16 +162,16 @@ public class JAdESLevelBaselineB {
 	 * or 5.2.2	The x5t#o (X509 certificate digest) header parameter
 	 */
 	protected void incorporateSigningCertificate() {
-		if (parameters.getSigningCertificate() == null) {
+		CertificateToken signingCertificate = parameters.getSigningCertificate();
+		if (signingCertificate == null) {
 			return;
 		}
 		
 		DigestAlgorithm signingCertificateDigestMethod = parameters.getSigningCertificateDigestMethod();
 		if (DigestAlgorithm.SHA256.equals(signingCertificateDigestMethod)) {
-			incorporateSiginingCertificateSha256Thumbprint(parameters.getSigningCertificate());
+			incorporateSiginingCertificateSha256Thumbprint(signingCertificate);
 		} else {
-			List<CertificateToken> certificates = Arrays.asList(parameters.getSigningCertificate());
-			incorporateSigningCertificateOtherDigestReferences(certificates, signingCertificateDigestMethod);
+			incorporateSigningCertificateOtherDigestReference(signingCertificate, signingCertificateDigestMethod);
 		}
 	}
 
@@ -182,19 +182,6 @@ public class JAdESLevelBaselineB {
 	protected void incorporateSiginingCertificateSha256Thumbprint(CertificateToken signingCertificate) {
 		String x5tS256 = X509Util.x5tS256(signingCertificate.getCertificate());
 		addHeader(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT, x5tS256);
-	}
-
-	/**
-	 * Incorporates 5.2.2 The x5t#o (X509 certificate digest) header parameter
-	 */
-	protected void incorporateSigningCertificateOtherDigestReferences(List<CertificateToken> certificates, DigestAlgorithm digestAlgorithm) {
-		List<JsonObject> digAndValues = new ArrayList<>();
-		for (CertificateToken certificateToken : certificates) {
-			byte[] digestValue = certificateToken.getDigest(digestAlgorithm);
-			JsonObject digAndVal = DSSJsonUtils.getDigAlgValObject(digestValue, digestAlgorithm);
-			digAndValues.add(digAndVal);
-		}
-		addHeader(JAdESHeaderParameterNames.X5T_O, new JSONArray(digAndValues));
 	}
 	
 	/**
@@ -296,7 +283,7 @@ public class JAdESLevelBaselineB {
 	/**
 	 * Incorporates 5.2.1 The sigT (claimed signing time) header parameter
 	 */
-	private void incorporateSigningTime() {
+	protected void incorporateSigningTime() {
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);
 		
@@ -304,30 +291,46 @@ public class JAdESLevelBaselineB {
 	}
 
 	/**
-	 * Incorporates 5.2.3 The srCm (signer commitment) header parameter
+	 * Incorporates 5.2.2.2 The x5t#o (X509 certificate digest) header parameter
 	 */
-	protected void incorporateSignerCommitment() {
+	protected void incorporateSigningCertificateOtherDigestReference(CertificateToken signingCertificate,
+			DigestAlgorithm digestAlgorithm) {
+		byte[] digestValue = signingCertificate.getDigest(digestAlgorithm);
+		JsonObject digAndVal = DSSJsonUtils.getDigAlgValObject(digestValue, digestAlgorithm);
+
+		addHeader(JAdESHeaderParameterNames.X5T_O, digAndVal);
+	}
+
+	/**
+	 * Incorporates 5.2.2.3 The sigX5ts (X509 certificates digests)
+	 */
+	protected void incorporateX509CertificateDigests() {
+		// addition of multiple signing certificate references are not supported in DSS
+	}
+
+	/**
+	 * Incorporates 5.2.3 The srCms (signer commitments) header parameter
+	 */
+	protected void incorporateSignerCommitments() {
 		if (Utils.isCollectionEmpty(parameters.bLevel().getCommitmentTypeIndications())) {
 			return;
 		}
-		// TODO : ETSI TS 119 182-1 V0.0.3 allows only one Commitment Type,
-		// however it is under review to be changed to array in further versions
-		if (parameters.bLevel().getCommitmentTypeIndications().size() > 1) {
-			LOG.warn("The current version supports only one CommitmentType indication. "
-					+ "All indications except the first one are omitted.");
+		
+		List<JsonObject> srCms = new ArrayList<>();
+		
+		for (CommitmentType commitmentType : parameters.bLevel().getCommitmentTypeIndications()) {
+			JsonObject oidObject = DSSJsonUtils.getOidObject(commitmentType); // Only simple Oid form is supported
+
+			Map<String, Object> srCmParams = new LinkedHashMap<>();
+			srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
+
+			// Qualifiers are not supported
+			// srCmParams.put(JAdESHeaderParameterNames.COMM_QUALS, quals);
+
+			srCms.add(new JsonObject(srCmParams));
 		}
-		CommitmentType commitmentType = parameters.bLevel().getCommitmentTypeIndications().iterator().next();
-		JsonObject oidObject = DSSJsonUtils.getOidObject(commitmentType); // Only simple Oid form is supported		
 		
-		Map<String, Object> srCmParams = new LinkedHashMap<>();
-		srCmParams.put(JAdESHeaderParameterNames.COMM_ID, oidObject);
-		
-		// Qualifiers are not supported
-		// srCmParams.put(JAdESHeaderParameterNames.COMM_QUALS, quals);
-		
-		JsonObject srCmParamsObject = new JsonObject(srCmParams);
-		
-		addHeader(JAdESHeaderParameterNames.SR_CM, srCmParamsObject);
+		addHeader(JAdESHeaderParameterNames.SR_CMS, new JSONArray(srCms));
 	}
 
 	/**
@@ -335,40 +338,37 @@ public class JAdESLevelBaselineB {
 	 */
 	private void incorporateSignatureProductionPlace() {
 		SignerLocation signerProductionPlace = parameters.bLevel().getSignerLocation();
-		if (signerProductionPlace != null) {
+		if (signerProductionPlace != null && !signerProductionPlace.isEmpty()) {
 			
 			String city = signerProductionPlace.getLocality();
 			String streetAddress = signerProductionPlace.getStreet();
 			String stateOrProvince = signerProductionPlace.getStateOrProvince();
+			String postOfficeBoxNumber = signerProductionPlace.getPostOfficeBoxNumber();
 			String postalCode = signerProductionPlace.getPostalCode();
 			String country = signerProductionPlace.getCountry();
-			
-			// sigPlace must have at least one property
-			if (Utils.isAtLeastOneStringNotEmpty(city, streetAddress, stateOrProvince, postalCode, country)) {
-				Map<String, Object> sigPlaceMap = new LinkedHashMap<>();
-				
-				if (city != null) {
-					sigPlaceMap.put(JAdESHeaderParameterNames.CITY, city);
-				}
-				if (streetAddress != null) {
-					sigPlaceMap.put(JAdESHeaderParameterNames.STR_ADDR, streetAddress);
-				}
-				if (stateOrProvince != null) {
-					sigPlaceMap.put(JAdESHeaderParameterNames.STAT_PROV, stateOrProvince);
-				}
-				if (postalCode != null) {
-					sigPlaceMap.put(JAdESHeaderParameterNames.POST_CODE, postalCode);
-				}
-				if (country != null) {
-					sigPlaceMap.put(JAdESHeaderParameterNames.COUNTRY, country);
-				}
-				
-				addHeader(JAdESHeaderParameterNames.SIG_PL, new JsonObject(sigPlaceMap));
-				
-			} else {
-				LOG.warn("SignerLocation is defined, but does not contain any properties! 'SigPlace' attribute requires at least one property!");
-				
+
+			Map<String, Object> sigPlaceMap = new LinkedHashMap<>();
+
+			if (country != null) {
+				sigPlaceMap.put(JAdESHeaderParameterNames.ADDRESS_COUNTRY, country);
 			}
+			if (city != null) {
+				sigPlaceMap.put(JAdESHeaderParameterNames.ADDRESS_LOCALITY, city);
+			}
+			if (stateOrProvince != null) {
+				sigPlaceMap.put(JAdESHeaderParameterNames.ADDRESS_REGION, stateOrProvince);
+			}
+			if (postOfficeBoxNumber != null) {
+				sigPlaceMap.put(JAdESHeaderParameterNames.POST_OFFICE_BOX_NUMBER, postOfficeBoxNumber);
+			}
+			if (postalCode != null) {
+				sigPlaceMap.put(JAdESHeaderParameterNames.POSTAL_CODE, postalCode);
+			}
+			if (streetAddress != null) {
+				sigPlaceMap.put(JAdESHeaderParameterNames.STREET_ADDRESS, streetAddress);
+			}
+
+			addHeader(JAdESHeaderParameterNames.SIG_PL, new JsonObject(sigPlaceMap));
 		}
 	}
 

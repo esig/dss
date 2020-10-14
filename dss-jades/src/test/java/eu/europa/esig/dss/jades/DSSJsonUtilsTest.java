@@ -19,6 +19,18 @@ import eu.europa.esig.dss.utils.Utils;
 public class DSSJsonUtilsTest {
 	
 	@Test
+	public void isBase64UrlEncodedTest() {
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded(""));
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9"));
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded(
+				"RFssS82MNnGv7ysjlLP11E8D1KpaegAimzl6CtwHATXVnHsDEg6nrLgzEjDWm0bfWHidPAB6J17kGtC1yky8ZA"));
+		assertFalse(DSSJsonUtils.isBase64UrlEncoded(null));
+		assertFalse(DSSJsonUtils.isBase64UrlEncoded(" "));
+		assertFalse(DSSJsonUtils.isBase64UrlEncoded(
+				"RFssS82MNnGv7ysjlLP11E8D1KpaegAimzl6CtwHATXVnHsDEg6nrLgzEjDWm0bfWHidPAB6J17kGtC1yky8ZA=="));
+	}
+
+	@Test
 	public void isUrlSafePayloadTest() {
 		assertTrue(DSSJsonUtils.isUrlSafePayload(""));
 		assertTrue(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9"));

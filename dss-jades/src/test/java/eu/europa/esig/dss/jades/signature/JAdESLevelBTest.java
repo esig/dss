@@ -51,6 +51,8 @@ public class JAdESLevelBTest extends AbstractJAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setLocality("Kehlen");
+		signerLocation.setPostOfficeBoxNumber("2C");
+		signerLocation.setPostalCode("L-8287");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfCreation));
 		return signatureParameters;

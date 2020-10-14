@@ -64,6 +64,11 @@
 			    },
 				{
 					"required": [
+					    "x5c"
+					]
+			    },
+				{
+					"required": [
 					    "x5t#o"
 					]
 			    }

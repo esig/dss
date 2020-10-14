@@ -31,6 +31,7 @@ public class SignatureProductionPlace implements Serializable {
 
 	private String city;
 	private String stateOrProvince;
+	private String postOfficeBoxNumber;
 	private String postalCode;
 	private String countryName;
 	private String streetAddress;
@@ -49,6 +50,14 @@ public class SignatureProductionPlace implements Serializable {
 
 	public void setStateOrProvince(String stateOrProvince) {
 		this.stateOrProvince = stateOrProvince;
+	}
+
+	public String getPostOfficeBoxNumber() {
+		return postOfficeBoxNumber;
+	}
+
+	public void setPostOfficeBoxNumber(String postOfficeBoxNumber) {
+		this.postOfficeBoxNumber = postOfficeBoxNumber;
 	}
 
 	public String getPostalCode() {

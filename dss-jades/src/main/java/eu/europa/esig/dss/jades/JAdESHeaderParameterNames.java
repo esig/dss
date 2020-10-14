@@ -19,6 +19,11 @@ public final class JAdESHeaderParameterNames {
 	public static final String X5T_O = "x5t#o";
 
 	/**
+	 * X509 certificate digests
+	 */
+	public static final String SIG_X5T_S = "sigX5ts";
+
+	/**
 	 * Digest algorithm and value
 	 */
 	public static final String DIG_ALG_VAL = "digAlgVal";
@@ -34,9 +39,9 @@ public final class JAdESHeaderParameterNames {
 	public static final String DIG_VAL = "digVal";
 
 	/**
-	 * Signer commitment
+	 * Signer commitments
 	 */
-	public static final String SR_CM = "srCm";
+	public static final String SR_CMS = "srCms";
 
 	/**
 	 * Commitment Id
@@ -49,29 +54,34 @@ public final class JAdESHeaderParameterNames {
 	public static final String SIG_PL = "sigPl";
 
 	/**
-	 * City
+	 * Country address
 	 */
-	public static final String CITY = "city";
+	public static final String ADDRESS_COUNTRY = "addressCountry";
 
 	/**
-	 * Street and address
+	 * Locality (City) address
 	 */
-	public static final String STR_ADDR = "strAddr";
+	public static final String ADDRESS_LOCALITY = "addressLocality";
 
 	/**
-	 * State and province
+	 * Region (state and province) address
 	 */
-	public static final String STAT_PROV = "statProv";
+	public static final String ADDRESS_REGION = "addressRegion";
+
+	/**
+	 * Post office box number
+	 */
+	public static final String POST_OFFICE_BOX_NUMBER = "postOfficeBoxNumber";
 
 	/**
 	 * Postal code
 	 */
-	public static final String POST_CODE = "postCode";
+	public static final String POSTAL_CODE = "postalCode";
 
 	/**
-	 * Country
+	 * Street address
 	 */
-	public static final String COUNTRY = "country";
+	public static final String STREET_ADDRESS = "streetAddress";
 
 	/**
 	 * Signer attributes

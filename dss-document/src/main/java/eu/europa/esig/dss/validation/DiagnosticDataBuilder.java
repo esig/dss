@@ -1185,6 +1185,7 @@ public class DiagnosticDataBuilder {
 			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();
 			xmlSignatureProductionPlace.setCountryName(emptyToNull(signatureProductionPlace.getCountryName()));
 			xmlSignatureProductionPlace.setStateOrProvince(emptyToNull(signatureProductionPlace.getStateOrProvince()));
+			xmlSignatureProductionPlace.setPostOfficeBoxNumber(emptyToNull(signatureProductionPlace.getPostOfficeBoxNumber()));
 			xmlSignatureProductionPlace.setPostalCode(emptyToNull(signatureProductionPlace.getPostalCode()));
 			xmlSignatureProductionPlace.setAddress(emptyToNull(signatureProductionPlace.getStreetAddress()));
 			xmlSignatureProductionPlace.setCity(emptyToNull(signatureProductionPlace.getCity()));

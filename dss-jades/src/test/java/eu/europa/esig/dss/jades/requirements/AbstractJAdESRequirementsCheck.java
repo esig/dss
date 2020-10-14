@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.jades.requirements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,10 +20,12 @@ import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.signature.AbstractJAdESTestSignature;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -101,10 +104,29 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		checkCrit(protectedHeaderMap);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void checkSigningCertificate(Map<?, ?> protectedHeaderMap) {
 		Object x5tNS256 = protectedHeaderMap.get(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
 		Object x5tNo = protectedHeaderMap.get("x5t#o");
 		assertTrue(x5tNS256 != null ^ x5tNo != null);
+
+		if (x5tNS256 != null) {
+			assertTrue(DSSJsonUtils.isBase64UrlEncoded((String) x5tNS256));
+		}
+
+		if (x5tNo != null) {
+			Map<String, Object> x5tNoMap = (Map<String, Object>) x5tNo;
+			String digAlg = (String) x5tNoMap.get("digAlg");
+			assertNotNull(digAlg);
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digAlg);
+			assertNotNull(digestAlgorithm);
+			assertNotEquals(DigestAlgorithm.SHA256, digestAlgorithm);
+
+			assertTrue(DSSJsonUtils.isBase64UrlEncoded((String) x5tNoMap.get("digVal")));
+		}
+
+		Object sigX5ts = protectedHeaderMap.get("sigX5ts");
+		// assertNull(sigX5ts);
 	}
 
 	private void checkCertificateChain(Map<String, Object> protectedHeaderMap) {
@@ -144,10 +166,10 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 				HeaderParameterNames.JWK, HeaderParameterNames.JWK_SET_URL, HeaderParameterNames.KEY_ID, HeaderParameterNames.PBES2_ITERATION_COUNT, 
 				HeaderParameterNames.PBES2_SALT_INPUT, HeaderParameterNames.TYPE, HeaderParameterNames.X509_CERTIFICATE_CHAIN, 
 				HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT, HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, HeaderParameterNames.X509_URL, 
-				HeaderParameterNames.ZIP);
+				HeaderParameterNames.ZIP, JAdESHeaderParameterNames.ETSI_U);
 		
-		List<String> includedHeaders = Arrays.asList(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, "sigT", "x5t#o", "srCm", "sigPl", "srAts",
-				"adoTst", "sigPld", "sigD");
+		List<String> includedHeaders = Arrays.asList(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, "sigT", "x5t#o",
+				"sigX5ts", "srCm", "sigPl", "srAts", "adoTst", "sigPld", "sigD");
 		
 		for (Object critEntry : crit) {
 			assertNotNull(critEntry);
