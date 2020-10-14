@@ -98,7 +98,7 @@
 		<module>specs-validation-report</module>
 		<module>specs-asic-manifest</module>
 		<module>specs-saml-assertion</module>
-		<module>specs-json</module>
+		<module>specs-jws</module>
 		<module>specs-jades</module>
 		
 		<module>dss-policy-jaxb</module>
