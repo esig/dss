@@ -17,7 +17,6 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
@@ -81,20 +80,19 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			throw new DSSException("Original documents must be provided to generate a content timestamp!");
 		}
 		
-		byte[] concatenationResult = DSSUtils.EMPTY_BYTE_ARRAY;
-		for (DSSDocument document : toSignDocuments) {
-			byte[] documentBinaries = null;
-			if (document instanceof HTTPHeader) {
-				HTTPHeader httpHeader = (HTTPHeader) document;
-				documentBinaries = httpHeader.getValue().getBytes();
-			} else {
-				documentBinaries = DSSUtils.toByteArray(document);
-			}
-			String base64UrlEncodedDoc = DSSJsonUtils.toBase64Url(documentBinaries);
-			concatenationResult = DSSUtils.concatenate(concatenationResult, base64UrlEncodedDoc.getBytes());
+		byte[] messageImprint = DSSUtils.EMPTY_BYTE_ARRAY;
+
+		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
+			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments);
+			messageImprint = httpHeadersPayloadBuilder.build();
+		} else {
+			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments);
 		}
+		messageImprint = DSSJsonUtils.toBase64Url(messageImprint).getBytes();
+
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, concatenationResult));
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm,
+				DSSUtils.digest(digestAlgorithm, messageImprint));
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 		} catch (TSPException | IOException | CMSException e) {

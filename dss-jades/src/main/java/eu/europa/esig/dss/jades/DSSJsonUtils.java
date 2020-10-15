@@ -93,6 +93,9 @@ public class DSSJsonUtils {
 	
 	public static final String HTTP_HEADER_DIGEST = "Digest";
 
+	/* RFC 2045 */
+	public static final String CONTENT_ENCODING_BINARY = "binary";
+
 	/* Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	
@@ -161,7 +164,18 @@ public class DSSJsonUtils {
 	}
 
 	/**
-	 * Returns a base64Url encoded string from the provided JSON Object or JSON Array
+	 * Returns a base64Url encoded string
+	 * 
+	 * @param document {@link DSSDocument} to encode
+	 * @return base64Url encoded {@link String}
+	 */
+	public static String toBase64Url(DSSDocument document) {
+		return toBase64Url(DSSUtils.toByteArray(document));
+	}
+
+	/**
+	 * Returns a base64Url encoded string from the provided JSON Object or JSON
+	 * Array
 	 * 
 	 * @param object JSON Object or JSON Array to encode
 	 * @return base64Url encoded {@link String}
@@ -398,35 +412,24 @@ public class DSSJsonUtils {
 	 * 
 	 * @param documents a list of {@link DSSDocument}s to concatenate
 	 * @return a byte array of document octets
-	 * @throws IOException if an exception occurs
 	 */
-	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) throws IOException {
+	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) {
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new DSSException("Unable to build a JWS Payload. Reason : the detached content is not provided!");
+		}
+		if (documents.size() == 1) {
+			return DSSUtils.toByteArray(documents.get(0));
+		}
+
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSDocument document : documents) {
 				baos.write(DSSUtils.toByteArray(document));
 			}
 			return baos.toByteArray();
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to build a JWS Payload. Reason : %s", e.getMessage()), e);
 		}
-	}
-	
-	/**
-	 * Casts a list of {@link DSSDocument}s to a list of {@code HTTPHeader}s
-	 * 
-	 * @param dssDocuments a list of {@link DSSDocument}s to be casted to {@link HTTPHeader}s
-	 * @return a list of {@link HTTPHeader}s
-	 * @throws IllegalArgumentException if a document of not {@link HTTPHeader} class found
-	 */
-	public static List<HTTPHeader> toHTTPHeaders(List<DSSDocument> dssDocuments) {
-		List<HTTPHeader> httpHeaderDocuments = new ArrayList<>();
-		for (DSSDocument document : dssDocuments) {
-			if (document instanceof HTTPHeader) {
-				HTTPHeader httpHeaderDocument = (HTTPHeader) document;
-				httpHeaderDocuments.add(httpHeaderDocument);
-			} else {
-				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeader!", document.getName()));
-			}
-		}
-		return httpHeaderDocuments;
 	}
 	
 	/**

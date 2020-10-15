@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,8 +13,6 @@ import java.util.Set;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.keys.X509Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -45,8 +42,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  *
  */
 public class JAdESLevelBaselineB {
-
-	private static final Logger LOG = LoggerFactory.getLogger(JAdESLevelBaselineB.class);
 	
 	private final CertificateVerifier certificateVerifier;
 	private final JAdESSignatureParameters parameters;
@@ -378,49 +373,85 @@ public class JAdESLevelBaselineB {
 	private void incorporateSignerRoles() {
 		Map<String, Object> srAtsParams = new LinkedHashMap<>();
 
-		JSONArray claimed = getEncodedClaimedSignerRoles();
-		if (claimed != null) {
-			srAtsParams.put(JAdESHeaderParameterNames.CLAIMED, claimed);
-		}
-
 		// TODO : certified are not supported
-		// srAtsParams.put(JAdESHeaderParameterNames.CERTIFIED, certified);
+		// srAtsParams.put(JAdESHeaderParameterNames.CERTIFIED, new JSONArray(certifiedList));
 
-		JSONArray signedAssertions = getEncodedSignedAssertions();
-		if (signedAssertions != null) {
-			srAtsParams.put(JAdESHeaderParameterNames.SIGNED_ASSERTIONS, signedAssertions);
+		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
+		if (Utils.isCollectionNotEmpty(claimedSignerRoles)) {
+			srAtsParams.put(JAdESHeaderParameterNames.CLAIMED, getQArray(claimedSignerRoles));
 		}
 
-		if (!srAtsParams.isEmpty()) {
+		List<String> signedAssertions = parameters.bLevel().getSignedAssertions();
+		if (Utils.isCollectionNotEmpty(signedAssertions)) {
+			srAtsParams.put(JAdESHeaderParameterNames.SIGNED_ASSERTIONS, getQArray(signedAssertions));
+		}
+
+		if (Utils.isMapNotEmpty(srAtsParams)) {
 			JsonObject srAtsParamsObject = new JsonObject(srAtsParams);
 			addHeader(JAdESHeaderParameterNames.SR_ATS, srAtsParamsObject);
 		}
 	}
 
-	private JSONArray getEncodedClaimedSignerRoles() {
-		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
-		if (Utils.isCollectionEmpty(claimedSignerRoles)) {
-			return null;
-		}
-		return new JSONArray(toBase64Strings(claimedSignerRoles));
-	}
-	
-	private JSONArray getEncodedSignedAssertions() {
-		List<String> signedAssertions = parameters.bLevel().getSignedAssertions();
-		if (Utils.isCollectionEmpty(signedAssertions)) {
-			return null;
-		}
-		return new JSONArray(toBase64Strings(signedAssertions));
-	}
+	private JSONArray getQArray(List<String> qArrayVals) {
 
-	private List<String> toBase64Strings(List<String> strings) {
-		List<String> base64Strings = new ArrayList<>();
-		for (String str : strings) {
-			if (str != null) {
-				base64Strings.add(Utils.toBase64(str.getBytes()));
-			}
-		}
-		return base64Strings;
+		// TODO : in 0.0.4 both "qArrays" and "vals" inside are arrays.
+		// Could be change in the future
+
+		List<JsonObject> qArrays = new ArrayList<>();
+
+		/*
+		 * Each instance of this type shall be a JSON array whose elements are JSON
+		 * objects. Each JSON object shall contain three members, namely:
+		 */
+		Map<String, Object> qArrayMap = new LinkedHashMap<>();
+		
+		/*
+		 * a) The mediaType member, which shall contain a string identifying the type of
+		 * the signed assertions or the claimed attributes present in vals member, and
+		 * shall meet the requirements specified in clause 8.4 of
+		 * draft-handrews-json-schema-validation-02: "JSON Schema Validation: A
+		 * Vocabulary for Structural Validation of JSON" [21].
+		 */
+
+		/*
+		 * RFC 2046 "4.1.3. Plain Subtype"
+		 * 
+		 * The simplest and most important subtype of "text" is "plain". This indicates
+		 * plain text that does not contain any formatting commands or directives. Plain
+		 * text is intended to be displayed "as-is", that is, no interpretation of
+		 * embedded formatting commands, font attribute specifications, processing
+		 * instructions, interpretation directives, or content markup should be
+		 * necessary for proper display.
+		 */
+		qArrayMap.put(JAdESHeaderParameterNames.MEDIA_TYPE, MimeType.TEXT.getMimeTypeString());
+
+		/*
+		 * b) The encoding member, which shall contain a string identifying the encoding
+		 * of the signed assertions or the claimed attributes present in vals member,
+		 * and shall meet the requirements specified in clause 8.3 of
+		 * draft-handrews-json-schema-validation-02: "JSON Schema Validation: A
+		 * Vocabulary for Structural Validation of JSON" [21].
+		 */
+
+		/*
+		 * RFC 2045 "2.9. Binary Data"
+		 * 
+		 * "Binary data" refers to data where any sequence of octets whatsoever is
+		 * allowed.
+		 */
+		qArrayMap.put(JAdESHeaderParameterNames.ENCODING, DSSJsonUtils.CONTENT_ENCODING_BINARY);
+
+		/*
+		 * c) The vals member, which shall be a JSON array of at least one item. The
+		 * elements of vals JSON array shall be the values of the signed assertions or
+		 * the claimed attributes encoded as indicated within the encoding member.
+		 */
+		qArrayMap.put(JAdESHeaderParameterNames.VALS, new JSONArray(qArrayVals));
+
+		JsonObject qArray = new JsonObject(qArrayMap);
+		qArrays.add(qArray);
+
+		return new JSONArray(qArrays);
 	}
 
 	/**
@@ -577,8 +608,6 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private Map<String, Object> getSigDForHttpHeadersMechanism(List<DSSDocument> detachedContents) {
-		assertHttpHeadersConfigurationIsValid();
-		
 		Map<String, Object> sigDParams = new LinkedHashMap<>();
 
 		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
@@ -602,7 +631,8 @@ public class JAdESLevelBaselineB {
 	private JSONArray getSignedDataDigests(List<DSSDocument> detachedContents, DigestAlgorithm digestAlgorithm) {
 		List<String> digests = new ArrayList<>();
 		for (DSSDocument document : detachedContents) {
-			digests.add(document.getDigest(digestAlgorithm)); // base64 digest
+			byte[] digest = DSSUtils.digest(digestAlgorithm, document);
+			digests.add(DSSJsonUtils.toBase64Url(digest)); // base64Url digest
 		}
 		return new JSONArray(digests);
 	}
@@ -686,38 +716,13 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
-		assertHttpHeadersConfigurationIsValid();
-		
-		List<HTTPHeader> httpHeaders = DSSJsonUtils.toHTTPHeaders(documentsToSign);
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
-		
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsToSign);
 		return httpHeadersPayloadBuilder.build();
 	}
 	
-	private void assertHttpHeadersConfigurationIsValid() {
-		if (Utils.isCollectionNotEmpty(documentsToSign)) {
-			boolean digestDocumentFound = false;
-			for (DSSDocument document : documentsToSign) {
-				if (!(document instanceof HTTPHeader)) {
-                    throw new DSSException("The documents to sign must have "
-                            + "a type of HTTPHeader for 'sigD' HttpHeaders mechanism!");
-				}
-				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
-					if (digestDocumentFound) {                        
-						throw new DSSException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
-					}
-					digestDocumentFound = true;
-				}
-			}
-		}
-	}
-	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
-		try {
-			return DSSJsonUtils.concatenateDSSDocuments(documentsToSign);
-		} catch (IOException e) {
-			throw new DSSException(String.format("An exception occurred during building a payload! Reason : %s", e.getMessage()), e);
-		}
+		// NOTE: b64 encoding is processed by JWS
+		return DSSJsonUtils.concatenateDSSDocuments(documentsToSign);
 	}
 
 }

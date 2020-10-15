@@ -84,6 +84,21 @@ public final class JAdESHeaderParameterNames {
 	public static final String STREET_ADDRESS = "streetAddress";
 
 	/**
+	 * Q Arrays (used for signed assertions and claimed)
+	 */
+	public static final String Q_ARRAYS = "qArrays";
+
+	/**
+	 * Media type
+	 */
+	public static final String MEDIA_TYPE = "mediaType";
+
+	/**
+	 * Values
+	 */
+	public static final String VALS = "vals";
+
+	/**
 	 * Signer attributes
 	 */
 	public static final String SR_ATS = "srAts";
@@ -102,6 +117,11 @@ public final class JAdESHeaderParameterNames {
 	 * X509 Attribute certificate
 	 */
 	public static final String X509_ATTR_CERT = "x509AttrCert";
+
+	/**
+	 * Other attribute certificate
+	 */
+	public static final String OTHER_ATTR_CERT = "otherAttrCert";
 
 	/**
 	 * Signed assertions
@@ -221,7 +241,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Timestamp tokens array
 	 */
-	public static final String TS_TOKENS = "tsTokens";
+	public static final String TS_TOKENS = "tstokens";
 
 	/**
 	 * Encoding (eg : DER,...)

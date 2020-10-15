@@ -108,13 +108,14 @@
 			"items": {
 				"type": "object",
 				"properties": {
-					"meciaType": {"type": "string"},
+					"mediaType": {"type": "string"},
 					"encoding": {"type": "string"},
 					"vals": {
 						"type": "array",
 						"minItems": 1
 					}
 				},
+				"required": [ "mediaType", "encoding", "vals" ],
 				"minItems": 1
 			}
 		},
@@ -134,18 +135,25 @@
 		},
 		
 		"certifiedAttrs": {
+			"type": "object",
 			"oneOf":[
 				{
-					"x509AttrCert":{
-						"type": "object",
-						"properties": {
-							"val": {"type": "string", "contentEncoding" : "base64"}
-						},
-						"required": ["val"]
-					}
+					"properties": {
+						"x509AttrCert":{
+							"type": "object",
+							"properties": {
+								"val": {"type": "string", "contentEncoding" : "base64"}
+							},
+							"required": ["val"]
+						}
+					},
+					"required": [ "x509AttrCert" ]
 				},
 				{
-					"otherAttrCert":{"type": "pkiOb"}
+					"properties": {
+						"otherAttrCert": {"$ref": "#/definitions/pkiOb"}
+					},
+					"required": [ "otherAttrCert" ]
 				}
 			]
 		},

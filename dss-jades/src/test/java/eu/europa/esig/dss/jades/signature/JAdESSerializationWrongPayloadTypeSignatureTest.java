@@ -46,7 +46,7 @@ public class JAdESSerializationWrongPayloadTypeSignatureTest extends AbstractJAd
 	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> super.sign());
 		assertTrue(exception.getMessage().contains("JWS Serialization is not supported for invalid RFC 7515 files."));
-		assertTrue(exception.getMessage().contains("The 'payload' must be instance of String class!"));
+		assertTrue(exception.getMessage().contains("#/payload: expected type: String"));
 	}
 
 	@Override

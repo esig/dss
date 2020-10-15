@@ -46,7 +46,7 @@ public class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTe
 	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> super.sign());
 		assertTrue(exception.getMessage().contains("JWS Serialization is not supported for invalid RFC 7515 files."));
-		assertTrue(exception.getMessage().contains("The file contains not allowed for JWS element with name : 'evil'"));
+		assertTrue(exception.getMessage().contains("extraneous key [evil] is not permitted"));
 	}
 
 	@Override

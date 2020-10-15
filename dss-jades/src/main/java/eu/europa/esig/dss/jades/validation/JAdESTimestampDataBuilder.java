@@ -12,15 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
-import eu.europa.esig.dss.jades.HTTPHeader;
-import eu.europa.esig.dss.jades.HTTPHeaderDigest;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -57,74 +55,40 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return DSSJsonUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
 	}
 	
-	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean archiveTst) {
+	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean isArchiveTst) {
 		/*
-		 * 3)	Else, if the JAdES signature incorporates the sigD header parameter specified in clause 5.2.8 of the present document, then:
-		 * -	For each reference to one data object within the ordered list of references present within the aforementioned header parameter:
-		 *      	Retrieve the referenced data object.
-		 *          Base64url encode the retrieved data object
-		 *          Concatenate the result to the octet stream.
+		 * 3) Else, if the JAdES signature incorporates the sigD header parameter
+		 * specified in clause 5.2.8 of the present document, then: For each reference
+		 * to one data object within the ordered list of references present within the
+		 * aforementioned header parameter: 
+		 * - Retrieve the referenced data object. 
+		 * - Base64url encode the retrieved data object Concatenate the result to 
+		 *   the octet stream.
 		 */
+
+		byte[] sigDOctets = null;
 		List<DSSDocument> documentList = null;
+
 		switch (sigDMechanism) {
 			case HTTP_HEADERS:
 				documentList = signature.getSignedDocumentsByUri(false);
+				HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentList, isArchiveTst);
+				sigDOctets = httpHeadersPayloadBuilder.build();
 				break;
 			case OBJECT_ID_BY_URI:
 			case OBJECT_ID_BY_URI_HASH:
 				documentList = signature.getSignedDocumentsByUri(true);
+				sigDOctets = DSSJsonUtils.concatenateDSSDocuments(documentList);
 				break;
 			default:
 				LOG.warn("Unsupported SigDMechanism has been found '{}'!", sigDMechanism);
-				return null;
 		}
 		
-		if (Utils.isCollectionEmpty(documentList)) {
-			LOG.warn("Unable to compute message-imprint for a content tst with sigDMechanism '{}'! "
-					+ "The referenced documents are not found.", sigDMechanism);
-			return null;
+		if (Utils.isArrayNotEmpty(sigDOctets)) {
+			sigDOctets = DSSJsonUtils.toBase64Url(sigDOctets).getBytes();
 		}
-		
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			
-			for (DSSDocument document : documentList) {
-				byte[] documentOctets = null;
-				if (document instanceof HTTPHeader) {
-					HTTPHeader httpHeader = (HTTPHeader) document;
-					if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(httpHeader.getName()) && archiveTst) {
-						if (httpHeader instanceof HTTPHeaderDigest) {
-							HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) httpHeader;
-							DSSDocument messageBodyDocument = httpHeaderDigest.getMessageBodyDocument();
-							documentOctets = DSSUtils.toByteArray(messageBodyDocument);
-						} else {
-							throw new DSSException("Unable to compute message-imprint for an Archive Timestamp! "
-									+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
-						}
-					} else {
-						documentOctets = httpHeader.getValue().getBytes();
-					}
-					
-				} else {
-					documentOctets = DSSUtils.toByteArray(document);
-				}
-				
-				String base64UrlEncoded = DSSJsonUtils.toBase64Url(documentOctets);
-				baos.write(base64UrlEncoded.getBytes());
-			}
-			
-			byte[] messageImprint = baos.toByteArray();
 
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("The 'previousArcTst' timestamp message-imprint : {}", new String(messageImprint));
-			}
-			
-			return messageImprint;
-			
-		} catch (IOException e) {
-			throw new DSSException(String.format("An error occurred during a message-imprint computation for "
-					+ "a content timestamp with sigDMechanism '%s'. Reason : %s", sigDMechanism, e.getMessage()), e);
-		}
-		
+		return sigDOctets;
 	}
 
 	@Override

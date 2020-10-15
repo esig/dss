@@ -354,38 +354,41 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 		SignerLocation signerLocation = getSignatureParameters().bLevel().getSignerLocation();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(!signerLocation.isEmpty(), signatureWrapper.isSignatureProductionPlacePresent());
+		assertEquals(signerLocation != null && !signerLocation.isEmpty(),
+				signatureWrapper.isSignatureProductionPlacePresent());
 
-		String country = signerLocation.getCountry();
-		if (Utils.isStringNotEmpty(country)) {
-			assertEquals(country, signatureWrapper.getCountryName());
-		}
-		String locality = signerLocation.getLocality();
-		if (Utils.isStringNotEmpty(locality)) {
-			assertEquals(locality, signatureWrapper.getCity());
-		}
-		// TODO : improve for CAdES
-		List<String> postalAddress = signerLocation.getPostalAddress();
-		if (Utils.isCollectionNotEmpty(postalAddress)) {
-			for (String postAddress : postalAddress) {
-				assertTrue(signatureWrapper.getAddress().contains(postAddress));
+		if (signerLocation != null) {
+			String country = signerLocation.getCountry();
+			if (Utils.isStringNotEmpty(country)) {
+				assertEquals(country, signatureWrapper.getCountryName());
 			}
-		}
-		String postalCode = signerLocation.getPostalCode();
-		if (Utils.isStringNotEmpty(postalCode)) {
-			assertEquals(postalCode, signatureWrapper.getPostalCode());
-		}
-		String postOfficeBoxNumber = signerLocation.getPostOfficeBoxNumber();
-		if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
-			assertEquals(postOfficeBoxNumber, signatureWrapper.getPostOfficeBoxNumber());
-		}
-		String stateOrProvince = signerLocation.getStateOrProvince();
-		if (Utils.isStringNotEmpty(stateOrProvince)) {
-			assertEquals(stateOrProvince, signatureWrapper.getStateOrProvince());
-		}
-		String street = signerLocation.getStreet();
-		if (Utils.isStringNotEmpty(street)) {
-			assertEquals(street, signatureWrapper.getAddress());
+			String locality = signerLocation.getLocality();
+			if (Utils.isStringNotEmpty(locality)) {
+				assertEquals(locality, signatureWrapper.getCity());
+			}
+			// TODO : improve for CAdES
+			List<String> postalAddress = signerLocation.getPostalAddress();
+			if (Utils.isCollectionNotEmpty(postalAddress)) {
+				for (String postAddress : postalAddress) {
+					assertTrue(signatureWrapper.getAddress().contains(postAddress));
+				}
+			}
+			String postalCode = signerLocation.getPostalCode();
+			if (Utils.isStringNotEmpty(postalCode)) {
+				assertEquals(postalCode, signatureWrapper.getPostalCode());
+			}
+			String postOfficeBoxNumber = signerLocation.getPostOfficeBoxNumber();
+			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
+				assertEquals(postOfficeBoxNumber, signatureWrapper.getPostOfficeBoxNumber());
+			}
+			String stateOrProvince = signerLocation.getStateOrProvince();
+			if (Utils.isStringNotEmpty(stateOrProvince)) {
+				assertEquals(stateOrProvince, signatureWrapper.getStateOrProvince());
+			}
+			String street = signerLocation.getStreet();
+			if (Utils.isStringNotEmpty(street)) {
+				assertEquals(street, signatureWrapper.getAddress());
+			}
 		}
 	}
 

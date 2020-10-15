@@ -21,7 +21,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class JAdESLevelBDetachedWithB64Test extends AbstractJAdESTestSignature {
+public class JAdESLevelBDetachedWithNonB64Test extends AbstractJAdESTestSignature {
 	
 	private static final String ORIGINAL_STRING = "Hello\nWorld!";
 
