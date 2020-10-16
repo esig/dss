@@ -110,9 +110,10 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		
 		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
 		assertEquals(2, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-		assertEquals(2, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
-		assertEquals(1, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-		assertEquals(1, foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(3, foundCertificates
+				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(1, foundCertificates
+				.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
 		
 		FoundRevocationsProxy foundRevocations = signature.foundRevocations();
 		assertEquals(0, foundRevocations.getRelatedRevocationData().size());
@@ -125,7 +126,8 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		
 		assertEquals(4, diagnosticData.getTimestampList().size());
 		int sigTstCounter = 0;
-		int sigAndRfsTstCounter = 0;
+		int firstSigAndRfsTstCounter = 0;
+		int seconfSigAndRfsTstCounter = 0;
 		int rfsTstCounter = 0;
 		
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
@@ -140,9 +142,12 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
 				assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
-				assertEquals(1, timestampWrapper.getTimestampedOrphanCertificates().size());
 				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());
-				++sigAndRfsTstCounter;
+				if (timestampWrapper.getTimestampedOrphanCertificates().size() == 0) {
+					++firstSigAndRfsTstCounter;
+				} else if (timestampWrapper.getTimestampedOrphanCertificates().size() == 1) {
+					++seconfSigAndRfsTstCounter;
+				}
 				
 			} else if (TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(3, timestampWrapper.getTimestampedCertificates().size());
@@ -153,8 +158,14 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 			}
 		}
 		assertEquals(1, sigTstCounter);
-		assertEquals(2, sigAndRfsTstCounter);
+		assertEquals(1, firstSigAndRfsTstCounter);
+		assertEquals(1, seconfSigAndRfsTstCounter);
 		assertEquals(1, rfsTstCounter);
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

@@ -631,8 +631,8 @@ public class JAdESLevelBaselineB {
 	private JSONArray getSignedDataDigests(List<DSSDocument> detachedContents, DigestAlgorithm digestAlgorithm) {
 		List<String> digests = new ArrayList<>();
 		for (DSSDocument document : detachedContents) {
-			byte[] digest = DSSUtils.digest(digestAlgorithm, document);
-			digests.add(DSSJsonUtils.toBase64Url(digest)); // base64Url digest
+			String base64Digest = document.getDigest(digestAlgorithm);
+			digests.add(DSSJsonUtils.toBase64Url(Utils.fromBase64(base64Digest))); // base64Url digest
 		}
 		return new JSONArray(digests);
 	}

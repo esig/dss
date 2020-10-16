@@ -227,25 +227,31 @@
 		},
 
 		"sigPSt": {
-			"oneOf": [
+			"allOf": [
 				{
-					"type": "object",
-					"properties": {
-						"sigPolDoc": {"type": "string", "contentEncoding": "base64"}
-					}
+					"oneOf": [
+						{
+							"properties": {
+								"sigPolDoc": {"type": "string", "contentEncoding": "base64"}
+							},
+							"required": [ "sigPolDoc" ]
+						},
+						{
+							"properties": {
+								"sigPolLocalURI": {"type": "string", "format": "uri-reference"}
+							},
+							"required": [ "sigPolLocalURI" ]
+						}
+					]
 				},
 				{
-					"type": "object",
-					"properties": {
-						"sigPolLocalURI": {"type": "string", "format": "uri-reference"}
-					}
+					"type":"object",
+					"properties":{
+						"spDSpec": {"$ref": "#/definitions/oId"}
+				 	},
+					"minProperties": 1
 				}
-			],
-			"type":"object",
-			"properties":{
-				"spDSpec": {"$ref": "#/definitions/oId"}
-		 	},
-			"minProperties": 1
+			]
 		},
 
 		"sigTst": {"$ref": "#/definitions/tstContainer"},
@@ -369,9 +375,20 @@
 								"type": "object",
 								"properties": {
 									"responderId": {
+										"type": "object",
 										"oneOf":	[
-											{"byName": {"type": "string", "contentEncoding" : "base64"}},
-											{"byKey": {"type": "string", "contentEncoding" : "base64"}}
+											{
+												"properties": {
+													"byName": {"type": "string", "contentEncoding" : "base64"}
+												},
+												"required": [ "byName" ]
+											},
+											{
+												"properties": {
+													"byKey": {"type": "string", "contentEncoding" : "base64"}
+												},
+												"required": [ "byKey" ]
+											}
 										]
 									},
 									"producedAt": {"type": "string", "format": "date-time"},

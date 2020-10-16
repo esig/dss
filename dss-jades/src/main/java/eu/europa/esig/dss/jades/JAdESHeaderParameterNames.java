@@ -399,9 +399,9 @@ public final class JAdESHeaderParameterNames {
 	public static final String REV_VALS = "revVals";
 
 	/**
-	 * Shows of TST Validation Data covers a Content Tst
+	 * Shows if TST Validation Data covers a JWS Payload or not
 	 */
-	public static final String ON_SDO = "onSdo";
+	public static final String ON_JWSP = "onJWSP";
 
 	/**
 	 * Archive TimeStamp
@@ -421,7 +421,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Signature and References Timestamp
 	 */
-	public static final String SIG_AND_RFS_TST = "sigAndRfsTst";
+	public static final String SIG_R_TST = "sigRTst";
 
 	/**
 	 * References Timestamp

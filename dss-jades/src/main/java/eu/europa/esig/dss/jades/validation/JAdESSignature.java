@@ -820,12 +820,13 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	private boolean isDocumentDigestMatch(DSSDocument document, DigestAlgorithm digestAlgorithm,
 			byte[] expectedDigest) {
-		byte[] computedDigest = DSSUtils.digest(digestAlgorithm, document);
-		if (Arrays.equals(expectedDigest, computedDigest)) {
+		String computedDigestBase64 = document.getDigest(digestAlgorithm);
+		byte[] computedDigestValue = Utils.fromBase64(computedDigestBase64);
+		if (Arrays.equals(expectedDigest, computedDigestValue)) {
 			return true;
 		}
 		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
-				computedDigest, document.getName(), expectedDigest);
+				computedDigestBase64, document.getName(), Utils.toBase64(expectedDigest));
 		return false;
 	}
 	

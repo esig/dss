@@ -198,7 +198,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		Map<?, ?> sigTst = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "sigTst");
 		assertNotNull(sigTst);
 		assertNull(sigTst.get("canonAlg"));
-		List<?> tstokens = (List<?>) sigTst.get("tsTokens");
+		List<?> tstokens = (List<?>) sigTst.get("tstokens");
 		assertNotNull(tstokens);
 		assertEquals(1, tstokens.size());
 	}
@@ -289,7 +289,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		Map<?, ?> tstContainer = (Map<?, ?>) arcTst.get("tstContainer");
 		assertNotNull(tstContainer);
 		
-		List<?> tstokens = (List<?>) tstContainer.get("tsTokens");
+		List<?> tstokens = (List<?>) tstContainer.get("tstokens");
 		assertTrue(Utils.isCollectionNotEmpty(tstokens));
 	}
 	
