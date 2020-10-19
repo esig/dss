@@ -98,6 +98,14 @@ public class ASiCEXAdESDoubleCounterSignTest extends AbstractASiCXAdESCounterSig
 	}
 
 	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		assertTrue(signatureWrapper.getStructuralValidationMessage()
+				.contains("There are multiple occurrences of ID value 'CS-"));
+	}
+
+	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
 	}

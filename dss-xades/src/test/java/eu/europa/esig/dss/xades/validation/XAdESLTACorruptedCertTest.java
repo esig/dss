@@ -72,4 +72,12 @@ public class XAdESLTACorruptedCertTest extends AbstractXAdESTestValidation {
 		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		assertTrue(signatureWrapper.getStructuralValidationMessage()
+				.contains("is not a valid value for 'base64Binary'"));
+	}
+
 }

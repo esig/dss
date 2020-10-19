@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +29,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
@@ -69,6 +71,15 @@ public class XAdESRefreshedOCSPCertificateTest extends AbstractXAdESTestValidati
 			}
 		}
 		assertTrue(equivalentCertsFound);
+	}
+
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		// mixed sequence order
+		assertTrue(signatureWrapper.getStructuralValidationMessage().contains(
+				"Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":StateOrProvince}'"));
 	}
 
 }

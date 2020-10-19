@@ -21,13 +21,16 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCWithModifiedCertValuesTest extends AbstractASiCWithXAdESTestValidation {
+public class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdESTestValidation {
 
 	/* File contains empty tags or blank lines for level LT */
 	@Override
@@ -40,6 +43,15 @@ public class ASiCWithModifiedCertValuesTest extends AbstractASiCWithXAdESTestVal
 		super.checkSigningCertificateValue(diagnosticData);
 		
 		assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		// xades132:OCSPValues is empty
+		assertTrue(signatureWrapper.getStructuralValidationMessage()
+				.contains("he content of element 'xades132:OCSPValues' is not complete."));
 	}
 
 }

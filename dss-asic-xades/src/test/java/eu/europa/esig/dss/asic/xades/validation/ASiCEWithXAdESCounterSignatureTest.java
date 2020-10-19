@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCEWithCAdESCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
+public class ASiCEWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -61,6 +62,16 @@ public class ASiCEWithCAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 		originalDocuments = validator.getOriginalDocuments(counterSignatures.iterator().next());
 		assertEquals(1, originalDocuments.size());
 		assertEquals("service-body.json", originalDocuments.get(0).getName());
+	}
+
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertFalse(signatureWrapper.isStructuralValidationValid());
+			// the ID type shall start with either a letter or underscore
+			assertTrue(signatureWrapper.getStructuralValidationMessage()
+					.contains("is not a valid value for 'NCName'."));
+		}
 	}
 
 }

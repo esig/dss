@@ -92,6 +92,14 @@ public class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCount
 	}
 
 	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		assertTrue(signatureWrapper.getStructuralValidationMessage()
+				.contains("There are multiple occurrences of ID value 'CS-"));
+	}
+
+	@Override
 	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}

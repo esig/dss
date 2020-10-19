@@ -1185,9 +1185,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method returns the last timestamp validation data for an archive timestamp.
+	 * This method returns the last timestamp validation data for an archive
+	 * timestamp.
 	 *
-	 * @return
+	 * @return {@link Element} xades141:TimestampValidationData
 	 */
 	public Element getLastTimestampValidationData() {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath() + "/*");

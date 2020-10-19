@@ -86,4 +86,13 @@ public class XAdES111PTTest extends AbstractXAdESTestValidation {
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		// mixed sequence order
+		assertTrue(signatureWrapper.getStructuralValidationMessage().contains(
+				"Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":CRLValues}'."));
+	}
+
 }
