@@ -147,6 +147,16 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 	
 	@Override
+	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
+		String location = getSignatureParameters().getLocation();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(Utils.isStringNotEmpty(location), signatureWrapper.isSignatureProductionPlacePresent());
+		if (Utils.isStringNotEmpty(location)) {
+			assertEquals(location, signatureWrapper.getCountryName());
+		}
+	}
+
+	@Override
 	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			checkSignatureInformationStore(signature.getSignatureInformationStore());
