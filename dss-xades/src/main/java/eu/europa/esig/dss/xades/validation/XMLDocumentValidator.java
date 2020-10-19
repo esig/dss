@@ -36,6 +36,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.SAMLAssertionNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -115,7 +116,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 
 		signatures = new ArrayList<>();
-		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(rootElement);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);

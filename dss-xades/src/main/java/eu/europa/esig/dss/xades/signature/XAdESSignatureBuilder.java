@@ -29,17 +29,20 @@ import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -185,6 +188,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	public byte[] build() throws DSSException {
 
+		assertSignaturePossible();
+
 		ensureConfigurationValidity();
 		
 		xadesPaths = getCurrentXAdESPaths();
@@ -224,6 +229,41 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		return canonicalizedSignedInfo;
 	}
 	
+	private void assertSignaturePossible() {
+		if (DomUtils.isDOM(document)) {
+			Document dom = DomUtils.buildDOM(document);
+			final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(dom);
+			if (signatureNodeList != null && signatureNodeList.getLength() > 0) {
+				for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+					final Node signatureNode = signatureNodeList.item(ii);
+					assertDoesNotContainEnvelopedTransform(signatureNode);
+				}
+			}
+		}
+	}
+
+	private void assertDoesNotContainEnvelopedTransform(final Node signatureNode) {
+		NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureNode);
+		if (referenceNodeList != null && referenceNodeList.getLength() > 0) {
+			for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+				final Node referenceNode = referenceNodeList.item(ii);
+				NodeList transformList = DomUtils.getNodeList(referenceNode, XMLDSigPaths.TRANSFORMS_TRANSFORM_PATH);
+				if (transformList != null && transformList.getLength() > 0) {
+					for (int jj = 0; jj < transformList.getLength(); jj++) {
+						final Element transformElement = (Element) transformList.item(jj);
+						String transformAlgorithm = transformElement
+								.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
+						if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(transformAlgorithm)) {
+							throw new DSSException(String.format(
+									"The parallel signature is not possible! The provided file contains a signature with an '%s' transform.",
+									Transforms.TRANSFORM_ENVELOPED_SIGNATURE));
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private void ensureConfigurationValidity() {
 		checkSignaturePackagingValidity();
 

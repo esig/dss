@@ -1018,13 +1018,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 	
-	private NodeList getReferenceNodeList() {
-		return DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
-	}
-	
 	private List<DigestAlgorithm> getUsedReferenceDigestAlgos() {
 		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
-		NodeList referenceNodeList = getReferenceNodeList();
+		NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureElement);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
 			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
@@ -1067,7 +1063,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	private List<String> getUsedReferenceTypes() {
 		List<String> referenceTypes = new ArrayList<>();
-		NodeList referenceNodeList = getReferenceNodeList();
+		NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureElement);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
 			String type = referenceElement.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());

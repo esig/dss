@@ -68,6 +68,7 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
@@ -883,8 +884,6 @@ public final class DSSXMLUtils {
 		
 		return null;
 	}
-	
-
 
 	/**
 	 * This method verifies whether a given signature is a countersignature.
@@ -908,6 +907,27 @@ public final class DSSXMLUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a NodeList of all "ds:Signature" elements found in the
+	 * {@code documentNode}
+	 * 
+	 * @param documentNode {@link Node} the XML document or its part
+	 * @return {@link NodeList}
+	 */
+	public static NodeList getAllSignaturesExceptCounterSignatures(Node documentNode) {
+		return DomUtils.getNodeList(documentNode, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+	}
+
+	/**
+	 * Returns a NodeList of "ds:Reference" elements
+	 * 
+	 * @param signatureElement {@link Node} representing a ds:Signature node
+	 * @return {@link NodeList}
+	 */
+	public static NodeList getReferenceNodeList(Node signatureElement) {
+		return DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
 	}
 
 }

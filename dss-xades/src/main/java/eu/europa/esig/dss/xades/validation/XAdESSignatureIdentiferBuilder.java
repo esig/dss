@@ -4,10 +4,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 public class XAdESSignatureIdentiferBuilder extends AbstractSignatureIdentifierBuilder {
 
@@ -37,7 +36,7 @@ public class XAdESSignatureIdentiferBuilder extends AbstractSignatureIdentifierB
 		XAdESSignature xadesSignature = (XAdESSignature) signature;
 		Element signatureElement = xadesSignature.getSignatureElement();
 		Document document = signatureElement.getOwnerDocument();
-		final NodeList signatureNodeList = DomUtils.getNodeList(document, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
 		
 		int counter = 0;
 		while (counter < signatureNodeList.getLength()) {

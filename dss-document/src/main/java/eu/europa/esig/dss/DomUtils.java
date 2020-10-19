@@ -277,11 +277,41 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method returns true if the provided {@code InputStream} is a valid
+	 * {@link org.w3c.dom.Document}
+	 * 
+	 * @param inputStream {@link InputStream} to be tested
+	 * @return true if the document is an XML
+	 */
+	public static boolean isDOM(final InputStream inputStream) {
+		try {
+			final Document dom = buildDOM(inputStream);
+			return dom != null;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * This method returns true if the provided document is a valid XML
+	 * {@link org.w3c.dom.Document}
+	 * 
+	 * @param dssDocument {@link DSSDocument} to be tested
+	 * @return true if the document is an XML
+	 */
+	public static boolean isDOM(final DSSDocument dssDocument) {
+		try {
+			return startsWithXmlPreamble(dssDocument) && isDOM(dssDocument.openStream());
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the XML
 	 * inputStream.
 	 *
-	 * @param inputStream
-	 *                    The inputStream stream representing the dssDocument to be
+	 * @param inputStream The inputStream stream representing the dssDocument to be
 	 *                    created.
 	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream} @
 	 */

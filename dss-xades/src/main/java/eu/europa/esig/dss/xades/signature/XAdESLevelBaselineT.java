@@ -112,7 +112,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		documentDom = DomUtils.buildDOM(dssDocument);
 
-		final NodeList signatureNodeList = DomUtils.getNodeList(documentDom, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
 		if (signatureNodeList.getLength() == 0) {
 			throw new DSSException("There is no signature to extend!");
 		}
