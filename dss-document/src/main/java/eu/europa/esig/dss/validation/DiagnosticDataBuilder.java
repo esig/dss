@@ -177,8 +177,8 @@ public class DiagnosticDataBuilder {
 	private Date validationDate;
 	
 	// Merged revocation data sources;
-	private ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<CRL>();
-	private ListRevocationSource<OCSP> commonOCSPSource = new ListRevocationSource<OCSP>();
+	private ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<>();
+	private ListRevocationSource<OCSP> commonOCSPSource = new ListRevocationSource<>();
 
 	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
@@ -1944,6 +1944,9 @@ public class DiagnosticDataBuilder {
 		}
 		ref.setDataFound(referenceValidation.isFound());
 		ref.setDataIntact(referenceValidation.isIntact());
+		if (referenceValidation.isDuplicated()) {
+			ref.setDuplicated(referenceValidation.isDuplicated());
+		}
 		return ref;
 	}
 

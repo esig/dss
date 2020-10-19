@@ -824,25 +824,27 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					
 					final String uri = validation.getUri();
 
-					boolean noDuplicateIdFound = true;
+					boolean isDuplicated = false;
 					// empty URI means enveloped signature
 					if (Utils.isStringNotEmpty(uri)) {
-						noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(currentSantuarioSignature.getDocument(), DomUtils.getId(uri));
+						isDuplicated = !XMLUtils.protectAgainstWrappingAttack(
+								currentSantuarioSignature.getDocument(), DomUtils.getId(uri));
 					}
+					validation.setDuplicated(isDuplicated);
 					
 					boolean isElementReference = DomUtils.isElementReference(uri);
 							
 					if (isElementReference && DSSXMLUtils.isSignedProperties(reference, xadesPaths)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						found = found && (noDuplicateIdFound && (disableXSWProtection || findSignedPropertiesById(uri)));
+						found = found && (disableXSWProtection || findSignedPropertiesById(uri));
 						
 					} else if (DomUtils.isXPointerQuery(uri)) {
 						validation.setType(DigestMatcherType.XPOINTER);
-						found = found && noDuplicateIdFound;
+						// found is checked in the reference validation
 						
 					} else if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
 						validation.setType(DigestMatcherType.COUNTER_SIGNATURE);
-						found = found && noDuplicateIdFound;
+						// found is checked in the reference validation
 						
 					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, currentSantuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
@@ -854,27 +856,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
-						found = found && (noDuplicateIdFound && (disableXSWProtection || findObjectById(uri)));
+						found = found && (disableXSWProtection || findObjectById(uri));
 						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
-						found = found && (noDuplicateIdFound && (disableXSWProtection || (manifestNode != null)));
+						found = found && (disableXSWProtection || (manifestNode != null));
 						if (manifestNode != null) {
 							validation.getDependentValidations().addAll(getManifestReferences(manifestNode));
 						}
 						
-					} else {
-						found = found && noDuplicateIdFound;
 					}
 					
-					if (found) {
+					if (found && !isDuplicated) {
 						intact = reference.verify();
 					}
 					
 				} catch (Exception e) {
 					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage(), e);
-					
 				}
 				
 				if (DigestMatcherType.REFERENCE.equals(validation.getType()) || DigestMatcherType.OBJECT.equals(validation.getType()) ||

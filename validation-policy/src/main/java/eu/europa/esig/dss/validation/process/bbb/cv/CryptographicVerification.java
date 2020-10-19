@@ -68,13 +68,12 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		ChainItem<XmlCV> item = null;
 
 		/*
-		 * 5.2.7.4 Processing
-		 * The first and second steps as well as the Data To Be Signed depend on the signature type. The technical
-		 * details on how to do this correctly are out of scope for the present document. See ETSI EN 319 122-1 [i.2],
-		 * ETSI EN 319
-		 * 122-2 [i.3], ETSI EN 319 132-1 [i.4], ETSI EN 319 132-2 [i.5], ETSI EN 319 142-1 [i.6], ETSI EN 319 142-2
-		 * [i.7] and IETF
-		 * RFC 3852 [i.8] for details.
+		 * 5.2.7.4 Processing The first and second steps as well as 
+		 * the Data To Be Signed depend on the signature type. The technical details 
+		 * on how to do this correctly are out of scope for the present document. 
+		 * See ETSI EN 319 122-1 [i.2], ETSI EN 319 122-2 [i.3], ETSI EN 319 132-1 [i.4], 
+		 * ETSI EN 319 132-2 [i.5], ETSI EN 319 142-1 [i.6], ETSI EN 319 142-2 [i.7] 
+		 * and IETF RFC 3852 [i.8] for details.
 		 */
 
 		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();

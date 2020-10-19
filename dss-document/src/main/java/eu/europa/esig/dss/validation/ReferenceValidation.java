@@ -39,19 +39,31 @@ public class ReferenceValidation implements Serializable {
 
 	private static final long serialVersionUID = 1303869856995695436L;
 
+	/** The type of the Reference */
 	private DigestMatcherType type;
 
-	/* The pointed reference is found */
+	/** The pointed reference is found */
 	private boolean found;
-	/* The pointed reference is intact */
+
+	/** The pointed reference is intact */
 	private boolean intact;
-	/* The digest value embedded in reference element */
+
+	/** The digest value embedded in reference element */
 	private Digest digest;
-	/* Name of the reference */
+
+	/** Name of the reference */
 	private String name;
-	/* List of used transforms to compute digest of the reference */
+
+	/** List of used transforms to compute digest of the reference */
 	protected List<String> transforms;
-	/* List of dependent {@code ReferenceValidation}s (used in case of manifest type for manifest entries) */
+
+	/** The reference points to more that one element */
+	private boolean isDuplicated;
+
+	/**
+	 * List of dependent {@code ReferenceValidation}s (used in case of manifest type
+	 * for manifest entries)
+	 */
 	private List<ReferenceValidation> dependentReferenceValidations;
 
 	public DigestMatcherType getType() {
@@ -93,6 +105,27 @@ public class ReferenceValidation implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * Returns a list of transformations contained in the {@code reference}
+	 * 
+	 * @return list of transformation names
+	 */
+	public List<String> getTransformationNames() {
+		return transforms;
+	}
+
+	public void setTransformationNames(List<String> transforms) {
+		this.transforms = transforms;
+	}
+
+	public boolean isDuplicated() {
+		return isDuplicated;
+	}
+
+	public void setDuplicated(boolean isDuplicated) {
+		this.isDuplicated = isDuplicated;
+	}
 	
 	/**
 	 * Returns a list of dependent validations from {@code this}
@@ -105,18 +138,6 @@ public class ReferenceValidation implements Serializable {
 			dependentReferenceValidations = new ArrayList<>();
 		}
 		return dependentReferenceValidations;
-	}
-
-	/**
-	 * Returns a list of transformations contained in the {@code reference}
-	 * @return list of transformation names
-	 */
-	public List<String> getTransformationNames() {
-		return transforms;
-	}
-	
-	public void setTransformationNames(List<String> transforms) {
-		this.transforms = transforms;
 	}
 
 }

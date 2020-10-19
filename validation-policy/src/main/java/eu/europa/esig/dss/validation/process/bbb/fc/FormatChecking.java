@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCh
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
@@ -79,7 +80,9 @@ public class FormatChecking extends Chain<XmlFC> {
 	protected void initChain() {
 		ChainItem<XmlFC> item = firstItem = formatCheck();
 		
-		item = item.setNextItem(duplicateCheck());
+		item = item.setNextItem(signatureDuplicateCheck());
+
+		item = item.setNextItem(referenceDuplicateCheck());
 
 		item = item.setNextItem(fullScopeCheck());
 		
@@ -123,9 +126,13 @@ public class FormatChecking extends Chain<XmlFC> {
 		return new FormatCheck(i18nProvider, result, signature, constraint);
 	}
 	
-	private ChainItem<XmlFC> duplicateCheck() {
+	private ChainItem<XmlFC> signatureDuplicateCheck() {
 		LevelConstraint constraint = policy.getSignatureDuplicatedConstraint(context);
 		return new SignatureNotAmbiguousCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> referenceDuplicateCheck() {
+		return new ReferencesNotAmbiguousCheck(i18nProvider, result, signature, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlFC> fullScopeCheck() {

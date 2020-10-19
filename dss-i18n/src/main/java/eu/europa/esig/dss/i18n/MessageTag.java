@@ -36,6 +36,9 @@ public enum MessageTag {
 	
 	BBB_FC_ISD,
 	BBB_FC_ISD_ANS,
+
+	BBB_FC_ISRIA,
+	BBB_FC_ISRIA_ANS,
 	
 	BBB_FC_IOSIP,
 	BBB_FC_IOSIP_ANS,

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -406,6 +407,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
+					assertFalse(digestMatcher.isDuplicated());
 				}
 			}
 	
