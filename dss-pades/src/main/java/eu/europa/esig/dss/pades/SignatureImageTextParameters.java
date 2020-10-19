@@ -84,13 +84,13 @@ public class SignatureImageTextParameters implements Serializable {
 	private Color textColor = DEFAULT_TEXT_COLOR;
 
 	/**
-	 * This variable defines the text color to use when the signerNamePosition
-	 * is not NONE (default is WHITE)
+	 * This variable defines the background of a text bounding box
 	 */
 	private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	/**
 	 * Returns a signer text position respectively to an image
+	 * 
 	 * @return {@link SignerTextPosition}
 	 */
 	public SignerTextPosition getSignerTextPosition() {
@@ -98,8 +98,11 @@ public class SignatureImageTextParameters implements Serializable {
 	}
 
 	/**
-	 * Specifies a text position respectively to an image inside the signature field area
-	 * @param signerTextPosition {@link SignerTextPosition} (TOP, BOTTOM, RIGHT, LEFT)
+	 * Specifies a text position respectively to an image inside the signature field
+	 * area
+	 * 
+	 * @param signerTextPosition {@link SignerTextPosition} (TOP, BOTTOM, RIGHT,
+	 *                           LEFT)
 	 */
 	public void setSignerTextPosition(SignerTextPosition signerTextPosition) {
 		this.signerTextPosition = signerTextPosition;
@@ -107,6 +110,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text vertical alignment value
+	 * 
 	 * @return {@link SignerTextVerticalAlignment}
 	 */
 	public SignerTextVerticalAlignment getSignerTextVerticalAlignment() {
@@ -114,8 +118,11 @@ public class SignatureImageTextParameters implements Serializable {
 	}
 
 	/**
-	 * Defines a vertical alignment (positioning) of signer text inside the signature field
-	 * @param signerTextVerticalAlignment {@link SignerTextVerticalAlignment} (TOP, MIDDLE, BOTTOM)
+	 * Defines a vertical alignment (positioning) of signer text inside the
+	 * signature field
+	 * 
+	 * @param signerTextVerticalAlignment {@link SignerTextVerticalAlignment} (TOP,
+	 *                                    MIDDLE, BOTTOM)
 	 */
 	public void setSignerTextVerticalAlignment(SignerTextVerticalAlignment signerTextVerticalAlignment) {
 		this.signerTextVerticalAlignment = signerTextVerticalAlignment;
@@ -123,6 +130,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text horizontal alignment value
+	 * 
 	 * @return {@link SignerTextHorizontalAlignment}
 	 */
     public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
@@ -130,9 +138,11 @@ public class SignatureImageTextParameters implements Serializable {
     }
 
     /**
-     * Allows a horizontal alignment of a text with respect to its area
-     * @param signerTextHorizontalAlignment {@link SignerTextHorizontalAlignment} (LEFT, CENTER, RIGHT)
-     */
+	 * Allows a horizontal alignment of a text with respect to its area
+	 * 
+	 * @param signerTextHorizontalAlignment {@link SignerTextHorizontalAlignment}
+	 *                                      (LEFT, CENTER, RIGHT)
+	 */
     public void setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment signerTextHorizontalAlignment) {
         this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
     }
@@ -152,6 +162,7 @@ public class SignatureImageTextParameters implements Serializable {
 	
 	/**
 	 * Sets a text font
+	 * 
 	 * @param dssFont {@link DSSFont}
 	 */
 	public void setFont(DSSFont dssFont) {
@@ -160,6 +171,7 @@ public class SignatureImageTextParameters implements Serializable {
 	
 	/**
 	 * Returns padding between text and its area
+	 * 
 	 * @return {@code float} padding value
 	 */
 	public float getPadding() {
@@ -168,6 +180,7 @@ public class SignatureImageTextParameters implements Serializable {
 	
 	/**
 	 * Sets a padding between text and its area
+	 * 
 	 * @param padding {@code float} padding value
 	 */
 	public void setPadding(float padding) {
@@ -176,6 +189,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns text color parameter
+	 * 
 	 * @return {@link Color}
 	 */
 	public Color getTextColor() {
@@ -184,6 +198,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets color for the text
+	 * 
 	 * @param textColor {@link Color} to set
 	 */
 	public void setTextColor(Color textColor) {
@@ -192,6 +207,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns background color for the text's area
+	 * 
 	 * @return {@link Color} of the text area background
 	 */
 	public Color getBackgroundColor() {
@@ -200,6 +216,10 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets the provided background color for a test's area
+	 * 
+	 * NOTE: use NULL for a transparent background (if supported by a selected implementation)
+	 * DEFAULT: Color.WHITE 
+	 * 
 	 * @param backgroundColor {@link Color} to set
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
@@ -208,6 +228,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns defines text content
+	 * 
 	 * @return {@link String} text
 	 */
 	public String getText() {
@@ -216,6 +237,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets a text content parameter
+	 * 
 	 * @param text {@link String} text to display
 	 */
 	public void setText(String text) {

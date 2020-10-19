@@ -133,11 +133,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
 		
 		Rectangle boundingRectangle = new Rectangle(sigFieldRect.getWidth(), sigFieldRect.getHeight()); // defines text field borders
-		boundingRectangle.setBackgroundColor(parameters.getTextParameters().getBackgroundColor());
+		boundingRectangle.setBackgroundColor(textParameters.getBackgroundColor());
 		layer.rectangle(boundingRectangle);
 		
 		layer.setBoundingBox(boundingRectangle);
-		layer.setColorStroke(textParameters.getTextColor());
+		layer.setColorFill(textParameters.getTextColor());
 		
 		String[] lines = iTextFontMetrics.getLines(text);
 		
