@@ -349,6 +349,50 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 
 	@Override
+	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
+		super.checkSignatureProductionPlace(diagnosticData);
+
+		SignerLocation signerLocation = getSignatureParameters().bLevel().getSignerLocation();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(signerLocation != null && !signerLocation.isEmpty(),
+				signatureWrapper.isSignatureProductionPlacePresent());
+
+		if (signerLocation != null) {
+			String country = signerLocation.getCountry();
+			if (Utils.isStringNotEmpty(country)) {
+				assertEquals(country, signatureWrapper.getCountryName());
+			}
+			String locality = signerLocation.getLocality();
+			if (Utils.isStringNotEmpty(locality)) {
+				assertEquals(locality, signatureWrapper.getCity());
+			}
+			// TODO : improve for CAdES
+			List<String> postalAddress = signerLocation.getPostalAddress();
+			if (Utils.isCollectionNotEmpty(postalAddress)) {
+				for (String postAddress : postalAddress) {
+					assertTrue(signatureWrapper.getAddress().contains(postAddress));
+				}
+			}
+			String postalCode = signerLocation.getPostalCode();
+			if (Utils.isStringNotEmpty(postalCode)) {
+				assertEquals(postalCode, signatureWrapper.getPostalCode());
+			}
+			String postOfficeBoxNumber = signerLocation.getPostOfficeBoxNumber();
+			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
+				assertEquals(postOfficeBoxNumber, signatureWrapper.getPostOfficeBoxNumber());
+			}
+			String stateOrProvince = signerLocation.getStateOrProvince();
+			if (Utils.isStringNotEmpty(stateOrProvince)) {
+				assertEquals(stateOrProvince, signatureWrapper.getStateOrProvince());
+			}
+			String street = signerLocation.getStreet();
+			if (Utils.isStringNotEmpty(street)) {
+				assertEquals(street, signatureWrapper.getAddress());
+			}
+		}
+	}
+
+	@Override
 	@SuppressWarnings({ "unchecked" })
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
 		super.checkMessageDigestAlgorithm(diagnosticData);
@@ -567,6 +611,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		String locality = signerLocation.getLocality();
 		if (locality != null) {
 			assertTrue(addressString.contains(locality));
+		}
+		String postOfficeBoxNumber = signerLocation.getPostOfficeBoxNumber();
+		if (postOfficeBoxNumber != null) {
+			assertTrue(addressString.contains(postOfficeBoxNumber));
 		}
 		String postalCode = signerLocation.getPostalCode();
 		if (postalCode != null) {

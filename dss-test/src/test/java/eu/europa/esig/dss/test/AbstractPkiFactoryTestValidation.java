@@ -257,7 +257,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			for (AdvancedSignature signature : signatures) {
 				SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
 				if (signaturePolicy != null) {
-					List<SignaturePolicyValidator> validators = new ArrayList<SignaturePolicyValidator>();
+					List<SignaturePolicyValidator> validators = new ArrayList<>();
 					
 					ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
 					Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
@@ -380,6 +380,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
 		checkSignedAssertions(diagnosticData);
+		checkSignatureProductionPlace(diagnosticData);
 		checkSignatureIdentifier(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
 		checkSignaturePolicyStore(diagnosticData);
@@ -794,6 +795,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void checkSignedAssertions(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
+
+	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
 	
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
@@ -847,7 +852,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 	
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
-		// not implemented by default
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			if (Utils.isStringNotEmpty(signature.getStructuralValidationMessage())) {
+				fail("Structural validation failure: " + signature.getStructuralValidationMessage());
+			}
+		}
 	}
 	
 	protected void checkTokens(DiagnosticData diagnosticData) {

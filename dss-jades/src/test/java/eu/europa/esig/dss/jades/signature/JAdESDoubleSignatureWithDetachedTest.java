@@ -19,7 +19,7 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -67,7 +67,7 @@ public class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValid
 		DSSDocument doubleSignedDocument = sign(Collections.singletonList(signedDocument), signatureParameters);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");
 		
-		assertTrue(JAdESUtils.isJsonDocument(doubleSignedDocument));
+		assertTrue(DSSJsonUtils.isJsonDocument(doubleSignedDocument));
 		 
 		return doubleSignedDocument;
 	}

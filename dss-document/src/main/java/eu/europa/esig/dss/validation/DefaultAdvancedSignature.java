@@ -457,13 +457,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			counterSignature.prepareCounterSignatures(validationContext);
 		}
 	}
-
-	@Override
-	public void validateStructure() {
+	
+    /**
+     * This method allows the structure validation of the signature.
+     */
+	protected String validateStructure() {
+		// not implemented by default
+		return Utils.EMPTY_STRING;
 	}
 
 	@Override
 	public String getStructureValidationResult() {
+		if (structureValidation == null) {
+			structureValidation = validateStructure();
+		}
 		return structureValidation;
 	}
 	

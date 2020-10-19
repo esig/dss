@@ -20,8 +20,8 @@ import eu.europa.esig.dss.model.MimeType;
 public class HTTPHeader implements DSSDocument {
 	
 	private final String name;
-	private final String value;
-	
+	private String value;
+
 	/** The default constructor */
 	public HTTPHeader(final String name, final String value) {
 		this.name = name;
@@ -43,6 +43,15 @@ public class HTTPHeader implements DSSDocument {
 	 */
 	public String getValue() {
 		return value;
+	}
+
+	/**
+	 * Sets a String value of HTTP Header
+	 * 
+	 * @param value {@link String} value
+	 */
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override

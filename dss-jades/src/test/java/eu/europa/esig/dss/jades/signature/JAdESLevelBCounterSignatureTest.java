@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
@@ -102,7 +102,7 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		assertEquals(1, jwsSignatures.size());
 		
 		JWS jws = jwsSignatures.iterator().next();
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		assertEquals(1, etsiU.size());
 		
 		Map<?, ?> item = (Map<?, ?>) etsiU.iterator().next();
@@ -121,7 +121,7 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		assertTrue(Utils.isArrayEmpty(counterJWS.getUnverifiedPayloadBytes()));
 
 		try {
-			String jsonString = new String(JAdESUtils.fromBase64Url(counterJWS.getEncodedHeader()));
+			String jsonString = new String(DSSJsonUtils.fromBase64Url(counterJWS.getEncodedHeader()));
 			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
 			
 			Object cty = protectedHeaderMap.get(HeaderParameterNames.CONTENT_TYPE);

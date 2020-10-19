@@ -5,8 +5,9 @@ import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_D;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PID;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PL;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_T;
+import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_X5T_S;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_ATS;
-import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CM;
+import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SR_CMS;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.X5T_O;
 import static org.jose4j.jwx.HeaderParameterNames.AGREEMENT_PARTY_U_INFO;
 import static org.jose4j.jwx.HeaderParameterNames.AGREEMENT_PARTY_V_INFO;
@@ -78,14 +79,22 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.jws.JAdESUtils;
 
-public class JAdESUtils {
+/**
+ * Utility class for working with JSON objects
+ *
+ */
+public class DSSJsonUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JAdESUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DSSJsonUtils.class);
 	
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
 	
 	public static final String HTTP_HEADER_DIGEST = "Digest";
+
+	/* RFC 2045 */
+	public static final String CONTENT_ENCODING_BINARY = "binary";
 
 	/* Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -118,7 +127,7 @@ public class JAdESUtils {
 	static {
 		criticalHeaders = Stream.of(
 				/* JAdES EN 119-812 constraints */
-				SIG_T, X5T_O, SR_CM, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
+				SIG_T, X5T_O, SIG_X5T_S, SR_CMS, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
 				/* RFC7797 'b64' */
 				BASE64URL_ENCODE_PAYLOAD ).collect(Collectors.toSet());
 		
@@ -131,7 +140,7 @@ public class JAdESUtils {
 				PBES2_SALT_INPUT, PBES2_ITERATION_COUNT, ENCRYPTION_METHOD, ZIP ).collect(Collectors.toSet());
 	}
 	
-	private JAdESUtils() {
+	private DSSJsonUtils() {
 	}
 	
 	/**
@@ -155,7 +164,18 @@ public class JAdESUtils {
 	}
 
 	/**
-	 * Returns a base64Url encoded string from the provided JSON Object or JSON Array
+	 * Returns a base64Url encoded string
+	 * 
+	 * @param document {@link DSSDocument} to encode
+	 * @return base64Url encoded {@link String}
+	 */
+	public static String toBase64Url(DSSDocument document) {
+		return toBase64Url(DSSUtils.toByteArray(document));
+	}
+
+	/**
+	 * Returns a base64Url encoded string from the provided JSON Object or JSON
+	 * Array
 	 * 
 	 * @param object JSON Object or JSON Array to encode
 	 * @return base64Url encoded {@link String}
@@ -183,16 +203,36 @@ public class JAdESUtils {
 	 */
 	public static boolean isBase64UrlEncoded(String str) {
 		try {
-			byte[] decoded = Base64Url.decode(str);
-			return Utils.isArrayNotEmpty(decoded);
+			Base64Url.decode(str);
+			for (byte b : str.getBytes()) {
+				if (!isBase64UrlEncoded(b)) {
+					return false;
+				}
+			}
+			return true;
 		} catch (Exception e) {
 			return false;
 		}
 	}
 	
 	/**
-	 * Checks if the payload is JWS URL safe
-	 * See RFC 7797 : 5.2. Unencoded JWS Compact Serialization Payload
+	 * Checks if the byte is Base64Url encoded
+	 * 
+	 * @param b a byte to check
+	 * @return TRUE if the byte is Base64Url encoded, FALSE otherwise
+	 */
+	public static boolean isBase64UrlEncoded(byte b) {
+		for (byte m : URL_SAFE_ENCODE_TABLE) {
+			if (b == m) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the payload is JWS URL safe See RFC 7797 : 5.2. Unencoded JWS
+	 * Compact Serialization Payload
 	 * 
 	 * @param payloadString {@link String} representing a payload
 	 * @return TRUE if the payload is URL safe, FALSE otherwise
@@ -221,21 +261,6 @@ public class JAdESUtils {
 	 */
 	public static boolean isUrlSafe(byte b) {
 		return 0x1f < b && b < 0x2e || 0x2e < b && b < 0x7f;
-	}
-	
-	/**
-	 * Checks if the byte is Base64Url encoded
-	 * 
-	 * @param b a byte to check
-	 * @return TRUE if the byte is Base64Url encoded, FALSE otherwise
-	 */
-	public static boolean isBase64UrlEncoded(byte b) {
-		for (byte m : URL_SAFE_ENCODE_TABLE) {
-			if (b == m) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -281,7 +306,7 @@ public class JAdESUtils {
 		
 		Map<String, Object> digAlgValParams = new LinkedHashMap<>();
 		digAlgValParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getUri());
-		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, Utils.toBase64(digestValue));
+		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, DSSJsonUtils.toBase64Url(digestValue));
 		
 		return new JsonObject(digAlgValParams);
 	}
@@ -297,7 +322,7 @@ public class JAdESUtils {
 			String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
 			String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
 			if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
-				return new Digest(DigestAlgorithm.forXML(digestAlgoURI), Utils.fromBase64(digestValueBase64));
+				return new Digest(DigestAlgorithm.forXML(digestAlgoURI), DSSJsonUtils.fromBase64Url(digestValueBase64));
 			}
 		}
 		return null;
@@ -331,7 +356,7 @@ public class JAdESUtils {
 		if (Utils.isStringNotEmpty(desc)) {
 			oidParams.put(JAdESHeaderParameterNames.DESC, desc);
 		}
-		if (docRefs != null) {
+		if (Utils.isArrayNotEmpty(docRefs)) {
 			oidParams.put(JAdESHeaderParameterNames.DOC_REFS, new JSONArray(Arrays.asList(docRefs)));
 		}
 		
@@ -387,35 +412,24 @@ public class JAdESUtils {
 	 * 
 	 * @param documents a list of {@link DSSDocument}s to concatenate
 	 * @return a byte array of document octets
-	 * @throws IOException if an exception occurs
 	 */
-	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) throws IOException {
+	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) {
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new DSSException("Unable to build a JWS Payload. Reason : the detached content is not provided!");
+		}
+		if (documents.size() == 1) {
+			return DSSUtils.toByteArray(documents.get(0));
+		}
+
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSDocument document : documents) {
 				baos.write(DSSUtils.toByteArray(document));
 			}
 			return baos.toByteArray();
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to build a JWS Payload. Reason : %s", e.getMessage()), e);
 		}
-	}
-	
-	/**
-	 * Casts a list of {@link DSSDocument}s to a list of {@code HTTPHeader}s
-	 * 
-	 * @param dssDocuments a list of {@link DSSDocument}s to be casted to {@link HTTPHeader}s
-	 * @return a list of {@link HTTPHeader}s
-	 * @throws IllegalArgumentException if a document of not {@link HTTPHeader} class found
-	 */
-	public static List<HTTPHeader> toHTTPHeaders(List<DSSDocument> dssDocuments) {
-		List<HTTPHeader> httpHeaderDocuments = new ArrayList<>();
-		for (DSSDocument document : dssDocuments) {
-			if (document instanceof HTTPHeader) {
-				HTTPHeader httpHeaderDocument = (HTTPHeader) document;
-				httpHeaderDocuments.add(httpHeaderDocument);
-			} else {
-				throw new IllegalArgumentException(String.format("The document with name '%s' is not of type HTTPHeader!", document.getName()));
-			}
-		}
-		return httpHeaderDocuments;
 	}
 	
 	/**
@@ -573,6 +587,32 @@ public class JAdESUtils {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Validates {@code JWS} against a JAdES schema (ETSI TS 119 182-1)
+	 * 
+	 * @param jws {@link JWS} to validate
+	 * @return {@link String} containing validation errors, empty string ("") if no error occurred
+	 */
+	public static String validateAgainstJAdESSchema(JWS jws) {
+		StringBuilder builder = new StringBuilder();
+		
+		String headerJson = jws.getHeaders().getFullHeaderAsJsonString();
+		String errors = JAdESUtils.getInstance().validateAgainstJWSProtectedHeaderSchema(headerJson);
+		builder.append(errors);
+		
+		Map<String, Object> unprotected = jws.getUnprotected();
+		if (Utils.isMapNotEmpty(unprotected)) {
+			String unprotectedJson = JsonUtil.toJson(unprotected);
+			errors = JAdESUtils.getInstance().validateAgainstJWSUnprotectedHeaderSchema(unprotectedJson);
+			if (Utils.isStringNotEmpty(errors)) {
+				builder.append("; ");
+				builder.append(errors);
+			}
+		}
+		
+		return builder.toString();
 	}
 
 }

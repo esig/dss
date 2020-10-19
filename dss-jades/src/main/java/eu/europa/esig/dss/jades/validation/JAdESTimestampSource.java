@@ -15,9 +15,9 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -49,7 +49,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 
 	@Override
 	protected SignatureProperties<JAdESAttribute> getUnsignedSignatureProperties() {
-		List<Object> etsiU = JAdESUtils.getEtsiU(signature.getJws());
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
 		return new JAdESUnsignedProperties(etsiU);
 	}
 
@@ -102,7 +102,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 
 	@Override
 	protected boolean isSigAndRefsTimestamp(JAdESAttribute unsignedAttribute) {
-		return JAdESHeaderParameterNames.SIG_AND_RFS_TST.equals(unsignedAttribute.getHeaderName());
+		return JAdESHeaderParameterNames.SIG_R_TST.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -362,7 +362,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	protected List<AdvancedSignature> getCounterSignatures(JAdESAttribute unsignedAttribute) {
 		Object cSig = unsignedAttribute.getValue();
 		if (cSig != null) {
-			JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSig, signature);
+			JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSig, signature);
 			if (counterSignature != null) {
 				return Collections.singletonList(counterSignature);
 			}
@@ -405,28 +405,35 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 
 	private List<TimestampToken> extractTimestampTokens(JAdESAttribute signatureAttribute, Map<?, ?> tstContainer, TimestampType timestampType,
 			List<TimestampedReference> references) {
-		List<TimestampToken> result = new LinkedList<TimestampToken>();
+		List<TimestampToken> result = new LinkedList<>();
 
 		List<?> tokens = (List<?>) tstContainer.get(JAdESHeaderParameterNames.TS_TOKENS);
-		for (Object token : tokens) {
-			if (token instanceof Map<?, ?>) {
-				Map<?, ?> jsonToken = (Map<?, ?>) token;
-				String encoding = (String) jsonToken.get(JAdESHeaderParameterNames.ENCODING);
-				if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-					String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
-					try {
-						TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references, TimestampLocation.JAdES);
-						timestampToken.setHashCode(signatureAttribute.getValueHashCode());
-						result.add(timestampToken);
-					} catch (Exception e) {
-						LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+		if (Utils.isCollectionNotEmpty(tokens)) {
+			for (Object token : tokens) {
+				if (token instanceof Map<?, ?>) {
+					Map<?, ?> jsonToken = (Map<?, ?>) token;
+					String encoding = (String) jsonToken.get(JAdESHeaderParameterNames.ENCODING);
+					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+						String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
+						try {
+							TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64),
+									timestampType, references, TimestampLocation.JAdES);
+							timestampToken.setHashCode(signatureAttribute.getValueHashCode());
+							result.add(timestampToken);
+						} catch (Exception e) {
+							LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
+						}
+					} else {
+						LOG.warn("Unsupported encoding {}", encoding);
 					}
 				} else {
-					LOG.warn("Unsupported encoding {}", encoding);
+					LOG.warn("The '{}' element shall contain an array of JSON objects! The entry is skipped.",
+							JAdESHeaderParameterNames.TS_TOKENS);
 				}
-			} else {
-				LOG.warn("The 'tsTokens' element shall contain an array of JSON objects! The entry is skipped.");
 			}
+		} else {
+			LOG.warn("'{}' element is not found! Returns an empty array if timestamps.",
+					JAdESHeaderParameterNames.TS_TOKENS);
 		}
 		return result;
 	}

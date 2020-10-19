@@ -23,15 +23,51 @@ package eu.europa.esig.dss.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class SignerLocation implements Serializable {
 
+	/**
+	 * A sequence defined a Postal Address
+	 * 
+	 * NOTE: used in CAdES
+	 */
 	private List<String> postalAddress = new ArrayList<>();
+
+	/**
+	 * The post office box number for PO box addresses.
+	 * 
+	 * NOTE: used in JAdES
+	 */
+	private String postOfficeBoxNumber;
+
+	/**
+	 * The postal code (ZIP-code). For example, 94043.
+	 */
 	private String postalCode;
+
+	/**
+	 * The locality (city) in which the street address is, and which is in the
+	 * region.
+	 */
 	private String locality;
+
+	/**
+	 * State or province. The region in which the locality is, and which is in the
+	 * country.
+	 */
 	private String stateOrProvince;
+
+	/**
+	 * The country. For example, USA. You can also provide the two-letter ISO 3166-1
+	 * alpha-2 country code.
+	 */
 	private String country;
+
+	/**
+	 * The street address. For example, 1600 Amphitheatre Pkwy.
+	 */
 	private String street;
 
 	public SignerLocation() {
@@ -69,6 +105,14 @@ public class SignerLocation implements Serializable {
 		this.postalCode = postalCode;
 	}
 
+	public String getPostOfficeBoxNumber() {
+		return postOfficeBoxNumber;
+	}
+
+	public void setPostOfficeBoxNumber(String postOfficeBoxNumber) {
+		this.postOfficeBoxNumber = postOfficeBoxNumber;
+	}
+
 	public String getStateOrProvince() {
 		return stateOrProvince;
 	}
@@ -97,25 +141,20 @@ public class SignerLocation implements Serializable {
 		}
 		postalAddress.add(addressItem);
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((country == null) ? 0 : country.hashCode());
-		result = (prime * result) + ((locality == null) ? 0 : locality.hashCode());
-		result = (prime * result) + ((postalAddress == null) ? 0 : postalAddress.hashCode());
-		result = (prime * result) + ((postalCode == null) ? 0 : postalCode.hashCode());
-		result = (prime * result) + ((stateOrProvince == null) ? 0 : stateOrProvince.hashCode());
-		result = (prime * result) + ((street == null) ? 0 : street.hashCode());
-		return result;
-	}
 	
+	/**
+	 * Checks if the SignerLocation instance is empty
+	 * 
+	 * @return TRUE if none of the fields are filled in, FALSE otherwise
+	 */
 	public boolean isEmpty() {
 		if (postalAddress != null && !postalAddress.isEmpty()) {
 			return false;
 		}
 		if (postalCode != null && !postalCode.isEmpty()) {
+			return false;
+		}
+		if (postOfficeBoxNumber != null && !postOfficeBoxNumber.isEmpty()) {
 			return false;
 		}
 		if (locality != null && !locality.isEmpty()) {
@@ -134,6 +173,20 @@ public class SignerLocation implements Serializable {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((locality == null) ? 0 : locality.hashCode());
+		result = prime * result + ((postOfficeBoxNumber == null) ? 0 : postOfficeBoxNumber.hashCode());
+		result = prime * result + ((postalAddress == null) ? 0 : postalAddress.hashCode());
+		result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
+		result = prime * result + ((stateOrProvince == null) ? 0 : stateOrProvince.hashCode());
+		result = prime * result + ((street == null) ? 0 : street.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -145,46 +198,25 @@ public class SignerLocation implements Serializable {
 			return false;
 		}
 		SignerLocation other = (SignerLocation) obj;
-		if (country == null) {
-			if (other.country != null) {
-				return false;
-			}
-		} else if (!country.equals(other.country)) {
+		if (!Objects.equals(country, other.country)) {
 			return false;
 		}
-		if (locality == null) {
-			if (other.locality != null) {
-				return false;
-			}
-		} else if (!locality.equals(other.locality)) {
+		if (!Objects.equals(locality, other.locality)) {
 			return false;
 		}
-		if (postalAddress == null) {
-			if (other.postalAddress != null) {
-				return false;
-			}
-		} else if (!postalAddress.equals(other.postalAddress)) {
+		if (!Objects.equals(postOfficeBoxNumber, other.postOfficeBoxNumber)) {
 			return false;
 		}
-		if (postalCode == null) {
-			if (other.postalCode != null) {
-				return false;
-			}
-		} else if (!postalCode.equals(other.postalCode)) {
+		if (!Objects.equals(postalAddress, other.postalAddress)) {
 			return false;
 		}
-		if (stateOrProvince == null) {
-			if (other.stateOrProvince != null) {
-				return false;
-			}
-		} else if (!stateOrProvince.equals(other.stateOrProvince)) {
+		if (!Objects.equals(postalCode, other.postalCode)) {
 			return false;
 		}
-		if (street == null) {
-			if (other.street != null) {
-				return false;
-			}
-		} else if (!street.equals(other.street)) {
+		if (!Objects.equals(stateOrProvince, other.stateOrProvince)) {
+			return false;
+		}
+		if (!Objects.equals(street, other.street)) {
 			return false;
 		}
 		return true;
@@ -192,8 +224,9 @@ public class SignerLocation implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignerLocation [postalAddress=" + postalAddress + ", postalCode=" + postalCode + ", locality=" + locality + ", stateOrProvince="
-				+ stateOrProvince + ", country=" + country + ", street=" + street + "]";
+		return "SignerLocation [postalAddress=" + postalAddress + ", postOfficeBoxNumber=" + postOfficeBoxNumber
+				+ ", postalCode=" + postalCode + ", locality=" + locality + ", stateOrProvince=" + stateOrProvince
+				+ ", country=" + country + ", street=" + street + "]";
 	}
 
 }

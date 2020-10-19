@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
@@ -74,7 +74,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 						Utils.toBase64(DSSUtils.toByteArray(signaturePolicyStore.getSignaturePolicyContent())));
 
 				SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
-				JsonObject oidObject = JAdESUtils.getOidObject(spDocSpecification.getId(), spDocSpecification.getDescription(), 
+				JsonObject oidObject = DSSJsonUtils.getOidObject(spDocSpecification.getId(), spDocSpecification.getDescription(), 
 						spDocSpecification.getDocumentationReferences());
 				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SP_DSPEC, oidObject);
 

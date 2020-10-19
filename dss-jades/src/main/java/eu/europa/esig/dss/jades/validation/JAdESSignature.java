@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -21,9 +21,8 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.jades.HTTPHeader;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -106,7 +105,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public Date getSigningTime() {
 		String signingTimeStr = jws.getHeaders().getStringHeaderValue(JAdESHeaderParameterNames.SIG_T);
-		return JAdESUtils.getDate(signingTimeStr);
+		return DSSJsonUtils.getDate(signingTimeStr);
 	}
 
 	/**
@@ -174,11 +173,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PL);
 		if (signaturePlace != null) {
 			SignatureProductionPlace result = new SignatureProductionPlace();
-			result.setCity((String) signaturePlace.get(JAdESHeaderParameterNames.CITY));
-			result.setStreetAddress((String) signaturePlace.get(JAdESHeaderParameterNames.STR_ADDR));
-			result.setPostalCode((String) signaturePlace.get(JAdESHeaderParameterNames.POST_CODE));
-			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.STAT_PROV));
-			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.COUNTRY));
+			result.setCity((String) signaturePlace.get(JAdESHeaderParameterNames.ADDRESS_LOCALITY));
+			result.setStreetAddress((String) signaturePlace.get(JAdESHeaderParameterNames.STREET_ADDRESS));
+			result.setPostOfficeBoxNumber((String) signaturePlace.get(JAdESHeaderParameterNames.POST_OFFICE_BOX_NUMBER));
+			result.setPostalCode((String) signaturePlace.get(JAdESHeaderParameterNames.POSTAL_CODE));
+			result.setStateOrProvince((String) signaturePlace.get(JAdESHeaderParameterNames.ADDRESS_REGION));
+			result.setCountryName((String) signaturePlace.get(JAdESHeaderParameterNames.ADDRESS_COUNTRY));
 			return result;
 		}
 		return null;
@@ -226,18 +226,26 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<CommitmentTypeIndication> getCommitmentTypeIndications() {
 		List<CommitmentTypeIndication> result = new ArrayList<>();
-		Map<?, ?> signedCommitment = (Map<?, ?>) jws.getHeaders()
-				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CM);
-		if (signedCommitment != null) {
-			Map<? ,?> commIdMap = (Map<? ,?>) signedCommitment.get(JAdESHeaderParameterNames.COMM_ID);
-			String uri = (String) commIdMap.get(JAdESHeaderParameterNames.ID);
-			if (Utils.isStringNotBlank(uri)) {
-				CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
-				commitmentTypeIndication.setDescription((String) commIdMap.get(JAdESHeaderParameterNames.DESC));
-				commitmentTypeIndication.setDocumentReferences((List<String>) commIdMap.get(JAdESHeaderParameterNames.DOC_REFS));
-				result.add(commitmentTypeIndication);
-			} else {
-				LOG.warn("Id parameter in the OID with the value '{}' is not conformant! The entry is skipped.", uri);
+		List<?> signedCommitments = (List<?>) jws.getHeaders()
+				.getObjectHeaderValue(JAdESHeaderParameterNames.SR_CMS);
+		if (Utils.isCollectionNotEmpty(signedCommitments)) {
+			for (Object signedCommitment : signedCommitments) {
+				if (signedCommitment instanceof Map<?, ?>) {
+					Map<?, ?> signedCommitmentMap = (Map<?, ?>) signedCommitment;
+					Map<?, ?> commIdMap = (Map<?, ?>) signedCommitmentMap.get(JAdESHeaderParameterNames.COMM_ID);
+					String uri = (String) commIdMap.get(JAdESHeaderParameterNames.ID);
+					if (Utils.isStringNotBlank(uri)) {
+						CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
+						commitmentTypeIndication.setDescription((String) commIdMap.get(JAdESHeaderParameterNames.DESC));
+						commitmentTypeIndication.setDocumentReferences((List<String>) commIdMap.get(JAdESHeaderParameterNames.DOC_REFS));
+						result.add(commitmentTypeIndication);
+					} else {
+						LOG.warn("Id parameter in the OID with the value '{}' is not conformant! The entry is skipped.", uri);
+					}
+				} else {
+					LOG.warn("Unable to extract a SignerCommitment. An object is expected as an item in 'srCms' map! "
+							+ "The entry is skipped.");
+				}
 			}
 		}
 		return result;
@@ -267,48 +275,87 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<SignerRole> getClaimedSignerRoles() {
+	public List<SignerRole> getCertifiedSignerRoles() {
 		List<SignerRole> result = new ArrayList<>();
 		Map<?, ?> jsonMap = getSignerAttributes();
 		if (jsonMap != null) {
-			List<String> claimedList = (List<String>) jsonMap.get(JAdESHeaderParameterNames.CLAIMED);
-			if (Utils.isCollectionNotEmpty(claimedList)) {
-				for (String claimedBase64 : claimedList) {
-					// TODO unclear standard
-					String claimed = new String(Utils.fromBase64(claimedBase64));
-					result.add(new SignerRole(claimed, EndorsementType.CLAIMED));
+			List<?> certified = (List<?>) jsonMap.get(JAdESHeaderParameterNames.CERTIFIED);
+			if (Utils.isCollectionNotEmpty(certified)) {
+				for (Object certifiedItem : certified) {
+					String certifiedVal = getCertifiedVal(certifiedItem);
+					if (Utils.isStringNotEmpty(certifiedVal)) {
+						result.add(new SignerRole(certifiedVal, EndorsementType.CERTIFIED));
+					}
 				}
 			}
 		}
 		return result;
 	}
 
-	@Override
-	public List<SignerRole> getCertifiedSignerRoles() {
-		List<SignerRole> certifieds = new ArrayList<>();
-		Map<?, ?> jsonMap = getSignerAttributes();
-		if (jsonMap != null) {
-			List<?> certified = (List<?>) jsonMap.get(JAdESHeaderParameterNames.CERTIFIED);
-			if (Utils.isCollectionNotEmpty(certified)) {
-				// TODO unclear standard
-				LOG.info("Attribute {} is detected", JAdESHeaderParameterNames.CERTIFIED);
+	private String getCertifiedVal(Object certifiedItem) {
+		if (certifiedItem instanceof Map<?, ?>) {
+			Map<?, ?> certifiedItemMap = (Map<?, ?>) certifiedItem;
+
+			Map<?, ?> x509AttrCert = (Map<?, ?>) certifiedItemMap.get(JAdESHeaderParameterNames.X509_ATTR_CERT);
+			if (x509AttrCert != null) {
+				return (String) x509AttrCert.get(JAdESHeaderParameterNames.VAL);
 			}
+
+			Map<?, ?> otherAttrCert = (Map<?, ?>) certifiedItemMap.get(JAdESHeaderParameterNames.OTHER_ATTR_CERT);
+			if (otherAttrCert != null) {
+				LOG.warn("Unsupported {} found", JAdESHeaderParameterNames.OTHER_ATTR_CERT);
+				return null;
+			}
+
+			LOG.warn("One of types {} or {} is expected in {}", JAdESHeaderParameterNames.X509_ATTR_CERT,
+					JAdESHeaderParameterNames.OTHER_ATTR_CERT, JAdESHeaderParameterNames.CERTIFIED);
+
+		} else {
+			LOG.warn("A {} array item is expected to be an object. The entry is skipped",
+					JAdESHeaderParameterNames.CERTIFIED);
+
 		}
-		return certifieds;
+		return null;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<SignerRole> getSignedAssertions() {
-		List<SignerRole> result = new ArrayList<>();
+	public List<SignerRole> getClaimedSignerRoles() {
 		Map<?, ?> jsonMap = getSignerAttributes();
 		if (jsonMap != null) {
-			List<String> signedAssertionsList = (List<String>) jsonMap.get(JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
-			if (Utils.isCollectionNotEmpty(signedAssertionsList)) {
-				for (String signedAssertionBase64 : signedAssertionsList) {
-					String signedAssertion = new String(Utils.fromBase64(signedAssertionBase64));
-					result.add(new SignerRole(signedAssertion, EndorsementType.SIGNED));
+			List<?> claimed = (List<?>) jsonMap.get(JAdESHeaderParameterNames.CLAIMED);
+			if (Utils.isCollectionNotEmpty(claimed)) {
+				return getQArraySignerRoles(claimed, EndorsementType.CLAIMED);
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<SignerRole> getSignedAssertions() {
+		Map<?, ?> jsonMap = getSignerAttributes();
+		if (jsonMap != null) {
+			List<?> signedAssertions = (List<?>) jsonMap.get(JAdESHeaderParameterNames.SIGNED_ASSERTIONS);
+			if (Utils.isCollectionNotEmpty(signedAssertions)) {
+				return getQArraySignerRoles(signedAssertions, EndorsementType.SIGNED);
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	private List<SignerRole> getQArraySignerRoles(List<?> qArrays, EndorsementType category) {
+		List<SignerRole> result = new ArrayList<>();
+		
+		if (Utils.isCollectionNotEmpty(qArrays)) {
+			for (Object qArray : qArrays) {
+				if (qArray instanceof Map<?, ?>) {
+					Map<?, ?> qArrayMap = (Map<?, ?>) qArray;
+					List<?> vals = (List<?>) qArrayMap.get(JAdESHeaderParameterNames.VALS);
+					for (Object val : vals) {
+						result.add(new SignerRole(val.toString(), category));
+					}
+					
+				} else {
+					LOG.warn("The item of 'qArrays' shall be an object. The entry is skipped!");
 				}
 			}
 		}
@@ -327,10 +374,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		
 		countersignatures = new ArrayList<>();
 		
-		List<Object> cSigObjects = JAdESUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
+		List<Object> cSigObjects = DSSJsonUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
 			for (Object cSigObject : cSigObjects) {
-				JAdESSignature counterSignature = JAdESUtils.extractJAdESCounterSignature(cSigObject, this);
+				JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSigObject, this);
 				if (counterSignature != null) {
 					counterSignature.setSignatureFilename(getSignatureFilename());
 					countersignatures.add(counterSignature);
@@ -360,7 +407,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 			signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifier(id));
 			signaturePolicy.setDescription((String) policyId.get(JAdESHeaderParameterNames.DESC));
-			signaturePolicy.setDigest(JAdESUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
+			signaturePolicy.setDigest(DSSJsonUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
 
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
@@ -393,7 +440,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		String encodedHeader = jws.getEncodedHeader();
 		String payload = jws.isRfc7797UnencodedPayload() ? jws.getUnverifiedPayload() : jws.getEncodedPayload();
 		String encodedSignature = jws.getEncodedSignature();
-		byte[] signatureReferenceBytes = JAdESUtils.concatenate(encodedHeader, payload, encodedSignature).getBytes();
+		byte[] signatureReferenceBytes = DSSJsonUtils.concatenate(encodedHeader, payload, encodedSignature).getBytes();
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureReferenceBytes);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
@@ -512,14 +559,14 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					}
 					
 					String payload = jws.getSignedPayload();
-					String headerAndPayloadResult = JAdESUtils.concatenate(encodedHeader, payload);
+					String headerAndPayloadResult = DSSJsonUtils.concatenate(encodedHeader, payload);
 					// The data to sign by RFC 7515 shall be ASCII-encoded
-					byte[] dataToSign = JAdESUtils.getAsciiBytes(headerAndPayloadResult);
+					byte[] dataToSign = DSSJsonUtils.getAsciiBytes(headerAndPayloadResult);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
 					signatureValueReferenceValidation.setDigest(digest);
 	
-					jws.setKnownCriticalHeaders(JAdESUtils.getSupportedCriticalHeaders());
+					jws.setKnownCriticalHeaders(DSSJsonUtils.getSupportedCriticalHeaders());
 					jws.setDoKeyValidation(false); // restrict on key size,...
 	
 					CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
@@ -600,8 +647,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		 * "Signing HTTP Messages" [17].
 		 */
 		List<DSSDocument> documentsByUri = getSignedDocumentsByUri(false);
-		List<HTTPHeader> httpHeaders = JAdESUtils.toHTTPHeaders(documentsByUri);
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsByUri);
 		
 		return httpHeadersPayloadBuilder.build();
 	}
@@ -612,19 +658,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		
 		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsByUri(true);
-		
-		if (Utils.isCollectionEmpty(signedDocumentsByUri)) {
-			throw new DSSException("The matching detached content has not been found!");
-		} else if (signedDocumentsByUri.size() == 1) {
-			return DSSUtils.toByteArray(signedDocumentsByUri.get(0));
-		} else {
-			try {
-				return JAdESUtils.concatenateDSSDocuments(signedDocumentsByUri);
-			} catch (IOException e) {
-				throw new DSSException(String.format("Unable to build a payload for detached signature with ObjectIdByURI mechanism. "
-						+ "Reason : %s", e.getMessage()), e); 
-			}
-		}
+		return DSSJsonUtils.concatenateDSSDocuments(signedDocumentsByUri);
 	}
 	
 	/**
@@ -696,8 +730,9 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			String signedDataName = signedDataEntry.getKey();
 			referenceValidation.setName(signedDataName);
 			
-			String expectedDigest = signedDataEntry.getValue();
-			referenceValidation.setDigest(new Digest(digestAlgorithm, Utils.fromBase64(expectedDigest)));
+			String expectedDigestString = signedDataEntry.getValue();
+			byte[] expectedDigest = DSSJsonUtils.fromBase64Url(expectedDigestString);
+			referenceValidation.setDigest(new Digest(digestAlgorithm, expectedDigest));
 			
 			boolean found = false;
 			// accept document with any name if only one detached document has been signed
@@ -783,18 +818,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return Collections.emptyList();
 	}
 	
-	private boolean isDocumentDigestMatch(DSSDocument document, DigestAlgorithm digestAlgorithm, String expectedDigest) {
-		String computedDigest = document.getDigest(digestAlgorithm);
-		if (expectedDigest.equals(computedDigest)) {
+	private boolean isDocumentDigestMatch(DSSDocument document, DigestAlgorithm digestAlgorithm,
+			byte[] expectedDigest) {
+		String computedDigestBase64 = document.getDigest(digestAlgorithm);
+		byte[] computedDigestValue = Utils.fromBase64(computedDigestBase64);
+		if (Arrays.equals(expectedDigest, computedDigestValue)) {
 			return true;
 		}
 		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
-				computedDigest, document.getName(), expectedDigest);
+				computedDigestBase64, document.getName(), Utils.toBase64(expectedDigest));
 		return false;
 	}
 	
 	private Object getUnsignedProperty(String headerName) {
-		List<Object> unsignedProperties = JAdESUtils.getUnsignedProperties(jws, headerName);
+		List<Object> unsignedProperties = DSSJsonUtils.getUnsignedProperties(jws, headerName);
 		if (Utils.isCollectionNotEmpty(unsignedProperties)) {
 			// return the first occurrence
 			return unsignedProperties.iterator().next();
@@ -862,6 +899,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private boolean hasBProfile() {
 		return getSigningTime() != null && getSignatureAlgorithm() != null;
+	}
+	
+	@Override
+	protected String validateStructure() {
+		return DSSJsonUtils.validateAgainstJAdESSchema(jws);
 	}
 
 }

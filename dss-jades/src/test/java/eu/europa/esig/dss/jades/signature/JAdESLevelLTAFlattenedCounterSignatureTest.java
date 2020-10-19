@@ -21,7 +21,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.signature.JAdESService;
@@ -76,7 +76,7 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 		assertLTALevelFound(jws);
 		
 		boolean cSigFound = false;
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		for (Object etsiUEntry : etsiU) {
 			Map<?, ?> item = (Map<?, ?>) etsiUEntry;
 			assertEquals(1, item.size());
@@ -106,7 +106,7 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 		boolean rValsFound = false;
 		boolean arcTstFound = false;
 		
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		for (Object etsiUEntry : etsiU) {
 			Map<?, ?> item = (Map<?, ?>) etsiUEntry;
 			assertEquals(1, item.size());

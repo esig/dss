@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -56,11 +56,11 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 		*/
 		byte[] dataToSign;
 		if (parameters.isBase64UrlEncodedPayload()) {
-			String dataToBeSignedString = JAdESUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
-			dataToSign = JAdESUtils.getAsciiBytes(dataToBeSignedString);
+			String dataToBeSignedString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
+			dataToSign = DSSJsonUtils.getAsciiBytes(dataToBeSignedString);
 		} else {
-			String encodedHeader = new String(JAdESUtils.getAsciiBytes(jws.getEncodedHeader()));
-			String dataToBeSignedString = JAdESUtils.concatenate(encodedHeader, jws.getUnverifiedPayload());
+			String encodedHeader = new String(DSSJsonUtils.getAsciiBytes(jws.getEncodedHeader()));
+			String dataToBeSignedString = DSSJsonUtils.concatenate(encodedHeader, jws.getUnverifiedPayload());
 			dataToSign = dataToBeSignedString.getBytes();
 		}
 		

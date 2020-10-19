@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -131,7 +131,7 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 			assertEquals(1, signaturesList.size());
 			Map<?, ?> signature = (Map<?, ?>) signaturesList.get(0);
 
-			String jsonString = new String(JAdESUtils.fromBase64Url((String) signature.get(JWSConstants.PROTECTED)));
+			String jsonString = new String(DSSJsonUtils.fromBase64Url((String) signature.get(JWSConstants.PROTECTED)));
 			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
 			
 			Map<?, ?> unprotectedHeaderMap = (Map<?, ?>) signature.get(JWSConstants.HEADER);

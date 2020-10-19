@@ -11,7 +11,7 @@ import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -34,7 +34,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void extractEtsiU() {
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		if (Utils.isCollectionEmpty(etsiU)) {
 			return;
 		}

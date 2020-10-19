@@ -16,7 +16,7 @@ public class HTTPHeaderDigest extends HTTPHeader {
 	private final DSSDocument messageBodyDocument;
 
 	public HTTPHeaderDigest(final DSSDocument messageBodyDocument, final DigestAlgorithm digestAlgorithm) {
-		super(JAdESUtils.HTTP_HEADER_DIGEST, buildInstanceDigestValue(messageBodyDocument, digestAlgorithm));
+		super(DSSJsonUtils.HTTP_HEADER_DIGEST, buildInstanceDigestValue(messageBodyDocument, digestAlgorithm));
 		this.messageBodyDocument = messageBodyDocument;
 	}
 	

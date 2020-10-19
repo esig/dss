@@ -692,7 +692,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void processSignaturesValidation(List<AdvancedSignature> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSignatureIntegrity();
-			signature.validateStructure();
 		}
 	}
 

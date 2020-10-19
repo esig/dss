@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.model.DSSException;
 
@@ -60,7 +60,7 @@ public class JWS extends JsonWebSignature {
 		if (isRfc7797UnencodedPayload()) {
             setPayloadBytes(payload);
         } else {
-            setEncodedPayload(JAdESUtils.toBase64Url(payload));
+            setEncodedPayload(DSSJsonUtils.toBase64Url(payload));
         }
 	}
 	

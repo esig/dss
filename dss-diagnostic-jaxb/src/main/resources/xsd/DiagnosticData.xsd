@@ -195,6 +195,7 @@
 			<xs:element name="Address" type="xs:string" minOccurs="0" />
 			<xs:element name="City" type="xs:string" minOccurs="0" />
 			<xs:element name="StateOrProvince" type="xs:string" minOccurs="0" />
+			<xs:element name="PostOfficeBoxNumber" type="xs:string" minOccurs="0" />
 			<xs:element name="PostalCode" type="xs:string" minOccurs="0" />
 			<xs:element name="CountryName" type="xs:string" minOccurs="0" />
 		</xs:sequence>

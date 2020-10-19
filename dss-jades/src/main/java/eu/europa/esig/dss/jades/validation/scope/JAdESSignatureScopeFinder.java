@@ -28,11 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.HTTPHeaderMessageBodySignatureScope;
 import eu.europa.esig.dss.jades.HTTPHeaderSignatureScope;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -167,6 +167,9 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 	private List<SignatureScope> getHttpHeaderSignatureScope(List<DSSDocument> originalDocuments) {
 		List<SignatureScope> httpHeadersSignatureScopes = new ArrayList<>();
 		
+		SignatureScope httpHeadersPayloadSignatureScope = getHttpHeadersPayloadSignatureScope(originalDocuments);
+		httpHeadersSignatureScopes.add(httpHeadersPayloadSignatureScope);
+
 		HTTPHeader digestHttpHeader = null;
 		
 		List<HTTPHeader> httpHeaders = new ArrayList<>();
@@ -174,13 +177,11 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 			if (document instanceof HTTPHeader) {
 				httpHeaders.add((HTTPHeader) document);
 				
-				if (JAdESUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
 					digestHttpHeader = (HTTPHeader) document;
 				}
 			}
 		}
-		SignatureScope httpHeadersPayloadSignatureScope = getHttpHeadersPayloadSignatureScope(httpHeaders);
-		httpHeadersSignatureScopes.add(httpHeadersPayloadSignatureScope);
 		
 		if (digestHttpHeader != null) {
 			SignatureScope httpHeaderDigestSignatureScope = getHttpHeaderDigestSignatureScope(digestHttpHeader);
@@ -192,8 +193,8 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		return httpHeadersSignatureScopes;
 	}
 	
-	private SignatureScope getHttpHeadersPayloadSignatureScope(List<HTTPHeader> httpHeaders) {
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(httpHeaders);
+	private SignatureScope getHttpHeadersPayloadSignatureScope(List<DSSDocument> originalDocuments) {
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(originalDocuments);
 		byte[] payload = httpHeadersPayloadBuilder.build();
 		byte[] digest = DSSUtils.digest(getDefaultDigestAlgorithm(), payload);
 		return new HTTPHeaderSignatureScope(new Digest(getDefaultDigestAlgorithm(), digest));

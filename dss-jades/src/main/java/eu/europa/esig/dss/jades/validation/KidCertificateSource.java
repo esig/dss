@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
@@ -22,7 +22,7 @@ public class KidCertificateSource extends CommonCertificateSource implements Cer
 	@Override
 	public CertificateToken addCertificate(CertificateToken certificateToAdd) {
 		LOG.debug("kid is not provided (generate kid following the JAdES specification)");
-		return addCertificate(JAdESUtils.generateKid(certificateToAdd), certificateToAdd);
+		return addCertificate(DSSJsonUtils.generateKid(certificateToAdd), certificateToAdd);
 	}
 
 	/**

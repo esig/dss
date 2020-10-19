@@ -12,7 +12,7 @@ import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -33,7 +33,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	}
 
 	private void extractEtsiU() {
-		List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		if (Utils.isCollectionEmpty(etsiU)) {
 			return;
 		}

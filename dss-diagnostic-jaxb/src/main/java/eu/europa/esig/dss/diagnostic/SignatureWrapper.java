@@ -227,6 +227,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	public String getPostOfficeBoxNumber() {
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getPostOfficeBoxNumber();
+		}
+		return null;
+	}
+
 	public String getPostalCode() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getPostalCode();

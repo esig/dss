@@ -7,7 +7,7 @@ import java.util.List;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -49,7 +49,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			if (jws.isRfc7797UnencodedPayload()) {
 				payloadBytes = jwsJsonSerializationObject.getPayload().getBytes(StandardCharsets.UTF_8);
 			} else {
-				payloadBytes = JAdESUtils.fromBase64Url(jwsJsonSerializationObject.getPayload());
+				payloadBytes = DSSJsonUtils.fromBase64Url(jwsJsonSerializationObject.getPayload());
 			}
 			return Collections.singletonList(new InMemoryDocument(payloadBytes));
 

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -80,13 +80,13 @@ public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestVali
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");
 		
-		assertTrue(JAdESUtils.isJsonDocument(doubleSignedDocument));
+		assertTrue(DSSJsonUtils.isJsonDocument(doubleSignedDocument));
 		try {
 			Map<String, Object> rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(doubleSignedDocument)));
 			
 			String payload = (String) rootStructure.get(JWSConstants.PAYLOAD);
 			assertNotNull(payload);
-			assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(payload)));
+			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(payload)));
 
 			List<Map<String, Object>> signaturesList = (List<Map<String, Object>>) rootStructure.get(JWSConstants.SIGNATURES);
 			assertTrue(Utils.isCollectionNotEmpty(signaturesList));
@@ -95,11 +95,11 @@ public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestVali
 			for (Map<String, Object> signature : signaturesList) {
 				String header = (String) signature.get(JWSConstants.PROTECTED);
 				assertNotNull(header);
-				assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(header)));
+				assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(header)));
 				
 				String signatureValueBase64Url = (String) signature.get(JWSConstants.SIGNATURE);
 				assertNotNull(signatureValueBase64Url);
-				assertTrue(Utils.isArrayNotEmpty(JAdESUtils.fromBase64Url(signatureValueBase64Url)));
+				assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(signatureValueBase64Url)));
 			}
 			
 		} catch (JoseException e) {

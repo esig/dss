@@ -12,11 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
-import eu.europa.esig.dss.jades.HTTPHeader;
-import eu.europa.esig.dss.jades.HTTPHeaderDigest;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.JAdESUtils;
+import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -54,77 +53,43 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getBase64UrlEncodedPayload() {
-		return JAdESUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
+		return DSSJsonUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
 	}
 	
-	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean archiveTst) {
+	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean isArchiveTst) {
 		/*
-		 * 3)	Else, if the JAdES signature incorporates the sigD header parameter specified in clause 5.2.8 of the present document, then:
-		 * -	For each reference to one data object within the ordered list of references present within the aforementioned header parameter:
-		 *      	Retrieve the referenced data object.
-		 *          Base64url encode the retrieved data object
-		 *          Concatenate the result to the octet stream.
+		 * 3) Else, if the JAdES signature incorporates the sigD header parameter
+		 * specified in clause 5.2.8 of the present document, then: For each reference
+		 * to one data object within the ordered list of references present within the
+		 * aforementioned header parameter: 
+		 * - Retrieve the referenced data object. 
+		 * - Base64url encode the retrieved data object Concatenate the result to 
+		 *   the octet stream.
 		 */
+
+		byte[] sigDOctets = null;
 		List<DSSDocument> documentList = null;
+
 		switch (sigDMechanism) {
 			case HTTP_HEADERS:
 				documentList = signature.getSignedDocumentsByUri(false);
+				HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentList, isArchiveTst);
+				sigDOctets = httpHeadersPayloadBuilder.build();
 				break;
 			case OBJECT_ID_BY_URI:
 			case OBJECT_ID_BY_URI_HASH:
 				documentList = signature.getSignedDocumentsByUri(true);
+				sigDOctets = DSSJsonUtils.concatenateDSSDocuments(documentList);
 				break;
 			default:
 				LOG.warn("Unsupported SigDMechanism has been found '{}'!", sigDMechanism);
-				return null;
 		}
 		
-		if (Utils.isCollectionEmpty(documentList)) {
-			LOG.warn("Unable to compute message-imprint for a content tst with sigDMechanism '{}'! "
-					+ "The referenced documents are not found.", sigDMechanism);
-			return null;
+		if (Utils.isArrayNotEmpty(sigDOctets)) {
+			sigDOctets = DSSJsonUtils.toBase64Url(sigDOctets).getBytes();
 		}
-		
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			
-			for (DSSDocument document : documentList) {
-				byte[] documentOctets = null;
-				if (document instanceof HTTPHeader) {
-					HTTPHeader httpHeader = (HTTPHeader) document;
-					if (JAdESUtils.HTTP_HEADER_DIGEST.equals(httpHeader.getName()) && archiveTst) {
-						if (httpHeader instanceof HTTPHeaderDigest) {
-							HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) httpHeader;
-							DSSDocument messageBodyDocument = httpHeaderDigest.getMessageBodyDocument();
-							documentOctets = DSSUtils.toByteArray(messageBodyDocument);
-						} else {
-							throw new DSSException("Unable to compute message-imprint for an Archive Timestamp! "
-									+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
-						}
-					} else {
-						documentOctets = httpHeader.getValue().getBytes();
-					}
-					
-				} else {
-					documentOctets = DSSUtils.toByteArray(document);
-				}
-				
-				String base64UrlEncoded = JAdESUtils.toBase64Url(documentOctets);
-				baos.write(base64UrlEncoded.getBytes());
-			}
-			
-			byte[] messageImprint = baos.toByteArray();
 
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("The 'previousArcTst' timestamp message-imprint : {}", new String(messageImprint));
-			}
-			
-			return messageImprint;
-			
-		} catch (IOException e) {
-			throw new DSSException(String.format("An error occurred during a message-imprint computation for "
-					+ "a content timestamp with sigDMechanism '%s'. Reason : %s", sigDMechanism, e.getMessage()), e);
-		}
-		
+		return sigDOctets;
 	}
 
 	@Override
@@ -150,7 +115,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			/*
-			 * 1) The value of the signature component, which is the base64url encoded JWS Signature Value.
+			 * 1) The value of the base64url-encoded JWS Signature Value.
 			 */
 			baos.write(jws.getEncodedSignature().getBytes());
 			
@@ -160,21 +125,23 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			baos.write('.');
 			
 			/*
-			 * 3) Those among the following components that appear before sigRTst, in their order of 
-			 *    appearance within the etsiU array, base64url-encoded, and separated by the character '.':
-			 *    
-			 * NOTE: there is a difference in processing base64url encoded values and clear incorporation
+			 * 3) Those among the following components that appear before sigRTst, in their
+			 * order of appearance within the etsiU array, base64url-encoded, and separated
+			 * by the character '.':
+			 * 
+			 * NOTE: there is a difference in processing base64url encoded values and clear
+			 * incorporation
 			 */
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			
 			boolean separate = false;
 			
 			/*
-			 *    -	The sigTst components.
-			 *    -	The xRefs component.
-			 *    -	The rRefs component.
-			 *    -	The axRefs component if it is present. And
-			 *    -	The arRefs component if it is present
+			 * - sigTst. 
+			 * - xRefs. 
+			 * - rRefs. 
+			 * - axRefs if it is present. And 
+			 * - arRefs if it is present.
 			 */
 			for (Object item : etsiU) {
 				
@@ -183,7 +150,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				
 				if (entry == null) {
 					// Validation : check is the current timestamp has been reached
-					entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.SIG_AND_RFS_TST);
+					entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.SIG_R_TST);
 					
 					if (timestampToken != null && timestampToken.getHashCode() == entry.hashCode()) {
 						// the current timestamp is found, stop the iteration
@@ -198,8 +165,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					baos.write('.');
 				}
 				
-				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
 				}
@@ -265,17 +232,18 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			/*
-			 * The message imprint computation input shall be the concatenation of 
-			 * the components listed below, base64url encoded, and separated by the character '.', 
-			 * in their order of appearance within the etsiU array:
-			 * - The xRefs component.
-			 * - The rRefs component.
-			 * - The axRefs component if it is present. And
-			 * - The arRefs component if it is present.
+			 * The message imprint computation input shall be the concatenation of the
+			 * components listed below, base64url encoded, and separated by the character
+			 * '.', in their order of appearance within the etsiU array: 
+			 * - xRefs. 
+			 * - rRefs. 
+			 * - axRefs if it is present. And 
+			 * - arRefs if it is present.
 			 * 
-			 * NOTE: there is a difference in processing base64url encoded values and clear incorporation
+			 * NOTE: there is a difference in processing base64url encoded values and clear
+			 * incorporation
 			 */
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			
 			boolean separate = false;
 			
@@ -292,8 +260,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					baos.write('.');
 				}
 				
-				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
 				}
@@ -379,13 +347,12 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			/*
-			 * 1) One of the following:
-			 *     - The value of payload member, if present.
-			 *     - The base64url encoded stream of octets retrieved after processing 
-			 *               the sigD header parameter if present.
-			 *     - The base64url encoded stream of octets of the detached payload 
-			 *               retrieved by other means, (out of the scope of the present document) 
-			 *               if both the payload component sigD header parameters are absent.
+			 * 1) The base64url-encoded JWS Payload. If the sigD header parameter is present
+			 * and the value of its mId member is "http: //uri.etsi.org/19182/HttpHeaders",
+			 * the processing of the "Digest" string element in the pars array shall consist
+			 * in retrieving the bytes of the body of the HTTP message, base64url encode
+			 * them, and concatenate the result to the stream of bytes that will form the
+			 * input to the message imprint computation
 			 */
 			
 			baos.write(getSignedDataBinaries(true));
@@ -397,15 +364,15 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			baos.write('.');
 			
 			/*
-			 * 3) The value of protected member, which is also base64url encoded, 
-			 *    followed by the character '.'.
+			 * 3) The value of the JWS Protected Header, base64url encoded, followed by the
+			 * character '.'.
 			 */
 			
 			baos.write(jws.getEncodedHeader().getBytes());
 			baos.write('.');
 			
 			/*
-			 * 4) The value of the signature member, which is the base64url encoded JWS Signature Value.
+			 * 4) The value of the JAdES Signature Value, base64url encoded.
 			 */
 			
 			baos.write(jws.getEncodedSignature().getBytes());
@@ -418,7 +385,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * NOTE: There is a difference in computation depending on base64Url value
 			 */
 			
-			List<Object> etsiU = JAdESUtils.getEtsiU(jws);
+			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			
 			/*
 			 * a) the xVals JSON array shall be incorporated, base64url encoded, 
@@ -466,8 +433,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					break;
 				}
 				
-				if (entry instanceof String && JAdESUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(JAdESUtils.toBase64Url(entry).getBytes());
+				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
+					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
 				} else {
 					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
 				}
@@ -499,7 +466,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 */
 	@SuppressWarnings("unchecked")
 	private byte[] getPreviousArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
-		List<Object> etsiU = JAdESUtils.getEtsiU(signature.getJws());
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
 		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 		

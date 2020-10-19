@@ -19,6 +19,11 @@ public final class JAdESHeaderParameterNames {
 	public static final String X5T_O = "x5t#o";
 
 	/**
+	 * X509 certificate digests
+	 */
+	public static final String SIG_X5T_S = "sigX5ts";
+
+	/**
 	 * Digest algorithm and value
 	 */
 	public static final String DIG_ALG_VAL = "digAlgVal";
@@ -34,9 +39,9 @@ public final class JAdESHeaderParameterNames {
 	public static final String DIG_VAL = "digVal";
 
 	/**
-	 * Signer commitment
+	 * Signer commitments
 	 */
-	public static final String SR_CM = "srCm";
+	public static final String SR_CMS = "srCms";
 
 	/**
 	 * Commitment Id
@@ -49,29 +54,49 @@ public final class JAdESHeaderParameterNames {
 	public static final String SIG_PL = "sigPl";
 
 	/**
-	 * City
+	 * Country address
 	 */
-	public static final String CITY = "city";
+	public static final String ADDRESS_COUNTRY = "addressCountry";
 
 	/**
-	 * Street and address
+	 * Locality (City) address
 	 */
-	public static final String STR_ADDR = "strAddr";
+	public static final String ADDRESS_LOCALITY = "addressLocality";
 
 	/**
-	 * State and province
+	 * Region (state and province) address
 	 */
-	public static final String STAT_PROV = "statProv";
+	public static final String ADDRESS_REGION = "addressRegion";
+
+	/**
+	 * Post office box number
+	 */
+	public static final String POST_OFFICE_BOX_NUMBER = "postOfficeBoxNumber";
 
 	/**
 	 * Postal code
 	 */
-	public static final String POST_CODE = "postCode";
+	public static final String POSTAL_CODE = "postalCode";
 
 	/**
-	 * Country
+	 * Street address
 	 */
-	public static final String COUNTRY = "country";
+	public static final String STREET_ADDRESS = "streetAddress";
+
+	/**
+	 * Q Arrays (used for signed assertions and claimed)
+	 */
+	public static final String Q_ARRAYS = "qArrays";
+
+	/**
+	 * Media type
+	 */
+	public static final String MEDIA_TYPE = "mediaType";
+
+	/**
+	 * Values
+	 */
+	public static final String VALS = "vals";
 
 	/**
 	 * Signer attributes
@@ -92,6 +117,11 @@ public final class JAdESHeaderParameterNames {
 	 * X509 Attribute certificate
 	 */
 	public static final String X509_ATTR_CERT = "x509AttrCert";
+
+	/**
+	 * Other attribute certificate
+	 */
+	public static final String OTHER_ATTR_CERT = "otherAttrCert";
 
 	/**
 	 * Signed assertions
@@ -211,7 +241,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Timestamp tokens array
 	 */
-	public static final String TS_TOKENS = "tsTokens";
+	public static final String TS_TOKENS = "tstokens";
 
 	/**
 	 * Encoding (eg : DER,...)
@@ -369,9 +399,9 @@ public final class JAdESHeaderParameterNames {
 	public static final String REV_VALS = "revVals";
 
 	/**
-	 * Shows of TST Validation Data covers a Content Tst
+	 * Shows if TST Validation Data covers a JWS Payload or not
 	 */
-	public static final String ON_SDO = "onSdo";
+	public static final String ON_JWSP = "onJWSP";
 
 	/**
 	 * Archive TimeStamp
@@ -391,7 +421,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Signature and References Timestamp
 	 */
-	public static final String SIG_AND_RFS_TST = "sigAndRfsTst";
+	public static final String SIG_R_TST = "sigRTst";
 
 	/**
 	 * References Timestamp

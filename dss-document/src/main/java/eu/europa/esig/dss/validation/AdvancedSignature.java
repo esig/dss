@@ -475,11 +475,6 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	void prepareCounterSignatures(ValidationContext validationContext);
 
-	/**
-	 * This method allows the structure validation of the signature.
-	 */
-	void validateStructure();
-
 	String getStructureValidationResult();
 
 	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);

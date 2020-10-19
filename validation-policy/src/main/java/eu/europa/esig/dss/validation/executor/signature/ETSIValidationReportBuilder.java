@@ -1198,10 +1198,12 @@ public class ETSIValidationReportBuilder {
 			final String address = sigWrapper.getAddress();
 			final String city = sigWrapper.getCity();
 			final String stateOrProvince = sigWrapper.getStateOrProvince();
+			final String postOfficeBoxNumber = sigWrapper.getPostOfficeBoxNumber();
 			final String postalCode = sigWrapper.getPostalCode();
 			final String countryName = sigWrapper.getCountryName();
 
-			if (Utils.areAllStringsEmpty(address, city, stateOrProvince, postalCode, countryName)) { 
+			if (Utils.areAllStringsEmpty(address, city, stateOrProvince, postOfficeBoxNumber, postalCode,
+					countryName)) {
 				return;
 			}
 			SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
@@ -1213,6 +1215,9 @@ public class ETSIValidationReportBuilder {
 			}
 			if (Utils.isStringNotEmpty(stateOrProvince)) {
 				sigProductionPlace.getAddressString().add(stateOrProvince);
+			}
+			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
+				sigProductionPlace.getAddressString().add(postOfficeBoxNumber);
 			}
 			if (Utils.isStringNotEmpty(postalCode)) {
 				sigProductionPlace.getAddressString().add(postalCode);

@@ -16,10 +16,9 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.jades.HTTPHeader;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.JAdESUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -81,20 +80,19 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			throw new DSSException("Original documents must be provided to generate a content timestamp!");
 		}
 		
-		byte[] concatenationResult = DSSUtils.EMPTY_BYTE_ARRAY;
-		for (DSSDocument document : toSignDocuments) {
-			byte[] documentBinaries = null;
-			if (document instanceof HTTPHeader) {
-				HTTPHeader httpHeader = (HTTPHeader) document;
-				documentBinaries = httpHeader.getValue().getBytes();
-			} else {
-				documentBinaries = DSSUtils.toByteArray(document);
-			}
-			String base64UrlEncodedDoc = JAdESUtils.toBase64Url(documentBinaries);
-			concatenationResult = DSSUtils.concatenate(concatenationResult, base64UrlEncodedDoc.getBytes());
+		byte[] messageImprint = DSSUtils.EMPTY_BYTE_ARRAY;
+
+		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
+			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments);
+			messageImprint = httpHeadersPayloadBuilder.build();
+		} else {
+			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments);
 		}
+		messageImprint = DSSJsonUtils.toBase64Url(messageImprint).getBytes();
+
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, concatenationResult));
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm,
+				DSSUtils.digest(digestAlgorithm, messageImprint));
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 		} catch (TSPException | IOException | CMSException e) {
@@ -178,14 +176,14 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 				// check if the document contains JWS signature(s)
 				if (documentsToSign.size() == 1) {
 					DSSDocument documentToSign = documentsToSign.get(0);
-					if (JAdESUtils.isJsonDocument(documentToSign)) {
+					if (DSSJsonUtils.isJsonDocument(documentToSign)) {
 						JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(documentToSign);
 						
 						JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
 						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {
 							if (!jwsJsonSerializationObject.isValid()) {
 								throw new DSSException(String.format("JWS Serialization is not supported for invalid RFC 7515 files. "
-										+ "Reason(s) : %s", jwsJsonSerializationObject.getErrorMessages()));
+										+ "Reason(s) : %s", jwsJsonSerializationObject.getStructuralValidationError()));
 							}
 							
 							return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);
