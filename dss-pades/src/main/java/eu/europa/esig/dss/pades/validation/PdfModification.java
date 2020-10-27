@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.pades.validation;
 
 /**
  * This interface contains information about the occurred modifications in a PDF

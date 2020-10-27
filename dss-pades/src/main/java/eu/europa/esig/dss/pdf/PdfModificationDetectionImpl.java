@@ -2,9 +2,9 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.List;
 
+import eu.europa.esig.dss.pades.validation.PdfModification;
+import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.PdfModification;
-import eu.europa.esig.dss.validation.PdfModificationDetection;
 
 public class PdfModificationDetectionImpl implements PdfModificationDetection {
 	

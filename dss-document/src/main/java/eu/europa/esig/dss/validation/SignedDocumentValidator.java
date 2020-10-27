@@ -389,10 +389,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Creates a DiagnosticData to pass to the validation process
+	 * Creates a {@code DiagnosticDataBuilder}
 	 * 
 	 * @param validationContext {@link ValidationContext}
-	 * @return {@link DiagnosticData}
+	 * @return {@link DiagnosticDataBuilder}
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
 		
@@ -412,19 +412,44 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			validateContext(validationContext);
 		}
 		
-		return getDiagnosticDataBuilderConfiguration(validationContext, allSignatures, listCRLSource, listOCSPSource);
+		return createDiagnosticDataBuilder(validationContext, allSignatures, listCRLSource, listOCSPSource);
 	}
 	
-	protected DiagnosticDataBuilder getDiagnosticDataBuilderConfiguration(final ValidationContext validationContext, List<AdvancedSignature> signatures,
+	/**
+	 * Initializes a relevant {@code DiagnosticDataBuilder} for the given
+	 * implementation
+	 * 
+	 * @return {@link SignedDocumentDiagnosticDataBuilder}
+	 */
+	protected SignedDocumentDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
+		return new SignedDocumentDiagnosticDataBuilder(); // be default
+	}
+
+	/**
+	 * Creates and fills the {@code DiagnosticDataBuilder} with a relevant data
+	 * 
+	 * @param validationContext {@link ValidationContext} used for the validation
+	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
+	 * @param listCRLSource     {@link ListRevocationSource} used for CRL collection
+	 * @param listOCSPSource    {@link ListRevocationSource} used for OCSP
+	 *                          collection
+	 * @return filled {@link DiagnosticDataBuilder}
+	 */
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(
+			final ValidationContext validationContext, List<AdvancedSignature> signatures,
 			final ListRevocationSource<CRL> listCRLSource, final ListRevocationSource<OCSP> listOCSPSource) {
-		return new DiagnosticDataBuilder().document(document).usedTimestamps(validationContext.getProcessedTimestamps())
-				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
-				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.tokenExtractionStategy(tokenExtractionStategy)
-				.certificateSourceTypes(validationContext.getCertificateSourceTypes()).trustedCertificateSources(certificateVerifier.getTrustedCertSources())
+		return initializeDiagnosticDataBuilder().document(document)
+				.foundSignatures(signatures)
+				.usedTimestamps(validationContext.getProcessedTimestamps())
+				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource)
 				.signaturePolicyProvider(getSignaturePolicyProvider())
-				.validationDate(getValidationTime()).foundSignatures(signatures)
-				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource);
+				.usedCertificates(validationContext.getProcessedCertificates())
+				.usedRevocations(validationContext.getProcessedRevocations())
+				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
+				.tokenExtractionStategy(tokenExtractionStategy)
+				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
+				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
+				.validationDate(getValidationTime());
 	}
 	
 	/**
@@ -451,7 +476,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return merged CRL Source
 	 */
 	protected ListRevocationSource<CRL> mergeCRLSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
-		ListRevocationSource<CRL> allCrlSource = new ListRevocationSource<CRL>();
+		ListRevocationSource<CRL> allCrlSource = new ListRevocationSource<>();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				allCrlSource.add(signature.getCRLSource());
@@ -476,7 +501,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return merged OCSP Source
 	 */
 	protected ListRevocationSource<OCSP> mergeOCSPSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
-		ListRevocationSource<OCSP> allOcspSource = new ListRevocationSource<OCSP>();
+		ListRevocationSource<OCSP> allOcspSource = new ListRevocationSource<>();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				allOcspSource.add(signature.getOCSPSource());

@@ -27,10 +27,10 @@ import java.util.Objects;
 import org.bouncycastle.cms.CMSSignedData;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.ByteRange;
-import eu.europa.esig.dss.validation.PdfModificationDetection;
-import eu.europa.esig.dss.validation.PdfRevision;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public abstract class PdfCMSRevision implements PdfRevision {
 

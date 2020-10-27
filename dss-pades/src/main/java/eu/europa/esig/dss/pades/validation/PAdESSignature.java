@@ -40,8 +40,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.PdfRevision;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
@@ -215,7 +213,11 @@ public class PAdESSignature extends CAdESSignature {
 		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
 	}
 
-	@Override
+	/**
+	 * Retrieves a PdfRevision (PAdES) related to the current signature
+	 * 
+	 * @return {@link PdfRevision}
+	 */
 	public PdfSignatureRevision getPdfRevision() {
 		return pdfSignatureRevision;
 	}

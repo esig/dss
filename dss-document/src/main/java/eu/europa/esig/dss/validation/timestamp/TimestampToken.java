@@ -69,7 +69,6 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
@@ -111,7 +110,7 @@ public class TimestampToken extends Token {
 	 */
 	private List<SignatureScope> timestampScopes;
 
-	/* In case of ASiC-E CAdES */
+	/* In case of ASiC-E */
 	private ManifestFile manifestFile;
 	
 	private TimestampLocation timestampLocation;
@@ -133,8 +132,6 @@ public class TimestampToken extends Token {
 	private String canonicalizationMethod;
 
 	private X500Principal tsaX500Principal;
-	
-	private PdfRevision pdfRevision;
 
 	/**
 	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the
@@ -148,12 +145,6 @@ public class TimestampToken extends Token {
 	
 	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
 		this(binaries, type, new ArrayList<TimestampedReference>(), null);
-	}
-
-	public TimestampToken(final PdfRevision pdfTimestampRevision, final TimestampType type, final TimestampLocation timestampLocation)
-			throws TSPException, IOException, CMSException {
-		this(pdfTimestampRevision.getPdfSigDictInfo().getCMSSignedData(), type, new ArrayList<TimestampedReference>(), timestampLocation);
-		this.pdfRevision = pdfTimestampRevision;
 	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences,
@@ -431,15 +422,6 @@ public class TimestampToken extends Token {
 
 	public boolean isProcessed() {
 		return processed;
-	}
-	
-	/**
-	 * Returns the current PDF timestamp revision
-	 * 
-	 * @return {@link PdfRevision}
-	 */
-	public PdfRevision getPdfRevision() {
-		return pdfRevision;
 	}
 
 	/**

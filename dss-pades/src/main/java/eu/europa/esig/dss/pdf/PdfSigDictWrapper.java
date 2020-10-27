@@ -27,8 +27,8 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.ByteRange;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public class PdfSigDictWrapper implements PdfSignatureDictionary {
 

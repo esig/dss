@@ -52,6 +52,10 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.validation.PdfModification;
+import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
@@ -60,10 +64,6 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ByteRange;
-import eu.europa.esig.dss.validation.PdfModification;
-import eu.europa.esig.dss.validation.PdfModificationDetection;
-import eu.europa.esig.dss.validation.PdfRevision;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 

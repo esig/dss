@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
 
 /**
  * The usage of this interface permits the user to choose the underlying PDF library used to create PDF signatures.

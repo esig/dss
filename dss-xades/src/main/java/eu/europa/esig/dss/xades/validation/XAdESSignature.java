@@ -618,18 +618,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return mimeType;
 	}
-
-	@Override
-	public String getContentIdentifier() {
-		// not applicable
-		return null;
-	}
-
-	@Override
-	public String getContentHints() {
-		// not applicable
-		return null;
-	}
 	
 	/**
 	 * Returns a base64 SignatureValue
@@ -1093,23 +1081,25 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		if (countersignatures != null) {
-			return countersignatures;
+		if (counterSignatures != null) {
+			return counterSignatures;
 		}
 		
-		countersignatures = new ArrayList<>();
+		counterSignatures = new ArrayList<>();
 
 		// see ETSI TS 101 903 V1.4.2 (2010-12) pp. 38/39/40
-		final NodeList counterSignatures = DomUtils.getNodeList(signatureElement, xadesPaths.getCounterSignaturePath());
-		if (counterSignatures != null && counterSignatures.getLength() > 0) {
-			for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
-				XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature((Element) counterSignatures.item(ii), this);
+		final NodeList counterSignaturesElements = DomUtils.getNodeList(signatureElement,
+				xadesPaths.getCounterSignaturePath());
+		if (counterSignaturesElements != null && counterSignaturesElements.getLength() > 0) {
+			for (int ii = 0; ii < counterSignaturesElements.getLength(); ii++) {
+				XAdESSignature counterSignature = DSSXMLUtils.createCounterSignature(
+						(Element) counterSignaturesElements.item(ii), this);
 				if (counterSignature != null) {
-					countersignatures.add(counterSignature);
+					counterSignatures.add(counterSignature);
 				}
 			}
 		}
-		return countersignatures;
+		return counterSignatures;
 	}
 	
 	@Override

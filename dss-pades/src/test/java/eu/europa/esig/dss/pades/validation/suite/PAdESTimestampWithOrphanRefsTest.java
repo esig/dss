@@ -39,6 +39,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -68,11 +69,14 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 
 		for (TimestampToken timestampToken : detachedTimestamps) {
 			try {
-				PdfDocTimestampRevision pdfRevision = (PdfDocTimestampRevision) timestampToken.getPdfRevision();
+				assertTrue(timestampToken instanceof PdfTimestampToken);
+				PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+
+				PdfDocTimestampRevision pdfRevision = (PdfDocTimestampRevision) pdfTimestampToken.getPdfRevision();
 				byte[] signedContent = PAdESUtils.getSignedContent(document, pdfRevision.getByteRange());
 
 				SignedDocumentValidator timestampValidator = SignedDocumentValidator
-						.fromDocument(new InMemoryDocument(timestampToken.getEncoded()));
+						.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));
 				timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
 				timestampValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(signedContent)));
 
@@ -88,7 +92,7 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 				assertTrue(timestampWrapper.isMessageImprintDataIntact());
 
 				SimpleReport simpleReport = reports.getSimpleReport();
-				assertNotEquals(Indication.FAILED, simpleReport.getIndication(timestampToken.getDSSIdAsString()));
+				assertNotEquals(Indication.FAILED, simpleReport.getIndication(pdfTimestampToken.getDSSIdAsString()));
 
 			} catch (IOException e) {
 				fail(e);

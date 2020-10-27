@@ -137,9 +137,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private final CMSSignedData cmsSignedData;
 
 	private final SignerInformation signerInformation;
-	
+
 	/**
-	 * NOTE: The value shall be cached in order to properly compute a unique identifier for counter signatures
+	 * NOTE: The value shall be cached in order to properly compute a unique
+	 * identifier for counter signatures
 	 */
 	private SignerInformationStore counterSignaturesStore;
 
@@ -924,7 +925,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	@Override
+	/**
+	 * Returns a digest value incorporated in an attribute "message-digest" in CMS
+	 * Signed Data
+	 * 
+	 * @return a byte array representing a signed content digest value
+	 */
 	public byte[] getMessageDigestValue() {
 		final Attribute messageDigestAttribute = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
 		if (messageDigestAttribute == null) {
@@ -953,7 +959,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return DSSASN1Utils.getString(mimeTypeAttribute.getAttrValues().getObjectAt(0));
 	}
 
-	@Override
+	/**
+	 * @return content identifier as {@code String}
+	 */
 	public String getContentIdentifier() {
 		final Attribute contentIdentifierAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentIdentifier);
 		if (contentIdentifierAttribute == null) {
@@ -965,7 +973,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return contentIdentifierString;
 	}
 
-	@Override
+	/**
+	 * @return content hints as {@code String}
+	 */
 	public String getContentHints() {
 		final Attribute contentHintAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentHint);
 		if (contentHintAttribute == null) {
@@ -1014,18 +1024,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		if (countersignatures != null) {
-			return countersignatures;
+		if (counterSignatures != null) {
+			return counterSignatures;
 		}
 		
-		countersignatures = new ArrayList<>();
+		counterSignatures = new ArrayList<>();
 		for (final SignerInformation counterSignerInformation : getCounterSignatureStore()) {
 			final CAdESSignature counterSignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
 			counterSignature.setSignatureFilename(getSignatureFilename());
 			counterSignature.setMasterSignature(this);
-			countersignatures.add(counterSignature);
+			counterSignatures.add(counterSignature);
 		}
-		return countersignatures;
+		return counterSignatures;
 	}
 	
 	/**
@@ -1067,8 +1077,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signedAttributes.get(oid);
 	}
-	
-	@Override
+
+	/**
+	 * Returns a Set of CertificateIdentifier extracted from a
+	 * SignerInformationStore of CMS Signed Data
+	 * 
+	 * @return a Set of {@link CertificateIdentifier}s
+	 */
 	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
 	}
