@@ -357,6 +357,7 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 
 				tokensToProcess.put(token, null);
+				registerPOE(token.getDSSIdAsString(), currentTime);
 				if (traceEnabled) {
 					LOG.trace("+ New {} to check: {}", token.getClass().getSimpleName(), token.getAbbreviation());
 				}
@@ -452,13 +453,17 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
-			List<Date> bestSignatureTimeList = poeTimes.get(timestampedReference.getObjectId());
-			if (Utils.isCollectionEmpty(bestSignatureTimeList)) {
-				bestSignatureTimeList = new ArrayList<Date>();
-				poeTimes.put(timestampedReference.getObjectId(), bestSignatureTimeList);
-			}
-			bestSignatureTimeList.add(usageDate);
+			registerPOE(timestampedReference.getObjectId(), usageDate);
 		}
+	}
+
+	private void registerPOE(String tokenId, Date poeTime) {
+		List<Date> poeTimeList = poeTimes.get(tokenId);
+		if (Utils.isCollectionEmpty(poeTimeList)) {
+			poeTimeList = new ArrayList<>();
+			poeTimes.put(tokenId, poeTimeList);
+		}
+		poeTimeList.add(poeTime);
 	}
 	
 	private List<CertificateToken> toCertificateTokenChain(List<Token> tokens) {
@@ -478,7 +483,6 @@ public class SignatureValidationContext implements ValidationContext {
 			getCertChain(timestampToken);
 			registerUsageDate(timestampToken);
 			timestampToken = getNotYetVerifiedTimestamp();
-			
 		}
 		
 		Token token = getNotYetVerifiedToken();
@@ -489,7 +493,6 @@ public class SignatureValidationContext implements ValidationContext {
 				getRevocationData((CertificateToken) token, certChain);
 			}
 			token = getNotYetVerifiedToken();
-			
 		}
 	}
 
@@ -498,12 +501,11 @@ public class SignatureValidationContext implements ValidationContext {
 	 * sources. The issuer certificate must be provided, the underlining library
 	 * (bouncy castle) needs it to build the request.
 	 *
-	 * @param certToken
-	 *                  the current token
-	 * @param certChain
-	 *                  the complete chain
-	 * @return
+	 * @param certToken the current token
+	 * @param certChain the complete chain
+	 * @return a list of found {@link RevocationToken}s
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private List<RevocationToken> getRevocationData(final CertificateToken certToken, List<Token> certChain) {
 
 		if (LOG.isTraceEnabled()) {
@@ -776,24 +778,27 @@ public class SignatureValidationContext implements ValidationContext {
 		return DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
-		Date refreshNeededAfterTime = lastTimestampCertChainDates.get(certToken); // get last usage dates for the same timestamp certificate chain
+		// get last usage dates for the same timestamp certificate chain
+		Date refreshNeededAfterTime = lastTimestampCertChainDates.get(certToken);
 		if (refreshNeededAfterTime == null) {
-			refreshNeededAfterTime = getLowestPOETime(certToken.getDSSIdAsString()); // the best signature time for other tokens (i.e. B-level and revocation data)
+			// the best signature time for other tokens (i.e. B-level and revocation data)
+			// shall not return null
+			refreshNeededAfterTime = getLowestPOETime(certToken.getDSSIdAsString());
 		}
-		if (refreshNeededAfterTime != null) {
-			boolean freshRevocationDataFound = false;
-			for (RevocationToken<Revocation> revocationToken : revocations) {
-				if (refreshNeededAfterTime.before(revocationToken.getProductionDate()) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason() &&
-						isConsistent(revocationToken))) {
-					freshRevocationDataFound = true;
-					break;
-				}
+		boolean freshRevocationDataFound = false;
+		for (RevocationToken<Revocation> revocationToken : revocations) {
+			if (refreshNeededAfterTime.before(revocationToken.getProductionDate())
+					&& (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason()
+							&& isConsistent(revocationToken))) {
+				freshRevocationDataFound = true;
+				break;
 			}
-			if (!freshRevocationDataFound) {
-				LOG.debug("Revocation data refresh is needed");
-				return true;
-			}
+		}
+		if (!freshRevocationDataFound) {
+			LOG.debug("Revocation data refresh is needed");
+			return true;
 		}
 		return false;
 	}
@@ -828,9 +833,6 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken<Revocation> revocation) {
-		if (isConsistentOnTime(revocation, currentTime)) {
-			return true;
-		}
 		List<Date> poeTimeList = poeTimes.get(revocation.getDSSIdAsString());
 		if (Utils.isCollectionNotEmpty(poeTimeList)) {
 			for (Date poeTime : poeTimeList) {
@@ -843,10 +845,6 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private boolean hasPOEInTheValidityRange(CertificateToken certificateToken) {
-		// the certificate is valid in the current time
-		if (certificateToken.isValidOn(currentTime)) {
-			return true;
-		}
 		List<Date> poeTimeList = poeTimes.get(certificateToken.getDSSIdAsString());
 		if (Utils.isCollectionNotEmpty(poeTimeList)) {
 			for (Date poeTime : poeTimeList) {
