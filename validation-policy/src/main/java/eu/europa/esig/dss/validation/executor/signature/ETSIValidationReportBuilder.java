@@ -1194,41 +1194,70 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addProductionPlace(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		if (sigWrapper.isSignatureProductionPlacePresent()) {
-			final String address = sigWrapper.getAddress();
+		SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
+
+		/**
+		 * A.9.5 PAdES
+		 * 
+		 * For PAdES signatures as specified in ETSI EN 319 142-1 [i.3] and ETSI EN 319
+		 * 142-2 [i.4], clause 5 this component shall have the contents of the Location
+		 * entry in the Signature PDF dictionary.
+		 */
+		if (sigWrapper.getPDFRevision() != null) {
+			final String location = sigWrapper.getLocation();
+			if (Utils.isStringNotEmpty(location)) {
+				sigProductionPlace.getAddressString().add(location);
+			} else {
+				return;
+			}
+			/**
+			 * XAdES, CAdES, JAdES
+			 */
+		} else if (sigWrapper.isSignatureProductionPlacePresent()) {
+			final List<String> postalAddress = sigWrapper.getPostalAddress();
+			final String streetAddress = sigWrapper.getStreetAddress();
 			final String city = sigWrapper.getCity();
 			final String stateOrProvince = sigWrapper.getStateOrProvince();
 			final String postOfficeBoxNumber = sigWrapper.getPostOfficeBoxNumber();
 			final String postalCode = sigWrapper.getPostalCode();
 			final String countryName = sigWrapper.getCountryName();
 
-			if (Utils.areAllStringsEmpty(address, city, stateOrProvince, postOfficeBoxNumber, postalCode,
-					countryName)) {
+			if (Utils.isCollectionEmpty(postalAddress) && 
+					Utils.areAllStringsEmpty(streetAddress, city, stateOrProvince, 
+							postOfficeBoxNumber, postalCode, countryName)) {
 				return;
 			}
-			SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
-			if (Utils.isStringNotEmpty(address)) {
-				sigProductionPlace.getAddressString().add(address);
-			}
-			if (Utils.isStringNotEmpty(city)) {
-				sigProductionPlace.getAddressString().add(city);
+
+			if (Utils.isStringNotEmpty(countryName)) {
+				sigProductionPlace.getAddressString().add(countryName);
 			}
 			if (Utils.isStringNotEmpty(stateOrProvince)) {
 				sigProductionPlace.getAddressString().add(stateOrProvince);
 			}
-			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
-				sigProductionPlace.getAddressString().add(postOfficeBoxNumber);
+			if (Utils.isStringNotEmpty(city)) {
+				sigProductionPlace.getAddressString().add(city);
+			}
+			if (Utils.isStringNotEmpty(streetAddress)) {
+				sigProductionPlace.getAddressString().add(streetAddress);
+			}
+			if (Utils.isCollectionNotEmpty(postalAddress)) {
+				sigProductionPlace.getAddressString().addAll(postalAddress);
 			}
 			if (Utils.isStringNotEmpty(postalCode)) {
 				sigProductionPlace.getAddressString().add(postalCode);
 			}
-			if (Utils.isStringNotEmpty(countryName)) {
-				sigProductionPlace.getAddressString().add(countryName);
+			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
+				sigProductionPlace.getAddressString().add(postOfficeBoxNumber);
 			}
-			setSignedIfValid(sigWrapper, sigProductionPlace);
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
+
+		} else {
+			return;
+
 		}
+
+		setSignedIfValid(sigWrapper, sigProductionPlace);
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+				.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
 	}
 
 	private void addFilter(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {

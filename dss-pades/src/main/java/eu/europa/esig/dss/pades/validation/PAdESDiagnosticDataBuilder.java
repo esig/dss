@@ -65,6 +65,7 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 			pdfSignatureDictionary.setFilter(emptyToNull(pdfSigDict.getFilter()));
 			pdfSignatureDictionary.setSubFilter(emptyToNull(pdfSigDict.getSubFilter()));
 			pdfSignatureDictionary.setContactInfo(emptyToNull(pdfSigDict.getContactInfo()));
+			pdfSignatureDictionary.setLocation(emptyToNull(pdfSigDict.getLocation()));
 			pdfSignatureDictionary.setReason(emptyToNull(pdfSigDict.getReason()));
 			pdfSignatureDictionary.getSignatureByteRange().addAll(pdfSigDict.getByteRange().toBigIntegerList());
 			return pdfSignatureDictionary;

@@ -424,17 +424,18 @@ public class SignedDocumentDiagnosticDataBuilder extends CertificateDiagnosticDa
 		return xmlStructuralValidation;
 	}
 
-	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(
-			SignatureProductionPlace signatureProductionPlace) {
+	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(SignatureProductionPlace signatureProductionPlace) {
 		if (signatureProductionPlace != null) {
 			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();
 			xmlSignatureProductionPlace.setCountryName(emptyToNull(signatureProductionPlace.getCountryName()));
 			xmlSignatureProductionPlace.setStateOrProvince(emptyToNull(signatureProductionPlace.getStateOrProvince()));
-			xmlSignatureProductionPlace
-					.setPostOfficeBoxNumber(emptyToNull(signatureProductionPlace.getPostOfficeBoxNumber()));
+			xmlSignatureProductionPlace.setPostOfficeBoxNumber(emptyToNull(signatureProductionPlace.getPostOfficeBoxNumber()));
 			xmlSignatureProductionPlace.setPostalCode(emptyToNull(signatureProductionPlace.getPostalCode()));
-			xmlSignatureProductionPlace.setAddress(emptyToNull(signatureProductionPlace.getStreetAddress()));
+			xmlSignatureProductionPlace.setStreetAddress(emptyToNull(signatureProductionPlace.getStreetAddress()));
 			xmlSignatureProductionPlace.setCity(emptyToNull(signatureProductionPlace.getCity()));
+			if (Utils.isCollectionNotEmpty(signatureProductionPlace.getPostalAddress())) {
+				xmlSignatureProductionPlace.getPostalAddress().addAll(signatureProductionPlace.getPostalAddress());
+			}
 			return xmlSignatureProductionPlace;
 		}
 		return null;

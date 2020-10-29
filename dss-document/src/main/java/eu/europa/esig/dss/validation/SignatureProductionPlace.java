@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents the information concerning the signature production place.
@@ -35,6 +37,7 @@ public class SignatureProductionPlace implements Serializable {
 	private String postalCode;
 	private String countryName;
 	private String streetAddress;
+	private List<String> postalAddress;
 
 	public String getCity() {
 		return city;
@@ -83,4 +86,16 @@ public class SignatureProductionPlace implements Serializable {
 	public void setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
 	}
+
+	public List<String> getPostalAddress() {
+		if (postalAddress == null) {
+			postalAddress = new ArrayList<>();
+		}
+		return postalAddress;
+	}
+
+	public void setPostalAddress(List<String> postalAddress) {
+		this.postalAddress = postalAddress;
+	}
+
 }

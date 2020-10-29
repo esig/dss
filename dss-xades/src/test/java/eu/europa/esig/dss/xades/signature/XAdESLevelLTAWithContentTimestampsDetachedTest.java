@@ -70,7 +70,7 @@ public class XAdESLevelLTAWithContentTimestampsDetachedTest extends AbstractXAdE
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("BE");
 		signerLocation.setLocality("Brussels");
-		signerLocation.setStreet("Anspach");
+		signerLocation.setStreetAddress("Anspach");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 		signatureParameters.bLevel()
 				.setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfSender, CommitmentTypeEnum.ProofOfCreation));

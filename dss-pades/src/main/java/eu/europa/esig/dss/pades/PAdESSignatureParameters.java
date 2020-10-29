@@ -150,10 +150,20 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.signatureImageParameters = signatureImageParameters;
 	}
 
+	/**
+	 * Gets location
+	 * 
+	 * @return {@link String}
+	 */
 	public String getLocation() {
 		return this.location;
 	}
 
+	/**
+	 * Sets location (The CPU host name or physical location of the signing)
+	 * 
+	 * @param location {@link String}
+	 */
 	public void setLocation(String location) {
 		this.location = location;
 	}

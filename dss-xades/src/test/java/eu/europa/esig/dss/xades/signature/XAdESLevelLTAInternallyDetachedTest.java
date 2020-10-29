@@ -67,7 +67,7 @@ public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignat
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("BE");
 		signerLocation.setLocality("Brussels");
-		signerLocation.setStreet("Anspach");
+		signerLocation.setStreetAddress("Anspach");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
 		signatureParameters.bLevel()

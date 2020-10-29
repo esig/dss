@@ -48,7 +48,6 @@ import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
@@ -376,40 +375,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (signerLocation == null) {
 			return null;
 		}
+
 		final SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
+
 		final DirectoryString countryName = signerLocation.getCountry();
 		if (countryName != null) {
 			signatureProductionPlace.setCountryName(countryName.getString());
 		}
+
 		final DirectoryString localityName = signerLocation.getLocality();
 		if (localityName != null) {
 			signatureProductionPlace.setCity(localityName.getString());
 		}
-		final StringBuilder address = new StringBuilder();
+
 		final ASN1Sequence seq = signerLocation.getPostalAddress();
 		if (seq != null) {
-
 			for (int ii = 0; ii < seq.size(); ii++) {
-
-				if (seq.getObjectAt(ii) instanceof DEROctetString) {
-					if (address.length() > 0) {
-						address.append(" / ");
-					}
-					// TODO: getOctets returns an array
-					address.append(new String(((DEROctetString) seq.getObjectAt(ii)).getOctets()));
-				} else if (seq.getObjectAt(ii) instanceof DERUTF8String) {
-
-					if (address.length() > 0) {
-						address.append(" / ");
-					}
-					final DERUTF8String derutf8String = (DERUTF8String) seq.getObjectAt(ii);
-					address.append(derutf8String.getString());
+				DirectoryString directoryString = DirectoryString.getInstance(seq.getObjectAt(ii));
+				String postalAddress = directoryString.getString();
+				if (Utils.isStringNotEmpty(postalAddress)) {
+					signatureProductionPlace.getPostalAddress().add(postalAddress);
 				}
 			}
 		}
-		signatureProductionPlace.setStreetAddress(address.toString());
-		// This property is not used in CAdES version of signature
-		// signatureProductionPlace.setStateOrProvince(stateOrProvince);
+
 		return signatureProductionPlace;
 	}
 

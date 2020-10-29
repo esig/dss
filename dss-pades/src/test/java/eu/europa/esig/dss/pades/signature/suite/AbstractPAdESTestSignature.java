@@ -143,17 +143,13 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(getSignatureParameters().getSubFilter(), signature.getSubFilter());
 		assertEquals(getSignatureParameters().getReason(), signature.getReason());
 		assertEquals(getSignatureParameters().getContactInfo(), signature.getContactInfo());
-		assertEquals(getSignatureParameters().getLocation(), signature.getCountryName());
+		assertEquals(getSignatureParameters().getLocation(), signature.getLocation());
 	}
 	
 	@Override
 	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
-		String location = getSignatureParameters().getLocation();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(Utils.isStringNotEmpty(location), signatureWrapper.isSignatureProductionPlacePresent());
-		if (Utils.isStringNotEmpty(location)) {
-			assertEquals(location, signatureWrapper.getCountryName());
-		}
+		assertFalse(signatureWrapper.isSignatureProductionPlacePresent()); // see PdfSignatureDictionary.location
 	}
 
 	@Override

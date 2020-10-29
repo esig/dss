@@ -70,7 +70,7 @@ public class XAdESInternallyDetachedOneLinesFilePrettyPrintTest extends Abstract
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("BE");
 		signerLocation.setLocality("Brussels");
-		signerLocation.setStreet("Anspach");
+		signerLocation.setStreetAddress("Anspach");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
 		signatureParameters.bLevel()

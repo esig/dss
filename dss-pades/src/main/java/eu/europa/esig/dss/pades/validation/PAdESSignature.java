@@ -43,7 +43,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
 
 /**
  * Implementation of AdvancedSignature for PAdES
@@ -115,18 +114,6 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public Date getSigningTime() {
 		return pdfSignatureRevision.getSigningDate();
-	}
-
-	@Override
-	public SignatureProductionPlace getSignatureProductionPlace() {
-		String location = pdfSignatureRevision.getPdfSigDictInfo().getLocation();
-		if (Utils.isStringBlank(location)) {
-			return super.getSignatureProductionPlace();
-		} else {
-			SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
-			signatureProductionPlace.setCountryName(location);
-			return signatureProductionPlace;
-		}
 	}
 
 	@Override

@@ -126,6 +126,7 @@ import eu.europa.esig.validationreport.jaxb.SANameType;
 import eu.europa.esig.validationreport.jaxb.SAReasonType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SASigPolicyIdentifierType;
+import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASigningTimeType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SATimestampType;
@@ -1191,6 +1192,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				} else if (value instanceof SASigPolicyIdentifierType) {
 					SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
 					validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
+				} else if (value instanceof SASignatureProductionPlaceType) {
+					SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
+					validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
 				} else if (value instanceof SACounterSignatureType) {
 					SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
 					validateETSISACounterSignatureType(saCounterSignature);
@@ -1248,6 +1252,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void validateETSISASigPolicyIdentifierType(SASigPolicyIdentifierType saSigPolicyIdentifier) {
 		assertNotNull(saSigPolicyIdentifier);
+	}
+	
+	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType saSignatureProductionPlace) {
+		assertNotNull(saSignatureProductionPlace);
+		assertTrue(Utils.isCollectionNotEmpty(saSignatureProductionPlace.getAddressString()));
 	}
 	
 	protected void validateETSISACounterSignatureType(SACounterSignatureType saCounterSignature) {

@@ -192,12 +192,13 @@
 	
 	<xs:complexType name="SignatureProductionPlace">
 		<xs:sequence>
-			<xs:element name="Address" type="xs:string" minOccurs="0" />
+			<xs:element name="PostalAddress" type="xs:string" minOccurs="0" maxOccurs="unbounded" /> <!-- Used in CAdES -->
 			<xs:element name="City" type="xs:string" minOccurs="0" />
 			<xs:element name="StateOrProvince" type="xs:string" minOccurs="0" />
 			<xs:element name="PostOfficeBoxNumber" type="xs:string" minOccurs="0" />
 			<xs:element name="PostalCode" type="xs:string" minOccurs="0" />
 			<xs:element name="CountryName" type="xs:string" minOccurs="0" />
+			<xs:element name="StreetAddress" type="xs:string" minOccurs="0" /> <!-- Used in XAdES and JAdES -->
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -243,6 +244,7 @@
 			<xs:element name="Filter" type="xs:string" minOccurs="0" />
 			<xs:element name="SubFilter" type="xs:string" minOccurs="0" />
 			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
+			<xs:element name="Location" type="xs:string" minOccurs="0" />
 			<xs:element name="Reason" type="xs:string" minOccurs="0" />
 			<xs:element name="SignatureByteRange" minOccurs="0" >
 				<xs:simpleType>
