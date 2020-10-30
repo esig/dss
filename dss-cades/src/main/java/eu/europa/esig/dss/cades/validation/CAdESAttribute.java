@@ -106,17 +106,30 @@ public class CAdESAttribute implements ISignatureAttribute {
 	}
 
 	/**
+	 * Checks if the given CAdESAttribute is a timestamp token
+	 * 
+	 * @return TRUE if the attribute is a timestamp, FALSE otherwise
+	 */
+	public boolean isTimeStampToken() {
+		return DSSASN1Utils.getTimestampOids().contains(getASN1Oid());
+	}
+
+	/**
 	 * Returns a TimeStampToken if possible
 	 * 
 	 * @return a {@link TimeStampToken} or null
 	 */
 	public TimeStampToken toTimeStampToken() {
-		try {
-			return DSSASN1Utils.getTimeStampToken(attribute);
-		} catch (Exception e) {
-			LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
-			return null;
+		if (isTimeStampToken()) {
+			try {
+				return DSSASN1Utils.getTimeStampToken(attribute);
+			} catch (Exception e) {
+				LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
+			}
+		} else {
+			LOG.warn("The given attribute [{}] is not a timestamp! Unable to build a TimeStampToken.", this);
 		}
+		return null;
 	}
 	
 	@Override

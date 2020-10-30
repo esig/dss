@@ -79,23 +79,45 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 	 */
 	protected ListCertificateSource certificateSource;
 	
-	// Enclosed content timestamps.
+	/**
+	 * Enclosed content timestamps.
+	 */
 	protected List<TimestampToken> contentTimestamps;
 
-	// Enclosed signature timestamps.
+	/**
+	 * Enclosed signature timestamps.
+	 */
 	protected List<TimestampToken> signatureTimestamps;
 
-	// Enclosed SignAndRefs timestamps.
+	/**
+	 * Enclosed SignAndRefs timestamps.
+	 */
 	protected List<TimestampToken> sigAndRefsTimestamps;
 
-	// Enclosed RefsOnly timestamps.
+	/**
+	 * Enclosed RefsOnly timestamps.
+	 */
 	protected List<TimestampToken> refsOnlyTimestamps;
 
-	// This variable contains the list of enclosed archive signature timestamps.
+	/**
+	 * This variable contains the list of enclosed archive signature timestamps.
+	 */
 	protected List<TimestampToken> archiveTimestamps;
 	
-	// A list of all TimestampedReferences extracted from a signature
+	/**
+	 * A list of all TimestampedReferences extracted from a signature
+	 */
 	protected List<TimestampedReference> unsignedPropertiesReferences;
+
+	/**
+	 * A cached instance of Signed Signature Properties
+	 */
+	private SignatureProperties<SignatureAttribute> signedSignatureProperties;
+
+	/**
+	 * A cached instance of Unsigned Signature Properties
+	 */
+	private SignatureProperties<SignatureAttribute> unsignedSignatureProperties;
 
 	/**
 	 * Default constructor
@@ -205,7 +227,7 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 
 	@Override
 	public ListRevocationSource<CRL> getTimestampCRLSources() {
-		ListRevocationSource<CRL> result = new ListRevocationSource<CRL>();
+		ListRevocationSource<CRL> result = new ListRevocationSource<>();
 		for (TimestampToken timestampToken : getAllTimestamps()) {
 			result.add(timestampToken.getCRLSource());
 		}
@@ -214,7 +236,7 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 
 	@Override
 	public ListRevocationSource<OCSP> getTimestampOCSPSources() {
-		ListRevocationSource<OCSP> result = new ListRevocationSource<OCSP>();
+		ListRevocationSource<OCSP> result = new ListRevocationSource<>();
 		for (TimestampToken timestampToken : getAllTimestamps()) {
 			result.add(timestampToken.getOCSPSource());
 		}
@@ -265,19 +287,32 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 		sigAndRefsTimestamps = new ArrayList<>();
 		refsOnlyTimestamps = new ArrayList<>();
 		archiveTimestamps = new ArrayList<>();
-		
+
 		// initialize combined revocation sources
-		crlSource = new ListRevocationSource<CRL>(signature.getCRLSource());
-		ocspSource = new ListRevocationSource<OCSP>(signature.getOCSPSource());
+		crlSource = new ListRevocationSource<>(signature.getCRLSource());
+		ocspSource = new ListRevocationSource<>(signature.getOCSPSource());
 		certificateSource = new ListCertificateSource(signature.getCertificateSource());
-		
+
 		// a list of all embedded references
-		unsignedPropertiesReferences = new ArrayList<TimestampedReference>();
+		unsignedPropertiesReferences = new ArrayList<>();
+
+		makeTimestampTokensFromSignedAttributes();
+		makeTimestampTokensFromUnsignedAttributes();
+
+	}
+
+	/**
+	 * Creates TimestampTokens from all instances extracted from signed attributes
+	 * (content TSTs)
+	 */
+	protected void makeTimestampTokensFromSignedAttributes() {
+
+		SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
+		if (signedSignatureProperties == null || !signedSignatureProperties.isExist()) {
+			return;
+		}
 		
-		final SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
-		
-		final List<SignatureAttribute> signedAttributes = signedSignatureProperties.getAttributes();
-		for (SignatureAttribute signedAttribute : signedAttributes) {
+		for (SignatureAttribute signedAttribute : signedSignatureProperties.getAttributes()) {
 			
 			List<TimestampToken> timestampTokens;
 			
@@ -308,10 +343,15 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 			contentTimestamps.addAll(timestampTokens);
 		}
 		
-		
+	}
+
+	/**
+	 * Creates TimestampTokens from found instances in unsigned properties
+	 */
+	protected void makeTimestampTokensFromUnsignedAttributes() {
+
 		final SignatureProperties<SignatureAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		if (unsignedSignatureProperties == null || !unsignedSignatureProperties.isExist()) {
-			// timestamp tokens cannot be created if signature does not contain "unsigned-signature-properties" element
 			return;
 		}
 		
@@ -320,8 +360,7 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 		// JAdES specific (contains references to the last 'arcTst' and the associated 'tstVd')
 		List<TimestampedReference> previousArcTstReferences = new ArrayList<>();
 		
-		final List<SignatureAttribute> unsignedAttributes = unsignedSignatureProperties.getAttributes();
-		for (SignatureAttribute unsignedAttribute : unsignedAttributes) {
+		for (SignatureAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
 			
 			List<TimestampToken> timestampTokens;
 			
@@ -383,17 +422,13 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 				continue;
 				
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = new ArrayList<>();
-				addReferencesFromPreviousTimestamps(references, timestamps);
-				addReferences(references, getSignerDataReferences());
-				addReferences(references, unsignedPropertiesReferences);
-				
-				timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP, references);
+				timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP,
+						new ArrayList<>());
 				if (Utils.isCollectionEmpty(timestampTokens)) {
 					continue;
 				}
 				setArchiveTimestampType(timestampTokens, unsignedAttribute);
-				incorporateArchiveTimestampOtherReferences(timestampTokens);
+				incorporateArchiveTimestampReferences(timestampTokens, timestamps);
 				
 				// reset the list, because a new 'arcTst' has been found
 				previousArcTstReferences = new ArrayList<>();
@@ -441,22 +476,47 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 			
 			populateSources(timestampTokens);
 			timestamps.addAll(timestampTokens);
-			
 		}
 		
 	}
 
 	/**
 	 * Returns the 'signed-signature-properties' element of the signature
+	 * 
 	 * @return {@link SignatureProperties}
 	 */
-	protected abstract SignatureProperties<SignatureAttribute> getSignedSignatureProperties();
-	
+	protected SignatureProperties<SignatureAttribute> getSignedSignatureProperties() {
+		if (signedSignatureProperties == null) {
+			signedSignatureProperties = buildSignedSignatureProperties();
+		}
+		return signedSignatureProperties;
+	}
+
+	/**
+	 * Creates the 'signed-signature-properties' element of the signature
+	 * 
+	 * @return {@link SignatureProperties}
+	 */
+	protected abstract SignatureProperties<SignatureAttribute> buildSignedSignatureProperties();
+
 	/**
 	 * Returns the 'unsigned-signature-properties' element of the signature
+	 * 
 	 * @return {@link SignatureProperties}
 	 */
-	protected abstract SignatureProperties<SignatureAttribute> getUnsignedSignatureProperties();
+	protected SignatureProperties<SignatureAttribute> getUnsignedSignatureProperties() {
+		if (unsignedSignatureProperties == null) {
+			unsignedSignatureProperties = buildUnsignedSignatureProperties();
+		}
+		return unsignedSignatureProperties;
+	}
+
+	/**
+	 * Creates the 'unsigned-signature-properties' element of the signature
+	 * 
+	 * @return {@link SignatureProperties}
+	 */
+	protected abstract SignatureProperties<SignatureAttribute> buildUnsignedSignatureProperties();
 
 	/**
 	 * Determines if the given {@code signedAttribute} is an instance of "content-timestamp" element
@@ -847,10 +907,46 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 	 */
 	protected abstract List<Identifier> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
 	
-	private void incorporateArchiveTimestampOtherReferences(List<TimestampToken> timestampTokens) {
-		for (TimestampToken timestampToken : timestampTokens) {
-			addReferences(timestampToken.getTimestampedReferences(), getArchiveTimestampOtherReferences(timestampToken));
+	/**
+	 * Returns a list of {@code TimestampedReference}s that has been extracted from
+	 * previously incorporated signed and unsigned elements
+	 * 
+	 * @param unsignedAttribute  {@link SignatureAttribute} representing a timestamp
+	 * @param previousTimestamps a list of previously created {@link TimestampToken}
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getArchiveTimestampInitialReferences(SignatureAttribute unsignedAttribute,
+			List<TimestampToken> previousTimestamps) {
+		final List<TimestampedReference> references = new ArrayList<>();
+		addReferences(references, getSignatureTimestampReferences());
+		addReferencesFromPreviousTimestamps(references, previousTimestamps);
+		addReferences(references, getSignerDataReferences());
+		addReferences(references, unsignedPropertiesReferences);
+		return references;
+	}
+
+	private void incorporateArchiveTimestampReferences(List<TimestampToken> createdTimestampTokens,
+			List<TimestampToken> previousTimestamps) {
+		for (TimestampToken timestampToken : createdTimestampTokens) {
+			incorporateArchiveTimestampReferences(timestampToken, previousTimestamps);
 		}
+	}
+
+	/**
+	 * The method incorporates all the timestamped references for 
+	 * the given archive {@code timestampToken}
+	 * 
+	 * @param timestampToken     {@link TimestampToken} representing an Archive TST
+	 *                           to add references into
+	 * @param previousTimestamps a list of previously created
+	 *                           {@link TimestampToken}s
+	 */
+	protected void incorporateArchiveTimestampReferences(TimestampToken timestampToken,
+			List<TimestampToken> previousTimestamps) {
+		addReferences(timestampToken.getTimestampedReferences(), getSignatureTimestampReferences());
+		addReferencesFromPreviousTimestamps(timestampToken.getTimestampedReferences(), previousTimestamps);
+		addReferences(timestampToken.getTimestampedReferences(), unsignedPropertiesReferences);
+		addReferences(timestampToken.getTimestampedReferences(), getArchiveTimestampOtherReferences(timestampToken));
 	}
 	
 	/**
@@ -1012,14 +1108,27 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 	 * @param references a list of {@link TimestampedReference}s to populate 
 	 * @param timestampedTimestamps a list of {@link TimestampToken}s to extract values from
 	 */
-	protected void addReferencesFromPreviousTimestamps(List<TimestampedReference> references, List<TimestampToken> timestampedTimestamps) {
+	protected void addReferencesFromPreviousTimestamps(List<TimestampedReference> references,
+			List<TimestampToken> timestampedTimestamps) {
 		if (Utils.isCollectionNotEmpty(timestampedTimestamps)) {
 			for (final TimestampToken timestampToken : timestampedTimestamps) {
-				addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
-				addTimestampedReferences(references, timestampToken);
-				addEncapsulatedValuesFromTimestamp(references, timestampToken);
+				addReferences(references, getReferencesFromTimestamp(timestampToken));
 			}
 		}
+	}
+
+	/**
+	 * Incorporates all references from the given {@code timestampToken}
+	 * 
+	 * @param timestampToken a {@link TimestampToken} to extract values from
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getReferencesFromTimestamp(TimestampToken timestampToken) {
+		List<TimestampedReference> references = new ArrayList<>();
+		addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
+		addTimestampedReferences(references, timestampToken);
+		addEncapsulatedValuesFromTimestamp(references, timestampToken);
+		return references;
 	}
 	
 	private void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {

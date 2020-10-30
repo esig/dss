@@ -86,6 +86,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CMSCRLSource;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
@@ -117,12 +118,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	}
 
 	@Override
-	protected SignatureProperties<CAdESAttribute> getSignedSignatureProperties() {
+	protected SignatureProperties<CAdESAttribute> buildSignedSignatureProperties() {
 		return CAdESSignedAttributes.build(signature.getSignerInformation());
 	}
 
 	@Override
-	protected SignatureProperties<CAdESAttribute> getUnsignedSignatureProperties() {
+	protected SignatureProperties<CAdESAttribute> buildUnsignedSignatureProperties() {
 		return CAdESUnsignedAttributes.build(signature.getSignerInformation());
 	}
 
@@ -246,6 +247,33 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	}
 
 	@Override
+	protected void incorporateArchiveTimestampReferences(TimestampToken timestampToken,
+			List<TimestampToken> previousTimestamps) {
+		if (isArchiveTimestampV2(timestampToken)) {
+			// for an ATSTv2 all the incorporated unsigned properties are covered
+			super.incorporateArchiveTimestampReferences(timestampToken, previousTimestamps);
+		}
+		// else archive-timestamp-v3
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
+		addReferences(timestampedReferences, getSignatureTimestampReferences());
+
+		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		if (atsHashIndex != null) {
+			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
+
+			final ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
+			final ASN1Sequence crlHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
+			addReferences(timestampedReferences, getSignedDataCertificateReferences(certsHashIndex, digestAlgorithm));
+			addReferences(timestampedReferences, getSignedDataRevocationReferences(crlHashIndex, digestAlgorithm));
+
+			final ASN1Sequence unsignedAttrsHashIndex = DSSASN1Utils.getUnsignedAttributesHashIndex(atsHashIndex);
+			addReferences(timestampedReferences,
+					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
+		}
+		timestampToken.getTimestampedReferences().addAll(timestampedReferences);
+	}
+
+	@Override
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(CAdESAttribute signedAttribute) {
 		// not applicable for CAdES, must be not executed
 		throw new DSSException("Not applicable for CAdES!");
@@ -253,66 +281,40 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	
 	@Override
 	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		timestampedReferences.addAll(getSignedDataReferences(timestampToken));
-		timestampedReferences.addAll(getUnsignedCounterSignatureAttributesReferences(timestampToken));
-		return timestampedReferences;
+		// executed for ArchiveTimestampV2 only
+		return getSignatureSignedDataReferences();
 	}
 	
-	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
-		
-		if (ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType()) ||
-				ArchiveTimestampType.CAdES.equals(timestampToken.getArchiveTimestampType())) {
-			// in case of ArchiveTimestampV2 or another earlier form of archive timestamp
-			// all SignedData is covered
-			return getSignatureSignedDataReferences();
-		}
-		
-		List<TimestampedReference> references = new ArrayList<>();
-		
-		// Compare values present in the timestamp's Hash Index Table with signature's SignedData item digests
-		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
-		if (atsHashIndex != null) {
-			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
-			
-			List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
-					atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-			references.addAll(certificateReferences);
-	
-			List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
-			references.addAll(revocationReferences);
-		}
-		
-		return references;
+	private boolean isArchiveTimestampV2(TimestampToken timestampToken) {
+		return ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType())
+				|| ArchiveTimestampType.CAdES.equals(timestampToken.getArchiveTimestampType());
 	}
-	
-	private List<TimestampedReference> getSignedDataCertificateReferences(final ASN1Sequence atsHashIndex, final DigestAlgorithm digestAlgorithm,
-			final String timestampId) {
+
+	private List<TimestampedReference> getSignedDataCertificateReferences(final ASN1Sequence certsHashIndex,
+			final DigestAlgorithm digestAlgorithm) {
 		List<TimestampedReference> references = new ArrayList<>();
 		
 		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
 		if (signatureCertificateSource instanceof CMSCertificateSource) {
-			ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
 			List<DEROctetString> certsHashList = DSSASN1Utils.getDEROctetStrings(certsHashIndex);
 			for (CertificateToken certificate : signatureCertificateSource.getSignedDataCertificates()) {
 				if (isDigestValuePresent(certificate.getDigest(digestAlgorithm), certsHashList)) {
 					addReference(references, certificate.getDSSId(), TimestampedObjectType.CERTIFICATE);
 				} else {
-					LOG.warn("The certificate with id [{}] was not included to the message imprint of timestamp with id [{}] "
-							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							certificate.getDSSIdAsString(), timestampId);
+					LOG.debug("The certificate with id [{}] was not included to the message imprint of timestamp "
+							+ "or was added to the CMS SignedData after this ArchiveTimestamp has been incorporated!",
+							certificate.getDSSIdAsString());
 				}
 			}
 		}
 		return references;
 	}
 	
-	private List<TimestampedReference> getSignedDataRevocationReferences(final ASN1Sequence atsHashIndex, final DigestAlgorithm digestAlgorithm,
-			final String timestampId) {
+	private List<TimestampedReference> getSignedDataRevocationReferences(final ASN1Sequence crlsHashIndex,
+			final DigestAlgorithm digestAlgorithm) {
 		List<TimestampedReference> references = new ArrayList<>();
 		
 		// get CRL references
-		ASN1Sequence crlsHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
 		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
 		
 		OfflineCRLSource signatureCRLSource = signature.getCRLSource();
@@ -322,22 +324,22 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 				if (isDigestValuePresent(token.getDigestValue(digestAlgorithm), crlsHashList)) {
 					addReference(references, token, TimestampedObjectType.REVOCATION);
 				} else {
-					LOG.warn("The CRL Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
+					LOG.debug("The CRL Token with id [{}] was not included to the message imprint of timestamp "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							token.asXmlId(), timestampId);
+							token.asXmlId());
 				}
 			}
 		}
 
 		// get OCSP references
-		List<TimestampedReference> ocspReferences = getSignedDataOCSPReferences(crlsHashList, digestAlgorithm, timestampId);
+		List<TimestampedReference> ocspReferences = getSignedDataOCSPReferences(crlsHashList, digestAlgorithm);
 		references.addAll(ocspReferences);
 		
 		return references;
 	}
 	
-	private List<TimestampedReference> getSignedDataOCSPReferences(List<DEROctetString> crlsHashList, final DigestAlgorithm digestAlgorithm,
-			final String timestampId) {
+	private List<TimestampedReference> getSignedDataOCSPReferences(List<DEROctetString> crlsHashList,
+			final DigestAlgorithm digestAlgorithm) {
 		List<TimestampedReference> references = new ArrayList<>();
 		
 		OfflineOCSPSource signatureOCSPSource = signature.getOCSPSource();
@@ -354,29 +356,84 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 				if (isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList)) {
 					addReference(references, binary, TimestampedObjectType.REVOCATION);
 				} else {
-					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
+					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							binary.asXmlId(), timestampId);
+							binary.asXmlId());
 				}
 			}
 		}
 		return references;
 	}
 	
-	protected List<TimestampedReference> getUnsignedCounterSignatureAttributesReferences(TimestampToken timestampToken) {
-		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+	protected List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,
+			final DigestAlgorithm digestAlgorithm, final List<TimestampToken> previousTimestamps) {
+		final List<TimestampedReference> references = new ArrayList<>();
+
+		final List<DEROctetString> timestampUnsignedAttributesHashesList = DSSASN1Utils
+				.getDEROctetStrings(unsignedAttrsHashIndex);
 		
-		if (ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType()) ||
-				ArchiveTimestampType.CAdES.equals(timestampToken.getArchiveTimestampType())) {
-			// in case of ArchiveTimestampV2 or another earlier form of archive timestamp
-			// all UnsignedProperties is covered
-			return getCounterSignaturesReferences(counterSignatures);
+		final SignatureProperties<CAdESAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
+		for (CAdESAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
+			List<byte[]> octets = DSSASN1Utils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
+					unsignedAttribute.getAttrValues());
+			for (byte[] bytes : octets) {
+				final byte[] digest = DSSUtils.digest(digestAlgorithm, bytes);
+				DEROctetString derDigest = new DEROctetString(digest);
+				if (timestampUnsignedAttributesHashesList.contains(derDigest)) {
+					addReferences(references, getReferencesFromUnsignedProperty(unsignedAttribute, previousTimestamps));
+				}
+			}
 		}
-		
-		// for ArchiveTimestampV3 process in its physical order (see {@code getCounterSignatures()})
-		return Collections.emptyList();
+
+		return references;
 	}
 	
+	private List<TimestampedReference> getReferencesFromUnsignedProperty(CAdESAttribute unsignedAttribute,
+			final List<TimestampToken> previousTimestamps) {
+		if (unsignedAttribute.isTimeStampToken()) {
+			List<TimestampedReference> references = getReferencesFromMatchingTimestamp(unsignedAttribute,
+					previousTimestamps);
+			if (Utils.isCollectionEmpty(references)) {
+				LOG.warn("The timestamp order is broken! Unable to find a covered timestamp.");
+			}
+			return references;
+
+		} else if (isCompleteCertificateRef(unsignedAttribute) || isAttributeCertificateRef(unsignedAttribute)) {
+			return getTimestampedCertificateRefs(unsignedAttribute);
+
+		} else if (isCompleteRevocationRef(unsignedAttribute) || isAttributeRevocationRef(unsignedAttribute)) {
+			return getTimestampedRevocationRefs(unsignedAttribute);
+
+		} else if (isCertificateValues(unsignedAttribute)) {
+			return getTimestampedCertificateValues(unsignedAttribute);
+
+		} else if (isRevocationValues(unsignedAttribute)) {
+			return getTimestampedRevocationValues(unsignedAttribute);
+
+		} else if (isCounterSignature(unsignedAttribute)) {
+			List<AdvancedSignature> counterSignatures = getCounterSignatures(unsignedAttribute);
+			return getCounterSignaturesReferences(counterSignatures);
+
+		} else {
+			LOG.warn("Unable to find an unsigned attribute with the digest from ats-hash-index-v3");
+
+		}
+
+		return Collections.emptyList();
+	}
+
+	private List<TimestampedReference> getReferencesFromMatchingTimestamp(CAdESAttribute unsingedAttribute,
+			final List<TimestampToken> previousTimestamps) {
+		ASN1Encodable asn1Object = unsingedAttribute.getASN1Object();
+		byte[] derEncoded = DSSASN1Utils.getDEREncoded(asn1Object);
+		for (TimestampToken timestampToken : previousTimestamps) {
+			if (Arrays.equals(derEncoded, timestampToken.getEncoded())) {
+				return getReferencesFromTimestamp(timestampToken);
+			}
+		}
+		return Collections.emptyList();
+	}
+
 	@Override
 	protected List<TimestampedReference> getSignatureSignedDataReferences() {
 		List<TimestampedReference> references = new ArrayList<>();
@@ -557,9 +614,6 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	@Override
 	@SuppressWarnings("rawtypes")
 	protected List<AdvancedSignature> getCounterSignatures(CAdESAttribute unsignedAttribute) {
-		// In case of CAdES the counter signature is added depending on the ATS version type
-		// see {@code getUnsignedCounterSignatureAttributesReferences()} for ATSv2
-		
 		List<AdvancedSignature> cadesResult = new ArrayList<>();
 		
 		// unable to build a SignerInformation with BC (protected constructor)

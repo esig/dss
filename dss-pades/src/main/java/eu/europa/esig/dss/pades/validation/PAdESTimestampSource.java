@@ -83,9 +83,9 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	}
 
 	@Override
-	protected void makeTimestampTokens() {
+	protected void makeTimestampTokensFromUnsignedAttributes() {
 		// Creates signature timestamp tokens only (from CAdESTimestampSource)
-		super.makeTimestampTokens();
+		super.makeTimestampTokensFromUnsignedAttributes();
 		
 		List<TimestampToken> cadesSignatureTimestamps = getSignatureTimestamps();
 		final List<TimestampToken> timestampedTimestamps = new ArrayList<>(cadesSignatureTimestamps);

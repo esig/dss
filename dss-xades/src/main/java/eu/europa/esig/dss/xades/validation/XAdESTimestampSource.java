@@ -82,12 +82,12 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature
 	}
 
 	@Override
-	protected SignatureProperties<XAdESAttribute> getSignedSignatureProperties() {
+	protected SignatureProperties<XAdESAttribute> buildSignedSignatureProperties() {
 		return XAdESSignedDataObjectProperties.build(signatureElement, xadesPaths);
 	}
 
 	@Override
-	protected SignatureProperties<XAdESAttribute> getUnsignedSignatureProperties() {
+	protected SignatureProperties<XAdESAttribute> buildUnsignedSignatureProperties() {
 		return XAdESUnsignedSigProperties.build(signatureElement, xadesPaths);
 	}
 

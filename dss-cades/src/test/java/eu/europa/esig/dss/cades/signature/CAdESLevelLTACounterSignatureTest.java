@@ -3,6 +3,7 @@ package eu.europa.esig.dss.cades.signature;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 
@@ -13,9 +14,11 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -94,6 +97,21 @@ public class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSigna
 		assertEquals(2, foundRevocations.getRelatedRevocationData().size());
 		assertEquals(1, foundRevocations.getRelatedRevocationsByType(RevocationType.CRL).size());
 		assertEquals(1, foundRevocations.getRelatedRevocationsByType(RevocationType.OCSP).size());
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		boolean arcTstFound = false;
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
+				arcTstFound = true;
+			}
+		}
+
+		assertTrue(arcTstFound);
 	}
 
 	@Override

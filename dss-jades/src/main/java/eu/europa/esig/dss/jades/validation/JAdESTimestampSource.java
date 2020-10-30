@@ -43,12 +43,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	}
 
 	@Override
-	protected SignatureProperties<JAdESAttribute> getSignedSignatureProperties() {
+	protected SignatureProperties<JAdESAttribute> buildSignedSignatureProperties() {
 		return new JAdESSignedProperties(signature.getJws().getHeaders());
 	}
 
 	@Override
-	protected SignatureProperties<JAdESAttribute> getUnsignedSignatureProperties() {
+	protected SignatureProperties<JAdESAttribute> buildUnsignedSignatureProperties() {
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
 		return new JAdESUnsignedProperties(etsiU);
 	}

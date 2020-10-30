@@ -23,6 +23,12 @@ package eu.europa.esig.dss.spi;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -136,8 +142,18 @@ public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
+	private static List<ASN1ObjectIdentifier> timestampOids;
+
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+
+		timestampOids = new ArrayList<>();
+		timestampOids.add(id_aa_ets_contentTimestamp);
+		timestampOids.add(id_aa_ets_archiveTimestampV2);
+		timestampOids.add(id_aa_ets_archiveTimestampV3);
+		timestampOids.add(id_aa_ets_certCRLTimestamp);
+		timestampOids.add(id_aa_ets_escTimeStamp);
+		timestampOids.add(id_aa_signatureTimeStampToken);
 	}
 
 	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
@@ -1276,13 +1292,13 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns octets from the given attribute by defined atsh-hash-index type
-	 * @param attribute {@link Attribute} to get byte array from
-	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} to specify rules
+	 * 
+	 * @param attribute                     {@link Attribute} to get byte array from
+	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} to specify
+	 *                                      rules
 	 * @return byte array
 	 */
 	public static List<byte[]> getOctetStringForAtsHashIndex(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
-		
-		List<byte[]> octets = new ArrayList<>();
 		/*
 		 *  id_aa_ATSHashIndexV3 (EN 319 122-1 v1.1.1) -> Each one shall contain the hash
 		 *  value of the octets resulting from concatenating the Attribute.attrType field and one of the instances of
@@ -1291,19 +1307,32 @@ public final class DSSASN1Utils {
 		 *  unsignedAttrsHashIndex
 		 */
 		if (id_aa_ATSHashIndexV3.equals(atsHashIndexVersionIdentifier)) {
-			byte[] attrType = getDEREncoded(attribute.getAttrType());
-			for (ASN1Encodable asn1Encodable : attribute.getAttrValues().toArray()) {
-				octets.add(DSSUtils.concatenate(attrType, getDEREncoded(asn1Encodable)));
-			}
+			return getATSHashIndexV3OctetString(attribute.getAttrType(), attribute.getAttrValues());
 		} else {
 			/*
 			 * id_aa_ATSHashIndex (TS 101 733 v2.2.1) and id_aa_ATSHashIndexV2 (EN 319 122-1 v1.0.0) ->
 			 * The field unsignedAttrsHashIndex shall be a sequence of octet strings. Each one shall contain the hash value of
 			 * one instance of Attribute within the unsignedAttrs field of the SignerInfo.
 			 */
-			octets.add(getDEREncoded(attribute));
+			return Arrays.asList(getDEREncoded(attribute));
 		}
-		
+	}
+
+	/**
+	 * Returns octets from the given attribute for ATS-Hash-Index-v3 table
+	 * 
+	 * @param attributeIdentifier {@link ASN1ObjectIdentifier} of the corresponding
+	 *                            Attribute
+	 * @param attributeValues     {@link ASN1Set} of the corresponding Attribute
+	 * @return byte array representing an octet string
+	 */
+	public static List<byte[]> getATSHashIndexV3OctetString(ASN1ObjectIdentifier attributeIdentifier,
+			ASN1Set attributeValues) {
+		List<byte[]> octets = new ArrayList<>();
+		byte[] attrType = getDEREncoded(attributeIdentifier);
+		for (ASN1Encodable asn1Encodable : attributeValues.toArray()) {
+			octets.add(DSSUtils.concatenate(attrType, getDEREncoded(asn1Encodable)));
+		}
 		return octets;
 	}
 	
@@ -1369,10 +1398,20 @@ public final class DSSASN1Utils {
 	}
 	
 	/**
+	 * Returns a list of all CMS timestamp identifiers
+	 * 
+	 * @return a list of {@link ASN1ObjectIdentifier}s
+	 */
+	public static List<ASN1ObjectIdentifier> getTimestampOids() {
+		return timestampOids;
+	}
+
+	/**
 	 * Checks if the attribute is of an allowed archive timestamp type
 	 * 
 	 * @param attribute {@link Attribute} to check
-	 * @return true if the attribute represents an archive timestamp element, false otherwise
+	 * @return true if the attribute represents an archive timestamp element, false
+	 *         otherwise
 	 */
 	public static boolean isArchiveTimeStampToken(Attribute attribute) {
 		return isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2) || isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV3);

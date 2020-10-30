@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,6 +47,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -161,6 +163,38 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		}
 	}
 	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(3, timestampList.size());
+
+		String signatureTstId = null;
+		String aTstV2Id = null;
+		String aTstV3Id = null;
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			List<String> timestampedIds = timestampWrapper.getTimestampedTimestamps().stream()
+					.map(TimestampWrapper::getId).collect(Collectors.toList());
+
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				signatureTstId = timestampWrapper.getId();
+			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertTrue(timestampedIds.contains(signatureTstId));
+				if (ArchiveTimestampType.CAdES_V2.equals(timestampWrapper.getArchiveTimestampType())) {
+					aTstV2Id = timestampWrapper.getId();
+				} else if (ArchiveTimestampType.CAdES_V3.equals(timestampWrapper.getArchiveTimestampType())) {
+					assertTrue(timestampedIds.contains(aTstV2Id));
+					aTstV3Id = timestampWrapper.getId();
+				}
+			}
+		}
+
+		assertNotNull(signatureTstId);
+		assertNotNull(aTstV2Id);
+		assertNotNull(aTstV3Id);
+	}
+
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertEquals(getFinalSignatureLevel(), diagnosticData.getFirstSignatureFormat()); 
