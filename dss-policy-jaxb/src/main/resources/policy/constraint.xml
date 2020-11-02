@@ -232,6 +232,7 @@
 	<Revocation>
         <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
         <UnknownStatus Level="FAIL" />
+        <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
