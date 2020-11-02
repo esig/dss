@@ -124,9 +124,16 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 	protected Map<String, XmlOrphanCertificateToken> xmlOrphanCertificateTokensMap = new HashMap<>();
 	protected Map<String, XmlOrphanRevocationToken> xmlOrphanRevocationTokensMap = new HashMap<>();
 
-	// A map between references ids and their related token ids (used to map
-	// references for timestamped refs)
+	/**
+	 * A map between references ids and their related token ids (used to map
+	 * references for timestamped refs)
+	 */
 	protected Map<String, String> referenceMap = new HashMap<>();
+
+	/**
+	 * A map between certificate id Strings and the related CertificateTokens
+	 */
+	protected Map<String, CertificateToken> certificateIdsMap = new HashMap<>();
 
 	protected Map<String, CertificateToken> signingCertificateMap = new HashMap<>();
 
@@ -544,7 +551,10 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 	protected List<XmlChainItem> getXmlForCertificateChain(final Token token) {
 		if (token != null) {
 			final List<XmlChainItem> certChainTokens = new ArrayList<>();
-			Set<CertificateToken> processedTokens = new HashSet<>();
+
+			Set<Token> processedTokens = new HashSet<>();
+			processedTokens.add(token);
+
 			CertificateToken issuerToken = getIssuerCertificate(token);
 			while (issuerToken != null) {
 				certChainTokens.add(getXmlChainItem(issuerToken));
@@ -554,6 +564,7 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 				processedTokens.add(issuerToken);
 				issuerToken = getIssuerCertificate(issuerToken);
 			}
+
 			return certChainTokens;
 		}
 		return null;
@@ -567,7 +578,12 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 				certChainTokens.add(getXmlChainItem(certificateByPubKey));
 				List<XmlChainItem> certChain = getXmlForCertificateChain(certificateByPubKey);
 				if (Utils.isCollectionNotEmpty(certChain)) {
-					certChainTokens.addAll(certChain);
+					for (XmlChainItem chainItem : certChain) {
+						if (certificateByPubKey.getDSSIdAsString().equals(chainItem.getCertificate().getId())) {
+							break;
+						}
+						certChainTokens.add(chainItem);
+					}
 				}
 				return certChainTokens;
 			}
@@ -603,27 +619,31 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 
 	private CertificateToken getIssuerCertificate(final Token token) {
 		if (token != null && token.getPublicKeyOfTheSigner() != null) {
+
+			CertificateToken issuer = null;
 			if (token instanceof OCSPToken) {
-				CertificateToken issuer = getIssuerForOCSPToken((OCSPToken) token);
-				if (issuer != null) {
-					return issuer;
-				}
+				issuer = getIssuerForOCSPToken((OCSPToken) token);
 			}
 			if (token instanceof TimestampToken) {
-				CertificateToken issuer = getIssuerForTimestampToken((TimestampToken) token);
-				if (issuer != null) {
-					return issuer;
-				}
+				issuer = getIssuerForTimestampToken((TimestampToken) token);
 			}
-			List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), usedCertificates);
-			if (Utils.isCollectionNotEmpty(issuers)) {
-				for (CertificateToken cert : issuers) {
-					if (cert.isValidOn(token.getCreationDate())) {
-						return cert;
+
+			if (issuer != null) {
+				return issuer;
+
+			} else {
+				List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(),
+						usedCertificates);
+				if (Utils.isCollectionNotEmpty(issuers)) {
+					for (CertificateToken cert : issuers) {
+						if (cert.isValidOn(token.getCreationDate())) {
+							return cert;
+						}
 					}
+					return issuers.iterator().next();
 				}
-				return issuers.iterator().next();
 			}
+
 		}
 		return null;
 	}
@@ -660,6 +680,7 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 
 		if (publicKey != null) {
 			for (CertificateToken cert : candidates) {
+				cert = getProcessedCertificateToken(cert);
 				if (publicKey.equals(cert.getPublicKey())) {
 					founds.add(cert);
 					if (trustedCertSources.isTrusted(cert)) {
@@ -669,6 +690,15 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 			}
 		}
 		return founds;
+	}
+
+	private CertificateToken getProcessedCertificateToken(CertificateToken certificateToken) {
+		CertificateToken processedCertificateToken = certificateIdsMap.get(certificateToken.getDSSIdAsString());
+		if (processedCertificateToken == null) {
+			processedCertificateToken = certificateToken;
+			certificateIdsMap.put(certificateToken.getDSSIdAsString(), certificateToken);
+		}
+		return processedCertificateToken;
 	}
 
 	protected XmlSigningCertificate getXmlSigningCertificate(Identifier tokenIdentifier,

@@ -67,6 +67,7 @@ import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -265,7 +266,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
 					if (validatorOptions.hasNext()) {
 						for (SignaturePolicyValidator signaturePolicyValidator : loader) {
-							signaturePolicyValidator.setSignature(signature);
+							signaturePolicyValidator.setSignaturePolicy(signaturePolicy);
 							if (signaturePolicyValidator.canValidate()) {
 								validators.add(signaturePolicyValidator);
 							}
@@ -532,6 +533,38 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			if (signatureWrapper.getSigningCertificate() != null) {
 				assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getCertificateChain()));
+			}
+			checkCertificateChainComplete(signatureWrapper);
+		}
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			checkCertificateChainComplete(certificateWrapper);
+		}
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			checkCertificateChainComplete(revocationWrapper);
+		}
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			checkCertificateChainComplete(timestampWrapper);
+		}
+	}
+
+	private void checkCertificateChainComplete(TokenProxy tokenProxy) {
+		List<CertificateWrapper> certificateChain = tokenProxy.getCertificateChain();
+		CertificateWrapper signingCertificate = tokenProxy.getSigningCertificate();
+		if (signingCertificate == null) {
+			assertFalse(Utils.isCollectionNotEmpty(certificateChain));
+		} else {
+			assertTrue(Utils.isCollectionNotEmpty(certificateChain));
+
+			List<CertificateWrapper> signingCertificateChain = signingCertificate.getCertificateChain();
+			if (Utils.isCollectionNotEmpty(signingCertificateChain)) {
+				if (signingCertificate.getId().equals(signingCertificateChain.get(0).getId())) {
+					assertEquals(1, signingCertificateChain.size());
+				} else {
+					assertEquals(certificateChain.size(), signingCertificateChain.size() + 1);
+					for (int ii = 0; ii < signingCertificateChain.size(); ii++) {
+						assertEquals(certificateChain.get(ii + 1).getId(), signingCertificateChain.get(ii).getId());
+					}
+				}
 			}
 		}
 	}
