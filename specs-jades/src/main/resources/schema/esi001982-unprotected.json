@@ -12,6 +12,7 @@
 		"etsiU": {
 	    	"type": "array",
 	    	"items": {
+	    		"type": "object",
 	    		"properties": {
     				"sigPSt": {
     					"oneOf": [
