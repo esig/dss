@@ -282,6 +282,7 @@ public class CertificateDiagnosticDataBuilder implements DiagnosticDataBuilder {
 	private void linkSigningCertificateAndChains(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
+				certificateToken = getProcessedCertificateToken(certificateToken); // ensure the token is processed
 				XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
 				xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken));
 				xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken));
