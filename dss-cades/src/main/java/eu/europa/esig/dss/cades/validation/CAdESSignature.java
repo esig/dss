@@ -370,7 +370,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		try {
 			signerLocation = SignerLocation.getInstance(asn1Encodable);
 		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
+			String errorMessage = "Unable to build a SignerLocation instance. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 		}
 		if (signerLocation == null) {
 			return null;
@@ -391,8 +396,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final ASN1Sequence seq = signerLocation.getPostalAddress();
 		if (seq != null) {
 			for (int ii = 0; ii < seq.size(); ii++) {
-				DirectoryString directoryString = DirectoryString.getInstance(seq.getObjectAt(ii));
-				String postalAddress = directoryString.getString();
+				String postalAddress = DSSASN1Utils.getDirectoryStringValue(seq.getObjectAt(ii));
 				if (Utils.isStringNotEmpty(postalAddress)) {
 					signatureProductionPlace.getPostalAddress().add(postalAddress);
 				}
