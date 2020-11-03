@@ -510,7 +510,9 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
-			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && isNotInvalidManifest(validator) && signsDocuments(diagnosticData)) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
+			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && isNotInvalidManifest(validator)
+					&& signsDocuments(diagnosticData) && !signatureWrapper.isCounterSignature()) {
 				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
 			}
