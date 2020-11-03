@@ -23,6 +23,9 @@ package eu.europa.esig.dss.pades.extension.suite;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.event.Level;
+
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -52,6 +55,7 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
+		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
 
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(TSA_CA_URL, Utils.fromBase64(TSA_CA));
