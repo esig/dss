@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Wed, 24 Jun 2020 13:48:32 GMT
+Date: Wed, 04 Nov 2020 15:02:06 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -13,12 +13,12 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 6716
+Content-Length: 6826
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-06-24T13:48:32",
+    "ValidationDate" : "2020-11-04T15:02:06",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -131,7 +131,7 @@ Content-Length: 6716
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-06-24T13:48:32"
+    "ValidationTime" : "2020-11-04T15:02:06"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {
@@ -162,7 +162,8 @@ Content-Length: 6716
           } ],
           "Infos" : null
         },
-        "Title" : "Certificate Qualification"
+        "Title" : "Certificate Qualification",
+        "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C"
       }
     } ],
     "BasicBuildingBlocks" : [ {
@@ -218,6 +219,7 @@ Content-Length: 6716
       "Type" : "CERTIFICATE"
     } ],
     "TLAnalysis" : [ ],
+    "Semantic" : null,
     "ValidationTime" : null
   }
 }

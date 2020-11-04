@@ -414,9 +414,9 @@ dss-common-remote-converter:: Classes which convert the DTO to DSS Objects.
 dss-signature-dto:: Data Transfer Objects used for signature creation/extension (REST and SOAP).
 dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
 dss-signature-rest-client:: Client for the REST webservices.
-dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods), counter-sign and extend a signature.
 dss-signature-soap-client:: Client for the SOAP webservices.
-dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods), counter-sign and extend a signature.
 
 '''
 dss-server-signing-dto:: Data Transfer Objects used for the server signing module (REST and SOAP).
@@ -2136,7 +2136,7 @@ DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI p
 
 The different webservices are : 
 
- * Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing or extending a signature from a client.
+ * Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing and extending or counter-signing a signature from a client.
  * Server-signing webservice (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
  * Signature validation webservices (`dss-validation-soap` / `dss-validation-rest`) and their clients : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
  * Certificate validation webservices (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
@@ -2200,6 +2200,30 @@ include::_restdocs/timestamp-one-document/1/http-request.adoc[]
 
 .Response
 include::_restdocs/timestamp-one-document/1/http-response.adoc[]
+
+==== Get data to be counter signed
+
+This method returns the data to be signed in order to create a counter signature. The user should provide a document containing a signature to be counter signed, id of the signature, and other parameters similarly to the method 'getDataToSign()'.
+
+WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
+
+.Request
+include::_restdocs/counter-sign-signature/1/http-request.adoc[]
+
+.Response
+include::_restdocs/counter-sign-signature/1/http-response.adoc[]
+
+==== Counter Sign Signature
+
+This method incorporates a created counter signature to unsigned properties of the master signature with this specified id.
+
+WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
+
+.Request
+include::_restdocs/counter-sign-signature/2/http-request.adoc[]
+
+.Response
+include::_restdocs/counter-sign-signature/2/http-response.adoc[]
 
 === REST server signature service
 

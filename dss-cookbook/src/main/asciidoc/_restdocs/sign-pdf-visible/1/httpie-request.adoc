@@ -10,6 +10,8 @@ $ echo '{
     "asicContainerType" : null,
     "signatureLevel" : "PAdES_BASELINE_B",
     "signaturePackaging" : null,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : "RSA",
@@ -38,10 +40,16 @@ $ echo '{
       "alignmentVertical" : null,
       "backgroundColor" : null,
       "dpi" : null,
-      "height" : 50,
       "image" : null,
-      "page" : 1,
       "rotation" : null,
+      "fieldParameters" : {
+        "fieldId" : null,
+        "originX" : 200.0,
+        "originY" : 100.0,
+        "width" : 130.0,
+        "height" : 50.0,
+        "page" : 1
+      },
       "textParameters" : {
         "backgroundColor" : {
           "red" : 255,
@@ -63,14 +71,12 @@ $ echo '{
           "alpha" : 255
         }
       },
-      "width" : 130,
-      "xAxis" : 200.0,
-      "yAxis" : 100.0,
       "zoom" : null
     },
+    "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1593006508632,
+      "signingDate" : 1604502116501,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

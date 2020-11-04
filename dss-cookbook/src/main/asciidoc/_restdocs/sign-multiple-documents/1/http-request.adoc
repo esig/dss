@@ -4,7 +4,7 @@ POST /services/rest/signature/multiple-documents/getDataToSignMultiple HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 3063
+Content-Length: 3168
 
 {
   "parameters" : {
@@ -16,6 +16,8 @@ Content-Length: 3063
     "asicContainerType" : "ASiC_E",
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : null,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : "RSA",
@@ -40,9 +42,10 @@ Content-Length: 3063
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
+    "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1593006510964,
+      "signingDate" : 1604502121165,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

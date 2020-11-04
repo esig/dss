@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-06-24T13:48:32",
+    "ValidationDate" : "2020-11-04T15:02:06",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -116,7 +116,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-06-24T13:48:32"
+    "ValidationTime" : "2020-11-04T15:02:06"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {
@@ -147,7 +147,8 @@
           } ],
           "Infos" : null
         },
-        "Title" : "Certificate Qualification"
+        "Title" : "Certificate Qualification",
+        "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C"
       }
     } ],
     "BasicBuildingBlocks" : [ {
@@ -203,6 +204,7 @@
       "Type" : "CERTIFICATE"
     } ],
     "TLAnalysis" : [ ],
+    "Semantic" : null,
     "ValidationTime" : null
   }
 }
