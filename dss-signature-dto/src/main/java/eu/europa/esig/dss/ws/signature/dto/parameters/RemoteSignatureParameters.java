@@ -139,6 +139,12 @@ public class RemoteSignatureParameters implements Serializable {
 	 * PAdES: The image information to be included.
 	 */
 	private RemoteSignatureImageParameters imageParameters;
+	
+	/**
+	 * This variable defines an Id of a signature to be counter-signed
+	 * Used only for {@code getDataToBeCounterSigned()} and {@code counterSignSignature()} methods
+	 */
+	private String signatureIdToCounterSign;
 
 	public RemoteSignatureParameters() {
 	}
@@ -484,7 +490,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * @return {@link RemoteSignatureImageParameters} the image information to be included.
 	 */
 	public RemoteSignatureImageParameters getImageParameters() {
-		return this.imageParameters;
+		return imageParameters;
 	}
 
 	/**
@@ -494,6 +500,24 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public void setImageParameters(final RemoteSignatureImageParameters imageParameters) {
 		this.imageParameters = imageParameters;
+	}
+
+	/**
+	 * Returns a signature Id being counter signed
+	 * 
+	 * @return {@link String} signature Id to counter sign
+	 */
+	public String getSignatureIdToCounterSign() {
+		return signatureIdToCounterSign;
+	}
+
+	/**
+	 * Sets the signature Id to counter sign
+	 * 
+	 * @param signatureIdToCounterSign {@link String} signature id to counter sign
+	 */
+	public void setSignatureIdToCounterSign(String signatureIdToCounterSign) {
+		this.signatureIdToCounterSign = signatureIdToCounterSign;
 	}
 
 	@Override
@@ -544,49 +568,25 @@ public class RemoteSignatureParameters implements Serializable {
 			return false;
 		}
 		RemoteSignatureParameters other = (RemoteSignatureParameters) obj;
-		if (archiveTimestampParameters == null) {
-			if (other.archiveTimestampParameters != null) {
-				return false;
-			}
-		} else if (!archiveTimestampParameters.equals(other.archiveTimestampParameters)) {
+		if (!Objects.equals(archiveTimestampParameters, other.archiveTimestampParameters)) {
 			return false;
 		}
 		if (asicContainerType != other.asicContainerType) {
 			return false;
 		}
-		if (bLevelParams == null) {
-			if (other.bLevelParams != null) {
-				return false;
-			}
-		} else if (!bLevelParams.equals(other.bLevelParams)) {
+		if (!Objects.equals(bLevelParams, other.bLevelParams)) {
 			return false;
 		}
-		if (certificateChain == null) {
-			if (other.certificateChain != null) {
-				return false;
-			}
-		} else if (!certificateChain.equals(other.certificateChain)) {
+		if (!Objects.equals(certificateChain, other.certificateChain)) {
 			return false;
 		}
-		if (contentTimestampParameters == null) {
-			if (other.contentTimestampParameters != null) {
-				return false;
-			}
-		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
+		if (!Objects.equals(contentTimestampParameters, other.contentTimestampParameters)) {
 			return false;
 		}
-		if (contentTimestamps == null) {
-			if (other.contentTimestamps != null) {
-				return false;
-			}
-		} else if (!contentTimestamps.equals(other.contentTimestamps)) {
+		if (!Objects.equals(contentTimestamps, other.contentTimestamps)) {
 			return false;
 		}
-		if (detachedContents == null) {
-			if (other.detachedContents != null) {
-				return false;
-			}
-		} else if (!detachedContents.equals(other.detachedContents)) {
+		if (!Objects.equals(detachedContents, other.detachedContents)) {
 			return false;
 		}
 		if (digestAlgorithm != other.digestAlgorithm) {
@@ -598,11 +598,7 @@ public class RemoteSignatureParameters implements Serializable {
 		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
 			return false;
 		}
-		if (imageParameters == null) {
-			if (other.imageParameters != null) {
-				return false;
-			}
-		} else if (!imageParameters.equals(other.imageParameters)) {
+		if (!Objects.equals(imageParameters, other.imageParameters)) {
 			return false;
 		}
 		if (jwsSerializationType != other.jwsSerializationType) {
@@ -626,18 +622,10 @@ public class RemoteSignatureParameters implements Serializable {
 		if (signaturePackaging != other.signaturePackaging) {
 			return false;
 		}
-		if (signatureTimestampParameters == null) {
-			if (other.signatureTimestampParameters != null) {
-				return false;
-			}
-		} else if (!signatureTimestampParameters.equals(other.signatureTimestampParameters)) {
+		if (!Objects.equals(signatureTimestampParameters, other.signatureTimestampParameters)) {
 			return false;
 		}
-		if (signingCertificate == null) {
-			if (other.signingCertificate != null) {
-				return false;
-			}
-		} else if (!signingCertificate.equals(other.signingCertificate)) {
+		if (!Objects.equals(signingCertificate, other.signingCertificate)) {
 			return false;
 		}
 		return true;

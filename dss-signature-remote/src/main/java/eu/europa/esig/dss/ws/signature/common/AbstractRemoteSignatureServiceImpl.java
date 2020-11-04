@@ -30,18 +30,20 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.signature.JAdESCounterSignatureParameters;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -68,6 +70,7 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
 public abstract class AbstractRemoteSignatureServiceImpl {
 
@@ -129,8 +132,13 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return padesParams;
 	}
 	
-	protected SerializableSignatureParameters getJAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
-		JAdESSignatureParameters jadesParameters = new JAdESSignatureParameters();
+	/*
+	 * Return {@code SerializableCounterSignatureParameters} in order to support
+	 * counter signature
+	 */
+	protected SerializableCounterSignatureParameters getJAdESSignatureParameters(
+			RemoteSignatureParameters remoteParameters) {
+		JAdESCounterSignatureParameters jadesParameters = new JAdESCounterSignatureParameters();
 		if (remoteParameters.getJwsSerializationType() != null) {
 			jadesParameters.setJwsSerializationType(remoteParameters.getJwsSerializationType());
 		}
@@ -342,7 +350,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return fieldParameters;
 	}
 
-	private SignatureImageTextParameters toTextParameters(final RemoteSignatureImageTextParameters remoteTextParameters){
+	private SignatureImageTextParameters toTextParameters(final RemoteSignatureImageTextParameters remoteTextParameters) {
 		if (remoteTextParameters == null) {
 			return null;
 		}
@@ -387,6 +395,37 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return textParameters;
 	}
 
+	protected SerializableCounterSignatureParameters createCounterSignatureParameters(RemoteSignatureParameters remoteParameters) {
+		SerializableCounterSignatureParameters parameters;
+
+		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();
+		switch (signatureForm) {
+			case XAdES:
+				parameters = new XAdESCounterSignatureParameters();
+				break;
+			case CAdES:
+				parameters = new CAdESCounterSignatureParameters();
+				break;
+			case JAdES:
+				parameters = getJAdESSignatureParameters(remoteParameters);
+				break;
+			default:
+				throw new DSSException("Unsupported signature form for counter singature : " + signatureForm);
+		}
+		
+		fillCounterSignatureParameters(parameters, remoteParameters);
+		return parameters;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void fillCounterSignatureParameters(SerializableCounterSignatureParameters parameters,
+			RemoteSignatureParameters remoteParameters) {
+		parameters.setSignatureIdToCounterSign(remoteParameters.getSignatureIdToCounterSign());
+		if (parameters instanceof AbstractSignatureParameters<?>) {
+			AbstractSignatureParameters<TimestampParameters> abstractSignatureParameters = (AbstractSignatureParameters<TimestampParameters>) parameters;
+			fillParameters(abstractSignatureParameters, remoteParameters);
+		}
+	}
 
 
 }

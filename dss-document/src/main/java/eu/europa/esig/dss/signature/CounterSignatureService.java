@@ -33,9 +33,9 @@ public interface CounterSignatureService<CSP extends SerializableCounterSignatur
 	 * @param parameters
 	 *            set of the driving signing parameters for a counter signature
 	 * @param signatureValue
-	 *            the signature value to incorporate
+	 *            {@link SignatureValue} the signature value to incorporate
 	 * @return {@link DSSDocument} the signature document enveloping a newly created counter signature
 	 */
-	DSSDocument counterSignSignature(final DSSDocument signatureDocument, final CSP parameters, SignatureValue signatureValue);
+	DSSDocument counterSignSignature(final DSSDocument signatureDocument, final CSP parameters, final SignatureValue signatureValue);
 
 }

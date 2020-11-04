@@ -28,6 +28,8 @@ import javax.jws.WebService;
 
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.signature.dto.CounterSignSignatureDTO;
+import eu.europa.esig.dss.ws.signature.dto.DataToBeCounterSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignOneDocumentDTO;
@@ -49,43 +51,71 @@ public interface SoapDocumentSignatureService extends Serializable {
 	/**
 	 * This method computes the digest to be signed
 	 *
-	 * @param dataToSign
-	 *            a DTO which contains the document to sign and parameters
-	 * @return the data to be signed
+	 * @param dataToSign {@link DataToSignOneDocumentDTO }a DTO which contains the
+	 *                   document to sign and parameters
+	 * @return {@link ToBeSignedDTO} the data to be signed
 	 */
 	@WebResult(name = "response")
 	ToBeSignedDTO getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignOneDocumentDTO dataToSign);
 
 	/**
-	 * This web service operation signs a document according to a previously signed digest, a level of signature, some
-	 * signature properties and keyInfo.
+	 * This web service operation signs a document according to a previously signed
+	 * digest, a level of signature, some signature properties and keyInfo.
 	 *
-	 * @param signDocument
-	 *            a DTO which contains the document to be signed, the parameters and the signature value
-	 * @return the signed document
+	 * @param signDocument {@link SignOneDocumentDTO} a DTO which contains the
+	 *                     document to be signed, the parameters and the signature
+	 *                     value
+	 * @return {@link RemoteDocument} the signed document
 	 */
 	@WebResult(name = "response")
 	RemoteDocument signDocument(@WebParam(name = "signDocumentDTO") SignOneDocumentDTO signDocument);
 
 	/**
-	 * This web service operation extends the signature of a given document to the level of the signature provided. The
-	 * document is only changed, if the given signature level is 'higher' than the signature level of the document.
+	 * This web service operation extends the signature of a given document to the
+	 * level of the signature provided. The document is only changed, if the given
+	 * signature level is 'higher' than the signature level of the document.
 	 *
-	 * @param extendDocument
-	 *            a DTO which contains the document to be extented and the parameters
-	 * @return the document with an extended signature
+	 * @param extendDocument {@link ExtendDocumentDTO} a DTO which contains the
+	 *                       document to be extented and the parameters
+	 * @return {@link RemoteDocument} the document with an extended signature
 	 */
 	@WebResult(name = "response")
 	RemoteDocument extendDocument(@WebParam(name = "extendDocumentDTO") ExtendDocumentDTO extendDocument);
 
 	/**
-	 * This web service operation timestamps a document according to the provided timestamp parameters.
+	 * This web service operation timestamps a document according to the provided
+	 * timestamp parameters.
 	 *
-	 * @param timestampDocument
-	 *            a DTO which contains the document to be timestamped and timestamp parameters
-	 * @return a timestamped document
+	 * @param timestampDocument {@link TimestampOneDocumentDTO} a DTO which contains
+	 *                          the document to be timestamped and timestamp
+	 *                          parameters
+	 * @return {@link RemoteDocument} a timestamped document
 	 */
 	@WebResult(name = "response")
 	RemoteDocument timestampDocument(@WebParam(name = "timestampDocumentDTO") TimestampOneDocumentDTO timestampDocument);
+
+	/**
+	 * Retrieves the data to be signed for counter signature creation
+	 * 
+	 * @param dataToBeCounterSigned {@link DataToBeCounterSignedDTO} a DTO with the
+	 *                          required information (signatureDocument, parameters)
+	 *                          to get data to be counter signed
+	 * @return {@link DataToBeCounterSignedDTO} the data to be counter signed
+	 */
+	@WebResult(name = "response")
+	ToBeSignedDTO getDataToBeCounterSigned(@WebParam(name = "dataToBeCounterSigned") DataToBeCounterSignedDTO dataToBeCounterSigned);
+
+	/**
+	 * Counter signs the defined signature
+	 * 
+	 * @param counterSignSignature {@link CounterSignSignatureDTO} a DTO with the
+	 *                             required information (dataToBeCounterSigned,
+	 *                             parameters, signatureValue) to counter sign a
+	 *                             signature
+	 * @return {@link RemoteDocument} representing a signatureDocument containing
+	 *         the created counter signature
+	 */
+	@WebResult(name = "response")
+	RemoteDocument counterSignSignature(@WebParam(name = "counterSignSignature") CounterSignSignatureDTO counterSignSignature);
 
 }

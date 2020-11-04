@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.ws.signature.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
@@ -55,6 +56,36 @@ public abstract class AbstractSignDocumentDTO implements Serializable {
 
 	public void setSignatureValue(SignatureValueDTO signatureValue) {
 		this.signatureValue = signatureValue;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((signatureValue == null) ? 0 : signatureValue.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AbstractSignDocumentDTO other = (AbstractSignDocumentDTO) obj;
+		if (!Objects.equals(parameters, other.parameters)) {
+			return false;
+		}
+		if (!Objects.equals(signatureValue, other.signatureValue)) {
+			return false;
+		}
+		return true;
 	}
 
 }

@@ -108,5 +108,31 @@ public interface RemoteDocumentSignatureService extends Serializable {
 	 *             if an error occurred
 	 */
 	RemoteDocument timestamp(final RemoteDocument toTimestampDocument, final RemoteTimestampParameters parameters) throws DSSException;
+	
+	/**
+	 * Retrieves the bytes of the data that need to be counter signed from {@code signatureDocument}.
+	 * {@code signatureDocument} shall be a valid signature of the same type
+	 * 
+	 * @param signatureDocument 
+	 *           {@link RemoteDocument} representing the original signature to be counter signed
+	 * @param parameters
+	 *            {@link RemoteSignatureParameters} set of the driving signing parameters for a counter signature
+	 * @return {@link ToBeSignedDTO} to be counter signed byte array (signature value retrieved from the {@code signatureDocument})
+	 */
+	ToBeSignedDTO getDataToBeCounterSigned(final RemoteDocument signatureDocument, final RemoteSignatureParameters parameters);
+
+	/**
+	 * Counter signs the {@code signatureDocument} with the provided signatureValue.
+	 *
+	 * @param signatureDocument
+	 *            {@link RemoteDocument} to be counter signed
+	 * @param parameters
+	 *            {@link RemoteSignatureParameters} set of the driving signing parameters for a counter signature
+	 * @param signatureValue
+	 *            {@link SignatureValueDTO} the signature value to incorporate
+	 * @return {@link RemoteDocument} the signature document enveloping a newly created counter signature
+	 */
+	RemoteDocument counterSignSignature(final RemoteDocument signatureDocument,
+			final RemoteSignatureParameters parameters, final SignatureValueDTO signatureValue);
 
 }

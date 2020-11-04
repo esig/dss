@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
@@ -53,8 +54,11 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.ColorConverter;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
@@ -376,6 +380,107 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		
 		assertEquals(0, diagnosticData.getSignatures().size());
 		assertEquals(1, diagnosticData.getTimestampList().size());
+	}
+
+	@Test
+	public void testCounterSignature() throws Exception {
+		DSSDocument fileToCounterSign = new FileDocument(new File("src/test/resources/xades-signed.xml"));
+		RemoteDocument signatureDocument = new RemoteDocument(Utils.toByteArray(fileToCounterSign.openStream()),
+				fileToCounterSign.getName());
+
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		parameters.setSignatureIdToCounterSign("id-910825ec07149183c174c83fce12ac93");
+
+		ToBeSignedDTO dataToBeCounterSigned = signatureService.getDataToBeCounterSigned(signatureDocument, parameters);
+		assertNotNull(dataToBeCounterSigned);
+
+		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToBeCounterSigned),
+				DigestAlgorithm.SHA256, getPrivateKeyEntry());
+		RemoteDocument counterSignedDocument = signatureService.counterSignSignature(signatureDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+
+		assertNotNull(counterSignedDocument);
+
+		DSSDocument dssDocument = new InMemoryDocument(counterSignedDocument.getBytes());
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports reports = validator.validateDocument();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(1, diagnosticData.getAllSignatures().size());
+		assertEquals(1, diagnosticData.getAllCounterSignatures().size());
+
+		String counterSignatureId = diagnosticData.getAllCounterSignatures().iterator().next().getId();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(counterSignatureId));
+	}
+
+	@Test
+	public void testSignAndCounterSignDetached() throws Exception {
+		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileToSign),
+				DigestAlgorithm.SHA256, fileToSign.getName());
+
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocument, parameters);
+		assertNotNull(dataToSign);
+
+		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256,
+				getPrivateKeyEntry());
+		RemoteDocument signedDocument = signatureService.signDocument(toSignDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+
+		DiagnosticData diagnosticData = validate(new InMemoryDocument(signedDocument.getBytes()),
+				Arrays.asList(fileToSign));
+		assertEquals(1, diagnosticData.getAllSignatures().size());
+		assertEquals(0, diagnosticData.getAllCounterSignatures().size());
+
+		parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		parameters.setSignatureIdToCounterSign(diagnosticData.getFirstSignatureId());
+		parameters.setDetachedContents(Arrays.asList(toSignDocument));
+
+		ToBeSignedDTO dataToBeCounterSigned = signatureService.getDataToBeCounterSigned(signedDocument, parameters);
+		assertNotNull(dataToBeCounterSigned);
+
+		signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToBeCounterSigned), DigestAlgorithm.SHA256,
+				getPrivateKeyEntry());
+		RemoteDocument counterSignedDocument = signatureService.counterSignSignature(signedDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+
+		assertNotNull(counterSignedDocument);
+
+		diagnosticData = validate(new InMemoryDocument(counterSignedDocument.getBytes()), Arrays.asList(fileToSign));
+		assertEquals(1, diagnosticData.getAllSignatures().size());
+		assertEquals(1, diagnosticData.getAllCounterSignatures().size());
+	}
+
+	@Test
+	public void testPAdESCounterSign() throws Exception {
+		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
+		RemoteDocument toCounterSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()),
+				fileToSign.getName());
+
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		Exception exception = assertThrows(DSSException.class,
+				() -> signatureService.getDataToBeCounterSigned(toCounterSignDocument, parameters));
+		assertEquals("Unsupported signature form for counter singature : PAdES", exception.getMessage());
 	}
 
 }
