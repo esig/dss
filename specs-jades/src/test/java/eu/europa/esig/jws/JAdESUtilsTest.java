@@ -70,7 +70,6 @@ public class JAdESUtilsTest {
 		
 		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
 		assertTrue(errors.contains("x509Cert"));
-		assertTrue(errors.contains("kid"));
 	}
 
 }

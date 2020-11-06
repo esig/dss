@@ -2,8 +2,6 @@ package eu.europa.esig.jws;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,15 +16,100 @@ public abstract class AbstractJWSUtils {
 
 	private static final String EMPTY_STRING = "";
 	
-	private static final String JWS_SCHEMA_LOCATION = "/schema/rfc7515-jws.json";
+	/**
+	 * JSON Schema for a root JWS element validation
+	 */
+	private Schema jwsSchema;
 	
-	protected abstract JSONObject getJWSProtectedHeaderSchema();
+	/**
+	 * JSON Schema for a JWS Protected Header validation
+	 */
+	private Schema jwsProtectedHeaderSchema;
 	
-	protected abstract Map<URI, JSONObject> getJWSProtectedHeaderDefinitions();
+	/**
+	 * JSON Schema for a JWS Unprotected Header validation
+	 */
+	private Schema jwsUnprotectedHeaderSchema;
 	
-	protected abstract JSONObject getJWSUnprotectedHeaderSchema();
+	/**
+	 * Returns a JWS Schema for a root signature element validation
+	 * 
+	 * @return {@link Schema} for JWS root validation
+	 */
+	public Schema getJWSSchema() {
+		if (jwsSchema == null) {
+			jwsSchema = loadSchema(getJWSSchemaJSON(), getJWSSchemaDefinitions());
+		}
+		return jwsSchema;
+	}
 	
-	protected abstract Map<URI, JSONObject> getJWSUnprotectedHeaderDefinitions();
+	/**
+	 * Returns a JWS Protected Header Schema
+	 * 
+	 * @return {@link Schema} for JWS Protected Header validation
+	 */
+	public Schema getJWSProtectedHeaderSchema() {
+		if (jwsProtectedHeaderSchema == null) {
+			jwsProtectedHeaderSchema = loadSchema(getJWSProtectedHeaderSchemaJSON(),
+					getJWSProtectedHeaderSchemaDefinitions());
+		}
+		return jwsProtectedHeaderSchema;
+	}
+
+	/**
+	 * Returns a JWS Protected Header Schema
+	 * 
+	 * @return {@link Schema} for JWS Protected Header validation
+	 */
+	public Schema getJWSUnprotectedHeaderSchema() {
+		if (jwsUnprotectedHeaderSchema == null) {
+			jwsUnprotectedHeaderSchema = loadSchema(getJWSUnprotectedHeaderSchemaJSON(),
+					getJWSUnprotectedHeaderSchemaDefinitions());
+		}
+		return jwsUnprotectedHeaderSchema;
+	}
+
+	/**
+	 * Returns a JSON schema for a root JWS element validation
+	 * 
+	 * @return {@link JSONObject}
+	 */
+	public abstract JSONObject getJWSSchemaJSON();
+	
+	/**
+	 * Returns a map of definition objects used for JWS validation
+	 * 
+	 * @return JWS schema definitions map
+	 */
+	public abstract Map<URI, JSONObject> getJWSSchemaDefinitions();
+
+	/**
+	 * Loads JSON schema for a JSON Protected Header validation
+	 * 
+	 * @return {@link JSONObject}
+	 */
+	public abstract JSONObject getJWSProtectedHeaderSchemaJSON();
+	
+	/**
+	 * Returns a map of definition objects used for JWS Protected Header validation
+	 * 
+	 * @return JWS Protected Header schema definitions map
+	 */
+	public abstract Map<URI, JSONObject> getJWSProtectedHeaderSchemaDefinitions();
+
+	/**
+	 * Loads JSON schema for a JSON Unprotected Header validation
+	 * 
+	 * @return {@link JSONObject}
+	 */
+	public abstract JSONObject getJWSUnprotectedHeaderSchemaJSON();
+	
+	/**
+	 * Returns a map of definition objects used for JWS Unprotected Header validation
+	 * 
+	 * @return JWS Unprotected Header schema definitions map
+	 */
+	public abstract Map<URI, JSONObject> getJWSUnprotectedHeaderSchemaDefinitions();
 
 	/**
 	 * Validates a JSON against JWS Schema according to RFC 7515
@@ -57,18 +140,8 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link String} a message containing errors occurred during the validation process, 
 	 * 			empty string ("") when validation succeeds
 	 */
-	protected String validateAgainstJWSSchema(JSONObject json) {
-		JSONObject jwsSchema = getJWSSchema();
-		return validateAgainstSchema(json, jwsSchema, Collections.emptyMap());
-	}
-	
-	/**
-	 * Returns JWS schema
-	 * 
-	 * @return {@link JSONObject}
-	 */
-	protected JSONObject getJWSSchema() {
-		return parseJson(AbstractJWSUtils.class.getResourceAsStream(JWS_SCHEMA_LOCATION));
+	public String validateAgainstJWSSchema(JSONObject json) {
+		return validateAgainstSchema(json, getJWSSchema());
 	}
 	
 	/**
@@ -100,10 +173,8 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link String} a message containing errors occurred during the validation process, 
 	 * 			empty string ("") when validation succeeds
 	 */
-	protected String validateAgainstJWSProtectedHeaderSchema(JSONObject json) {
-		JSONObject jwsProtectedSchema = getJWSProtectedHeaderSchema();
-		Map<URI, JSONObject> jwsProtectedDefinitions = getJWSProtectedHeaderDefinitions();
-		return validateAgainstSchema(json, jwsProtectedSchema, jwsProtectedDefinitions);
+	public String validateAgainstJWSProtectedHeaderSchema(JSONObject json) {
+		return validateAgainstSchema(json, getJWSProtectedHeaderSchema());
 	}
 
 	/**
@@ -135,25 +206,21 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link String} a message containing errors occurred during the validation process, 
 	 * 			empty string ("") when validation succeeds
 	 */
-	protected String validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
-		JSONObject jwsUnprotectedSchema = getJWSUnprotectedHeaderSchema();
-		Map<URI, JSONObject> jwsUnprotectedDefinitions = getJWSUnprotectedHeaderDefinitions();
-		return validateAgainstSchema(json, jwsUnprotectedSchema, jwsUnprotectedDefinitions);
+	public String validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
+		return validateAgainstSchema(json, getJWSUnprotectedHeaderSchema());
 	}
 	
 	/**
 	 * Validates a {@code json} against the provided JSON {@code schema}
 	 * 
-	 * @param json {@link JSONObject} to be validated against a schema
-	 * @param schema {@link JSONObject} schema to validate against
-	 * @param definitions a map of definitions required for the {@code schema}
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @param json   {@link JSONObject} to be validated against a schema
+	 * @param schema {@link Schema} schema to validate against
+	 * @return {@link String} a message containing errors occurred during the
+	 *         validation process, empty string ("") when validation succeeds
 	 */
-	public String validateAgainstSchema(JSONObject json, JSONObject schema, Map<URI, JSONObject> definitions) {
+	public String validateAgainstSchema(JSONObject json, Schema schema) {
 		try {
-			Schema jwsProtectedSchema = loadSchema(schema, definitions);
-			jwsProtectedSchema.validate(json);
+			schema.validate(json);
 			
 		} catch (ValidationException e) {
 			List<String> allMessages = e.getAllMessages();
@@ -168,23 +235,40 @@ public abstract class AbstractJWSUtils {
 		return EMPTY_STRING;
 	}
 
-	protected JSONObject parseJson(String json) {
+	/**
+	 * Parses the JSON string and returns a {@code JSONObject}
+	 * 
+	 * @param json {@link String} to parse
+	 * @return {@link JSONObject}
+	 */
+	public JSONObject parseJson(String json) {
 		return new JSONObject(new JSONTokener(json));
 	}
-	
-	protected JSONObject parseJson(InputStream inputStream) {
+
+	/**
+	 * Parses the JSON InputStream and returns a {@code JSONObject}
+	 * 
+	 * @param inputStream {@link InputStream} to parse
+	 * @return {@link JSONObject}
+	 */
+	public JSONObject parseJson(InputStream inputStream) {
 		return new JSONObject(new JSONTokener(inputStream));
 	}
 	
-	protected Schema loadSchema(JSONObject schemaJSON, Map<URI, JSONObject> definitions) throws URISyntaxException {
+	/**
+	 * Loads schema with the given list of definitions (references)
+	 * 
+	 * @param schemaJSON  {@link JSONObject} the schema object
+	 * @param definitions a map containing definitions and their reference names
+	 * @return {@link Schema}
+	 */
+	public Schema loadSchema(JSONObject schemaJSON, Map<URI, JSONObject> definitions) {
 		SchemaLoaderBuilder builder = SchemaLoader.builder()
 				.schemaJson(schemaJSON)
 				.draftV7Support();
 		
-		if (definitions != null) {
-			for (Map.Entry<URI, JSONObject> definition : definitions.entrySet()) {
-				builder.registerSchemaByURI(definition.getKey(), definition.getValue());
-			}
+		for (Map.Entry<URI, JSONObject> definition : definitions.entrySet()) {
+			builder.registerSchemaByURI(definition.getKey(), definition.getValue());
 		}
 		
 		SchemaLoader loader = builder.build();

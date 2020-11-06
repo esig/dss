@@ -221,11 +221,6 @@
 			"required": ["mId"]
 		},
 
-		"etsiU": {
-			"type": "array",
-			"minItems": 1
-		},
-
 		"sigPSt": {
 			"allOf": [
 				{
@@ -417,7 +412,102 @@
 
 		"rfsTst": {"$ref": "#/definitions/tstContainer"},
 		
-		"sigRTst": {"$ref": "#/definitions/tstContainer"}
+		"sigRTst": {"$ref": "#/definitions/tstContainer"},
+
+		"etsiU": {
+            "type": "array",
+            "oneOf" : [
+                {
+                	"items" : { "$ref": "#/definitions/etsiUClearInstances"} 
+                },
+                {	
+                	"items" : { "type": "string", "contentEncoding" : "base64" }
+                }
+            ],
+			"minItems": 1
+    	},
+    	
+    	"etsiUClearInstances": {
+    		"type" : "object",
+            "properties": {
+                "sigPSt" : { "$ref": "#/definitions/sigPSt" },
+                "sigTst" : { "$ref": "#/definitions/sigTst" },
+                "xVals" : { "$ref": "#/definitions/xVals" },
+                "rVals" : { "$ref": "#/definitions/rVals" },
+                "axVals" : { "$ref": "#/definitions/axVals" },
+                "arVals" : { "$ref": "#/definitions/arVals" },
+                "tstVD" : { "$ref": "#/definitions/tstVD" },
+                "arcTst" : { "$ref": "#/definitions/arcTst" },
+                "xRefs" : { "$ref": "#/definitions/xRefs" },
+                "rRefs" : { "$ref": "#/definitions/rRefs" },
+                "axRefs" : { "$ref": "#/definitions/axRefs" },
+                "arRefs" : { "$ref": "#/definitions/arRefs" },
+                "sigRTst" : { "$ref": "#/definitions/sigRTst" },
+                "rfsTst" : { "$ref": "#/definitions/rfsTst" },
+                "cSig" : { "$ref": "rfc7515.json#/definitions/jws" }
+            },
+            "minProperties" : 1,
+            "maxProperties" : 1
+    	},
+		
+		"jwsProtectedHeader": {
+			"allOf": [
+				{ 
+					"$ref": "rfc7515.json#/definitions/jwsProtectedHeader"
+				},
+				{
+					"properties": {
+						"b64": {
+					    	"type": "boolean"
+					    },
+					    "sigT": { "$ref": "#/definitions/sigT" },
+					    "x5t#o": { "$ref": "#/definitions/x5t%23o" },
+					    "sigX5ts": { "$ref": "#/definitions/sigX5ts" },
+					    "srCms": { "$ref": "#/definitions/srCms" },
+					    "sigPl": { "$ref": "#/definitions/sigPl" },
+					    "srAts": { "$ref": "#/definitions/srAts" },
+					    "adoTst": { "$ref": "#/definitions/adoTst" },
+					    "sigPId": { "$ref": "#/definitions/sigPId" },
+					    "sigD": { "$ref": "#/definitions/sigD" }
+					},
+					"required": [ "alg" ],
+					"anyOf": [
+						{
+						    "required": [
+							    "x5t#S256"
+							]
+					    },
+						{
+							"required": [
+							    "sigX5ts"
+							]
+					    },
+						{
+							"required": [
+							    "x5t#o"
+							]
+					    }
+					],
+					"not": {
+						"required": [ "x5t" ]
+					}
+				}
+			]
+		},
+		
+		"jwsUnprotectedHeader": {
+			"allOf": [
+				{ 
+					"$ref": "rfc7515.json#/definitions/jwsUnprotectedHeader"
+				},
+				{
+					"properties": {
+						"etsiU": { "$ref": "#/definitions/etsiU"} 
+				    },
+					"required": [ "etsiU" ]
+				}
+			]
+		}
 
 	}
 }
