@@ -168,7 +168,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		documentsToStore.addAll(signatures);
 		excludeExtendedDocuments(documentsToStore, extendedDocuments);
 		final DSSDocument asicContainer = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, 
-				documentsToStore, asicParameters, null);
+				documentsToStore, asicParameters);
 		asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicContainer;
@@ -198,7 +198,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			extendWithArchiveManifest(getEmbeddedSignatures(), getEmbeddedArchiveManifests(), getEmbeddedManifests(), 
 					getEmbeddedTimestamps(), getEmbeddedSignedDocuments(), extendedDocuments, parameters.getDigestAlgorithm());
 
-			DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toTimestampDocument, extendedDocuments);
+			DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toTimestampDocument, extendedDocuments,
+					ASiCUtils.getZipComment(asicParameters));
 			extensionResult.setName(getFinalArchiveName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
 			return extensionResult;
 
@@ -233,7 +234,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			documentsToStore.addAll(signatures);
 			excludeExtendedDocuments(documentsToStore, extendedDocuments);
 			final DSSDocument asicContainer = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, 
-					documentsToStore, asicParameters, null);
+					documentsToStore, asicParameters);
 			asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));
 			return asicContainer;
 
@@ -241,7 +242,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	private void excludeExtendedDocuments(List<DSSDocument> documentListToCheck, List<DSSDocument> extendedDocuments) {
-		List<String> extendeDocumentNames = ASiCUtils.getDSSDocumentNames(extendedDocuments);
+		List<String> extendeDocumentNames = DSSUtils.getDocumentNames(extendedDocuments);
 		Iterator<DSSDocument> iterator = documentListToCheck.iterator();
 		while (iterator.hasNext()) {
 			DSSDocument document = iterator.next();
@@ -256,13 +257,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 
-		if (!isExtensionSupported(toExtendDocument)) {
-			throw new DSSException("Unsupported file type");
-		}
-
+		assertExtensionSupported(toExtendDocument);
 		extractCurrentArchive(toExtendDocument);
 
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
+		assertValidSignaturesToExtendFound(signatureDocuments);
+
 		List<DSSDocument> originalSignedDocuments = getEmbeddedSignedDocuments();
 		DSSDocument mimetype = getEmbeddedMimetype();
 
@@ -296,15 +296,23 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments);
+		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments,
+				ASiCUtils.getZipComment(parameters.aSiC()));
 		extensionResult.setName(getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), 
 				toExtendDocument.getMimeType()));
 		return extensionResult;
 	}
 
-	private boolean isExtensionSupported(DSSDocument toExtendDocument) {
-		return ASiCUtils.isZip(toExtendDocument)
-				&& ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, getExpectedSignatureExtension());
+	private void assertExtensionSupported(DSSDocument toExtendDocument) {
+		if (!ASiCUtils.isZip(toExtendDocument)) {
+			throw new DSSException("Unsupported file type");
+		}
+	}
+
+	private void assertValidSignaturesToExtendFound(List<DSSDocument> signatureDocuments) {
+		if (Utils.isCollectionEmpty(signatureDocuments)) {
+			throw new DSSException("No supported signature documents found! Unable to extend the container.");
+		}
 	}
 
 	private boolean isCoveredByArchiveManifest(DSSDocument signature) {
@@ -448,7 +456,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		validationDataForInclusion.getOcspTokens().addAll(validationDataForDocument.getOcspTokens());
 	}
 	
-	@SuppressWarnings("unchecked")
 	private ValidationDataForInclusion getValidationDataForDocument(DSSDocument document, DSSDocument signedManifest) {
 		try {
 			CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
@@ -489,11 +496,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private String getArchiveTimestampFilename(List<DSSDocument> timestamps) {
 		int num = Utils.collectionSize(timestamps) + 1;
 		return ZIP_ENTRY_ASICE_METAINF_CADES_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
-	}
-
-	@Override
-	protected boolean isSignatureFilename(String name) {
-		return ASiCUtils.isCAdES(name);
 	}
 
 	@Override
@@ -565,7 +567,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		
 		List<DSSDocument> newSignaturesList = counterSignatureHelper.getUpdatedSignatureDocumentsList(counterSignedSignature);
 		
-		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList);
+		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList,
+				ASiCUtils.getZipComment(asicContainer.getMimeType().getMimeTypeString()));
 		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		return resultArchive;
 	}

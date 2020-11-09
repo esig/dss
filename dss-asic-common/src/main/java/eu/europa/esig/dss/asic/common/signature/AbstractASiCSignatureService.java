@@ -20,23 +20,17 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -58,8 +52,6 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 					implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
-
-	private static final String ZIP_ENTRY_MIMETYPE = "mimetype";
 
 	protected ASiCExtractResult archiveContent = new ASiCExtractResult();
 
@@ -123,118 +115,74 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		return archiveContent.getMimeTypeDocument();
 	}
 
-	protected DSSDocument mergeArchiveAndExtendedSignatures(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
-			copyArchiveContentWithoutSignatures(archiveDocument, zos, signaturesToAdd);
-			storeDocuments(signaturesToAdd, zos);
-
-			zos.finish();
-
-			return new InMemoryDocument(baos.toByteArray(), null, archiveDocument.getMimeType());
-		} catch (IOException e) {
-			throw new DSSException("Unable to extend the ASiC container", e);
-		}
+	/**
+	 * Creates a ZIP-Archive by copying the existing {@code archiveDocument} entries
+	 * and overwriting matching ones with {@code filesToAdd}
+	 * 
+	 * @param archiveDocument {@link DSSDocument} the original ASiC container to
+	 *                        extend
+	 * @param filesToAdd      a list of {@link DSSDocument} signatures to embed
+	 * @param zipComment      {@link String}
+	 * @return {@link DSSDocument} the merged ASiC Container
+	 */
+	protected DSSDocument mergeArchiveAndExtendedSignatures(DSSDocument archiveDocument, List<DSSDocument> filesToAdd,
+			String zipComment) {
+		List<DSSDocument> containerEntriesList = getListOfArchiveDocumentToAdd(archiveDocument, filesToAdd);
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList, zipComment);
+		zipArchive.setMimeType(archiveDocument.getMimeType());
+		return zipArchive;
 	}
 
-	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos, List<DSSDocument> documentsToAdd) throws IOException {
-		List<String> documentNames = getDocumentNames(documentsToAdd);
-		long containerSize = DSSUtils.getFileByteSize(archiveDocument);
-		try (InputStream is = archiveDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
-				final String name = entry.getName();
-				final ZipEntry newEntry = new ZipEntry(name);
-				if (!isSignatureFilename(name) && !documentNames.contains(name)) {
-					zos.putNextEntry(newEntry);
-					ASiCUtils.secureCopy(zis, zos, containerSize);
-				}
+	private List<DSSDocument> getListOfArchiveDocumentToAdd(DSSDocument archiveDocument, List<DSSDocument> filesToAdd) {
+		List<DSSDocument> result = new ArrayList<>();
+		List<String> filesToAddNames = DSSUtils.getDocumentNames(filesToAdd);
+		List<DSSDocument> containerContent = ZipUtils.getInstance().extractContainerContent(archiveDocument);
+		for (DSSDocument entry : containerContent) {
+			if (!filesToAddNames.contains(entry.getName())) {
+				result.add(entry);
 			}
 		}
+		result.addAll(filesToAdd);
+		return result;
 	}
 
-	protected abstract boolean isSignatureFilename(String name);
-	
-	private List<String> getDocumentNames(List<DSSDocument> documents) {
-		List<String> names = new ArrayList<>();
-		for (DSSDocument document : documents) {
-			names.add(document.getName());
-		}
-		return names;
-	}
-
+	/**
+	 * Creates a ZIP-Archive by copying the provided documents to the new container
+	 * 
+	 * @param documentsToBeSigned    a list of {@link DSSDocument}s to be originally
+	 *                               signed
+	 * @param signatures             a list of {@link DSSDocument} representing
+	 *                               signature
+	 * @param metaInfFolderDocuments a list of {@link DSSDocument} representing a
+	 *                               META-INF directory content
+	 * @param asicParameters         {@link ASiCParameters}
+	 * @return {@link DSSDocument} the created ASiC Container
+	 */
 	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures,
-			List<DSSDocument> documentsToStore,  ASiCParameters asicParameters, DSSDocument rootContainer) {
-
-		if (rootContainer != null) {
-			return mergeArchiveAndExtendedSignatures(rootContainer, signatures);
-		} else {
-			return buildASiCContainerType(documentsToBeSigned, signatures, documentsToStore, asicParameters);
-		}
-	}
-	
-	private DSSDocument buildASiCContainerType(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, 
 			List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
-			storeMimetype(asicParameters, zos);
-			if (ASiCUtils.isASiCE(asicParameters)) {
-				storeDocuments(metaInfFolderDocuments, zos);
-			}
-			storeDocuments(signatures, zos);
-			storeSignedFiles(documentsToBeSigned, zos);
-			storeZipComment(asicParameters, zos);
-			
-			zos.finish();
-
-			return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
-		} catch (IOException e) {
-			throw new DSSException("Unable to build the ASiC Container", e);
-		}
+		List<DSSDocument> containerEntriesList = getListOfArchiveDocumentToAdd(documentsToBeSigned, signatures,
+				metaInfFolderDocuments, asicParameters);
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList,
+				ASiCUtils.getZipComment(asicParameters));
+		zipArchive.setMimeType(ASiCUtils.getMimeType(asicParameters));
+		return zipArchive;
 	}
 
-	private void storeDocuments(List<DSSDocument> documents, ZipOutputStream zos) throws IOException {
-		for (DSSDocument doc : documents) {
-			final ZipEntry entrySignature = new ZipEntry(doc.getName());
-			zos.putNextEntry(entrySignature);
-			doc.writeTo(zos);
+	private List<DSSDocument> getListOfArchiveDocumentToAdd(List<DSSDocument> documentsToBeSigned,
+			List<DSSDocument> signatures, List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters) {
+		List<DSSDocument> result = new ArrayList<>();
+		result.add(getMimetypeDocument(asicParameters));
+		result.addAll(documentsToBeSigned);
+		if (ASiCUtils.isASiCE(asicParameters)) {
+			result.addAll(metaInfFolderDocuments);
 		}
+		result.addAll(signatures);
+		return result;
 	}
 
-	private void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
-		for (DSSDocument detachedDocument : detachedDocuments) {
-			try (InputStream is = detachedDocument.openStream()) {
-				final String detachedDocumentName = detachedDocument.getName();
-				final String name = detachedDocumentName != null ? detachedDocumentName : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
-				final ZipEntry entryDocument = new ZipEntry(name);
-
-				zos.setLevel(ZipEntry.DEFLATED);
-				zos.putNextEntry(entryDocument);
-				Utils.copy(is, zos);
-			}
-		}
-	}
-
-	private void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream zos) throws IOException {
+	private DSSDocument getMimetypeDocument(final ASiCParameters asicParameters) {
 		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes(StandardCharsets.UTF_8);
-		final ZipEntry entryMimetype = getZipEntryMimeType(mimeTypeBytes);
-		zos.putNextEntry(entryMimetype);
-		Utils.write(mimeTypeBytes, zos);
-	}
-
-	private ZipEntry getZipEntryMimeType(final byte[] mimeTypeBytes) {
-		final ZipEntry entryMimetype = new ZipEntry(ZIP_ENTRY_MIMETYPE);
-		entryMimetype.setMethod(ZipEntry.STORED);
-		entryMimetype.setSize(mimeTypeBytes.length);
-		entryMimetype.setCompressedSize(mimeTypeBytes.length);
-		final CRC32 crc = new CRC32();
-		crc.update(mimeTypeBytes);
-		entryMimetype.setCrc(crc.getValue());
-		return entryMimetype;
-	}
-
-	protected void storeZipComment(final ASiCParameters asicParameters, final ZipOutputStream zos) {
-		if (asicParameters.isZipComment()) {
-			zos.setComment(ASiCUtils.MIME_TYPE_COMMENT + ASiCUtils.getMimeTypeString(asicParameters));
-		}
+		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
 	}
 	
 	protected void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper, CSP parameters) {

@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -54,6 +53,11 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	
 	private List<ManifestFile> manifestFiles;
 
+	/**
+	 * The default constructor
+	 * 
+	 * @param document {@link DSSDocument} to be validated
+	 */
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
 		this.document = document;
 	}
@@ -214,14 +218,11 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		if (Utils.collectionSize(retrievedDocs) > 1) {
 			throw new DSSException("ASiC-S : More than one file");
 		}
-		DSSDocument uniqueDoc = retrievedDocs.get(0);
-		List<DSSDocument> result = new ArrayList<>();
-		if (ASiCUtils.isASiCSArchive(uniqueDoc)) {
-			result.addAll(ASiCUtils.getPackageZipContent(uniqueDoc));
-		} else {
-			result.add(uniqueDoc);
+		List<DSSDocument> containerDocuments = extractResult.getContainerDocuments();
+		if (Utils.isCollectionNotEmpty(containerDocuments)) {
+			return containerDocuments;
 		}
-		return result;
+		return retrievedDocs;
 	}
 
 }

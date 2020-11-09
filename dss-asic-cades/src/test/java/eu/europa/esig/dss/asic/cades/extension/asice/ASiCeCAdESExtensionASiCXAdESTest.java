@@ -55,7 +55,7 @@ public class ASiCeCAdESExtensionASiCXAdESTest extends PKIFactoryAccess {
 		DSSException exception = assertThrows(DSSException.class, () -> {
 			service.extendDocument(documentToExtend, signatureParameters);
 		});
-		assertEquals("Unsupported file type", exception.getMessage());
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 	}
 
 	@Override

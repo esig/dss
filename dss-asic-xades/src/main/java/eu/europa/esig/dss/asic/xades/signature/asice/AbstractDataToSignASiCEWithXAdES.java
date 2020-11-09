@@ -30,11 +30,13 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class AbstractDataToSignASiCEWithXAdES {
 
 	protected static final String META_INF = "META-INF/";
+
     private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = META_INF + "signatures001.xml";
+	private static final String ZIP_ENTRY_ASICE_METAINF_MANIFEST = META_INF + "manifest.xml";
 
 	protected DSSDocument getASiCManifest(List<DSSDocument> documents) {
 		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
-		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), META_INF + "manifest.xml");
+		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), ZIP_ENTRY_ASICE_METAINF_MANIFEST);
 	}
 
 	protected String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {

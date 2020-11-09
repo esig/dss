@@ -11,6 +11,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -34,22 +35,22 @@ public abstract class ASiCCounterSignatureHelper {
 	 * @return {@link DSSDocument} signature document containing a signature to be counter signed with a defined id
 	 */
 	public DSSDocument extractSignatureDocument(String signatureId) {		
-		if (ASiCUtils.isAsic(asicContainer)) {
+		if (ASiCUtils.isZip(asicContainer)) {
 			
 			List<DSSDocument> signatureDocuments = getSignatureDocuments();
-			for (DSSDocument signatureDocument : signatureDocuments) {
-				if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
-					checkCounterSignaturePossible(signatureDocument);
-					return signatureDocument;
+			if (Utils.isCollectionNotEmpty(signatureDocuments)) {
+				for (DSSDocument signatureDocument : signatureDocuments) {
+					if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
+						checkCounterSignaturePossible(signatureDocument);
+						return signatureDocument;
+					}
 				}
+
+				throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
 			}
 			
-			throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
-			
-		} else {
-			throw new DSSException("The provided file shall be an ASiC container!");
 		}
-		
+		throw new DSSException("The provided file shall be an ASiC container with signatures inside!");
 	}
 
 	/**

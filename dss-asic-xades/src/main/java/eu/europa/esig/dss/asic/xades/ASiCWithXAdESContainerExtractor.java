@@ -26,13 +26,15 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtractor {
 
+	private static final String METAINF_MANIFEST_FILENAME = ASiCUtils.META_INF_FOLDER + "manifest.xml";
+
 	public ASiCWithXAdESContainerExtractor(DSSDocument archive) {
 		super(archive);
 	}
 
 	@Override
 	protected boolean isAllowedManifest(String entryName) {
-		return entryName.equals(ASiCUtils.META_INF_FOLDER + "manifest.xml");
+		return entryName.equals(METAINF_MANIFEST_FILENAME);
 	}
 
 	@Override
