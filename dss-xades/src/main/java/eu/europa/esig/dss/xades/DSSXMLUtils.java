@@ -44,6 +44,7 @@ import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,9 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
@@ -85,20 +89,31 @@ public final class DSSXMLUtils {
 
 	private static final Set<String> canonicalizers;
 	
+	private static final Set<String> transformsWithNodeSetOutput;
+	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 	
 	/**
-	 * This is the default canonicalization method for XMLDSIG used for signatures and timestamps (see XMLDSIG 4.4.3.2). 
+	 * This is the default canonicalization method used for production of signatures
+	 * within DSS framework.
 	 * 
-	 * Another complication arises because of the way that the default canonicalization algorithm handles namespace declarations; 
-	 * frequently a signed XML document needs to be embedded in another document; 
-	 * in this case the original canonicalization algorithm will not yield the same result 
-	 * as if the document is treated alone. For this reason, the so-called Exclusive Canonicalization,
-	 * which serializes XML namespace declarations independently of the surrounding XML, was created.
+	 * Another complication arises because of the way that the default
+	 * canonicalization algorithm handles namespace declarations; frequently a
+	 * signed XML document needs to be embedded in another document; in this case
+	 * the original canonicalization algorithm will not yield the same result as if
+	 * the document is treated alone. For this reason, the so-called Exclusive
+	 * Canonicalization, which serializes XML namespace declarations independently
+	 * of the surrounding XML, was created.
 	 */
-	public static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
+	public static final String DEFAULT_DSS_C14N_METHOD = CanonicalizationMethod.EXCLUSIVE;
 	
+	/**
+	 * This is the default canonicalization method for XMLDSIG used for signatures
+	 * and timestamps (see XMLDSIG 4.4.3.2) when one is not defined.
+	 */
+	public static final String DEFAULT_XMLDSIG_C14N_METHOD = CanonicalizationMethod.INCLUSIVE;
+
 	static {
 		SantuarioInitializer.init();
 
@@ -107,13 +122,15 @@ public final class DSSXMLUtils {
 
 		canonicalizers = new HashSet<>();
 		registerDefaultCanonicalizers();
+		
+		transformsWithNodeSetOutput = new HashSet<>();
+		registerTransformsWithNodeSetOutput();
 	}
 
 	/**
 	 * This method registers the default transforms.
 	 */
 	private static void registerDefaultTransforms() {
-
 		registerTransform(Transforms.TRANSFORM_BASE64_DECODE);
 		registerTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 		registerTransform(Transforms.TRANSFORM_XPATH);
@@ -126,7 +143,6 @@ public final class DSSXMLUtils {
 	 * This method registers the default canonicalizers.
 	 */
 	private static void registerDefaultCanonicalizers() {
-
 		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
 		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
@@ -134,6 +150,15 @@ public final class DSSXMLUtils {
 		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
 		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS);
+	}
+
+	/**
+	 * This method registers transforms resulting to a node-set according to XMLDSIG
+	 */
+	private static void registerTransformsWithNodeSetOutput() {
+		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH);
+		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH2FILTER);
 	}
 
 	/**
@@ -163,6 +188,19 @@ public final class DSSXMLUtils {
 	 */
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
 		final boolean added = canonicalizers.add(c14nAlgorithmURI);
+		return added;
+	}
+
+	/**
+	 * This method allows to register a transformation resulting to a node-set output.
+	 * See XMLDSIG for more information
+	 *
+	 * @param transformURI
+	 *            the URI of transform
+	 * @return true if this set did not already contain the specified element
+	 */
+	public static boolean registerTransformWithNodeSetOutput(final String transformURI) {
+		final boolean added = transformsWithNodeSetOutput.add(transformURI);
 		return added;
 	}
 	
@@ -473,8 +511,10 @@ public final class DSSXMLUtils {
 	 */
 	public static String getCanonicalizationMethod(String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			LOG.warn("Canonicalization method is not defined. A default canonicalization '{}' will be used.", DEFAULT_CANONICALIZATION_METHOD);
-			return DEFAULT_CANONICALIZATION_METHOD;
+			// The INCLUSIVE canonicalization is used by default (See DSS-2208)
+			LOG.warn("Canonicalization method is not defined. "
+					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", DEFAULT_XMLDSIG_C14N_METHOD);
+			return DEFAULT_XMLDSIG_C14N_METHOD;
 		}
 		return canonicalizationMethod;
 	}
@@ -827,6 +867,19 @@ public final class DSSXMLUtils {
 	}
 	
 	/**
+	 * XMLDSIG 4.4.3.2 The Reference Processing Model
+	 * 
+	 * A 'same-document' reference is defined as a URI-Reference that consists of 
+	 * a hash sign ('#') followed by a fragment or alternatively consists of an empty URI
+	 * 
+	 * @param referenceUri {@link String} uri of a reference to check
+	 * @return TRUE is the URI points to a same-document, FALSE otherwise
+	 */
+	public static boolean isSameDocumentReference(String referenceUri) {
+		return Utils.EMPTY_STRING.equals(referenceUri) || DomUtils.startsFromHash(referenceUri);
+	}
+	
+	/**
 	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present
 	 * NOTE: can return null (the value is optional)
 	 * 
@@ -928,6 +981,50 @@ public final class DSSXMLUtils {
 	 */
 	public static NodeList getReferenceNodeList(Node signatureElement) {
 		return DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
+	}
+
+	/**
+	 * Returns the expected dereferencing output for the provided
+	 * {@code DSSReference}
+	 * 
+	 * @param reference {@link DSSReference} to get OutputType for
+	 * @return {@link ReferenceOutputType}
+	 */
+	public static ReferenceOutputType getReferenceOutputType(final DSSReference reference) {
+		ReferenceOutputType outputType = getDereferenceOutputType(reference.getUri());
+		if (Utils.isCollectionNotEmpty(reference.getTransforms())) {
+			for (DSSTransform transform : reference.getTransforms()) {
+				String algorithmUri = transform.getAlgorithm();
+				outputType = getTransformOutputType(algorithmUri);
+			}
+		}
+		return outputType;
+	}
+
+	/**
+	 * Returns the expected dereferencing output for the provided {@code Reference}
+	 * 
+	 * @param reference {@link Reference} to get OutputType for
+	 * @return {@link ReferenceOutputType}
+	 */
+	public static ReferenceOutputType getReferenceOutputType(final Reference reference) throws XMLSecurityException {
+		ReferenceOutputType outputType = getDereferenceOutputType(reference.getURI());
+		Transforms transforms = reference.getTransforms();
+		if (transforms != null) {
+			for (int ii = 0; ii < transforms.getLength(); ii++) {
+				Transform transform = transforms.item(ii);
+				outputType = getTransformOutputType(transform.getURI());
+			}
+		}
+		return outputType;
+	}
+	
+	private static ReferenceOutputType getDereferenceOutputType(String referenceUri) {
+		return isSameDocumentReference(referenceUri) ? ReferenceOutputType.NODE_SET : ReferenceOutputType.OCTET_STREAM;
+	}
+	
+	private static ReferenceOutputType getTransformOutputType(String algorithmUri) {
+		return transformsWithNodeSetOutput.contains(algorithmUri) ? ReferenceOutputType.NODE_SET : ReferenceOutputType.OCTET_STREAM;
 	}
 
 }

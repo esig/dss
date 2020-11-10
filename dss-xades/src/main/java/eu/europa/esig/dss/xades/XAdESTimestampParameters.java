@@ -27,7 +27,7 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public class XAdESTimestampParameters extends TimestampParameters {
 
-	private String canonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+	private String canonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 	
 	public XAdESTimestampParameters() {
 	}

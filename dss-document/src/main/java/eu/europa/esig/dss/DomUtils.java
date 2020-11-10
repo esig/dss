@@ -658,7 +658,7 @@ public final class DomUtils {
 	 * @param uri {@link String} to be checked
 	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
 	 */
-	private static boolean startsFromHash(String uri) {
+	public static boolean startsFromHash(String uri) {
 		return Utils.isStringNotBlank(uri) && uri.startsWith("#");
 	}
 	

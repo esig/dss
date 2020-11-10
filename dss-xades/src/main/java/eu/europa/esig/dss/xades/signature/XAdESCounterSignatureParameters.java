@@ -19,7 +19,7 @@ public class XAdESCounterSignatureParameters extends XAdESSignatureParameters im
 	 * The canonicalization method used for a SignatureValue canonicalization
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String counterSignatureCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+	private String counterSignatureCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 
 	@Override
 	public String getSignatureIdToCounterSign() {

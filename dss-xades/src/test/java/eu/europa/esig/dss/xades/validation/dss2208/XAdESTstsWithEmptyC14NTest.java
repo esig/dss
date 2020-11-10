@@ -18,17 +18,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.validation.dss2057;
+package eu.europa.esig.dss.xades.validation.dss2208;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class XAdESArchiveTstWithEmptyC14NTest extends AbstractXAdESTestValidation {
+public class XAdESTstsWithEmptyC14NTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss2057/xades-atst-empty-c14n.xml");
+		return new FileDocument("src/test/resources/validation/dss2208/xades-tsts-empty-c14n.xml");
 	}
 
 }

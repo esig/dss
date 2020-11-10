@@ -31,7 +31,6 @@ import java.util.Set;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -66,20 +65,6 @@ public class ASiCEWithXAdESNoSignCertFoundForRevocationTest extends AbstractASiC
 		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
 		RevocationWrapper revocationWrapper = allRevocationData.iterator().next();
 		assertEquals(1, revocationWrapper.foundCertificates().getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-	}
-	
-	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 	}
 	
 }

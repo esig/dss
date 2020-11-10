@@ -1,0 +1,7 @@
+<doc xmlns="http://example.org" xmlns:a="http://www.w3.org" Id="dss1">
+	<e1 a:attr="World" attr="Hello">
+		<e2>
+			<e3 xmlns="http://www.ietf.org"/>
+		</e2>
+	</e1>
+</doc>

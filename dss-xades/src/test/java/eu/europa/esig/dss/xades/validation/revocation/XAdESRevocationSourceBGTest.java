@@ -28,7 +28,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -59,22 +58,6 @@ public class XAdESRevocationSourceBGTest extends AbstractXAdESTestValidation {
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		// do nothing
-	}
-	
-	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 	}
 	
 	@Override

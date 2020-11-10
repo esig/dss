@@ -72,19 +72,19 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for KeyInfo.
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String keyInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+	private String keyInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String signedInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+	private String signedInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String signedPropertiesCanonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
+	private String signedPropertiesCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).

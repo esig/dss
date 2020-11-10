@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,7 +10,6 @@ import java.util.List;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -56,17 +54,9 @@ public class DSS2123Test extends AbstractASiCWithXAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
+
 		assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 	}
 
 }

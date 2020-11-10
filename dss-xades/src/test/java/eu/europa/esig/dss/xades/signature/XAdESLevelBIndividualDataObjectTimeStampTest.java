@@ -42,7 +42,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -84,7 +83,9 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signatureParameters.setReferences(references);
 
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));
+//		byte[] toSignBytes = DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign));
+		byte[] toSignBytes = DSSUtils.toByteArray(documentToSign);
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, toSignBytes);
 		TimestampBinary timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude(referenceId, true)));

@@ -109,7 +109,7 @@ public class ReferenceBuilder {
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
 		CanonicalizationTransform canonicalizationTransform = 
-				new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
+				new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 		dssTransformList.add(canonicalizationTransform);
 
 		dssReference.setTransforms(dssTransformList);
@@ -132,13 +132,13 @@ public class ReferenceBuilder {
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
 			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
-			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
+			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else if (signatureParameters.isEmbedXML()) {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + refId);
 
-			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
+			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
@@ -177,7 +177,7 @@ public class ReferenceBuilder {
 
 		List<DSSTransform> dssTransformList = new ArrayList<>();
 		CanonicalizationTransform canonicalization = new CanonicalizationTransform(
-				signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD);
+				signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;

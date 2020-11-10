@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,7 +30,6 @@ import java.util.Set;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -73,7 +71,6 @@ public class ASiCEWithXAdESNoEmbeddedOcspCertWithProvidedCertTest extends Abstra
 		
 		FoundCertificatesProxy foundCertificates = revocationWrapper.foundCertificates();
 		assertTrue(Utils.isCollectionNotEmpty(foundCertificates.getRelatedCertificates()));
-		
 	}
 	
 	@Override
@@ -82,20 +79,6 @@ public class ASiCEWithXAdESNoEmbeddedOcspCertWithProvidedCertTest extends Abstra
 		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
 		RevocationWrapper revocationWrapper = allRevocationData.iterator().next();
 		assertEquals(1, revocationWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-	}
-	
-	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 	}
 
 }

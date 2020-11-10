@@ -27,6 +27,8 @@ import java.util.List;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -43,12 +45,15 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 
 /**
  * This class allows to create a XAdES content-timestamp which covers all documents (AllDataObjectsTimeStamp).
  * 
  */
 public class AllDataObjectsTimeStampBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AllDataObjectsTimeStampBuilder.class);
 
 	private final TSPSource tspSource;
 	private final XAdESSignatureParameters signatureParameters;
@@ -75,29 +80,37 @@ public class AllDataObjectsTimeStampBuilder {
 		}
 
 		byte[] dataToBeDigested = null;
-		/*
-		 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
-		 * clause 4.4.3.2;
-		 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
-		 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
-		 * ds:SignedInfo.
-		 */
 		XAdESTimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
 		String canonicalizationMethod = contentTimestampParameters.getCanonicalizationMethod();
 		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSReference reference : references) {
+				/*
+				 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
+				 * clause 4.4.3.2;
+				 */
 				DSSDocument referenceContent = referenceBuilder.getReferenceOutput(reference);
 				byte[] binaries = DSSUtils.toByteArray(referenceContent);
-				// TODO : investigate canonicalization usage
-				if (DomUtils.isDOM(binaries)) {
+				/*
+				 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
+				 */
+				if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(binaries)) {
 					binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
 				}
+				/*
+				 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
+				 * ds:SignedInfo.
+				 */
 				baos.write(binaries);
 			}
 			dataToBeDigested = baos.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException("Unable to compute the data to be digested", e);
+		}
+
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Computed AllDataObjectsTimestampData bytes:");
+			LOG.trace(new String(dataToBeDigested));
 		}
 		
 		DigestAlgorithm digestAlgorithm = contentTimestampParameters.getDigestAlgorithm();

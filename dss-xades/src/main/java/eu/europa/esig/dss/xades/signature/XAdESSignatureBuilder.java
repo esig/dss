@@ -1224,8 +1224,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		String canonicalizationMethod = token.getCanonicalizationMethod();
 		if (Utils.isStringNotEmpty(canonicalizationMethod)) {
-			final Element canonicalizationMethodElement = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.CANONICALIZATION_METHOD);
-			canonicalizationMethodElement.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), canonicalizationMethod);
+			final Element canonicalizationMethodElement = DomUtils.createElementNS(documentDom, getXmldsigNamespace(),
+					XMLDSigElement.CANONICALIZATION_METHOD);
+			canonicalizationMethodElement.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(),
+					canonicalizationMethod);
 			timestampElement.appendChild(canonicalizationMethodElement);
 		} else {
 			throw new DSSException("Unable to create a timestamp with empty canonicalization method. "
