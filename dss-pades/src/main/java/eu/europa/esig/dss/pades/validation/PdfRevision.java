@@ -18,38 +18,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.pades.validation;
 
-import java.util.Date;
-
-import org.bouncycastle.cms.CMSSignedData;
+import java.util.List;
 
 /**
- * Contains PDF signature dictionary information
- * 
+ * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
-public interface PdfSignatureDictionary {
-
-	ByteRange getByteRange();
-
-	String getSignerName();
-
-	String getLocation();
-
-	String getContactInfo();
-
-	String getReason();
+// TODO : move to dss-pades module, remove PAdES-specific methods and remove from AdvancedSignature
+public interface PdfRevision {
 	
-	String getType();
-
-	String getFilter();
-
-	String getSubFilter();
+	/**
+	 * Returns a PDF Signature Dictionary info container
+	 * 
+	 * @return {@code PdfSignatureDictionary}
+	 */
+	PdfSignatureDictionary getPdfSigDictInfo();
 	
-	CMSSignedData getCMSSignedData();
+	/**
+	 * Returns a list of signature field names that refer the current object
+	 * 
+	 * @return list of {@link String} field names
+	 */
+	List<String> getFieldNames();
 	
-	byte[] getContents();
-
-	Date getSigningDate();
+	/**
+	 * Returns an information about changes made in the document
+	 * 
+	 * @return {@link PdfModificationDetection}
+	 */
+	PdfModificationDetection getModificationDetection();
 
 }

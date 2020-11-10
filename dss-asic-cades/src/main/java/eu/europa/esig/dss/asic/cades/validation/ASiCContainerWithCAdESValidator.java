@@ -302,4 +302,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return result;
 	}
 
+	@Override
+	protected ASiCWithCAdESDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
+		return new ASiCWithCAdESDiagnosticDataBuilder();
+	}
+
 }

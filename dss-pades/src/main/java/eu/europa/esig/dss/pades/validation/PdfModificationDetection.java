@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.pades.validation;
 
 import java.util.List;
 

@@ -205,7 +205,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		signerLocation.setPostalAddress(remoteBLevelParameters.getSignerLocationPostalAddress());
 		signerLocation.setPostalCode(remoteBLevelParameters.getSignerLocationPostalCode());
 		signerLocation.setStateOrProvince(remoteBLevelParameters.getSignerLocationStateOrProvince());
-		signerLocation.setStreet(remoteBLevelParameters.getSignerLocationStreet());
+		signerLocation.setStreetAddress(remoteBLevelParameters.getSignerLocationStreet());
 		if (!signerLocation.isEmpty()) {
 			bLevelParameters.setSignerLocation(signerLocation);
 		}

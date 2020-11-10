@@ -9,9 +9,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.PdfModification;
 
 /**
  * The class contains utils for modification detection

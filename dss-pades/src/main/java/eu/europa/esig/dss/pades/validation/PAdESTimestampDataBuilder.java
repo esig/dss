@@ -30,7 +30,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
-import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {

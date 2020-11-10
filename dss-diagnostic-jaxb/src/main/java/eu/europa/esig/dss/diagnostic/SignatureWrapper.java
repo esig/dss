@@ -206,9 +206,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getSignatureProductionPlace() != null;
 	}
 
-	public String getAddress() {
+	public String getStreetAddress() {
 		if (isSignatureProductionPlacePresent()) {
-			return signature.getSignatureProductionPlace().getAddress();
+			return signature.getSignatureProductionPlace().getStreetAddress();
 		}
 		return null;
 	}
@@ -246,6 +246,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return signature.getSignatureProductionPlace().getStateOrProvince();
 		}
 		return null;
+	}
+
+	public List<String> getPostalAddress() {
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getPostalAddress();
+		}
+		return Collections.emptyList();
 	}
 
 	public SignatureLevel getSignatureFormat() {
@@ -727,6 +734,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
 			return pdfRevision.getPDFSignatureDictionary().getContactInfo();
+		}
+		return null;
+	}
+
+	public String getLocation() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getLocation();
 		}
 		return null;
 	}

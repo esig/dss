@@ -1071,7 +1071,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			}
 
 			if (params.isEn319132()) {
-				final String streetAddress = signatureProductionPlace.getStreet();
+				final String streetAddress = signatureProductionPlace.getStreetAddress();
 				if (streetAddress != null) {
 					DomUtils.addTextElement(documentDom, signatureProductionPlaceDom, getXadesNamespace(),
 							getCurrentXAdESElements().getElementStreetAddress(), streetAddress);

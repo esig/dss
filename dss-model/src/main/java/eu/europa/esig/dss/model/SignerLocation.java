@@ -25,6 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class represents the information concerning 
+ * the signature production place.
+ *
+ */
 @SuppressWarnings("serial")
 public class SignerLocation implements Serializable {
 
@@ -67,70 +72,76 @@ public class SignerLocation implements Serializable {
 
 	/**
 	 * The street address. For example, 1600 Amphitheatre Pkwy.
+	 * 
+	 * NOTE: used in XAdES and JAdES
 	 */
-	private String street;
+	private String streetAddress;
 
+	/**
+	 * The default constructor
+	 */
 	public SignerLocation() {
 	}
 
+	/**
+	 * Gets the country
+	 * 
+	 * @return {@link String}
+	 */
 	public String getCountry() {
 		return country;
 	}
 
+	/**
+	 * Sets the country Can be a country name or its two-letter ISO 3166-1 alpha-2
+	 * country code
+	 * 
+	 * @param country {@link String}
+	 */
 	public void setCountry(final String country) {
 		this.country = country;
 	}
 
+	/**
+	 * Gets the locality (city)
+	 * 
+	 * @return {@link String}
+	 */
 	public String getLocality() {
 		return locality;
 	}
 
+	/**
+	 * Sets the locality (city)
+	 * 
+	 * @param locality {@link String}
+	 */
 	public void setLocality(final String locality) {
 		this.locality = locality;
 	}
 
+	/**
+	 * Gets the postal address
+	 * 
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getPostalAddress() {
 		return postalAddress;
 	}
 
+	/**
+	 * Sets the postal address 
+	 * NOTE: used in CAdES
+	 * 
+	 * @param postalAddress a list of {@link String}s
+	 */
 	public void setPostalAddress(final List<String> postalAddress) {
 		this.postalAddress = postalAddress;
 	}
 
-	public String getPostalCode() {
-		return postalCode;
-	}
-
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
-
-	public String getPostOfficeBoxNumber() {
-		return postOfficeBoxNumber;
-	}
-
-	public void setPostOfficeBoxNumber(String postOfficeBoxNumber) {
-		this.postOfficeBoxNumber = postOfficeBoxNumber;
-	}
-
-	public String getStateOrProvince() {
-		return stateOrProvince;
-	}
-
-	public void setStateOrProvince(String stateOrProvince) {
-		this.stateOrProvince = stateOrProvince;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
 	/**
 	 * Adds an address item to the complete address.
+	 * NOTE: used in CAdES
 	 *
 	 * @param addressItem
 	 *            an address line
@@ -140,6 +151,88 @@ public class SignerLocation implements Serializable {
 			postalAddress = new ArrayList<>();
 		}
 		postalAddress.add(addressItem);
+	}
+
+	/**
+	 * Gets the postal code
+	 * 
+	 * @return {@link String}
+	 */
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	/**
+	 * Sets the postal code
+	 * 
+	 * @param postalCode {@link String}
+	 */
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+
+	/**
+	 * Gets the post office box number
+	 * 
+	 * @return {@link String}
+	 */
+	public String getPostOfficeBoxNumber() {
+		return postOfficeBoxNumber;
+	}
+
+	/**
+	 * Sets the post office box number 
+	 * NOTE: used in JAdES
+	 * 
+	 * @param postOfficeBoxNumber {@link String}
+	 */
+	public void setPostOfficeBoxNumber(String postOfficeBoxNumber) {
+		this.postOfficeBoxNumber = postOfficeBoxNumber;
+	}
+
+	/**
+	 * Gets the state or province
+	 * 
+	 * @return {@link String}
+	 */
+	public String getStateOrProvince() {
+		return stateOrProvince;
+	}
+
+	/**
+	 * Sets the state or province (the region where the locality is)
+	 * 
+	 * @param stateOrProvince {@link String}
+	 */
+	public void setStateOrProvince(String stateOrProvince) {
+		this.stateOrProvince = stateOrProvince;
+	}
+
+	/**
+	 * Gets the street address
+	 * 
+	 * @return {@link String}
+	 */
+	public String getStreetAddress() {
+		return streetAddress;
+	}
+
+	/**
+	 * Deprecated since DSS 5.8. Use {@code setStreetAddress(streetAddress)}
+	 */
+	@Deprecated
+	public void setStreet(String street) {
+		this.streetAddress = street;
+	}
+
+	/**
+	 * Sets the street address 
+	 * NOTE: used in XAdES and JAdES
+	 * 
+	 * @param streetAddress {@link String}
+	 */
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
 	}
 	
 	/**
@@ -166,7 +259,7 @@ public class SignerLocation implements Serializable {
 		if (country != null && !country.isEmpty()) {
 			return false;
 		}
-		if (street != null && !street.isEmpty()) {
+		if (streetAddress != null && !streetAddress.isEmpty()) {
 			return false;
 		}
 		return true;
@@ -182,7 +275,7 @@ public class SignerLocation implements Serializable {
 		result = prime * result + ((postalAddress == null) ? 0 : postalAddress.hashCode());
 		result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
 		result = prime * result + ((stateOrProvince == null) ? 0 : stateOrProvince.hashCode());
-		result = prime * result + ((street == null) ? 0 : street.hashCode());
+		result = prime * result + ((streetAddress == null) ? 0 : streetAddress.hashCode());
 		return result;
 	}
 
@@ -216,7 +309,7 @@ public class SignerLocation implements Serializable {
 		if (!Objects.equals(stateOrProvince, other.stateOrProvince)) {
 			return false;
 		}
-		if (!Objects.equals(street, other.street)) {
+		if (!Objects.equals(streetAddress, other.streetAddress)) {
 			return false;
 		}
 		return true;
@@ -226,7 +319,7 @@ public class SignerLocation implements Serializable {
 	public String toString() {
 		return "SignerLocation [postalAddress=" + postalAddress + ", postOfficeBoxNumber=" + postOfficeBoxNumber
 				+ ", postalCode=" + postalCode + ", locality=" + locality + ", stateOrProvince=" + stateOrProvince
-				+ ", country=" + country + ", street=" + street + "]";
+				+ ", country=" + country + ", street=" + streetAddress + "]";
 	}
 
 }

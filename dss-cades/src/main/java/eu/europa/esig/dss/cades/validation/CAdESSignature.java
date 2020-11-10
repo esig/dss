@@ -48,7 +48,6 @@ import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
@@ -137,9 +136,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private final CMSSignedData cmsSignedData;
 
 	private final SignerInformation signerInformation;
-	
+
 	/**
-	 * NOTE: The value shall be cached in order to properly compute a unique identifier for counter signatures
+	 * NOTE: The value shall be cached in order to properly compute a unique
+	 * identifier for counter signatures
 	 */
 	private SignerInformationStore counterSignaturesStore;
 
@@ -370,45 +370,39 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		try {
 			signerLocation = SignerLocation.getInstance(asn1Encodable);
 		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
+			String errorMessage = "Unable to build a SignerLocation instance. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 		}
 		if (signerLocation == null) {
 			return null;
 		}
+
 		final SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
+
 		final DirectoryString countryName = signerLocation.getCountry();
 		if (countryName != null) {
 			signatureProductionPlace.setCountryName(countryName.getString());
 		}
+
 		final DirectoryString localityName = signerLocation.getLocality();
 		if (localityName != null) {
 			signatureProductionPlace.setCity(localityName.getString());
 		}
-		final StringBuilder address = new StringBuilder();
+
 		final ASN1Sequence seq = signerLocation.getPostalAddress();
 		if (seq != null) {
-
 			for (int ii = 0; ii < seq.size(); ii++) {
-
-				if (seq.getObjectAt(ii) instanceof DEROctetString) {
-					if (address.length() > 0) {
-						address.append(" / ");
-					}
-					// TODO: getOctets returns an array
-					address.append(new String(((DEROctetString) seq.getObjectAt(ii)).getOctets()));
-				} else if (seq.getObjectAt(ii) instanceof DERUTF8String) {
-
-					if (address.length() > 0) {
-						address.append(" / ");
-					}
-					final DERUTF8String derutf8String = (DERUTF8String) seq.getObjectAt(ii);
-					address.append(derutf8String.getString());
+				String postalAddress = DSSASN1Utils.getDirectoryStringValue(seq.getObjectAt(ii));
+				if (Utils.isStringNotEmpty(postalAddress)) {
+					signatureProductionPlace.getPostalAddress().add(postalAddress);
 				}
 			}
 		}
-		signatureProductionPlace.setStreetAddress(address.toString());
-		// This property is not used in CAdES version of signature
-		// signatureProductionPlace.setStateOrProvince(stateOrProvince);
+
 		return signatureProductionPlace;
 	}
 
@@ -924,7 +918,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	@Override
+	/**
+	 * Returns a digest value incorporated in an attribute "message-digest" in CMS
+	 * Signed Data
+	 * 
+	 * @return a byte array representing a signed content digest value
+	 */
 	public byte[] getMessageDigestValue() {
 		final Attribute messageDigestAttribute = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
 		if (messageDigestAttribute == null) {
@@ -953,7 +952,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return DSSASN1Utils.getString(mimeTypeAttribute.getAttrValues().getObjectAt(0));
 	}
 
-	@Override
+	/**
+	 * @return content identifier as {@code String}
+	 */
 	public String getContentIdentifier() {
 		final Attribute contentIdentifierAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentIdentifier);
 		if (contentIdentifierAttribute == null) {
@@ -965,7 +966,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return contentIdentifierString;
 	}
 
-	@Override
+	/**
+	 * @return content hints as {@code String}
+	 */
 	public String getContentHints() {
 		final Attribute contentHintAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentHint);
 		if (contentHintAttribute == null) {
@@ -1014,18 +1017,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		if (countersignatures != null) {
-			return countersignatures;
+		if (counterSignatures != null) {
+			return counterSignatures;
 		}
 		
-		countersignatures = new ArrayList<>();
+		counterSignatures = new ArrayList<>();
 		for (final SignerInformation counterSignerInformation : getCounterSignatureStore()) {
 			final CAdESSignature counterSignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
 			counterSignature.setSignatureFilename(getSignatureFilename());
 			counterSignature.setMasterSignature(this);
-			countersignatures.add(counterSignature);
+			counterSignatures.add(counterSignature);
 		}
-		return countersignatures;
+		return counterSignatures;
 	}
 	
 	/**
@@ -1067,8 +1070,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signedAttributes.get(oid);
 	}
-	
-	@Override
+
+	/**
+	 * Returns a Set of CertificateIdentifier extracted from a
+	 * SignerInformationStore of CMS Signed Data
+	 * 
+	 * @return a Set of {@link CertificateIdentifier}s
+	 */
 	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
 	}

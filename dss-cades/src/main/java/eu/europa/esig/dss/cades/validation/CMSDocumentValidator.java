@@ -147,6 +147,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
+	protected CAdESDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
+		return new CAdESDiagnosticDataBuilder();
+	}
+
+	@Override
 	public List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature) {
 		final CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
 		try {

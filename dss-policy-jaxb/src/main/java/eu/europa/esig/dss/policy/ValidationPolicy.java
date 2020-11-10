@@ -276,16 +276,38 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getCertificateSignatureConstraint(Context context, SubContext subContext);
 
+	/**
+	 * The method returns UnknownStatus constraint
+	 * 
+	 * @return {@link LevelConstraint}
+	 */
 	LevelConstraint getUnknownStatusConstraint();
-	
+
+	/**
+	 * The method returns OCSPCertHashPresent constraint
+	 * 
+	 * @return {@link LevelConstraint}
+	 */
 	LevelConstraint getOCSPResponseCertHashPresentConstraint();
-	
+
+	/**
+	 * The method returns OCSPCertHashMatch constraint
+	 * 
+	 * @return {@link LevelConstraint}
+	 */
 	LevelConstraint getOCSPResponseCertHashMatchConstraint();
 
 	/**
+	 * The method returns SelfIssuedOCSP constraint
+	 * 
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getSelfIssuedOCSPConstraint();
+
+	/**
 	 * @param context
-	 * @return {@code LevelConstraint} if RevocationDataAvailable for a given context element is present in the
-	 *         constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if RevocationDataAvailable for a given
+	 *         context element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getRevocationDataAvailableConstraint(Context context, SubContext subContext);
 

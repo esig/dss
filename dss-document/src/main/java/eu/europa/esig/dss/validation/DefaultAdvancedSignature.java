@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -32,7 +30,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
@@ -93,12 +90,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	// Cached {@code TimestampSource}
 	protected TimestampSource signatureTimestampSource;
 
-	// Cached {@code AdvancedSignature}
-	protected List<AdvancedSignature> countersignatures;
+	// Cached a list of {@code AdvancedSignature}s
+	protected List<AdvancedSignature> counterSignatures;
 
 	private AdvancedSignature masterSignature;
-	
-	private List<AdvancedSignature> counterSignatures;
 
 	protected SignaturePolicy signaturePolicy;
 
@@ -474,6 +469,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return structureValidation;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
 		signatureScopes = signatureScopeFinder.findSignatureScope(this);
@@ -606,24 +602,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean isHashOnlyValidation() {
 		// TODO: not implemented yet
 		return false;
-	}
-	
-	@Override
-	public byte[] getMessageDigestValue() {
-		// Not applicable by default (CAdES/PAdES only)
-		return null;
-	}
-	
-	@Override
-	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
-		// Not applicable by default (CAdES/PAdES only)
-		return Collections.emptySet();
-	}
-	
-	@Override
-	public PdfRevision getPdfRevision() {
-		// Not applicable by default (PDF only)
-		return null;
 	}
 
 	@Override

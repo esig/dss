@@ -263,18 +263,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public String getContentIdentifier() {
-		// not applicable
-		return null;
-	}
-
-	@Override
-	public String getContentHints() {
-		// not applicable
-		return null;
-	}
-
-	@Override
 	public List<SignerRole> getCertifiedSignerRoles() {
 		List<SignerRole> result = new ArrayList<>();
 		Map<?, ?> jsonMap = getSignerAttributes();
@@ -368,11 +356,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-		if (countersignatures != null) {
-			return countersignatures;
+		if (counterSignatures != null) {
+			return counterSignatures;
 		}
 		
-		countersignatures = new ArrayList<>();
+		counterSignatures = new ArrayList<>();
 		
 		List<Object> cSigObjects = DSSJsonUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
 		if (Utils.isCollectionNotEmpty(cSigObjects)) {
@@ -380,11 +368,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSigObject, this);
 				if (counterSignature != null) {
 					counterSignature.setSignatureFilename(getSignatureFilename());
-					countersignatures.add(counterSignature);
+					counterSignatures.add(counterSignature);
 				}
 			}
 		}
-		return countersignatures;
+		return counterSignatures;
 	}
 
 	@Override

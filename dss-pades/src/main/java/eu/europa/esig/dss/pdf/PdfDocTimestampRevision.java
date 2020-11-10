@@ -26,10 +26,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -61,7 +61,7 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 		super(signatureDictionary, timestampFieldNames, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = isArchiveTimestamp ? TimestampType.ARCHIVE_TIMESTAMP : TimestampType.SIGNATURE_TIMESTAMP;
-			timestampToken = new TimestampToken(this, timestampType, TimestampLocation.DOC_TIMESTAMP);
+			timestampToken = new PdfTimestampToken(this, timestampType);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, getByteRange());
 			}

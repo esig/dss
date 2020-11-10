@@ -336,7 +336,7 @@ public class JAdESLevelBaselineB {
 		if (signerProductionPlace != null && !signerProductionPlace.isEmpty()) {
 			
 			String city = signerProductionPlace.getLocality();
-			String streetAddress = signerProductionPlace.getStreet();
+			String streetAddress = signerProductionPlace.getStreetAddress();
 			String stateOrProvince = signerProductionPlace.getStateOrProvince();
 			String postOfficeBoxNumber = signerProductionPlace.getPostOfficeBoxNumber();
 			String postalCode = signerProductionPlace.getPostalCode();

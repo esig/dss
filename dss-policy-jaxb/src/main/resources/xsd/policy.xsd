@@ -346,6 +346,11 @@
 							<xsd:documentation>Checks if a value of certHash attribute matches the signing certificate</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="SelfIssuedOCSP" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if a checked certificate appears in the OCSP Responder's certificate path</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of common checks on this token signature</xsd:documentation>

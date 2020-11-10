@@ -116,6 +116,11 @@ public class DetailedReportMessageCollector {
 	}
 
 	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion) {
+		collect(type, result, constraintConclusion, null);
+	}
+
+	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion,
+			String bbbId) {
 		if (constraintConclusion != null && constraintConclusion.getConstraint() != null) {
 			for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
 				XmlName message = getMessage(type, constraint);
@@ -126,7 +131,7 @@ public class DetailedReportMessageCollector {
 				// do not extract subErrors if the highest conclusion is valid
 				if (!MessageType.ERROR.equals(type) || message != null) {
 					String constraintId = constraint.getId();
-					if (constraintId != null && !constraintId.isEmpty()) {
+					if (constraintId != null && !constraintId.isEmpty() && !constraintId.equals(bbbId)) {
 						collect(type, result, detailedReport.getBasicBuildingBlockById(constraintId));
 						collect(type, result, detailedReport.getTLAnalysisById(constraintId));
 					}
@@ -151,7 +156,7 @@ public class DetailedReportMessageCollector {
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				if (subXCV != null) {
 					for (XmlSubXCV xmlSubXCV : subXCV) {
-						collect(type, result, xmlSubXCV);
+						collect(type, result, xmlSubXCV, bbb.getId());
 					}
 				}
 			}

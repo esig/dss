@@ -55,11 +55,11 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
@@ -143,17 +143,13 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(getSignatureParameters().getSubFilter(), signature.getSubFilter());
 		assertEquals(getSignatureParameters().getReason(), signature.getReason());
 		assertEquals(getSignatureParameters().getContactInfo(), signature.getContactInfo());
-		assertEquals(getSignatureParameters().getLocation(), signature.getCountryName());
+		assertEquals(getSignatureParameters().getLocation(), signature.getLocation());
 	}
 	
 	@Override
 	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
-		String location = getSignatureParameters().getLocation();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(Utils.isStringNotEmpty(location), signatureWrapper.isSignatureProductionPlacePresent());
-		if (Utils.isStringNotEmpty(location)) {
-			assertEquals(location, signatureWrapper.getCountryName());
-		}
+		assertFalse(signatureWrapper.isSignatureProductionPlacePresent()); // see PdfSignatureDictionary.location
 	}
 
 	@Override

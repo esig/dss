@@ -100,9 +100,11 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		svc.setCurrentTime(getValidationTime());
 		svc.validate();
 
-		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
-				.usedRevocations(svc.getProcessedRevocations()).tokenExtractionStategy(
-						tokenExtractionStategy)
+		final XmlDiagnosticData diagnosticData = new CertificateDiagnosticDataBuilder()
+				.usedCertificates(svc.getProcessedCertificates())
+				.usedRevocations(svc.getProcessedRevocations())
+				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
+				.tokenExtractionStategy(tokenExtractionStategy)
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).build();

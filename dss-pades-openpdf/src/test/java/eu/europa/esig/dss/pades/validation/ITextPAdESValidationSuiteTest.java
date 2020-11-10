@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.validation.suite.DSS2023Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2025Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2116WithPAdESTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS2199Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2258Test;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
@@ -91,7 +92,7 @@ import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigest
 		DSS1469Test.class, DSS1469LTTest.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class, 
 		PAdESOrphanOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class, DSS2116WithPAdESTest.class,
 		PAdESExtendedToTLevelTest.class, DSS2199Test.class, PAdESSameBorderAnnotationsTest.class, PAdESMultiplePagesAnnotationsOverlapTest.class,
-		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class })
+		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

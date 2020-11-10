@@ -80,6 +80,7 @@ import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
+import org.bouncycastle.asn1.x500.DirectoryString;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -1679,6 +1680,30 @@ public final class DSSASN1Utils {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Returns a value of an ASN.1 DirectoryString instance Returns null if an error
+	 * occurs during the transformation
+	 * 
+	 * @param directoryStringInstance {@link ASN1Encodable} to get DirectoryString
+	 *                                value from
+	 * @return {@link String} value
+	 */
+	public static String getDirectoryStringValue(ASN1Encodable directoryStringInstance) {
+		String postalAddress = null;
+		try {
+			DirectoryString directoryString = DirectoryString.getInstance(directoryStringInstance);
+			postalAddress = directoryString.getString();
+		} catch (Exception e) {
+			String errorMessage = "Unable to build a DirectoryString instance. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
+		}
+		return postalAddress;
 	}
 
 }

@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.validation.PdfModification;
+import eu.europa.esig.dss.pades.validation.PdfModification;
 
 public class PdfModificationImpl implements PdfModification {
 	

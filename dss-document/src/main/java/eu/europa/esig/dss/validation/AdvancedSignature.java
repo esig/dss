@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -38,7 +37,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -313,16 +311,6 @@ public interface AdvancedSignature extends Serializable {
 	String getMimeType();
 
 	/**
-	 * @return content identifier as {@code String}
-	 */
-	String getContentIdentifier();
-
-	/**
-	 * @return content hints as {@code String}
-	 */
-	String getContentHints();
-
-	/**
 	 * Returns the list of roles of the signer.
 	 *
 	 * @return list of the {@link SignerRole}s
@@ -475,10 +463,28 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	void prepareCounterSignatures(ValidationContext validationContext);
 
+	/**
+	 * Returns a message if the structure validation fails
+	 * 
+	 * @return {@link String} error message if the structure validation fails, empty
+	 *         string otherwise
+	 */
 	String getStructureValidationResult();
 
+	/**
+	 * Runs SignatureScopeFinder
+	 * 
+	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
+	 */
+	@SuppressWarnings("rawtypes")
 	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
 
+	/**
+	 * Returns a list of found SignatureScopes NOTE: the method
+	 * {@code findSignatureScope(signatureScopeFinder)} shall be called before
+	 * 
+	 * @return a list of {@link SignatureScope}s
+	 */
 	List<SignatureScope> getSignatureScopes();
 	
 	/**
@@ -533,31 +539,5 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@link Digest} DTBSR, which is then used to create the signature.
 	 */
 	Digest getDataToBeSignedRepresentation();
-
-	// ------------------------ CAdES Specifics for TS 119 102-2
-
-	/**
-	 * Returns a digest value incorporated in an attribute "message-digest" in CMS Signed Data
-	 * 
-	 * @return a byte array representing a signed content digest value
-	 */
-	byte[] getMessageDigestValue();
-	
-	/**
-	 * Returns a Set of CertificateIdentifier extracted from a
-	 * SignerInformationStore of CMS Signed Data
-	 * 
-	 * @return a Set of {@link CertificateIdentifier}s
-	 */
-	Set<CertificateIdentifier> getSignerInformationStoreInfos();
-
-	// ------------------------ PDF Specifics for TS 119 102-2
-	
-	/**
-	 * Retrieves a PdfRevision (PAdES) related to the current signature
-	 * 
-	 * @return {@link PdfRevision}
-	 */
-	PdfRevision getPdfRevision();
 
 }

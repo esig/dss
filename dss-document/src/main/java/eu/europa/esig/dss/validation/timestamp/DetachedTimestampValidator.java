@@ -43,6 +43,10 @@ import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
+/**
+ * Detached CMS TimestampToken Validator
+ *
+ */
 public class DetachedTimestampValidator extends SignedDocumentValidator {
 
 	protected TimestampType timestampType;

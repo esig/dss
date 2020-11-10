@@ -338,16 +338,21 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint) {
 		CryptographicConstraint defaultConstraint = getDefaultCryptographicConstraint();
 		if (defaultConstraint != null) {
-			if (cryptographicConstraint.getAcceptableDigestAlgo() == null)
+			if (cryptographicConstraint.getAcceptableDigestAlgo() == null) {
 				cryptographicConstraint.setAcceptableDigestAlgo(defaultConstraint.getAcceptableDigestAlgo());
-			if (cryptographicConstraint.getAcceptableEncryptionAlgo() == null)
+			}
+			if (cryptographicConstraint.getAcceptableEncryptionAlgo() == null) {
 				cryptographicConstraint.setAcceptableEncryptionAlgo(defaultConstraint.getAcceptableEncryptionAlgo());
-			if (cryptographicConstraint.getAlgoExpirationDate() == null)
+			}
+			if (cryptographicConstraint.getAlgoExpirationDate() == null) {
 				cryptographicConstraint.setAlgoExpirationDate(defaultConstraint.getAlgoExpirationDate());
-			if (cryptographicConstraint.getLevel() == null)
+			}
+			if (cryptographicConstraint.getLevel() == null) {
 				cryptographicConstraint.setLevel(defaultConstraint.getLevel());
-			if (cryptographicConstraint.getMiniPublicKeySize() == null)
+			}
+			if (cryptographicConstraint.getMiniPublicKeySize() == null) {
 				cryptographicConstraint.setMiniPublicKeySize(defaultConstraint.getMiniPublicKeySize());
+			}
 		}
 	}
 
@@ -522,6 +527,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {
 			return revocationConstraints.getOCSPCertHashMatch();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSelfIssuedOCSPConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getSelfIssuedOCSP();
 		}
 		return null;
 	}

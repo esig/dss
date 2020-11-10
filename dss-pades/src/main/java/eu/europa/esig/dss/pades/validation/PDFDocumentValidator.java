@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,6 +36,7 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
+import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
@@ -50,7 +50,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.ListRevocationSource;
-import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -126,7 +125,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			validateContext(validationContext);
 		}
 
-		return getDiagnosticDataBuilderConfiguration(validationContext, allSignatures, listCRLSource, listOCSPSource);
+		return createDiagnosticDataBuilder(validationContext, allSignatures, listCRLSource, listOCSPSource);
+	}
+
+	@Override
+	protected PAdESDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
+		return new PAdESDiagnosticDataBuilder();
 	}
 
 	protected ListRevocationSource<CRL> mergeCRLSources(Collection<AdvancedSignature> allSignatures,
@@ -199,8 +203,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			if (pdfRevision instanceof PdfDocTimestampRevision) {
 				PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
 				try {
-					TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision,
-							TimestampType.CONTENT_TIMESTAMP, TimestampLocation.DOC_TIMESTAMP);
+					TimestampToken timestampToken = new PdfTimestampToken(pdfDocTimestampRevision,
+							TimestampType.CONTENT_TIMESTAMP);
 					timestampToken.setFileName(document.getName());
 					timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getRevisionCoveredBytes()));
 

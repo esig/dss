@@ -47,6 +47,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHa
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
@@ -91,11 +92,15 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		 * responder knows the certificate as we have it, and so also its revocation state
 		 */
 		if (RevocationType.OCSP.equals(revocationData.getRevocationType())) {
+
 			item = item.setNextItem(revocationCertHashPresent());
 			
 			if (revocationData.isCertHashExtensionPresent()) {
 				item = item.setNextItem(revocationCertHashMatch());
 			}
+
+			item = item.setNextItem(selfIssuedOcsp());
+
 		}
 
 		item = item.setNextItem(revocationDataConsistent());
@@ -170,6 +175,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	private ChainItem<XmlRAC> revocationCertHashMatch() {
 		LevelConstraint constraint = policy.getOCSPResponseCertHashMatchConstraint();
 		return new RevocationCertHashMatchCheck(i18nProvider, result, revocationData, constraint);
+	}
+
+	private ChainItem<XmlRAC> selfIssuedOcsp() {
+		LevelConstraint constraint = policy.getSelfIssuedOCSPConstraint();
+		return new SelfIssuedOCSPCheck(i18nProvider, result, certificate, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationDataConsistent() {

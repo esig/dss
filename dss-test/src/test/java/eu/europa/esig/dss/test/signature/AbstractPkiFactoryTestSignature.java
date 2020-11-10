@@ -366,12 +366,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			if (Utils.isStringNotEmpty(locality)) {
 				assertEquals(locality, signatureWrapper.getCity());
 			}
-			// TODO : improve for CAdES
 			List<String> postalAddress = signerLocation.getPostalAddress();
 			if (Utils.isCollectionNotEmpty(postalAddress)) {
-				for (String postAddress : postalAddress) {
-					assertTrue(signatureWrapper.getAddress().contains(postAddress));
-				}
+				assertEquals(postalAddress, signatureWrapper.getPostalAddress());
 			}
 			String postalCode = signerLocation.getPostalCode();
 			if (Utils.isStringNotEmpty(postalCode)) {
@@ -385,9 +382,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			if (Utils.isStringNotEmpty(stateOrProvince)) {
 				assertEquals(stateOrProvince, signatureWrapper.getStateOrProvince());
 			}
-			String street = signerLocation.getStreet();
+			String street = signerLocation.getStreetAddress();
 			if (Utils.isStringNotEmpty(street)) {
-				assertEquals(street, signatureWrapper.getAddress());
+				assertEquals(street, signatureWrapper.getStreetAddress());
 			}
 		}
 	}
@@ -624,7 +621,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		if (stateOrProvince != null) {
 			assertTrue(addressString.contains(stateOrProvince));
 		}
-		String street = signerLocation.getStreet();
+		String street = signerLocation.getStreetAddress();
 		if (street != null) {
 			assertTrue(addressString.contains(street));
 		}

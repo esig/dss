@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 
 public interface PdfDocumentReader extends Closeable {
 	

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.List;
 
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 
 public class PdfSignatureRevision extends PdfCMSRevision {
 	
