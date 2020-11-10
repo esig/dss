@@ -74,8 +74,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
  * The common class for DiagnosticData creation from a signed/timestamped document
  *
  */
-public class SignedDocumentDiagnosticDataBuilder extends CertificateDiagnosticDataBuilder
-		implements DiagnosticDataBuilder {
+public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	protected DSSDocument signedDocument;
 	protected List<AdvancedSignature> signatures;
