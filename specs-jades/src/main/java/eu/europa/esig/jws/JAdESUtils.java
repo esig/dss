@@ -6,12 +6,15 @@ import java.util.Map;
 import org.json.JSONObject;
 
 public final class JAdESUtils extends AbstractJWSUtils {
+
+	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-schema-draft07_v005b_dss.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-schema.json";
+
+	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfc7797.json";
+	private static final String RFC7797_SCHEMA_URI = "rfc7797.json";
 	
 	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-protected.json";
 	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected.json";
-
-	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-schema-draft07_v004_dss.json";
-	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-schema.json";
 
 	private Map<URI, JSONObject> definitions;
 
@@ -67,6 +70,8 @@ public final class JAdESUtils extends AbstractJWSUtils {
 			definitions = JWSUtils.getInstance().getRFCDefinitions();
 			definitions.put(URI.create(JAdES_SCHEMA_DEFINITIONS_URI),
 					parseJson(JAdESUtils.class.getResourceAsStream(JAdES_SCHEMA_DEFINITIONS_LOCATION)));
+			definitions.put(URI.create(RFC7797_SCHEMA_URI),
+					parseJson(JAdESUtils.class.getResourceAsStream(RFC7797_SCHEMA_LOCATION)));
 		}
 		return definitions;
 	}

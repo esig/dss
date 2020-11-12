@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.InputStream;
 import java.util.Base64;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class JAdESUtilsTest {
 
 		validateSignature(jws);
 	}
-	
+
 	private void validateSignature(JSONObject signature) {
 		String protectedBase64 = signature.getString("protected");
 		assertNotNull(protectedBase64);
@@ -47,7 +48,7 @@ public class JAdESUtilsTest {
 		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
 		assertEquals("", errors);
 	}
-	
+
 	@Test
 	public void jsonFlattenedInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta-invalid.json");
@@ -70,6 +71,51 @@ public class JAdESUtilsTest {
 		
 		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
 		assertTrue(errors.contains("x509Cert"));
+	}
+
+	@Test
+	public void jsonSerializationTest() {
+		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt.json");
+		JSONObject jws = jadesUtils.parseJson(is);
+
+		String errors = jadesUtils.validateAgainstJWSSchema(jws);
+		assertEquals("", errors);
+
+		JSONArray jsonArray = jws.getJSONArray("signatures");
+		assertEquals(1, jsonArray.length());
+
+		JSONObject signature = (JSONObject) jsonArray.get(0);
+		validateSignature(signature);
+	}
+
+	@Test
+	public void jsonSerializationInvalidTest() {
+		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt-invalid.json");
+		JSONObject jws = jadesUtils.parseJson(is);
+
+		String errors = jadesUtils.validateAgainstJWSSchema(jws);
+		assertTrue(errors.contains("[signature] is not permitted"));
+
+		JSONArray jsonArray = jws.getJSONArray("signatures");
+		assertEquals(1, jsonArray.length());
+
+		JSONObject signature = (JSONObject) jsonArray.get(0);
+
+		String protectedBase64 = signature.getString("protected");
+		assertNotNull(protectedBase64);
+
+		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64);
+		String protectedString = new String(decodedProtected);
+
+		errors = jadesUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
+		assertTrue(errors.contains("[hashAV] is not permitted"));
+
+		JSONObject header = signature.getJSONObject("header");
+		assertNotNull(header);
+
+		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
+		assertTrue(errors.contains("[tstokens] is not permitted"));
+		assertTrue(errors.contains("sigPSt: #: 2 subschemas matched instead of one"));
 	}
 
 }

@@ -7,17 +7,16 @@ import java.util.Map;
 import org.json.JSONObject;
 
 public final class JWSUtils extends AbstractJWSUtils {
-	
-	private static final String JWS_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/rfc7515-protected.json";
-	private static final String JWS_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/rfc7515-unprotected.json";
 
-	private static final String RFC7515_SCHEMA_LOCATION = "/schema/rfc7515-definitions.json";
+	private static final String RFC7515_SCHEMA_LOCATION = "/schema/rfc7515.json";
 	private static final String RFC7515_SCHEMA_URI = "rfc7515.json";
 
-	private static final String RFC7517_SCHEMA_LOCATION = "/schema/rfc7517-definitions.json";
+	private static final String RFC7517_SCHEMA_LOCATION = "/schema/rfc7517.json";
 	private static final String RFC7517_SCHEMA_URI = "rfc7517.json";
 
 	private static final String JWS_SCHEMA_LOCATION = "/schema/rfc7515-jws.json";
+	private static final String JWS_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/rfc7515-protected.json";
+	private static final String JWS_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/rfc7515-unprotected.json";
 
 	private Map<URI, JSONObject> definitions;
 
