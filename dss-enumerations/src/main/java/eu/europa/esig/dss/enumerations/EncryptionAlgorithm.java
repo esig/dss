@@ -41,9 +41,7 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 	
 	X448("X448", "1.3.101.111", "X448"),
 
-	ED25519("Ed25519", "1.3.101.112", "Ed25519"),
-	
-	ED448("Ed448", "1.3.101.113", "Ed448"),
+	EDDSA("EdDSA", "1.3.101.100", "EdDSA"),
 	
 	HMAC("HMAC", "", "");
 
@@ -107,6 +105,11 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 		// To be checked if ECC exists also .
 		if ("EC".equals(name) || "ECC".equals(name)) {
 			return ECDSA;
+		}
+
+		// Since JDK 15
+		if ("Ed25519".equals(name) || "Ed448".equals(name)) {
+			return EDDSA;
 		}
 
 		// org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPublicKey.getAlgorithm()
