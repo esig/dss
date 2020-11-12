@@ -237,30 +237,54 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature
 	}
 
 	@Override
-	protected TimestampToken makeTimestampToken(XAdESAttribute unsignedAttribute, TimestampType timestampType, 
+	protected List<TimestampToken> makeTimestampTokens(XAdESAttribute signatureAttribute, TimestampType timestampType,
 			List<TimestampedReference> references) {
-
-		final Element timestampTokenNode = unsignedAttribute.findElement(xadesPaths.getCurrentEncapsulatedTimestamp());
-		if (timestampTokenNode == null) {
-			LOG.warn("The timestamp {} cannot be extracted from the signature!", timestampType.name());
-			return null;
+		final NodeList encapsulatedTimestamps = signatureAttribute
+				.getNodeList(xadesPaths.getCurrentEncapsulatedTimestamp());
+		if (encapsulatedTimestamps == null || encapsulatedTimestamps.getLength() == 0) {
+			LOG.warn("The timestamp(s) {} cannot be extracted from the signature!", timestampType.name());
+			return Collections.emptyList();
 		}
-		
-		TimestampToken timestampToken = null;
+
+		/**
+		 * 6.3 Requirements on XAdES signature's elements, qualifying properties and
+		 * services n) Requirement for SignatureTimeStamp. Each SignatureTimeStamp
+		 * element shall contain only one electronic time-stamp.
+		 */
+		if (isSignatureTimestamp(signatureAttribute) && encapsulatedTimestamps.getLength() > 1) {
+			LOG.warn("Only one EncapsulatedTimeStamp is allowed in '{}' element!", signatureAttribute.getName());
+		}
+
+		final List<TimestampToken> result = new ArrayList<>();
+		for (int ii = 0; ii < encapsulatedTimestamps.getLength(); ii++) {
+			final Element encapsulatedTimeStamp = (Element) encapsulatedTimestamps.item(ii);
+			TimestampToken timestampToken = createTimestampToken(encapsulatedTimeStamp, timestampType, references);
+			if (timestampToken != null) {
+				timestampToken.setHashCode(signatureAttribute.getElementHashCode());
+				timestampToken.setCanonicalizationMethod(signatureAttribute.getTimestampCanonicalizationMethod());
+				timestampToken.setTimestampIncludes(signatureAttribute.getTimestampIncludedReferences());
+				result.add(timestampToken);
+			}
+		}
+		return result;
+	}
+
+	private TimestampToken createTimestampToken(final Element encapsulatedTimeStamp, TimestampType timestampType,
+			List<TimestampedReference> references) {
 		try {
-			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, 
+			return new TimestampToken(Utils.fromBase64(encapsulatedTimeStamp.getTextContent()), timestampType,
 					references, TimestampLocation.XAdES);
 		} catch (Exception e) {
-			LOG.warn("Unable to build timestamp token from binaries '{}'. Reason : {}", timestampTokenNode.getTextContent(), e.getMessage(), e);
+			LOG.warn("Unable to build timestamp token from binaries '{}'. Reason : {}",
+					encapsulatedTimeStamp.getTextContent(), e.getMessage(), e);
 			return null;
 		}
-		
-		timestampToken.setHashCode(unsignedAttribute.getElementHashCode());
-		timestampToken.setCanonicalizationMethod(unsignedAttribute.getTimestampCanonicalizationMethod());
-		timestampToken.setTimestampIncludes(unsignedAttribute.getTimestampIncludedReferences());
-		
-		return timestampToken;
-		
+	}
+
+	@Override
+	protected TimestampToken makeTimestampToken(XAdESAttribute signatureAttribute, TimestampType timestampType,
+			List<TimestampedReference> references) {
+		throw new UnsupportedOperationException("XAdESTimeStampType element can contain more than one timestamp");
 	}
 
 	@Override
