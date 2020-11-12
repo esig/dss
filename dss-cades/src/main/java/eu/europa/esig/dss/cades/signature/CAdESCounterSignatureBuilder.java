@@ -180,7 +180,7 @@ public class CAdESCounterSignatureBuilder {
 			CAdESCounterSignatureParameters parameters, SignatureValue signatureValue) {
 		CMSSignedDataBuilder builder = new CMSSignedDataBuilder(certificateVerifier);
 
-		SignatureAlgorithm signatureAlgorithm = signatureValue.getAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(new InMemoryDocument(signerInformation.getSignature()),
