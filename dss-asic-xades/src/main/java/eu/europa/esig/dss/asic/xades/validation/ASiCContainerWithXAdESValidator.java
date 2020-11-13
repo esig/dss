@@ -37,6 +37,8 @@ import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 
 /**
  * This class is an implementation to validate ASiC containers with XAdES signature(s)
@@ -48,8 +50,13 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		super(null);
 	}
 
+	/**
+	 * The default constructor
+	 * 
+	 * @param asicContainer {@link DSSDocument} to be validated
+	 */
 	public ASiCContainerWithXAdESValidator(final DSSDocument asicContainer) {
-		super(asicContainer);
+		super(asicContainer, new XAdESSignatureScopeFinder());
 		analyseEntries();
 	}
 
@@ -68,16 +75,18 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		if (signatureValidators == null) {
 			signatureValidators = new ArrayList<>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
-				XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
+				XMLDocumentValidator xadesValidator = new XMLDocumentValidator(signature);
 				xadesValidator.setCertificateVerifier(certificateVerifier);
 				xadesValidator.setProcessExecutor(processExecutor);
 				xadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 
 				if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
 					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult));
-				} else {
+				} else if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 					xadesValidator.setDetachedContents(getSignedDocuments());
 					xadesValidator.setContainerContents(getArchiveDocuments());
+				} else {
+					xadesValidator.setDetachedContents(getAllDocuments());
 				}
 
 				signatureValidators.add(xadesValidator);
@@ -107,10 +116,10 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
 			potentials = OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult);
 		} else {
-			potentials = getSignedDocuments();
+			potentials = getAllDocuments();
 		}
 		for (final DSSDocument signature : getSignatureDocuments()) {
-			XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
+			XMLDocumentValidator xadesValidator = new XMLDocumentValidator(signature);
 			xadesValidator.setCertificateVerifier(certificateVerifier);
 			xadesValidator.setDetachedContents(potentials);
 			List<DSSDocument> retrievedDocs = xadesValidator.getOriginalDocuments(signatureId);

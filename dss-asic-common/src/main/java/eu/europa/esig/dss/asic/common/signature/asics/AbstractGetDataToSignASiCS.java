@@ -37,17 +37,12 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractGetDataToSignASiCS {
 
-	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file-";
-
 	/* In case of multi-files and ASiC-S, we need to create a zip with all files to be signed */
 	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
 
-			for (int i = 0; i < documents.size(); i++) {
-				DSSDocument document = documents.get(i);
-				final String documentName = document.getName();
-				final String name = documentName != null ? documentName : ZIP_ENTRY_DETACHED_FILE + i;
-				final ZipEntry entryDocument = new ZipEntry(name);
+			for (DSSDocument document : documents) {
+				final ZipEntry entryDocument = new ZipEntry(document.getName());
 				entryDocument.setTime(signingDate.getTime());
 				entryDocument.setMethod(ZipEntry.STORED);
 				byte[] byteArray = DSSUtils.toByteArray(document);

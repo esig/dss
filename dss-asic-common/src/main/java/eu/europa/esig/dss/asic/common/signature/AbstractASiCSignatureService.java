@@ -202,9 +202,7 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	private void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
 		for (DSSDocument detachedDocument : detachedDocuments) {
 			try (InputStream is = detachedDocument.openStream()) {
-				final String detachedDocumentName = detachedDocument.getName();
-				final String name = detachedDocumentName != null ? detachedDocumentName : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
-				final ZipEntry entryDocument = new ZipEntry(name);
+				final ZipEntry entryDocument = new ZipEntry(detachedDocument.getName());
 
 				zos.setLevel(ZipEntry.DEFLATED);
 				zos.putNextEntry(entryDocument);

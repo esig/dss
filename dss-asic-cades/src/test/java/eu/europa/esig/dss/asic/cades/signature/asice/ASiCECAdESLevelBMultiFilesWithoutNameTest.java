@@ -1,30 +1,11 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
-package eu.europa.esig.dss.asic.cades.signature.asics;
+package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -47,24 +28,26 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
+public class ASiCECAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<>();
-	
+
 	@BeforeEach
 	public void init() throws Exception {
-		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
+		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes()));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes()));
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 	}
 
 	@Override
@@ -83,16 +66,15 @@ public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithC
 		assertTrue(signatureFilename.endsWith(".p7s"));
 
 		List<DSSDocument> manifestDocuments = result.getManifestDocuments();
-		assertEquals(0, manifestDocuments.size());
+		assertEquals(1, manifestDocuments.size());
+		String manifestFilename = manifestDocuments.get(0).getName();
+		assertTrue(manifestFilename.startsWith("META-INF/ASiCManifest"));
+		assertTrue(manifestFilename.endsWith(".xml"));
 
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
-		assertEquals(1, signedDocuments.size());
-		assertEquals("package.zip", signedDocuments.get(0).getName());
+		assertEquals(2, signedDocuments.size());
 
-		List<DSSDocument> containerDocuments = result.getContainerDocuments();
-		assertEquals(2, containerDocuments.size());
-
-		for (DSSDocument document : containerDocuments) {
+		for (DSSDocument document : signedDocuments) {
 			assertNotNull(document.getName());
 		}
 	}
@@ -101,7 +83,7 @@ public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithC
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		assertEquals(3, Utils.collectionSize(signatureScopes)); // manifest + two signed files
 	}
 
 	@Override
@@ -111,7 +93,7 @@ public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithC
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.ASICE;
 	}
 
 	@Override

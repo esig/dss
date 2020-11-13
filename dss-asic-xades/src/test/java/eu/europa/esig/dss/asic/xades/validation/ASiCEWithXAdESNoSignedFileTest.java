@@ -34,7 +34,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -42,6 +41,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestValidation {
@@ -82,35 +82,10 @@ public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestVal
 	}
 	
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+
 		assertEquals(2, signatures.size());
-		
-		for (SignatureWrapper signature : signatures) {
-			boolean signsSignatureFile = false;
-			for (XmlDigestMatcher digestMatcher : signature.getDigestMatchers()) {
-				if ("signatures0".equals(digestMatcher.getName())) {
-					assertFalse(digestMatcher.isDataFound());
-					assertFalse(digestMatcher.isDataIntact());
-					signsSignatureFile = true;
-				} else {
-					assertTrue(digestMatcher.isDataFound());
-					assertTrue(digestMatcher.isDataIntact());
-				}
-			}
-			
-			if (signsSignatureFile) {
-				assertFalse(signature.isSignatureIntact());
-				assertFalse(signature.isSignatureValid());
-				assertFalse(signature.isBLevelTechnicallyValid());
-			} else {
-				assertTrue(signature.isSignatureIntact());
-				assertTrue(signature.isSignatureValid());
-				assertTrue(signature.isBLevelTechnicallyValid());
-			}
-		}
-		
 	}
 	
 	@Override
@@ -120,10 +95,7 @@ public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestVal
 	
 	@Override
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		for (String signatureId : diagnosticData.getSignatureIdList()) {
-			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
-			assertTrue(Utils.isCollectionEmpty(retrievedOriginalDocuments));
-		}
+		// skip, signature has invalid reference type
 	}
 
 	@Override

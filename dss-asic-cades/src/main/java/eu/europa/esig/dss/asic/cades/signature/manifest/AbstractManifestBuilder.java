@@ -25,7 +25,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
 import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
@@ -48,8 +47,7 @@ public abstract class AbstractManifestBuilder {
 	protected Element addDataObjectReference(final Document documentDom, final Element asicManifestDom, DSSDocument document, DigestAlgorithm digestAlgorithm) {
 		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCElement.DATA_OBJECT_REFERENCE);
 		
-		final String name = document.getName() != null ? document.getName() : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
-		dataObjectReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), DSSUtils.encodeURI(name));
+		dataObjectReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), DSSUtils.encodeURI(document.getName()));
 
 		MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {

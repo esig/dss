@@ -73,7 +73,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	public void signatureTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		
-        Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
+        Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate((DSSDocument) null, signatureParameters));
         assertEquals("toSignDocument cannot be null!", exception.getMessage());
 		
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
@@ -165,9 +165,61 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	private DSSDocument signAndValidate(DSSDocument documentToSign, XAdESSignatureParameters signatureParameters) {
-        ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		assertNotNull(signedDocument);
+		validate(signedDocument);
+		return signedDocument;
+	}
+
+	@Test
+	public void multipleDocumentsSignatureTest() throws Exception {
+		DSSDocument documentToSign1 = new InMemoryDocument("Hello World!".getBytes());
+		DSSDocument documentToSign2 = new InMemoryDocument("Bye World.".getBytes());
+
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+
+		Exception exception = assertThrows(NullPointerException.class,
+				() -> signAndValidate((List<DSSDocument>) null, signatureParameters));
+		assertEquals("toSignDocuments cannot be null!", exception.getMessage());
+
+		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
+		assertEquals("SignatureParameters cannot be null!", exception.getMessage());
+
+		exception = assertThrows(NullPointerException.class,
+				() -> signAndValidate(Arrays.asList(documentToSign1, documentToSign2), signatureParameters));
+		assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
+
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		exception = assertThrows(DSSException.class,
+				() -> signAndValidate(Arrays.asList(documentToSign1, documentToSign2), signatureParameters));
+		assertEquals("All documents in the list to be signed shall have names!", exception.getMessage());
+
+		documentToSign1.setName("doc");
+		documentToSign2.setName("doc");
+		exception = assertThrows(DSSException.class, () -> signAndValidate(Arrays.asList(documentToSign1, documentToSign2), 
+				signatureParameters));
+		assertEquals("The documents to be signed shall have different names! "
+				+ "The name 'doc' appears multiple times.", exception.getMessage());
+		
+		documentToSign2.setName("anotherDoc");
+		exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("Signing Certificate is not defined!", exception.getMessage());
+
+		signatureParameters.setSigningCertificate(getSigningCert());
+		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("SignatureLevel must be defined!", exception.getMessage());
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signAndValidate(documentToSign, signatureParameters);
+	}
+
+	private DSSDocument signAndValidate(List<DSSDocument> documentsToSign, XAdESSignatureParameters signatureParameters) {
+		ToBeSigned dataToSign = service.getDataToSign(documentsToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		DSSDocument signedDocument = service.signDocument(documentsToSign, signatureParameters, signatureValue);
         assertNotNull(signedDocument);
         validate(signedDocument);
         return signedDocument;

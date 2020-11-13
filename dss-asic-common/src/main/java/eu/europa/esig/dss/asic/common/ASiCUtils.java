@@ -56,7 +56,6 @@ public final class ASiCUtils {
 	public static final String TIMESTAMP_FILENAME = "timestamp";
 	public static final String TST_EXTENSION = ".tst";
 	public static final String XML_EXTENSION = ".xml";
-	public static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
     /**
      * Minimum file size to be analized on zip bombing

@@ -1,24 +1,4 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
-package eu.europa.esig.dss.asic.xades.signature.asics;
+package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,12 +28,12 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithXAdESMultipleDocumentsTestSignature {
+public class ASiCEXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithXAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<>();
-	
+
 	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
@@ -67,7 +47,7 @@ public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithX
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 	}
 
 	@Override
@@ -86,16 +66,13 @@ public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithX
 		assertTrue(signatureFilename.endsWith(".xml"));
 
 		List<DSSDocument> manifestDocuments = result.getManifestDocuments();
-		assertEquals(0, manifestDocuments.size());
+		assertEquals(1, manifestDocuments.size());
+		assertEquals("META-INF/manifest.xml", manifestDocuments.get(0).getName());
 
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
-		assertEquals(1, signedDocuments.size());
-		assertEquals("package.zip", signedDocuments.get(0).getName());
+		assertEquals(2, signedDocuments.size());
 
-		List<DSSDocument> containerDocuments = result.getContainerDocuments();
-		assertEquals(2, containerDocuments.size());
-
-		for (DSSDocument document : containerDocuments) {
+		for (DSSDocument document : signedDocuments) {
 			assertNotNull(document.getName());
 		}
 	}
@@ -104,7 +81,7 @@ public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithX
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		assertEquals(2, Utils.collectionSize(signatureScopes)); // two signed files
 	}
 
 	@Override
@@ -114,7 +91,7 @@ public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithX
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.ASICE;
 	}
 
 	@Override

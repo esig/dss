@@ -74,7 +74,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
-		GetDataToSignASiCWithXAdESHelper getDataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		GetDataToSignASiCWithXAdESHelper getDataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
+				.build(toSignDocuments, parameters);
 		XAdESSignatureParameters xadesParameters = getParameters(parameters, getDataToSignHelper);
 		return getXAdESService().getContentTimestamp(getDataToSignHelper.getSignedDocuments(), xadesParameters);
 	}
@@ -85,7 +86,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new DSSException("List of documents to sign cannot be empty!");
 		}
-		GetDataToSignASiCWithXAdESHelper dataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
+				.build(toSignDocuments, parameters);
 		XAdESSignatureParameters xadesParameters = getParameters(parameters, dataToSignHelper);
 		return getXAdESService().getDataToSign(dataToSignHelper.getSignedDocuments(), xadesParameters);
 	}
@@ -102,7 +104,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		GetDataToSignASiCWithXAdESHelper dataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
+				.build(toSignDocuments, parameters);
 
 		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
 		List<DSSDocument> manifestFiles = dataToSignHelper.getManifestFiles();

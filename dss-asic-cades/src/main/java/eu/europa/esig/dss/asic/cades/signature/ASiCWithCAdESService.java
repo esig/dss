@@ -92,8 +92,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
-		GetDataToSignASiCWithCAdESHelper getDataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(SigningOperation.SIGN,
-				toSignDocuments, parameters);
+		GetDataToSignASiCWithCAdESHelper getDataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
+				.build(SigningOperation.SIGN, toSignDocuments, parameters);
 		return getCAdESService().getContentTimestamp(getDataToSignHelper.getToBeSigned(), parameters);
 	}
 
@@ -103,8 +103,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new DSSException("List of documents to sign cannot be empty!");
 		}
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = 
-				ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(SigningOperation.SIGN, toSignDocuments, parameters);
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
+				.build(SigningOperation.SIGN, toSignDocuments, parameters);
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
 		return getCAdESService().getDataToSign(dataToSignHelper.getToBeSigned(), cadesParameters);
@@ -122,8 +122,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = 
-				ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(SigningOperation.SIGN, toSignDocuments, parameters);
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
+				.build(SigningOperation.SIGN, toSignDocuments, parameters);
 
 		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
 		List<DSSDocument> manifests = dataToSignHelper.getManifestFiles();
@@ -183,8 +183,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		ASiCParameters asicParameters = parameters.aSiC();
 
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(SigningOperation.TIMESTAMP,
-				toTimestampDocuments, parameters);
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
+				.build(SigningOperation.TIMESTAMP, toTimestampDocuments, parameters);
 
 		List<DSSDocument> timestamps = dataToSignHelper.getTimestamps();
 
@@ -448,7 +448,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		validationDataForInclusion.getOcspTokens().addAll(validationDataForDocument.getOcspTokens());
 	}
 	
-	@SuppressWarnings("unchecked")
 	private ValidationDataForInclusion getValidationDataForDocument(DSSDocument document, DSSDocument signedManifest) {
 		try {
 			CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);

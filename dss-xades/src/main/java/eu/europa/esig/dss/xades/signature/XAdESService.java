@@ -112,7 +112,11 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+
 		assertMultiDocumentsAllowed(parameters);
+		assertDocumentsValid(toSignDocuments);
 		parameters.setDetachedContents(toSignDocuments);
 		return getDataToSign(toSignDocuments.get(0), parameters);
 	}
@@ -156,7 +160,13 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocuments is not defined!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+
 		assertMultiDocumentsAllowed(parameters);
+		assertDocumentsValid(toSignDocuments);
 		parameters.setDetachedContents(toSignDocuments);
 		return signDocument(toSignDocuments.get(0), parameters, signatureValue);
 	}
@@ -231,9 +241,24 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	 * @param parameters
 	 */
 	private void assertMultiDocumentsAllowed(XAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
 		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
 		if (signaturePackaging == null || SignaturePackaging.ENVELOPED == signaturePackaging) {
 			throw new DSSException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
+		}
+	}
+
+	private void assertDocumentsValid(List<DSSDocument> toSignDocuments) {
+		List<String> documentNames = new ArrayList<>();
+		for (DSSDocument document : toSignDocuments) {
+			if (toSignDocuments.size() > 1 && Utils.isStringBlank(document.getName())) {
+				throw new DSSException("All documents in the list to be signed shall have names!");
+			}
+			if (documentNames.contains(document.getName())) {
+				throw new DSSException(String.format("The documents to be signed shall have different names! "
+						+ "The name '%s' appears multiple times.", document.getName()));
+			}
+			documentNames.add(document.getName());
 		}
 	}
 

@@ -30,25 +30,23 @@ import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFro
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromFiles;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ASiCWithCAdESDataToSignHelperBuilder {
-
-	private ASiCWithCAdESDataToSignHelperBuilder() {
-	}
+public class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
 
 	/**
-	 * Gets a {@code GetDataToSignASiCWithCAdESHelper} from the given list of documents and defined parameters
+	 * Builds a {@code GetDataToSignASiCWithCAdESHelper} from the given list of documents and defined parameters
 	 * 
 	 * @param operation {@link SigningOperation}
 	 * @param documents a list of {@link DSSDocument}s to get a helper from
 	 * @param parameters {@link ASiCWithCAdESCommonParameters}
 	 * @return {@link GetDataToSignASiCWithCAdESHelper}
 	 */
-	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(SigningOperation operation, List<DSSDocument> documents,
+	public GetDataToSignASiCWithCAdESHelper build(SigningOperation operation, List<DSSDocument> documents,
 			ASiCWithCAdESCommonParameters parameters) {
 		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
 			DSSDocument archiveDocument = documents.get(0);
@@ -59,7 +57,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 		return fromFiles(operation, documents, parameters);
 	}
 	
-	private static GetDataToSignASiCWithCAdESHelper fromZipArchive(SigningOperation operation, DSSDocument archiveDoc, 
+	private GetDataToSignASiCWithCAdESHelper fromZipArchive(SigningOperation operation, DSSDocument archiveDoc, 
 			ASiCWithCAdESCommonParameters parameters) {
 		if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".p7s") && !ASiCUtils.isArchiveContainsCorrectTimestamp(archiveDoc)) {
 			throw new UnsupportedOperationException("Container type doesn't match");
@@ -83,8 +81,9 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 		}
 	}
 	
-	private static GetDataToSignASiCWithCAdESHelper fromFiles(SigningOperation operation, List<DSSDocument> documents, 
+	private GetDataToSignASiCWithCAdESHelper fromFiles(SigningOperation operation, List<DSSDocument> documents, 
 			ASiCWithCAdESCommonParameters parameters) {
+		assertDocumentNamesDefined(documents);
 		if (ASiCUtils.isASiCE(parameters.aSiC())) {
 			return new DataToSignASiCEWithCAdESFromFiles(operation, documents, parameters);
 		} else {

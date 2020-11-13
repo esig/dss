@@ -378,9 +378,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 
 	/**
-	 * This method creates the first reference (this is a reference to the file to sign) which is specific for each form
-	 * of signature. Here, the value of the URI is the name of the file to sign or if the information is not available
-	 * the URI will use the default value: "detached-file".
+	 * This method creates the ds:Reference elements in the signature.
 	 */
 	private void incorporateReferences() {
 		final List<DSSReference> references = params.getReferences();

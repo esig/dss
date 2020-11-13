@@ -25,6 +25,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignASiCEWithXAdESFromArchive;
@@ -36,19 +37,17 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ASiCWithXAdESDataToSignHelperBuilder {
-
-	private ASiCWithXAdESDataToSignHelperBuilder() {
-	}
+public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
 
 	/**
-	 * Gets a {@code GetDataToSignASiCWithXAdESHelper} from the given list of documents and defined parameters
+	 * Builds a {@code GetDataToSignASiCWithXAdESHelper} from the given list of
+	 * documents and defined parameters
 	 * 
-	 * @param documents a list of {@link DSSDocument}s to get a helper from
+	 * @param documents  a list of {@link DSSDocument}s to get a helper from
 	 * @param parameters {@link ASiCWithXAdESSignatureParameters}
 	 * @return {@link GetDataToSignASiCWithXAdESHelper}
 	 */
-	public static GetDataToSignASiCWithXAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
+	public GetDataToSignASiCWithXAdESHelper build(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
 		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
 			DSSDocument archiveDocument = documents.get(0);
 			if (ASiCUtils.isZip(archiveDocument)) {
@@ -58,7 +57,7 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 		return fromFiles(documents, parameters);
 	}
 	
-	private static GetDataToSignASiCWithXAdESHelper fromZipArchive(DSSDocument archiveDocument, ASiCWithXAdESSignatureParameters parameters) {
+	private GetDataToSignASiCWithXAdESHelper fromZipArchive(DSSDocument archiveDocument, ASiCWithXAdESSignatureParameters parameters) {
 
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
 		
@@ -93,7 +92,9 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 		}
 	}
 
-	private static GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
+	private GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents,
+			ASiCWithXAdESSignatureParameters parameters) {
+		assertDocumentNamesDefined(documents);
 		if (ASiCUtils.isASiCE(parameters.aSiC())) {
 			return new DataToSignASiCEWithXAdESFromFiles(documents, parameters.aSiC());
 		} else {

@@ -29,10 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -57,8 +59,13 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		super(null);
 	}
 
+	/**
+	 * The default constructor
+	 * 
+	 * @param asicContainer {@link DSSDocument} to be validated
+	 */
 	public ASiCContainerWithCAdESValidator(final DSSDocument asicContainer) {
-		super(asicContainer);
+		super(asicContainer, new ASiCWithCAdESSignatureScopeFinder());
 		analyseEntries();
 	}
 
@@ -77,7 +84,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		if (signatureValidators == null) {
 			signatureValidators = new ArrayList<>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
-				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
+				CMSDocumentValidator cadesValidator = new CMSDocumentValidator(signature);
 				cadesValidator.setCertificateVerifier(certificateVerifier);
 				cadesValidator.setProcessExecutor(processExecutor);
 				cadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());

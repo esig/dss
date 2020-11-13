@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
@@ -54,7 +55,24 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	
 	private List<ManifestFile> manifestFiles;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param document {@link DSSDocument} to be validated
+	 */
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
+		this(document, null);
+	}
+
+	/**
+	 * Constructor with a custom {@code SignatureScopeFinder}
+	 * 
+	 * @param document             {@link DSSDocument} to be validated
+	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
+	 */
+	protected AbstractASiCContainerValidator(final DSSDocument document,
+			final SignatureScopeFinder signatureScopeFinder) {
+		super(signatureScopeFinder);
 		this.document = document;
 	}
 
@@ -133,20 +151,16 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 		List<DocumentValidator> currentValidators = getSignatureValidators();
 		for (DocumentValidator signatureValidator : currentValidators) {
+
 			List<AdvancedSignature> signatures = signatureValidator.getSignatures();
-			
-			List<AdvancedSignature> currentValidatorSignatures = new ArrayList<>();
 			for (AdvancedSignature advancedSignature : signatures) {
-				currentValidatorSignatures.add(advancedSignature);
-				appendCounterSignatures(currentValidatorSignatures, advancedSignature);
+				allSignatureList.add(advancedSignature);
+				appendCounterSignatures(allSignatureList, advancedSignature);
 			}
 
-			// XML/CMS validator
-			signatureValidator.findSignatureScopes(currentValidatorSignatures);
-
-			allSignatureList.addAll(currentValidatorSignatures);
 		}
 
+		findSignatureScopes(allSignatureList);
 		attachExternalTimestamps(allSignatureList);
 
 		return allSignatureList;
