@@ -65,7 +65,7 @@ public class JWSJsonSerializationObject {
 	}
 	
 	public boolean isValid() {
-		return Utils.isCollectionNotEmpty(structuralValidationErrors);
+		return Utils.isCollectionEmpty(structuralValidationErrors);
 	}
 
 }

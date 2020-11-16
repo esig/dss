@@ -891,7 +891,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	@Override
 	protected List<String> validateStructure() {
-		return DSSJsonUtils.validateAgainstJAdESSchema(jws);
+		List<String> validationErrors = DSSJsonUtils.validateAgainstJAdESSchema(jws);
+		if (Utils.isCollectionNotEmpty(validationErrors)) {
+			LOG.warn("Error(s) occurred during the JSON schema validation : {}", validationErrors);
+		}
+		return validationErrors;
 	}
 
 }

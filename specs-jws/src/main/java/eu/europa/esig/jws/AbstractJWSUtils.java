@@ -23,7 +23,7 @@ public abstract class AbstractJWSUtils {
 	
 	private static final String JWS_SCHEMA_LOCATION = "/schema/rfc7515-jws.json";
 
-	private static final String ERROR_MESSAGE = "Error during the XML schema validation! Reason : {}";
+	private static final String ERROR_MESSAGE = "Error during the JSON schema validation! Reason : {}";
 	
 	protected abstract JSONObject getJWSProtectedHeaderSchema();
 	
@@ -163,9 +163,9 @@ public abstract class AbstractJWSUtils {
 			
 		} catch (ValidationException e) {
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(ERROR_MESSAGE, e.getMessage(), e);
+				LOG.debug(ERROR_MESSAGE, e.getMessage(), e);
 			} else {
-				LOG.warn(ERROR_MESSAGE, e.getMessage());
+				LOG.debug(ERROR_MESSAGE, e.getMessage());
 			}
 			return e.getAllMessages();
 			
