@@ -128,7 +128,7 @@
 		
 		"jwsUnprotectedHeader": {
 			"type": "object",
-			"minItems": 1
+			"minProperties": 1
 		}
 		
 	}

@@ -196,7 +196,6 @@
 					"encoding",
 					"qVals"
 				],
-				"minItems": 1,
 				"additionalProperties": false
 			},
 			"minItems": 1
@@ -270,19 +269,7 @@
 				},
 				"sigPQuals": {
 					"type": "array",
-					"items": {
-						"properties": {
-							"spURI": {
-								"$ref": "#/definitions/spURI"
-							},
-							"spUserNotice": {
-								"$ref": "#/definitions/spUserNotice"
-							},
-							"spDSpec": {
-								"$ref": "#/definitions/spDSpec"
-							}
-						}
-					},
+					"items": { "$ref": "#/definitions/sigPolQual" },
 					"minItems": 1
 				}
 			},
@@ -290,6 +277,17 @@
 				"id"
 			],
 			"additionalProperties": false
+		},
+		
+		"sigPolQual": {
+			"type": "object",
+			"properties": {
+				"spUserNotice": {"$ref": "#/definitions/spUserNotice"},
+				"spURI": {"$ref": "#/definitions/spURI"},
+				"spDSpec": {"$ref": "#/definitions/spDSpec"}
+			},
+			"minProperties": 1,
+			"maxProperties": 1
 		},
 		
 		"spURI": {
@@ -352,7 +350,7 @@
 				"hashV": {
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string","contentEncoding": "base64"				
 					},
 					"minItems": 1
 				},
@@ -659,7 +657,7 @@
 		},
 		
 		"arRefs": {
-			"$ref": "#/definitions/x5Ids"
+			"$ref": "#/definitions/rRefs"
 		},
 		
 		"rfsTst": {
@@ -818,15 +816,14 @@
 					"$ref": "rfc7515.json#/definitions/jwsUnprotectedHeader"
 				},
 				{
+					"type": "object",
 					"properties": {
 						"etsiU": {
 							"$ref": "#/definitions/etsiU"
 						}
 					},
-					"required": [
-						"etsiU"
-					],
-					"maxProperties": 1
+		            "maxProperties": 1,
+		            "additionalProperties": false
 				}
 			]
 		}
