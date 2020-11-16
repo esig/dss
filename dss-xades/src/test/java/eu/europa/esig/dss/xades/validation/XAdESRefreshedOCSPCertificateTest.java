@@ -77,8 +77,8 @@ public class XAdESRefreshedOCSPCertificateTest extends AbstractXAdESTestValidati
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		// mixed sequence order
-		assertTrue(signatureWrapper.getStructuralValidationMessage().contains(
+		assertEquals(1, signatureWrapper.getStructuralValidationMessages().size());
+		assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains(
 				"Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":StateOrProvince}'"));
 	}
 

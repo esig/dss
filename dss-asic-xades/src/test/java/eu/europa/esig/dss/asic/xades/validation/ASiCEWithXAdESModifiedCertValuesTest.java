@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdESTestValidation {
 
@@ -49,9 +50,15 @@ public class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdEST
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		// xades132:OCSPValues is empty
-		assertTrue(signatureWrapper.getStructuralValidationMessage()
-				.contains("he content of element 'xades132:OCSPValues' is not complete."));
+		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getStructuralValidationMessages()));
+
+		boolean ocspValueEmptyErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains("The content of element 'xades132:OCSPValues' is not complete.")) {
+				ocspValueEmptyErrorFound = true;
+			}
+		}
+		assertTrue(ocspValueEmptyErrorFound);
 	}
 
 }

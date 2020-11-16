@@ -890,7 +890,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	@Override
-	protected String validateStructure() {
+	protected List<String> validateStructure() {
 		return DSSJsonUtils.validateAgainstJAdESSchema(jws);
 	}
 

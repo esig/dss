@@ -90,9 +90,12 @@ public class XAdES111PTTest extends AbstractXAdESTestValidation {
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
+		assertEquals(2, signatureWrapper.getStructuralValidationMessages().size());
 		// mixed sequence order
-		assertTrue(signatureWrapper.getStructuralValidationMessage().contains(
-				"Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":CRLValues}'."));
+		assertTrue(signatureWrapper.getStructuralValidationMessages().contains(
+				"cvc-complex-type.2.4.a: Invalid content was found starting with element "
+						+ "'{\"http://uri.etsi.org/01903/v1.3.2#\":CRLValues}'. "
+						+ "One of '{\"http://uri.etsi.org/01903/v1.3.2#\":OtherValues}' is expected."));
 	}
 
 }

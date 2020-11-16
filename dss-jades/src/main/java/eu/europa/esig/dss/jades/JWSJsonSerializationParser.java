@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -22,8 +20,6 @@ import eu.europa.esig.jws.JAdESUtils;
  *
  */
 public class JWSJsonSerializationParser {
-
-	private static final Logger LOG = LoggerFactory.getLogger(JWSJsonSerializationParser.class);
 	
 	/** The document to be parsed */
 	private final DSSDocument document;
@@ -48,9 +44,9 @@ public class JWSJsonSerializationParser {
 			
 			JWSJsonSerializationObject jwsJsonSerializationObject = new JWSJsonSerializationObject();
 			
-			String structureValidationError = validateJWSStructure(jsonDocument);
-			if (Utils.isStringNotEmpty(structureValidationError)) {
-				jwsJsonSerializationObject.setStructuralValidationError(structureValidationError);
+			List<String> structureValidationErrors = validateJWSStructure(jsonDocument);
+			if (Utils.isCollectionNotEmpty(structureValidationErrors)) {
+				jwsJsonSerializationObject.setStructuralValidationErrors(structureValidationErrors);
 			}
 			
 			Map<String, Object> rootStructure = JsonUtil.parseJson(jsonDocument);
@@ -147,12 +143,8 @@ public class JWSJsonSerializationParser {
 		}
 	}
 	
-	private String validateJWSStructure(String jsonDocument) {
-		String validationErrors = JAdESUtils.getInstance().validateAgainstJWSSchema(jsonDocument);
-		if (LOG.isDebugEnabled() && Utils.isStringNotEmpty(validationErrors)) {
-			LOG.debug("The provided JSON file failed against JWS Schema : {}", validationErrors);
-		}
-		return validationErrors;
+	private List<String> validateJWSStructure(String jsonDocument) {
+		return JAdESUtils.getInstance().validateAgainstJWSSchema(jsonDocument);
 	}
 
 }

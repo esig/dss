@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,8 +26,8 @@ public class JAdESUtilsTest {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta.json");
 		JSONObject jws = jadesUtils.parseJson(is);
 		
-		String errors = jadesUtils.validateAgainstJWSSchema(jws);
-		assertEquals("", errors);
+		List<String> errors = jadesUtils.validateAgainstJWSSchema(jws);
+		assertTrue(errors.isEmpty());
 
 		validateSignature(jws);
 	}
@@ -38,14 +39,14 @@ public class JAdESUtilsTest {
 		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64);
 		String protectedString = new String(decodedProtected);
 		
-		String errors = jadesUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
-		assertEquals("", errors);
+		List<String> errors = jadesUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
+		assertTrue(errors.isEmpty());
 
 		JSONObject header = signature.getJSONObject("header");
 		assertNotNull(header);
 		
 		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
-		assertEquals("", errors);
+		assertTrue(errors.isEmpty());
 	}
 	
 	@Test
@@ -53,8 +54,9 @@ public class JAdESUtilsTest {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta-invalid.json");
 		JSONObject jws = jadesUtils.parseJson(is);
 		
-		String errors = jadesUtils.validateAgainstJWSSchema(jws);
-		assertTrue(errors.contains("evilPayload"));
+		List<String> errors = jadesUtils.validateAgainstJWSSchema(jws);
+		assertEquals(6, errors.size());
+		assertErrorFound(errors, "evilPayload");
 
 		String protectedBase64 = jws.getString("protected");
 		assertNotNull(protectedBase64);
@@ -63,14 +65,27 @@ public class JAdESUtilsTest {
 		String protectedString = new String(decodedProtected);
 		
 		errors = jadesUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
-		assertTrue(errors.contains("x5t"));
+		assertEquals(1, errors.size());
+		assertErrorFound(errors, "x5t");
 
 		JSONObject header = jws.getJSONObject("header");
 		assertNotNull(header);
 		
 		errors = jadesUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
-		assertTrue(errors.contains("x509Cert"));
-		assertTrue(errors.contains("kid"));
+		assertEquals(4, errors.size());
+		assertErrorFound(errors, "x509Cert");
+		assertErrorFound(errors, "kid");
+	}
+
+	private void assertErrorFound(List<String> errors, String errorMessage) {
+		boolean errorFound = false;
+		for (String error : errors) {
+			if (error.contains(errorMessage)) {
+				errorFound = true;
+				break;
+			}
+		}
+		assertTrue(errorFound);
 	}
 
 }

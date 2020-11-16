@@ -70,9 +70,16 @@ public class XAdESRevocationSourceBGTest extends AbstractXAdESTestValidation {
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		// mixed sequence order
-		assertTrue(signatureWrapper.getStructuralValidationMessage().contains(
-				"Invalid content was found starting with element 'xades:StateOrProvince'. No child element is expected at this point."));
+		assertEquals(6, signatureWrapper.getStructuralValidationMessages().size());
+
+		boolean mixedSequenceOrderErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains(
+					"Invalid content was found starting with element 'xades:StateOrProvince'. No child element is expected at this point.")) {
+				mixedSequenceOrderErrorFound = true;
+			}
+		}
+		assertTrue(mixedSequenceOrderErrorFound);
 	}
 
 }

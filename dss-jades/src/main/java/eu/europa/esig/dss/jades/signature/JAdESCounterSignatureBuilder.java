@@ -99,7 +99,8 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	private JAdESSignature extractSignatureById(JWSJsonSerializationObject jwsJsonSerializationObject, String signatureId) {
 		if (!jwsJsonSerializationObject.isValid()) {
 			throw new DSSException(String.format("Counter signature is not supported for invalid RFC 7515 files "
-					+ "(shall be a Serializable JAdES signature). Reason(s) : %s", jwsJsonSerializationObject.getStructuralValidationError()));
+					+ "(shall be a Serializable JAdES signature). Reason(s) : %s",
+					jwsJsonSerializationObject.getStructuralValidationErrors()));
 		}
 		if (Utils.isStringEmpty(signatureId)) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
@@ -166,7 +167,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	private void addUnprotectedHeader(Map<String, Object> cSigMap, JWS jws) {
 		Map<String, Object> unprotected = (Map<String, Object>) cSigMap.get(JWSConstants.HEADER);
 		if (unprotected == null) {
-			unprotected = new HashMap<String, Object>();
+			unprotected = new HashMap<>();
 			cSigMap.put(JWSConstants.HEADER, unprotected);
 		}
 		jws.setUnprotected(unprotected);

@@ -183,7 +183,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {
 							if (!jwsJsonSerializationObject.isValid()) {
 								throw new DSSException(String.format("JWS Serialization is not supported for invalid RFC 7515 files. "
-										+ "Reason(s) : %s", jwsJsonSerializationObject.getStructuralValidationError()));
+										+ "Reason(s) : %s",
+										jwsJsonSerializationObject.getStructuralValidationErrors()));
 							}
 							
 							return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);

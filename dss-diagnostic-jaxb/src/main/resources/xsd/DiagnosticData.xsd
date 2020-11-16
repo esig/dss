@@ -513,9 +513,9 @@
 	
 	<xs:complexType name="StructuralValidation">
 		<xs:sequence>
-			<xs:element name="Valid" type="xs:boolean" minOccurs="0" />
-			<xs:element name="Message" type="xs:string" minOccurs="0" />
+			<xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+		<xs:attribute name="valid" type="xs:boolean" />
 	</xs:complexType>
 	
 	<xs:complexType name="BasicSignature">
