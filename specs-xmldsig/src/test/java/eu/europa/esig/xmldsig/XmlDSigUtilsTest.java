@@ -21,8 +21,10 @@
 package eu.europa.esig.xmldsig;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -31,12 +33,18 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.jaxb.DSSErrorHandler;
+import eu.europa.esig.dss.jaxb.ValidatorConfigurator;
+import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
 import eu.europa.esig.xmldsig.jaxb.SignatureType;
 
 public class XmlDSigUtilsTest {
@@ -90,6 +98,40 @@ public class XmlDSigUtilsTest {
 		assertNotNull(xmlDSigUtils.getSchema());
 		// cached
 		assertNotNull(xmlDSigUtils.getSchema());
+	}
+
+	@Test
+	public void validateTest() throws IOException, SAXException {
+		StreamSource aliceFile = new StreamSource(new File("src/test/resources/XmlAliceSig.xml"));
+		xmlDSigUtils.validate(aliceFile, xmlDSigUtils.getSchema(), true);
+
+		StreamSource bobFile = new StreamSource(new File("src/test/resources/XmlBobSig.xml"));
+		assertThrows(XSDValidationException.class,
+				() -> xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true));
+
+		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
+		validatorConfigurator.setErrorHandlerAlert(new Alert<DSSErrorHandler>() {
+			@Override
+			public void alert(DSSErrorHandler errorHandler) {
+				if (!errorHandler.isValid()) {
+					throw new RuntimeException(errorHandler.getErrors().iterator().next());
+				}
+			}
+		});
+		XmlDefinerUtils.getInstance().setValidatorConfigurator(validatorConfigurator);
+		assertThrows(RuntimeException.class, () -> xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true));
+
+		validatorConfigurator.setErrorHandlerAlert(new Alert<DSSErrorHandler>() {
+			@Override
+			public void alert(DSSErrorHandler errorHandler) {
+				// do nothing
+			}
+		});
+		XmlDefinerUtils.getInstance().setValidatorConfigurator(validatorConfigurator);
+		xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true);
+
+		// return settings
+		XmlDefinerUtils.getInstance().setValidatorConfigurator(ValidatorConfigurator.getSecureValidatorConfigurator());
 	}
 
 }

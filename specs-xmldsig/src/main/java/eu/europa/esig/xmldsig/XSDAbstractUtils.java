@@ -36,13 +36,11 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.xmldsig.exception.XSDValidationException;
+import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
 
 public abstract class XSDAbstractUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XSDAbstractUtils.class);
-
-	private static final String ERROR_MESSAGE = "Error during the XML schema validation! Reason : {}";
 
 	private Schema schema;
 
@@ -104,14 +102,9 @@ public abstract class XSDAbstractUtils {
 			validate(xmlSource, getSchema(), true);
 			return Collections.emptyList();
 		} catch (XSDValidationException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.warn(ERROR_MESSAGE, e.getMessage(), e);
-			} else {
-				LOG.warn(ERROR_MESSAGE, e.getMessage());
-			}
 			return e.getAllMessages();
 		} catch (Exception e) {
-			LOG.warn(ERROR_MESSAGE, e.getMessage(), e);
+			LOG.warn("An exception occurred : {}", e.getMessage(), e);
 			return Arrays.asList(e.getMessage());
 		}
 	}
@@ -129,14 +122,9 @@ public abstract class XSDAbstractUtils {
 			validate(xmlSource, getSchema(schemaSources), true);
 			return Collections.emptyList();
 		} catch (XSDValidationException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.warn(ERROR_MESSAGE, e.getMessage(), e);
-			} else {
-				LOG.warn(ERROR_MESSAGE, e.getMessage());
-			}
 			return e.getAllMessages();
 		} catch (Exception e) {
-			LOG.warn(ERROR_MESSAGE, e.getMessage(), e);
+			LOG.warn("An exception occurred : {}", e.getMessage(), e);
 			return Arrays.asList(e.getMessage());
 		}
 	}
@@ -152,22 +140,17 @@ public abstract class XSDAbstractUtils {
 	 *                         enable/disable the secure validation (protection against XXE)
 	 */
 	public void validate(final Source xmlSource, final Schema schema, boolean secureValidation)
-			throws XSDValidationException, IOException {
+			throws IOException {
 		try {
 			Validator validator = schema.newValidator();
 			if (secureValidation) {
 				XmlDefinerUtils.getInstance().configure(validator);
 			}
-			DSSErrorHandler errorHandler = new DSSErrorHandler();
-			validator.setErrorHandler(errorHandler);
 			validator.validate(xmlSource);
+			XmlDefinerUtils.getInstance().postProcess(validator);
 
-			List<SAXException> exceptions = errorHandler.getExceptions();
-			if (exceptions != null && exceptions.size() > 0) {
-				throw new XSDValidationException(exceptions);
-			}
 		} catch (SAXException e) {
-			throw new XSDValidationException(Arrays.asList(e));
+			throw new XSDValidationException(Arrays.asList(e.getMessage()));
 		}
 	}
 
