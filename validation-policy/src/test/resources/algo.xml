@@ -25,9 +25,7 @@
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
             <ClaimedSigningTime>2019-09-23T14:25:17</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="S0-RefId0">
                     <DigestMethod>SHA256</DigestMethod>

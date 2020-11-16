@@ -24,9 +24,7 @@
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
             <ClaimedSigningTime>2018-11-28T14:42:30</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="FUL-pain.001.001.03.sct-1543416150404">
                     <DigestMethod>SHA256</DigestMethod>

@@ -7,9 +7,7 @@
             <SignatureFilename>PDF</SignatureFilename>
             <ClaimedSigningTime>2019-01-22T09:47:48</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

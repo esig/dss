@@ -7,9 +7,7 @@
             <SignatureFilename>Signature-C-CZ_ICA-1.p7m</SignatureFilename>
             <ClaimedSigningTime>2016-04-25T21:30:40</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

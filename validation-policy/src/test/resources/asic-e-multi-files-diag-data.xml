@@ -28,9 +28,7 @@
             <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
             <ClaimedSigningTime>2017-09-26T08:07:27</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

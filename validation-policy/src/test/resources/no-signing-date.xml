@@ -6,9 +6,7 @@
         <Signature Id="id-1e71de2a815b8732fdcdc48064062d7b">
             <SignatureFilename>submissionReport(Getekend)_v1_2.xml</SignatureFilename>
             <SignatureFormat>XML-NOT-ETSI</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">
                     <DigestMethod>SHA256</DigestMethod>

@@ -7,9 +7,7 @@
             <SignatureFilename>Signature-C-DE_OPE-6.p7m</SignatureFilename>
             <ClaimedSigningTime>2019-11-06T08:24:25</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LT</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

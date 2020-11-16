@@ -7,9 +7,7 @@
             <SignatureFilename>test.txt.p7m</SignatureFilename>
             <ClaimedSigningTime>2004-01-15T08:30:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

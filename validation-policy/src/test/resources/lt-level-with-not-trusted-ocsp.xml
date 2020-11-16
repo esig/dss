@@ -7,9 +7,7 @@
             <SignatureFilename>sample-signed-xades-baseline-lt.xml</SignatureFilename>
             <ClaimedSigningTime>2020-02-11T06:21:21</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="OBJECT" name="r-id-4bf3e2817bdbed79516ecb8b622a35f7-1">
                     <DigestMethod>SHA256</DigestMethod>

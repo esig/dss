@@ -8,9 +8,7 @@
             <SignatureFilename>OJ_L_2018_109_FULL.xml</SignatureFilename>
             <ClaimedSigningTime>2018-04-27T07:32:00</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MANIFEST" name="Signature_1524814320911-Reference-0">
                     <DigestMethod>SHA512</DigestMethod>

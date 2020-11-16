@@ -8,9 +8,7 @@
             <SignatureFilename>dss-signed-altered-signedPropsRemoved.xml</SignatureFilename>
             <ClaimedSigningTime>2019-02-19T12:29:01</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="xml_ref_id">
                     <DigestMethod>SHA256</DigestMethod>

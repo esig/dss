@@ -2028,9 +2028,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	@Test
 	public void structureValidationFailureTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/xades-structure-failure.xml"));
-		
-		String messageError = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessage();
-		assertNotNull(messageError);
+
+		List<String> messages = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessages();
+		assertTrue(Utils.isCollectionNotEmpty(messages));
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -2056,7 +2056,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<XmlConstraint> constraints = sav.getConstraint();
 		for (XmlConstraint constraint : constraints) {
 			if (MessageTag.BBB_SAV_ISSV.name().equals(constraint.getName().getNameId())) {
-				assertTrue(constraint.getAdditionalInfo().contains(messageError));
+				assertTrue(constraint.getAdditionalInfo().contains(messages.get(0)));
 				structureWarnFound = true;
 			}
 		}
@@ -2067,8 +2067,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	public void structuralValidationFailLevelTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/xades-structure-failure.xml"));
 		
-		String messageError = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessage();
-		assertNotNull(messageError);
+		List<String> messages = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessages();
+		assertTrue(Utils.isCollectionNotEmpty(messages));
 
 		ValidationPolicy policy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
