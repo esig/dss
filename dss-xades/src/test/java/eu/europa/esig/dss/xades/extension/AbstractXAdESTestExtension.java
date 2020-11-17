@@ -32,7 +32,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -66,22 +65,32 @@ public abstract class AbstractXAdESTestExtension extends AbstractTestExtension<X
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
-		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
-
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		XAdESSignatureParameters signatureParameters = getSignatureParameters();
+		XAdESService service = getSignatureServiceToSign();
 
 		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 
+	protected XAdESSignatureParameters getSignatureParameters() {
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
+		return signatureParameters;
+	}
+
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected XAdESService getSignatureServiceToSign() {
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		return service;
+	}
+
+	@Override
+	protected XAdESService getSignatureServiceToExtend() {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

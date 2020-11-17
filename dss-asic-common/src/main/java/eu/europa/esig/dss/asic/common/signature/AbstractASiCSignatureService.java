@@ -242,4 +242,12 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		}
 	}
 
+	protected void assertAddSignaturePolicyStorePossible() {
+		if (Utils.isCollectionEmpty(getEmbeddedSignatures())) {
+			throw new UnsupportedOperationException(
+					"Signature documents of the expected format are not found in the provided ASiC Container! "
+					+ "Add a SignaturePolicyStore is not possible!");
+		}
+	}
+
 }

@@ -45,6 +45,7 @@ import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -222,6 +223,36 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	@Override
 	protected String getExpectedSignatureExtension() {
 		return ".xml";
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the ASiC
+	 * with XAdES Signature
+	 * 
+	 * @param asicContainer        {@link DSSDocument} containing a XAdES Signature
+	 *                             to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} ASiC with XAdES container with an incorporated
+	 *         SignaturePolicyStore
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument asicContainer, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(asicContainer, "The asicContainer cannot be null");
+		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+
+		extractCurrentArchive(asicContainer);
+		assertAddSignaturePolicyStorePossible();
+
+		XAdESService xadesService = getXAdESService();
+		List<DSSDocument> extendedSignatures = new ArrayList<>();
+		for (DSSDocument signature : getEmbeddedSignatures()) {
+			DSSDocument signatureWithPolicyStore = xadesService.addSignaturePolicyStore(signature, signaturePolicyStore);
+			signatureWithPolicyStore.setName(signature.getName());
+			extendedSignatures.add(signatureWithPolicyStore);
+		}
+
+		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, extendedSignatures);
+		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_SIG_POLICY_STORE, asicContainer.getMimeType()));
+		return resultArchive;
 	}
 
 	@Override

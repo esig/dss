@@ -40,7 +40,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -96,23 +95,34 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
+		CAdESSignatureParameters signatureParameters = getSignatureParameters();
+		CAdESService service = getSignatureServiceToSign();
+
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		return service.signDocument(doc, signatureParameters, signatureValue);
+	}
+
+	@Override
+	protected CAdESSignatureParameters getSignatureParameters() {
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
-
-		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getUsedTSPSourceAtSignatureTime());
-
-		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(doc, signatureParameters, signatureValue);
-
+		return signatureParameters;
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected CAdESService getSignatureServiceToSign() {
+		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		return service;
+	}
+
+	@Override
+	protected CAdESService getSignatureServiceToExtend() {
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

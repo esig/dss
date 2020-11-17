@@ -42,7 +42,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -104,23 +103,36 @@ public abstract class AbstractJAdESTestExtension
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
+		JAdESSignatureParameters signatureParameters = getSignatureParameters();
+		JAdESService service = getSignatureServiceToSign();
+
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		return service.signDocument(doc, signatureParameters, signatureValue);
+	}
+
+	@Override
+	protected JAdESSignatureParameters getSignatureParameters() {
+		// Sign
 		JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
-
-		JAdESService service = new JAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getUsedTSPSourceAtSignatureTime());
-
-		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(doc, signatureParameters, signatureValue);
+		return signatureParameters;
 	}
 
 	@Override
-	protected DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected JAdESService getSignatureServiceToSign() {
+		JAdESService service = new JAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		return service;
+	}
+
+	@Override
+	protected JAdESService getSignatureServiceToExtend() {
 		JAdESService service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

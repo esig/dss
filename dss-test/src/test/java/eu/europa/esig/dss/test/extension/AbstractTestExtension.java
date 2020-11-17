@@ -51,6 +51,8 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
+	protected abstract DocumentSignatureService<SP, TP> getSignatureServiceToSign();
+
 	protected abstract DocumentSignatureService<SP, TP> getSignatureServiceToExtend();
 
 	protected abstract TSPSource getUsedTSPSourceAtSignatureTime();
@@ -125,6 +127,8 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 		return extendedDocument;
 	}
+
+	protected abstract SP getSignatureParameters();
 
 	protected abstract SP getExtensionParameters();
 

@@ -58,6 +58,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -520,6 +521,48 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	@Override
 	protected String getExpectedSignatureExtension() {
 		return ".p7s";
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the ASiC
+	 * with CAdES Signature
+	 * 
+	 * @param asicContainer        {@link DSSDocument} containing a CAdES Signature
+	 *                             to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} ASiC with CAdES container with an incorporated
+	 *         SignaturePolicyStore
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument asicContainer, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(asicContainer, "The asicContainer cannot be null");
+		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+
+		extractCurrentArchive(asicContainer);
+		assertAddSignaturePolicyStorePossible();
+
+		CAdESService cadesService = getCAdESService();
+		List<DSSDocument> extendedSignatures = new ArrayList<>();
+		for (DSSDocument signature : getEmbeddedSignatures()) {
+			DSSDocument signatureWithPolicyStore = cadesService.addSignaturePolicyStore(signature, signaturePolicyStore);
+			signatureWithPolicyStore.setName(signature.getName());
+			extendedSignatures.add(signatureWithPolicyStore);
+		}
+
+		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, extendedSignatures);
+		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_SIG_POLICY_STORE, asicContainer.getMimeType()));
+		return resultArchive;
+	}
+	
+	@Override
+	protected void assertAddSignaturePolicyStorePossible() {
+		super.assertAddSignaturePolicyStorePossible();
+
+		for (DSSDocument signature : getEmbeddedSignatures()) {
+			if (isCoveredByArchiveManifest(signature)) {
+				throw new DSSException(String.format("The counter signature is not possible! "
+						+ "Reason : a signature with a filename '%s' is covered by another manifest.", signature.getName()));
+			}
+		}
 	}
 
 	@Override

@@ -302,17 +302,20 @@ public class CAdESService extends
 	}
 
 	/**
-	 * Incorporates a Signature Policy Store as an unsigned property into the XAdES Signature
+	 * Incorporates a Signature Policy Store as an unsigned property into the CAdES Signature
 	 * 
-	 * @param document {@link DSSDocument} containing a XAdES Signature to add a SignaturePolicyStore to
+	 * @param document             {@link DSSDocument} containing a CAdES Signature
+	 *                             to add a SignaturePolicyStore to
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
-	 * @return {@link DSSDocument} XAdESSignature with an incorporates SignaturePolicyStore
+	 * @return {@link DSSDocument} CAdESSignature with an incorporated SignaturePolicyStore
 	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
-		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
-		
+		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
+
+		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
 		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(cmsSignedData, signaturePolicyStore);
 		
 		CMSSignedDocument documentWithPolicyStore = new CMSSignedDocument(newCmsSignedData);

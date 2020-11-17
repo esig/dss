@@ -100,6 +100,10 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 					notBefore.toString(), notAfter.toString()));
 		}
 	}
+	
+	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, MimeType containerMimeType) {
+		return getFinalArchiveName(originalFile, operation, null, containerMimeType);
+	}
 
 	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, MimeType containerMimeType) {
 		StringBuilder finalName = new StringBuilder();

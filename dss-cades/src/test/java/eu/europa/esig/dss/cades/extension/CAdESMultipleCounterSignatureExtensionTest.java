@@ -11,9 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -22,7 +20,6 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -58,7 +55,7 @@ public class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTes
 	}
 	
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected CAdESService getSignatureServiceToExtend() {
 		return service;
 	}
 	

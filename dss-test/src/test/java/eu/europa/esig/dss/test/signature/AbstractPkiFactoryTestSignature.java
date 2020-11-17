@@ -443,6 +443,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			}
 			if (Utils.isStringNotEmpty(signaturePolicy.getSpuri())) {
 				assertEquals(signaturePolicy.getSpuri(), signature.getPolicyUrl());
+			} else if (Utils.isStringNotEmpty(signaturePolicy.getId())) {
+				assertEquals(signaturePolicy.getId(), signature.getPolicyUrl());
 			} else {
 				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
 			}

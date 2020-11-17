@@ -34,10 +34,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -54,7 +52,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -128,7 +125,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	}
 	
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected CAdESService getSignatureServiceToExtend() {
 		return service;
 	}
 	

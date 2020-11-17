@@ -60,7 +60,7 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 	private static final String SIGNATURE_POLICY_DOCUMENTATION = "http://nowina.lu/signature-policy.pdf";
 	private static final String OPTIONAL_ID = "mySignaturePolicyStore";
 
-	private static DSSDocument POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
+	private static final DSSDocument POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
 
 	private XAdESService service;
 	private XAdESSignatureParameters signatureParameters;

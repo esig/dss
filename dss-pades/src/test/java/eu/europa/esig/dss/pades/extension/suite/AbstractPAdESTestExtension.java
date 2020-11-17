@@ -51,7 +51,6 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -90,15 +89,9 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {
-
 		// Sign
-		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
-
-		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		PAdESSignatureParameters signatureParameters = getSignatureParameters();
+		PAdESService service = getSignatureServiceToSign();
 
 		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -106,15 +99,26 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 	}
 
 	@Override
-	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
-		checkTimestamps(diagnosticData);
+	protected PAdESService getSignatureServiceToSign() {
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		return service;
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected PAdESService getSignatureServiceToExtend() {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
+		return signatureParameters;
 	}
 
 	@Override
@@ -122,6 +126,11 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 		PAdESSignatureParameters extensionParameters = new PAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
 		return extensionParameters;
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		checkTimestamps(diagnosticData);
 	}
 	
 	@Override

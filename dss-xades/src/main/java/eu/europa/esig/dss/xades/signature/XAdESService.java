@@ -265,9 +265,10 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	/**
 	 * Incorporates a Signature Policy Store as an unsigned property into the XAdES Signature
 	 * 
-	 * @param document {@link DSSDocument} containing a XAdES Signature to add a SignaturePolicyStore to
+	 * @param document             {@link DSSDocument} containing a XAdES Signature
+	 *                             to add a SignaturePolicyStore to
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
-	 * @return {@link DSSDocument} XAdESSignature with an incorporates SignaturePolicyStore
+	 * @return {@link DSSDocument} XAdESSignature with an incorporated SignaturePolicyStore
 	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(document, "The document cannot be null");
