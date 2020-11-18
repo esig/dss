@@ -384,7 +384,7 @@ public class DSSUtilsTest {
 		logger.info("{}", token);
 		logger.info("{}", token.getPublicKey());
 		assertEquals(SignatureAlgorithm.ED25519, token.getSignatureAlgorithm());
-		assertEquals(EncryptionAlgorithm.ED25519, EncryptionAlgorithm.forKey(token.getPublicKey()));
+		assertEquals(EncryptionAlgorithm.EDDSA, EncryptionAlgorithm.forKey(token.getPublicKey()));
 		assertTrue(token.isSelfSigned());
 		assertTrue(token.isSignedBy(token));
 	}

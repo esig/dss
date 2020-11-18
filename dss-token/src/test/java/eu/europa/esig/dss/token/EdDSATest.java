@@ -49,7 +49,7 @@ public class EdDSATest {
 		PublicKey publicKey = kp.getPublic();
 		assertNotNull(publicKey);
 		assertEquals("Ed25519", publicKey.getAlgorithm());
-		assertEquals(EncryptionAlgorithm.ED25519, EncryptionAlgorithm.forKey(publicKey));
+		assertEquals(EncryptionAlgorithm.EDDSA, EncryptionAlgorithm.forKey(publicKey));
 
 		PrivateKey privateKey = kp.getPrivate();
 		assertNotNull(privateKey);
@@ -68,7 +68,7 @@ public class EdDSATest {
 		PublicKey publicKey = kp.getPublic();
 		assertNotNull(publicKey);
 		assertEquals("Ed448", publicKey.getAlgorithm());
-		assertEquals(EncryptionAlgorithm.ED448, EncryptionAlgorithm.forKey(publicKey));
+		assertEquals(EncryptionAlgorithm.EDDSA, EncryptionAlgorithm.forKey(publicKey));
 
 		PrivateKey privateKey = kp.getPrivate();
 		assertNotNull(privateKey);

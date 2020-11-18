@@ -157,9 +157,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	HMAC_RIPEMD160(EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160),
 
 	// https://tools.ietf.org/html/rfc8419#section-3.1
-	ED25519(EncryptionAlgorithm.ED25519, DigestAlgorithm.SHA512),
+	ED25519(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHA512),
 
-	ED448(EncryptionAlgorithm.ED448, DigestAlgorithm.SHAKE256_512);
+	ED448(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHAKE256_512);
 
 	private final EncryptionAlgorithm encryptionAlgo;
 
