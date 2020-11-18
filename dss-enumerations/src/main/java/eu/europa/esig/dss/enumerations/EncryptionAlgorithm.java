@@ -41,7 +41,7 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 	
 	X448("X448", "1.3.101.111", "X448"),
 
-	EDDSA("EdDSA", "1.3.101.100", "EdDSA"),
+	EDDSA("EdDSA", "", "EdDSA"),
 	
 	HMAC("HMAC", "", "");
 
