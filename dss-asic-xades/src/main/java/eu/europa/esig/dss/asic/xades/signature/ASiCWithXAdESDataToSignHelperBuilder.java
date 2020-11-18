@@ -35,6 +35,7 @@ import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFro
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromFiles;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
@@ -63,18 +64,18 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 		
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(archiveDocument);
 		ASiCExtractResult extract = extractor.extract();
+		assertContainerTypeValid(extract);
 		
 		if (ASiCUtils.isOpenDocument(extract.getMimeTypeDocument())) {
 			return new DataToSignOpenDocument(extract.getSignedDocuments(), extract.getSignatureDocuments(), 
 					extract.getManifestDocuments(), extract.getMimeTypeDocument(), extract.getRootContainer());
-			
-		} else if (ASiCUtils.isAsic(archiveDocument)) {
-			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDocument, ".xml")) {
-				throw new UnsupportedOperationException("Container type doesn't match");
-			}
+		}
 
-			ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDocument, extract.getMimeTypeDocument(), 
-					extract.getZipComment(), extract.getSignedDocuments());
+		// if ASiC with XAdES (no detached timestamps are allowed)
+		if (Utils.isCollectionNotEmpty(extract.getSignatureDocuments())) {
+
+			ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDocument,
+					extract.getMimeTypeDocument(), extract.getZipComment(), extract.getSignedDocuments());
 
 			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
 				return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(),
@@ -84,12 +85,13 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 						extract.getSignedDocuments(), parameters.aSiC());
 			} else {
 				throw new UnsupportedOperationException(
-						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
+						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType,
+								parameters.aSiC().getContainerType()));
 			}
 
-		} else {
-			return fromFiles(Arrays.asList(archiveDocument), parameters);
 		}
+
+		return fromFiles(Arrays.asList(archiveDocument), parameters);
 	}
 
 	private GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents,
@@ -99,6 +101,13 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 			return new DataToSignASiCEWithXAdESFromFiles(documents, parameters.aSiC());
 		} else {
 			return new DataToSignASiCSWithXAdESFromFiles(documents, parameters.bLevel().getSigningDate(), parameters.aSiC());
+		}
+	}
+
+	private static void assertContainerTypeValid(ASiCExtractResult result) {
+		if (ASiCUtils.areFilesContainSignatures(DSSUtils.getDocumentNames(result.getAllDocuments()))
+				&& Utils.isCollectionEmpty(result.getSignatureDocuments())) {
+			throw new UnsupportedOperationException("Container type doesn't match");
 		}
 	}
 

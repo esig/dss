@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,6 @@ import java.util.zip.ZipInputStream;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -77,15 +77,13 @@ public class ASiCEXAdESMimetypePositionTest extends AbstractASiCEXAdESTestSignat
 		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			String name = null;
-			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
+			while ((entry = zis.getNextEntry()) != null) {
 				name = entry.getName();
 				break;
 			}
 			assertEquals("mimetype", name);
 			assertEquals(0, entry.getMethod());
-			if (entry.getExtra() != null) {
-				assertEquals(0, entry.getExtra().length);
-			}
+			assertNull(entry.getExtra());
 		} catch (IOException e1) {
 			throw new DSSException(e1);
 		}

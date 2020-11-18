@@ -22,10 +22,7 @@ package eu.europa.esig.dss.asic.common;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -43,13 +39,14 @@ public abstract class AbstractASiCContainerExtractor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerExtractor.class);
 
-	/**
-	 * Defines the maximal amount of files that can be inside a ZIP container
-	 */
-	private static final int MAXIMAL_ALLOWED_FILE_AMOUNT = 1024;
-
 	private final DSSDocument asicContainer;
 
+	/**
+	 * The default constructor
+	 * 
+	 * @param asicContainer {@link DSSDocument} representing an ASiC container to
+	 *                      extract entries from
+	 */
 	protected AbstractASiCContainerExtractor(DSSDocument asicContainer) {
 		this.asicContainer = asicContainer;
 	}
@@ -57,23 +54,10 @@ public abstract class AbstractASiCContainerExtractor {
 	public ASiCExtractResult extract() {
 		ASiCExtractResult result = new ASiCExtractResult();
 		
-		long containerSize = DSSUtils.getFileByteSize(asicContainer);
-		List<String> fileNames = ASiCUtils.getFileNames(asicContainer);
-		if (Utils.isCollectionEmpty(fileNames)) {
-			throw new DSSException("The provided file does not contain documents inside. Probably file has an unsupported format or has been corrupted. "
-					+ "The signature validation is not possible");
-		} else if (fileNames.size() > MAXIMAL_ALLOWED_FILE_AMOUNT) {
-			throw new DSSException("Too many files detected. Cannot extract ASiC content");
-		}
-		
-		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {	
-			result = zipParsing(containerSize, asicInputStream);
+		try {
+			result = zipParsing(asicContainer);
 			result.setRootContainer(asicContainer);
-			
-			setContainerType(result);
-			if (ASiCContainerType.ASiC_S.equals(result.getContainerType())) {
-				result.setContainerDocuments(getArchiveDocuments(result.getSignedDocuments()));
-			}
+			result.setContainerType(getContainerType(result));
 
 			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
 				LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
@@ -88,13 +72,21 @@ public abstract class AbstractASiCContainerExtractor {
 		return result;
 	}
 
-	private ASiCExtractResult zipParsing(long containerSize, ZipInputStream asicInputStream) throws IOException {
+	private ASiCExtractResult zipParsing(DSSDocument asicContainer) throws IOException {
 		ASiCExtractResult result = new ASiCExtractResult();
-		ZipEntry entry;
-		while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
-			String entryName = entry.getName();
+
+		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(asicContainer);
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new DSSException(String.format(
+					"The provided file with name '%s' does not contain documents inside. "
+							+ "Probably file has an unsupported format or has been corrupted. "
+							+ "The signature validation is not possible",
+					asicContainer.getName()));
+		}
+
+		for (DSSDocument currentDocument : documents) {
+			String entryName = currentDocument.getName();
 			
-			DSSDocument currentDocument = ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize);
 			if (isMetaInfFolder(entryName)) {
 				if (isAllowedSignature(entryName)) {
 					result.getSignatureDocuments().add(currentDocument);
@@ -108,12 +100,12 @@ public abstract class AbstractASiCContainerExtractor {
 					result.getUnsupportedDocuments().add(currentDocument);
 				}
 			} else if (!isFolder(entryName)) { 
-				if (isMimetype(entryName)) {
+				if (ASiCUtils.isMimetype(entryName)) {
 					result.setMimeTypeDocument(currentDocument);
 				} else {
 					result.getSignedDocuments().add(currentDocument);
 					if (ASiCUtils.isASiCSArchive(currentDocument)) {
-						result.setContainerDocuments(ASiCUtils.getPackageZipContent(currentDocument));
+						result.setContainerDocuments(ZipUtils.getInstance().extractContainerContent(currentDocument));
 					}
 				}
 			}
@@ -157,16 +149,17 @@ public abstract class AbstractASiCContainerExtractor {
 		return null;
 	}
 
-	private boolean isMimetype(String entryName) {
-		return ASiCUtils.MIME_TYPE.equals(entryName);
-	}
-
 	private boolean isMetaInfFolder(String entryName) {
 		return entryName.startsWith(ASiCUtils.META_INF_FOLDER);
 	}
 	
 	private boolean isFolder(String entryName) {
 		return entryName.endsWith("/");
+	}
+
+	private ASiCContainerType getContainerType(ASiCExtractResult result) {
+		return ASiCUtils.getContainerType(asicContainer, result.getMimeTypeDocument(), result.getZipComment(),
+				result.getSignedDocuments());
 	}
 
 	protected abstract boolean isAllowedManifest(String entryName);
@@ -176,22 +169,5 @@ public abstract class AbstractASiCContainerExtractor {
 	protected abstract boolean isAllowedTimestamp(String entryName);
 
 	protected abstract boolean isAllowedSignature(String entryName);
-	
-	private void setContainerType(ASiCExtractResult result) {
-		ASiCContainerType containerType = ASiCUtils.getContainerType(asicContainer, result.getMimeTypeDocument(), 
-				result.getZipComment(), result.getSignedDocuments());
-		result.setContainerType(containerType);
-	}
-	
-	private List<DSSDocument> getArchiveDocuments(List<DSSDocument> foundDocuments) {
-		List<DSSDocument> archiveDocuments = new ArrayList<>();
-		for (DSSDocument document : foundDocuments) {
-			if (ASiCUtils.isASiCSArchive(document)) {
-				archiveDocuments.addAll(ASiCUtils.getPackageZipContent(document));
-				break; // only one "package.zip" is possible
-			}
-		}
-		return archiveDocuments;
-	}
 
 }

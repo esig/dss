@@ -33,8 +33,6 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithCAdES {
 
-	private static final String ASIC_MANIFEST_NAME = "ASiCManifest";
-
 	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
 
 	private static final String ZIP_ENTRY_ASICE_METAINF_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
@@ -50,7 +48,7 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 		}
 
 		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(operation, documents, parameters.getDigestAlgorithm(), uri);
-		String newManifestName = ASiCUtils.getNextASiCEManifestName(ASIC_MANIFEST_NAME, manifests);
+		String newManifestName = ASiCUtils.getNextASiCEManifestName(ASiCUtils.ASIC_MANIFEST_FILENAME, manifests);
 
 		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), newManifestName);
 	}

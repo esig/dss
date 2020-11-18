@@ -80,7 +80,7 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
-		assertEquals("Unsupported file type", exception.getMessage());
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

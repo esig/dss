@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -1152,6 +1153,19 @@ public final class DSSUtils {
 			return text;
 		}
 		return text.replaceFirst("^"+leading, "");
+	}
+
+	/**
+	 * Returns a list of document names from the given document list
+	 * 
+	 * @param dssDocuments a list of {@link DSSDocument}s to get names of
+	 * @return a list of {@link String} document names
+	 */
+	public static List<String> getDocumentNames(List<DSSDocument> dssDocuments) {
+		if (Utils.isCollectionNotEmpty(dssDocuments)) {
+			return dssDocuments.stream().map(DSSDocument::getName).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 }

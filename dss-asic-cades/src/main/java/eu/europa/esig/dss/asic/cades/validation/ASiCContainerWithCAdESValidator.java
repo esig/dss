@@ -32,6 +32,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
@@ -71,7 +72,11 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		return ASiCUtils.isZip(dssDocument) && ASiCUtils.isASiCWithCAdES(dssDocument);
+		if (ASiCUtils.isZip(dssDocument)) {
+			List<String> filenames = ZipUtils.getInstance().extractEntryNames(dssDocument);
+			return ASiCUtils.isASiCWithCAdES(filenames);
+		}
+		return false;
 	}
 
 	@Override

@@ -145,4 +145,12 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
         assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }
 
+	protected void onDocumentSigned(DSSDocument signedDocument) {
+		// do nothing by default
+	}
+
+	protected void onDocumentExtended(DSSDocument extendedDocument) {
+		// do nothing by default
+	}
+
 }

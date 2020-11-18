@@ -27,14 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -138,8 +134,8 @@ public abstract class AbstractASiCWithXAdESTestExtension extends AbstractTestExt
 		// We check that all original files are present in the extended archive.
 		// (signature are not renamed,...)
 
-		List<String> filenames = getFilesNames(signedDocument);
-		List<String> extendedFilenames = getFilesNames(extendedDocument);
+		List<String> filenames = ZipUtils.getInstance().extractEntryNames(signedDocument);
+		List<String> extendedFilenames = ZipUtils.getInstance().extractEntryNames(extendedDocument);
 
 		for (String name : extendedFilenames) {
 			assertTrue(filenames.contains(name));
@@ -148,19 +144,6 @@ public abstract class AbstractASiCWithXAdESTestExtension extends AbstractTestExt
 		for (String name : filenames) {
 			assertTrue(extendedFilenames.contains(name));
 		}
-	}
-
-	private List<String> getFilesNames(DSSDocument doc) {
-		List<String> filenames = new ArrayList<>();
-		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
-				filenames.add(entry.getName());
-			}
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
-		return filenames;
 	}
 	
 	@Override

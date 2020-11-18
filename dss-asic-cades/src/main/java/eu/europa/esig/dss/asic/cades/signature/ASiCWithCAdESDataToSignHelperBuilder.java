@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
+import java.util.Arrays;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
@@ -30,10 +31,12 @@ import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFro
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromFiles;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
@@ -50,8 +53,11 @@ public class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 			ASiCWithCAdESCommonParameters parameters) {
 		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
 			DSSDocument archiveDocument = documents.get(0);
-			if (ASiCUtils.isAsic(archiveDocument)) {
-				return fromZipArchive(operation, archiveDocument, parameters);
+			if (ASiCUtils.isZip(archiveDocument)) {
+				List<String> filenames = ZipUtils.getInstance().extractEntryNames(archiveDocument);
+				if (ASiCUtils.isAsicFileContent(filenames)) {
+					return fromZipArchive(operation, archiveDocument, parameters);
+				}
 			}
 		}
 		return fromFiles(operation, documents, parameters);
@@ -59,26 +65,30 @@ public class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 	
 	private GetDataToSignASiCWithCAdESHelper fromZipArchive(SigningOperation operation, DSSDocument archiveDoc, 
 			ASiCWithCAdESCommonParameters parameters) {
-		if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".p7s") && !ASiCUtils.isArchiveContainsCorrectTimestamp(archiveDoc)) {
-			throw new UnsupportedOperationException("Container type doesn't match");
-		}
-
 		ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(archiveDoc);
 		ASiCExtractResult result = extractor.extract();
+		assertContainerTypeValid(result);
 
-		ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc, result.getMimeTypeDocument(), result.getZipComment(),
-				result.getSignedDocuments());
-		
-		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
+		if (Utils.isCollectionNotEmpty(result.getSignatureDocuments())
+				|| Utils.isCollectionNotEmpty(result.getTimestampDocuments())) {
 
-		if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
-			return new DataToSignASiCEWithCAdESFromArchive(operation, result, parameters);
-		} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
-			return new DataToSignASiCSWithCAdESFromArchive(result, parameters.aSiC());
-		} else {
-			throw new UnsupportedOperationException(
-					String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
+			ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc,
+					result.getMimeTypeDocument(), result.getZipComment(), result.getSignedDocuments());
+
+			boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
+
+			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
+				return new DataToSignASiCEWithCAdESFromArchive(operation, result, parameters);
+			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
+				return new DataToSignASiCSWithCAdESFromArchive(result, parameters.aSiC());
+			} else {
+				throw new UnsupportedOperationException(
+						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType,
+								parameters.aSiC().getContainerType()));
+			}
 		}
+
+		return fromFiles(operation, Arrays.asList(archiveDoc), parameters);
 	}
 	
 	private GetDataToSignASiCWithCAdESHelper fromFiles(SigningOperation operation, List<DSSDocument> documents, 
@@ -91,5 +101,11 @@ public class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 		}
 	}
 
+	private static void assertContainerTypeValid(ASiCExtractResult result) {
+		if (ASiCUtils.areFilesContainSignatures(DSSUtils.getDocumentNames(result.getAllDocuments()))
+				&& Utils.isCollectionEmpty(result.getSignatureDocuments())) {
+			throw new UnsupportedOperationException("Container type doesn't match");
+		}
+	}
 
 }
