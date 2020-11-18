@@ -129,9 +129,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		final DSSDocument asicSignature;
 		if (rootContainer != null) {
 			asicSignature = mergeArchiveAndExtendedSignatures(rootContainer, signatures,
+					parameters.bLevel().getSigningDate(),
 					ASiCUtils.getZipComment(asicParameters));
 		} else {
-			asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters);
+			asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters,
+					parameters.bLevel().getSigningDate());
 		}
 		asicSignature.setName(getFinalArchiveName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
 		parameters.reinitDeterministicId();
@@ -171,6 +173,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			extendedDocuments.add(extendDocument);
 		}
 		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments,
+				parameters.bLevel().getSigningDate(),
 				ASiCUtils.getZipComment(parameters.aSiC()));
 		extensionResult.setName(getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), toExtendDocument.getMimeType()));
 		return extensionResult;
@@ -268,6 +271,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		List<DSSDocument> newSignaturesList = counterSignatureHelper.getUpdatedSignatureDocumentsList(counterSignedSignature);
 		
 		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList,
+				parameters.bLevel().getSigningDate(),
 				ASiCUtils.getZipComment(asicContainer.getMimeType().getMimeTypeString()));
 		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		return resultArchive;

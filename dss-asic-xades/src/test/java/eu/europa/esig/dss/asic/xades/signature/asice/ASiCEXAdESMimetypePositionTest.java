@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,9 +83,7 @@ public class ASiCEXAdESMimetypePositionTest extends AbstractASiCEXAdESTestSignat
 			}
 			assertEquals("mimetype", name);
 			assertEquals(0, entry.getMethod());
-			if (entry.getExtra() != null) {
-				assertEquals(0, entry.getExtra().length);
-			}
+			assertNull(entry.getExtra());
 		} catch (IOException e1) {
 			throw new DSSException(e1);
 		}

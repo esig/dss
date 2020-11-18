@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.common.signature;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -122,13 +123,15 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * @param archiveDocument {@link DSSDocument} the original ASiC container to
 	 *                        extend
 	 * @param filesToAdd      a list of {@link DSSDocument} signatures to embed
+	 * @param creationTime    {@link Date} of the archive creation
 	 * @param zipComment      {@link String}
 	 * @return {@link DSSDocument} the merged ASiC Container
 	 */
 	protected DSSDocument mergeArchiveAndExtendedSignatures(DSSDocument archiveDocument, List<DSSDocument> filesToAdd,
-			String zipComment) {
+			Date creationTime, String zipComment) {
 		List<DSSDocument> containerEntriesList = getListOfArchiveDocumentToAdd(archiveDocument, filesToAdd);
-		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList, zipComment);
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList, creationTime,
+				zipComment);
 		zipArchive.setMimeType(archiveDocument.getMimeType());
 		return zipArchive;
 	}
@@ -156,13 +159,14 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * @param metaInfFolderDocuments a list of {@link DSSDocument} representing a
 	 *                               META-INF directory content
 	 * @param asicParameters         {@link ASiCParameters}
+	 * @param creationTime           {@link Date} of the archive creation
 	 * @return {@link DSSDocument} the created ASiC Container
 	 */
 	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures,
-			List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters) {
+			List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters, Date creationTime) {
 		List<DSSDocument> containerEntriesList = getListOfArchiveDocumentToAdd(documentsToBeSigned, signatures,
 				metaInfFolderDocuments, asicParameters);
-		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList,
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList, creationTime,
 				ASiCUtils.getZipComment(asicParameters));
 		zipArchive.setMimeType(ASiCUtils.getMimeType(asicParameters));
 		return zipArchive;

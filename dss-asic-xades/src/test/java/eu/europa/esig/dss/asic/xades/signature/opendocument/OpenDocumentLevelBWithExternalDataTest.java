@@ -98,7 +98,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	private DSSDocument removeExternalDataFilesFromContainer(DSSDocument archiveDocument) {
 		List<DSSDocument> containerContent = ZipUtils.getInstance().extractContainerContent(archiveDocument);
 		containerContent = getArchiveContentWithoutExternalData(containerContent);
-		return ZipUtils.getInstance().createZipArchive(containerContent, null);
+		return ZipUtils.getInstance().createZipArchive(containerContent, null, null);
 	}
 
 	private List<DSSDocument> getArchiveContentWithoutExternalData(List<DSSDocument> containerContent) {

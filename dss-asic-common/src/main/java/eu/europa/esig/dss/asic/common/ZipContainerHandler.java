@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.asic.common;
 
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
@@ -29,10 +30,14 @@ public interface ZipContainerHandler {
 	/**
 	 * Creates a ZIP-Archive with the given {@code containerEntries}
 	 * 
-	 * @param containerEntries a list of {@link DSSDocument}s to embed into the new container instance
-	 * @param zipComment (Optional) {@link String} defined a zipComment
+	 * @param containerEntries a list of {@link DSSDocument}s to embed into the new
+	 *                         container instance
+	 * @param creationTime     (Optional) {@link Date} defined time of an archive
+	 *                         creation, will be set for all embedded files. If
+	 *                         null, the local current time will be used
+	 * @param zipComment       (Optional) {@link String} defined a zipComment
 	 * @return {@link DSSDocument} ZIP-Archive
 	 */
-	DSSDocument createZipArchive(List<DSSDocument> containerEntries, String zipComment);
+	DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment);
 
 }

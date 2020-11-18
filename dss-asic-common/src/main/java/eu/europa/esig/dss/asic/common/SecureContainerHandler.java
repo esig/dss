@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -121,7 +122,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		return result;
 	}
 
-	private DSSDocument getNextDocument(ZipInputStream zis, long containerSize) throws IOException {
+	private DSSDocument getNextDocument(ZipInputStream zis, long containerSize) {
 		ZipEntry entry = getNextValidEntry(zis);
 		if (entry != null) {
 			DSSDocument currentDocument = getCurrentDocument(zis, containerSize);
@@ -147,12 +148,12 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	@Override
-	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, String zipComment) {
+	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ZipOutputStream zos = new ZipOutputStream(baos)) {
 
 			for (DSSDocument entry : containerEntries) {
-				final ZipEntry zipEntry = getZipEntry(entry);
+				final ZipEntry zipEntry = getZipEntry(entry, creationTime);
 				zos.putNextEntry(zipEntry);
 				try (InputStream entryIS = entry.openStream()) {
 					secureCopy(entryIS, zos, -1);
@@ -170,33 +171,34 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		}
 	}
 
-	private ZipEntry getZipEntry(DSSDocument entry) {
-		if (ASiCUtils.isMimetype(entry.getName())) {
-			return createMimeTypeZipEntry(entry);
+	private ZipEntry getZipEntry(DSSDocument entry, Date creationTime) {
+		final String name = entry.getName() != null ? entry.getName() : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
+		final ZipEntry zipEntry = new ZipEntry(name);
+		/*
+		 * The default is DEFLATED, which will cause the size, compressed size, and CRC
+		 * to be set automatically, and the entry's data to be compressed.
+		 */
+		if (ASiCUtils.isMimetype(name)) {
+			/*
+			 * If you switch to STORED note that you'll have to set the size (or compressed
+			 * size; they must be the same, but it's okay to only set one) and CRC yourself
+			 * because they must appear before the user data in the resulting zip file.
+			 */
+			zipEntry.setMethod(ZipEntry.STORED);
+			final byte[] byteArray = DSSUtils.toByteArray(entry);
+			zipEntry.setSize(byteArray.length);
+			zipEntry.setCompressedSize(byteArray.length);
+			final CRC32 crc = new CRC32();
+			crc.update(byteArray);
+			zipEntry.setCrc(crc.getValue());
 		} else {
-			return createDocumentZipEntry(entry);
+			zipEntry.setMethod(ZipEntry.DEFLATED);
 		}
-	}
-
-	private ZipEntry createMimeTypeZipEntry(DSSDocument entry) {
-		final ZipEntry entryMimetype = new ZipEntry(entry.getName());
-		entryMimetype.setMethod(ZipEntry.STORED);
-		final byte[] mimeTypeBytes = DSSUtils.toByteArray(entry);
-		entryMimetype.setSize(mimeTypeBytes.length);
-		entryMimetype.setCompressedSize(mimeTypeBytes.length);
-		final CRC32 crc = new CRC32();
-		crc.update(mimeTypeBytes);
-		entryMimetype.setCrc(crc.getValue());
-		return entryMimetype;
-	}
-
-	private ZipEntry createDocumentZipEntry(DSSDocument entry) {
-		final String detachedDocumentName = entry.getName();
-		final String entryName = detachedDocumentName != null ? detachedDocumentName
-				: ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
-		final ZipEntry entryMimetype = new ZipEntry(entryName);
-		entryMimetype.setMethod(ZipEntry.DEFLATED);
-		return entryMimetype;
+		// if not set, the local current time will be used
+		if (creationTime != null) {
+			zipEntry.setTime(creationTime.getTime());
+		}
+		return zipEntry;
 	}
 
 	private void resetByteCounter() {
@@ -245,14 +247,13 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	/**
-	 * Returns file from the given ZipInputStream
+	 * Returns the current file from the given ZipInputStream
 	 * 
 	 * @param zis           {@link ZipInputStream} of the file
 	 * @param containerSize - long byte size of the parent container
 	 * @return {@link DSSDocument} created from the given {@code zis}
-	 * @throws IOException in case of ZipInputStream read error
 	 */
-	private DSSDocument getCurrentDocument(ZipInputStream zis, long containerSize) throws IOException {
+	private DSSDocument getCurrentDocument(ZipInputStream zis, long containerSize) {
 		long allowedSize = containerSize * maxCompressionRatio;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			secureCopy(zis, baos, allowedSize);
@@ -260,7 +261,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			return new InMemoryDocument(baos.toByteArray());
 		} catch (IOException e) {
 			closeEntry(zis);
-			throw e;
+			throw new DSSException(String.format("Unable to read an entry binaries. Reason : {}", e.getMessage()), e);
 		}
 	}
 
