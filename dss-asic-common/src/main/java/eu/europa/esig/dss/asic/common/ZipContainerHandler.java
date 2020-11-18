@@ -14,18 +14,18 @@ public interface ZipContainerHandler {
 	/**
 	 * Extracts a list of {@code DSSDocument} from the given ZIP-archive
 	 * 
-	 * @param zipPackage {@link DSSDocument}
+	 * @param zipArchive {@link DSSDocument}
 	 * @return a list of {@link DSSDocument}s
 	 */
-	List<DSSDocument> extractContainerContent(DSSDocument zipPackage);
+	List<DSSDocument> extractContainerContent(DSSDocument zipArchive);
 
 	/**
 	 * Returns a list of ZIP archive entry names
 	 * 
-	 * @param zipPackage {@link DSSDocument}
+	 * @param zipArchive {@link DSSDocument}
 	 * @return a list of {@link String} entry names
 	 */
-	List<String> extractEntryNames(DSSDocument zipPackage);
+	List<String> extractEntryNames(DSSDocument zipArchive);
 
 	/**
 	 * Creates a ZIP-Archive with the given {@code containerEntries}

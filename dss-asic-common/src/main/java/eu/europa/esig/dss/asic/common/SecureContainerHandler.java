@@ -105,12 +105,12 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	@Override
-	public List<DSSDocument> extractContainerContent(DSSDocument zipPackage) {
+	public List<DSSDocument> extractContainerContent(DSSDocument zipArchive) {
 		resetByteCounter();
 
 		List<DSSDocument> result = new ArrayList<>();
-		long containerSize = DSSUtils.getFileByteSize(zipPackage);
-		try (InputStream is = zipPackage.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
+		long containerSize = DSSUtils.getFileByteSize(zipArchive);
+		try (InputStream is = zipArchive.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			DSSDocument document;
 			while ((document = getNextDocument(zis, containerSize)) != null) {
 				result.add(document);
@@ -133,9 +133,9 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	@Override
-	public List<String> extractEntryNames(DSSDocument zipPackage) {
+	public List<String> extractEntryNames(DSSDocument zipArchive) {
 		List<String> result = new ArrayList<>();
-		try (InputStream is = zipPackage.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
+		try (InputStream is = zipArchive.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = getNextValidEntry(zis)) != null) {
 				result.add(entry.getName());
