@@ -33,6 +33,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -88,6 +90,12 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 	@Test
 	public void zipBombingOneLevelAsice2() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
+
+		// decreased value to pass the test on low memory configuration (less than -Xmx3072m)
+		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+		secureContainerHandler.setMaxCompressionRatio(50);
+		ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+
 		Exception exception = assertThrows(DSSException.class, () -> new ASiCContainerWithXAdESValidator(doc));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 	}
