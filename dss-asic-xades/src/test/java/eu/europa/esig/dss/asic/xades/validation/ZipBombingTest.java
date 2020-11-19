@@ -93,11 +93,13 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 
 		// decreased value to pass the test on low memory configuration (less than -Xmx3072m)
 		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
-		secureContainerHandler.setMaxCompressionRatio(50);
+		secureContainerHandler.setMaxCompressionRatio(20);
 		ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
 
 		Exception exception = assertThrows(DSSException.class, () -> new ASiCContainerWithXAdESValidator(doc));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
+
+		ZipUtils.getInstance().setZipContainerHandler(new SecureContainerHandler()); // return settings
 	}
 
 	@Test
