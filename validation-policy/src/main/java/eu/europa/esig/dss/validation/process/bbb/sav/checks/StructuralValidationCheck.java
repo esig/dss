@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
+import java.util.List;
+
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -66,9 +68,9 @@ public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected String buildAdditionalInfo() {
-		String errorMessage = signature.getStructuralValidationMessage();
-		if (Utils.isStringNotBlank(errorMessage)) {
-			return i18nProvider.getMessage(MessageTag.STRUCTURAL_VALIDATION_FAILURE, errorMessage);
+		List<String> errorMessages = signature.getStructuralValidationMessages();
+		if (Utils.isCollectionNotEmpty(errorMessages)) {
+			return i18nProvider.getMessage(MessageTag.STRUCTURAL_VALIDATION_FAILURE, errorMessages.toString());
 		}
 		return null;
 	}

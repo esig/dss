@@ -1165,7 +1165,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public String validateStructure() {
+	public List<String> validateStructure() {
 		return DSSXMLUtils.validateAgainstXSD(xadesPaths.getXSDUtils(), new DOMSource(signatureElement));
 	}
 

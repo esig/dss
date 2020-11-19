@@ -16,9 +16,7 @@
             <SignatureFilename>META-INF/signatures.xml</SignatureFilename>
             <ClaimedSigningTime>2017-09-26T08:26:18</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="Hello world.pdf">
                     <DigestMethod>SHA256</DigestMethod>

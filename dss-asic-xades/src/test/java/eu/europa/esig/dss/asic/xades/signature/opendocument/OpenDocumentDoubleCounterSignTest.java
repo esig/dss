@@ -19,6 +19,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
@@ -95,8 +96,15 @@ public class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCount
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		assertTrue(signatureWrapper.getStructuralValidationMessage()
-				.contains("There are multiple occurrences of ID value 'CS-"));
+		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getStructuralValidationMessages()));
+
+		boolean duplicateIdErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains("There are multiple occurrences of ID value 'CS-")) {
+				duplicateIdErrorFound = true;
+			}
+		}
+		assertTrue(duplicateIdErrorFound);
 	}
 
 	@Override

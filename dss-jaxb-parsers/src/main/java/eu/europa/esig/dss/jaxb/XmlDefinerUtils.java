@@ -127,4 +127,13 @@ public final class XmlDefinerUtils {
 		secureValidatorConfigurator.configure(validator);
 	}
 
+	/**
+	 * Post-processes the validator after the validation is executed
+	 * 
+	 * @param validator {@link javax.xml.validation.Validator}
+	 */
+	public void postProcess(Validator validator) {
+		secureValidatorConfigurator.postProcess(validator);
+	}
+
 }

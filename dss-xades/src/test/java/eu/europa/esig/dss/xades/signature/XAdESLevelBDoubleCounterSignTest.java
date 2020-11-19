@@ -98,8 +98,15 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		assertTrue(signatureWrapper.getStructuralValidationMessage()
-				.contains("There are multiple occurrences of ID value 'CS-"));
+		assertEquals(8, signatureWrapper.getStructuralValidationMessages().size());
+
+		boolean duplicateIdErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains("There are multiple occurrences of ID value 'CS-")) {
+				duplicateIdErrorFound = true;
+			}
+		}
+		assertTrue(duplicateIdErrorFound);
 	}
 
 	@Override

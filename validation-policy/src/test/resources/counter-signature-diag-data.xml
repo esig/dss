@@ -7,9 +7,7 @@
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
             <ClaimedSigningTime>2017-09-21T16:04:25</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>
@@ -71,9 +69,7 @@
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
             <ClaimedSigningTime>2017-09-21T16:04:55</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>

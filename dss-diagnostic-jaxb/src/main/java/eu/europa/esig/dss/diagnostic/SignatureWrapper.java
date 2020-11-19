@@ -123,15 +123,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isStructuralValidationValid() {
-		return (signature.getStructuralValidation() != null) && signature.getStructuralValidation().isValid();
+		return signature.getStructuralValidation() != null && signature.getStructuralValidation().isValid();
 	}
 
-	public String getStructuralValidationMessage() {
+	public List<String> getStructuralValidationMessages() {
 		XmlStructuralValidation structuralValidation = signature.getStructuralValidation();
 		if (structuralValidation != null) {
-			return structuralValidation.getMessage();
+			return structuralValidation.getMessages();
 		}
-		return "";
+		return Collections.emptyList();
 	}
 
 	public Date getClaimedSigningTime() {

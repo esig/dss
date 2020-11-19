@@ -200,6 +200,9 @@
   	<jaxb:bindings node="//xs:complexType[@name='DiagnosticData']//xs:element[@name='OrphanTokens']//xs:element[@name='OrphanRevocation']">
 		<jaxb:property name="OrphanRevocations" />
 	</jaxb:bindings>
+  	<jaxb:bindings node="//xs:complexType[@name='StructuralValidation']//xs:element[@name='Message']">
+		<jaxb:property name="Messages" />
+	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">
         <jaxb:property>

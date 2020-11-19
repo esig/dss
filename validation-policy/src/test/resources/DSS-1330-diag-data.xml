@@ -7,9 +7,7 @@
             <SignatureFilename>Test.signed_Certipost-2048-SHA512.extended-dss-universign.pdf</SignatureFilename>
             <ClaimedSigningTime>2013-05-08T19:16:05</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

@@ -102,9 +102,15 @@ public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestVal
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertFalse(signatureWrapper.isStructuralValidationValid());
-			// the ID type shall start with either a letter or underscore
-			assertTrue(
-					signatureWrapper.getStructuralValidationMessage().contains("is not a valid value for 'NCName'."));
+			assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getStructuralValidationMessages()));
+
+			boolean notValidNameErrorFound = false;
+			for (String error : signatureWrapper.getStructuralValidationMessages()) {
+				if (error.contains("is not a valid value for 'NCName'.")) {
+					notValidNameErrorFound = true;
+				}
+			}
+			assertTrue(notValidNameErrorFound);
 		}
 	}
 

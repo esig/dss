@@ -25,8 +25,19 @@ import java.util.Objects;
 import javax.xml.XMLConstants;
 import javax.xml.validation.Validator;
 
+import org.xml.sax.ErrorHandler;
+
+import eu.europa.esig.dss.alert.Alert;
+
 public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
-	
+
+	/**
+	 * The alert used to process the errors collected during the validation process
+	 * 
+	 * Default : {@code DSSErrorHandlerAlert} - collects exception and throws {@code XSDValidationException}
+	 */
+	private Alert<DSSErrorHandler> errorHandlerAlert = new DSSErrorHandlerAlert();
+
 	private ValidatorConfigurator() {
 		// The configuration protects against XXE
 		// (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
@@ -44,14 +55,16 @@ public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
 	}
 	
 	/**
-	 * Configures the {@code validator} by setting the pre-defined features and attributes
+	 * Configures the {@code javax.xml.validation.Validator} by setting the
+	 * pre-defined features and attributes
 	 * 
-	 * @param validator {@link Validator} to be configured
+	 * @param validator {@link javax.xml.validation.Validator} to be configured
 	 */
 	public void configure(Validator validator) {
 		Objects.requireNonNull(validator, "Validator must be provided");
 		setSecurityFeatures(validator);
 		setSecurityAttributes(validator);
+		setErrorHandler(validator);
 	}
 	
 	@Override
@@ -62,6 +75,17 @@ public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
 	@Override
 	public ValidatorConfigurator disableFeature(String feature) {
 		return (ValidatorConfigurator) super.disableFeature(feature);
+	}
+
+	/**
+	 * Sets {@code Alert<DSSErrorHandler>} used to process the collected exception
+	 * during the XML file validation
+	 * 
+	 * @param errorHandlerAlert {@link Alert} to handle the {@link DSSErrorHandler}
+	 */
+	public void setErrorHandlerAlert(Alert<DSSErrorHandler> errorHandlerAlert) {
+		Objects.requireNonNull(errorHandlerAlert, "errorHandlerAlert cannot be null!");
+		this.errorHandlerAlert = errorHandlerAlert;
 	}
 	
 	@Override
@@ -82,6 +106,28 @@ public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
 	@Override
 	protected void setSecurityAttribute(Validator validator, String attribute, Object value) throws Exception {
 		validator.setProperty(attribute, value);
+	}
+
+	/**
+	 * Sets {@code DSSErrorHandler} in order to collect exceptions occurred during
+	 * the validation process
+	 * 
+	 * @param validator {@link javax.xml.validation.Validator}
+	 */
+	protected void setErrorHandler(Validator validator) {
+		validator.setErrorHandler(new DSSErrorHandler());
+	}
+
+	/**
+	 * Handles the validation errors occurred during an XML file validation
+	 * 
+	 * @param validator {@link javax.xml.validation.Validator}
+	 */
+	public void postProcess(Validator validator) {
+		ErrorHandler errorHandler = validator.getErrorHandler();
+		if (errorHandler != null && errorHandler instanceof DSSErrorHandler) {
+			errorHandlerAlert.alert((DSSErrorHandler) errorHandler);
+		}
 	}
 
 }

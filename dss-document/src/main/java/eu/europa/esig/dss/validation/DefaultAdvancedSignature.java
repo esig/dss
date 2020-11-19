@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
@@ -72,7 +73,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected SignatureCryptographicVerification signatureCryptographicVerification;
 
-	protected String structureValidation;
+	/**
+	 * A list of error messages occurred during a structure validation
+	 */
+	protected List<String> structureValidationMessages;
 
 	private CertificateVerifier offlineCertificateVerifier;
 
@@ -452,23 +456,23 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			counterSignature.prepareCounterSignatures(validationContext);
 		}
 	}
-	
-    /**
-     * This method allows the structure validation of the signature.
-     */
-	protected String validateStructure() {
-		// not implemented by default
-		return Utils.EMPTY_STRING;
-	}
 
 	@Override
-	public String getStructureValidationResult() {
-		if (structureValidation == null) {
-			structureValidation = validateStructure();
+	public List<String> getStructureValidationResult() {
+		if (Utils.isCollectionEmpty(structureValidationMessages)) {
+			structureValidationMessages = validateStructure();
 		}
-		return structureValidation;
+		return structureValidationMessages;
 	}
 	
+	/**
+	 * This method processes the structure validation of the signature.
+	 */
+	protected List<String> validateStructure() {
+		// not implemented by default
+		return Collections.emptyList();
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {

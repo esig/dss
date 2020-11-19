@@ -7,9 +7,7 @@
             <SignatureFilename>document-signed-cades-baseline-t.pkcs7</SignatureFilename>
             <ClaimedSigningTime>2018-07-07T09:37:10</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

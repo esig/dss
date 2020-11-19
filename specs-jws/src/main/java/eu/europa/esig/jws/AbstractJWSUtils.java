@@ -3,6 +3,7 @@ package eu.europa.esig.jws;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +14,16 @@ import org.everit.json.schema.loader.SchemaLoader;
 import org.everit.json.schema.loader.SchemaLoader.SchemaLoaderBuilder;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractJWSUtils {
 
-	private static final String EMPTY_STRING = "";
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractJWSUtils.class);
 	
 	private static final String JWS_SCHEMA_LOCATION = "/schema/rfc7515-jws.json";
+
+	private static final String ERROR_MESSAGE = "Error during the JSON schema validation! Reason : {}";
 	
 	protected abstract JSONObject getJWSProtectedHeaderSchema();
 	
@@ -32,10 +37,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates a JSON against JWS Schema according to RFC 7515
 	 * 
 	 * @param is {@link InputStream} representing a JSON to validate
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstJWSSchema(InputStream is) {
+	public List<String> validateAgainstJWSSchema(InputStream is) {
 		return validateAgainstJWSSchema(parseJson(is));
 	}
 
@@ -43,10 +48,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates a JSON against JWS Schema according to RFC 7515
 	 * 
 	 * @param jsonString {@link String} representing a JSON to validate
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstJWSSchema(String jsonString) {
+	public List<String> validateAgainstJWSSchema(String jsonString) {
 		return validateAgainstJWSSchema(parseJson(jsonString));
 	}
 
@@ -57,7 +62,7 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link String} a message containing errors occurred during the validation process, 
 	 * 			empty string ("") when validation succeeds
 	 */
-	protected String validateAgainstJWSSchema(JSONObject json) {
+	protected List<String> validateAgainstJWSSchema(JSONObject json) {
 		JSONObject jwsSchema = getJWSSchema();
 		return validateAgainstSchema(json, jwsSchema, Collections.emptyMap());
 	}
@@ -75,10 +80,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates a "protected" header of a JWS
 	 * 
 	 * @param is {@link InputStream} representing a protected header of a JWS
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstJWSProtectedHeaderSchema(InputStream is) {
+	public List<String> validateAgainstJWSProtectedHeaderSchema(InputStream is) {
 		return validateAgainstJWSProtectedHeaderSchema(parseJson(is));
 	}
 
@@ -86,10 +91,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates a "protected" header of a JWS
 	 * 
 	 * @param jsonString {@link String} representing a protected header of a JWS
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstJWSProtectedHeaderSchema(String jsonString) {
+	public List<String> validateAgainstJWSProtectedHeaderSchema(String jsonString) {
 		return validateAgainstJWSProtectedHeaderSchema(parseJson(jsonString));
 	}
 	
@@ -97,10 +102,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates a "protected" header of a JWS
 	 * 
 	 * @param json {@link JSONObject} representing a protected header of a JWS
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	protected String validateAgainstJWSProtectedHeaderSchema(JSONObject json) {
+	protected List<String> validateAgainstJWSProtectedHeaderSchema(JSONObject json) {
 		JSONObject jwsProtectedSchema = getJWSProtectedHeaderSchema();
 		Map<URI, JSONObject> jwsProtectedDefinitions = getJWSProtectedHeaderDefinitions();
 		return validateAgainstSchema(json, jwsProtectedSchema, jwsProtectedDefinitions);
@@ -110,10 +115,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates an unprotected "header" of a JWS
 	 * 
 	 * @param is {@link InputStream} representing an unprotected header of a JWS
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstJWSUnprotectedHeaderSchema(InputStream is) {
+	public List<String> validateAgainstJWSUnprotectedHeaderSchema(InputStream is) {
 		return validateAgainstJWSUnprotectedHeaderSchema(parseJson(is));
 	}
 
@@ -121,10 +126,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates an unprotected "header" of a JWS
 	 * 
 	 * @param jsonString {@link String} representing an unprotected header of a JWS
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstJWSUnprotectedHeaderSchema(String jsonString) {
+	public List<String> validateAgainstJWSUnprotectedHeaderSchema(String jsonString) {
 		return validateAgainstJWSUnprotectedHeaderSchema(parseJson(jsonString));
 	}
 
@@ -132,10 +137,10 @@ public abstract class AbstractJWSUtils {
 	 * Validates an unprotected "header" of a JWS
 	 * 
 	 * @param json {@link JSONObject} representing an unprotected header of a JWS
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	protected String validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
+	protected List<String> validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
 		JSONObject jwsUnprotectedSchema = getJWSUnprotectedHeaderSchema();
 		Map<URI, JSONObject> jwsUnprotectedDefinitions = getJWSUnprotectedHeaderDefinitions();
 		return validateAgainstSchema(json, jwsUnprotectedSchema, jwsUnprotectedDefinitions);
@@ -144,28 +149,30 @@ public abstract class AbstractJWSUtils {
 	/**
 	 * Validates a {@code json} against the provided JSON {@code schema}
 	 * 
-	 * @param json {@link JSONObject} to be validated against a schema
-	 * @param schema {@link JSONObject} schema to validate against
+	 * @param json        {@link JSONObject} to be validated against a schema
+	 * @param schema      {@link JSONObject} schema to validate against
 	 * @param definitions a map of definitions required for the {@code schema}
-	 * @return {@link String} a message containing errors occurred during the validation process, 
-	 * 			empty string ("") when validation succeeds
+	 * @return a list of {@link String} message errors occurred during the
+	 *         validation process, an empty list when validation succeeds
 	 */
-	public String validateAgainstSchema(JSONObject json, JSONObject schema, Map<URI, JSONObject> definitions) {
+	public List<String> validateAgainstSchema(JSONObject json, JSONObject schema, Map<URI, JSONObject> definitions) {
 		try {
 			Schema jwsProtectedSchema = loadSchema(schema, definitions);
 			jwsProtectedSchema.validate(json);
+			return Collections.emptyList();
 			
 		} catch (ValidationException e) {
-			List<String> allMessages = e.getAllMessages();
-			if (allMessages != null && allMessages.size() != 0) {
-				return allMessages.toString();
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(ERROR_MESSAGE, e.getMessage(), e);
+			} else {
+				LOG.debug(ERROR_MESSAGE, e.getMessage());
 			}
+			return e.getAllMessages();
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			LOG.warn(ERROR_MESSAGE, e.getMessage(), e);
+			return Arrays.asList(e.getMessage());
 		}
-		
-		return EMPTY_STRING;
 	}
 
 	protected JSONObject parseJson(String json) {

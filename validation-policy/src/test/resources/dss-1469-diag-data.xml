@@ -7,9 +7,7 @@
             <SignatureFilename>screenshot2.png.cades-server-detached.extended.sig</SignatureFilename>
             <ClaimedSigningTime>2019-05-03T18:26:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

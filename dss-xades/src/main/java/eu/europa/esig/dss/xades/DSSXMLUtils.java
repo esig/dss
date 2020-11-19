@@ -600,13 +600,11 @@ public final class DSSXMLUtils {
 	/**
 	 * This method allows to validate an XML against the XAdES XSD schema.
 	 *
-	 * @param xsdUtils
-	 *                 the XSD Utils class to be used
-	 * @param source
-	 *                 {@code Source} XML to validate
-	 * @return null if the XSD validates the XML, error message otherwise
+	 * @param xsdUtils the XSD Utils class to be used
+	 * @param source   {@code Source} XML to validate
+	 * @return an empty list if the XSD validates the XML, error messages otherwise
 	 */
-	public static String validateAgainstXSD(XSDAbstractUtils xsdUtils, final Source source) {
+	public static List<String> validateAgainstXSD(XSDAbstractUtils xsdUtils, final Source source) {
 		return xsdUtils.validateAgainstXSD(source);
 	}
 

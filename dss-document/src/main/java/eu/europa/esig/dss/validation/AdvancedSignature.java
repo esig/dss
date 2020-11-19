@@ -466,10 +466,10 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Returns a message if the structure validation fails
 	 * 
-	 * @return {@link String} error message if the structure validation fails, empty
-	 *         string otherwise
+	 * @return a list of {@link String} error messages if validation fails,
+	 *         an empty list if structural validation succeeds
 	 */
-	String getStructureValidationResult();
+	List<String> getStructureValidationResult();
 
 	/**
 	 * Runs SignatureScopeFinder

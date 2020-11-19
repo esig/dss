@@ -22,6 +22,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
@@ -101,8 +102,15 @@ public class ASiCEXAdESDoubleCounterSignTest extends AbstractASiCXAdESCounterSig
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		assertTrue(signatureWrapper.getStructuralValidationMessage()
-				.contains("There are multiple occurrences of ID value 'CS-"));
+		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getStructuralValidationMessages()));
+
+		boolean duplicateIdErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains("There are multiple occurrences of ID value 'CS-")) {
+				duplicateIdErrorFound = true;
+			}
+		}
+		assertTrue(duplicateIdErrorFound);
 	}
 
 	@Override

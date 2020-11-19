@@ -593,26 +593,12 @@ public class DSSJsonUtils {
 	 * Validates {@code JWS} against a JAdES schema (ETSI TS 119 182-1)
 	 * 
 	 * @param jws {@link JWS} to validate
-	 * @return {@link String} containing validation errors, empty string ("") if no error occurred
+	 * @return a list of {@link String}s containing validation errors, empty list if
+	 *         no error occurred
 	 */
-	public static String validateAgainstJAdESSchema(JWS jws) {
-		StringBuilder builder = new StringBuilder();
-		
+	public static List<String> validateAgainstJAdESSchema(JWS jws) {
 		String headerJson = jws.getHeaders().getFullHeaderAsJsonString();
-		String errors = JAdESUtils.getInstance().validateAgainstJWSProtectedHeaderSchema(headerJson);
-		builder.append(errors);
-		
-		Map<String, Object> unprotected = jws.getUnprotected();
-		if (Utils.isMapNotEmpty(unprotected)) {
-			String unprotectedJson = JsonUtil.toJson(unprotected);
-			errors = JAdESUtils.getInstance().validateAgainstJWSUnprotectedHeaderSchema(unprotectedJson);
-			if (Utils.isStringNotEmpty(errors)) {
-				builder.append("; ");
-				builder.append(errors);
-			}
-		}
-		
-		return builder.toString();
+		return JAdESUtils.getInstance().validateAgainstJWSProtectedHeaderSchema(headerJson);
 	}
 
 }

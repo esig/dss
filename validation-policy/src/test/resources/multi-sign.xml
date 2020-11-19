@@ -7,9 +7,7 @@
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
             <ClaimedSigningTime>2017-04-27T10:25:52</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>
@@ -80,9 +78,7 @@
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
             <ClaimedSigningTime>2016-10-10T12:13:46</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>
@@ -153,9 +149,7 @@
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
             <ClaimedSigningTime>2017-02-21T12:11:37</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>
@@ -224,9 +218,7 @@
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
             <ClaimedSigningTime>2017-04-07T08:19:49</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>

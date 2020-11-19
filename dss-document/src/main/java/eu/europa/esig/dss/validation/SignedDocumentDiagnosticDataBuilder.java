@@ -414,11 +414,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	private XmlStructuralValidation getXmlStructuralValidation(AdvancedSignature signature) {
-		String structureValidationResult = signature.getStructureValidationResult();
+		List<String> structureValidationResult = signature.getStructureValidationResult();
 		final XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
-		xmlStructuralValidation.setValid(Utils.isStringEmpty(structureValidationResult));
-		if (Utils.isStringNotEmpty(structureValidationResult)) {
-			xmlStructuralValidation.setMessage(structureValidationResult);
+		xmlStructuralValidation.setValid(Utils.isCollectionEmpty(structureValidationResult));
+		if (Utils.isCollectionNotEmpty(structureValidationResult)) {
+			xmlStructuralValidation.getMessages().addAll(structureValidationResult);
 		}
 		return xmlStructuralValidation;
 	}

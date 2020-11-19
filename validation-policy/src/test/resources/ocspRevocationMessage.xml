@@ -7,9 +7,7 @@
             <SignatureFilename>test-signed-cades-baseline-b.pkcs7</SignatureFilename>
             <ClaimedSigningTime>2019-08-08T08:20:43</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

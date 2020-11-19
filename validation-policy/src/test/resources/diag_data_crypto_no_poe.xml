@@ -8,9 +8,7 @@
             <SignatureFilename>EUTrustedListsofCertificationServiceProvidersXML.signed_Certipost_detached.extended-lta.xml</SignatureFilename>
             <ClaimedSigningTime>2013-08-26T13:51:22</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="Signature_1377525082391-Reference-0">
                     <DigestMethod>SHA256</DigestMethod>

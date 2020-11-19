@@ -45,9 +45,7 @@
             <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
             <ClaimedSigningTime>2019-12-17T10:12:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>
@@ -118,9 +116,7 @@
             <SignatureFilename>META-INF/signature002.p7s</SignatureFilename>
             <ClaimedSigningTime>2019-12-17T10:12:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

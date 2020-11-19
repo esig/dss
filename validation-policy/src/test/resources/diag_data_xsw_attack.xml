@@ -8,9 +8,7 @@
             <SignatureFilename>XSW-enveloped-fake-content-two-same-id.xml</SignatureFilename>
             <ClaimedSigningTime>2018-07-20T08:00:00</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="id-LockItSignatureReference-1x365793516" duplicated="true">
                     <DigestMethod>SHA256</DigestMethod>
