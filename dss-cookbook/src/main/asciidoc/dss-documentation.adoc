@@ -257,10 +257,11 @@ DSS contains a bundle of JAXB-based modules, generation Java classes in runtime 
 
 Also, as it was explained in the previous section, some modules are required to be built completely for a building of their dependent modules when using a quick profile, namely:
 
- * dss-test;
  * dss-utils;
  * dss-crl-parser;
- * dss-pades.
+ * dss-test;
+ * dss-pades;
+ * dss-asic-common.
 
 The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the equal behavior between their implementations.
 
