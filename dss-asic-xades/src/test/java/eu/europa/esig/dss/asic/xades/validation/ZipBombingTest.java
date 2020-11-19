@@ -82,7 +82,7 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 	public void zipBombingOneLevelAsice() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
 		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
-		assertEquals("Unable to close entry", exception.getMessage());
+		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 	}
 
 	@Test

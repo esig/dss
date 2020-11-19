@@ -134,12 +134,17 @@ public class SecureContainerHandler implements ZipContainerHandler {
 
 	@Override
 	public List<String> extractEntryNames(DSSDocument zipArchive) {
+		resetByteCounter();
+		long containerSize = DSSUtils.getFileByteSize(zipArchive);
+		long allowedSize = containerSize * maxCompressionRatio;
+
 		List<String> result = new ArrayList<>();
 		try (InputStream is = zipArchive.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = getNextValidEntry(zis)) != null) {
 				result.add(entry.getName());
 				assertCollectionSizeValid(result);
+				secureRead(zis, allowedSize); // read securely before accessing the next entry
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to extract package.zip", e);
@@ -220,11 +225,9 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			try {
 				return zis.getNextEntry();
 			} catch (Exception e) {
-				LOG.warn(
-						"ZIP container contains a malformed, corrupted or not accessible entry! The entry is skipped. Reason: [{}]",
-						e.getMessage());
-				// skip the entry and continue until find the next valid entry or end of the
-				// stream
+				LOG.warn("ZIP container contains a malformed, corrupted or not accessible entry! "
+						+ "The entry is skipped. Reason: [{}]", e.getMessage());
+				// skip the entry and continue until find the next valid entry or end of the stream
 				counter++;
 				closeEntry(zis);
 			}
@@ -266,14 +269,15 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	/**
-	 * Reads and copies InputStream in a secure way, depending on the provided
-	 * container size This method allows to detect "ZipBombing" (large files inside
-	 * a zip container)
+	 * Reads and copies InputStream in a secure way to OutputStream. Detects
+	 * "ZipBombing" (large files inside a zip container) depending on the provided
+	 * container size
 	 * 
 	 * @param is          {@link InputStream} of file
-	 * @param os          {@link OutputStream} where save file to
+	 * @param os          {@link OutputStream} where save file to.
 	 * @param allowedSize defines an allowed size of the ZIP container entries, if
 	 *                    -1 skips the validation
+	 * @throws IOException if an exception occurs
 	 */
 	private void secureCopy(InputStream is, OutputStream os, long allowedSize) throws IOException {
 		byte[] data = new byte[2048];
@@ -282,6 +286,22 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			byteCounter += nRead;
 			assertExtractEntryLengthValid(allowedSize);
 			os.write(data, 0, nRead);
+		}
+	}
+
+	/**
+	 * This method allows to read securely InputStream without caching the content
+	 * 
+	 * @param is          {@link InputStream} to read
+	 * @param allowedSize the maximum allowed size of the extracted content
+	 * @throws IOException if an exception occurs
+	 */
+	private void secureRead(InputStream is, long allowedSize) throws IOException {
+		byte[] data = new byte[2048];
+		int nRead;
+		while ((nRead = is.read(data)) != -1) {
+			byteCounter += nRead;
+			assertExtractEntryLengthValid(allowedSize);
 		}
 	}
 
