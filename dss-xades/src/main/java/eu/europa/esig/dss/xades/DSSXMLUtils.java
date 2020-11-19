@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -1025,6 +1026,54 @@ public final class DSSXMLUtils {
 	
 	private static ReferenceOutputType getTransformOutputType(String algorithmUri) {
 		return transformsWithNodeSetOutput.contains(algorithmUri) ? ReferenceOutputType.NODE_SET : ReferenceOutputType.OCTET_STREAM;
+	}
+
+	/**
+	 * Applies transforms on the node and returns the byte array to be used for a
+	 * digest computation
+	 * 
+	 * NOTE: returns the original node binaries, if the list of {@code transforms}
+	 * is empty
+	 * 
+	 * @param node         {@link Node} to apply transforms on
+	 * @param transforms   a list of {@link DSSTransform}s to execute on the node
+	 * @return a byte array, representing a content obtained after transformations
+	 */
+	public static byte[] applyTransforms(final Node node, final List<DSSTransform> transforms) {
+		Node nodeToTransform = node;
+		if (Utils.isCollectionNotEmpty(transforms)) {
+			byte[] transformedReferenceBytes = null;
+			Iterator<DSSTransform> iterator = transforms.iterator();
+			while (iterator.hasNext()) {
+				DSSTransform transform = iterator.next();
+				transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform);
+				if (iterator.hasNext()) {
+					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
+				}
+			}
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Reference bytes after transforms: ");
+				LOG.debug(new String(transformedReferenceBytes));
+			}
+			return transformedReferenceBytes;
+			
+		} else {
+			return DSSXMLUtils.getNodeBytes(nodeToTransform);
+		}
+	}
+	/**
+	 * Applies transforms on document content and returns the byte array to be used for a
+	 * digest computation
+	 * 
+	 * NOTE: returns the original document binaries, if the list of {@code transforms}
+	 * is empty. The {@code document} shall represent an XML content.
+	 * 
+	 * @param document     {@link DSSDocument} representing an XML to apply transforms on
+	 * @param transforms   a list of {@link DSSTransform}s to execute on the node
+	 * @return a byte array, representing a content obtained after transformations
+	 */
+	public static byte[] applyTransforms(final DSSDocument document, final List<DSSTransform> transforms) {
+		return applyTransforms(DomUtils.buildDOM(document), transforms);
 	}
 
 }

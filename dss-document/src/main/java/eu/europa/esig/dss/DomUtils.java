@@ -737,4 +737,30 @@ public final class DomUtils {
 		element.setAttribute(namespaceAttribute.toString(), namespace.getUri());
 	}
 
+	/**
+	 * Returns a Node with excluded comments.
+	 * 
+	 * NOTE: the method modifies the original {@code node}!
+	 * 
+	 * @param node {@link Node} to process
+	 * @return binaries of the {@code node} without comments
+	 */
+	public static Node excludeComments(Node node) {
+		excludeCommentsRecursively(node);
+		return node;
+	}
+
+	private static void excludeCommentsRecursively(final Node node) {
+		NodeList childNodes = node.getChildNodes();
+		for (int ii = 0; ii < childNodes.getLength(); ii++) {
+			Node childNode = childNodes.item(ii);
+			if (Node.COMMENT_NODE == childNode.getNodeType()) {
+				node.removeChild(childNode);
+			}
+			if (childNode.hasChildNodes()) {
+				excludeCommentsRecursively(childNode);
+			}
+		}
+	}
+
 }

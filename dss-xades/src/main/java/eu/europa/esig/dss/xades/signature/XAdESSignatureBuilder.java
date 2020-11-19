@@ -640,15 +640,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (referenceType != null) {
 			referenceDom.setAttribute(XMLDSigAttribute.TYPE.getAttributeName(), referenceType);
 		}
-
-		final List<DSSTransform> dssTransforms = dssReference.getTransforms();
-		if (Utils.isCollectionNotEmpty(dssTransforms)) { // Detached signature may not have transformations
-			final Element transformsDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORMS);
-			referenceDom.appendChild(transformsDom);
-			for (final DSSTransform dssTransform : dssTransforms) {
-				dssTransform.createTransform(documentDom, transformsDom);
-			}
+		
+		// Detached signature may not have transformations
+		if (Utils.isCollectionNotEmpty(dssReference.getTransforms())) {
+			incorporateTransforms(referenceDom, dssReference.getTransforms());
 		}
+		
 		final DigestAlgorithm digestAlgorithm = dssReference.getDigestMethodAlgorithm();
 		incorporateDigestMethod(referenceDom, digestAlgorithm);
 
@@ -657,6 +654,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			LOG.trace("Reference canonicalization method  --> {}", signedInfoCanonicalizationMethod);
 		}
 		incorporateDigestValue(referenceDom, dssReference, digestAlgorithm, documentAfterTranformations);
+	}
+	
+	private void incorporateTransforms(final Element parentElement, final List<DSSTransform> transforms) {
+		final Element transformsDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORMS);
+		parentElement.appendChild(transformsDom);
+		for (final DSSTransform dssTransform : transforms) {
+			dssTransform.createTransform(documentDom, transformsDom);
+		}
 	}
 	
 	/**
@@ -776,8 +781,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					incorporateDocumentationReferences(sigPolicyIdDom, documentationReferences);
 				}
 
-				if ((signaturePolicy.getDigestAlgorithm() != null) && (signaturePolicy.getDigestValue() != null)) {
+				if (signaturePolicy instanceof XmlPolicyWithTransforms) {
+					XmlPolicyWithTransforms xmlPolicy = (XmlPolicyWithTransforms) signaturePolicy;
+					if (Utils.isCollectionNotEmpty(xmlPolicy.getTransforms())) {
+						incorporateTransforms(signaturePolicyIdDom, xmlPolicy.getTransforms());
+					}
+				}
 
+				if (signaturePolicy.getDigestAlgorithm() != null && signaturePolicy.getDigestValue() != null) {
 					final Element sigPolicyHashDom = DomUtils.addElement(documentDom, signaturePolicyIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyHash());
 
 					final DigestAlgorithm digestAlgorithm = signaturePolicy.getDigestAlgorithm();

@@ -63,4 +63,36 @@ public class XPath2FilterTransform extends XPathTransform {
 		return xPathElement;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		XPath2FilterTransform other = (XPath2FilterTransform) obj;
+		if (!Objects.equals(filter, other.filter)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "XPath2FilterTransform [filter=" + filter + ", xPathExpression=" + xPathExpression + ", algorithm="
+				+ algorithm + ", namespace=" + namespace + "]";
+	}
+
 }

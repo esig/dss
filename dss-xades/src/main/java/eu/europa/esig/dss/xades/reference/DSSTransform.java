@@ -30,27 +30,30 @@ public interface DSSTransform {
 	
 	/**
 	 * Returns a particular transformation algorithm name
+	 * 
 	 * @return {@link String} algorithm name of transformation
 	 */
 	String getAlgorithm();
 	
 	/**
 	 * Specifies a namespace for the transformation elements
+	 * 
 	 * @param namespace {@link DSSNamespace} uri
 	 */
 	void setNamespace(DSSNamespace namespace);
 	
 	/**
 	 * Performs transformation on the given {@code node} and returns resulting bytes
+	 * 
 	 * @param node {@link Node} to perform transformation on
-	 * @param uri {@link String} the uri used in a reference to extract the node content
 	 * @return byte array
 	 */
-	byte[] getBytesAfterTranformation(Node node, String uri);
+	byte[] getBytesAfterTranformation(Node node);
 	
 	/**
 	 * Creates a Transform element DOM and appends it to the {@code parentNode}
-	 * @param document {@link Document} to add transform for
+	 * 
+	 * @param document   {@link Document} to add transform for
 	 * @param parentNode {@link Element} to append transform to
 	 * @return created transform {@link Element}
 	 */

@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.w3c.dom.Node;
-
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -40,19 +36,6 @@ public class CanonicalizationTransform extends ComplexTransform {
 		if (!DSSXMLUtils.canCanonicalize(canonicalizationAlgorithm)) {
 			throw new DSSException(String.format("The provided canonicalization method [%s] is not supported!", canonicalizationAlgorithm));
 		}
-	}
-	
-	@Override
-	protected XMLSignatureInput getXMLSignatureInput(Node node, String uri) {
-		XMLSignatureInput xmlSignatureInput = super.getXMLSignatureInput(node, uri);
-		xmlSignatureInput.setExcludeComments(isExcludeComments(uri));
-		return xmlSignatureInput;
-	}
-	
-	protected boolean isExcludeComments(String uri) {
-		// see XMLDSig core 4.4.3.2 The Reference Processing Model and 4.4.3.3 Same-Document URI-References
-		// i.e. comments shall be omitted for the same document references
-		return uri != null && ("".equals(uri) || DomUtils.isElementReference(uri));
 	}
 
 }

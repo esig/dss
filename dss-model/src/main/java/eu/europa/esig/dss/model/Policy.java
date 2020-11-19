@@ -22,6 +22,7 @@ package eu.europa.esig.dss.model;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
@@ -29,8 +30,9 @@ import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 /**
  * This class allows to define the signature policy.
  */
-@SuppressWarnings("serial")
 public class Policy implements Serializable {
+
+	private static final long serialVersionUID = 2792220193195511748L;
 
 	private String id;
 
@@ -239,11 +241,7 @@ public class Policy implements Serializable {
 			return false;
 		}
 		Policy other = (Policy) obj;
-		if (description == null) {
-			if (other.description != null) {
-				return false;
-			}
-		} else if (!description.equals(other.description)) {
+		if (!Objects.equals(description, other.description)) {
 			return false;
 		}
 		if (documentationReferences == null) {
@@ -259,18 +257,10 @@ public class Policy implements Serializable {
 		if (!Arrays.equals(digestValue, other.digestValue)) {
 			return false;
 		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
+		if (!Objects.equals(id, other.id)) {
 			return false;
 		}
-		if (spuri == null) {
-			if (other.spuri != null) {
-				return false;
-			}
-		} else if (!spuri.equals(other.spuri)) {
+		if (!Objects.equals(spuri, other.spuri)) {
 			return false;
 		}
 		return true;

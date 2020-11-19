@@ -55,4 +55,36 @@ public class XPathTransform extends ComplexTransform {
 		return DomUtils.addTextElement(document, transform, namespace, XMLDSigElement.XPATH, xPathExpression);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((xPathExpression == null) ? 0 : xPathExpression.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		XPathTransform other = (XPathTransform) obj;
+		if (!Objects.equals(xPathExpression, other.xPathExpression)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "XPathTransform [xPathExpression=" + xPathExpression + ", algorithm=" + algorithm + ", namespace="
+				+ namespace + "]";
+	}
+
 }

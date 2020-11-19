@@ -2,7 +2,6 @@ package eu.europa.esig.dss.xades.reference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -201,7 +200,7 @@ public class ReferenceBuilder {
 		if (reference.getContents() instanceof DigestDocument) {
 			return reference.getContents();
 		}
-		Node nodeToTransform = getNodeToTransform(reference);
+		Node nodeToTransform = dereferenceNode(reference);
 		if (nodeToTransform == null) {
 			return reference.getContents();
 		}
@@ -209,13 +208,21 @@ public class ReferenceBuilder {
 		if (isUniqueBase64Tranform(transforms)) {
 			return reference.getContents();
 		}
-		byte[] referenceOutputResult = applyTransformations(reference, nodeToTransform);
+		byte[] referenceOutputResult = DSSXMLUtils.applyTransforms(nodeToTransform, reference.getTransforms());
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(new String(referenceOutputResult));
 		}
 		return new InMemoryDocument(referenceOutputResult);
 	}
 	
+	private Node dereferenceNode(DSSReference reference) {
+		Node dereferencedNode = getNodeToTransform(reference);
+		if (dereferencedNode != null && DSSXMLUtils.isSameDocumentReference(reference.getUri())) {
+			dereferencedNode = DomUtils.excludeComments(dereferencedNode);
+		}
+		return dereferencedNode;
+	}
+
 	private Node getNodeToTransform(DSSReference reference) {
 		DSSDocument contents = reference.getContents();		
 		byte[] docBinaries = DSSUtils.toByteArray(contents);
@@ -267,36 +274,6 @@ public class ReferenceBuilder {
 	
 	private boolean isUniqueBase64Tranform(List<DSSTransform> transforms) {
 		return transforms != null && transforms.size() == 1 && transforms.get(0) instanceof Base64Transform;
-	}
-
-	/**
-	 * Applies transforms on a node and returns the byte array to be used for a reference digest computation
-	 * 
-	 * @param reference a {@link DSSReference} to apply transforms from
-	 * @param nodeToTransform {@link Node} to apply transforms on
-	 * @return a byte array, representing a content obtained after transformations
-	 */
-	private byte[] applyTransformations(final DSSReference reference, Node nodeToTransform) {
-		byte[] transformedReferenceBytes = null;
-		List<DSSTransform> transforms = reference.getTransforms();
-		if (Utils.isCollectionNotEmpty(transforms)) {
-			Iterator<DSSTransform> iterator = transforms.iterator();
-			while (iterator.hasNext()) {
-				DSSTransform transform = iterator.next();
-				transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform, reference.getUri());
-				if (iterator.hasNext()) {
-					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
-				}
-			}
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Reference bytes after transforms: ");
-				LOG.debug(new String(transformedReferenceBytes));
-			}
-			return transformedReferenceBytes;
-			
-		} else {
-			return DSSXMLUtils.getNodeBytes(nodeToTransform);
-		}
 	}
 	
 	/**

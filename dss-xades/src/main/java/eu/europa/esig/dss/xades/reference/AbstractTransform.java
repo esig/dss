@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import java.util.Objects;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -58,6 +60,41 @@ public abstract class AbstractTransform implements DSSTransform {
 		final Element transformDom = DomUtils.addElement(document, parentNode, namespace, XMLDSigElement.TRANSFORM);
 		transformDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), algorithm);
 		return transformDom;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((algorithm == null) ? 0 : algorithm.hashCode());
+		result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AbstractTransform other = (AbstractTransform) obj;
+		if (!Objects.equals(algorithm, other.algorithm)) {
+			return false;
+		}
+		if (!Objects.equals(namespace, other.namespace)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "DSSTransform [algorithm=" + algorithm + ", namespace=" + namespace + "]";
 	}
 	
 }
