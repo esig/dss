@@ -67,7 +67,7 @@ public class RestSignatureServiceSnippet extends CookbookTools {
 			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 			
 			// Initialize a RemoteDocument object to be signed
-			FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+			FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 			RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
 			
 			// computes the digest to be signed
@@ -81,7 +81,7 @@ public class RestSignatureServiceSnippet extends CookbookTools {
 			// Adds the signature value to the document
 			RemoteDocument signedDocument = restClient.signDocument(signDocument);
 	
-			// Define the extention parameters
+			// Define the extension parameters
 			RemoteSignatureParameters extendParameters = new RemoteSignatureParameters();
 			extendParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 	
