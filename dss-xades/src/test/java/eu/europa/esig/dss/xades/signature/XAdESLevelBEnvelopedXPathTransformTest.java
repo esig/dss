@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -38,11 +40,12 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPathTransform;
 
-public class XAdESLevelBXPathTransformTest extends AbstractXAdESTestSignature {
+public class XAdESLevelBEnvelopedXPathTransformTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -67,7 +70,8 @@ public class XAdESLevelBXPathTransformTest extends AbstractXAdESTestSignature {
 		dssReference.setContents(documentToSign);
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		DSSTransform xPathTransform = new XPathTransform("ancestor-or-self::*[@Id='hello']");
-		dssReference.setTransforms(Arrays.asList(xPathTransform));
+		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
+		dssReference.setTransforms(Arrays.asList(xPathTransform, canonicalizationTransform));
 		references.add(dssReference);
 
 		signatureParameters.setReferences(references);

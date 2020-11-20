@@ -645,7 +645,9 @@ public final class DSSXMLUtils {
 	 * @return byte array
 	 */
 	public static byte[] getNodeBytes(Node node) {
-		if (node.getNodeType() == Node.ELEMENT_NODE) {
+		switch (node.getNodeType()) {
+		case Node.ELEMENT_NODE:
+		case Node.DOCUMENT_NODE:
 			byte[] bytes = serializeNode(node);
 			String str = new String(bytes);
 			// TODO: better
@@ -654,15 +656,18 @@ public final class DSSXMLUtils {
 				str = str.substring(str.indexOf("?>") + 2);
 			}
 			return str.getBytes();
-		} else if (node.getNodeType() == Node.TEXT_NODE) {
+
+		case Node.TEXT_NODE:
 			String textContent = node.getTextContent();
 			if (Utils.isBase64Encoded(textContent)) {
 				return Utils.fromBase64(node.getTextContent());
 			} else {
 				return textContent.getBytes();
 			}
+
+		default:
+			return null;
 		}
-		return null;
 	}
 	
 	/**

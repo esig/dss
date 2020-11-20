@@ -747,7 +747,9 @@ public final class DomUtils {
 	 */
 	public static Node excludeComments(Node node) {
 		excludeCommentsRecursively(node);
-		return node;
+		// workaround to handle the transforms correctly (clone does not work)
+		// TODO: improve
+		return buildDOM(xmlToString(node));
 	}
 
 	private static void excludeCommentsRecursively(final Node node) {

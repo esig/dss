@@ -200,6 +200,7 @@ public class ReferenceBuilder {
 		if (reference.getContents() instanceof DigestDocument) {
 			return reference.getContents();
 		}
+
 		Node nodeToTransform = dereferenceNode(reference);
 		if (nodeToTransform == null) {
 			return reference.getContents();
@@ -208,7 +209,12 @@ public class ReferenceBuilder {
 		if (isUniqueBase64Tranform(transforms)) {
 			return reference.getContents();
 		}
+
 		byte[] referenceOutputResult = DSSXMLUtils.applyTransforms(nodeToTransform, reference.getTransforms());
+
+		if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referenceOutputResult)) {
+			referenceOutputResult = DSSXMLUtils.canonicalize(DSSXMLUtils.DEFAULT_XMLDSIG_C14N_METHOD, referenceOutputResult);
+		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(new String(referenceOutputResult));
 		}
@@ -284,7 +290,6 @@ public class ReferenceBuilder {
 		for (DSSReference reference : signatureParameters.getReferences()) {
 			List<DSSTransform> transforms = reference.getTransforms();
 			if (Utils.isCollectionNotEmpty(transforms)) {
-				boolean incorrectUsageOfEnvelopedSignature = false;
 				for (DSSTransform transform : transforms) {
 					switch (transform.getAlgorithm()) {
 					case Transforms.TRANSFORM_BASE64_DECODE:
@@ -299,26 +304,10 @@ public class ReferenceBuilder {
 							throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
 						}
 						break;
-					case Transforms.TRANSFORM_ENVELOPED_SIGNATURE:
-						incorrectUsageOfEnvelopedSignature = true;
-						break;
-					case Transforms.TRANSFORM_C14N11_OMIT_COMMENTS:
-					case Transforms.TRANSFORM_C14N11_WITH_COMMENTS:
-					case Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS:
-					case Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS:
-					case Transforms.TRANSFORM_C14N_OMIT_COMMENTS:
-					case Transforms.TRANSFORM_C14N_WITH_COMMENTS:
-						// enveloped signature must follow up by a canonicalization
-						incorrectUsageOfEnvelopedSignature = false;
-						break;
 					default:
 						// do nothing
 						break;
 					}
-					
-				}
-				if (incorrectUsageOfEnvelopedSignature) {
-					throw new DSSException(referenceWrongMessage + "Enveloped Signature Transform must be followed up by a Canonicalization Transform.");
 				}
 				
 			} else {
