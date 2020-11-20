@@ -7,14 +7,14 @@ import org.json.JSONObject;
 
 public final class JAdESUtils extends AbstractJWSUtils {
 
-	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-schema-draft07_v005b_dss.json";
-	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-schema.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-draft07_v005_dss.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-draft07_v005c.json";
 
 	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfc7797.json";
 	private static final String RFC7797_SCHEMA_URI = "rfc7797.json";
 	
-	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-protected.json";
-	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected.json";
+	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-protected-draft07_v005.json";
+	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected-draft07_v005_dss.json";
 
 	private Map<URI, JSONObject> definitions;
 
