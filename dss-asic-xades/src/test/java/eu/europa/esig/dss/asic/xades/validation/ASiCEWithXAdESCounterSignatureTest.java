@@ -72,7 +72,7 @@ public class ASiCEWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 
 			boolean notValidNameErrorFound = false;
 			for (String error : signatureWrapper.getStructuralValidationMessages()) {
-				if (error.contains("is not a valid value for 'NCName'.")) {
+				if (error.contains("NCName")) {
 					notValidNameErrorFound = true;
 				}
 			}

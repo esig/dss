@@ -54,7 +54,7 @@ public class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdEST
 
 		boolean ocspValueEmptyErrorFound = false;
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
-			if (error.contains("The content of element 'xades132:OCSPValues' is not complete.")) {
+			if (error.contains("xades132:OCSPValues")) {
 				ocspValueEmptyErrorFound = true;
 			}
 		}

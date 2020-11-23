@@ -74,8 +74,7 @@ public class XAdESRevocationSourceBGTest extends AbstractXAdESTestValidation {
 
 		boolean mixedSequenceOrderErrorFound = false;
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
-			if (error.contains(
-					"Invalid content was found starting with element 'xades:StateOrProvince'. No child element is expected at this point.")) {
+			if (error.contains("xades:StateOrProvince")) {
 				mixedSequenceOrderErrorFound = true;
 			}
 		}

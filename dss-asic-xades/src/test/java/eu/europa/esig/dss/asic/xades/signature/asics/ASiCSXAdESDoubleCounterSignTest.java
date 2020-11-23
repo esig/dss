@@ -106,7 +106,7 @@ public class ASiCSXAdESDoubleCounterSignTest extends AbstractASiCXAdESCounterSig
 
 		boolean duplicateIdErrorFound = false;
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
-			if (error.contains("There are multiple occurrences of ID value 'CS-")) {
+			if (error.contains("ID")) {
 				duplicateIdErrorFound = true;
 			}
 		}

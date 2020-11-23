@@ -79,7 +79,7 @@ public class XAdESRefreshedOCSPCertificateTest extends AbstractXAdESTestValidati
 		assertFalse(signatureWrapper.isStructuralValidationValid());
 		assertEquals(1, signatureWrapper.getStructuralValidationMessages().size());
 		assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains(
-				"Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":StateOrProvince}'"));
+				"\"http://uri.etsi.org/01903/v1.3.2#\":StateOrProvince"));
 	}
 
 }
