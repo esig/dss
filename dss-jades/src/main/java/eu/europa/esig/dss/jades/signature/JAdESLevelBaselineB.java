@@ -26,6 +26,7 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -291,9 +292,12 @@ public class JAdESLevelBaselineB {
 	protected void incorporateSigningCertificateOtherDigestReference(CertificateToken signingCertificate,
 			DigestAlgorithm digestAlgorithm) {
 		byte[] digestValue = signingCertificate.getDigest(digestAlgorithm);
-		JsonObject digAndVal = DSSJsonUtils.getDigAlgValObject(digestValue, digestAlgorithm);
 
-		addHeader(JAdESHeaderParameterNames.X5T_O, digAndVal);
+		Map<String, Object> x5toParams = new LinkedHashMap<>();
+		x5toParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getJAdESId());
+		x5toParams.put(JAdESHeaderParameterNames.DIG_VAL, DSSJsonUtils.toBase64Url(digestValue));
+
+		addHeader(JAdESHeaderParameterNames.X5T_O, new JsonObject(x5toParams));
 	}
 
 	/**
@@ -394,9 +398,6 @@ public class JAdESLevelBaselineB {
 
 	private JSONArray getQArray(List<String> qArrayVals) {
 
-		// TODO : in 0.0.4 both "qArrays" and "vals" inside are arrays.
-		// Could be change in the future
-
 		List<JsonObject> qArrays = new ArrayList<>();
 
 		/*
@@ -442,11 +443,11 @@ public class JAdESLevelBaselineB {
 		qArrayMap.put(JAdESHeaderParameterNames.ENCODING, DSSJsonUtils.CONTENT_ENCODING_BINARY);
 
 		/*
-		 * c) The vals member, which shall be a JSON array of at least one item. The
-		 * elements of vals JSON array shall be the values of the signed assertions or
+		 * c) The qVals member, which shall be a JSON array of at least one item. The
+		 * elements of qVals JSON array shall be the values of the signed assertions or
 		 * the claimed attributes encoded as indicated within the encoding member.
 		 */
-		qArrayMap.put(JAdESHeaderParameterNames.VALS, new JSONArray(qArrayVals));
+		qArrayMap.put(JAdESHeaderParameterNames.Q_VALS, new JSONArray(qArrayVals));
 
 		JsonObject qArray = new JsonObject(qArrayMap);
 		qArrays.add(qArray);
@@ -497,13 +498,21 @@ public class JAdESLevelBaselineB {
 			JsonObject oid = DSSJsonUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), signaturePolicy.getDocumentationReferences());
 			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
 			
-			if ((signaturePolicy.getDigestValue() != null) && (signaturePolicy.getDigestAlgorithm() != null)) {
-				JsonObject digAlgVal = DSSJsonUtils.getDigAlgValObject(signaturePolicy.getDigestValue(), signaturePolicy.getDigestAlgorithm());
-				sigPIdParams.put(JAdESHeaderParameterNames.HASH_AV, digAlgVal);
+			if (signaturePolicy.getDigestAlgorithm() != null && signaturePolicy.getDigestValue() != null) {
+				sigPIdParams.put(JAdESHeaderParameterNames.DIG_ALG, signaturePolicy.getDigestAlgorithm().getJAdESId());
+				sigPIdParams.put(JAdESHeaderParameterNames.DIG_VAL, DSSJsonUtils.toBase64Url(signaturePolicy.getDigestValue()));
 			}
 
-			// hashPSp is not added and treated as FALSE, because qualifier 'spDSpec' is not supported
-			// sigPIdParams.put(JAdESHeaderParameterNames.HASH_PSP, value)
+			/*
+			 * The hashPSp digPSp member shall be a boolean. When present and set to "true",
+			 * it shall indicate that the digest of the signature policy document has been
+			 * computed as specified in a technical specification. Absence of this member
+			 * shall be considered as if present and set to "false". If this member is
+			 * present and set to "true", then the qualifier spDSpec qualifier shall be
+			 * present and shall identify the aforementioned technical specification.
+			 */
+			// digPSp is not added and treated as FALSE, because qualifier 'spDSpec' is not supported
+			// sigPIdParams.put(JAdESHeaderParameterNames.DIG_PSP, value)
 			
 			List<JsonObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
 			if (Utils.isCollectionNotEmpty(signaturePolicyQualifiers)) {
@@ -546,14 +555,16 @@ public class JAdESLevelBaselineB {
 			Map<String, Object> sigDParams;
 			switch (parameters.getSigDMechanism()) {
 				case HTTP_HEADERS:
+					// 5.2.8.2 Mechanism HttpHeaders
+					assertHttpHeadersConfigurationValid();
 					sigDParams = getSigDForHttpHeadersMechanism(documentsToSign);
 					break;
 				case OBJECT_ID_BY_URI:
-					// The 5.2.8.3 Mechanism ObjectIdByURI implementation
+					// 5.2.8.3.2 Mechanism ObjectIdByURI
 					sigDParams = getSigDForObjectIdByUriMechanism(documentsToSign);
 					break;
 				case OBJECT_ID_BY_URI_HASH:
-					// The 5.2.8.4 Mechanism ObjectIdByURIHash implementation
+					// 5.2.8.3.3 Mechanism ObjectIdByURIHash
 					sigDParams = getSigDForObjectIdByUriHashMechanism(documentsToSign);
 					break;
 				case NO_SIG_D:
@@ -566,7 +577,7 @@ public class JAdESLevelBaselineB {
 			addHeader(JAdESHeaderParameterNames.SIG_D, new JsonObject(sigDParams));
 		}
 	}
-	
+
 	private void assertDetachedContentValid() {
 		if (parameters.getSigDMechanism() == null) {
 			throw new DSSException("The SigDMechanism is not defined for a detached signature! "
@@ -581,6 +592,29 @@ public class JAdESLevelBaselineB {
 		}
 	}
 	
+	private void assertHttpHeadersConfigurationValid() {
+		/*
+		 * 5.1.10 The b64 header parameter
+		 * 
+		 * If the sigD header parameter is present with its member set to
+		 * "http://uri.etsi.org/19182/HttpHeaders" then the b64 header parameter shall
+		 * be present and set to "false".
+		 */
+		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism()) && parameters.isBase64UrlEncodedPayload()) {
+			throw new DSSException(String.format("'%s' SigD Mechanism can be used only with non-base64url encoded payload! "
+					+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(true).", SigDMechanism.HTTP_HEADERS.getUri()));
+		}
+	}
+
+	private Map<String, Object> getSigDForHttpHeadersMechanism(List<DSSDocument> detachedContents) {
+		Map<String, Object> sigDParams = new LinkedHashMap<>();
+
+		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames());
+
+		return sigDParams;
+	}
+
 	private Map<String, Object> getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
 		Map<String, Object> sigDParams = new LinkedHashMap<>();
 		
@@ -599,19 +633,10 @@ public class JAdESLevelBaselineB {
 		sigDParams.put(JAdESHeaderParameterNames.PARS, getSignedDataReferences(detachedContents));
 		
 		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault();
-		sigDParams.put(JAdESHeaderParameterNames.HASH_M, digestAlgorithm.getUri());
+		sigDParams.put(JAdESHeaderParameterNames.HASH_M, digestAlgorithm.getJAdESId());
 		sigDParams.put(JAdESHeaderParameterNames.HASH_V, getSignedDataDigests(detachedContents, digestAlgorithm));
 		
 		sigDParams.put(JAdESHeaderParameterNames.CTYS, getSignedDataMimeTypesIfPresent(detachedContents));
-		
-		return sigDParams;
-	}
-	
-	private Map<String, Object> getSigDForHttpHeadersMechanism(List<DSSDocument> detachedContents) {
-		Map<String, Object> sigDParams = new LinkedHashMap<>();
-
-		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
-		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames());
 		
 		return sigDParams;
 	}
@@ -629,10 +654,32 @@ public class JAdESLevelBaselineB {
 	}
 	
 	private JSONArray getSignedDataDigests(List<DSSDocument> detachedContents, DigestAlgorithm digestAlgorithm) {
+		/*
+		 * The hashV member shall be a non-empty array of strings. Each element of the
+		 * array shall contain:
+		 */
 		List<String> digests = new ArrayList<>();
 		for (DSSDocument document : detachedContents) {
-			String base64Digest = document.getDigest(digestAlgorithm);
-			digests.add(DSSJsonUtils.toBase64Url(Utils.fromBase64(base64Digest))); // base64Url digest
+			byte[] docDigest;
+			/*
+			 * 1) The base64url-encoded digest value of the data object referenced by the
+			 * parameter value (...) if the b64 header parameter is present and set to
+			 * "false".
+			 */
+			if (!parameters.isBase64UrlEncodedPayload() || document instanceof DigestDocument) {
+				String base64Digest = document.getDigest(digestAlgorithm);
+				docDigest = Utils.fromBase64(base64Digest);
+			}
+			/*
+			 * 2) The base64url-encoded digest value of the base64url-encoded data object
+			 * referenced by the parameter value (...) if the b64 header parameter is absent
+			 * or it is present and set to "true".
+			 */
+			else {
+				byte[] base64urlDocumentContent = DSSJsonUtils.toBase64Url(document).getBytes();
+				docDigest = DSSUtils.digest(digestAlgorithm, base64urlDocumentContent);
+			}
+			digests.add(DSSJsonUtils.toBase64Url(docDigest)); // base64Url digest
 		}
 		return new JSONArray(digests);
 	}
@@ -705,23 +752,32 @@ public class JAdESLevelBaselineB {
 		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) ||
 				SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
 			return DSSUtils.toByteArray(documentsToSign.get(0));
+
 		} else if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
 			return getPayloadForHttpHeadersMechanism();
+
 		} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(parameters.getSigDMechanism())) {
 			return getPayloadForObjectIdByUriMechanism();
+
 		} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(parameters.getSigDMechanism())) {
+			/*
+			 * 5.2.8.3.3 Mechanism ObjectIdByURIHash
+			 * 
+			 * When using this mechanism, the JWS Payload shall contribute as an empty
+			 * stream to the computation of the JWS Signature Value.
+			 */
 			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}
 		throw new DSSException("The configured signature format is not supported!");
 	}
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsToSign);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsToSign, false);
 		return httpHeadersPayloadBuilder.build();
 	}
 	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
-		// NOTE: b64 encoding is processed by JWS
+		// NOTE: base64url encoding is processed by JWS
 		return DSSJsonUtils.concatenateDSSDocuments(documentsToSign);
 	}
 

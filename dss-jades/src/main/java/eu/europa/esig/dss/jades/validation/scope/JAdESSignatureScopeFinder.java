@@ -194,7 +194,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 	}
 	
 	private SignatureScope getHttpHeadersPayloadSignatureScope(List<DSSDocument> originalDocuments) {
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(originalDocuments);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(originalDocuments, false);
 		byte[] payload = httpHeadersPayloadBuilder.build();
 		byte[] digest = DSSUtils.digest(getDefaultDigestAlgorithm(), payload);
 		return new HTTPHeaderSignatureScope(new Digest(getDefaultDigestAlgorithm(), digest));
@@ -216,7 +216,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 	private Digest getDigest(String digestHeaderValue) {
 		String[] valueParts = digestHeaderValue.split("=");
 		if (valueParts.length == 2) {
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJWSHttpHeader(valueParts[0]);
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forHttpHeader(valueParts[0]);
 			byte[] digestValue = Utils.fromBase64(valueParts[1]);
 			return new Digest(digestAlgorithm, digestValue);
 		}

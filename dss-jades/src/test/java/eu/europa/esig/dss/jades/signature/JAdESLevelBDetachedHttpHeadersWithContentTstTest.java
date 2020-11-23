@@ -61,6 +61,7 @@ public class JAdESLevelBDetachedHttpHeadersWithContentTstTest extends AbstractJA
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
 		signatureParameters.setSigDMechanism(SigDMechanism.HTTP_HEADERS);
+		signatureParameters.setBase64UrlEncodedPayload(false);
 
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentsToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));

@@ -294,36 +294,23 @@ public class DSSJsonUtils {
 	}
 	
 	/**
-	 * Creates a 'DigAlgVal' JsonObject from the given values
-	 * 
-	 * @param digestValue a byte array representing a hash value
-	 * @param digestAlgorithm {@link DigestAlgorithm} has been used to generate the value
-	 * @return 'DigAlgVal' {@link JsonObject}
-	 */
-	public static JsonObject getDigAlgValObject(byte[] digestValue, DigestAlgorithm digestAlgorithm) {
-		Objects.requireNonNull(digestValue, "digestValue must be defined!");
-		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be defined!");
-		
-		Map<String, Object> digAlgValParams = new LinkedHashMap<>();
-		digAlgValParams.put(JAdESHeaderParameterNames.DIG_ALG, digestAlgorithm.getUri());
-		digAlgValParams.put(JAdESHeaderParameterNames.DIG_VAL, DSSJsonUtils.toBase64Url(digestValue));
-		
-		return new JsonObject(digAlgValParams);
-	}
-
-	/**
 	 * Creates a {@link Digest} object from a JSON structure
 	 * 
 	 * @param digestValueAndAlgo a Map with digAlg and digVal values
 	 * @return an instance of Digest or null
 	 */
 	public static Digest getDigest(Map<?, ?> digestValueAndAlgo) {
-		if (Utils.isMapNotEmpty(digestValueAndAlgo)) {
-			String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
-			String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
-			if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
-				return new Digest(DigestAlgorithm.forXML(digestAlgoURI), DSSJsonUtils.fromBase64Url(digestValueBase64));
+		try {
+			if (Utils.isMapNotEmpty(digestValueAndAlgo)) {
+				String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
+				String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
+				if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
+					return new Digest(DigestAlgorithm.forJAdES(digestAlgoURI),
+							DSSJsonUtils.fromBase64Url(digestValueBase64));
+				}
 			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract Digest Algorithm and Value. Reason : {}", e.getMessage(), e);
 		}
 		return null;
 	}
@@ -385,7 +372,7 @@ public class DSSJsonUtils {
 			tsTokens.add(tstToken);
 		}
 		JSONArray tsTokensArray = new JSONArray(tsTokens);
-		tstContainerParams.put(JAdESHeaderParameterNames.TS_TOKENS, tsTokensArray);
+		tstContainerParams.put(JAdESHeaderParameterNames.TST_TOKENS, tsTokensArray);
 		
 		return new JsonObject(tstContainerParams);
 	}

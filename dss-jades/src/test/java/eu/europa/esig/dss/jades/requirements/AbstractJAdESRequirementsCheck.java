@@ -118,7 +118,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 			Map<String, Object> x5tNoMap = (Map<String, Object>) x5tNo;
 			String digAlg = (String) x5tNoMap.get("digAlg");
 			assertNotNull(digAlg);
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digAlg);
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJAdES(digAlg);
 			assertNotNull(digestAlgorithm);
 			assertNotEquals(DigestAlgorithm.SHA256, digestAlgorithm);
 
@@ -126,7 +126,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		}
 
 		Object sigX5ts = protectedHeaderMap.get("sigX5ts");
-		// assertNull(sigX5ts);
+		assertNull(sigX5ts);
 	}
 
 	private void checkCertificateChain(Map<String, Object> protectedHeaderMap) {
@@ -198,9 +198,9 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		Map<?, ?> sigTst = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "sigTst");
 		assertNotNull(sigTst);
 		assertNull(sigTst.get("canonAlg"));
-		List<?> tstokens = (List<?>) sigTst.get("tstokens");
-		assertNotNull(tstokens);
-		assertEquals(1, tstokens.size());
+		List<?> tstTokens = (List<?>) sigTst.get("tstTokens");
+		assertNotNull(tstTokens);
+		assertEquals(1, tstTokens.size());
 	}
 
 	protected void checkCertificateValues(Map<?, ?> unprotectedHeaderMap) {
@@ -282,15 +282,8 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		Map<?, ?> arcTst = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "arcTst");
 		assertNotNull(arcTst);
 		
-		String timeStamped = (String) arcTst.get("timeStamped");
-		assertNotNull(timeStamped);
-		assertTrue("all".equals(timeStamped) || "previousArcTst".equals(timeStamped));
-		
-		Map<?, ?> tstContainer = (Map<?, ?>) arcTst.get("tstContainer");
-		assertNotNull(tstContainer);
-		
-		List<?> tstokens = (List<?>) tstContainer.get("tstokens");
-		assertTrue(Utils.isCollectionNotEmpty(tstokens));
+		List<?> tstTokens = (List<?>) arcTst.get("tstTokens");
+		assertTrue(Utils.isCollectionNotEmpty(tstTokens));
 	}
 	
 	protected Object getEtsiUElement(Map<?, ?> unprotectedHeaderMap, String headerName) {

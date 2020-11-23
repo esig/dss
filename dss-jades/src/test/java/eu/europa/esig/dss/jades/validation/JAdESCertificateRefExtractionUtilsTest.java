@@ -32,12 +32,8 @@ public class JAdESCertificateRefExtractionUtilsTest {
 		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
 		certificateRefJson.put("kid", issuerBase64);
 
-		JSONObject digAlgValJson = new JSONObject();
-		// TODO URI here ???
-		digAlgValJson.put("digAlg", DigestAlgorithm.SHA256.getUri());
-		digAlgValJson.put("digVal", Utils.toBase64(cert.getDigest(DigestAlgorithm.SHA256)));
-
-		certificateRefJson.put("digAlgVal", digAlgValJson);
+		certificateRefJson.put("digAlg", DigestAlgorithm.SHA256.getJAdESId());
+		certificateRefJson.put("digVal", Utils.toBase64(cert.getDigest(DigestAlgorithm.SHA256)));
 
 		LOG.info(certificateRefJson.toJSONString());
 

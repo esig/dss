@@ -10,12 +10,10 @@ import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -87,19 +85,13 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		
 		if (Utils.isCollectionNotEmpty(certificateTokens)) {
 			JSONArray xVals = getXVals(certificateTokens);
-			tstVd.put(JAdESHeaderParameterNames.CERT_VALS, xVals);
+			tstVd.put(JAdESHeaderParameterNames.X_VALS, xVals);
 		}
 		
 		if (Utils.isCollectionNotEmpty(crlTokens) || Utils.isCollectionNotEmpty(ocspTokens)) {
 			JSONObject rVals = getRVals(crlTokens, ocspTokens);
-			tstVd.put(JAdESHeaderParameterNames.REV_VALS, rVals);
+			tstVd.put(JAdESHeaderParameterNames.R_VALS, rVals);
 		}
-		
-		/* 
-		 * If the onSdo member is absent or it  is present and its value is set to "false", 
-		 * then it shall indicate that the electronic time-stamp whose validation material 
-		 * contains the tstVd JSON object, does not time-stamp the signed data objects.
-		 */
 		
 		// Content tst'data is included on LT-level, therefore should not be included on LTA
 		
@@ -116,9 +108,8 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 
 		// TODO : Support canonicalization
 		String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		JAdESArchiveTimestampType jadesArchiveTimestampType = archiveTimestampParameters.getArchiveTimestampType();
 		
-		byte[] messageImprint = jadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod, jadesArchiveTimestampType);
+		byte[] messageImprint = jadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
 		
 		byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, messageImprint);
 		return tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
@@ -129,36 +120,18 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		JSONObject arcTst = new JSONObject();
 		
 		String canonicalizationMethod = params.getCanonicalizationMethod();
-		JAdESArchiveTimestampType jadesArchiveTimestampType = params.getArchiveTimestampType();
-
 		JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary), canonicalizationMethod);
-		arcTst.put(JAdESHeaderParameterNames.TST_CONTAINER, tstContainer);
+		arcTst.put(JAdESHeaderParameterNames.ARC_TST, tstContainer);
 		
-		arcTst.put(JAdESHeaderParameterNames.TIMESTAMPED, jadesArchiveTimestampType.getValue());
-		
-		JSONObject arcTstItem = new JSONObject();
-		arcTstItem.put(JAdESHeaderParameterNames.ARC_TST, arcTst);
-		
-		unsignedProperties.add(arcTstItem);
+		unsignedProperties.add(arcTst);
 	}
 
 	/**
 	 * Checks if the extension is possible.
 	 */
 	private void assertExtendSignatureToLTAPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		JAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
-		JAdESArchiveTimestampType archiveTimestampType = archiveTimestampParameters.getArchiveTimestampType();
-		if (SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel)) {
-			if (JAdESArchiveTimestampType.TIMESTAMPED_PREVIOUS_ARC_TST.equals(archiveTimestampType) && !jadesSignature.hasLTAProfile()) {
-				throw new DSSException("Cannot extend the signature. The signature shall contain an 'arcTst' for extension with"
-						+ "'previousArcTst' archive timestamp!");
-			}
-			if (JAdESArchiveTimestampType.TIMESTAMPED_ALL.equals(archiveTimestampType)) {
-				assertDetachedDocumentsContainBinaries(params);
-				checkEtsiUContentUnicity(jadesSignature);
-			}
-		}
+		assertDetachedDocumentsContainBinaries(params);
+		checkEtsiUContentUnicity(jadesSignature);
 	}
 	
 	private void assertDetachedDocumentsContainBinaries(JAdESSignatureParameters params) {

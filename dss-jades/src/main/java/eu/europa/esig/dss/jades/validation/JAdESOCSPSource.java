@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -70,7 +70,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
 		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
 		if (Utils.isMapNotEmpty(tstVd)) {
-			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.REV_VALS);
+			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
 			if (Utils.isMapNotEmpty(revVals)) {
 				extractOCSPValues(revVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 			}

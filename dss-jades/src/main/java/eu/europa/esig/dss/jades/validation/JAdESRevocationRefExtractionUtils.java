@@ -10,8 +10,8 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
@@ -31,15 +31,11 @@ public final class JAdESRevocationRefExtractionUtils {
 		Date producedAt = null;
 		Map<?, ?> ocspId = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.OCSP_ID);
 		if (Utils.isMapNotEmpty(ocspId)) {
-
 			producedAt = DSSJsonUtils.getDate((String) ocspId.get(JAdESHeaderParameterNames.PRODUCED_AT));
-
 			responderId = getResponderId(ocspId);
 		}
 
-		Map<?, ?> digAlgVal = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.DIG_ALG_VAL);
-
-		Digest digest = DSSJsonUtils.getDigest(digAlgVal);
+		Digest digest = DSSJsonUtils.getDigest(ocpRef);
 		if (digest != null) {
 			return new OCSPRef(digest, producedAt, responderId);
 		} else {
@@ -72,13 +68,13 @@ public final class JAdESRevocationRefExtractionUtils {
 		return null;
 	}
 
-	public static CRLRef createCRLRef(Map<?, ?> item) {
+	public static CRLRef createCRLRef(Map<?, ?> crlRefMap) {
 
 		X500Name crlIssuer = null;
 		Date crlIssuedTime = null;
 		BigInteger crlNumber = null;
 
-		Map<?, ?> crlId = (Map<?, ?>) item.get(JAdESHeaderParameterNames.CRL_ID);
+		Map<?, ?> crlId = (Map<?, ?>) crlRefMap.get(JAdESHeaderParameterNames.CRL_ID);
 		if (Utils.isMapNotEmpty(crlId)) {
 			String issuerB64 = (String) crlId.get(JAdESHeaderParameterNames.ISSUER);
 			if (Utils.isStringNotEmpty(issuerB64) && Utils.isBase64Encoded(issuerB64)) {
@@ -96,9 +92,7 @@ public final class JAdESRevocationRefExtractionUtils {
 			}
 		}
 
-		Map<?, ?> digAlgVal = (Map<?, ?>) item.get(JAdESHeaderParameterNames.DIG_ALG_VAL);
-
-		Digest digest = DSSJsonUtils.getDigest(digAlgVal);
+		Digest digest = DSSJsonUtils.getDigest(crlRefMap);
 		if (digest != null) {
 			CRLRef crlRef = new CRLRef(digest);
 			crlRef.setCrlIssuer(crlIssuer);

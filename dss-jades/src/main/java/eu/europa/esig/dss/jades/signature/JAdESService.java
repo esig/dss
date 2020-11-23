@@ -74,7 +74,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
 		if (tspSource == null) {
-			throw new DSSException("A TSPSource is required !");
+			throw new DSSException("A TSPSource is required!");
 		}
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new DSSException("Original documents must be provided to generate a content timestamp!");
@@ -83,12 +83,14 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		byte[] messageImprint = DSSUtils.EMPTY_BYTE_ARRAY;
 
 		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
-			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments);
+			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments, true);
 			messageImprint = httpHeadersPayloadBuilder.build();
 		} else {
 			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments);
+			if (parameters.isBase64UrlEncodedPayload()) {
+				messageImprint = DSSJsonUtils.toBase64Url(messageImprint).getBytes();
+			}
 		}
-		messageImprint = DSSJsonUtils.toBase64Url(messageImprint).getBytes();
 
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm,

@@ -264,7 +264,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
 					if (validatorOptions.hasNext()) {
 						for (SignaturePolicyValidator signaturePolicyValidator : loader) {
-							signaturePolicyValidator.setSignature(signature);
+							signaturePolicyValidator.setSignaturePolicy(signature.getSignaturePolicy());
 							if (signaturePolicyValidator.canValidate()) {
 								validators.add(signaturePolicyValidator);
 							}

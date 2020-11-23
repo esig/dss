@@ -83,11 +83,14 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private void extractX5TO(Map<?, ?> x5TO) {
 		if (x5TO != null) {
-			CertificateRef certRef = new CertificateRef();
-			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			certRef.setCertDigest(DSSJsonUtils.getDigest(x5TO));
+			Digest digest = DSSJsonUtils.getDigest(x5TO);
+			if (digest != null) {
+				CertificateRef certRef = new CertificateRef();
+				certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+				certRef.setCertDigest(digest);
 
-			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+				addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+			}
 		}
 	}
 
@@ -157,7 +160,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
 		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
 		if (Utils.isMapNotEmpty(tstVd)) {
-			List<?> certVals = (List<?>) tstVd.get(JAdESHeaderParameterNames.CERT_VALS);
+			List<?> certVals = (List<?>) tstVd.get(JAdESHeaderParameterNames.X_VALS);
 			if (Utils.isCollectionNotEmpty(certVals)) {
 				extractCertificateValues(certVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 			}

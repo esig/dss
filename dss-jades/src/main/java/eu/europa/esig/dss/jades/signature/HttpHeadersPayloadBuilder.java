@@ -21,30 +21,20 @@ public class HttpHeadersPayloadBuilder {
 	private final List<DSSDocument> detachedContents;
 
 	/**
-	 * If the payload shall be computed for an Archive TST (defines different
-	 * processing)
+	 * If the payload shall be computed for a timestamp (defines different processing)
 	 */
-	private final boolean isArchiveTst;
-
-	/**
-	 * The default constructor (non archive tst)
-	 * 
-	 * @param detachedContents a list of detached {@link DSSDocument}s
-	 */
-	public HttpHeadersPayloadBuilder(List<DSSDocument> detachedContents) {
-		this(detachedContents, false);
-	}
+	private final boolean isTimestamp;
 
 	/**
 	 * The default constructor
 	 * 
 	 * @param detachedContents a list of detached {@link DSSDocument}s
-	 * @param isArchiveTst     a boolean value defines if the payload shall be
-	 *                         computed for an archive tst
+	 * @param isTimestamp     a boolean value defines if the payload shall be
+	 *                         computed for a timestamp
 	 */
-	public HttpHeadersPayloadBuilder(List<DSSDocument> detachedContents, boolean isArchiveTst) {
+	public HttpHeadersPayloadBuilder(List<DSSDocument> detachedContents, boolean isTimestamp) {
 		this.detachedContents = detachedContents;
-		this.isArchiveTst = isArchiveTst;
+		this.isTimestamp = isTimestamp;
 	}
 	
 	/**
@@ -90,7 +80,7 @@ public class HttpHeadersPayloadBuilder {
 
 			HTTPHeader concatenedHttpHeader = getHTTPHeaderWithName(concatenatedHTTPFields, headerName);
 
-			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(headerName) && isArchiveTst) {
+			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(headerName) && isTimestamp) {
 				if (httpHeader instanceof HTTPHeaderDigest) {
 					concatenedHttpHeader = httpHeader;
 					continue;
@@ -119,7 +109,7 @@ public class HttpHeadersPayloadBuilder {
 		Iterator<HTTPHeader> iterator = concatenatedHTTPFields.iterator();
 		while (iterator.hasNext()) {
 			HTTPHeader header = iterator.next();
-			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(header.getName()) && isArchiveTst) {
+			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(header.getName()) && isTimestamp) {
 				HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) header;
 				stringBuilder.append(DSSJsonUtils.toBase64Url(httpHeaderDigest.getMessageBodyDocument()));
 			} else {
@@ -171,9 +161,6 @@ public class HttpHeadersPayloadBuilder {
 	/**
 	 * Checks if a valid detached content is provided for "HTTPHeaders" "sigD"
 	 * Mechanism
-	 * 
-	 * @param detachedContent a list of {@link DSSDocument} representing a detached
-	 *                        contents
 	 */
 	private void assertHttpHeadersConfigurationIsValid() {
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
@@ -187,8 +174,8 @@ public class HttpHeadersPayloadBuilder {
 					if (digestDocumentFound) {
 						throw new DSSException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
 					}
-					if (!(document instanceof HTTPHeaderDigest) && isArchiveTst) {
-						throw new DSSException("Unable to compute message-imprint for an Archive Timestamp! "
+					if (!(document instanceof HTTPHeaderDigest) && isTimestamp) {
+						throw new DSSException("Unable to compute message-imprint for a Timestamp! "
 								+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
 					}
 					digestDocumentFound = true;

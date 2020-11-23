@@ -56,11 +56,6 @@ public class DigestAlgorithmTest {
 	}
 
 	@Test
-	public void forXMLSubstitution() {
-		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML("aaa", DigestAlgorithm.SHA256));
-	}
-
-	@Test
 	public void forName() {
 		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
 			assertEquals(digestAlgo, DigestAlgorithm.forName(digestAlgo.getName()));

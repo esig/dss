@@ -51,8 +51,9 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 		removeOldCertificateValues(unsignedProperties);
 		removeOldRevocationValues(unsignedProperties);
-		
-		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
+
+		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature,
+				validationContext);
 
 		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
 		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();

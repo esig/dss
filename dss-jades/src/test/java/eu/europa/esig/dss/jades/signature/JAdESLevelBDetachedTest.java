@@ -23,10 +23,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -64,6 +64,7 @@ public class JAdESLevelBDetachedTest extends AbstractJAdESTestSignature {
 	
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
 
 		InMemoryDocument compactSignature = new InMemoryDocument(byteArray);
 		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(compactSignature);

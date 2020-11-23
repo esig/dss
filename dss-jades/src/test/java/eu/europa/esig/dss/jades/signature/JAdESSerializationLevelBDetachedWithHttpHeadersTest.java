@@ -54,6 +54,8 @@ public class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends Abstrac
 		
 		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 		signatureParameters.setSigDMechanism(SigDMechanism.HTTP_HEADERS);
+		signatureParameters.setBase64UrlEncodedPayload(false);
+
 		return signatureParameters;
 	}
 	

@@ -11,8 +11,8 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -69,7 +69,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
 		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
 		if (Utils.isMapNotEmpty(tstVd)) {
-			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.REV_VALS);
+			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
 			if (Utils.isMapNotEmpty(revVals)) {
 				extractCRLValues(revVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 			}

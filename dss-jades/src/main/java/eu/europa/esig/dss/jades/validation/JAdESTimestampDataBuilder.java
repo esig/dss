@@ -3,23 +3,19 @@ package eu.europa.esig.dss.jades.validation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -36,17 +32,17 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getContentTimestampData(TimestampToken timestampToken) {
-		byte[] signedDataBinaries = getSignedDataBinaries(false);
+		byte[] signedDataBinaries = getSignedDataBinaries();
 		if (Utils.isArrayNotEmpty(signedDataBinaries)) {
 			return new InMemoryDocument(signedDataBinaries);
 		}
 		return null;
 	}
 	
-	private byte[] getSignedDataBinaries(boolean archiveTst) {
+	private byte[] getSignedDataBinaries() {
 		SigDMechanism sigDMechanism = signature.getSigDMechanism();
 		if (sigDMechanism != null) {
-			return getSigDReferencedOctets(sigDMechanism, archiveTst);
+			return getSigDReferencedOctets(sigDMechanism);
 		} else {
 			return getBase64UrlEncodedPayload();
 		}
@@ -56,7 +52,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return DSSJsonUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
 	}
 	
-	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism, boolean isArchiveTst) {
+	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism) {
 		/*
 		 * 3) Else, if the JAdES signature incorporates the sigD header parameter
 		 * specified in clause 5.2.8 of the present document, then: For each reference
@@ -73,20 +69,19 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		switch (sigDMechanism) {
 			case HTTP_HEADERS:
 				documentList = signature.getSignedDocumentsByUri(false);
-				HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentList, isArchiveTst);
+				HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentList, true);
 				sigDOctets = httpHeadersPayloadBuilder.build();
 				break;
 			case OBJECT_ID_BY_URI:
 			case OBJECT_ID_BY_URI_HASH:
 				documentList = signature.getSignedDocumentsByUri(true);
 				sigDOctets = DSSJsonUtils.concatenateDSSDocuments(documentList);
+				if (Utils.isArrayNotEmpty(sigDOctets) && !signature.getJws().isRfc7797UnencodedPayload()) {
+					sigDOctets = DSSJsonUtils.toBase64Url(sigDOctets).getBytes();
+				}
 				break;
 			default:
 				LOG.warn("Unsupported SigDMechanism has been found '{}'!", sigDMechanism);
-		}
-		
-		if (Utils.isArrayNotEmpty(sigDOctets)) {
-			sigDOctets = DSSJsonUtils.toBase64Url(sigDOctets).getBytes();
 		}
 
 		return sigDOctets;
@@ -286,7 +281,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	@Override
 	public DSSDocument getArchiveTimestampData(TimestampToken timestampToken) {
 		try {
-			byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null, null);
+			byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
 			return new InMemoryDocument(archiveTimestampData);
 		} catch (DSSException e) {
 			LOG.error("Unable to get data for TimestampToken with Id '{}'. Reason : {}", timestampToken.getDSSIdAsString(), e.getMessage(), e);
@@ -298,42 +293,21 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * Returns ArchiveTimestamp Data for a new Timestamp
 	 * 
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @param jadesArchiveTimestampType {@link JAdESArchiveTimestampType}
 	 * @return byte array timestamp data
 	 */
-	public byte[] getArchiveTimestampData(final String canonicalizationMethod, final JAdESArchiveTimestampType jadesArchiveTimestampType) {
+	public byte[] getArchiveTimestampData(final String canonicalizationMethod) {
 		// timestamp creation
-		return getArchiveTimestampData(null, canonicalizationMethod, jadesArchiveTimestampType);
+		return getArchiveTimestampData(null, canonicalizationMethod);
 	}
 	
-	protected byte[] getArchiveTimestampData(TimestampToken timestampToken, 
-			String canonicalizationMethod, JAdESArchiveTimestampType jadesArchiveTimestampType) {
+	@SuppressWarnings("unchecked")
+	protected byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
 		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("--->Get archive timestamp data : {}", (timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
 		}
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		
-		/*
-		 * 5.3.6.3 Computation of message-imprint
-		 * Absence of timeStamped shall be treated as if it is present with value "all".
-		 */
-		ArchiveTimestampType archiveTimestampType = timestampToken != null && timestampToken.getArchiveTimestampType() != null ?
-				timestampToken.getArchiveTimestampType() : jadesArchiveTimestampType.getAssociatedArchiveTimestampType();
 				
-		switch (archiveTimestampType) {
-			case JAdES_ALL:
-				return getAllArchiveTimestampData(timestampToken, canonicalizationMethod);
-			case JAdES_PREVIOUS_ARC_TST:
-				return getPreviousArchiveTimestampData(timestampToken, canonicalizationMethod);
-			default:
-				throw new DSSException(String.format("The ArchiveTimestampType '%s' is not supported!", archiveTimestampType));
-		}
-		
-	}
-
-	@SuppressWarnings("unchecked")
-	private byte[] getAllArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
 		JWS jws = signature.getJws();
 		
 		/*
@@ -355,7 +329,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * input to the message imprint computation
 			 */
 			
-			baos.write(getSignedDataBinaries(true));
+			baos.write(getSignedDataBinaries());
 			
 			/*
 			 * 2) The character '.'.
@@ -454,75 +428,6 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		}
 	}
 	
-	/*
-	 * 5.3.6.3.1	Time-stamping the time-stamp token of the last arcTst
-	 * 
-	 * If the value of timeStamped is equal to "previousArcTst" the time-stamp tokens 
-	 * within the container shall time-stamp the last existing arcTst container in 
-	 * the JAdES signature and its associated tstVD, if it is required to generate and 
-	 * incorporate it into the JAdES signature. In consequence the message imprint 
-	 * computation input shall be either the last existing arcTst container, or 
-	 * the concatenation of this container and its associated tstVD, either canonicalized or not.
-	 */
-	@SuppressWarnings("unchecked")
-	private byte[] getPreviousArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
-		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
-		
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-		
-			boolean previousArcTstFound = false;
-			boolean associatedTstVdFound = false;
-			
-			ListIterator<Object> iterator = etsiU.listIterator(etsiU.size());
-			while (!previousArcTstFound && iterator.hasPrevious()) {
-				Map<String, Object> previous = (Map<String, Object>) iterator.previous();
-	
-				Map<String, Object> tstVd = (Map<String, Object>) previous.get(JAdESHeaderParameterNames.TST_VD);
-				if (tstVd != null) {
-					if (associatedTstVdFound) {
-						throw new DSSException("Two consecuitive 'tstVd' containers found! Not valid JAdES. Extension is not possible.");
-					}
-					associatedTstVdFound = true;
-					
-					// TODO : check base64url encoded ???
-					baos.write(getCanonicalizedValue(tstVd, canonicalizationMethod));
-				}
-				
-				Map<String, Object> arcTst = (Map<String, Object>) previous.get(JAdESHeaderParameterNames.ARC_TST);
-				if (arcTst != null) {
-					
-					// Validation : check if the current timestamp has been reached
-					if (timestampToken != null && timestampToken.getHashCode() == arcTst.hashCode()) {
-						// reset the previously written data
-						baos.reset();
-						// go to the next element
-						continue;
-					}
-					
-					previousArcTstFound = true;
-
-					// TODO : check base64url encoded ???
-					baos.write(getCanonicalizedValue(arcTst, canonicalizationMethod));
-				}
-			}
-			
-			if (!previousArcTstFound) {
-				LOG.warn("Previous archive timestamp is not found! Message imprint has not been not calculated!");
-			}
-			
-			byte[] messageImprint = baos.toByteArray();
-
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("The 'previousArcTst' timestamp message-imprint : {}", new String(messageImprint));
-			}
-			
-			return messageImprint;
-			
-		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
-		}
-		
-	}
 	
 	private byte[] getCanonicalizedValue(Object jsonObject, String canonicalizationMethod) {
 		// TODO: canonicalization is not implemented yet

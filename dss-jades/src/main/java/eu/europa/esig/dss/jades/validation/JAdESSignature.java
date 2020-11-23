@@ -27,6 +27,7 @@ import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -349,7 +350,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			for (Object qArray : qArrays) {
 				if (qArray instanceof Map<?, ?>) {
 					Map<?, ?> qArrayMap = (Map<?, ?>) qArray;
-					List<?> vals = (List<?>) qArrayMap.get(JAdESHeaderParameterNames.VALS);
+					List<?> vals = (List<?>) qArrayMap.get(JAdESHeaderParameterNames.Q_VALS);
 					for (Object val : vals) {
 						result.add(new SignerRole(val.toString(), category));
 					}
@@ -407,7 +408,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 			signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifier(id));
 			signaturePolicy.setDescription((String) policyId.get(JAdESHeaderParameterNames.DESC));
-			signaturePolicy.setDigest(DSSJsonUtils.getDigest((Map<?, ?>) sigPolicy.get(JAdESHeaderParameterNames.HASH_AV)));
+
+			signaturePolicy.setDigest(DSSJsonUtils.getDigest(sigPolicy));
 
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
@@ -647,7 +649,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		 * "Signing HTTP Messages" [17].
 		 */
 		List<DSSDocument> documentsByUri = getSignedDocumentsByUri(false);
-		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsByUri);
+		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsByUri, false);
 		
 		return httpHeadersPayloadBuilder.build();
 	}
@@ -704,21 +706,22 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		List<DSSDocument> detachedDocuments = detachedContents;
 		
 		if (Utils.isCollectionEmpty(detachedContents)) {
-			LOG.warn("The detached content is not provided! Validation of 'sigD' is not possible.");
+			LOG.warn("The detached content is not provided! Validation of '{}' is not possible.", JAdESHeaderParameterNames.SIG_D);
 			detachedDocuments = Collections.emptyList();
 			// continue in order to extract signed data references
-		}
-		
-		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForDetachedContent();
-		if (digestAlgorithm == null) {
-			LOG.warn("The DigestAlgorithm has not been found for detached content.");
-			return Collections.emptyList();
 		}
 		
 		Map<String, String> signedDataHashMap = getSignedDataUriHashMap();
 		if (Utils.isMapEmpty(signedDataHashMap)) {
 			LOG.warn("The SignedData has not been found or incorrect for detached content.");
-			return Collections.emptyList();
+			JAdESReferenceValidation emptyReference = new JAdESReferenceValidation();
+			emptyReference.setType(DigestMatcherType.SIG_D_ENTRY);
+			return Collections.singletonList(emptyReference);
+		}
+
+		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForDetachedContent();
+		if (digestAlgorithm == null) {
+			LOG.warn("The DigestAlgorithm has not been found for the detached content.");
 		}
 		
 		List<JAdESReferenceValidation> detachedReferenceValidations = new ArrayList<>();
@@ -732,31 +735,19 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			
 			String expectedDigestString = signedDataEntry.getValue();
 			byte[] expectedDigest = DSSJsonUtils.fromBase64Url(expectedDigestString);
-			referenceValidation.setDigest(new Digest(digestAlgorithm, expectedDigest));
-			
-			boolean found = false;
-			// accept document with any name if only one detached document has been signed
-			if (signedDataHashMap.size() == 1 && detachedDocuments.size() == 1) {
-				found = true;
-				if (isDocumentDigestMatch(detachedDocuments.get(0), digestAlgorithm, expectedDigest)) {
-					referenceValidation.setIntact(true);
-				}
-				
-			} else {
-				// if more than one document signed/provided
-				for (DSSDocument detachedDocument : detachedDocuments) {
-					if (signedDataName.equals(detachedDocument.getName())) {
-						found = true;
-						if (isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
-							referenceValidation.setIntact(true);
-						}
-					}
-				}
+			if (digestAlgorithm != null) {
+				referenceValidation.setDigest(new Digest(digestAlgorithm, expectedDigest));
 			}
 			
-			referenceValidation.setFound(found);
-			if (!found) {
-				LOG.warn("A valid detached document for a 'sigD' entry with name '{}' has not been found!", signedDataName);
+			DSSDocument detachedDocument = getDetachedDocumentByName(signedDataName, detachedDocuments);
+			if (detachedDocument != null) {
+				referenceValidation.setFound(true);
+				if (digestAlgorithm != null && isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
+					referenceValidation.setIntact(true);
+				}
+			} else {
+				LOG.warn("A detached document for the '{}' header with name '{}' has not been found!",
+						JAdESHeaderParameterNames.SIG_D, signedDataName);
 			}
 			
 			detachedReferenceValidations.add(referenceValidation);
@@ -773,15 +764,39 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private DigestAlgorithm getDigestAlgorithmForDetachedContent() {
-		Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
-				.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
-		if (signatureDetached != null) {
-			String digestAlgoUri = (String) signatureDetached.get(JAdESHeaderParameterNames.HASH_M);
-			return DigestAlgorithm.forXML(digestAlgoUri);
+		try {
+			Map<?, ?> signatureDetached = (Map<?, ?>) jws.getHeaders()
+					.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_D);
+			if (signatureDetached != null) {
+				String digestAlgoUri = (String) signatureDetached.get(JAdESHeaderParameterNames.HASH_M);
+				return DigestAlgorithm.forJAdES(digestAlgoUri);
+			}
+		} catch (Exception e) {
+			String errorMessage = "Unable to extract DigestAlgorithm for '{}' element. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, JAdESHeaderParameterNames.SIG_D, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, JAdESHeaderParameterNames.SIG_D, e.getMessage());
+			}
 		}
 		return null;
 	}
 	
+	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
+		if (detachedContent.size() == 1 && detachedContent.size() == 1) {
+			return detachedContent.iterator().next();
+
+		} else {
+			// if more than one document signed/provided
+			for (DSSDocument detachedDocument : detachedContent) {
+				if (documentName.equals(detachedDocument.getName())) {
+					return detachedDocument;
+				}
+			}
+		}
+		return null;
+	}
+
 	private Map<String, String> getSignedDataUriHashMap() {
 		Map<String, String> signedDataHashMap = new LinkedHashMap<>(); // LinkedHashMap is used to keep the original order
 		
@@ -820,13 +835,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	private boolean isDocumentDigestMatch(DSSDocument document, DigestAlgorithm digestAlgorithm,
 			byte[] expectedDigest) {
-		String computedDigestBase64 = document.getDigest(digestAlgorithm);
-		byte[] computedDigestValue = Utils.fromBase64(computedDigestBase64);
+		byte[] computedDigestValue;
+		if (jws.isRfc7797UnencodedPayload() || document instanceof DigestDocument) {
+			String computedDigestBase64 = document.getDigest(digestAlgorithm);
+			computedDigestValue = Utils.fromBase64(computedDigestBase64);
+		} else {
+			String base64UrlEncodedDocument = DSSJsonUtils.toBase64Url(document);
+			computedDigestValue = DSSUtils.digest(digestAlgorithm, base64UrlEncodedDocument.getBytes());
+		}
+
 		if (Arrays.equals(expectedDigest, computedDigestValue)) {
 			return true;
 		}
 		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
-				computedDigestBase64, document.getName(), Utils.toBase64(expectedDigest));
+				DSSJsonUtils.toBase64Url(computedDigestValue), document.getName(), DSSJsonUtils.toBase64Url(expectedDigest));
 		return false;
 	}
 	

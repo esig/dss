@@ -10,8 +10,8 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
@@ -78,7 +78,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 						spDocSpecification.getDocumentationReferences());
 				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SP_DSPEC, oidObject);
 
-				Map<String, Object> sigPolicyStoreMap = new HashMap<String, Object>();
+				Map<String, Object> sigPolicyStoreMap = new HashMap<>();
 				sigPolicyStoreMap.put(JAdESHeaderParameterNames.SIG_PST, sigPolicyStoreParams);
 
 				JSONObject sigPolicyStoreItem = new JSONObject(sigPolicyStoreMap);
@@ -86,6 +86,9 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 			} else {
 				LOG.warn("Signature policy's digest doesn't match the document {} for signature {}", expectedDigest, jadesSignature.getId());
 			}
+		} else {
+			LOG.warn("No SignaturePolicyIdentifier '{}' found for a signature with id '{}'!",
+					JAdESHeaderParameterNames.SIG_PID, jadesSignature.getId());
 		}
 	}
 

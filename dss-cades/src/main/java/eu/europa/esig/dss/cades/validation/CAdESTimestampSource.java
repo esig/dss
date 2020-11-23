@@ -215,12 +215,6 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 	}
 
 	@Override
-	protected boolean isPreviousDataArchiveTimestamp(CAdESAttribute unsignedAttribute) {
-		// not applicable for CAdES
-		return false;
-	}
-
-	@Override
 	protected boolean isTimeStampValidationData(CAdESAttribute unsignedAttribute) {
 		// not applicable for CAdES
 		return false;

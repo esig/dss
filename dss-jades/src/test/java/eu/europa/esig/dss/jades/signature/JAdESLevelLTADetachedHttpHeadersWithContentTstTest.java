@@ -65,6 +65,7 @@ public class JAdESLevelLTADetachedHttpHeadersWithContentTstTest extends Abstract
 		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
 		signatureParameters.setSigDMechanism(SigDMechanism.HTTP_HEADERS);
+		signatureParameters.setBase64UrlEncodedPayload(false);
 
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentsToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));

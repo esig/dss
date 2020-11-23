@@ -48,7 +48,7 @@ public class JAdESLevelLTAWithoutTimestampedPropertyTest extends AbstractJAdESTe
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
-				assertEquals(ArchiveTimestampType.JAdES_ALL, timestamp.getArchiveTimestampType());
+				assertEquals(ArchiveTimestampType.JAdES, timestamp.getArchiveTimestampType());
 				archiveTstFound = true;
 			}
 		}
