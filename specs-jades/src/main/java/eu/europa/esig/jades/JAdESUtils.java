@@ -1,4 +1,4 @@
-package eu.europa.esig.jws;
+package eu.europa.esig.jades;
 
 import java.net.URI;
 import java.util.HashMap;

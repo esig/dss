@@ -16,7 +16,7 @@
 	<description>Generated sources from JWS JSON schema</description>
 
 	<properties>
-		<module-name>jpms_dss_jades</module-name>
+		<module-name>jpms_dss_specs_jws</module-name>
 	</properties>
 
 	<repositories>
@@ -26,7 +26,8 @@
 		</repository>
 	</repositories>
 
-	<dependencies>	
+	<dependencies>
+		<!-- https://github.com/everit-org/json-schema -->	
 		<dependency>
 			<groupId>com.github.everit-org.json-schema</groupId>
 			<artifactId>org.everit.json.schema</artifactId>

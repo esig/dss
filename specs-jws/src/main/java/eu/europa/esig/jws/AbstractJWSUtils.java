@@ -62,7 +62,7 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link String} a message containing errors occurred during the validation process, 
 	 * 			empty string ("") when validation succeeds
 	 */
-	protected List<String> validateAgainstJWSSchema(JSONObject json) {
+	public List<String> validateAgainstJWSSchema(JSONObject json) {
 		JSONObject jwsSchema = getJWSSchema();
 		return validateAgainstSchema(json, jwsSchema, Collections.emptyMap());
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractJWSUtils {
 	 * 
 	 * @return {@link JSONObject}
 	 */
-	protected JSONObject getJWSSchema() {
+	public JSONObject getJWSSchema() {
 		return parseJson(AbstractJWSUtils.class.getResourceAsStream(JWS_SCHEMA_LOCATION));
 	}
 	
@@ -140,7 +140,7 @@ public abstract class AbstractJWSUtils {
 	 * @return a list of {@link String} message errors occurred during the
 	 *         validation process, an empty list when validation succeeds
 	 */
-	protected List<String> validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
+	public List<String> validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
 		JSONObject jwsUnprotectedSchema = getJWSUnprotectedHeaderSchema();
 		Map<URI, JSONObject> jwsUnprotectedDefinitions = getJWSUnprotectedHeaderDefinitions();
 		return validateAgainstSchema(json, jwsUnprotectedSchema, jwsUnprotectedDefinitions);
@@ -179,7 +179,7 @@ public abstract class AbstractJWSUtils {
 		return new JSONObject(new JSONTokener(json));
 	}
 	
-	protected JSONObject parseJson(InputStream inputStream) {
+	public JSONObject parseJson(InputStream inputStream) {
 		return new JSONObject(new JSONTokener(inputStream));
 	}
 	

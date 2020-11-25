@@ -79,7 +79,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.jws.JAdESUtils;
+import eu.europa.esig.jades.JAdESUtils;
 
 /**
  * Utility class for working with JSON objects

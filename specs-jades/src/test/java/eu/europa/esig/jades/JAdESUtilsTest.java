@@ -1,4 +1,4 @@
-package eu.europa.esig.jws;
+package eu.europa.esig.jades;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

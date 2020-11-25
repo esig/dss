@@ -22,6 +22,11 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-jaxb-parsers</artifactId>
+		</dependency>
+		
+		<dependency>
 		    <groupId>org.junit.platform</groupId>
 		    <artifactId>junit-platform-launcher</artifactId>
 		    <scope>test</scope>

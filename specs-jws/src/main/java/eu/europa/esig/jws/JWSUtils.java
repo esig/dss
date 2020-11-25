@@ -28,12 +28,12 @@ public final class JWSUtils extends AbstractJWSUtils {
 	}
 
 	@Override
-	protected JSONObject getJWSProtectedHeaderSchema() {
+	public JSONObject getJWSProtectedHeaderSchema() {
 		return parseJson(JWSUtils.class.getResourceAsStream(JWS_PROTECTED_HEADER_SCHEMA_LOCATION));
 	}
 
 	@Override
-	protected Map<URI, JSONObject> getJWSProtectedHeaderDefinitions() {
+	public Map<URI, JSONObject> getJWSProtectedHeaderDefinitions() {
 		Map<URI, JSONObject> definitions = new HashMap<>();
 		definitions.put(URI.create(JWK_SCHEMA_URI), parseJson(JWSUtils.class.getResourceAsStream(JWK_SCHEMA_LOCATION)));
 		return definitions;

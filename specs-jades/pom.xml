@@ -16,7 +16,7 @@
 	<description>Generated sources from ETSI TS 119 182-1 JAdES JSON schema</description>
 
 	<properties>
-		<module-name>jpms_dss_jades</module-name>
+		<module-name>jpms_dss_specs_jades</module-name>
 	</properties>
 
 	<dependencies>

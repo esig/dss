@@ -13,7 +13,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.jws.JAdESUtils;
+import eu.europa.esig.jades.JAdESUtils;
 
 /**
  * The Parser used to create a {@code JWSJsonSerializationObject} from a document
