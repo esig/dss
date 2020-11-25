@@ -36,6 +36,7 @@
 
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
+		<module-name />
 
 		<slf4j.version>1.7.30</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
@@ -215,10 +216,6 @@
 								<compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
 							</compileSourceRoots>
 							<outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
-							<compilerArgs>
-								<arg>--patch-module</arg>
-								<arg>${module-name}=${project.build.outputDirectory}</arg>
-							</compilerArgs>
 						</configuration>
 					</execution>
 				</executions>          
@@ -237,8 +234,9 @@
 				<configuration>
 					<archive>
 			            <manifestEntries>
-			                <Multi-Release>true</Multi-Release>
-			            </manifestEntries>
+							<Multi-Release>true</Multi-Release>
+							<Automatic-Module-Name>${module-name}</Automatic-Module-Name>
+						</manifestEntries>
 			        </archive>
 				</configuration>
 			</plugin>
