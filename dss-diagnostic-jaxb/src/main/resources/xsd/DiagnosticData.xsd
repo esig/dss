@@ -280,8 +280,9 @@
 					<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationIdentifier" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
-					<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
+					<xs:element name="Title" type="xs:string" minOccurs="0"/>
+					<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 					<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 					<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
 					<xs:element name="Email" type="xs:string" minOccurs="0"/>

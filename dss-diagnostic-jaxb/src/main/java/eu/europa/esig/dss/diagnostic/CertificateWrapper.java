@@ -174,6 +174,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getSubjectSerialNumber();
 	}
 
+	public String getTitle() {
+		return certificate.getTitle();
+	}
+
 	public String getCommonName() {
 		return certificate.getCommonName();
 	}

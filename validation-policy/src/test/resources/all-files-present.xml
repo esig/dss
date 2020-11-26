@@ -117,8 +117,8 @@
             <CommonName>a,m j,37305300123</CommonName>
             <CountryName>EE</CountryName>
             <OrganizationName>ESTEID (DIGI-ID E-RESIDENT)</OrganizationName>
-            <GivenName>m j</GivenName>
             <OrganizationalUnit>digital signature</OrganizationalUnit>
+            <GivenName>m j</GivenName>
             <Surname>a</Surname>
             <AuthorityInformationAccessUrls>
                 <aiaUrl>http://c.sk.ee/ESTEID-SK_2015.der.crt</aiaUrl>

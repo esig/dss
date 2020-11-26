@@ -1011,6 +1011,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setSerialNumber(certToken.getSerialNumber());
 
 		xmlCert.setSubjectSerialNumber(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SERIALNUMBER, subject));
+		xmlCert.setTitle(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.T, subject));
 		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, subject));
 		xmlCert.setLocality(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.L, subject));
 		xmlCert.setState(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ST, subject));
