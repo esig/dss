@@ -10,8 +10,8 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
@@ -29,21 +29,23 @@ public final class JAdESRevocationRefExtractionUtils {
 	public static OCSPRef createOCSPRef(final Map<?,?> ocpRef) {
 		ResponderId responderId = null;
 		Date producedAt = null;
-		Map<?, ?> ocspId = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.OCSP_ID);
-		if (Utils.isMapNotEmpty(ocspId)) {
 
-			producedAt = DSSJsonUtils.getDate((String) ocspId.get(JAdESHeaderParameterNames.PRODUCED_AT));
+		try {
+			Map<?, ?> ocspId = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.OCSP_ID);
+			if (Utils.isMapNotEmpty(ocspId)) {
+				producedAt = DSSJsonUtils.getDate((String) ocspId.get(JAdESHeaderParameterNames.PRODUCED_AT));
+				responderId = getResponderId(ocspId);
+			}
 
-			responderId = getResponderId(ocspId);
-		}
+			Digest digest = DSSJsonUtils.getDigest(ocpRef);
+			if (digest != null) {
+				return new OCSPRef(digest, producedAt, responderId);
+			} else {
+				LOG.warn("Missing digest information in OCSPRef");
+			}
 
-		Map<?, ?> digAlgVal = (Map<?, ?>) ocpRef.get(JAdESHeaderParameterNames.DIG_ALG_VAL);
-
-		Digest digest = DSSJsonUtils.getDigest(digAlgVal);
-		if (digest != null) {
-			return new OCSPRef(digest, producedAt, responderId);
-		} else {
-			LOG.warn("Missing digest information in OCSPRef");
+		} catch (Exception e) {
+			LOG.warn("Unable to extract OCSPRef. Reason : {}", e.getMessage(), e);
 		}
 		return null;
 	}
@@ -72,43 +74,47 @@ public final class JAdESRevocationRefExtractionUtils {
 		return null;
 	}
 
-	public static CRLRef createCRLRef(Map<?, ?> item) {
+	public static CRLRef createCRLRef(Map<?, ?> crlRefMap) {
 
 		X500Name crlIssuer = null;
 		Date crlIssuedTime = null;
 		BigInteger crlNumber = null;
 
-		Map<?, ?> crlId = (Map<?, ?>) item.get(JAdESHeaderParameterNames.CRL_ID);
-		if (Utils.isMapNotEmpty(crlId)) {
-			String issuerB64 = (String) crlId.get(JAdESHeaderParameterNames.ISSUER);
-			if (Utils.isStringNotEmpty(issuerB64) && Utils.isBase64Encoded(issuerB64)) {
-				crlIssuer = X500Name.getInstance(Utils.fromBase64(issuerB64));
+		try {
+			Map<?, ?> crlId = (Map<?, ?>) crlRefMap.get(JAdESHeaderParameterNames.CRL_ID);
+			if (Utils.isMapNotEmpty(crlId)) {
+				String issuerB64 = (String) crlId.get(JAdESHeaderParameterNames.ISSUER);
+				if (Utils.isStringNotEmpty(issuerB64) && Utils.isBase64Encoded(issuerB64)) {
+					crlIssuer = X500Name.getInstance(Utils.fromBase64(issuerB64));
+				}
+
+				String issueTimeStr = (String) crlId.get(JAdESHeaderParameterNames.ISSUE_TIME);
+				if (Utils.isStringNotEmpty(issueTimeStr)) {
+					crlIssuedTime = DSSJsonUtils.getDate(issueTimeStr);
+				}
+
+				String crlNumberString = (String) crlId.get(JAdESHeaderParameterNames.NUMBER);
+				if (Utils.isStringNotEmpty(crlNumberString)) {
+					crlNumber = BigInteger.valueOf(Long.parseLong(crlNumberString));
+				}
 			}
 
-			String issueTimeStr = (String) crlId.get(JAdESHeaderParameterNames.ISSUE_TIME);
-			if (Utils.isStringNotEmpty(issueTimeStr)) {
-				crlIssuedTime = DSSJsonUtils.getDate(issueTimeStr);
+			Digest digest = DSSJsonUtils.getDigest(crlRefMap);
+			if (digest != null) {
+				CRLRef crlRef = new CRLRef(digest);
+				crlRef.setCrlIssuer(crlIssuer);
+				crlRef.setCrlIssuedTime(crlIssuedTime);
+				crlRef.setCrlNumber(crlNumber);
+				return crlRef;
+
+			} else {
+				LOG.warn("Missing digest information in CRLRef");
 			}
 
-			String crlNumberString = (String) crlId.get(JAdESHeaderParameterNames.NUMBER);
-			if (Utils.isStringNotEmpty(crlNumberString)) {
-				crlNumber = BigInteger.valueOf(Long.parseLong(crlNumberString));
-			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract a CRLRef. Reason : {}", e.getMessage(), e);
 		}
-
-		Map<?, ?> digAlgVal = (Map<?, ?>) item.get(JAdESHeaderParameterNames.DIG_ALG_VAL);
-
-		Digest digest = DSSJsonUtils.getDigest(digAlgVal);
-		if (digest != null) {
-			CRLRef crlRef = new CRLRef(digest);
-			crlRef.setCrlIssuer(crlIssuer);
-			crlRef.setCrlIssuedTime(crlIssuedTime);
-			crlRef.setCrlNumber(crlNumber);
-			return crlRef;
-		} else {
-			LOG.warn("Missing digest information in CRLRef");
-			return null;
-		}
+		return null;
 	}
 
 }

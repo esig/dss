@@ -12,7 +12,6 @@ import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -23,70 +22,61 @@ public class JAdESCRLSource extends OfflineCRLSource {
 
 	private static final long serialVersionUID = -8088419662779006608L;
 
-	private final JWS jws;
+	private transient final JAdESEtsiUHeader etsiUHeader;
 
-	public JAdESCRLSource(JWS jws) {
-		Objects.requireNonNull(jws, "JWS cannot be null");
-		this.jws = jws;
+	public JAdESCRLSource(JAdESEtsiUHeader etsiUHeader) {
+		Objects.requireNonNull(etsiUHeader, "etsiUComponents cannot be null");
+		this.etsiUHeader = etsiUHeader;
 
 		extractEtsiU();
 	}
 
 	private void extractEtsiU() {
-		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
-		if (Utils.isCollectionEmpty(etsiU)) {
+		if (!etsiUHeader.isExist()) {
 			return;
 		}
 
-		for (Object item : etsiU) {
-			if (item instanceof Map) {
-				Map<?, ?> jsonObject = (Map<?, ?>) item;
-				
-				extractRevocationValues(jsonObject);
-				extractAttributeRevocationValues(jsonObject);
-				extractTimestampValidationData(jsonObject);
-				
-				extractCompleteRevocationRefs(jsonObject);
-				extractAttributeRevocationRefs(jsonObject);
-			}
+		for (JAdESAttribute attribute : etsiUHeader.getAttributes()) {
+			extractRevocationValues(attribute);
+			extractAttributeRevocationValues(attribute);
+			extractTimestampValidationData(attribute);
+
+			extractCompleteRevocationRefs(attribute);
+			extractAttributeRevocationRefs(attribute);
 		}
 	}
 	
-	private void extractRevocationValues(Map<?, ?> jsonObject) {
-		Map<?, ?> rVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_VALS);
-		if (rVals != null) {
-			extractCRLValues(rVals, RevocationOrigin.REVOCATION_VALUES);
+	private void extractRevocationValues(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.R_VALS.equals(attribute.getHeaderName())) {
+			extractCRLValues((Map<?, ?>) attribute.getValue(), RevocationOrigin.REVOCATION_VALUES);
 		}
 	}
 	
-	private void extractAttributeRevocationValues(Map<?, ?> jsonObject) {
-		Map<?, ?> arVals = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_VALS);
-		if (arVals != null) {
-			extractCRLValues(arVals, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+	private void extractAttributeRevocationValues(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.AR_VALS.equals(attribute.getHeaderName())) {
+			extractCRLValues((Map<?, ?>) attribute.getValue(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 		}
 	}
 	
-	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
-		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
-		if (Utils.isMapNotEmpty(tstVd)) {
-			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.REV_VALS);
+	private void extractTimestampValidationData(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
+			Map<?, ?> tstVd = (Map<?, ?>) attribute.getValue();
+			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
 			if (Utils.isMapNotEmpty(revVals)) {
 				extractCRLValues(revVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 			}
 		}
 	}
 	
-	private void extractCompleteRevocationRefs(Map<?, ?> jsonObject) {
-		Map<?, ?> rRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.R_REFS);
-		if (rRefs != null) {
-			extractCRLReferences(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+	private void extractCompleteRevocationRefs(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.R_REFS.equals(attribute.getHeaderName())) {
+			extractCRLReferences((Map<?, ?>) attribute.getValue(), RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		}
 	}
 	
-	private void extractAttributeRevocationRefs(Map<?, ?> jsonObject) {
-		Map<?, ?> arRefs = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.AR_REFS);
-		if (arRefs != null) {
-			extractCRLReferences(arRefs, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+	private void extractAttributeRevocationRefs(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.AR_REFS.equals(attribute.getHeaderName())) {
+			extractCRLReferences((Map<?, ?>) attribute.getValue(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 		}
 	}
 

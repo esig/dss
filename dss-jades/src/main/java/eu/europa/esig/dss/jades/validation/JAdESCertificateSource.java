@@ -38,11 +38,14 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCertificateSource.class);
 
 	private transient final JWS jws;
+	private transient final JAdESEtsiUHeader etsiUHeader;
 
-	public JAdESCertificateSource(JWS jws) {
+	public JAdESCertificateSource(JWS jws, JAdESEtsiUHeader etsiUHeader) {
 		Objects.requireNonNull(jws, "JSON Web signature cannot be null");
+		Objects.requireNonNull(etsiUHeader, "etsiUHeader cannot be null");
 
 		this.jws = jws;
+		this.etsiUHeader = etsiUHeader;
 
 		// signing certificate
 		extractX5T();
@@ -83,11 +86,14 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private void extractX5TO(Map<?, ?> x5TO) {
 		if (x5TO != null) {
-			CertificateRef certRef = new CertificateRef();
-			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			certRef.setCertDigest(DSSJsonUtils.getDigest(x5TO));
+			Digest digest = DSSJsonUtils.getDigest(x5TO);
+			if (digest != null) {
+				CertificateRef certRef = new CertificateRef();
+				certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+				certRef.setCertDigest(digest);
 
-			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+				addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
+			}
 		}
 	}
 
@@ -121,60 +127,51 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractEtsiU() {
-		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
-		if (Utils.isCollectionEmpty(etsiU)) {
+		if (!etsiUHeader.isExist()) {
 			return;
 		}
 
-		for (Object item : etsiU) {
-			if (item instanceof Map) {
-				Map<?, ?> jsonObject = (Map<?, ?>) item;
+		for (JAdESAttribute attribute : etsiUHeader.getAttributes()) {
+			extractCertificateValues(attribute);
+			extractAttrAutoritiesCertValues(attribute);
+			extractTimestampValidationData(attribute);
 
-				extractCertificateValues(jsonObject);
-				extractAttrAutoritiesCertValues(jsonObject);
-				extractTimestampValidationData(jsonObject);
-
-				extractCompleteCertificateRefs(jsonObject);
-				extractAttributeCertificateRefs(jsonObject);
-			}
+			extractCompleteCertificateRefs(attribute);
+			extractAttributeCertificateRefs(attribute);
 		}
 	}
 
-	private void extractCertificateValues(Map<?, ?> jsonObject) {
-		List<?> xVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_VALS);
-		if (Utils.isCollectionNotEmpty(xVals)) {
-			extractCertificateValues(xVals, CertificateOrigin.CERTIFICATE_VALUES);
+	private void extractCertificateValues(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.X_VALS.equals(attribute.getHeaderName())) {
+			extractCertificateValues((List<?>) attribute.getValue(), CertificateOrigin.CERTIFICATE_VALUES);
 		}
 	}
 
-	private void extractAttrAutoritiesCertValues(Map<?, ?> jsonObject) {
-		List<?> axVals = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_VALS);
-		if (Utils.isCollectionNotEmpty(axVals)) {
-			extractCertificateValues(axVals, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+	private void extractAttrAutoritiesCertValues(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.AX_VALS.equals(attribute.getHeaderName())) {
+			extractCertificateValues((List<?>) attribute.getValue(), CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
 		}
 	}
 
-	private void extractTimestampValidationData(Map<?, ?> jsonObject) {
-		Map<?, ?> tstVd = (Map<?, ?>) jsonObject.get(JAdESHeaderParameterNames.TST_VD);
-		if (Utils.isMapNotEmpty(tstVd)) {
-			List<?> certVals = (List<?>) tstVd.get(JAdESHeaderParameterNames.CERT_VALS);
+	private void extractTimestampValidationData(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
+			Map<?, ?> tstVd = (Map<?, ?>) attribute.getValue();
+			List<?> certVals = (List<?>) tstVd.get(JAdESHeaderParameterNames.X_VALS);
 			if (Utils.isCollectionNotEmpty(certVals)) {
 				extractCertificateValues(certVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 			}
 		}
 	}
 
-	private void extractCompleteCertificateRefs(Map<?, ?> jsonObject) {
-		List<?> xRefs = (List<?>) jsonObject.get(JAdESHeaderParameterNames.X_REFS);
-		if (Utils.isCollectionNotEmpty(xRefs)) {
-			extractCertificateRefs(xRefs, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
+	private void extractCompleteCertificateRefs(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.X_REFS.equals(attribute.getHeaderName())) {
+			extractCertificateRefs((List<?>) attribute.getValue(), CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		}
 	}
 
-	private void extractAttributeCertificateRefs(Map<?, ?> jsonObject) {
-		List<?> axRefs = (List<?>) jsonObject.get(JAdESHeaderParameterNames.AX_REFS);
-		if (Utils.isCollectionNotEmpty(axRefs)) {
-			extractCertificateRefs(axRefs, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
+	private void extractAttributeCertificateRefs(JAdESAttribute attribute) {
+		if (JAdESHeaderParameterNames.AX_REFS.equals(attribute.getHeaderName())) {
+			extractCertificateRefs((List<?>) attribute.getValue(), CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
 		}
 	}
 

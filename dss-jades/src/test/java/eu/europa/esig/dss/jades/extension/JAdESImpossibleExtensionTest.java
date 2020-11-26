@@ -56,6 +56,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		parameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
+		parameters.setBase64UrlEncodedPayload(false);
 		
 		ToBeSigned dataToSign = service.getDataToSign(digestDocument, parameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, parameters.getDigestAlgorithm(), getPrivateKeyEntry());

@@ -16,7 +16,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class JAdESLevelLTAWithoutTimestampedPropertyTest extends AbstractJAdESTestValidation {
+public class JAdESLevelLTATest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -48,7 +48,7 @@ public class JAdESLevelLTAWithoutTimestampedPropertyTest extends AbstractJAdESTe
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
-				assertEquals(ArchiveTimestampType.JAdES_ALL, timestamp.getArchiveTimestampType());
+				assertEquals(ArchiveTimestampType.JAdES, timestamp.getArchiveTimestampType());
 				archiveTstFound = true;
 			}
 		}

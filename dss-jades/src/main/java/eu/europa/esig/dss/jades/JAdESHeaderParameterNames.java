@@ -24,11 +24,6 @@ public final class JAdESHeaderParameterNames {
 	public static final String SIG_X5T_S = "sigX5ts";
 
 	/**
-	 * Digest algorithm and value
-	 */
-	public static final String DIG_ALG_VAL = "digAlgVal";
-
-	/**
 	 * Digest algorithm
 	 */
 	public static final String DIG_ALG = "digAlg";
@@ -94,9 +89,9 @@ public final class JAdESHeaderParameterNames {
 	public static final String MEDIA_TYPE = "mediaType";
 
 	/**
-	 * Values
+	 * Values used for Q Arrays
 	 */
-	public static final String VALS = "vals";
+	public static final String Q_VALS = "qVals";
 
 	/**
 	 * Signer attributes
@@ -151,7 +146,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Hash policy is aligned to a specification
 	 */
-	public static final String HASH_PSP = "hashPSp";
+	public static final String DIG_PSP = "digPSp";
 
 	/**
 	 * Signature policy qualifiers
@@ -241,7 +236,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Timestamp tokens array
 	 */
-	public static final String TS_TOKENS = "tstokens";
+	public static final String TST_TOKENS = "tstTokens";
 
 	/**
 	 * Encoding (eg : DER,...)
@@ -389,16 +384,6 @@ public final class JAdESHeaderParameterNames {
 	public static final String TST_VD = "tstVd";
 
 	/**
-	 * TST Validation Data Certificate values
-	 */
-	public static final String CERT_VALS = "certVals";
-
-	/**
-	 * TST Validation Data Revocation values
-	 */
-	public static final String REV_VALS = "revVals";
-
-	/**
 	 * Shows if TST Validation Data covers a JWS Payload or not
 	 */
 	public static final String ON_JWSP = "onJWSP";
@@ -407,16 +392,6 @@ public final class JAdESHeaderParameterNames {
 	 * Archive TimeStamp
 	 */
 	public static final String ARC_TST = "arcTst";
-
-	/**
-	 * Archive TimeStamp container
-	 */
-	public static final String TST_CONTAINER = "tstContainer";
-
-	/**
-	 * Shows if the ATST covers all data or only the last 'arcTst'-'tstVd' pair
-	 */
-	public static final String TIMESTAMPED = "timeStamped";
 	
 	/**
 	 * Signature and References Timestamp

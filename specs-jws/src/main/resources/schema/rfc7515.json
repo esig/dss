@@ -1,0 +1,136 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	
+	"definitions": {
+	
+		"jws": {
+			"oneOf": [
+				{ "$ref": "#/definitions/compactSerialization" },
+				{ "$ref": "#/definitions/jsonSerialization" },
+				{ "$ref": "#/definitions/jsonFlattened" }
+			]
+		},
+	
+		"compactSerialization": {
+			"type": "string", "contentEncoding" : "base64"
+		},
+		
+		"jsonSerialization": {
+			"type": "object",
+			"properties": {
+				"payload": { "$ref": "#/definitions/payload" },
+				"signatures": { "$ref": "#/definitions/signatures" }
+			},
+			"required": [ "signatures" ],
+			"additionalProperties": false
+		},
+		
+		"jsonFlattened": {
+			"type": "object",
+			"properties": {
+				"payload": { "$ref": "#/definitions/payload" },
+				"protected": { "$ref": "#/definitions/protected" },
+				"header": { "$ref": "#/definitions/header" },
+				"signature": { "$ref": "#/definitions/signature" }
+			},
+			"required": [ "protected", "signature" ],
+			"additionalProperties": false
+		},
+	
+		"payload": {
+			"type": "string", "contentEncoding" : "base64"
+		},
+		
+		"signatures": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"protected": { "$ref": "#/definitions/protected" },
+					"header": { "$ref": "#/definitions/header" },
+					"signature": { "$ref": "#/definitions/signature" }
+				},
+				"required": [ "protected", "signature" ],
+				"additionalProperties": false
+			},
+			"minItems": 1
+		},
+		
+		"protected": {
+			"type": "string", "contentEncoding" : "base64"
+		},
+		
+		"header": { 
+			"$ref": "#/definitions/jwsUnprotectedHeader" 
+		},
+		
+		"signature": {
+			"type": "string", "contentEncoding" : "base64"
+		},
+		
+		"jwsProtectedHeader": {
+			"type": "object",
+			"properties": {
+			
+			    "alg": {
+			    	"type": "string"
+			    },
+			    
+			    "jku": {
+			    	"type": "string"
+			    },
+			    
+			    "jwk": {
+			    	"$ref": "rfc7517.json#/definitions/jwk"
+			    },
+			    
+			    "kid": {
+			    	"type": "string"
+			    },
+			    
+			    "x5u": {
+			    	"type": "string"
+			    },
+			    
+			    "x5c": {
+			    	"type": "array",
+			    	"items": {
+			    		"type": "string", "contentEncoding" : "base64"
+			    	}
+			    },
+			    
+			    "x5t": {
+			    	"type": "string", "contentEncoding" : "base64"
+			    },
+			    
+				"x5t#S256": {
+			    	"type": "string", "contentEncoding" : "base64"
+			    },
+			    
+			    "typ": {
+			    	"type": "string"
+			    },
+			    
+			    "cty": {
+			    	"type": "string"
+			    },
+			    
+			    "crit": {
+			    	"type": "array",
+			    	"items": {
+			    		"type": "string"
+			    	}
+			    }
+			    
+			},
+			"required": [ "alg" ]
+		},
+		
+		"jwsUnprotectedHeader": {
+			"type": "object",
+			"minProperties": 1
+		}
+		
+	}
+	
+}

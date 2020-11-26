@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +35,7 @@ public class JAdESWithMultipleCertRefsTest extends AbstractJAdESTestValidation {
 		List<RelatedCertificateWrapper> signCertificatereRefs = foundCertificates
 				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		assertNotNull(signCertificatereRefs);
-		assertTrue(signCertificatereRefs.size() > 1);
+		assertEquals(3, signCertificatereRefs.size());
 	}
 
 }

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
@@ -30,6 +32,7 @@ import eu.europa.esig.dss.utils.Utils;
 public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
+	private JAdESSignatureParameters signatureParameters;
 	private DSSDocument originalDocument;
 	private List<DSSDocument> documentsToSign;
 	private Date signingDate;
@@ -52,11 +55,9 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		// build "Digest" header manually
         String digest = originalDocument.getDigest(DigestAlgorithm.SHA1);
         documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
-	}
 
-	@Override
-	protected JAdESSignatureParameters getSignatureParameters() {
-		JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
+		signatureParameters = new JAdESSignatureParameters();
+
 		signatureParameters.bLevel().setSigningDate(signingDate);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -64,6 +65,10 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		
 		signatureParameters.setSigDMechanism(SigDMechanism.HTTP_HEADERS);
+	}
+
+	@Override
+	protected JAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 	
@@ -78,6 +83,19 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		detachedContents.add(new HTTPHeader("x-example", "Duplicated Header"));
 		
 		return detachedContents;
+	}
+	
+	@Override
+	protected DSSDocument sign() {
+		Exception exception = assertThrows(DSSException.class, () -> super.sign());
+		assertEquals("'http://uri.etsi.org/19182/HttpHeaders' SigD Mechanism can be used only with non-base64url encoded payload! "
+				+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(true).", exception.getMessage());
+
+		signatureParameters.setBase64UrlEncodedPayload(false);
+		DSSDocument signedDocument = super.sign();
+		assertNotNull(signedDocument);
+
+		return signedDocument;
 	}
 	
 	@Override

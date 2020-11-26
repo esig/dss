@@ -16,7 +16,6 @@ import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.JAdESArchiveTimestampType;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -48,9 +47,9 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	}
 
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected SignatureProperties<JAdESAttribute> buildUnsignedSignatureProperties() {
-		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
-		return new JAdESUnsignedProperties(etsiU);
+		return (SignatureProperties) signature.getEtsiUHeader();
 	}
 
 	@Override
@@ -117,14 +116,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 
 	@Override
 	protected boolean isArchiveTimestamp(JAdESAttribute unsignedAttribute) {
-		return isArchiveTimestamp(unsignedAttribute.getHeaderName()) && 
-				ArchiveTimestampType.JAdES_ALL.equals(getArchiveTimestampType(unsignedAttribute));
-	}
-
-	@Override
-	protected boolean isPreviousDataArchiveTimestamp(JAdESAttribute unsignedAttribute) {
-		return isArchiveTimestamp(unsignedAttribute.getHeaderName()) && 
-				ArchiveTimestampType.JAdES_PREVIOUS_ARC_TST.equals(getArchiveTimestampType(unsignedAttribute));
+		return isArchiveTimestamp(unsignedAttribute.getHeaderName());
 	}
 	
 	private boolean isArchiveTimestamp(String headerName) {
@@ -221,7 +213,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 		List<Object> xVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<String, Object> tstVd = (Map<String, Object>) unsignedAttribute.getValue();
-			xVals = (List<Object>) tstVd.get(JAdESHeaderParameterNames.CERT_VALS);
+			xVals = (List<Object>) tstVd.get(JAdESHeaderParameterNames.X_VALS);
 		} else {
 			xVals = (List<Object>) unsignedAttribute.getValue();
 		}
@@ -263,7 +255,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 		Map<String, Object> rVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<String, Object> tstVd = (Map<String, Object>) unsignedAttribute.getValue();
-			rVals = (Map<String, Object>) tstVd.get(JAdESHeaderParameterNames.REV_VALS);
+			rVals = (Map<String, Object>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
 		} else {
 			rVals = (Map<String, Object>) unsignedAttribute.getValue();
 		}
@@ -298,7 +290,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 		Map<String, Object> rVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<String, Object> tstVd = (Map<String, Object>) unsignedAttribute.getValue();
-			rVals = (Map<String, Object>) tstVd.get(JAdESHeaderParameterNames.REV_VALS);
+			rVals = (Map<String, Object>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
 		} else {
 			rVals = (Map<String, Object>) unsignedAttribute.getValue();
 		}
@@ -329,40 +321,15 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	protected ArchiveTimestampType getArchiveTimestampType(JAdESAttribute unsignedAttribute) {
-		/*
-		 * 5.3.6.3	Computation of message-imprint
-		 * Absence of timeStamped shall be treated as if it is present with value "all".
-		 */
-		ArchiveTimestampType archiveTimestampType = ArchiveTimestampType.JAdES_ALL;
-		
-		Map<String, Object> arcTst = (Map<String, Object>) unsignedAttribute.getValue();
-		String timestamped = (String) arcTst.get(JAdESHeaderParameterNames.TIMESTAMPED);
-		if (timestamped != null) {
-			switch (JAdESArchiveTimestampType.forJsonValue(timestamped)) {
-				case TIMESTAMPED_ALL:
-					return ArchiveTimestampType.JAdES_ALL;
-				case TIMESTAMPED_PREVIOUS_ARC_TST:
-					return ArchiveTimestampType.JAdES_PREVIOUS_ARC_TST;
-				default:
-					LOG.warn("Unsupported 'arcTst.timestamped' type found : {}. The default value 'all' will be used.", timestamped);
-			}
-		}
-		
-		return archiveTimestampType;
-	}
-
-	@Override
 	protected JAdESTimestampDataBuilder getTimestampDataBuilder() {
 		return new JAdESTimestampDataBuilder(signature);
 	}
 	
 	@Override
 	protected List<AdvancedSignature> getCounterSignatures(JAdESAttribute unsignedAttribute) {
-		Object cSig = unsignedAttribute.getValue();
-		if (cSig != null) {
-			JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSig, signature);
+		if (unsignedAttribute instanceof EtsiUComponent) {
+			EtsiUComponent etsiUComponent = (EtsiUComponent) unsignedAttribute;
+			JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(etsiUComponent, signature);
 			if (counterSignature != null) {
 				return Collections.singletonList(counterSignature);
 			}
@@ -374,11 +341,10 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	 * Returns concatenated data for an ArchiveTimestamp
 	 * 
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @param archiveTimestampType {@link JAdESArchiveTimestampType}
 	 * @return byte array
 	 */
-	public byte[] getArchiveTimestampData(String canonicalizationMethod, JAdESArchiveTimestampType archiveTimestampType) {
-		return getTimestampDataBuilder().getArchiveTimestampData(canonicalizationMethod, archiveTimestampType);
+	public byte[] getArchiveTimestampData(String canonicalizationMethod) {
+		return getTimestampDataBuilder().getArchiveTimestampData(canonicalizationMethod);
 	}
 
 	@Override
@@ -407,7 +373,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 			List<TimestampedReference> references) {
 		List<TimestampToken> result = new LinkedList<>();
 
-		List<?> tokens = (List<?>) tstContainer.get(JAdESHeaderParameterNames.TS_TOKENS);
+		List<?> tokens = (List<?>) tstContainer.get(JAdESHeaderParameterNames.TST_TOKENS);
 		if (Utils.isCollectionNotEmpty(tokens)) {
 			for (Object token : tokens) {
 				if (token instanceof Map<?, ?>) {
@@ -418,7 +384,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 						try {
 							TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64),
 									timestampType, references, TimestampLocation.JAdES);
-							timestampToken.setHashCode(signatureAttribute.getValueHashCode());
+							timestampToken.setHashCode(signatureAttribute.hashCode());
 							result.add(timestampToken);
 						} catch (Exception e) {
 							LOG.error("Unable to parse timestamp '{}'", tstBase64, e);
@@ -428,12 +394,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 					}
 				} else {
 					LOG.warn("The '{}' element shall contain an array of JSON objects! The entry is skipped.",
-							JAdESHeaderParameterNames.TS_TOKENS);
+							JAdESHeaderParameterNames.TST_TOKENS);
 				}
 			}
 		} else {
 			LOG.warn("'{}' element is not found! Returns an empty array if timestamps.",
-					JAdESHeaderParameterNames.TS_TOKENS);
+					JAdESHeaderParameterNames.TST_TOKENS);
 		}
 		return result;
 	}
@@ -441,9 +407,12 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	@SuppressWarnings("unchecked")
 	private List<TimestampToken> extractArchiveTimestampTokens(JAdESAttribute signatureAttribute, List<TimestampedReference> references) {
 		Map<String, Object> arcTst = (Map<String, Object>) signatureAttribute.getValue();
-		Map<String, Object> tstContainer = (Map<String, Object>) arcTst.get(JAdESHeaderParameterNames.TST_CONTAINER);
-		
-		return extractTimestampTokens(signatureAttribute, tstContainer, TimestampType.ARCHIVE_TIMESTAMP, references);
+		return extractTimestampTokens(signatureAttribute, arcTst, TimestampType.ARCHIVE_TIMESTAMP, references);
+	}
+
+	@Override
+	protected ArchiveTimestampType getArchiveTimestampType(JAdESAttribute unsignedAttribute) {
+		return ArchiveTimestampType.JAdES;
 	}
 
 }

@@ -53,7 +53,7 @@ public class JAdESLevelDoubleLTAInOneContainerTest extends AbstractJAdESTestVali
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
-				assertEquals(ArchiveTimestampType.JAdES_ALL, timestamp.getArchiveTimestampType());
+				assertEquals(ArchiveTimestampType.JAdES, timestamp.getArchiveTimestampType());
 				assertTrue(Utils.isCollectionNotEmpty(timestamp.getTimestampedObjects()));
 				++archiveTstCounter;
 				List<String> currentTimestampedObjectIds = timestamp.getTimestampedObjects().stream().map(o -> o.getToken().getId()).collect(Collectors.toList());

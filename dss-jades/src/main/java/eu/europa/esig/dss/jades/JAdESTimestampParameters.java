@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.jades;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampParameters;
@@ -33,14 +31,6 @@ public class JAdESTimestampParameters extends TimestampParameters {
 	 * The canonicalization method to use for timestamp's message imprint computation
 	 */
 	private String canonicalizationMethod;
-	
-	/**
-	 * Specifies data that will be timestamped by an Archive TimeStamp 'arcTst'
-	 * NOTE: used only for ArchiveTimestampParameters
-	 * 
-	 * Default : JAdESArchiveTimestampType.TIMESTAMPED_ALL
-	 */
-	private JAdESArchiveTimestampType archiveTimestampType = JAdESArchiveTimestampType.TIMESTAMPED_ALL;
 
 	public JAdESTimestampParameters() {
 	}
@@ -54,17 +44,8 @@ public class JAdESTimestampParameters extends TimestampParameters {
 	}
 
 	public void setCanonicalizationMethod(String canonicalizationMethod) {
-		throw new DSSException("Canonicalization is not supported");
+		throw new DSSException("Canonicalization is not supported in the current version.");
 		// TODO : this.canonicalizationMethod = canonicalizationMethod;
-	}
-
-	public JAdESArchiveTimestampType getArchiveTimestampType() {
-		return archiveTimestampType;
-	}
-
-	public void setArchiveTimestampType(JAdESArchiveTimestampType archiveTimestampType) {
-		Objects.requireNonNull("JAdESArchiveTimestampType cannot be null!");
-		this.archiveTimestampType = archiveTimestampType;
 	}
 
 }

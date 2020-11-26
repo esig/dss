@@ -24,7 +24,7 @@ public class HTTPHeaderDigest extends HTTPHeader {
 		Objects.requireNonNull(document, "DSSDocument shall be provided!");
 		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm shall be provided!");
 		
-		String jwsHttpHeaderAlgo = digestAlgorithm.getJwsHttpHeaderAlgo();
+		String jwsHttpHeaderAlgo = digestAlgorithm.getHttpHeaderAlgo();
 		if (jwsHttpHeaderAlgo == null) {
 			throw new DSSException(String.format("The DigestAlgorithm '%s' is not supported for 'sigD' HTTP_HEADERS mechanism. "
 					+ "See RFC 5843 for more information.", digestAlgorithm));

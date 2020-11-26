@@ -216,12 +216,6 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature
 	}
 
 	@Override
-	protected boolean isPreviousDataArchiveTimestamp(XAdESAttribute unsignedAttribute) {
-		// not applicable for XAdES
-		return false;
-	}
-
-	@Override
 	protected boolean isTimeStampValidationData(XAdESAttribute unsignedAttribute) {
 		return XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(unsignedAttribute.getName());
 	}

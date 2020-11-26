@@ -1,0 +1,458 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"oId": {
+			"type": "object",
+			"properties": {
+				"id": {"type": "string", "format": "uri"},
+				"desc": {"type": "string"},
+				"docRefs":{
+					"type": "array",
+					"items": {"type": "string", "format": "uri"},
+				 	"minItems": 1
+				}
+			},
+			"required": ["id"],
+			"additionalProperties": false
+		},
+		
+		"pkiOb": {
+			"type": "object",
+			"properties":{
+				"encoding": {"type": "string", "format": "uri"},
+				"specRef": {"type": "string"},
+				"val": {"type": "string", "contentEncoding" : "base64"}
+			},
+			"required": ["val"],
+			"additionalProperties": false
+		},
+
+		"tstContainer":{
+			"type": "object",
+			"properties": {
+				"canonAlg": {"type": "string", "format": "uri"},
+				"tstTokens": {
+					"type": "array",
+					"items": {"$ref":"#/definitions/tstToken"},
+					"minItems": 1
+				}
+			},
+			"required": ["tstTokens"],
+			"additionalProperties": false
+		},
+
+		"tstToken":{
+		 	"type": "object",
+			"properties": {
+				"type": {"type": "string"},
+				"encoding": {"type": "string", "format": "uri"},
+				"specRef": {"type": "string"},
+				"val": {"type": "string", "contentEncoding" : "base64"}
+			},
+			"required": ["val"],
+			"additionalProperties": false
+		},
+
+		"sigT": {"type": "string", "format": "date-time"},
+
+		"x5t#o": {
+			"type": "object",
+			"properties": {
+				"digAlg": {"type": "string"},
+				"digVal": {"type": "string", "contentEncoding": "base64"}
+			},
+			"required": ["digAlg","digVal"],
+			"additionalProperties": false
+		},
+
+		"sigX5ts": {
+			"type": "array",
+			"items": {"$ref": "#/definitions/x5t%23o"},
+			"minItems": 2
+		},
+
+		"srCms":{
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties":{
+					"commId": {"$ref": "#/definitions/oId"},
+					"commQuals":{
+						"type": "array",
+						"items": {"type":"object"},
+						"minItems": 1
+					}
+				},
+				"required": ["commId"],
+				"additionalProperties": false
+			},
+			"minItems": 1
+		},
+
+		"sigPl":{
+			"type": "object",
+			"properties":{
+				"addressCountry": {"type": "string"},
+				"addressLocality": {"type": "string"},
+				"addressRegion": {"type": "string"},
+				"postOfficeBoxNumber": {"type": "string"},
+				"postalCode": {"type": "string"},
+				"streetAddress": {"type": "string"}
+			},
+			"minProperties": 1,
+			"additionalProperties": false
+		},
+
+		"qArrays":{
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"mediaType": {"type": "string"},
+					"encoding": {"type": "string"},
+					"qVals": {
+						"type": "array",
+						"minItems": 1
+					}
+				},
+				"required": ["mediaType", "encoding", "qVals"],
+				"additionalProperties": false
+			},
+			"minItems": 1
+		},
+
+		"srAts":{
+			"type": "object",
+			"properties": {
+				"certified":{
+					"type": "array",
+					"items": {"$ref": "#/definitions/certifiedAttrs"},
+					"minItems": 1
+				},
+				"claimed": {"$ref": "#/definitions/qArrays"},
+				"signedAssertions": {"$ref": "#/definitions/qArrays"}
+			},
+			"minProperties": 1,
+			"additionalProperties": false
+		},
+
+		"certifiedAttrs": {
+			"type": "object",
+			"properties": {
+				"x509AttrCert":{"$ref": "#/definitions/pkiOb"},
+				"otherAttrCert":{"$ref": "#/definitions/pkiOb"}
+			},
+			"oneOf":[
+				{
+					"required":["x509AttrCert"]
+				},
+				{
+					"required":["otherAttrCert"]
+				}
+			],
+			"additionalProperties": false
+		},
+
+		"adoTst": {"$ref": "#/definitions/tstContainer"},
+
+		"sigPId": {
+			"type": "object",
+			"properties": {
+				"id": {"$ref": "#/definitions/oId"},
+				"digAlg": {"type": "string"},
+				"digVal": {"type": "string", "contentEncoding": "base64"},
+				"digPSp": {"type": "boolean"},
+				"sigPQuals": {
+		 			"type": "array",
+					"items": {"$ref":"#/definitions/sigPQual"},
+					"minItems": 1
+				}
+		 	},
+			"required": ["id"],
+			"additionalProperties": false
+		},
+		
+		"sigPQual": {
+			"type": "object",
+			"properties": {
+				"spUserNotice": {"$ref": "#/definitions/spUserNotice"},
+				"spURI": {"$ref": "#/definitions/spURI"},
+				"spDSpec": {"$ref": "#/definitions/spDSpec"}
+			},
+			"minProperties": 1,
+			"maxProperties": 1
+		},
+		
+		"spURI": {"type": "string", "format": "uri"},
+		
+		"spUserNotice": {
+			"type": "object",
+			"properties": {
+				"noticeRef": {
+					"type": "object",
+					"properties": {
+						"organization": {"type": "string"},
+						"noticeNumbers": {
+							"type": "array",
+							"items": {"type": "integer"},
+							"minItems" : 1
+		 				}
+					},
+					"required": ["organization","noticeNumbers"],
+					"additionalProperties": false
+				},
+				"explText": {"type": "string"}
+			},
+			"minProperties": 1,
+			"additionalProperties": false
+		},
+		
+		"spDSpec": {"$ref": "#/definitions/oId"},
+
+		"sigD":{ 
+			"type": "object",
+			"properties": {
+				"mId" : {"type":"string", "format": "uri"},
+				"pars" : {
+					"type": "array",
+					"items": {"type": "string"},
+					"minItems": 1
+				},
+				"hashM" : {"type":"string"},
+				"hashV" : {
+					"type": "array",
+					"items": {"type": "string","contentEncoding": "base64"},
+					"minItems": 1
+				},
+				"ctys" : {
+					"type": "array",
+					"items": {"type": "string"},
+					"minItems": 1
+				}
+			},
+			"required": ["mId"],
+			"additionalProperties": false
+		},
+
+		"sigPSt": { 
+			"type":"object",
+			"properties": {
+				"sigPolDoc": {"type": "string", "contentEncoding": "base64"},
+				"sigPolLocalURI": {"type": "string", "format": "uri-reference"},
+				"spDSpec": {"$ref": "#/definitions/oId"}
+			},
+			"oneOf": [
+				{
+					"required": ["sigPolDoc"]
+				},
+				{
+					"required": ["sigPolLocalURI"]
+				}
+			],
+			"minProperties": 1,
+			"additionalProperties": false
+		}, 
+
+		"sigTst": {"$ref": "#/definitions/tstContainer"},
+
+		"xVals": {
+			"type": "array",
+			"items": {
+				"type":"object",
+				"properties": {
+					"x509Cert": {"$ref": "#/definitions/pkiOb"},
+					"otherCert": {"$ref": "#/definitions/pkiOb"}
+				},
+				"oneOf": [
+					{
+						"required": ["x509Cert"]
+					},
+					{
+						"required": ["otherCert"]
+					}
+				],
+				"additionalProperties": false
+			},
+			"minItems": 1
+		},
+
+		"rVals": {
+			"type": "object",
+			"properties":{
+				"crlVals": {
+					"type": "array",
+					"items": {"$ref":"#/definitions/pkiOb"},
+					"minItems": 1
+				},
+				"ocspVals": {
+					"type": "array",
+					"items": {"$ref":"#/definitions/pkiOb"},
+					"minItems": 1
+				},
+				"otherVals": {
+					"type": "array",
+					"items": {"type":"object"},
+					"minItems": 1
+				}
+			},
+			"minProperties": 1 ,
+			"additionalProperties": false
+		},
+
+		"axVals": {"$ref": "#/definitions/xVals"},
+
+		"arVals": {"$ref": "#/definitions/rVals"},
+
+		"tstVD": {
+			"type": "object",
+			"properties": {
+				"xVals": {"$ref": "#/definitions/xVals"},
+				"rVals": {"$ref": "#/definitions/rVals"}
+			},
+			"minProperties": 1 ,
+			"additionalProperties": false
+		},
+
+		"arcTst": {"$ref": "#/definitions/tstContainer"},
+		
+		"certId":{
+			"type": "object",
+			"properties":{
+				"digAlg": {"type": "string"},
+				"digVal": {"type": "string", "contentEncoding": "base64"},
+				"kid": {"type": "string", "contentEncoding" : "base64"},
+				"x5u": {"type": "string", "format": "uri-reference"}
+			},
+			"required": ["digAlg","digVal"] ,
+			"additionalProperties": false
+		},
+		
+		"x5Ids": {
+			"type": "array",
+			"items": {"$ref": "#/definitions/certId"},
+			"minItems": 1
+		},
+		
+		"xRefs": {"$ref": "#/definitions/x5Ids"},		
+		
+		"rRefs": {
+			"type": "object",
+			"properties": {
+				"crlRefs": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"digAlg": {"type": "string"},
+							"digVal": {"type": "string", "contentEncoding": "base64"},
+							"crlId": {
+								"type": "object",
+								"properties": {
+									"issuer": {"type": "string", "contentEncoding" : "base64"},
+									"issueTime": {"type": "string", "format": "date-time"},
+									"number": {"type": "number"},
+									"uri": {"type": "string", "format": "uri-reference"}
+								},
+								"required": ["issuer","issueTime"],
+								"additionalProperties": false
+							}
+						},
+						"required": ["digAlg","digVal"] ,
+						"additionalProperties": false
+					},
+					"minItems": 1
+				},
+				"ocspRefs":{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"ocspId": {
+								"type": "object",
+								"properties": {
+									"responderId": {
+										"type": "object",
+										"properties": {
+											"byName": {"type": "string", "contentEncoding" : "base64"},
+											"byKey": {"type": "string", "contentEncoding" : "base64"}
+										},
+										"oneOf":[
+											{
+												"required": ["byName"]
+											},
+											{
+												"required": ["byKey"]
+											}
+										],
+										"additionalProperties": false
+									},
+									"producedAt": {"type": "string", "format": "date-time"},
+									"uri": {"type": "string", "format": "uri-reference"}
+								},
+								"required": ["responderId", "producedAt"],
+								"additionalProperties": false
+							},
+							"digAlg": {"type": "string"},
+							"digVal": {"type": "string", "contentEncoding": "base64"}
+						},
+						"required": ["ocspId","digAlg","digVal"],
+						"additionalProperties": false
+					},
+					"minItems": 1
+				},
+				"otherRefs": {
+					"type": "array",
+					"items": {"type":"object"},
+					"minItems": 1
+				}
+			},
+			"minProperties": 1,
+			"additionalProperties": false
+		},
+		
+		"axRefs": {"$ref": "#/definitions/x5Ids"},		
+		
+		"arRefs": {"$ref": "#/definitions/rRefs"},		
+		
+		"sigRTst": {"$ref": "#/definitions/tstContainer"},
+		
+		"rfsTst": {"$ref": "#/definitions/tstContainer"},		
+
+		"etsiU": {
+			"type": "array",
+			"oneOf": [
+				{
+					"items": {"$ref": "#/definitions/etsiUClearInstance"}
+				},
+				{
+					"items": {"type": "string", "contentEncoding": "base64"}
+				}
+			],
+			"minItems": 1
+		},
+
+		"etsiUClearInstance": {
+			"type": "object",
+			"properties": {
+				"sigPSt": {"$ref": "#/definitions/sigPSt"},
+				"sigTst": {"$ref": "#/definitions/sigTst"},
+				"xVals": {"$ref": "#/definitions/xVals"},
+				"rVals": {"$ref": "#/definitions/rVals"},
+				"axVals": {"$ref": "#/definitions/axVals"},
+				"arVals": {"$ref": "#/definitions/arVals"},
+				"tstVD": {"$ref": "#/definitions/tstVD"},
+				"arcTst": {"$ref": "#/definitions/arcTst"},
+				"xRefs": {"$ref": "#/definitions/xRefs"},
+				"rRefs": {"$ref": "#/definitions/rRefs"},
+				"axRefs": {"$ref": "#/definitions/axRefs"},
+				"arRefs": {"$ref": "#/definitions/arRefs"},
+				"sigRTst": {"$ref": "#/definitions/sigRTst"},
+				"rfsTst": {"$ref": "#/definitions/rfsTst"},
+				"cSig": {"$ref": "rfc7515.json#/definitions/jws"}
+			},
+			"minProperties": 1,
+			"maxProperties": 1
+		}
+		
+	}
+}

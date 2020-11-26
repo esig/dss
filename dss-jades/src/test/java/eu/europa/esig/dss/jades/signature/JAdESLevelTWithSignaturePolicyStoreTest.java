@@ -22,10 +22,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -139,7 +139,8 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 			
 			Map<?, ?> sigPSt = null;
 			for (Object etsiUItem : etsiU) {
-				sigPSt = (Map<?, ?>) ((Map<?, ?>) etsiUItem).get("sigPSt");
+				Map<String, Object> map = DSSJsonUtils.parseEtsiUComponent(etsiUItem);
+				sigPSt = (Map<?, ?>) map.get("sigPSt");
 				if (sigPSt != null) {
 					break;
 				}

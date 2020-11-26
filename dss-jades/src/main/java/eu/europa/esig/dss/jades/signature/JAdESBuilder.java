@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -10,9 +11,9 @@ public interface JAdESBuilder {
 	 * Builds a signature
 	 * 
 	 * @param signatureValue {@link SignatureValue} to add to the signature
-	 * @return a JWS binaries
+	 * @return {@link DSSDocument} containing JWS binaries
 	 */
-	byte[] build(SignatureValue signatureValue);
+	DSSDocument build(SignatureValue signatureValue);
 
 	/**
 	 * Builds data to be signed by incorporating a detached payload when required (see 5.2.8.3 Mechanism ObjectIdByURI)

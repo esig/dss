@@ -1,0 +1,16 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions":{
+		"jwsUnprotectedHeader": {
+			"type":"object",
+			"properties":{
+				"etsiU": {"$ref": "#/definitions/etsiU"}
+			},
+			"required": ["etsiU"],
+			"additionalProperties": false
+		}
+	},
+	
+	"$ref": "#/definitions/jwsUnprotectedHeader"
+	
+}

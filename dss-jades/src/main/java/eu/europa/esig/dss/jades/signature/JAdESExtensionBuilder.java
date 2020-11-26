@@ -1,27 +1,27 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.jose4j.json.internal.json_simple.JSONArray;
-
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
-import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.JWS;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 
 public abstract class JAdESExtensionBuilder {
 
-	@SuppressWarnings("unchecked")
-	protected List<Object> getUnsignedProperties(JAdESSignature jadesSignature) {
-		JWS jws = jadesSignature.getJws();
-		Map<String, Object> unprotected = jws.getUnprotected();
-		if (unprotected == null) {
-			unprotected = new HashMap<>();
-			jws.setUnprotected(unprotected);
+	protected void assertExtensionPossible(JWS jws, boolean isBase64UrlEtsiUComponents) {
+		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
+		if (Utils.isCollectionNotEmpty(etsiU)) {
+			if (!DSSJsonUtils.checkComponentsUnicity(etsiU)) {
+				throw new DSSException("Extension is not possible, because components of the 'etsiU' header have "
+						+ "not common format! Shall be all Strings or Objects.");
+			}
+			if (DSSJsonUtils.areAllBase64UrlComponents(etsiU) != isBase64UrlEtsiUComponents) {
+				throw new DSSException(String.format("Extension is not possible! The encoding of 'etsiU' "
+						+ "components shall match! Use jadesSingatureParameters.setBase64UrlEncodedEtsiUComponents(%s)",
+						!isBase64UrlEtsiUComponents));
+			}
 		}
-
-		return (List<Object>) unprotected.computeIfAbsent(JAdESHeaderParameterNames.ETSI_U, k -> new JSONArray());
 	}
 
 }

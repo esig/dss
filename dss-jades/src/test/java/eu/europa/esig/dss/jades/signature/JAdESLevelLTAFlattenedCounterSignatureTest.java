@@ -18,13 +18,12 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
-import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -61,6 +60,7 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 		counterSignatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
@@ -78,7 +78,7 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 		boolean cSigFound = false;
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		for (Object etsiUEntry : etsiU) {
-			Map<?, ?> item = (Map<?, ?>) etsiUEntry;
+			Map<?, ?> item = DSSJsonUtils.parseEtsiUComponent(etsiUEntry);
 			assertEquals(1, item.size());
 			
 			Map<String, ?> cSig = (Map<String, ?>) item.get(JAdESHeaderParameterNames.C_SIG);
@@ -108,7 +108,7 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 		
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		for (Object etsiUEntry : etsiU) {
-			Map<?, ?> item = (Map<?, ?>) etsiUEntry;
+			Map<?, ?> item = DSSJsonUtils.parseEtsiUComponent(etsiUEntry);
 			assertEquals(1, item.size());
 			
 			if (item.get(JAdESHeaderParameterNames.SIG_TST) != null) {

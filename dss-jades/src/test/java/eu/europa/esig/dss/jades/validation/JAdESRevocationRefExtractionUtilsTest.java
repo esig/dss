@@ -35,12 +35,8 @@ public class JAdESRevocationRefExtractionUtilsTest {
 		ocspIdJson.put("producedAt", "2020-07-10T08:40:30Z");
 		ocspRefJson.put("ocspId", ocspIdJson);
 
-		JSONObject digAlgValJson = new JSONObject();
-		// TODO URI here ???
-		digAlgValJson.put("digAlg", DigestAlgorithm.SHA256.getUri());
-		digAlgValJson.put("digVal", Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Hello".getBytes())));
-
-		ocspRefJson.put("digAlgVal", digAlgValJson);
+		ocspRefJson.put("digAlg", DigestAlgorithm.SHA256.getJAdESId());
+		ocspRefJson.put("digVal", Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Hello".getBytes())));
 
 		LOG.info(ocspRefJson.toJSONString());
 
@@ -59,12 +55,8 @@ public class JAdESRevocationRefExtractionUtilsTest {
 
 		JSONObject crlRefJson = new JSONObject();
 
-		JSONObject digAlgValJson = new JSONObject();
-		// TODO URI here ???
-		digAlgValJson.put("digAlg", DigestAlgorithm.SHA256.getUri());
-		digAlgValJson.put("digVal", Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Hello".getBytes())));
-
-		crlRefJson.put("digAlgVal", digAlgValJson);
+		crlRefJson.put("digAlg", DigestAlgorithm.SHA256.getJAdESId());
+		crlRefJson.put("digVal", Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Hello".getBytes())));
 
 		JSONObject crlId = new JSONObject();
 		crlId.put("issuer", Utils.toBase64(new X500Principal("C=BE,O=MyOrg,CN=Test").getEncoded()));

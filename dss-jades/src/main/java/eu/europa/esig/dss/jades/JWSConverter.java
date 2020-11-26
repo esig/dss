@@ -1,12 +1,30 @@
 package eu.europa.esig.dss.jades;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 
 public final class JWSConverter {
+
+	private static final String FLATTENED_SERIALIZATION_DOCUMENT_NAME = "json-flattened-serialization.json";
+	private static final String SERIALIZATION_DOCUMENT_NAME = "json-serialization.json";
+	private static final String CLEAR_ETSIU_DOCUMENT_NAME = "etsiU-clear-incorporation.json";
+	private static final String BASE64URL_ETSIU_DOCUMENT_NAME = "etsiU-base64url-incorporation.json";
+
+	private static List<String> timestampHeaderNames;
+
+	static {
+		timestampHeaderNames = Arrays.asList(JAdESHeaderParameterNames.ARC_TST, JAdESHeaderParameterNames.RFS_TST,
+				JAdESHeaderParameterNames.SIG_R_TST);
+	}
 
 	private JWSConverter() {
 	}
@@ -18,7 +36,6 @@ public final class JWSConverter {
 	 * @return the converted signature with JSON Flattened Serialization format
 	 */
 	public static DSSDocument fromJWSCompactToJSONFlattenedSerialization(DSSDocument document) {
-
 		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(document);
 		JWS jws = parser.parse();
 
@@ -30,7 +47,10 @@ public final class JWSConverter {
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
 				JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
-		return new InMemoryDocument(generator.generate(), "json-flattened-serialization.json", MimeType.JSON);
+		DSSDocument signatureDocument = generator.generate();
+		signatureDocument.setName(FLATTENED_SERIALIZATION_DOCUMENT_NAME);
+		signatureDocument.setMimeType(MimeType.JSON);
+		return signatureDocument;
 	}
 
 	/**
@@ -40,7 +60,6 @@ public final class JWSConverter {
 	 * @return the converted signature with JSON Serialization format
 	 */
 	public static DSSDocument fromJWSCompactToJSONSerialization(DSSDocument document) {
-
 		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(document);
 		JWS jws = parser.parse();
 
@@ -50,7 +69,123 @@ public final class JWSConverter {
 
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject, JWSSerializationType.JSON_SERIALIZATION);
 
-		return new InMemoryDocument(generator.generate(), "json-serialization.json", MimeType.JSON);
+		DSSDocument signatureDocument = generator.generate();
+		signatureDocument.setName(SERIALIZATION_DOCUMENT_NAME);
+		signatureDocument.setMimeType(MimeType.JSON);
+		return signatureDocument;
+	}
+
+	/**
+	 * Converts unprotected content of 'etsiU' header of JAdES signatures inside a
+	 * document to its clear JSON incorporation form
+	 * 
+	 * @param document {@link DSSDocument} containing Serialization (or Flattened)
+	 *                 JAdES signatures
+	 * @return {@link DSSDocument} containing signatures with 'etsiU' header in its
+	 *         clear JSON representation
+	 */
+	public static DSSDocument fromEtsiUWithBase64UrlToClearJsonIncorporation(DSSDocument document) {
+		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
+		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
+
+		for (JWS jws : jwsJsonSerializationObject.getSignatures()) {
+			List<Object> etsiUContent = DSSJsonUtils.getEtsiU(jws);
+			if (Utils.isCollectionEmpty(etsiUContent)) {
+				// do nothing
+				continue;
+			}
+
+			assertConvertPossible(etsiUContent);
+
+			List<Object> clearEtsiUContent = toClearJsonIncorporation(etsiUContent);
+			Map<String, Object> unprotected = jws.getUnprotected();
+			unprotected.replace(JAdESHeaderParameterNames.ETSI_U, clearEtsiUContent);
+		}
+
+		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
+				jwsJsonSerializationObject.getJWSSerializationType());
+
+		DSSDocument signatureDocument = generator.generate();
+		signatureDocument.setName(CLEAR_ETSIU_DOCUMENT_NAME);
+		signatureDocument.setMimeType(MimeType.JSON);
+		return signatureDocument;
+	}
+
+	private static void assertConvertPossible(List<Object> etsiUContent) {
+		if (!DSSJsonUtils.checkComponentsUnicity(etsiUContent)) {
+			throw new DSSException("Unable to convert the EtsiU content! All components shall have a common form.");
+		}
+	}
+
+	private static List<Object> toClearJsonIncorporation(List<Object> etsiUContent) {
+		List<Object> clearEtsiUContent = new ArrayList<>();
+		for (Object item : etsiUContent) {
+			Map<String, Object> clearEtsiUComponent = DSSJsonUtils.parseEtsiUComponent(item);
+			if (clearEtsiUComponent == null) {
+				throw new DSSException(String.format("Unable to parse 'etsiU' component : '%s'", item));
+			}
+			assertComponentSupportsConvertion(clearEtsiUComponent);
+			clearEtsiUContent.add(new JsonObject(clearEtsiUComponent));
+		}
+		return clearEtsiUContent;
+	}
+
+	/**
+	 * Converts unprotected content of 'etsiU' header of JAdES signatures inside a
+	 * document to its base64Url JSON incorporation form
+	 * 
+	 * @param document {@link DSSDocument} containing Serialization (or Flattened)
+	 *                 JAdES signatures
+	 * @return {@link DSSDocument} containing signatures with 'etsiU' header in its
+	 *         base64Url encoded representation
+	 */
+	public static DSSDocument fromEtsiUWithClearJsonToBase64UrlIncorporation(DSSDocument document) {
+		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
+		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
+
+		for (JWS jws : jwsJsonSerializationObject.getSignatures()) {
+			List<Object> etsiUContent = DSSJsonUtils.getEtsiU(jws);
+			if (Utils.isCollectionEmpty(etsiUContent)) {
+				// do nothing
+				continue;
+			}
+
+			assertConvertPossible(etsiUContent);
+
+			List<Object> base64UrlEtsiUContent = toBase64UrlIncorporation(etsiUContent);
+			Map<String, Object> unprotected = jws.getUnprotected();
+			unprotected.replace(JAdESHeaderParameterNames.ETSI_U, base64UrlEtsiUContent);
+		}
+
+		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
+				jwsJsonSerializationObject.getJWSSerializationType());
+
+		DSSDocument signatureDocument = generator.generate();
+		signatureDocument.setName(BASE64URL_ETSIU_DOCUMENT_NAME);
+		signatureDocument.setMimeType(MimeType.JSON);
+		return signatureDocument;
+	}
+
+	private static List<Object> toBase64UrlIncorporation(List<Object> etsiUContent) {
+		List<Object> base64UrlEtsiUContent = new ArrayList<>();
+		for (Object item : etsiUContent) {
+			Map<String, Object> base64UrlEtsiUComponent = DSSJsonUtils.parseEtsiUComponent(item);
+			if (base64UrlEtsiUComponent == null) {
+				throw new DSSException(String.format("Unable to parse 'etsiU' component : '%s'", item));
+			}
+			assertComponentSupportsConvertion(base64UrlEtsiUComponent);
+			base64UrlEtsiUContent.add(DSSJsonUtils.toBase64Url(base64UrlEtsiUComponent));
+		}
+		return base64UrlEtsiUContent;
+	}
+
+	private static void assertComponentSupportsConvertion(Map<String, Object> etsiUComponent) {
+		// only one is allowed
+		String componentName = etsiUComponent.keySet().iterator().next();
+		if (timestampHeaderNames.contains(componentName)) {
+			throw new DSSException(String.format("Unable to convert a signature! "
+					+ "'etsiU' contains a component with name '%s', which is sensible to a format change.", componentName));
+		}
 	}
 
 }

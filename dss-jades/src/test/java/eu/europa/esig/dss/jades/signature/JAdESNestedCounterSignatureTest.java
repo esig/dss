@@ -77,6 +77,7 @@ public class JAdESNestedCounterSignatureTest extends AbstractJAdESTestValidation
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		// counterSignedSignature.save("target/counterSignedSignature.json");
+		verify(counterSignedSignature);
 		
 		validator = getValidator(counterSignedSignature);
 		

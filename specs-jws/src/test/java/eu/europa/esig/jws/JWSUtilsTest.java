@@ -28,7 +28,7 @@ public class JWSUtilsTest {
 		JSONObject jws = jwsUtils.parseJson(is);
 		
 		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
-		assertTrue(errors.isEmpty());
+		assertTrue(errors.isEmpty(), errors.toString());
 		
 		JSONArray signartures = jws.getJSONArray("signatures");
 		assertNotNull(signartures);

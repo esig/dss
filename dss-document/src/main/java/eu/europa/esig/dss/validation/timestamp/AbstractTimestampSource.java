@@ -357,11 +357,7 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 		
 		final List<TimestampToken> timestamps = new ArrayList<>();
 		
-		// JAdES specific (contains references to the last 'arcTst' and the associated 'tstVd')
-		List<TimestampedReference> previousArcTstReferences = new ArrayList<>();
-		
 		for (SignatureAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-			
 			List<TimestampToken> timestampTokens;
 			
 			if (isSignatureTimestamp(unsignedAttribute)) {
@@ -430,33 +426,11 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 				setArchiveTimestampType(timestampTokens, unsignedAttribute);
 				incorporateArchiveTimestampReferences(timestampTokens, timestamps);
 				
-				// reset the list, because a new 'arcTst' has been found
-				previousArcTstReferences = new ArrayList<>();
-
-				addPreviousArcTSTsReferences(previousArcTstReferences, timestampTokens);
-				archiveTimestamps.addAll(timestampTokens);
-				
-			} else if (isPreviousDataArchiveTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = new ArrayList<>();
-				addReferences(references, previousArcTstReferences);
-				
-				timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP, references);
-				if (Utils.isCollectionEmpty(timestampTokens)) {
-					continue;
-				}
-				setArchiveTimestampType(timestampTokens, unsignedAttribute);
-				
-				// reset the list, because a new 'arcTst' has been found
-				previousArcTstReferences = new ArrayList<>();
-				
-				addPreviousArcTSTsReferences(previousArcTstReferences, timestampTokens);
 				archiveTimestamps.addAll(timestampTokens);
 				
 			} else if (isTimeStampValidationData(unsignedAttribute)) {
 				List<TimestampedReference> timestampValidationData = getTimestampValidationData(unsignedAttribute);
 				addReferences(unsignedPropertiesReferences, timestampValidationData);
-				// required for Archive TSTs of PREVIOUS_ARC_TST type
-				addReferences(previousArcTstReferences, timestampValidationData);
 				continue;
 				
 			} else if (isCounterSignature(unsignedAttribute)) {
@@ -625,16 +599,6 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 	 * @return TRUE if the {@code unsignedAttribute} is an Archive TimeStamp, FALSE otherwise
 	 */
 	protected abstract boolean isArchiveTimestamp(SignatureAttribute unsignedAttribute);
-
-	/**
-	 * Determines if the given {@code unsignedAttribute} is an instance of "archive-timestamp" element
-	 * with "previousArcTst" type
-	 * NOTE: used in JAdES
-	 * 
-	 * @param unsignedAttribute {@link ISignatureAttribute} to process
-	 * @return TRUE if the {@code unsignedAttribute} is a Previous Data Archive TimeStamp, FALSE otherwise
-	 */
-	protected abstract boolean isPreviousDataArchiveTimestamp(SignatureAttribute unsignedAttribute);
 	
 	/**
 	 * Determines if the given {@code unsignedAttribute} is an instance of

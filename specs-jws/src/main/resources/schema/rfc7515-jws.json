@@ -1,66 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	
-	"type": "object",
-	
-	"definitions": {
-		
-		"jsonSerialization": {
-			"properties": {
-				"payload": { "$ref": "#/definitions/payload" },
-				"signatures": { "$ref": "#/definitions/signatures" }
-			},
-			"required": [ "signatures" ],
-			"additionalProperties": false
-		},
-		
-		"jsonFlattened": {
-			"properties": {
-				"payload": { "$ref": "#/definitions/payload" },
-				"protected": { "$ref": "#/definitions/protected" },
-				"header": { "$ref": "#/definitions/header" },
-				"signature": { "$ref": "#/definitions/signature" }
-			},
-			"required": [ "protected", "signature" ],
-			"additionalProperties": false
-		},
-	
-		"payload": {
-			"type": "string", "contentEncoding" : "base64"
-		},
-		
-		"signatures": {
-			"type": "array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"protected": { "$ref": "#/definitions/protected" },
-					"header": { "$ref": "#/definitions/header" },
-					"signature": { "$ref": "#/definitions/signature" }
-				},
-				"required": [ "protected", "signature" ],
-				"additionalProperties": false
-			},
-			"minItems": 1
-		},
-		
-		"protected": {
-			"type": "string", "contentEncoding" : "base64"
-		},
-		
-		"header": {
-			"type": "object"
-		},
-		
-		"signature": {
-			"type": "string", "contentEncoding" : "base64"
-		}
-		
-	},
-	
-	"oneOf": [
-		{ "$ref": "#/definitions/jsonSerialization" },
-		{ "$ref": "#/definitions/jsonFlattened" }
-	]
+	"$ref": "rfc7515.json#/definitions/jws"
 	
 }

@@ -21,10 +21,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -87,7 +87,7 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 			boolean arcTstFound = false;
 			
 			for (Object property : unsignedProperties) {
-				Map<String, Object> map = (Map<String, Object>) property;
+				Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
 				List<?> xVals = (List<?>) map.get(JAdESHeaderParameterNames.X_VALS);
 				if (xVals != null) {
 					xValsFound = true;

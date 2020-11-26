@@ -14,13 +14,13 @@ public class JAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	protected Integer getCounterSignaturePosition(AdvancedSignature masterSignature) {
 		JAdESSignature jadesSignature = (JAdESSignature) signature;
 		JAdESSignature jadesMasterSignature = (JAdESSignature) masterSignature;
-		Object masterCSigObject = jadesSignature.getMasterCSigObject();
+		JAdESAttribute masterCSigAttribute = jadesSignature.getMasterCSigComponent();
 
 		int counter = 0;
-		if (masterCSigObject != null) {
+		if (masterCSigAttribute != null) {
 			for (AdvancedSignature counterSignature : jadesMasterSignature.getCounterSignatures()) {
 				JAdESSignature jadesCounterSignature = (JAdESSignature) counterSignature;
-				if (masterCSigObject == jadesCounterSignature.getMasterCSigObject()) {
+				if (masterCSigAttribute.hashCode() == jadesCounterSignature.getMasterCSigComponent().hashCode()) {
 					break;
 				}
 				++counter;
