@@ -113,7 +113,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		assertEquals(3, foundCertificates
 				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
 		assertEquals(1, foundCertificates
-				.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
 		
 		FoundRevocationsProxy foundRevocations = signature.foundRevocations();
 		assertEquals(0, foundRevocations.getRelatedRevocationData().size());
@@ -125,10 +125,10 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		super.checkTimestamps(diagnosticData);
 		
 		assertEquals(4, diagnosticData.getTimestampList().size());
-		int sigTstCounter = 0;
-		int firstSigAndRfsTstCounter = 0;
-		int seconfSigAndRfsTstCounter = 0;
-		int rfsTstCounter = 0;
+		boolean sigTstFound = false;
+		boolean firstSigAndRfsTstFound = false;
+		boolean seconfSigAndRfsTstFound = false;
+		boolean rfsTstFound = false;
 		
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			assertTrue(timestampWrapper.isMessageImprintDataFound());
@@ -136,31 +136,30 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 			
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
-				++sigTstCounter;
+				sigTstFound = true;
 				
 			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
-				assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
 				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());
-				if (timestampWrapper.getTimestampedOrphanCertificates().size() == 0) {
-					++firstSigAndRfsTstCounter;
-				} else if (timestampWrapper.getTimestampedOrphanCertificates().size() == 1) {
-					++seconfSigAndRfsTstCounter;
+				if (!firstSigAndRfsTstFound) {
+					assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
+					firstSigAndRfsTstFound = true;
+				} else {
+					assertEquals(5, timestampWrapper.getTimestampedCertificates().size());
+					seconfSigAndRfsTstFound = true;
 				}
 				
 			} else if (TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.equals(timestampWrapper.getType())) {
-				assertEquals(3, timestampWrapper.getTimestampedCertificates().size());
-				assertEquals(1, timestampWrapper.getTimestampedOrphanCertificates().size());
+				assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
 				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());
-				++rfsTstCounter;
-				
+				rfsTstFound = true;
 			}
 		}
-		assertEquals(1, sigTstCounter);
-		assertEquals(1, firstSigAndRfsTstCounter);
-		assertEquals(1, seconfSigAndRfsTstCounter);
-		assertEquals(1, rfsTstCounter);
+		assertTrue(sigTstFound);
+		assertTrue(firstSigAndRfsTstFound);
+		assertTrue(seconfSigAndRfsTstFound);
+		assertTrue(rfsTstFound);
 	}
 
 	@Override

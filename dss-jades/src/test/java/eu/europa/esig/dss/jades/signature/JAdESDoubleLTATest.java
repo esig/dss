@@ -185,7 +185,8 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 			int tstVdCounter = 0;
 			
 			for (Object property : unsignedProperties) {
-				Map<String, Object> map = (Map<String, Object>) property;
+				Map<String, Object> map = DSSJsonUtils.parseEtsiUComponent(property);
+
 				List<?> xVals = (List<?>) map.get(JAdESHeaderParameterNames.X_VALS);
 				if (xVals != null) {
 					++xValsCounter;

@@ -43,12 +43,28 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * Defines if the payload has to be base64url encoded
 	 * If false, original signed document binaries will be used according to RFC 7797
 	 * 
+	 * NOTE: the parameter is independent from {@code base64UrlEncodedEtsiUComponents}
+	 * 
 	 * Default : TRUE (base64url encoded payload)
 	 */
 	private boolean base64UrlEncodedPayload = true;
 	
 	/**
-	 * The DigestAlgorithm used to create a reference to a signing certificate, 
+	 * Defines if the items of the 'etsiU' unprotected headers will be incorporated
+	 * in their corresponding base64url encodings, if FALSE the components will
+	 * appear as clear JSON instances.
+	 * The parameter is used for Serialization (or Flattened) format only with an unprotected header.
+	 * All the components of 'etsiU' header shall appear in the same representation
+	 * 
+	 * NOTE: the parameter is independent from {@code base64UrlEncodedPayload}
+	 * 
+	 * Default : TRUE (base64url encoded etsiU components)
+	 * 
+	 */
+	private boolean base64UrlEncodedEtsiUComponents = true;
+
+	/**
+	 * The DigestAlgorithm used to create a reference to a signing certificate,
 	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
 	 */
 	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA256;
@@ -196,11 +212,12 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	}
 
 	/**
-	 * Sets if base64Url encoded payload shall be used
-	 * If FALSE, the unencoded (original) payload will be used according to RFC 7797
+	 * Sets if base64Url encoded payload shall be used If FALSE, the unencoded
+	 * (original) payload will be used according to RFC 7797
 	 * 
-	 * NOTE: some restrictions for payload content can apply when dealing with unencoded payload.
-	 * For more information please see RFC 7797
+	 * NOTE: some restrictions for payload content can apply when dealing with
+	 * unencoded payload. For more information please see RFC 7797. 
+	 * The parameter is independent from {@code base64UrlEncodedEtsiUComponents}
 	 * 
 	 * Default : TRUE (base64Url encoded payload will be used)
 	 * 
@@ -208,6 +225,40 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	public void setBase64UrlEncodedPayload(boolean base64EncodedPayload) {
 		this.base64UrlEncodedPayload = base64EncodedPayload;
+	}
+
+	/**
+	 * Gets if the instances of the 'etsiU' unprotected header shall appear in their
+	 * corresponding base64url encoding
+	 * 
+	 * Default : TRUE (base64Url encoded etsiU components will be used)
+	 * 
+	 * @return TRUE if the components of 'etsiU' header shall appear in their
+	 *         corresponding base64url encoding, otherwise in their clear JSON
+	 *         incorporation
+	 */
+	public boolean isBase64UrlEncodedEtsiUComponents() {
+		return base64UrlEncodedEtsiUComponents;
+	}
+
+	/**
+	 * Sets if the instances of the 'etsiU' header shall appear in their
+	 * corresponding base64url encoding. If FALSE the components of 'etsiU' will
+	 * appear in their clear JSON incorporation. The parameter is used for
+	 * Serialization (or Flattened) format only with unsigned properties.
+	 * 
+	 * NOTE: the parameter is independent from {@code base64UrlEncodedPayload}
+	 * 
+	 * Default : TRUE (base64url encoded etsiU components)
+	 * 
+	 * @param base64UrlEncodedEtsiUComponents if the components of 'etsiU' unsigned
+	 *                                        header shall appear in their
+	 *                                        corresponding base64url encoding, if
+	 *                                        FALSE the components will appear in
+	 *                                        their clear JSON incorporation
+	 */
+	public void setBase64UrlEncodedEtsiUComponents(boolean base64UrlEncodedEtsiUComponents) {
+		this.base64UrlEncodedEtsiUComponents = base64UrlEncodedEtsiUComponents;
 	}
 
 }

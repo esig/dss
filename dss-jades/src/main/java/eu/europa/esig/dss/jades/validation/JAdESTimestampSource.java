@@ -47,9 +47,9 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	}
 
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected SignatureProperties<JAdESAttribute> buildUnsignedSignatureProperties() {
-		List<Object> etsiU = DSSJsonUtils.getEtsiU(signature.getJws());
-		return new JAdESUnsignedProperties(etsiU);
+		return (SignatureProperties) signature.getEtsiUHeader();
 	}
 
 	@Override
@@ -327,9 +327,9 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 	
 	@Override
 	protected List<AdvancedSignature> getCounterSignatures(JAdESAttribute unsignedAttribute) {
-		Object cSig = unsignedAttribute.getValue();
-		if (cSig != null) {
-			JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSig, signature);
+		if (unsignedAttribute instanceof EtsiUComponent) {
+			EtsiUComponent etsiUComponent = (EtsiUComponent) unsignedAttribute;
+			JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(etsiUComponent, signature);
 			if (counterSignature != null) {
 				return Collections.singletonList(counterSignature);
 			}
@@ -384,7 +384,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 						try {
 							TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64),
 									timestampType, references, TimestampLocation.JAdES);
-							timestampToken.setHashCode(signatureAttribute.getValueHashCode());
+							timestampToken.setHashCode(signatureAttribute.hashCode());
 							result.add(timestampToken);
 						} catch (Exception e) {
 							LOG.error("Unable to parse timestamp '{}'", tstBase64, e);

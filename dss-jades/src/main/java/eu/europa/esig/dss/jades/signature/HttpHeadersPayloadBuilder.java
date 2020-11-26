@@ -111,7 +111,7 @@ public class HttpHeadersPayloadBuilder {
 			HTTPHeader header = iterator.next();
 			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(header.getName()) && isTimestamp) {
 				HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) header;
-				stringBuilder.append(DSSJsonUtils.toBase64Url(httpHeaderDigest.getMessageBodyDocument()));
+				stringBuilder.append(httpHeaderDigest.getMessageBodyDocument());
 			} else {
 				stringBuilder.append(Utils.lowerCase(header.getName()));
 				stringBuilder.append(":");

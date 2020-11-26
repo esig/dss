@@ -6,8 +6,8 @@ import java.util.List;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -63,7 +63,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 	}
 
 	@Override
-	public byte[] build(SignatureValue signatureValue) {
+	public DSSDocument build(SignatureValue signatureValue) {
 		assertConfigurationValidity(parameters);
 
 		JWS jws = getJWS();

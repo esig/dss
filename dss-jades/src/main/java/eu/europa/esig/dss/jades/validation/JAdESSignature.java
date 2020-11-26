@@ -67,7 +67,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	 * 
 	 * NOTE: used for counter signatures only
 	 */
-	private Object masterCSigObject;
+	private EtsiUComponent masterCSigComponent;
+
+	/** The list of unsigned properties embedded into the 'etsiU' array */
+	private JAdESEtsiUHeader etsiUHeader;
 
 	public JAdESSignature(JWS jws) {
 		this.jws = jws;
@@ -119,27 +122,28 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Gets a 'cSig' object embedding the current signature
+	 * Gets a 'cSig' component embedding the current signature
 	 * 
-	 * @return {@link Object} 'cSig' embedding the current signature
+	 * @return {@link EtsiUComponent} 'cSig' embedding the current signature
 	 */
-	public Object getMasterCSigObject() {
-		return masterCSigObject;
+	public EtsiUComponent getMasterCSigComponent() {
+		return masterCSigComponent;
 	}
 
 	/**
-	 * Sets a 'cSig' object embedding the current signature
+	 * Sets a 'cSig' component embedding the current signature
 	 * 
-	 * @param masterCSigObject {@link Object} 'cSig' embedding the current signature
+	 * @param masterCSigComponent {@link Object} 'cSig' embedding the current
+	 *                            signature
 	 */
-	public void setMasterCSigObject(Object masterCSigObject) {
-		this.masterCSigObject = masterCSigObject;
+	public void setMasterCSigComponent(EtsiUComponent masterCSigComponent) {
+		this.masterCSigComponent = masterCSigComponent;
 	}
 
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new JAdESCertificateSource(jws);
+			offlineCertificateSource = new JAdESCertificateSource(jws, getEtsiUHeader());
 		}
 		return offlineCertificateSource;
 	}
@@ -147,7 +151,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public OfflineCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
-			signatureCRLSource = new JAdESCRLSource(jws);
+			signatureCRLSource = new JAdESCRLSource(getEtsiUHeader());
 		}
 		return signatureCRLSource;
 	}
@@ -155,7 +159,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new JAdESOCSPSource(jws);
+			signatureOCSPSource = new JAdESOCSPSource(getEtsiUHeader());
 		}
 		return signatureOCSPSource;
 	}
@@ -375,13 +379,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		
 		countersignatures = new ArrayList<>();
 		
-		List<Object> cSigObjects = DSSJsonUtils.getUnsignedProperties(jws, JAdESHeaderParameterNames.C_SIG);
-		if (Utils.isCollectionNotEmpty(cSigObjects)) {
-			for (Object cSigObject : cSigObjects) {
-				JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(cSigObject, this);
-				if (counterSignature != null) {
-					counterSignature.setSignatureFilename(getSignatureFilename());
-					countersignatures.add(counterSignature);
+		List<EtsiUComponent> etsiUComponents = getEtsiUHeader().getAttributes();
+		if (Utils.isCollectionNotEmpty(etsiUComponents)) {
+			for (EtsiUComponent etsiUComponent : etsiUComponents) {
+				if (JAdESHeaderParameterNames.C_SIG.equals(etsiUComponent.getHeaderName())) {
+					JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(etsiUComponent, this);
+					if (counterSignature != null) {
+						counterSignature.setSignatureFilename(getSignatureFilename());
+						countersignatures.add(counterSignature);
+					}
 				}
 			}
 		}
@@ -434,6 +440,18 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public byte[] getSignatureValue() {
 		return jws.getSignatureValue();
+	}
+
+	/**
+	 * Returns unsigned properties embedded into the 'etsiU' array
+	 * 
+	 * @return {@link JAdESEtsiUHeader}
+	 */
+	public JAdESEtsiUHeader getEtsiUHeader() {
+		if (etsiUHeader == null) {
+			etsiUHeader = new JAdESEtsiUHeader(jws);
+		}
+		return etsiUHeader;
 	}
 
 	// TODO : no definition available in ETSI TS 119 442 - V1.1.1
@@ -853,10 +871,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private Object getUnsignedProperty(String headerName) {
-		List<Object> unsignedProperties = DSSJsonUtils.getUnsignedProperties(jws, headerName);
-		if (Utils.isCollectionNotEmpty(unsignedProperties)) {
+		List<EtsiUComponent> unsignedPropertiesWithHeaderName = 
+				DSSJsonUtils.getUnsignedPropertiesWithHeaderName(getEtsiUHeader(), headerName);
+		if (Utils.isCollectionNotEmpty(unsignedPropertiesWithHeaderName)) {
 			// return the first occurrence
-			return unsignedProperties.iterator().next();
+			return unsignedPropertiesWithHeaderName.iterator().next().getValue();
 		}
 		return null;
 	}

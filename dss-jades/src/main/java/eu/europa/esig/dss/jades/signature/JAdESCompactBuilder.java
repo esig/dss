@@ -4,11 +4,12 @@ import java.util.List;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -22,13 +23,14 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 	}
 
 	/**
-	 * Builds the concatenation of signed header and payload (dataTobeSigned string) in the way :
-	 * BASE64URL(UTF8(JWS Protected Header)) || '.' || BASE64URL(JWS Payload)
+	 * Builds the concatenation of signed header and payload (dataTobeSigned string)
+	 * in the way : BASE64URL(UTF8(JWS Protected Header)) || '.' || BASE64URL(JWS
+	 * Payload)
 	 * 
-	 * @return {@link String} representing the concatenation result
+	 * @return {@link DSSDocument} representing the concatenated signature
 	 */
 	@Override
-	public byte[] build(SignatureValue signatureValue) {
+	public DSSDocument build(SignatureValue signatureValue) {
 		assertConfigurationValidity(parameters);
 		
 		JWS jws = new JWS();
@@ -40,7 +42,7 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 		byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
 		
 		String signatureString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), payload, DSSJsonUtils.toBase64Url(signatureValueBytes));
-		return signatureString.getBytes();
+		return new InMemoryDocument(signatureString.getBytes());
 	}
 
 	@Override

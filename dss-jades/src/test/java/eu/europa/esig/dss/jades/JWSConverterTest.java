@@ -5,11 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
 public class JWSConverterTest {
@@ -39,7 +44,6 @@ public class JWSConverterTest {
 		assertNotNull(converted.getMimeType());
 		assertNotNull(converted.getName());
 		assertTrue(validator.isSupported(converted));
-
 	}
 
 	@Test
@@ -58,7 +62,123 @@ public class JWSConverterTest {
 		assertNotNull(converted.getMimeType());
 		assertNotNull(converted.getName());
 		assertTrue(validator.isSupported(converted));
+	}
 
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testConvertEtsiUToBase64Url() {
+		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-t-clear-etsiu.json");
+
+		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(jwsDocument);
+		JWSJsonSerializationObject jsonSerializationObject = parser.parse();
+		List<JWS> signatures = jsonSerializationObject.getSignatures();
+		assertEquals(1, signatures.size());
+
+		JWS originalJWS = signatures.get(0);
+
+		Map<String, Object> unprotected = originalJWS.getUnprotected();
+		assertEquals(1, unprotected.size());
+
+		List<Object> etsiU = (List<Object>) unprotected.get("etsiU");
+		assertEquals(1, etsiU.size());
+
+		Object item = etsiU.get(0);
+		assertTrue(item instanceof Map);
+
+		DSSDocument convertedDocument = JWSConverter.fromEtsiUWithClearJsonToBase64UrlIncorporation(jwsDocument);
+
+		parser = new JWSJsonSerializationParser(convertedDocument);
+		jsonSerializationObject = parser.parse();
+
+		signatures = jsonSerializationObject.getSignatures();
+		assertEquals(1, signatures.size());
+
+		JWS convertedJWS = signatures.get(0);
+
+		assertEquals(originalJWS.getUnverifiedPayload(), convertedJWS.getUnverifiedPayload());
+		assertEquals(originalJWS.getEncodedHeader(), convertedJWS.getEncodedHeader());
+		assertEquals(originalJWS.getEncodedSignature(), convertedJWS.getEncodedSignature());
+
+		unprotected = convertedJWS.getUnprotected();
+		assertEquals(1, unprotected.size());
+
+		etsiU = (List<Object>) unprotected.get("etsiU");
+		assertEquals(1, etsiU.size());
+
+		item = etsiU.get(0);
+		assertTrue(item instanceof String);
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded((String) item));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testConvertEtsiUToClearRepresentation() {
+		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-with-counter-signature.json");
+
+		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(jwsDocument);
+		JWSJsonSerializationObject jsonSerializationObject = parser.parse();
+		List<JWS> signatures = jsonSerializationObject.getSignatures();
+		assertEquals(1, signatures.size());
+
+		JWS originalJWS = signatures.get(0);
+
+		Map<String, Object> unprotected = originalJWS.getUnprotected();
+		assertEquals(1, unprotected.size());
+
+		List<Object> etsiU = (List<Object>) unprotected.get("etsiU");
+		assertEquals(1, etsiU.size());
+
+		Object item = etsiU.get(0);
+		assertTrue(item instanceof String);
+		assertTrue(DSSJsonUtils.isBase64UrlEncoded((String) item));
+
+		DSSDocument convertedDocument = JWSConverter.fromEtsiUWithBase64UrlToClearJsonIncorporation(jwsDocument);
+
+		parser = new JWSJsonSerializationParser(convertedDocument);
+		jsonSerializationObject = parser.parse();
+
+		signatures = jsonSerializationObject.getSignatures();
+		assertEquals(1, signatures.size());
+
+		JWS convertedJWS = signatures.get(0);
+
+		assertEquals(originalJWS.getUnverifiedPayload(), convertedJWS.getUnverifiedPayload());
+		assertEquals(originalJWS.getEncodedHeader(), convertedJWS.getEncodedHeader());
+		assertEquals(originalJWS.getEncodedSignature(), convertedJWS.getEncodedSignature());
+
+		unprotected = convertedJWS.getUnprotected();
+		assertEquals(1, unprotected.size());
+
+		etsiU = (List<Object>) unprotected.get("etsiU");
+		assertEquals(1, etsiU.size());
+
+		item = etsiU.get(0);
+		assertTrue(item instanceof Map);
+	}
+
+	@Test
+	public void testConvertWithTimestamp() {
+		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-lta.json");
+
+		Exception exception = assertThrows(DSSException.class,
+				() -> JWSConverter.fromEtsiUWithBase64UrlToClearJsonIncorporation(jwsDocument));
+		assertEquals("Unable to convert a signature! 'etsiU' contains a component with name "
+				+ "'arcTst', which is sensible to a format change.", exception.getMessage());
+	}
+
+	@Test
+	public void testConvertWithMixedEtsiU() {
+		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-with-mixed-etsiU-type.json");
+
+		Exception exception = assertThrows(DSSException.class,
+				() -> JWSConverter.fromEtsiUWithBase64UrlToClearJsonIncorporation(jwsDocument));
+		assertEquals("Unable to convert the EtsiU content! All components shall have a common form.",
+				exception.getMessage());
+
+		exception = assertThrows(DSSException.class,
+				() -> JWSConverter.fromEtsiUWithClearJsonToBase64UrlIncorporation(jwsDocument));
+		assertEquals("Unable to convert the EtsiU content! All components shall have a common form.",
+				exception.getMessage());
 	}
 
 }

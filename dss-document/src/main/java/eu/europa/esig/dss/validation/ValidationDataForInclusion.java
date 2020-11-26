@@ -69,4 +69,9 @@ public class ValidationDataForInclusion {
 		return ocspTokens;
 	}
 
+	public boolean isEmpty() {
+		return Utils.isCollectionEmpty(certificateTokens) && Utils.isCollectionEmpty(crlTokens)
+				&& Utils.isCollectionEmpty(ocspTokens);
+	}
+
 }

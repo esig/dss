@@ -4,24 +4,23 @@ import eu.europa.esig.dss.validation.ISignatureAttribute;
 
 public class JAdESAttribute implements ISignatureAttribute {
 
-	private final String key;
-	private final Object value;
+	protected String name;
+	protected Object value;
 
-	public JAdESAttribute(String key, Object value) {
-		this.key = key;
+	JAdESAttribute() {
+	}
+
+	public JAdESAttribute(String name, Object value) {
+		this.name = name;
 		this.value = value;
 	}
 
 	public String getHeaderName() {
-		return key;
+		return name;
 	}
 
 	public Object getValue() {
 		return value;
-	}
-	
-	public int getValueHashCode() {
-		return value.hashCode();
 	}
 	
 }

@@ -23,7 +23,6 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -153,9 +152,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
-		byte[] signatureBinaries = jadesBuilder.build(signatureValue);
 
-		DSSDocument signedDocument = new InMemoryDocument(signatureBinaries);
+		DSSDocument signedDocument = jadesBuilder.build(signatureValue);
 		SignatureExtension<JAdESSignatureParameters> signatureExtension = getExtensionProfile(parameters);
 		if (signatureExtension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
@@ -243,18 +241,32 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	}
 
 	/**
-	 * Incorporates a Signature Policy Store as an unsigned property into the JAdES Signature
+	 * Incorporates a Signature Policy Store as a base64Url-encoded unsigned property into the JAdES Signature
 	 * 
-	 * @param document {@link DSSDocument} containing a JAdES Signature to add a SignaturePolicyStore to
+	 * @param document             {@link DSSDocument} containing a JAdES Signature to add a SignaturePolicyStore to
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
 	 * @return {@link DSSDocument} JAdESSignature with an incorporates SignaturePolicyStore
 	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+		return addSignaturePolicyStore(document, signaturePolicyStore, true);
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the JAdES Signature
+	 * 
+	 * @param document             {@link DSSDocument} containing a JAdES Signature to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @param base64UrlInstance    defines if the SignaturePolicyStore shall be incorporated in its corresponding base64Url
+	 *                             representation, otherwise if FALSE incorporates in the clear JSON representation
+	 * @return {@link DSSDocument} JAdESSignature with an incorporates SignaturePolicyStore
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore,
+			boolean base64UrlInstance) {
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
 		
 		JAdESSignaturePolicyStoreBuilder builder = new JAdESSignaturePolicyStoreBuilder();
-		DSSDocument signatureWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		DSSDocument signatureWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore, base64UrlInstance);
 		signatureWithPolicyStore.setName(getFinalFileName(document, SigningOperation.ADD_SIG_POLICY_STORE));
 		signatureWithPolicyStore.setMimeType(document.getMimeType());
 		return signatureWithPolicyStore;

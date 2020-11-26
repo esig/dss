@@ -1,8 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.jose4j.json.internal.json_simple.JSONArray;
@@ -11,6 +9,8 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -48,45 +48,26 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		jadesSignature.resetRevocationSources();
 		jadesSignature.resetTimestampSource();
 
-		List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
-		removeOldCertificateValues(unsignedProperties);
-		removeOldRevocationValues(unsignedProperties);
+		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+
+		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
+		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
 
 		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature,
 				validationContext);
 
 		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+		if (Utils.isCollectionNotEmpty(certificateValuesToAdd)) {
+			JSONArray xVals = getXVals(certificateValuesToAdd);
+			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS, xVals,
+					params.isBase64UrlEncodedEtsiUComponents());
+		}
 		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
 		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-
-		addXVals(certificateValuesToAdd, unsignedProperties);
-		addRVals(crlsToAdd, ocspsToAdd, unsignedProperties);
-
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void removeOldCertificateValues(List<Object> unsignedProperties) {
-		ListIterator<Object> iterator = unsignedProperties.listIterator(unsignedProperties.size());
-		while (iterator.hasPrevious()) {
-			Map<String, Object> unsignedProperty = (Map<String, Object>) iterator.previous();
-			Object xVals = unsignedProperty.get(JAdESHeaderParameterNames.X_VALS);
-			if (xVals != null) {
-				iterator.remove();
-				return;
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void removeOldRevocationValues(List<Object> unsignedProperties) {
-		ListIterator<Object> iterator = unsignedProperties.listIterator(unsignedProperties.size());
-		while (iterator.hasPrevious()) {
-			Map<String, Object> unsignedProperty = (Map<String, Object>) iterator.previous();
-			Object rVals = unsignedProperty.get(JAdESHeaderParameterNames.R_VALS);
-			if (rVals != null) {
-				iterator.remove();
-				return;
-			}
+		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
+			JsonObject rVals = getRVals(crlsToAdd, ocspsToAdd);
+			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS, rVals,
+					params.isBase64UrlEncodedEtsiUComponents());
 		}
 	}
 
@@ -99,32 +80,19 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		return validationDataForInclusionBuilder.build();
 	}
 
-	@SuppressWarnings("unchecked")
-	private void addXVals(Set<CertificateToken> certificateValuesToAdd, List<Object> unsignedProperties) {
-		if (Utils.isCollectionEmpty(certificateValuesToAdd)) {
-			return;
-		}
-
-		JSONArray xVals = getXVals(certificateValuesToAdd);
-
-		JSONObject xValsItem = new JSONObject();
-		xValsItem.put(JAdESHeaderParameterNames.X_VALS, xVals);
-		unsignedProperties.add(xValsItem);
-	}
-	
 	/**
 	 * Builds and returns 'xVals' JSONArray
 	 * 
 	 * @param certificateValuesToAdd a set of {@link CertificateToken}s to add
-	 * @return {@link JSONArray} 'xVals' value
+	 * @return {@link JSONArray} 'xVals' JSONArray
 	 */
 	@SuppressWarnings("unchecked")
 	protected JSONArray getXVals(Set<CertificateToken> certificateValuesToAdd) {
-		JSONArray xVals = new JSONArray();
+		JSONArray xValsArray = new JSONArray();
 		for (CertificateToken certificateToken : certificateValuesToAdd) {
-			xVals.add(getX509CertObject(certificateToken));
+			xValsArray.add(getX509CertObject(certificateToken));
 		}
-		return xVals;
+		return xValsArray;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,36 +105,22 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		return x509Cert;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void addRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd, List<Object> unsignedProperties) {
-		if (Utils.isCollectionEmpty(crlsToAdd) && Utils.isCollectionEmpty(ocspsToAdd)) {
-			return;
-		}
-
-		JSONObject rVals = getRVals(crlsToAdd, ocspsToAdd);
-
-		JSONObject rValsItem = new JSONObject();
-		rValsItem.put(JAdESHeaderParameterNames.R_VALS, rVals);
-		unsignedProperties.add(rValsItem);
-	}
-
 	/**
-	 * Builds and returns 'rVals' JSONObject
+	 * Builds and returns 'rVals' JsonObject
 	 * 
-	 * @param crlsToAdd a list of {@link CRLToken}s to add
+	 * @param crlsToAdd  a list of {@link CRLToken}s to add
 	 * @param ocspsToAdd a list of {@link OCSPToken}s to add
-	 * @return {@link JSONObject} 'rVals' object
+	 * @return {@link JsonObject} 'rVals' object
 	 */
-	@SuppressWarnings("unchecked")
-	protected JSONObject getRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd) {
-		JSONObject rVals = new JSONObject();
+	protected JsonObject getRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd) {
+		JsonObject rValsObject = new JsonObject();
 		if (Utils.isCollectionNotEmpty(crlsToAdd)) {
-			rVals.put(JAdESHeaderParameterNames.CRL_VALS, getCrlVals(crlsToAdd));
+			rValsObject.put(JAdESHeaderParameterNames.CRL_VALS, getCrlVals(crlsToAdd));
 		}
 		if (Utils.isCollectionNotEmpty(ocspsToAdd)) {
-			rVals.put(JAdESHeaderParameterNames.OCSP_VALS, getOcspVals(ocspsToAdd));
+			rValsObject.put(JAdESHeaderParameterNames.OCSP_VALS, getOcspVals(ocspsToAdd));
 		}
-		return rVals;
+		return rValsObject;
 	}
 
 	@SuppressWarnings("unchecked")

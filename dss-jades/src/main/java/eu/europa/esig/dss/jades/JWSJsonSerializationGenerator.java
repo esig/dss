@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 public class JWSJsonSerializationGenerator {
@@ -27,9 +29,7 @@ public class JWSJsonSerializationGenerator {
 		this.output = output;
 	}
 
-	// TODO : change the returning type to DSSDocument
-	public byte[] generate() {
-
+	public DSSDocument generate() {
 		JsonObject jsonSerialization;
 		switch (output) {
 		case JSON_SERIALIZATION:
@@ -42,7 +42,8 @@ public class JWSJsonSerializationGenerator {
 			throw new DSSException(String.format("The JWSJsonSerializationGenerator does not support the given JWS Serialization Type '%s'", output));
 		}
 
-		return jsonSerialization.toJSONString().getBytes(StandardCharsets.UTF_8);
+		byte[] binaries = jsonSerialization.toJSONString().getBytes(StandardCharsets.UTF_8);
+		return new InMemoryDocument(binaries);
 	}
 
 	private JsonObject buildJWSJsonSerialization() {

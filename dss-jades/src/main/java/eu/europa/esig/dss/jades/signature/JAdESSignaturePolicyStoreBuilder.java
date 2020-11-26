@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +13,12 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -30,11 +27,29 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 
+/**
+ * The builder used to incorporate a {@code SignaturePolicyStore} to a
+ * JAdESSignature document
+ *
+ */
 public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignaturePolicyStoreBuilder.class);
 
-	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+	/**
+	 * Adds {@code signaturePolicyStore} to signatures inside the {@code document}
+	 * 
+	 * @param document             {@link DSSDocument} containing JAdES signatures
+	 *                             to extend with a {@link SignaturePolicyStore}
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to incorporate
+	 * @param base64UrlInstance    TRUE if the signature policy store shall be
+	 *                             incorporated as a base64url encoded component of
+	 *                             the 'etsiU' header, FALSE if it will be
+	 *                             incorporated in its clear JSON representation
+	 * @return {@link DSSDocument} containing signatures with
+	 *         {@code signaturePolicyStore}
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore, boolean base64UrlInstance) {
 		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification(), "SpDocSpecification must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getId(), "ID (OID or URI) for SpDocSpecification must be provided");
@@ -48,16 +63,18 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		}
 
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
+			assertExtensionPossible(signature, base64UrlInstance);
+
 			JAdESSignature jadesSignature = new JAdESSignature(signature);
-			extendSignature(jadesSignature, signaturePolicyStore);
+			extendSignature(jadesSignature, signaturePolicyStore, base64UrlInstance);
 		}
 
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
 				jwsJsonSerializationObject.getJWSSerializationType());
-		return new InMemoryDocument(generator.generate());
+		return generator.generate();
 	}
 
-	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore) {
+	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore, boolean base64UrlInstance) {
 		SignaturePolicy policyId = jadesSignature.getSignaturePolicy();
 		if (policyId != null && policyId.getDigest() != null) {
 			Digest expectedDigest = policyId.getDigest();
@@ -66,8 +83,6 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 			SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(policyId).loadValidator();
 			Digest computedDigest = validator.getComputedDigest(expectedDigest.getAlgorithm());
 			if (expectedDigest.equals(computedDigest)) {
-
-				List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
 				Map<String, Object> sigPolicyStoreParams = new LinkedHashMap<>();
 				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SIG_POL_DOC,
@@ -78,11 +93,10 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 						spDocSpecification.getDocumentationReferences());
 				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SP_DSPEC, oidObject);
 
-				Map<String, Object> sigPolicyStoreMap = new HashMap<>();
-				sigPolicyStoreMap.put(JAdESHeaderParameterNames.SIG_PST, sigPolicyStoreParams);
+				JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+				etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.SIG_PST,
+						sigPolicyStoreParams, base64UrlInstance);
 
-				JSONObject sigPolicyStoreItem = new JSONObject(sigPolicyStoreMap);
-				unsignedProperties.add(sigPolicyStoreItem);
 			} else {
 				LOG.warn("Signature policy's digest doesn't match the document {} for signature {}", expectedDigest, jadesSignature.getId());
 			}

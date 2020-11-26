@@ -28,10 +28,10 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
@@ -104,8 +104,8 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		JWS jws = jwsSignatures.iterator().next();
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		assertEquals(1, etsiU.size());
-		
-		Map<?, ?> item = (Map<?, ?>) etsiU.iterator().next();
+
+		Map<String, Object> item = DSSJsonUtils.parseEtsiUComponent(etsiU.iterator().next());
 		assertEquals(1, item.size());
 		
 		String cSig = (String) item.get(JAdESHeaderParameterNames.C_SIG);
@@ -185,7 +185,7 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(
 				jwsJsonSerializationObject, getSignatureParameters().getJwsSerializationType());
 		
-		DSSDocument signatureDocument = new InMemoryDocument(generator.generate());
+		DSSDocument signatureDocument = generator.generate();
 		
 		JAdESCounterSignatureParameters counterSignatureParameters = getCounterSignatureParameters();
 		counterSignatureParameters.setSignatureIdToCounterSign(getSignatureIdToCounterSign());

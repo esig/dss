@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -468,33 +471,33 @@ public class DSSJsonUtils {
 	}
 	
 	/**
-	 * Returns a list of unsigned properties matching the {@code headerName} from the {@code jws}
+	 * Returns a list of unsigned 'etsiU' properties matching the {@code headerName}
+	 * from the {@code jws}
 	 * 
-	 * @param jws {@link JWS} to extract unsigned properties from
-	 * @param headerName {@link String} name of the unsigned header
-	 * @return a list of {@link Object}s
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} to extract values from
+	 * @param headerName  {@link String} name of the unsigned header
+	 * @return a list of {@link EtsiUComponent}s
 	 */
-	public static List<Object> getUnsignedProperties(JWS jws, String headerName) {
-		List<Object> etsiU = getEtsiU(jws);
-		if (Utils.isCollectionEmpty(etsiU)) {
+	public static List<EtsiUComponent> getUnsignedPropertiesWithHeaderName(JAdESEtsiUHeader etsiUHeader, String headerName) {
+		if (!etsiUHeader.isExist()) {
 			return Collections.emptyList();
 		}
 		
-		List<Object> objects = new ArrayList<>();
-		
-		for (Object item : etsiU) {
-			if (item instanceof Map) {
-				Map<?, ?> jsonObject = (Map<?, ?>) item;
-				Object object = jsonObject.get(headerName);
-				if (object != null) {
-					objects.add(object);
-				}
+		List<EtsiUComponent> componentsWithHeaderName = new ArrayList<>();
+		for (EtsiUComponent attribute : etsiUHeader.getAttributes()) {
+			if (headerName.equals(attribute.getHeaderName())) {
+				componentsWithHeaderName.add(attribute);
 			}
 		}
-		
-		return objects;
+		return componentsWithHeaderName;
 	}
 
+	/**
+	 * Parses a IETF RFC 3339 dateTime String
+	 * 
+	 * @param dateTimeString {@link String} in the RFC 3339 format to parse
+	 * @return {@link Date}
+	 */
 	public static Date getDate(String dateTimeString) {
 		if (Utils.isStringNotEmpty(dateTimeString)) {
 			try {
@@ -508,6 +511,12 @@ public class DSSJsonUtils {
 		return null;
 	}
 
+	/**
+	 * Parses the 'kid' header value as in IETF RFC 5035
+	 * 
+	 * @param value {@link String} IssuerSerial to parse
+	 * @return {@link IssuerSerial}
+	 */
 	public static IssuerSerial getIssuerSerial(String value) {
 		if (Utils.isStringNotEmpty(value) && Utils.isBase64Encoded(value)) {
 			byte[] binary = Utils.fromBase64(value);
@@ -516,6 +525,13 @@ public class DSSJsonUtils {
 		return null;
 	}
 
+	/**
+	 * Generates the 'kid' value as in IETF RFC 5035
+	 * 
+	 * @param signingCertificate {@link CertificateToken} representing the singing
+	 *                           certificate
+	 * @return {@link String} 'kid' header value
+	 */
 	public static String generateKid(CertificateToken signingCertificate) {
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificate);
 		return Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
@@ -524,15 +540,15 @@ public class DSSJsonUtils {
 	/**
 	 * Extracts a counter signature from 'cSig' value with respect to the found format
 	 * 
-	 * @param cSigObject a value of 'cSig' element
+	 * @param cSigAttribute an attribute containing the 'cSig' element
 	 * @param masterSignature {@link JAdESSignature} the master signature
 	 * @return {@link JAdESSignature}
 	 */
 	@SuppressWarnings("unchecked")
-	public static JAdESSignature extractJAdESCounterSignature(Object cSigObject, JAdESSignature masterSignature) {
+	public static JAdESSignature extractJAdESCounterSignature(EtsiUComponent cSigAttribute, JAdESSignature masterSignature) {
+		Object cSigObject = cSigAttribute.getValue();
 		
 		String cSigValue = null;
-		
 		if (cSigObject instanceof String) {
 			cSigValue = (String) cSigObject;
 			
@@ -561,7 +577,7 @@ public class DSSJsonUtils {
 				if (signatures.size() == 1) {
 					JAdESSignature signature = (JAdESSignature) signatures.iterator().next(); // only one is considered
 					signature.setMasterSignature(masterSignature);
-					signature.setMasterCSigObject(cSigObject);
+					signature.setMasterCSigComponent(cSigAttribute);
 					signature.setDetachedContents(Arrays.asList(new InMemoryDocument(masterSignature.getSignatureValue())));
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("A JWS counter signature found with Id : '{}'", signature.getId());
@@ -582,6 +598,7 @@ public class DSSJsonUtils {
 	 * @param jws {@link JWS} to validate
 	 * @return {@link String} containing validation errors, empty string ("") if no error occurred
 	 */
+	@SuppressWarnings("unchecked")
 	public static String validateAgainstJAdESSchema(JWS jws) {
 		StringBuilder builder = new StringBuilder();
 		
@@ -597,9 +614,118 @@ public class DSSJsonUtils {
 				builder.append("; ");
 				builder.append(errors);
 			}
+			Object etsiU = unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+			if (etsiU instanceof List<?>) {
+				List<Object> etsiUComponents = (List<Object>) etsiU;
+				if (areAllBase64UrlComponents(etsiUComponents)) {
+					Map<String, Object> clearEtsiURepresentation = getClearEtsiURepresentation(unprotected);
+					String clearEtsiUJson = JsonUtil.toJson(clearEtsiURepresentation);
+					errors = JAdESUtils.getInstance().validateAgainstJWSUnprotectedHeaderSchema(clearEtsiUJson);
+					if (Utils.isStringNotEmpty(errors)) {
+						builder.append("; ");
+						builder.append(errors);
+					}
+				}
+			}
 		}
 		
 		return builder.toString();
+	}
+
+	/**
+	 * Checks if all components have one type (strings or objects)
+	 * 
+	 * @param components a list of objects to check
+	 * @return TRUE if all components are uniform (strings or objects), FALSE
+	 *         otherwise
+	 */
+	public static boolean checkComponentsUnicity(List<Object> components) {
+		if (Utils.isCollectionNotEmpty(components)) {
+			Iterator<Object> iterator = components.iterator();
+			Object component = iterator.next();
+			boolean stringFormat = isStringFormat(component);
+			while (iterator.hasNext()) {
+				component = iterator.next();
+				if (stringFormat != isStringFormat(component)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Checks of the object is an instance of a String class
+	 * 
+	 * @param object to check
+	 * @return TRUE if the object is an instance of {@code String} class, FALSE
+	 *         otherwise
+	 */
+	public static boolean isStringFormat(Object object) {
+		return object instanceof String;
+	}
+
+	/**
+	 * Checks if the all components are base64Url encoded
+	 * 
+	 * @param components a list of components to check
+	 * @return TRUE if all of the components are base64Url encoded, FALSE otherwise
+	 */
+	public static boolean areAllBase64UrlComponents(List<Object> components) {
+		if (Utils.isCollectionNotEmpty(components)) {
+			for (Object component : components) {
+				if (!isStringFormat(component) || !DSSJsonUtils.isBase64UrlEncoded((String) component)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Map<String, Object> getClearEtsiURepresentation(Map<String, Object> unprotected) {
+		List<Object> clearComponents = new ArrayList<>();
+		List<Object> stringComponents = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		for (Object component : stringComponents) {
+			Map<String, Object> json = parseEtsiUComponent(component);
+			clearComponents.add(json);
+		}
+		Map<String, Object> clearEtsiU = new HashMap<>();
+		clearEtsiU.put(JAdESHeaderParameterNames.ETSI_U, clearComponents);
+		return clearEtsiU;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> parseEtsiUComponent(Object etsiUComponent) {
+		try {
+			if (etsiUComponent instanceof Map) {
+				Map<String, Object> map = (Map<String, Object>) etsiUComponent;
+				if (map.size() != 1) {
+					LOG.debug("A child of 'etsiU' shall contain only one entry! Found : {}. "
+							+ "The element is skipped for message a imprint computation!", map.size());
+					return null;
+				}
+				return map;
+
+			} else if (etsiUComponent instanceof String) {
+				String base64UrlEncoded = (String) etsiUComponent;
+				if (isBase64UrlEncoded(base64UrlEncoded)) {
+					byte[] itemBinaries = DSSJsonUtils.fromBase64Url(base64UrlEncoded);
+					return JsonUtil.parseJson(new String(itemBinaries));
+				} else {
+					LOG.debug("A String component of 'etsiU' array shall be base64Url encoded!");
+				}
+
+			} else {
+				LOG.debug("A component of unsupported class '{}' found inside an 'etsiU' array!",
+						etsiUComponent.getClass());
+			}
+
+		} catch (Exception e) {
+			LOG.warn("An error occurred during 'etsiU' component parsing : {}", e.getMessage(), e);
+		}
+
+		return null;
 	}
 
 }

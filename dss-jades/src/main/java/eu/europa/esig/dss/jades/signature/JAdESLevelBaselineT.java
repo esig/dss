@@ -1,26 +1,23 @@
 package eu.europa.esig.dss.jades.signature;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-
-import org.jose4j.json.internal.json_simple.JSONObject;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -56,6 +53,10 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 
+		if (!DSSJsonUtils.isJsonDocument(document)) {
+			throw new DSSException("The extending document shall have a JWS Serialization (or Flattened) format!");
+		}
+
 		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
 		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
 
@@ -64,6 +65,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		}
 
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
+			assertExtensionPossible(signature, params.isBase64UrlEncodedEtsiUComponents());
 
 			JAdESSignature jadesSignature = new JAdESSignature(signature);
 			jadesSignature.setDetachedContents(params.getDetachedContents());
@@ -74,18 +76,15 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
 				params.getJwsSerializationType());
-		return new InMemoryDocument(generator.generate());
+		return generator.generate();
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 
 		assertExtendSignatureToTPossible(jadesSignature, params);
 
 		// The timestamp must be added only if there is no one or the extension -T level is being created
 		if (!jadesSignature.hasTProfile() || SignatureLevel.JAdES_BASELINE_T.equals(params.getSignatureLevel())) {
-			
-			List<Object> unsignedProperties = getUnsignedProperties(jadesSignature);
 
 			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
@@ -93,11 +92,10 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
 			
 			JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
-	
-			JSONObject sigTstItem = new JSONObject();
-			sigTstItem.put(JAdESHeaderParameterNames.SIG_TST, tstContainer);
-			unsignedProperties.add(sigTstItem);
-			
+
+			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.SIG_TST, tstContainer,
+					params.isBase64UrlEncodedEtsiUComponents());
 		}
 	}
 

@@ -2,8 +2,8 @@ package eu.europa.esig.dss.jades.validation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;
@@ -49,7 +49,11 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getBase64UrlEncodedPayload() {
-		return DSSJsonUtils.toBase64Url(signature.getJws().getUnverifiedPayloadBytes()).getBytes();
+		if (signature.getJws().isRfc7797UnencodedPayload()) {
+			return signature.getJws().getUnverifiedPayloadBytes();
+		} else {
+			return signature.getJws().getEncodedPayload().getBytes();
+		}
 	}
 	
 	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism) {
@@ -128,46 +132,39 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * incorporation
 			 */
 			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
+			if (DSSJsonUtils.checkComponentsUnicity(etsiU)) {
 			
-			boolean separate = false;
-			
-			/*
-			 * - sigTst. 
-			 * - xRefs. 
-			 * - rRefs. 
-			 * - axRefs if it is present. And 
-			 * - arRefs if it is present.
-			 */
-			for (Object item : etsiU) {
-				
-				Object entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.SIG_TST, JAdESHeaderParameterNames.X_REFS, 
-						JAdESHeaderParameterNames.R_REFS, JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS);
-				
-				if (entry == null) {
-					// Validation : check is the current timestamp has been reached
-					entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.SIG_R_TST);
-					
-					if (timestampToken != null && timestampToken.getHashCode() == entry.hashCode()) {
+				boolean separate = false;
+				/*
+				 * - sigTst if it is present.
+				 * - xRefs if it is present.
+				 * - rRefs if it is present.
+				 * - axRefs if it is present. And
+				 * - arRefs if it ispresent.
+				 */
+				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
+				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
+
+					if (timestampToken != null && timestampToken.getHashCode() == etsiUComponent.hashCode()) {
 						// the current timestamp is found, stop the iteration
 						break;
 					}
-					
-					// continue to the next attribute otherwise
-					continue;
+
+					if (isAllowedTypeEntry(etsiUComponent, JAdESHeaderParameterNames.SIG_TST,
+							JAdESHeaderParameterNames.X_REFS, JAdESHeaderParameterNames.R_REFS,
+							JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS)) {
+						if (separate) {
+							baos.write('.');
+						}
+						baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
+					}
+					separate = true;
+
 				}
-				
-				if (separate) {
-					baos.write('.');
-				}
-				
-				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
-				} else {
-					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
-				}
-				
-				separate = true;
-				
+
+			} else {
+				LOG.warn("Unable to process 'etsiU' entries for a 'sigRTst' timestamp. "
+						+ "The 'etsiU' components shall have a common format (Strings or Objects)!");
 			}
 
 			byte[] messageImprint = baos.toByteArray();
@@ -183,29 +180,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
-	private Object getAllowedTypeEntryOrNull(Object item, String... allowedTypes) {
-		if (!(item instanceof Map<?, ?>)) {
-			LOG.warn("Unsupported element is found in 'etsiU'. Shall be a map. The element is skipped for a message imprint computation!");
-			return null;
-		}
-		
-		Map<String, Object> map = (Map<String, Object>) item;
-		
-		if (map.size() != 1) {
-			LOG.warn("A child of 'etsiU' shall contain only one entry! Found : {}. "
-					+ "The element is skipped for message a imprint computation!", map.size());
-			return null;
-		}
-		
-		for (String entryType : allowedTypes) {
-			Object entry = map.get(entryType);
-			if (entry != null) {
-				return entry;
-			}
-		}
-		
-		return null;
+	private boolean isAllowedTypeEntry(EtsiUComponent etsiUComponent, String... allowedTypes) {
+		return Arrays.stream(allowedTypes).allMatch(etsiUComponent.getHeaderName()::equals);
 	}
 
 	@Override
@@ -229,40 +205,33 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			/*
 			 * The message imprint computation input shall be the concatenation of the
 			 * components listed below, base64url encoded, and separated by the character
-			 * '.', in their order of appearance within the etsiU array: 
-			 * - xRefs. 
-			 * - rRefs. 
-			 * - axRefs if it is present. And 
-			 * - arRefs if it is present.
+			 * '.', in their order of appearance within the etsiU array: - xRefs if it is
+			 * present. - rRefs if it is present. - axRefs if it is present. And - arRefs if
+			 * it is present.
 			 * 
 			 * NOTE: there is a difference in processing base64url encoded values and clear
 			 * incorporation
 			 */
 			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
-			
-			boolean separate = false;
-			
-			for (Object item : etsiU) {
-				
-				Object entry = getAllowedTypeEntryOrNull(item, JAdESHeaderParameterNames.X_REFS, JAdESHeaderParameterNames.R_REFS, 
-						JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS);
-				
-				if (entry == null) {
-					continue;
+			if (DSSJsonUtils.checkComponentsUnicity(etsiU)) {
+				boolean separate = false;
+
+				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
+				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
+					if (isAllowedTypeEntry(etsiUComponent, JAdESHeaderParameterNames.X_REFS,
+							JAdESHeaderParameterNames.R_REFS, JAdESHeaderParameterNames.AX_REFS,
+							JAdESHeaderParameterNames.AR_REFS)) {
+						if (separate) {
+							baos.write('.');
+						}
+						baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
+					}
+					separate = true;
 				}
 				
-				if (separate) {
-					baos.write('.');
-				}
-				
-				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
-				} else {
-					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
-				}
-				
-				separate = true;
-				
+			} else {
+				LOG.warn("Unable to process 'etsiU' entries for an 'rfsTst' timestamp. "
+						+ "The 'etsiU' components shall have a common format (Strings or Objects)!");
 			}
 
 			byte[] messageImprint = baos.toByteArray();
@@ -300,7 +269,6 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return getArchiveTimestampData(null, canonicalizationMethod);
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
 		
 		if (LOG.isTraceEnabled()) {
@@ -311,113 +279,75 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		JWS jws = signature.getJws();
 		
 		/*
-		 * 5.3.6.3.2 Time-stamping all the contents of the JAdES signature
+		 * 5.3.6.3.1 Processing (5.3.6.3 Computation of message-imprint)
 		 * 
-		 * If the value of timeStamped is equal to "all" or it is absent, 
-		 * and the etsiU array contains base64url encoded unsigned JSON values, 
-		 * then the message imprint computation input shall be the concatenation of 
-		 * the components in the order they are listed below:
+		 * If the value of timeStamped is equal to "all" or it is absent, and the etsiU
+		 * array contains base64url encoded unsigned JSON values, then the message
+		 * imprint computation input shall be the concatenation of the components in the
+		 * order they are listed below:
 		 */
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			/*
-			 * 1) The base64url-encoded JWS Payload. If the sigD header parameter is present
-			 * and the value of its mId member is "http: //uri.etsi.org/19182/HttpHeaders",
-			 * the processing of the "Digest" string element in the pars array shall consist
-			 * in retrieving the bytes of the body of the HTTP message, base64url encode
-			 * them, and concatenate the result to the stream of bytes that will form the
-			 * input to the message imprint computation
+			 * 1) If the sigD header parameter is absent then: a) If the b64 header
+			 * parameter specified in clause 3 of IETF RFC 7797 [15] is present and set to
+			 * "false" then concatenate the JWS Payload value. b) If the b64 header
+			 * parameter specified in clause 3 of IETF RFC 7797 [15] is present and set to
+			 * "true", OR it is absent, then concatenate the base64url-encoded JWS Payload.
+			 * 
+			 * 2) If the sigD header parameter is present: a) If the value of its mId member
+			 * is "http://uri.etsi.org/19182/HttpHeaders" then concatenate the bytes
+			 * resulting from processing the contents of its pars member as specified in
+			 * clause 5.2.8.2 of the present document except the "Digest" string element.
+			 * The processing of the "Digest" string element in the pars array shall consist
+			 * in retrieving the bytes of the body of the HTTP message.
+			 * 
 			 */
-			
 			baos.write(getSignedDataBinaries());
 			
 			/*
-			 * 2) The character '.'.
+			 * 3) The character '.'.
 			 */
-			
 			baos.write('.');
 			
 			/*
-			 * 3) The value of the JWS Protected Header, base64url encoded, followed by the
+			 * 4) The value of the JWS Protected Header, base64url encoded, followed by the
 			 * character '.'.
 			 */
-			
 			baos.write(jws.getEncodedHeader().getBytes());
 			baos.write('.');
 			
 			/*
-			 * 4) The value of the JAdES Signature Value, base64url encoded.
+			 * 5) The value of the JAdES Signature Value, base64url encoded.
 			 */
-			
 			baos.write(jws.getEncodedSignature().getBytes());
 			
 			/*
-			 * 5) The result of taking the contents of the etsiU array in the order 
-			 * they appear within the array, and concatenating them to the final octet stream. 
-			 * While concatenating, the following rules apply:
-			 * 
-			 * NOTE: There is a difference in computation depending on base64Url value
+			 * 6) If the elements of the etsiU array appear as the base64url encodings of
+			 * the unsigned components, then proceed as specified in clause 5.3.6.3.1.1 of
+			 * the present document. If the elements of the etsiU array appear as clear
+			 * instances of unsigned components, then proceed as specified in clause
+			 * 5.3.6.3.1.2 of the present document.
 			 */
-			
 			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
-			
-			/*
-			 * a) the xVals JSON array shall be incorporated, base64url encoded, 
-			 * into the signature if it is not already present and the signature 
-			 * misses some of the certificates listed in clause 5.3.5.1 that are required 
-			 * to validate the JAdES signature;
-			 * b) the rVals JSON object shall be incorporated, base64url encoded, into 
-			 * the signature if it is not already present and the signature misses some of 
-			 * the revocation data listed in clause 5.3.5.2 that are required to validate 
-			 * the JAdES signature;
-			 * c) the axVals JSON array shall be incorporated, base64url encoded, into 
-			 * the signature if not already present and the following conditions are true: 
-			 * attribute certificate(s) or signed assertions have been incorporated into 
-			 * the signature, and the signature misses some certificates required for their 
-			 * validation; and
-			 * d) the arVals JSON object shall be incorporated, base64url encoded, into 
-			 * the signature if not already present and the following conditions are true: 
-			 * attribute certificates or signed assertions have been incorporated into 
-			 * the signature, and the signature misses some revocation values required for 
-			 * their validation.
-			 * 
-			 * NOTE: all the required data is incorporated in LT-level if needed
-			 */
-			
-			for (Object item : etsiU) {
-				
-				if (!(item instanceof Map<?, ?>)) {
-					LOG.warn("Unsupported element is found in 'etsiU'. Shall be a map. The element is skipped for a message imprint computation!");
-					continue;
+			if (DSSJsonUtils.checkComponentsUnicity(etsiU)) {
+				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
+				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
+					if (timestampToken != null && timestampToken.getHashCode() == etsiUComponent.hashCode()) {
+						// the timestamp is found, stop the iteration
+						break;
+					}
+					baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
 				}
-				
-				Map<String, Object> map = (Map<String, Object>) item;
-				
-				if (map.size() != 1) {
-					LOG.warn("A child of 'etsiU' shall contain only one entry! Found : {}. "
-							+ "The element is skipped for message a imprint computation!", map.size());
-					continue;
-				}
-				
-				Object entry = map.values().iterator().next();
-				
-				// Validation : check is the current timestamp has been reached
-				if (timestampToken != null && timestampToken.getHashCode() == entry.hashCode()) {
-					// the timestamp is found, stop the iteration
-					break;
-				}
-				
-				if (entry instanceof String && DSSJsonUtils.isBase64UrlEncoded((String) entry)) {
-					baos.write(DSSJsonUtils.toBase64Url(entry).getBytes());
-				} else {
-					baos.write(getCanonicalizedValue(entry, canonicalizationMethod));
-				}
-				
+
+			} else {
+				LOG.warn("Unable to process 'etsiU' entries for an archive timestamp. "
+						+ "The 'etsiU' components shall have a common format (Strings or Objects)!");
 			}
 
 			byte[] messageImprint = baos.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The 'all' timestamp message-imprint : {}", new String(messageImprint));
+				LOG.trace("The 'arcTst' timestamp message-imprint : {}", new String(messageImprint));
 			}
 			
 			return messageImprint;
@@ -428,12 +358,19 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		}
 	}
 	
+	private byte[] getEtsiUComponentValue(EtsiUComponent etsiUComponent, String canonicalizationMethod) {
+		Object component = etsiUComponent.getComponent();
+		if (etsiUComponent.isBase64UrlEncoded()) {
+			return ((String) component).getBytes();
+		} else {
+			return getCanonicalizedValue(etsiUComponent.getValue(), canonicalizationMethod);
+		}
+	}
 	
 	private byte[] getCanonicalizedValue(Object jsonObject, String canonicalizationMethod) {
 		// TODO: canonicalization is not implemented yet
-		if (canonicalizationMethod != null) {
-			LOG.warn("Canonicalization is not supported in the current version. The message imprint computation can lead to an unexpected result");
-		}
+		LOG.warn("Canonicalization is not supported in the current version. "
+				+ "The message imprint computation can lead to an unexpected result");
 		// temporary solution
 		String jsonString = JSONValue.toJSONString(jsonObject);
 		return jsonString.getBytes();

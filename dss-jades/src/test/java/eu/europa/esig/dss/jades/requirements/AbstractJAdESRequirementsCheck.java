@@ -16,8 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.jose4j.base64url.Base64Url;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -286,10 +288,25 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		assertTrue(Utils.isCollectionNotEmpty(tstTokens));
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected Object getEtsiUElement(Map<?, ?> unprotectedHeaderMap, String headerName) {
 		List<?> etsiU = (List<?>) unprotectedHeaderMap.get("etsiU");
 		for (Object etsiUItem : etsiU) {
-			Object object = ((Map<?, ?>) etsiUItem).get(headerName);
+			Map<String, Object> map = null;
+			if (etsiUItem instanceof String) {
+				byte[] decoded = Base64Url.decode((String) etsiUItem);
+				try {
+					map = JsonUtil.parseJson(new String(decoded));
+				} catch (JoseException e) {
+					fail("Unable to parse an 'etsiU' element : " + e.getMessage());
+				}
+			} else if (etsiUItem instanceof Map) {
+				map = (Map<String, Object>) etsiUItem;
+			}
+			if (map == null) {
+				fail("An etsiU component of a valid type is not found!");
+			}
+			Object object = map.get(headerName);
 			if (object != null) {
 				return object;
 			}

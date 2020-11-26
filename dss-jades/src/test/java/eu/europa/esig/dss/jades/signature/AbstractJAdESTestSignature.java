@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.jades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,6 +63,19 @@ public abstract class AbstractJAdESTestSignature
 				assertTrue(Utils.isCollectionEmpty(etsiU));
 			} else {
 				assertTrue(Utils.isCollectionNotEmpty(etsiU));
+
+				if (getSignatureParameters().isBase64UrlEncodedEtsiUComponents()) {
+					for (Object item : etsiU) {
+						assertTrue(item instanceof String);
+						assertTrue(DSSJsonUtils.isBase64UrlEncoded((String) item));
+					}
+				} else {
+					for (Object item : etsiU) {
+						assertTrue(item instanceof Map);
+						assertEquals(1, ((Map<?, ?>) item).size());
+					}
+				}
+
 			}
 			
 			try {

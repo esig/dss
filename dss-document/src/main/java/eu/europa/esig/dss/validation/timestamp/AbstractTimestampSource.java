@@ -358,7 +358,6 @@ public abstract class AbstractTimestampSource<AS extends AdvancedSignature, Sign
 		final List<TimestampToken> timestamps = new ArrayList<>();
 		
 		for (SignatureAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-			
 			List<TimestampToken> timestampTokens;
 			
 			if (isSignatureTimestamp(unsignedAttribute)) {

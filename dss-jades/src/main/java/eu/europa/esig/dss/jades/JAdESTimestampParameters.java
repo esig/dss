@@ -44,7 +44,7 @@ public class JAdESTimestampParameters extends TimestampParameters {
 	}
 
 	public void setCanonicalizationMethod(String canonicalizationMethod) {
-		throw new DSSException("Canonicalization is not supported");
+		throw new DSSException("Canonicalization is not supported in the current version.");
 		// TODO : this.canonicalizationMethod = canonicalizationMethod;
 	}
 

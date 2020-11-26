@@ -16,7 +16,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class JAdESLevelLTAWithoutTimestampedPropertyTest extends AbstractJAdESTestValidation {
+public class JAdESLevelLTATest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

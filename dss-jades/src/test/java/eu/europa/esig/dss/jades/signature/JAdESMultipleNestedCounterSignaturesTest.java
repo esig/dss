@@ -14,6 +14,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -146,6 +147,16 @@ public class JAdESMultipleNestedCounterSignaturesTest extends AbstractJAdESTestV
 		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(secondCounterSignedDocument, newCounterSignatureParameters));
 		assertEquals("Unable to extend a Compact JAdES Signature with id '" + secondCounterSignatureId + "'", exception.getMessage());
 
+		DSSDocument clearEtsiUIncorporation = JWSConverter.fromEtsiUWithBase64UrlToClearJsonIncorporation(thirdCounterSignedDocument);
+		verify(clearEtsiUIncorporation);
+		
+		validator = getValidator(clearEtsiUIncorporation);
+		signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+		mainSignature = signatures.iterator().next();
+		assertEquals(mainSignatureId, mainSignature.getId());
+		counterSignatures = mainSignature.getCounterSignatures();
+		assertEquals(2, counterSignatures.size());
 	}
 
 	@Override
