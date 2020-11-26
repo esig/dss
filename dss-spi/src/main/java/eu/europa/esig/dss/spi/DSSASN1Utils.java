@@ -52,6 +52,7 @@ import java.util.Map;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
+import eu.europa.esig.dss.model.QCLimitValue;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -102,6 +103,7 @@ import org.bouncycastle.asn1.x509.PolicyQualifierInfo;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
+import org.bouncycastle.asn1.x509.qualified.MonetaryValue;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.asn1.x509.qualified.RFC3739QCObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.SemanticsInformation;
@@ -1545,6 +1547,35 @@ public final class DSSASN1Utils {
 						result.setRolesOfPSP(rolesOfPSP);
 						result.setNcaName(getString(psd2Seq.getObjectAt(1)));
 						result.setNcaId(getString(psd2Seq.getObjectAt(2)));
+					}
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to read QCStatement", e);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This method extracts the QcStatement regarding limits on the value of transactions for a given certificate
+	 *
+	 * @param certToken the certificate
+	 * @return an instance of {@code QCLimitValue} or null
+	 */
+	public static QCLimitValue getQcLimitValue(CertificateToken certToken) {
+		QCLimitValue result = null;
+		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
+		if (Utils.isArrayNotEmpty(qcStatement)) {
+			try {
+				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
+				for (int i = 0; i < seq.size(); i++) { 
+					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
+					if (QCStatement.id_etsi_qcs_LimiteValue.equals(statement.getStatementId())) {
+						MonetaryValue monetaryValue = MonetaryValue.getInstance(statement.getStatementInfo());
+						result = new QCLimitValue();
+						result.setCurrency(monetaryValue.getCurrency().getAlphabetic());
+						result.setAmount(monetaryValue.getAmount().intValue());
+						result.setExponent(monetaryValue.getExponent().intValue());
 					}
 				}
 			} catch (Exception e) {

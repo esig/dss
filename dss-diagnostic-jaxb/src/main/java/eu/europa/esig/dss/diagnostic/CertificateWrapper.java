@@ -356,6 +356,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	public QCLimitValueWrapper getQCLimitValue() {
+		if (certificate.getQCLimitValue() !=null) {
+			return new QCLimitValueWrapper(certificate.getQCLimitValue());
+		}
+		return null;
+	}
+
 	public List<String> getSubjectAlternativeNames() {
 		return certificate.getSubjectAlternativeNames();
 	}

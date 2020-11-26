@@ -15,6 +15,8 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
+import eu.europa.esig.dss.model.QCLimitValue;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1049,6 +1051,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setIdPkixOcspNoCheck(DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken));
 
 		xmlCert.setPSD2Info(getPSD2Info(certToken));
+		xmlCert.setQCLimitValue(getQCLimitValue(certToken));
 
 		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
 
@@ -1097,6 +1100,18 @@ public abstract class DiagnosticDataBuilder {
 			}
 			xmlInfo.setPSD2Roles(psd2Roles);
 			return xmlInfo;
+		}
+		return null;
+	}
+
+	private XmlQCLimitValue getQCLimitValue(CertificateToken certToken) {
+		QCLimitValue qcLimitValue = DSSASN1Utils.getQcLimitValue(certToken);
+		if (qcLimitValue != null) {
+			XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
+			xmlQCLimitValue.setCurrency(qcLimitValue.getCurrency());
+			xmlQCLimitValue.setAmount(qcLimitValue.getAmount());
+			xmlQCLimitValue.setExponent(qcLimitValue.getExponent());
+			return xmlQCLimitValue;
 		}
 		return null;
 	}
