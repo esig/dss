@@ -10,7 +10,7 @@ Please, use the new JIRA for project is on https://ec.europa.eu/cefdigital/track
 
 The latest version of DSS framework has the following minimal requirements:
 
- * Java 9 and higher (tested up to Java 14) for the build is required. For usage Java 8 is a mimimum requirement;
+ * Java 9 and higher (tested up to Java 15) for the build is required. For usage Java 8 is a mimimum requirement;
  * Maven 3.6 and higher;
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
  * Operating system: no specific requirements (tested on Windows and Linux).

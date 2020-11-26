@@ -177,7 +177,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
- * Java 9 and higher (tested up to Java 14) for the build is required. For usage Java 8 is a mimimum requirement;
+ * Java 9 and higher (tested up to Java 15) for the build is required. For usage Java 8 is a mimimum requirement;
  * Maven 3.6 and higher;
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
  * Operating system: no specific requirements (tested on Windows and Linux).
@@ -286,7 +286,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The minimal requirements to build/run DSS Demonstrations:
 
- * Java 8 and higher (tested up to Java 14) is required;
+ * Java 8 and higher (tested up to Java 15) is required;
  * Maven 3.6 and higher (if build required);
  * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
@@ -331,10 +331,10 @@ The documentation and javadoc will be copied automatically from built DSS Core a
  * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
  * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 14, the following profile can be used from `dss-demo-bundle` module:
+In order to build a bundle for JDK 15, the following profile can be used from `dss-demo-bundle` module:
 
 ----
-mvn clean install -P java14
+mvn clean install -P java15
 ----
 
 This will create a bundle with Tomcat 9.
