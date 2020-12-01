@@ -586,20 +586,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, List<TimestampToken> timestamps) {
 		for (TimestampToken timestampToken : timestamps) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
-			injectReferences(timestampToken);
-		}
-	}
-
-	/**
-	 * TODO : remove
-	 * 
-	 * Sets the timestamped references based on the given signature scope
-	 * 
-	 * @param timestamp the timestamp to fill
-	 */
-	private void injectReferences(TimestampToken timestamp) {
-		for (SignatureScope scope : timestamp.getTimestampScopes()) {
-			timestamp.getTimestampedReferences().add(new TimestampedReference(scope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
 		}
 	}
 

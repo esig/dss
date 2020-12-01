@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface IUtils {
@@ -104,5 +105,7 @@ public interface IUtils {
 	void cleanDirectory(File directory) throws IOException;
 
 	Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
+
+	<T extends Object> List<T> reverseList(List<T> list);
 
 }

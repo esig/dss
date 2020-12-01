@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -47,8 +40,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 public class SignatureWrapper extends AbstractTokenProxy {
 
@@ -188,18 +187,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
-	}
-	
-	public List<TimestampWrapper> getTimestampListByLocation(TimestampLocation timestampLocation) {
-		List<TimestampWrapper> tsps = new ArrayList<>();
-		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
-		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
-			if (xmlFoundTimestamp.getLocation() != null && 
-					xmlFoundTimestamp.getLocation().name().equals(timestampLocation.name())) {
-				tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
-			}
-		}
-		return tsps;
 	}
 
 	public boolean isSignatureProductionPlacePresent() {
@@ -349,7 +336,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isXLevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getTimestampLevelX();
-		return isTimestampValid(timestamps);
+		return areTimestampsValid(timestamps);
 	}
 
 	public List<TimestampWrapper> getTimestampLevelX() {
@@ -359,13 +346,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isThereALevel() {
-		List<TimestampWrapper> timestampList = getArchiveTimestamps();
-		return timestampList != null && timestampList.size() > 0;
+		List<TimestampWrapper> timestamps = getALevelTimestamps();
+		return timestamps != null && timestamps.size() > 0;
 	}
 
 	public boolean isALevelTechnicallyValid() {
-		List<TimestampWrapper> timestampList = getArchiveTimestamps();
-		return isTimestampValid(timestampList);
+		List<TimestampWrapper> timestamps = getALevelTimestamps();
+		return areTimestampsValid(timestamps);
+	}
+
+	public List<TimestampWrapper> getALevelTimestamps() {
+		List<TimestampWrapper> timestamps = new ArrayList<>(getArchiveTimestamps());
+		timestamps.addAll(getDocumentTimestamps(true));
+		return timestamps;
 	}
 
 	public List<TimestampWrapper> getArchiveTimestamps() {
@@ -373,13 +366,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isThereTLevel() {
-		List<TimestampWrapper> timestamps = getSignatureTimestamps();
+		List<TimestampWrapper> timestamps = getTLevelTimestamps();
 		return timestamps != null && timestamps.size() > 0;
 	}
 
 	public boolean isTLevelTechnicallyValid() {
-		List<TimestampWrapper> timestampList = getSignatureTimestamps();
-		return isTimestampValid(timestampList);
+		List<TimestampWrapper> timestamps = getTLevelTimestamps();
+		return areTimestampsValid(timestamps);
+	}
+
+	public List<TimestampWrapper> getTLevelTimestamps() {
+		List<TimestampWrapper> timestamps = new ArrayList<>(getSignatureTimestamps());
+		timestamps.addAll(getDocumentTimestamps(false));
+		return timestamps;
 	}
 
 	public List<TimestampWrapper> getContentTimestamps() {
@@ -403,7 +402,26 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 	}
 
-	private boolean isTimestampValid(List<TimestampWrapper> timestampList) {
+	public List<TimestampWrapper> getDocumentTimestamps() {
+		return getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
+	}
+
+	private List<TimestampWrapper> getDocumentTimestamps(boolean coversLTLevel) {
+		List<TimestampWrapper> timestampWrappers = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : getDocumentTimestamps()) {
+			if (coversLTLevel == coversLTLevel(timestampWrapper)) {
+				timestampWrappers.add(timestampWrapper);
+			}
+		}
+		return  timestampWrappers;
+	}
+
+	private boolean coversLTLevel(TimestampWrapper timestampWrapper) {
+		return !timestampWrapper.getTimestampedRevocations().isEmpty() ||
+				!timestampWrapper.getTimestampedOrphanRevocations().isEmpty();
+	}
+
+	private boolean areTimestampsValid(List<TimestampWrapper> timestampList) {
 		for (final TimestampWrapper timestamp : timestampList) {
 			final boolean signatureValid = timestamp.isSignatureValid();
 			final XmlDigestMatcher messageImprint = timestamp.getMessageImprint();

@@ -30,6 +30,7 @@ import java.util.Objects;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.dom.DOMSource;
 
+import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;

@@ -18,28 +18,46 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.validation;
+package eu.europa.esig.dss.cades.validation.timestamp;
 
-import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
-import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
+import eu.europa.esig.dss.cades.validation.CAdESAttribute;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cades.validation.CAdESSignedAttributes;
+import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CMSCRLSource;
+import eu.europa.esig.dss.validation.CMSCertificateSource;
+import eu.europa.esig.dss.validation.CMSOCSPSource;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
@@ -64,44 +82,28 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
-import eu.europa.esig.dss.crl.CRLUtils;
-import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
-import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
-import eu.europa.esig.dss.model.identifier.Identifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CMSCRLSource;
-import eu.europa.esig.dss.validation.CMSCertificateSource;
-import eu.europa.esig.dss.validation.CMSOCSPSource;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
+import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
+import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
 @SuppressWarnings("serial")
-public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature, CAdESAttribute> {
+public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignature, CAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
 	
@@ -237,12 +239,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 		if (timestamp == null) {
 			return null;
 		}
-		return new TimestampToken(timestamp, timestampType, references, TimestampLocation.CAdES);
+		return new TimestampToken(timestamp, timestampType, references);
 	}
 
 	@Override
 	protected void incorporateArchiveTimestampReferences(TimestampToken timestampToken,
-			List<TimestampToken> previousTimestamps) {
+														 List<TimestampToken> previousTimestamps) {
 		if (isArchiveTimestampV2(timestampToken)) {
 			// for an ATSTv2 all the incorporated unsigned properties are covered
 			super.incorporateArchiveTimestampReferences(timestampToken, previousTimestamps);
@@ -582,12 +584,9 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 		}
 		return ArchiveTimestampType.CAdES;
 	}
-	
-	@Override
-	protected void addEncapsulatedValuesFromTimestamp(List<TimestampedReference> references,
-			TimestampToken timestampedTimestamp) {
-		super.addEncapsulatedValuesFromTimestamp(references, timestampedTimestamp);
 
+	protected List<TimestampedReference> getEncapsulatedValuesFromTimestamp(TimestampToken timestampedTimestamp) {
+		List<TimestampedReference> references = super.getEncapsulatedValuesFromTimestamp(timestampedTimestamp);
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
 		for (EncapsulatedRevocationTokenIdentifier<CRL> binary : timeStampCRLSource.getAllRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
@@ -595,7 +594,6 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 		for (EncapsulatedRevocationTokenIdentifier<CRL> binary : timeStampCRLSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
-
 		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
 		for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
@@ -603,6 +601,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 		for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : timeStampOCSPSource.getAllReferencedRevocationBinaries()) {
 			addReference(references, binary, TimestampedObjectType.REVOCATION);
 		}
+		return references;
 	}
 
 	@Override
@@ -650,7 +649,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESSignature
 		TimestampSource counterSignatureTimestampSource = counterSignature.getTimestampSource();
 		addReferences(counterSigReferences, counterSignatureTimestampSource.getSignerDataReferences());
 		addReferences(counterSigReferences, counterSignatureTimestampSource.getUnsignedPropertiesReferences());
-		addReferencesFromPreviousTimestamps(counterSigReferences, counterSignatureTimestampSource.getAllTimestamps());
+		addReferences(counterSigReferences, getEncapsulatedReferencesFromTimestamps(
+				counterSignatureTimestampSource.getAllTimestamps()));
 		
 		return counterSigReferences;
 	}

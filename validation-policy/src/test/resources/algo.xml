@@ -82,7 +82,7 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-5A4869AA02C119D31348B4F5A3CA2268B13A741EADC993475A9B76B8902CF845" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-5A4869AA02C119D31348B4F5A3CA2268B13A741EADC993475A9B76B8902CF845"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-B626D6E3DB02434C70857B8375F9010776655894E91D2934162E77BD3B6EB993">

@@ -210,4 +210,8 @@ public final class Utils {
 		return impl.listFiles(folder, extensions, recursive);
 	}
 
+	public static <T extends Object> List<T> reverseList(List<T> list) {
+		return impl.reverseList(list);
+	}
+
 }

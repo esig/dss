@@ -20,39 +20,11 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
-import java.io.IOException;
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.cms.SignerInformationVerifier;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.operator.OperatorException;
-import org.bouncycastle.tsp.TSPException;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -70,6 +42,31 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.cms.SignerInformationVerifier;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.operator.OperatorException;
+import org.bouncycastle.tsp.TSPException;
+import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
+import java.io.IOException;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -112,8 +109,6 @@ public class TimestampToken extends Token {
 
 	/* In case of ASiC-E */
 	private ManifestFile manifestFile;
-	
-	private TimestampLocation timestampLocation;
 
 	/**
 	 * In case of XAdES IndividualDataObjectsTimeStamp, Includes shall be specified
@@ -144,17 +139,15 @@ public class TimestampToken extends Token {
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 	
 	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
-		this(binaries, type, new ArrayList<TimestampedReference>(), null);
+		this(binaries, type, new ArrayList<TimestampedReference>());
 	}
 
-	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences,
-			final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
-		this(new CMSSignedData(binaries), type, timestampedReferences, timestampLocation);
+	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences) throws TSPException, IOException, CMSException {
+		this(new CMSSignedData(binaries), type, timestampedReferences);
 	}
 
-	public TimestampToken(final CMSSignedData cms, final TimestampType type, final List<TimestampedReference> timestampedReferences,
-			final TimestampLocation timestampLocation) throws TSPException, IOException {
-		this(new TimeStampToken(cms), type, timestampedReferences, timestampLocation);
+	public TimestampToken(final CMSSignedData cms, final TimestampType type, final List<TimestampedReference> timestampedReferences) throws TSPException, IOException {
+		this(new TimeStampToken(cms), type, timestampedReferences);
 	}
 
 	/**
@@ -167,19 +160,15 @@ public class TimestampToken extends Token {
 	 *                              {@code TimestampType}
 	 * @param timestampedReferences
 	 *                              timestamped references
-	 * @param timestampLocation
-	 *                              {@code TimestampLocation} defines where the
 	 *                              timestamp comes from
 	 */
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
-			final TimestampLocation timestampLocation) {
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = new TimestampCertificateSource(timeStamp);
 		this.ocspSource = new TimestampOCSPSource(timeStamp);
 		this.crlSource = new TimestampCRLSource(timeStamp);
 		this.timestampedReferences = timestampedReferences;
-		this.timestampLocation = timestampLocation;
 	}
 
 	@Override
@@ -431,15 +420,6 @@ public class TimestampToken extends Token {
 	 */
 	public TimestampType getTimeStampType() {
 		return timeStampType;
-	}
-
-	/**
-	 * Retrieves the location of timestamp token.
-	 *
-	 * @return {@code TimestampLocation}
-	 */
-	public TimestampLocation getTimestampLocation() {
-		return timestampLocation;
 	}
 
 	/**

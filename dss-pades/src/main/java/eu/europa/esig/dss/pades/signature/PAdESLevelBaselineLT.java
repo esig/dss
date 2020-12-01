@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -42,6 +37,12 @@ import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * PAdES Baseline LT signature
@@ -73,7 +74,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		}
 
 		for (final AdvancedSignature signature : signatures) {
-			if (isRequireDocumentTimestamp(signature)) {
+			if (requiresDocumentTimestamp(signature)) {
 				// extend to T-level
 				document = super.extendSignatures(document, parameters);
 				pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
@@ -106,10 +107,11 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		return pdfDocumentValidator;
 	}
 
-	private boolean isRequireDocumentTimestamp(AdvancedSignature signature) {
-		List<TimestampToken> signatureTimestamps = signature.getSignatureTimestamps();
-		List<TimestampToken> archiveTimestamps = signature.getArchiveTimestamps();
-		return Utils.isCollectionEmpty(signatureTimestamps) && Utils.isCollectionEmpty(archiveTimestamps);
+	private boolean requiresDocumentTimestamp(AdvancedSignature signature) {
+		List<TimestampToken> timestamps = new ArrayList<>(signature.getSignatureTimestamps());
+		timestamps.addAll(signature.getArchiveTimestamps());
+		timestamps.addAll(signature.getDocumentTimestamps());
+		return Utils.isCollectionEmpty(timestamps);
 	}
 	
 	private void assertExtendSignaturePossible(PAdESSignature padesSignature) throws DSSException {

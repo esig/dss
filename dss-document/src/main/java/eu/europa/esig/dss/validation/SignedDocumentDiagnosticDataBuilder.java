@@ -897,7 +897,6 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		for (TimestampToken timestampToken : signature.getAllTimestamps()) {
 			XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
 			foundTimestamp.setTimestamp(xmlTimestampsMap.get(timestampToken.getDSSIdAsString()));
-			foundTimestamp.setLocation(timestampToken.getTimestampLocation());
 			foundTimestamps.add(foundTimestamp);
 		}
 		return foundTimestamps;

@@ -20,39 +20,22 @@
  */
 package eu.europa.esig.dss.spi;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.ldap.Rdn;
-import javax.security.auth.x500.X500Principal;
-
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.RoleOfPspOid;
+import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.QCLimitValue;
+import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificatePolicy;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.PSD2QcType;
+import eu.europa.esig.dss.spi.x509.RoleOfPSP;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -121,21 +104,36 @@ import org.bouncycastle.util.BigIntegers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.RoleOfPspOid;
-import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificatePolicy;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.PSD2QcType;
-import eu.europa.esig.dss.spi.x509.RoleOfPSP;
-import eu.europa.esig.dss.utils.Utils;
+import javax.naming.ldap.Rdn;
+import javax.security.auth.x500.X500Principal;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
 /**
  * Utility class that contains some ASN1 related method.
@@ -1341,12 +1339,12 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns {@link ASN1Encodable} for a given {@code oid} found in the {@code unsignedAttributes}
-	 * @param unsignedAttributes {@link AttributeTable} of a signature
+	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Encodable}
 	 */
-	public static ASN1Encodable getAsn1Encodable(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
-		final ASN1Set attrValues = getAsn1AttributeSet(unsignedAttributes, oid);
+	public static ASN1Encodable getAsn1Encodable(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
+		final ASN1Set attrValues = getAsn1AttributeSet(attributeTable, oid);
 		if (attrValues == null || attrValues.size() <= 0) {
 			return null;
 		}
@@ -1355,12 +1353,12 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns an Attribute values for a given {@code oid} found in the {@code unsignedAttributes}
-	 * @param unsignedAttributes {@link AttributeTable} of a signature
+	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Set}
 	 */
-	public static ASN1Set getAsn1AttributeSet(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
-		final Attribute attribute = unsignedAttributes.get(oid);
+	public static ASN1Set getAsn1AttributeSet(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
+		final Attribute attribute = attributeTable.get(oid);
 		if (attribute == null) {
 			return null;
 		}
@@ -1369,12 +1367,12 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns an array of {@link Attribute}s for a given {@code oid} found in the {@code unsignedAttributes}
-	 * @param unsignedAttributes {@link AttributeTable} of a signature
+	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link Attribute}s array
 	 */
-	public static Attribute[] getAsn1Attributes(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
-		ASN1EncodableVector encodableVector = unsignedAttributes.getAll(oid);
+	public static Attribute[] getAsn1Attributes(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
+		ASN1EncodableVector encodableVector = attributeTable.getAll(oid);
 		if (encodableVector == null) {
 			return null;
 		}

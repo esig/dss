@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -42,6 +34,14 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 
@@ -102,7 +102,7 @@ public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId())); // not LT-level
 	}
 	
 	@Override

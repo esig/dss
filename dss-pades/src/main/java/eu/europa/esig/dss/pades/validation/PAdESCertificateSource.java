@@ -44,7 +44,7 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
-	private final PdfDssDict dssDictionary;
+	private final PdfDssDictCertificateSource dssDictionaryCertificateSource;
 
 	/**
 	 * The default constructor for PAdESCertificateSource.
@@ -55,32 +55,21 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	public PAdESCertificateSource(final PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation) {
 		super(pdfSignatureRevision.getCMSSignedData(), signerInformation);
 
-		this.dssDictionary = pdfSignatureRevision.getDssDictionary();
-
-		extractFromDSSDict();
+		this.dssDictionaryCertificateSource = new PdfDssDictCertificateSource(pdfSignatureRevision.getDssDictionary());
+		extractFromDssDictSource();
 	}
 
-	private void extractFromDSSDict() {
-		for (CertificateToken certToken : getDSSDictionaryCertValues()) {
+	private void extractFromDssDictSource() {
+		for (CertificateToken certToken : dssDictionaryCertificateSource.getDSSDictionaryCertValues()) {
 			addCertificate(certToken, CertificateOrigin.DSS_DICTIONARY);
 		}
-		for (CertificateToken certToken : getVRIDictionaryCertValues()) {
+		for (CertificateToken certToken : dssDictionaryCertificateSource.getVRIDictionaryCertValues()) {
 			addCertificate(certToken, CertificateOrigin.VRI_DICTIONARY);
 		}
 	}
 
 	public Map<Long, CertificateToken> getCertificateMap() {
-		if (dssDictionary != null) {
-			Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
-			List<PdfVRIDict> vriDicts = dssDictionary.getVRIs();
-			if (Utils.isCollectionNotEmpty(vriDicts)) {
-				for (PdfVRIDict vriDict : vriDicts) {
-					dssCerts.putAll(vriDict.getCERTs());
-				}
-			}
-			return dssCerts;
-		}
-		return Collections.emptyMap();
+		return dssDictionaryCertificateSource.getCertificateMap();
 	}
 
 	@Override
@@ -103,26 +92,12 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 
 	@Override
 	public List<CertificateToken> getDSSDictionaryCertValues() {
-		if (dssDictionary != null) {
-			Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
-			return new ArrayList<>(dssCerts.values());
-		}
-		return Collections.emptyList();
+		return dssDictionaryCertificateSource.getDSSDictionaryCertValues();
 	}
 
 	@Override
 	public List<CertificateToken> getVRIDictionaryCertValues() {
-		if (dssDictionary != null) {
-			Map<Long, CertificateToken> vriCerts = new HashMap<>();
-			List<PdfVRIDict> vris = dssDictionary.getVRIs();
-			if (vris != null) {
-				for (PdfVRIDict vri : vris) {
-					vriCerts.putAll(vri.getCERTs());
-				}
-			}
-			return new ArrayList<>(vriCerts.values());
-		}
-		return Collections.emptyList();
+		return dssDictionaryCertificateSource.getVRIDictionaryCertValues();
 	}
 
 }

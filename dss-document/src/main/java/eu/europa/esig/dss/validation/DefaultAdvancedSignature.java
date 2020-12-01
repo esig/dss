@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -41,6 +37,10 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
@@ -442,6 +442,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 * This validates the archive timestamp tokens present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
+			validationContext.addTimestampTokenForVerification(timestampToken);
+		}
+
+		/*
+		 * This validates the document timestamps present in a PDF (used in PAdES only)
+		 */
+		for (final TimestampToken timestampToken : getDocumentTimestamps()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
 	}

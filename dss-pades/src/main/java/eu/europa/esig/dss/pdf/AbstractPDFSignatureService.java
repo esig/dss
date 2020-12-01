@@ -213,11 +213,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					PdfCMSRevision newRevision = null;
 
 					if (isDocTimestamp(signatureDictionary)) {
-						// if there is a DSS dictionary before -> Archive timestamp
-						boolean isArchiveTimestamp = previousRevisionDssDict != null;
-
 						newRevision = new PdfDocTimestampRevision(signatureDictionary, fieldNames, signedContent,
-								signatureCoversWholeDocument, isArchiveTimestamp);
+								signatureCoversWholeDocument);
 
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after

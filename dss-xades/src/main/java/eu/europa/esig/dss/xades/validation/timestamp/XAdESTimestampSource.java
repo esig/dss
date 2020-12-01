@@ -18,25 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.validation;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.xml.security.signature.Reference;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+package eu.europa.esig.dss.xades.validation.timestamp;
 
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSException;
@@ -54,7 +40,7 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
-import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
@@ -63,9 +49,27 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.validation.XAdESAttribute;
+import eu.europa.esig.dss.xades.validation.XAdESCertificateRefExtractionUtils;
+import eu.europa.esig.dss.xades.validation.XAdESRevocationRefExtractionUtils;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
+import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
+import org.apache.xml.security.signature.Reference;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
-public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature, XAdESAttribute> {
+public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignature, XAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
 	
@@ -267,7 +271,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESSignature
 			List<TimestampedReference> references) {
 		try {
 			return new TimestampToken(Utils.fromBase64(encapsulatedTimeStamp.getTextContent()), timestampType,
-					references, TimestampLocation.XAdES);
+					references);
 		} catch (Exception e) {
 			LOG.warn("Unable to build timestamp token from binaries '{}'. Reason : {}",
 					encapsulatedTimeStamp.getTextContent(), e.getMessage(), e);

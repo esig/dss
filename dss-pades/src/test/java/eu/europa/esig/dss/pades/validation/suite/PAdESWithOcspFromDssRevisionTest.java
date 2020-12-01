@@ -20,26 +20,17 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
-public class PAdESOrphanOcspFromDssRevisionTest extends AbstractPAdESTestValidation {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class PAdESWithOcspFromDssRevisionTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-DE_SCI-4.pdf"));
-	}
-	
-	@Override
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
-		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(1, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 	
 	@Override

@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.timestamp.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -59,6 +46,18 @@ import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationRepor
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -99,6 +98,7 @@ public class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 		
 		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
 		assertEquals(3, digestMatchers.size());
+		assertEquals(3, timestampWrapper.getTimestampedSignedData().size());
 
 		int messageImprintCounter = 0;
 		int filesCounter = 0;

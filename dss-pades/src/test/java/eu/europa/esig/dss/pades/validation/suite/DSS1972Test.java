@@ -20,13 +20,20 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1972Test extends AbstractPAdESTestValidation {
 
@@ -38,20 +45,32 @@ public class DSS1972Test extends AbstractPAdESTestValidation {
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		super.checkTimestamps(diagnosticData);
+		assertEquals(2, diagnosticData.getAllRevocationData().size());
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<RelatedRevocationWrapper> revocationData = signature.foundRevocations().getRelatedRevocationData();
+		assertEquals(1, revocationData.size());
+
+		String revocationId = revocationData.iterator().next().getId();
 		
-//		String orphanRevocationId = diagnosticData.getAllOrphanRevocationReferences().get(0).getId();
-		
-		int archiveTimestampCounter = 0;
+		int firstDssDictTimestampCounter = 0;
+		int secondDssDictTimestampCounter = 0;
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
-			if (timestampWrapper.getType().isArchivalTimestamp()) {
-//				List<OrphanTokenWrapper> allTimestampedOrphanTokens = timestampWrapper.getAllTimestampedOrphanTokens();
-//				assertEquals(1, allTimestampedOrphanTokens.size());
-//				assertEquals(orphanRevocationId, allTimestampedOrphanTokens.get(0).getId());
-				
-				++archiveTimestampCounter;
+			if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
+				List<RevocationWrapper> allTimestampedRevocations = timestampWrapper.getTimestampedRevocations();
+				if (allTimestampedRevocations.size() == 1) {
+					assertEquals(false, timestampWrapper.getTimestampedRevocations().stream().
+							map(RevocationWrapper::getId).collect(Collectors.toList()).contains(revocationId));
+					++firstDssDictTimestampCounter;
+				} else if (allTimestampedRevocations.size() == 2) {
+					assertEquals(true, timestampWrapper.getTimestampedRevocations().stream().
+							map(RevocationWrapper::getId).collect(Collectors.toList()).contains(revocationId));
+					++secondDssDictTimestampCounter;
+				}
 			}
 		}
-		assertEquals(3, archiveTimestampCounter);
+		assertEquals(1, firstDssDictTimestampCounter);
+		assertEquals(2, secondDssDictTimestampCounter);
 	}
 	
 	@Override

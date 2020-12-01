@@ -1,22 +1,17 @@
-package eu.europa.esig.dss.jades.validation;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package eu.europa.esig.dss.jades.validation.timestamp;
 
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESAttribute;
+import eu.europa.esig.dss.jades.validation.JAdESCertificateRefExtractionUtils;
+import eu.europa.esig.dss.jades.validation.JAdESRevocationRefExtractionUtils;
+import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.validation.JAdESSignedProperties;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -28,12 +23,21 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
-public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature, JAdESAttribute> {
+public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignature, JAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampSource.class);
 
@@ -383,7 +387,7 @@ public class JAdESTimestampSource extends AbstractTimestampSource<JAdESSignature
 						String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
 						try {
 							TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64),
-									timestampType, references, TimestampLocation.JAdES);
+									timestampType, references);
 							timestampToken.setHashCode(signatureAttribute.hashCode());
 							result.add(timestampToken);
 						} catch (Exception e) {

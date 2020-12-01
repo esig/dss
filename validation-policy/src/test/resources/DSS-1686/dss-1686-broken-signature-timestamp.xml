@@ -81,9 +81,9 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-BFE8B3E24DC946E83C989B65401FE6B41A8EC7A3C047F7579E01F5EA39D718B1" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-B40B46167579BA169C72C8EA45F4316382614B5034B23114BFD160E3CED8CD68" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-9D1437D3B9F777873C1EA371CB2F3943B2988698CC11D423300F465532B94710" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-BFE8B3E24DC946E83C989B65401FE6B41A8EC7A3C047F7579E01F5EA39D718B1"/>
+                <FoundTimestamp Timestamp="T-B40B46167579BA169C72C8EA45F4316382614B5034B23114BFD160E3CED8CD68"/>
+                <FoundTimestamp Timestamp="T-9D1437D3B9F777873C1EA371CB2F3943B2988698CC11D423300F465532B94710"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-29F011998FC5576ACA341603C8EA140AAC17BA917CD25F29F09C001D5C2D1CA4">

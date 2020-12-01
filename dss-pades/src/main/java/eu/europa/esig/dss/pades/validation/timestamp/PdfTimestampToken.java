@@ -1,16 +1,14 @@
 package eu.europa.esig.dss.pades.validation.timestamp;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
-import eu.europa.esig.dss.enumerations.TimestampLocation;
-import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.pades.validation.PdfRevision;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Specific class for a PDF TimestampToken
@@ -22,22 +20,20 @@ public class PdfTimestampToken extends TimestampToken {
 	/**
 	 * The related PDF revision
 	 */
-	private PdfRevision pdfRevision;
+	private PdfDocTimestampRevision pdfRevision;
 
 	/**
 	 * The default constructor
 	 * 
-	 * @param pdfTimestampRevision {@link PdfRevision} related to the current
+	 * @param pdfTimestampRevision {@link PdfDocTimestampRevision} related to the current
 	 *                             TimestampToken
-	 * @param type                 {@link TimestampType}
 	 * @throws TSPException if a timestamp parsing issue occurs
 	 * @throws IOException  if a reading exception occurs
 	 * @throws CMSException if a CMS exception occurs
 	 */
-	public PdfTimestampToken(final PdfRevision pdfTimestampRevision, final TimestampType type)
+	public PdfTimestampToken(final PdfDocTimestampRevision pdfTimestampRevision)
 			throws TSPException, IOException, CMSException {
-		super(pdfTimestampRevision.getPdfSigDictInfo().getCMSSignedData(), type, new ArrayList<TimestampedReference>(),
-				TimestampLocation.DOC_TIMESTAMP);
+		super(pdfTimestampRevision.getPdfSigDictInfo().getCMSSignedData(), TimestampType.DOCUMENT_TIMESTAMP, new ArrayList<>());
 		this.pdfRevision = pdfTimestampRevision;
 	}
 
@@ -46,7 +42,7 @@ public class PdfTimestampToken extends TimestampToken {
 	 * 
 	 * @return {@link PdfRevision}
 	 */
-	public PdfRevision getPdfRevision() {
+	public PdfDocTimestampRevision getPdfRevision() {
 		return pdfRevision;
 	}
 

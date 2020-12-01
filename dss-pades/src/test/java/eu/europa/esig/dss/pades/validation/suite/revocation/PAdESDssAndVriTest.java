@@ -20,22 +20,12 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.revocation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
@@ -44,6 +34,15 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.SATimestampType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+
+import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 
@@ -80,7 +79,7 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 		List<TimestampWrapper> timestamps = signature.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(2, timestamps.size());
-		List<TimestampWrapper> docTimestamps = signature.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
+		List<TimestampWrapper> docTimestamps = signature.getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
 		assertNotNull(docTimestamps);
 		assertEquals(1, docTimestamps.size());
 	}

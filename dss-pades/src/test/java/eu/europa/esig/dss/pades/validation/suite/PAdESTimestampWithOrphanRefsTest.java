@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -42,11 +30,22 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidation {
 
@@ -64,40 +63,55 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 	}
 
 	@Override
-	protected void checkDetachedTimestamps(List<TimestampToken> detachedTimestamps) {
-		assertTrue(Utils.isCollectionNotEmpty(detachedTimestamps));
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
 
-		for (TimestampToken timestampToken : detachedTimestamps) {
-			try {
-				assertTrue(timestampToken instanceof PdfTimestampToken);
-				PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+		assertEquals(2, signatures.size());
 
-				PdfDocTimestampRevision pdfRevision = (PdfDocTimestampRevision) pdfTimestampToken.getPdfRevision();
-				byte[] signedContent = PAdESUtils.getSignedContent(document, pdfRevision.getByteRange());
+		boolean firstSignature = false;
+		boolean secondSignature = false;
+		for (AdvancedSignature signature : signatures) {
+			List<TimestampToken> documentTimestamps = signature.getDocumentTimestamps();
+			if (documentTimestamps.size() == 2) {
+				firstSignature = true;
+			} else if (documentTimestamps.size() == 1) {
+				secondSignature = true;
+			}
 
-				SignedDocumentValidator timestampValidator = SignedDocumentValidator
-						.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));
-				timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
-				timestampValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(signedContent)));
+			for (TimestampToken timestampToken : documentTimestamps) {
+				try {
+					assertTrue(timestampToken instanceof PdfTimestampToken);
+					PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
 
-				Reports reports = timestampValidator.validateDocument();
-				assertNotNull(reports);
+					PdfDocTimestampRevision pdfRevision = (PdfDocTimestampRevision) pdfTimestampToken.getPdfRevision();
+					byte[] signedContent = PAdESUtils.getSignedContent(document, pdfRevision.getByteRange());
 
-				DiagnosticData diagnosticData = reports.getDiagnosticData();
-				List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-				assertEquals(1, timestampList.size());
+					SignedDocumentValidator timestampValidator = SignedDocumentValidator
+							.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));
+					timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
+					timestampValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(signedContent)));
 
-				TimestampWrapper timestampWrapper = timestampList.get(0);
-				assertTrue(timestampWrapper.isMessageImprintDataFound());
-				assertTrue(timestampWrapper.isMessageImprintDataIntact());
+					Reports reports = timestampValidator.validateDocument();
+					assertNotNull(reports);
 
-				SimpleReport simpleReport = reports.getSimpleReport();
-				assertNotEquals(Indication.FAILED, simpleReport.getIndication(pdfTimestampToken.getDSSIdAsString()));
+					DiagnosticData diagnosticData = reports.getDiagnosticData();
+					List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+					assertEquals(1, timestampList.size());
 
-			} catch (IOException e) {
-				fail(e);
+					TimestampWrapper timestampWrapper = timestampList.get(0);
+					assertTrue(timestampWrapper.isMessageImprintDataFound());
+					assertTrue(timestampWrapper.isMessageImprintDataIntact());
+
+					SimpleReport simpleReport = reports.getSimpleReport();
+					assertNotEquals(Indication.FAILED, simpleReport.getIndication(pdfTimestampToken.getDSSIdAsString()));
+
+				} catch (IOException e) {
+					fail(e);
+				}
 			}
 		}
+		assertTrue(firstSignature);
+		assertTrue(secondSignature);
 	}
 
 	@Override
@@ -105,17 +119,17 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 		super.checkTimestamps(diagnosticData);
 
 		int signatureTimestamps = 0;
-		int archiveTimestamps = 0;
+		int docTimestamps = 0;
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				++signatureTimestamps;
-			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
-				++archiveTimestamps;
+			} else if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
+				++docTimestamps;
 			}
 		}
 		assertEquals(2, signatureTimestamps);
-		assertEquals(2, archiveTimestamps);
+		assertEquals(2, docTimestamps);
 	}
 
 	@Override

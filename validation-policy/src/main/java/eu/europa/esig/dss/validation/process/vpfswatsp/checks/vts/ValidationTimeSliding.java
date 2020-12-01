@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -50,6 +45,10 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 
@@ -108,8 +107,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			 * 2) For each certificate in the chain starting from the first
 			 * certificate (the certificate issued by the trust anchor):
 			 */
-			Collections.reverse(certificateChain); // trusted_list -> ... ->
-														// signature
+			certificateChain = Utils.reverseList(certificateChain); // trusted_list -> ... -> signature
 
 			ChainItem<XmlVTS> item = null;
 

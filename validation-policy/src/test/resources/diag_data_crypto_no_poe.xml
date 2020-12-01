@@ -111,9 +111,9 @@
                 </OrphanRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-D49005368F0E03B30B20329431CF0F62674DEF6647AFA23079209B34145A1934" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-DF9B47509FBD8823ACEFA1AA50DF58A89304EB9FB0E6FDBC50D434621C54756F" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-462F3FB430EF66DBB018F7E7438114BF6C0F1178081D15EB9B700F94DD8F29B9" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-D49005368F0E03B30B20329431CF0F62674DEF6647AFA23079209B34145A1934"/>
+                <FoundTimestamp Timestamp="T-DF9B47509FBD8823ACEFA1AA50DF58A89304EB9FB0E6FDBC50D434621C54756F"/>
+                <FoundTimestamp Timestamp="T-462F3FB430EF66DBB018F7E7438114BF6C0F1178081D15EB9B700F94DD8F29B9"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-EE8B1E816AC6250A46C3B781D8F8745B446A87197A79CFDA0D0169478EC1027A">

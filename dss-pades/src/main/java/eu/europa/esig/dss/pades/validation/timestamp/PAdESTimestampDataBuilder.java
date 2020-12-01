@@ -18,14 +18,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.validation;
+package eu.europa.esig.dss.pades.validation.timestamp;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.pades.validation.PdfRevision;
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.cades.validation.CAdESTimestampDataBuilder;
+import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;

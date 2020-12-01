@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.summary;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
@@ -46,6 +35,16 @@ import eu.europa.esig.dss.tsl.parsing.ParsingUtils;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ValidationJobSummaryBuilder {
 
@@ -184,8 +183,7 @@ public class ValidationJobSummaryBuilder {
 				result.add(pivotSource);
 			}
 		}
-		Collections.reverse(result);
-		return result;
+		return Utils.reverseList(result);
 	}
 	
 	private List<CertificateToken> getPivotCertificateTokens(LOTLSource pivotSource) {

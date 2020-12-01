@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.utils;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -40,13 +35,20 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractUtilsTest {
 	
@@ -471,6 +473,20 @@ public abstract class AbstractUtilsTest {
 		assertThrows(FileNotFoundException.class, () -> {
 			Utils.cleanDirectory(new File("wrong"));	
 		});
+	}
+
+	@Test
+	public void reverseListTest() {
+		List<String> stringsList = Arrays.asList("a", "b", "c");
+		assertEquals(Arrays.asList("c", "b", "a"), Utils.reverseList(stringsList));
+
+		List<Integer> intList = Arrays.asList(1, 2, 3, null);
+		assertEquals(Arrays.asList(null, 3, 2, 1), Utils.reverseList(intList));
+
+		List<Object> emptyList = Collections.emptyList();
+		assertEquals(0, Utils.reverseList(emptyList).size());
+
+		assertThrows(Exception.class, () -> Utils.reverseList(null));
 	}
 
 }

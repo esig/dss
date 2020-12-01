@@ -86,12 +86,6 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.print" />
 		</jaxb:bindings>
 		
-  	<jaxb:bindings node="//xs:simpleType[@name='TimestampLocation']">
-			<jaxb:javaType name="eu.europa.esig.dss.enumerations.TimestampLocation" 
-				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampLocationParser.parse" 
-				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampLocationParser.print" />
-		</jaxb:bindings>
-		
   	<jaxb:bindings node="//xs:simpleType[@name='ArchiveTimestampType']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.ArchiveTimestampType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.ArchiveTimestampTypeParser.parse" 

@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -56,6 +50,11 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidation
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
+
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 5.6 Validation process for Signatures with Archival Data
@@ -227,8 +226,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			}
 			
 			// add past timestamp validation information in the proper order
-			Collections.reverse(timestampsList);
-			for (TimestampWrapper timestamp : timestampsList) {
+			for (TimestampWrapper timestamp : Utils.reverseList(timestampsList)) {
 				XmlBasicBuildingBlocks bbbTsp = bbbs.get(timestamp.getId());
 				if (bbbTsp.getPSV() != null) {
 					item = item.setNextItem(pastTimestampValidation(timestamp, bbbTsp));

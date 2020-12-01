@@ -125,7 +125,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	public void extractSigningCertificateReferences() {
+	private void extractSigningCertificateReferences() {
 		AttributeTable signedAttributes = currentSignerInformation.getSignedAttributes();
 		if (signedAttributes != null && signedAttributes.size() > 0) {
 			final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);

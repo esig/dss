@@ -68,7 +68,7 @@
             </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-51E9629770E9266FC6641F4C3EEAA541DD0D366D9223A21400715863FB0DB1C1" Location="CAdES"/>
+                <FoundTimestamp Timestamp="T-51E9629770E9266FC6641F4C3EEAA541DD0D366D9223A21400715863FB0DB1C1"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-7C74EEE0FE2A04A230B94ED365FF613578D3D44978429496CAAEAF6BD9EF5F2C">

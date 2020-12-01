@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateChain;
@@ -77,7 +66,6 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
@@ -139,6 +127,16 @@ import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import eu.europa.esig.xmldsig.jaxb.SignatureValueType;
+
+import javax.xml.bind.JAXBElement;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ETSIValidationReportBuilder {
 
@@ -795,7 +793,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="VRI" type="{http://uri.etsi.org/19102/v1.2.1#}SAVRIType"/&gt;
 		addVRI(sigAttributes, sigWrapper);
 		// &lt;element name="DocTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestampsByLocation(sigAttributes, sigWrapper, TimestampLocation.DOC_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.DOCUMENT_TIMESTAMP);
 		// &lt;element name="Reason" type="{http://uri.etsi.org/19102/v1.2.1#}SAReasonType"/&gt;
 		addReason(sigAttributes, sigWrapper);
 		// &lt;element name="Name" type="{http://uri.etsi.org/19102/v1.2.1#}SANameType"/&gt;
@@ -1064,10 +1062,6 @@ public class ETSIValidationReportBuilder {
 
 	private void addTimestampsByType(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampType timestampType) {
 		List<TimestampWrapper> timestampListByType = sigWrapper.getTimestampListByType(timestampType);
-		// remove document timestamps (they will be present in DocTimeStamp element)
-		List<TimestampWrapper> docTimestamps = sigWrapper.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
-		timestampListByType.removeAll(docTimestamps);
-
 		boolean isSigned = sigWrapper.isBLevelTechnicallyValid() && timestampType.isContentTimestamp();
 
 		for (TimestampWrapper timestampWrapper : timestampListByType) {
@@ -1077,14 +1071,6 @@ public class ETSIValidationReportBuilder {
 				wrap.getValue().setSigned(isSigned);
 			}
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap);
-		}
-	}
-
-	private void addTimestampsByLocation(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampLocation timestampLocation) {
-		List<TimestampWrapper> timestampListByType = sigWrapper.getTimestampListByLocation(timestampLocation);
-		for (TimestampWrapper timestampWrapper : timestampListByType) {
-			SATimestampType timestamp = getSATimestampType(timestampWrapper);
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap(timestampLocation, timestamp));
 		}
 	}
 	
@@ -1110,17 +1096,10 @@ public class ETSIValidationReportBuilder {
 				return objectFactory.createSignatureAttributesTypeSigAndRefsTimeStamp(timestamp);
 			case ARCHIVE_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
-			default:
-			throw new IllegalArgumentException("Unsupported timestamp type " + timestampType);
-		}
-	}
-
-	private JAXBElement<SATimestampType> wrap(TimestampLocation timestampLocation, SATimestampType timestamp) {
-		switch (timestampLocation) {
-			case DOC_TIMESTAMP:
+			case DOCUMENT_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
 			default:
-			throw new IllegalArgumentException("Unsupported timestamp type " + timestampLocation);
+			throw new IllegalArgumentException("Unsupported timestamp type " + timestampType);
 		}
 	}
 	

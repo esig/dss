@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.jades.validation.timestamp.JAdESTimestampSource;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

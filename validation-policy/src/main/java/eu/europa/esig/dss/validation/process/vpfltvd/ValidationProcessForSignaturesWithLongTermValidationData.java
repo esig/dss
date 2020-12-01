@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -80,6 +69,16 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterB
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
@@ -189,7 +188,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * message imprint has been generated according to the corresponding signature format specification
 		 * verification. If the verification fails, the process shall remove the token from the set.
 		 */
-		Set<TimestampWrapper> allowedTimestamps = filterValidSignatureTimestamps(currentSignature.getTimestampList());
+		Set<TimestampWrapper> allowedTimestamps = filterValidSignatureTimestamps(currentSignature.getTLevelTimestamps());
 
 		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
 
@@ -395,14 +394,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return xpoe;
 	}
 
-	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> allTimestamps) {
+	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> signatureTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<>();
-		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			// ignore content-timestamps / archival-timestamps
-			if (!TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
-				continue;
-			}
-
+		for (TimestampWrapper timestampWrapper : signatureTimestamps) {
 			XmlBasicBuildingBlocks bbbTST = bbbs.get(timestampWrapper.getId());
 			if (bbbTST != null) {
 				// PVA : if OK message imprint is validated in SVA of timestamp (depending of

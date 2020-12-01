@@ -20,6 +20,35 @@
  */
 package eu.europa.esig.dss.spi;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.enumerations.X520Attributes;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.DigestInfo;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.crypto.digests.SHAKEDigest;
+import org.bouncycastle.crypto.io.DigestOutputStream;
+import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
+import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.util.io.pem.PemWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,37 +85,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.DigestInfo;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.crypto.digests.SHAKEDigest;
-import org.bouncycastle.crypto.io.DigestOutputStream;
-import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
-import org.bouncycastle.util.io.pem.PemWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.ObjectIdentifier;
-import eu.europa.esig.dss.enumerations.X520Attributes;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.utils.Utils;
 
 public final class DSSUtils {
 
@@ -535,8 +533,8 @@ public final class DSSUtils {
 	 */
 	public static DSSDocument splitDocument(DSSDocument origin, int start, int end) {
 		try (InputStream is = origin.openStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			 BufferedInputStream bis = new BufferedInputStream(is);
+			 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
 			int i = 0;
 			int r;
@@ -1166,6 +1164,21 @@ public final class DSSUtils {
 			return dssDocuments.stream().map(DSSDocument::getName).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Adds all objects from {@code toAddCollection} into {@code currentCollection} without duplicates
+	 *
+	 * @param currentCollection a collection to enrich
+	 * @param toAddCollection a collection to add values from
+	 * @param <T> an Object
+	 */
+	public static <T extends Object> void enrichCollection(Collection<T> currentCollection, Collection<T> toAddCollection) {
+		for (T object : toAddCollection) {
+			if (!currentCollection.contains(object)) {
+				currentCollection.add(object);
+			}
+		}
 	}
 
 }

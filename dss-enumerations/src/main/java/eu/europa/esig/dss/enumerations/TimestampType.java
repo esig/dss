@@ -43,8 +43,11 @@ public enum TimestampType {
 	
 	// CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp
 	VALIDATION_DATA_TIMESTAMP(2, true),
+
+	// PAdES-LTV "document timestamp"
+	DOCUMENT_TIMESTAMP(3, true),
 	
-	// CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, PAdES-LTV, "document timestamp"
+	// CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp
 	ARCHIVE_TIMESTAMP(3, true);
 	
 	/**
@@ -58,11 +61,11 @@ public enum TimestampType {
 	private final Integer order;
 	
 	/* TRUE if the timestamp covers a Signature */
-	private final boolean coversSignarture;
+	private final boolean coversSignature;
 	
 	private TimestampType(int order, boolean coversSignature) {
 		this.order = order;
-		this.coversSignarture = coversSignature;
+		this.coversSignature = coversSignature;
 	}
 	
 	/**
@@ -98,7 +101,7 @@ public enum TimestampType {
 	 * @return TRUE if the type is an archive timestamp, FALSE otherwise
 	 */
 	public boolean isArchivalTimestamp() {
-		return 3 == order;
+		return ARCHIVE_TIMESTAMP == this;
 	}
 	
 	/**
@@ -107,7 +110,7 @@ public enum TimestampType {
 	 * @return TRUE if a timestamp of the type covers a signature, FALSE otherwise
 	 */
 	public boolean coversSignature() {
-		return coversSignarture;
+		return coversSignature;
 	}
 	
 	/**

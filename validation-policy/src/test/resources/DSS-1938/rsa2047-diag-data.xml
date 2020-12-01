@@ -49,8 +49,8 @@
             </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-ED94C69E8053A9193C00BE54501B33468FDB7B0AD59AC03E6E92247B4214973C" Location="CAdES"/>
-                <FoundTimestamp Timestamp="T-19D95052DDD8A5580C379E90DFACEEE232354BC6EF5828510EFE3D66DB2E8200" Location="CAdES"/>
+                <FoundTimestamp Timestamp="T-ED94C69E8053A9193C00BE54501B33468FDB7B0AD59AC03E6E92247B4214973C"/>
+                <FoundTimestamp Timestamp="T-19D95052DDD8A5580C379E90DFACEEE232354BC6EF5828510EFE3D66DB2E8200"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-B7593FD7EB8646227CE953C520BCB5A5B43390A1A4D1ED36798BEAFDFC50FCAE">

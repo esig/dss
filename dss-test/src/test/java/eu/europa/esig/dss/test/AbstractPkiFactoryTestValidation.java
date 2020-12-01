@@ -20,34 +20,6 @@
  */
 package eu.europa.esig.dss.test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.transform.stream.StreamResult;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -144,6 +116,32 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.transform.stream.StreamResult;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSignatureParameters, 
 				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
@@ -633,6 +631,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 			boolean foundSignatureTimeStamp = false;
 			boolean foundArchiveTimeStamp = false;
+			boolean foundDocTimeStamp = false;
 	
 			if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
 				for (String timestampId : timestampIdList) {
@@ -644,6 +643,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						case ARCHIVE_TIMESTAMP:
 							foundArchiveTimeStamp = true;
 							break;
+						case DOCUMENT_TIMESTAMP:
+							foundDocTimeStamp = true;
+							break;
 						default:
 							break;
 						}
@@ -651,11 +653,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			}
 	
 			if (isBaselineT(signatureWrapper.getSignatureFormat())) {
-				assertTrue(foundSignatureTimeStamp);
+				assertTrue(foundSignatureTimeStamp || foundDocTimeStamp);
 			}
 	
 			if (isBaselineLTA(signatureWrapper.getSignatureFormat())) {
-				assertTrue(foundArchiveTimeStamp);
+				assertTrue(foundArchiveTimeStamp || foundDocTimeStamp);
 			}
 	
 			Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();

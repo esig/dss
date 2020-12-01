@@ -20,22 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -48,6 +32,19 @@ import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable {
 
@@ -119,8 +116,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
 
-		List<String> pivotUrlsReversed = new LinkedList<>(pivotURLs);
-		Collections.reverse(pivotUrlsReversed); // -> 172, 191,..
+		List<String> pivotUrlsReversed = Utils.reverseList(pivotURLs); // -> 172, 191,..
 
 		CertificateSource currentCertificateSource = initialCertificateSource;
 		for (String pivotUrl : pivotUrlsReversed) {

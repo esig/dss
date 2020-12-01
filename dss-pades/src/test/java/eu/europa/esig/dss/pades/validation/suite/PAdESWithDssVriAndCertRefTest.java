@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -36,6 +28,13 @@ import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESWithDssVriAndCertRefTest extends AbstractPAdESTestValidation {
 
@@ -78,14 +77,6 @@ public class PAdESWithDssVriAndCertRefTest extends AbstractPAdESTestValidation {
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
-		assertEquals(2, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 	
 }

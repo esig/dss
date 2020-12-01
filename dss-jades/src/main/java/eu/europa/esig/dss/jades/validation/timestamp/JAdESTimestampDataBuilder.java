@@ -1,10 +1,14 @@
-package eu.europa.esig.dss.jades.validation;
+package eu.europa.esig.dss.jades.validation.timestamp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
+import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.validation.JWS;
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

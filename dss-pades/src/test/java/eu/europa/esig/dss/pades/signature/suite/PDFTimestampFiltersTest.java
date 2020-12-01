@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
@@ -42,6 +33,14 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFTimestampFiltersTest extends AbstractPAdESTestSignature {
 
@@ -88,13 +87,13 @@ public class PDFTimestampFiltersTest extends AbstractPAdESTestSignature {
 		assertEquals(2, timestampList.size());
 		
 		boolean signatureTimestampFound = false;
-		boolean archivalTimestampFound = false;
+		boolean docTimestampFound = false;
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.SIGNATURE_TIMESTAMP == timestampWrapper.getType()) {
 				assertNull(timestampWrapper.getPDFRevision()); // signature timestamp is added to CAdES CMS
 				signatureTimestampFound = true;
 				
-			} else if (TimestampType.ARCHIVE_TIMESTAMP == timestampWrapper.getType()) {
+			} else if (TimestampType.DOCUMENT_TIMESTAMP == timestampWrapper.getType()) {
 				XmlPDFRevision pdfRevision = timestampWrapper.getPDFRevision();
 				assertNotNull(pdfRevision);
 				
@@ -103,14 +102,14 @@ public class PDFTimestampFiltersTest extends AbstractPAdESTestSignature {
 				
 				assertEquals("Adobe.PPKLite", pdfSignatureDictionary.getFilter());
 				assertEquals("ETSI.RFC3161", pdfSignatureDictionary.getSubFilter());
-				
-				archivalTimestampFound = true;
+
+				docTimestampFound = true;
 				
 			}
 		}
 		
 		assertTrue(signatureTimestampFound);
-		assertTrue(archivalTimestampFound);
+		assertTrue(docTimestampFound);
 	}
 
 

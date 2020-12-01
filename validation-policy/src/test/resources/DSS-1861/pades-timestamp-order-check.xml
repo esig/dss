@@ -136,9 +136,9 @@
                 </OrphanRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-D8F372BEDBB4D46B8B7ED3B03F08549F53228DCF086938DB161468DC3A438B82" Location="CAdES"/>
-                <FoundTimestamp Timestamp="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3" Location="DOC_TIMESTAMP"/>
-                <FoundTimestamp Timestamp="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F" Location="DOC_TIMESTAMP"/>
+                <FoundTimestamp Timestamp="T-D8F372BEDBB4D46B8B7ED3B03F08549F53228DCF086938DB161468DC3A438B82"/>
+                <FoundTimestamp Timestamp="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3"/>
+                <FoundTimestamp Timestamp="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-1034FB49D528B8851136D9E52BD374551DCE5CD82A7DA4336AB75EE235EB449B">
@@ -1132,8 +1132,7 @@
                 <DigestValue>2PNyvtu01GuLftOwPwhUn1Mijc8IaTjbFhRo3DpDi4I=</DigestValue>
             </DigestAlgoAndValue>
         </Timestamp>
-        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3">
-            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3">
             <ProductionTime>2019-11-01T14:02:50</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
@@ -1178,8 +1177,7 @@
                 <DigestValue>rjvz+MMamVNV6OAuPWX156qeJ1NvEhZis4K56iIB6eM=</DigestValue>
             </DigestAlgoAndValue>
         </Timestamp>
-        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F">
-            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F">
             <ProductionTime>2019-11-01T14:28:14</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>

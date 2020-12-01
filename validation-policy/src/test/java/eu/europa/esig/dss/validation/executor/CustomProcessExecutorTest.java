@@ -20,30 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXB;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -119,6 +95,28 @@ import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.bind.JAXB;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	
@@ -3673,6 +3671,63 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void padesDoubleLtaTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/diag_data_pades_double_lta.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(diagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+
+		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(diagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+
+		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(diagnosticData.getUsedTimestamps().iterator().next().getProductionTime(),
+				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void padesDocSigTstTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/diag_data_pades_doc_sig_tst.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(diagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+
+		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(diagnosticData.getUsedTimestamps().iterator().next().getProductionTime(),
+				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+
+		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(diagnosticData.getUsedTimestamps().iterator().next().getProductionTime(),
+				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test

@@ -57,7 +57,7 @@
             </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-920B3EB651C6AD0DAE03BE564C8AFA861BE4529C52EE29D75495A6F7692A0067" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-920B3EB651C6AD0DAE03BE564C8AFA861BE4529C52EE29D75495A6F7692A0067"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-BEB2F53E023F8BCB51673495621D06BFC54C6A50F4EDED791815BCC6D167F0C3">

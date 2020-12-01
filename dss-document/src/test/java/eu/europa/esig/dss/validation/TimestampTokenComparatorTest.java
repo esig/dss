@@ -26,7 +26,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.utils.Utils;
@@ -60,7 +59,7 @@ public class TimestampTokenComparatorTest {
 
 		firstTimestampTokenDuplicate = new TimestampToken(Utils.fromBase64(firstBinaries),
 				TimestampType.SIGNATURE_TIMESTAMP,
-				Arrays.asList(new TimestampedReference("", TimestampedObjectType.TIMESTAMP)), TimestampLocation.DOC_TIMESTAMP);
+				Arrays.asList(new TimestampedReference("", TimestampedObjectType.TIMESTAMP)));
 
 		assertEquals(-1, comparator.compare(firstTimestampToken, firstTimestampTokenDuplicate));
 		assertEquals(1, comparator.compare(firstTimestampTokenDuplicate, firstTimestampToken));
@@ -78,7 +77,7 @@ public class TimestampTokenComparatorTest {
 
 		secondTimestampToken = new TimestampToken(Utils.fromBase64(secondBinaries),
 				TimestampType.SIGNATURE_TIMESTAMP,
-				Arrays.asList(new TimestampedReference("", TimestampedObjectType.TIMESTAMP)), TimestampLocation.DOC_TIMESTAMP);
+				Arrays.asList(new TimestampedReference("", TimestampedObjectType.TIMESTAMP)));
 
 		assertEquals(-1, comparator.compare(firstTimestampToken, secondTimestampToken));
 		assertEquals(1, comparator.compare(secondTimestampToken, firstTimestampToken));

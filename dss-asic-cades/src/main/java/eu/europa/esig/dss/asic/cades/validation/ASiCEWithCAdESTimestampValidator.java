@@ -79,12 +79,12 @@ public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator
 		TimestampToken timestamp = super.getTimestamp();
 		timestamp.setManifestFile(getCoveredManifest());
 		timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
-		timestamp.setTimestampScopes(getTimestampSignatureScope());
+		timestamp.setTimestampScopes(getTimestampSignatureScopes());
 		return timestamp;
 	}
 
 	@Override
-	protected List<SignatureScope> getTimestampSignatureScope() {
+	protected List<SignatureScope> getTimestampSignatureScopes() {
 		List<SignatureScope> result = new ArrayList<>();
 		result.add(new ManifestSignatureScope(manifestFile.getFilename(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), getTimestampedData())));
 		if (Utils.isCollectionNotEmpty(originalDocuments)) {

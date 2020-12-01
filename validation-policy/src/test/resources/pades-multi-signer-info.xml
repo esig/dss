@@ -96,8 +96,8 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-5327C1C85F8A6249C923CA41798B877944F4D24A66BE50659D05C8D10AC6A93B" Location="CAdES"/>
-                <FoundTimestamp Timestamp="T-C39D2D57CB4C2B9F278388903073AF8A85607D1BE665362651DA5BFBFAD5018C" Location="DOC_TIMESTAMP"/>
+                <FoundTimestamp Timestamp="T-5327C1C85F8A6249C923CA41798B877944F4D24A66BE50659D05C8D10AC6A93B"/>
+                <FoundTimestamp Timestamp="T-C39D2D57CB4C2B9F278388903073AF8A85607D1BE665362651DA5BFBFAD5018C"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-7769127C2FBA0C0E14968D88D52D1CECB1154D79705677873D69E868752B1052">
@@ -472,8 +472,7 @@
                 <DigestValue>UyfByF+KYknJI8pBeYuHeUT00kpmvlBlnQXI0QrGqTs=</DigestValue>
             </DigestAlgoAndValue>
         </Timestamp>
-        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-C39D2D57CB4C2B9F278388903073AF8A85607D1BE665362651DA5BFBFAD5018C">
-            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-C39D2D57CB4C2B9F278388903073AF8A85607D1BE665362651DA5BFBFAD5018C">
             <ProductionTime>2019-12-09T14:42:38</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>

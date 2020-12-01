@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;

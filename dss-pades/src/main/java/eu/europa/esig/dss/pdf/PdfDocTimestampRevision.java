@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Signature timestamp representation
@@ -53,17 +52,15 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	 *                                 the signed data
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
-	 * @param isArchiveTimestamp
-	 *                                 true if it is an ArchiveTimestamp
 	 */
-	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<String> timestampFieldNames, byte[] signedContent,
-			boolean coverCompleteRevision, boolean isArchiveTimestamp) {
+	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<String> timestampFieldNames,
+								   byte[] signedContent, boolean coverCompleteRevision) {
 		super(signatureDictionary, timestampFieldNames, signedContent, coverCompleteRevision);
 		try {
-			TimestampType timestampType = isArchiveTimestamp ? TimestampType.ARCHIVE_TIMESTAMP : TimestampType.SIGNATURE_TIMESTAMP;
-			timestampToken = new PdfTimestampToken(this, timestampType);
+			timestampToken = new PdfTimestampToken(this);
+			timestampToken.matchData(new InMemoryDocument(getRevisionCoveredBytes()));
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, getByteRange());
+				LOG.debug("Created PdfDocTimestampInfo : {}", getByteRange());
 			}
 		} catch (Exception e) {
 			throw new DSSException(e);

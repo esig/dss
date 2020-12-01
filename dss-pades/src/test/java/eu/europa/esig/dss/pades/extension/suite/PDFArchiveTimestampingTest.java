@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -64,6 +50,19 @@ import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.Test;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 	
@@ -118,7 +117,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		assertEquals(1, diagnosticData.getTimestampIdList().size());
 		
 		for (TimestampWrapper timestampWrapper : timestampList) {
-			assertEquals(TimestampType.CONTENT_TIMESTAMP, timestampWrapper.getType());
+			assertEquals(TimestampType.DOCUMENT_TIMESTAMP, timestampWrapper.getType());
 
 			CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
 			assertNotNull(signingCertificate);
