@@ -219,6 +219,12 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isHexEncoded(String hexString) {
+		Objects.requireNonNull(hexString, "String cannot be null");
+		return BaseEncoding.base16().lowerCase().canDecode(Ascii.toLowerCase(hexString));
+	}
+
+	@Override
 	public String toHex(byte[] bytes) {
 		Objects.requireNonNull(bytes, "Bytes cannot be null");
 		return BaseEncoding.base16().encode(bytes).toLowerCase();

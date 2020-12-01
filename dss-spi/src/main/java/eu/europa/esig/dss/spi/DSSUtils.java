@@ -374,6 +374,16 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method checks if the provided {@code str} represents a SHA-1 digest
+	 *
+	 * @param str {@link String} to check
+	 * @return TRUE if the string represents SHA-1 digest, FALSE otherwise
+	 */
+	public static boolean isSHA1Digest(final String str) {
+		return Utils.isStringNotBlank(str) && Utils.isHexEncoded(str) && str.length() == 40;
+	}
+
+	/**
 	 * This method allows to digest the data with the given algorithm.
 	 *
 	 * @param digestAlgorithm

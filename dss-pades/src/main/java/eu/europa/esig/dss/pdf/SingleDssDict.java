@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.utils.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is a representation of a DSS (Document Security Store) Dictionary embedded in a PDF file.
@@ -59,21 +59,41 @@ public class SingleDssDict extends AbstractPdfDssDict {
 	private void readVRI(PdfDict dssDictionary) {
 		PdfDict vriDict = dssDictionary.getAsDict(PAdESConstants.VRI_DICTIONARY_NAME);
 		if (vriDict != null) {
-			LOG.debug("There is a VRI dictionary in DSS dictionary");
+			LOG.trace("There is a VRI dictionary in DSS dictionary");
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
 					vris = new ArrayList<>();
 					for (String name : names) {
-						vris.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
+						if (isDictionaryKey(name)) {
+							vris.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
+						}
 					}
 				}
 			} catch (Exception e) {
-				LOG.debug("Unable to analyse VRI dictionary : {}", e.getMessage());
+				String errorMessage = "Unable to analyse VRI dictionary. Reason : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, e.getMessage());
+				}
 			}
 		} else {
 			LOG.debug("No VRI dictionary found in DSS dictionary");
 		}
+	}
+
+	private boolean isDictionaryKey(String name) {
+		/*
+		 * 5.4.2.2 DSS Dictionary (ETSI EN 319 142-1 V1.1.1)
+		 *
+		 * The key of each entry in this dictionary is the
+		 * base-16-encoded (uppercase) SHA1 digest of the signature to
+		 * which it applies and the value is the Signature VRI dictionary
+		 * which contains the validation-related information for that
+		 * signature.
+		 */
+		return DSSUtils.isSHA1Digest(name);
 	}
 	
 	@Override

@@ -162,6 +162,10 @@ public final class Utils {
 		return impl.collectionSize(collection);
 	}
 
+	public static boolean isHexEncoded(String hexString) {
+		return impl.isHexEncoded(hexString);
+	}
+
 	public static String toHex(byte[] bytes) {
 		return impl.toHex(bytes);
 	}

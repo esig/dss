@@ -102,7 +102,7 @@ public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId())); // not LT-level
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override

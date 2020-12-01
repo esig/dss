@@ -40,7 +40,6 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultiplePagesAnnotationsOverlapTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
-import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSameBorderAnnotationsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
@@ -48,6 +47,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithAddedPageTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithDssVriAndCertRefTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
@@ -84,7 +84,7 @@ import org.junit.runner.RunWith;
 @SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS1420Sha224Test.class,
 		DSS818CRYTest.class, DSS818ADOTest.class, DSS818SKTest.class, DSS917Test.class, DSS917CorruptedTest.class, PadesWrongDigestAlgoTest.class,
 		PdfPkcs7Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class, PAdESMultiSignedDocRevocTest.class,
-		PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class, PAdESSignatureDigestReferenceTest.class, 
+		PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class, PAdESSignatureDigestReferenceTest.class,
 		SignatureTimestampCertificateNotFoundTest.class, PAdESSimpleValidationTest.class, PAdESSimpleCorruptedTest.class, PAdESOutOfByteRangeTest.class,
 		ArchiveTimestampCoverageTest.class, DoubleArchiveTstCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class,
 		DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class, DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class,

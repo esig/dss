@@ -82,6 +82,8 @@ public interface IUtils {
 	@SuppressWarnings("rawtypes")
 	int collectionSize(Collection collection);
 
+	boolean isHexEncoded(String hexString);
+
 	String toHex(byte[] bytes);
 
 	byte[] fromHex(String hex);

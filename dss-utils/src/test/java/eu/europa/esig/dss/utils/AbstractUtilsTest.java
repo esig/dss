@@ -325,6 +325,21 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
+	public void isHexEncodedTest() {
+		assertTrue(Utils.isHexEncoded(""));
+		assertTrue(Utils.isHexEncoded("5361736861"));
+		assertTrue(Utils.isHexEncoded("30187F47A8D9AE9D3D12942CE996C3BF746E4F4F"));
+		assertTrue(Utils.isHexEncoded("7761726774655c657761723435684e554948672a264833345033"));
+		assertFalse(Utils.isHexEncoded("\n536 1736 \n861"));
+		assertFalse(Utils.isHexEncoded("5361736861=="));
+		assertFalse(Utils.isHexEncoded("AQIDBAU"));
+		assertFalse(Utils.isHexEncoded("AQIDBAU=="));
+		assertFalse(Utils.isHexEncoded("1.3.5"));
+		assertFalse(Utils.isHexEncoded("AS.DF,GH/JK"));
+		assertThrows(NullPointerException.class, () -> Utils.isHexEncoded(null));
+	}
+
+	@Test
 	public void toHexNull() {
 		assertThrows(NullPointerException.class, () -> Utils.toHex(null));
 	}
@@ -359,6 +374,7 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isBase64Encoded("\nAQI\nD BA\tU=\n"));
 		assertFalse(Utils.isBase64Encoded("1.3.5"));
 		assertFalse(Utils.isBase64Encoded("AS.DF,GH/JK"));
+		assertThrows(NullPointerException.class, () -> Utils.isBase64Encoded(null));
 	}
 	
 	@Test

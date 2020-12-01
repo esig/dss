@@ -172,6 +172,17 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isHexEncoded(String hexString) {
+		Objects.requireNonNull(hexString, "String cannot be null");
+		try {
+			Hex.decodeHex(hexString);
+			return true;
+		} catch (DecoderException e) {
+			return false;
+		}
+	}
+
+	@Override
 	public String toHex(byte[] bytes) {
 		Objects.requireNonNull(bytes, "Bytes cannot be null");
 		return Hex.encodeHexString(bytes);
