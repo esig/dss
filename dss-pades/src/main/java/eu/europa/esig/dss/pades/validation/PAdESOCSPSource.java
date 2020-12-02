@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -35,7 +36,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
@@ -46,18 +47,18 @@ public class PAdESOCSPSource extends PdfDssDictOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESOCSPSource.class);
 
-	private final AttributeTable signedAttributes;
+	private final String vriDictionaryName;
 
-	private transient Map<Long, BasicOCSPResp> ocspMap;
-
-	public PAdESOCSPSource(final PdfDssDict dssDictionary, final String vriDictionaryName,
+	public PAdESOCSPSource(PdfDssDict dssDictionary, final String vriDictionaryName,
 			AttributeTable signedAttributes) {
-		super(dssDictionary, vriDictionaryName);
-		this.signedAttributes = signedAttributes;
-		extractOCSPArchivalValues();
+		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
+		this.vriDictionaryName = vriDictionaryName;
+		extractDSSOCSPs(dssDictionary);
+		extractVRIOCSPs(dssDictionary);
+		extractOCSPArchivalValues(signedAttributes);
 	}
 
-	private void extractOCSPArchivalValues() {
+	private void extractOCSPArchivalValues(AttributeTable signedAttributes) {
 		if (signedAttributes != null) {
 			final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
 			if (attValue != null) {
@@ -76,6 +77,13 @@ public class PAdESOCSPSource extends PdfDssDictOCSPSource {
 					}
 				}
 			}
+		}
+	}
+
+	@Override
+	protected void extractVRIOCSPs(PdfVRIDict vriDictionary) {
+		if (vriDictionary != null && vriDictionaryName.equals(vriDictionary.getName())) {
+			super.extractVRIOCSPs(vriDictionary);
 		}
 	}
 

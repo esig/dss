@@ -5,7 +5,6 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,21 +12,14 @@ import java.util.Map;
 
 public class PdfDssDictCRLSource extends OfflineCRLSource {
 
-    private final PdfDssDict dssDictionary;
+    private transient Map<Long, CRLBinary> crlMap;
 
-    private final String vriDictionaryName;
-
-    private Map<Long, CRLBinary> crlMap;
-
-    public PdfDssDictCRLSource(final PdfDssDict dssDictionary) {
-        this(dssDictionary, null);
+    public PdfDssDictCRLSource(PdfDssDict dssDictionary) {
+        extractDSSCRLs(dssDictionary);
+        extractVRICRLs(dssDictionary);
     }
 
-    PdfDssDictCRLSource(final PdfDssDict dssDictionary, final String vriDictionaryName) {
-        this.dssDictionary = dssDictionary;
-        this.vriDictionaryName = vriDictionaryName;
-        extractDSSCRLs();
-        extractVRICRLs();
+    PdfDssDictCRLSource() {
     }
 
     /**
@@ -43,7 +35,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         return Collections.emptyMap();
     }
 
-    private Map<Long, CRLBinary> getDssCrlMap() {
+    private Map<Long, CRLBinary> getDssCrlMap(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
             crlMap = dssDictionary.getCRLs();
             return crlMap;
@@ -51,21 +43,18 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         return Collections.emptyMap();
     }
 
-    protected void extractDSSCRLs() {
-        for (CRLBinary crl : getDssCrlMap().values()) {
+    protected void extractDSSCRLs(PdfDssDict dssDictionary) {
+        Map<Long, CRLBinary> dssCrlMap = getDssCrlMap(dssDictionary);
+        for (CRLBinary crl : dssCrlMap.values()) {
             addBinary(crl, RevocationOrigin.DSS_DICTIONARY);
         }
     }
 
-    protected void extractVRICRLs() {
+    protected void extractVRICRLs(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
             List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
-            if (Utils.isCollectionNotEmpty(vriDictList)) {
-                for (PdfVRIDict vriDict : vriDictList) {
-                    if (vriDictionaryName == null || vriDictionaryName.equals(vriDict.getName())) {
-                        extractVRICRLs(vriDict);
-                    }
-                }
+            for (PdfVRIDict vriDict : vriDictList) {
+                extractVRICRLs(vriDict);
             }
         }
     }

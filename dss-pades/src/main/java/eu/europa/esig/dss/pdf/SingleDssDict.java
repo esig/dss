@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +39,8 @@ public class SingleDssDict extends AbstractPdfDssDict {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SingleDssDict.class);
 
-	private List<PdfVRIDict> vris;
+	/** Represents a list of VRI dictionaries incorporated into the DSS dictionary */
+	private final List<PdfVRIDict> vris;
 
 	public static SingleDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
@@ -53,22 +55,23 @@ public class SingleDssDict extends AbstractPdfDssDict {
 
 	protected SingleDssDict(PdfDict dssDictionary) {
 		super(dssDictionary);
-		readVRI(dssDictionary);
+		this.vris = extractVRIs(dssDictionary);
 	}
 
-	private void readVRI(PdfDict dssDictionary) {
+	private List<PdfVRIDict> extractVRIs(PdfDict dssDictionary) {
 		PdfDict vriDict = dssDictionary.getAsDict(PAdESConstants.VRI_DICTIONARY_NAME);
 		if (vriDict != null) {
 			LOG.trace("There is a VRI dictionary in DSS dictionary");
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
-					vris = new ArrayList<>();
+					List<PdfVRIDict> result = new ArrayList<>();
 					for (String name : names) {
 						if (isDictionaryKey(name)) {
-							vris.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
+							result.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
 						}
 					}
+					return result;
 				}
 			} catch (Exception e) {
 				String errorMessage = "Unable to analyse VRI dictionary. Reason : {}";
@@ -79,8 +82,9 @@ public class SingleDssDict extends AbstractPdfDssDict {
 				}
 			}
 		} else {
-			LOG.debug("No VRI dictionary found in DSS dictionary");
+			LOG.trace("No VRI dictionary found in DSS dictionary");
 		}
+		return Collections.emptyList();
 	}
 
 	private boolean isDictionaryKey(String name) {
