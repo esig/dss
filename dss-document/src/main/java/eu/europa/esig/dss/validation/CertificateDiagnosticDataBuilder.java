@@ -1,17 +1,20 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Builds the DiagnosticData for a CertificateToken validation
+ */
 public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	@Override
@@ -41,7 +44,7 @@ public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public CertificateDiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+	public CertificateDiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
 		return (CertificateDiagnosticDataBuilder) super.tokenExtractionStategy(tokenExtractionStategy);
 	}
 

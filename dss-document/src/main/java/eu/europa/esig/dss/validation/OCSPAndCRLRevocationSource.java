@@ -45,8 +45,10 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPAndCRLRevocationSource.class);
 
+	/** The OCSP revocation source */
 	private final RevocationSource<OCSP> ocspSource;
 
+	/** The CRL revocation source */
 	private final RevocationSource<CRL> crlSource;
 
 	/**
@@ -101,6 +103,15 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		return null;
 	}
 
+	/**
+	 * Retrieves and verifies the obtained OCSP token
+	 *
+	 * NOTE: returns only if a valid entry has been obtained!
+	 *
+	 * @param certificateToken {@link CertificateToken} to get OCSP for
+	 * @param issuerToken {@link CertificateToken} issuer of {@code certificateToken}
+	 * @return {@link RevocationToken}
+	 */
 	public RevocationToken<OCSP> checkOCSP(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (ocspSource == null) {
 			LOG.debug("OCSPSource null");
@@ -129,6 +140,15 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		return null;
 	}
 
+	/**
+	 * Retrieves and verifies the obtained CRL token
+	 *
+	 * NOTE: returns only if a valid entry has been obtained!
+	 *
+	 * @param certificateToken {@link CertificateToken} to get CRL for
+	 * @param issuerToken {@link CertificateToken} issuer of {@code certificateToken}
+	 * @return {@link RevocationToken}
+	 */
 	public RevocationToken<CRL> checkCRL(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (crlSource == null) {
 			LOG.debug("CRLSource is null");

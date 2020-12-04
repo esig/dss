@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.validation;
 
+/**
+ * Builds a deterministic Signature Identifier for the produced reports
+ */
 public interface SignatureIdentifierBuilder {
 	
 	/**

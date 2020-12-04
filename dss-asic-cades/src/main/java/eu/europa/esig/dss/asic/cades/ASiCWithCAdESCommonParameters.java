@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.asic.cades;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * The interface defining common parameters for an ASiC with CAdES container for signature/timestamp creation
+ */
 public interface ASiCWithCAdESCommonParameters extends Serializable {
 
 	/**
@@ -44,6 +47,7 @@ public interface ASiCWithCAdESCommonParameters extends Serializable {
 	
 	/**
 	 * Returns a signing date
+	 *
 	 * @return {@link Date}
 	 */
 	Date getZipCreationDate();

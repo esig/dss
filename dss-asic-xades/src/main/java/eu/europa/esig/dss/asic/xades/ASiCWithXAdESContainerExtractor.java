@@ -24,10 +24,19 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 
+/**
+ * The class is used to extract the content (documents) embedded into an ASiC with XAdES container
+ */
 public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtractor {
 
+	/** The manifest filename */
 	private static final String METAINF_MANIFEST_FILENAME = ASiCUtils.META_INF_FOLDER + "manifest.xml";
 
+	/**
+	 * The default constructor
+	 *
+	 * @param archive {@link DSSDocument} representing the container
+	 */
 	public ASiCWithXAdESContainerExtractor(DSSDocument archive) {
 		super(archive);
 	}

@@ -22,12 +22,17 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 
+/**
+ * Provides the executor for a validation process
+ *
+ * @param <PE> implementation of {@code ProcessExecutor}
+ */
 public interface ProcessExecutorProvider<PE extends ProcessExecutor<?>> {
 
 	/**
 	 * This method provides the possibility to set the specific {@code CustomProcessExecutor}
 	 *
-	 * @param processExecutor
+	 * @param processExecutor {@link ProcessExecutor}
 	 */
 	void setProcessExecutor(PE processExecutor);
 	

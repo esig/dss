@@ -28,13 +28,35 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
 
+/**
+ * SignedAssertion ::= SEQUENCE {
+ *  signedAssertionID SIGNED-ASSERTION.&id,
+ *  signedAssertion SIGNED-ASSERTION.&Assertion OPTIONAL
+ * }
+ *
+ * SIGNED-ASSERTION::= CLASS {
+ *  &id OBJECT IDENTIFIER UNIQUE,
+ *  &Assertion OPTIONAL }
+ *  WITH SYNTAX {
+ *  SIGNED-ASSERTION-ID &id
+ *  [SIGNED-ASSERTION-TYPE &Assertion] }
+ */
 public class SignedAssertion extends ASN1Object {
-    
+
+    /** SignedAssertion OID */
     private final ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier("0.4.0.19122.1.6");
+
+    /** The SignedAssertion value */
     private DERPrintableString assertion;
 
+    /**
+     * Parses the object and returns instance of {@code SignedAssertion},
+     * null if the object has another type
+     *
+     * @param obj object representing the {@link SignedAssertion}
+     * @return {@link SignedAssertion}
+     */
     public static SignedAssertion getInstance(Object obj) {
-
         if (obj instanceof SignedAssertion) {
             return (SignedAssertion) obj;
         } else if (obj != null) {
@@ -43,6 +65,11 @@ public class SignedAssertion extends ASN1Object {
         return null;
     }
 
+    /**
+     * Creates the {@code SignedAssertion} from a string value
+     *
+     * @param assertion {@link String}
+     */
     public SignedAssertion(String assertion) {
         this.assertion = new DERPrintableString(assertion);
     }
@@ -68,4 +95,5 @@ public class SignedAssertion extends ASN1Object {
     public String toString(){
         return assertion.getString();
     }
+
 }

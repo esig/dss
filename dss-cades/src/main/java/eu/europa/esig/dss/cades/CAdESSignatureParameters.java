@@ -23,43 +23,84 @@ package eu.europa.esig.dss.cades;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 
+/**
+ * Defines SignatureParameters to deal with CAdES signature creation/extension
+ */
 public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdESTimestampParameters> {
 
+	/** Defines if the signature shall be created according ti ETSI EN 319 122 */
 	private boolean en319122 = true;
 
+	/** Content Hints type */
 	private String contentHintsType;
+
+	/** Content Hints description */
 	private String contentHintsDescription;
 
+	/** Content identifier prefix */
 	private String contentIdentifierPrefix;
+
+	/** Content identifier suffix */
 	private String contentIdentifierSuffix;
 
+	/**
+	 * Returns if the signature shall be created according to ETSI EN 319 122
+	 *
+	 * @return TRUE if the signature shall be created according to ETSI EN 319 122, otherwise as an old format
+	 */
 	public boolean isEn319122() {
 		return en319122;
 	}
 
+	/**
+	 * Sets if the signature shall be created according to ETSI EN 319 122,
+	 * otherwise will be created with respect to the old standard
+	 *
+	 * Default: true
+	 *
+	 * @param en319122 if the signature shall be created according to ETSI EN 319 122
+	 */
 	public void setEn319122(boolean en319122) {
 		this.en319122 = en319122;
 	}
 
+	/**
+	 * Gets content hints type
+	 *
+	 * @return {@link String}
+	 */
 	public String getContentHintsType() {
 		return contentHintsType;
 	}
 
+	/**
+	 * Sets content hints type
+	 *
+	 * @param contentHintsType {@link String}
+	 */
 	public void setContentHintsType(String contentHintsType) {
 		this.contentHintsType = contentHintsType;
 	}
 
+	/**
+	 * Gets content hints description
+	 *
+	 * @return {@link String}
+	 */
 	public String getContentHintsDescription() {
 		return contentHintsDescription;
 	}
 
+	/**
+	 * Sets content hints description
+	 *
+	 * @param contentHintsDescription {@link String}
+	 */
 	public void setContentHintsDescription(String contentHintsDescription) {
 		this.contentHintsDescription = contentHintsDescription;
 	}
 
 	/**
-	 * THIS VALUE WILL BE SET AUTOMATICALLY IF LEFT BLANK
-	 *
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
 	 *
 	 * 5.10.2 content-identifier Attribute
@@ -74,14 +115,18 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
 	 * and a random number.
 	 *
-	 * @return
+	 * @return {@link String}
 	 */
 	public String getContentIdentifierSuffix() {
 		return contentIdentifierSuffix;
 	}
 
 	/**
-	 * @param contentIdentifierSuffix
+	 * Sets content identifier suffix.
+	 *
+	 * NOTE: THIS VALUE WILL BE SET AUTOMATICALLY IF LEFT BLANK
+	 *
+	 * @param contentIdentifierSuffix {@link String}
 	 * @see #getContentIdentifierSuffix()
 	 */
 	public void setContentIdentifierSuffix(String contentIdentifierSuffix) {
@@ -103,14 +148,16 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
 	 * and a random number.
 	 *
-	 * @return
+	 * @return {@link String}
 	 */
 	public String getContentIdentifierPrefix() {
 		return contentIdentifierPrefix;
 	}
 
 	/**
-	 * @param contentIdentifierPrefix
+	 * Sets content identifier prefix
+	 *
+	 * @param contentIdentifierPrefix {@link String}
 	 * @see #getContentIdentifierPrefix()
 	 */
 	public void setContentIdentifierPrefix(String contentIdentifierPrefix) {

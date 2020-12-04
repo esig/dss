@@ -20,40 +20,75 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
-import java.io.Serializable;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * The interface for handling validation data extracted from timestamps
  *
  */
 public interface TimestampSource extends Serializable {
-	
+
+	/**
+	 * Returns a list of incorporated content timestamps
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getContentTimestamps();
-	
+
+	/**
+	 * Returns a list of incorporated signature timestamps
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getSignatureTimestamps();
-	
+
+	/**
+	 * Returns a list of incorporated SigAndRefs timestamps
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getTimestampsX1();
-	
+
+	/**
+	 * Returns a list of incorporated RefsOnly timestamps
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getTimestampsX2();
-	
+
+	/**
+	 * Returns a list of incorporated archive timestamps
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getArchiveTimestamps();
-	
+
+	/**
+	 * Returns a list of incorporated document timestamps (PAdES only)
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getDocumentTimestamps();
-	
+
+	/**
+	 * Returns a list of all incorporated timestamps
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
 	List<TimestampToken> getAllTimestamps();
 	
 	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
 	 * 
 	 * @param timestamp
-	 *            the timestamp token
+	 *            {@link TimestampToken} the timestamp token
 	 */
 	void addExternalTimestamp(TimestampToken timestamp);
 	

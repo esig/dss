@@ -28,21 +28,36 @@ import eu.europa.esig.dss.model.Digest;
  * Contains Digest of a referenced signature
  */
 public class SignatureDigestReference {
-	
+
+	/** The canonicalization method when applicable (i.e. XAdES) */
 	private String canonicalizationMethod;
+
+	/** The Signature Reference Digest */
 	private final Digest digest;
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param digest {@link Digest}
+	 */
 	public SignatureDigestReference(Digest digest) {
 		this.digest = digest;
 	}
-	
+
+	/**
+	 * The constructor for XAdES Signature Digest Reference
+	 *
+	 * @param canonicalizationMethod {@link String} canonicalization method uri
+	 * @param digest {@link Digest}
+	 */
 	public SignatureDigestReference(String canonicalizationMethod, Digest digest) {
+		this(digest);
 		this.canonicalizationMethod = canonicalizationMethod;
-		this.digest = digest;
 	}
 	
 	/**
 	 * Returns canonicalization method used to calculate digest
+	 *
 	 * @return {@link String}
 	 */
 	public String getCanonicalizationMethod() {
@@ -51,6 +66,7 @@ public class SignatureDigestReference {
 	
 	/**
 	 * Returns {@code DigestAlgorithm} used to calculate digest value
+	 *
 	 * @return {@link DigestAlgorithm}
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
@@ -59,6 +75,7 @@ public class SignatureDigestReference {
 	
 	/**
 	 * Returns calculated digest value
+	 *
 	 * @return byte array
 	 */
 	public byte[] getDigestValue() {

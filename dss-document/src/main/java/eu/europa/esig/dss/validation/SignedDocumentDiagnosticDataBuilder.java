@@ -1,18 +1,5 @@
 package eu.europa.esig.dss.validation;
 
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -44,7 +31,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -70,24 +57,50 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampTokenComparator;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * The common class for DiagnosticData creation from a signed/timestamped document
  *
  */
 public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
+	/** The signed document */
 	protected DSSDocument signedDocument;
+
+	/** The list of signatures */
 	protected List<AdvancedSignature> signatures;
+
+	/** The list of timestamp tokens */
 	protected Set<TimestampToken> usedTimestamps;
 
+	/** The signature policy provider */
 	protected SignaturePolicyProvider signaturePolicyProvider;
 
-	// Merged revocation data sources;
+	/** The list of all CRL revocation sources */
 	protected ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<>();
+
+	/** The list of all OCSP revocation sources */
 	protected ListRevocationSource<OCSP> commonOCSPSource = new ListRevocationSource<>();
 
+	/** The cached map of signatures */
 	protected Map<String, XmlSignature> xmlSignaturesMap = new HashMap<>();
+
+	/** The cached map of timestamps */
 	protected Map<String, XmlTimestamp> xmlTimestampsMap = new HashMap<>();
+
+	/** The cached map of original signed data */
 	protected Map<String, XmlSignerData> xmlSignedDataMap = new HashMap<>();
 
 	@Override
@@ -117,7 +130,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public SignedDocumentDiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+	public SignedDocumentDiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
 		return (SignedDocumentDiagnosticDataBuilder) super.tokenExtractionStategy(tokenExtractionStategy);
 	}
 

@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
@@ -46,7 +36,19 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class parses the manifest document and produces a {@code ManifestFile}
+ */
 public class ASiCEWithCAdESManifestParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestParser.class);

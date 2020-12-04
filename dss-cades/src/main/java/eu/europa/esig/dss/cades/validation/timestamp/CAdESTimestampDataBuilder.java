@@ -20,16 +20,20 @@
  */
 package eu.europa.esig.dss.cades.validation.timestamp;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -50,40 +54,48 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
-import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
+
+/**
+ * Builds timestamped data binaries for a CAdES signature
+ */
 public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampDataBuilder.class);
-	
-	private final List<DSSDocument> detachedDocuments;
+
+	/** The CMS SignedData */
+	private final CMSSignedData cmsSignedData;
+
+	/** The SignerInformation of the related signature */
 	private final SignerInformation signerInformation;
 
-	private CMSSignedData cmsSignedData;
-	private CadesLevelBaselineLTATimestampExtractor timestampExtractor;
-	
-	protected CAdESTimestampDataBuilder(final SignerInformation signerInformation, final List<DSSDocument> detachedDocuments) {
-		this.signerInformation = signerInformation;
-		this.detachedDocuments = detachedDocuments;
-	}
-	
-	public CAdESTimestampDataBuilder(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, 
-			List<DSSDocument> detachedDocuments, final CadesLevelBaselineLTATimestampExtractor timestampExtractor) {
-		this.cmsSignedData = cmsSignedData;
-		this.signerInformation = signerInformation;
-		this.detachedDocuments = detachedDocuments;
-		this.timestampExtractor = timestampExtractor;
+	/** The list of detached documents */
+	private final List<DSSDocument> detachedDocuments;
+
+	/** The instance of CadesLevelBaselineLTATimestampExtractor */
+	private final CadesLevelBaselineLTATimestampExtractor timestampExtractor;
+
+	/**
+	 * The default constructor
+	 *
+	 * @param signature {@link CAdESSignature} containing timestamps
+	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
+	 */
+	public CAdESTimestampDataBuilder(final CAdESSignature signature,
+									 final ListCertificateSource certificateSource) {
+		this.cmsSignedData = signature.getCmsSignedData();
+		this.signerInformation = signature.getSignerInformation();
+		this.detachedDocuments = signature.getDetachedContents();
+		this.timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
+				cmsSignedData, certificateSource.getAllCertificateTokens());
 	}
 	
 	@Override
@@ -215,12 +227,12 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * The exception is the signed attributes attribute and authenticated attributes attributes which
 	 * have to be DER encoded. 
 	 * 
-	 * @param timestampToken
-	 * @param includeUnsignedAttrsTagAndLength
-	 * @return
-	 * @throws DSSException
+	 * @param timestampToken {@link TimestampToken}
+	 * @param includeUnsignedAttrsTagAndLength decides whether the tag and length octets are included.
+	 * @return {@link DSSDocument} archiveTimestampDataV2
 	 */
-	private DSSDocument getArchiveTimestampDataV2(TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength) throws DSSException {
+	private DSSDocument getArchiveTimestampDataV2(TimestampToken timestampToken,
+			boolean includeUnsignedAttrsTagAndLength) throws DSSException {
 
 		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
 
@@ -400,13 +412,13 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * the value of the timestamp against both."
 	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
 	 *
-	 * @param signerInfo
-	 * @param signerInfo
-	 * @param unauthenticatedAttributes
-	 * @param includeUnsignedAttrsTagAndLength
-	 * @return
+	 * @param signerInfo {@link SignerInfo}
+	 * @param unauthenticatedAttributes {@link ASN1Sequence}
+	 * @param includeUnsignedAttrsTagAndLength decides whether the tag and length octets are included
+	 * @return {@link ASN1Sequence}
 	 */
-	private ASN1Sequence getSignerInfoEncoded(final SignerInfo signerInfo, final ASN1Sequence unauthenticatedAttributes, final boolean includeUnsignedAttrsTagAndLength) {
+	private ASN1Sequence getSignerInfoEncoded(final SignerInfo signerInfo, final ASN1Sequence unauthenticatedAttributes,
+											  final boolean includeUnsignedAttrsTagAndLength) {
 
 		ASN1EncodableVector v = new ASN1EncodableVector();
 

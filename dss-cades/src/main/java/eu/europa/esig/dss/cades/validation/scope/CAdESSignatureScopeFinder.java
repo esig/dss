@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -38,7 +31,16 @@ import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Finds {@code SignatureScope}s for a CAdES signature
+ */
 public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdESSignature> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureScopeFinder.class);
@@ -57,8 +59,16 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         }
     	return Collections.emptyList();
     }
-    
-    protected List<SignatureScope> getSignatureScopeFromOriginalDocument(final CAdESSignature cadesSignature, DSSDocument originalDocument) {
+
+    /**
+     * Returns a list of {@code SignatureScope}s from the signed document
+     *
+     * @param cadesSignature {@link CAdESSignature}
+     * @param originalDocument {@link DSSDocument}
+     * @return a list of {@link SignatureScope}s
+     */
+    protected List<SignatureScope> getSignatureScopeFromOriginalDocument(final CAdESSignature cadesSignature,
+                                                                         final DSSDocument originalDocument) {
         List<SignatureScope> result = new ArrayList<>();
         if (originalDocument == null) {
         	return result;
@@ -81,7 +91,13 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         
         return result;
     }
-    
+
+    /**
+     * Gets a list of {@code SignatureScope}s from a {@code ReferenceValidation}
+     *
+     * @param reference {@link ReferenceValidation} to get SignatureScope from
+     * @return a list of {@link SignatureScope}s
+     */
     protected List<SignatureScope> getSignatureScopeFromReferenceValidation(ReferenceValidation reference) {
         List<SignatureScope> result = new ArrayList<>();
 		result.add(new FullSignatureScope("Full document", reference.getDigest()));

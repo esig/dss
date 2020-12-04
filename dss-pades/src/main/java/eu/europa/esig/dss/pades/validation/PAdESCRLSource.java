@@ -64,7 +64,7 @@ public class PAdESCRLSource extends PdfDssDictCRLSource {
 					try {
 						addBinary(CRLUtils.buildCRLBinary(revValue.getEncoded()),
 								RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
 					}
 				}

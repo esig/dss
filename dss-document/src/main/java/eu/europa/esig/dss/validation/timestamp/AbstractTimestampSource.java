@@ -47,6 +47,7 @@ public abstract class AbstractTimestampSource {
 
 	/**
 	 * Adds {@code referenceToAdd} to {@code referenceList} without duplicates
+	 *
 	 * @param referenceList - list of {@link TimestampedReference}s to be extended
 	 * @param referenceToAdd - {@link TimestampedReference} to be added
 	 */
@@ -68,6 +69,7 @@ public abstract class AbstractTimestampSource {
 
 	/**
 	 * Adds {@code referencesToAdd} to {@code referenceList} without duplicates
+	 *
 	 * @param referenceList - list of {@link TimestampedReference}s to be extended
 	 * @param referencesToAdd - {@link TimestampedReference}s to be added
 	 */
@@ -119,6 +121,12 @@ public abstract class AbstractTimestampSource {
 		return references;
 	}
 
+	/**
+	 * Returns a list of TimestampedReferences for tokens encapsulated within the list of timestampTokens
+	 *
+	 * @param timestampTokens a list of {@link TimestampToken} to get references from
+	 * @return a list of {@link TimestampedReference}s
+	 */
 	protected List<TimestampedReference> getEncapsulatedReferencesFromTimestamps(List<TimestampToken> timestampTokens) {
 		final List<TimestampedReference> references = new ArrayList<>();
 		for (TimestampToken timestampToken : timestampTokens) {
@@ -141,6 +149,13 @@ public abstract class AbstractTimestampSource {
 		return references;
 	}
 
+	/**
+	 * Creates a lit of {@code TimestampedReference}s from the identifiers of a given type
+	 *
+	 * @param identifiers a collection of {@link Identifier}s
+	 * @param timestampedObjectType {@link TimestampedObjectType} to create references with
+	 * @return a list of {@link TimestampedReference}s
+	 */
 	protected List<TimestampedReference> createReferencesForIdentifiers(
 			Collection<? extends Identifier> identifiers, TimestampedObjectType timestampedObjectType) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();

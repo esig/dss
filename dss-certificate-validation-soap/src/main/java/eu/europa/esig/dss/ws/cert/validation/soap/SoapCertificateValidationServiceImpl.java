@@ -26,11 +26,23 @@ import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
 import eu.europa.esig.dss.ws.cert.validation.soap.client.SoapCertificateValidationService;
 import eu.europa.esig.dss.ws.cert.validation.soap.client.WSCertificateReportsDTO;
 
+
+/**
+ * The default implementation of {@code SoapCertificateValidationService}
+ */
 @SuppressWarnings("serial")
 public class SoapCertificateValidationServiceImpl implements SoapCertificateValidationService {
 
+	/**
+	 * The certificate validation service
+	 */
 	private RemoteCertificateValidationService validationService;
 
+	/**
+	 * Sets the certificate validation service
+	 *
+	 * @param validationService {@link RemoteCertificateValidationService}
+	 */
 	public void setValidationService(RemoteCertificateValidationService validationService) {
 		this.validationService = validationService;
 	}

@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
@@ -73,19 +62,39 @@ import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * The service containing the main methods for ASiC with CAdES signature creation/extension
+ */
 @SuppressWarnings("serial")
 public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters, 
 						CAdESCounterSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
 
-	private static final String ARCHIVE_MANIFEST_FILENAME = "ASiCArchiveManifest";
-	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_ARCHIVE_MANIFEST = ASiCUtils.META_INF_FOLDER + ARCHIVE_MANIFEST_FILENAME;
-	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+	/** The default timestamp document name */
+	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_TIMESTAMP =
+			ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
 
-	private static final String DEFAULT_ARCHIVE_MANIFEST_FILENAME = ZIP_ENTRY_ASICE_METAINF_CADES_ARCHIVE_MANIFEST + ASiCUtils.XML_EXTENSION;
+	/** The default Archive Manifest filename */
+	private static final String DEFAULT_ARCHIVE_MANIFEST_FILENAME =
+			ASiCUtils.META_INF_FOLDER + ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME + ASiCUtils.XML_EXTENSION;
 
+	/**
+	 * The default constructor to instantiate the service
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to use
+	 */
 	public ASiCWithCAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ ASiCService with CAdES created");
@@ -170,7 +179,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		excludeExtendedDocuments(documentsToStore, extendedDocuments);
 		final DSSDocument asicContainer = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, 
 				documentsToStore, asicParameters, parameters.getZipCreationDate());
-		asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicContainer;
 	}
@@ -201,7 +210,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 			DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toTimestampDocument, extendedDocuments,
 					parameters.getZipCreationDate(), ASiCUtils.getZipComment(asicParameters));
-			extensionResult.setName(getFinalArchiveName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
+			extensionResult.setName(getFinalDocumentName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
 			return extensionResult;
 
 		} else {
@@ -236,7 +245,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			excludeExtendedDocuments(documentsToStore, extendedDocuments);
 			final DSSDocument asicContainer = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, 
 					documentsToStore, asicParameters, parameters.getZipCreationDate());
-			asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));
+			asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));
 			return asicContainer;
 
 		}
@@ -300,7 +309,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments,
 				parameters.getZipCreationDate(),
 				ASiCUtils.getZipComment(parameters.aSiC()));
-		extensionResult.setName(getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), 
+		extensionResult.setName(getFinalDocumentName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(),
 				toExtendDocument.getMimeType()));
 		return extensionResult;
 	}
@@ -389,7 +398,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			extendedDocuments.add(extendedArchiveTimestamp);
 
 			// current ArchiveManifest must be renamed
-			lastArchiveManifest.setName(ASiCUtils.getNextASiCEManifestName(ARCHIVE_MANIFEST_FILENAME, archiveManifests));
+			lastArchiveManifest.setName(ASiCUtils.getNextASiCEManifestName(ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME, archiveManifests));
 		}
 
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, originalSignedDocuments,
@@ -575,10 +584,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		assertSigningDateInCertificateValidityRange(parameters);
+		assertCounterSignatureParametersValid(parameters);
 
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
-		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
@@ -596,10 +604,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		assertCounterSignatureParametersValid(parameters);
 		
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
-		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 
 		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
@@ -615,14 +622,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList,
 				parameters.bLevel().getSigningDate(),
 				ASiCUtils.getZipComment(asicContainer.getMimeType().getMimeTypeString()));
-		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		resultArchive.setName(getFinalDocumentName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		return resultArchive;
 	}
-	
+
 	@Override
-	protected void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper,
-			CAdESCounterSignatureParameters parameters) {
-		super.verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+	protected void assertCounterSignatureParametersValid(CAdESCounterSignatureParameters parameters) {
+		super.assertCounterSignatureParametersValid(parameters);
 
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
 			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "

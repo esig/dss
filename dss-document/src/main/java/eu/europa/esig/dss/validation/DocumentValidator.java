@@ -20,13 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
-
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -36,6 +30,12 @@ import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This is the interface to be used when implementing different signature validators.
@@ -69,9 +69,9 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * This method allows to set the token extraction strategy to follow in the
 	 * diagnostic data generation.
 	 * 
-	 * @param tokenExtractionStategy the {@link TokenExtractionStategy}
+	 * @param tokenExtractionStategy the {@link TokenExtractionStrategy}
 	 */
-	void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy);
+	void setTokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy);
 	
 	/**
 	 * This method allows to enable/disable the semantics inclusion in the reports
@@ -268,6 +268,11 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 */
 	void processSignaturesValidation(List<AdvancedSignature> allSignatureList);
 
+	/**
+	 * Finds SignatureScopes for a list of signatures
+	 *
+	 * @param currentValidatorSignatures a list of {@link AdvancedSignature}s
+	 */
 	void findSignatureScopes(List<AdvancedSignature> currentValidatorSignatures);
 
 }

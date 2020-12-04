@@ -20,23 +20,46 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.signature.GetDataToSignHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.util.List;
+
+/**
+ * The interface defining a helper to create a {@code ToBeSigned} data for an ASiC with CAdES
+ */
 public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
 
-	/* In CMS/CAdES, we only can sign on file */
+	/**
+	 * Returns a signed file document
+	 *
+	 * NOTE: In CMS/CAdES, only one file can be signed
+	 *
+	 * @return {@link DSSDocument} to sign
+	 */
 	DSSDocument getToBeSigned();
 
-	/* In case of parallel ASiC-S signature, we need the detached content */
+	/**
+	 * Returns a list of detached documents
+	 *
+	 * NOTE: In case of ASiC-S signature, we need the detached content
+	 *
+	 * @return a list of detached {@link DSSDocument}s
+	 */
 	List<DSSDocument> getDetachedContents();
-	
-	/* List of Archive Manifest files (ASiC-E) */
+
+	/**
+	 * Returns an Archive Manifest files (ASiC-E)
+	 *
+	 * @return a list of archive manifest {@link DSSDocument}s
+	 */
 	List<DSSDocument> getArchiveManifestFiles();
-	
-	/* List of detached timestamps (ASiC-E) */
+
+	/**
+	 * Returns a list of detached timestamps (ASiC-E)
+	 *
+	 * @return a list of timestamp {@link DSSDocument}s
+	 */
 	List<DSSDocument> getTimestamps();
 
 }

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.model;
 
+/**
+ * The interface contains the common methods for counter signature parameters
+ */
 public interface SerializableCounterSignatureParameters extends SerializableSignatureParameters {
 	
 	/**

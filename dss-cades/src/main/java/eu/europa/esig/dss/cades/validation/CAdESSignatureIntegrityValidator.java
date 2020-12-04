@@ -1,22 +1,31 @@
 package eu.europa.esig.dss.cades.validation;
 
-import java.security.PublicKey;
-
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import org.bouncycastle.cms.CMSSignerDigestMismatchException;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSSecurityProvider;
-import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
+import java.security.PublicKey;
 
+/**
+ * Validates integrity of a CAdES signature
+ */
 public class CAdESSignatureIntegrityValidator extends SignatureIntegrityValidator {
-	
+
+	/** The corresponding SignerInformation */
 	private final SignerInformation signerInformation;
-	
+
+	/** The instance of the verifier builder */
 	private final JcaSimpleSignerInfoVerifierBuilder verifier;
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param signerInformation {@link SignerInformation} to be validated
+	 */
 	public CAdESSignatureIntegrityValidator(final SignerInformation signerInformation) {
 		this.signerInformation = signerInformation;
 		this.verifier = instantiateVerifier();

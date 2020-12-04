@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
-
-import java.util.Collection;
-
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -46,13 +47,11 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import java.util.Collection;
+
+import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 /**
  * OCSPSource that retrieves information from a {@link CMSSignedData} container.
@@ -63,7 +62,10 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSOCSPSource.class);
 
+	/** The CMS SignedData */
 	protected final transient CMSSignedData cmsSignedData;
+
+	/** Represents unsigned properties */
 	protected final transient AttributeTable unsignedAttributes;
 
 	/**
@@ -77,12 +79,10 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 	protected CMSOCSPSource(final CMSSignedData cms, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cms;
 		this.unsignedAttributes = unsignedAttributes;
-
 		appendContainedOCSPResponses();
 	}
 
-	public void appendContainedOCSPResponses() {
-		
+	private void appendContainedOCSPResponses() {
 		// Add OCSPs from SignedData
 		collectFromSignedData();
 

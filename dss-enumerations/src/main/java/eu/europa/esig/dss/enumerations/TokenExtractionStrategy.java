@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.enumerations;
 
-public enum TokenExtractionStategy {
+/**
+ * Defines a representation of tokens in the DiagnosticData (as binaries or digests)
+ */
+public enum TokenExtractionStrategy {
 
 	/**
 	 * Extract certificates, timestamps and revocation data
@@ -67,7 +70,7 @@ public enum TokenExtractionStategy {
 	private final boolean timestamp;
 	private final boolean revocationData;
 
-	TokenExtractionStategy(boolean certificate, boolean timestamp, boolean revocationData) {
+	TokenExtractionStrategy(boolean certificate, boolean timestamp, boolean revocationData) {
 		this.certificate = certificate;
 		this.timestamp = timestamp;
 		this.revocationData = revocationData;
@@ -108,13 +111,13 @@ public enum TokenExtractionStategy {
 	 * @param revocationData true if revocation data need to be extracted
 	 * @return
 	 */
-	public static TokenExtractionStategy fromParameters(boolean certificate, boolean timestamp, boolean revocationData) {
-		for (TokenExtractionStategy value : TokenExtractionStategy.values()) {
+	public static TokenExtractionStrategy fromParameters(boolean certificate, boolean timestamp, boolean revocationData) {
+		for (TokenExtractionStrategy value : TokenExtractionStrategy.values()) {
 			if ((certificate == value.certificate) && (timestamp == value.timestamp) && (revocationData == value.revocationData)) {
 				return value;
 			}
 		}
-		return TokenExtractionStategy.NONE;
+		return TokenExtractionStrategy.NONE;
 	}
 
 }

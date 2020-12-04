@@ -40,7 +40,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -104,7 +104,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_TIMESTAMPS_ONLY);
+		validator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_TIMESTAMPS_ONLY);
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 		

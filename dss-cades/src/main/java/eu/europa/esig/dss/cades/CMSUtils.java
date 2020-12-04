@@ -20,20 +20,25 @@
  */
 package eu.europa.esig.dss.cades;
 
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
+import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
+import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSet;
@@ -58,25 +63,32 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
-import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
+
+/**
+ * The utils for dealing with CMS object
+ */
 public final class CMSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
-	
+
+	/** The default DigestAlgorithm for ArchiveTimestamp */
 	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
+
+	/** 01-01-1950 date, see RFC 3852 (month param is zero-based (i.e. 0 for January)) */
+	private static final Date JANUARY_1950 = DSSUtils.getUtcDate(1950, 0, 1);
+
+	/** 01-01-2050 date, see RFC 3852 (month param is zero-based (i.e. 0 for January)) */
+	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
 
 	private CMSUtils() {
 	}
@@ -85,12 +97,13 @@ public final class CMSUtils {
 	 * This method generate {@code CMSSignedData} using the provided #{@code CMSSignedDataGenerator}, the content and
 	 * the indication if the content should be encapsulated.
 	 *
-	 * @param generator
-	 * @param content
-	 * @param encapsulate
-	 * @return
+	 * @param generator {@link CMSSignedDataGenerator}
+	 * @param content {@link CMSTypedData}
+	 * @param encapsulate true if the content should be encapsulated in the signature, false otherwise
+	 * @return {@link CMSSignedData}
 	 */
-	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSTypedData content, final boolean encapsulate) {
+	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator,
+													  final CMSTypedData content, final boolean encapsulate) {
 		try {
 			return generator.generate(content, encapsulate);
 		} catch (CMSException e) {
@@ -98,7 +111,15 @@ public final class CMSUtils {
 		}
 	}
 
-	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator, SignerInformation signerInfoToSign) {
+	/**
+	 * Generates a counter signature
+	 *
+	 * @param cmsSignedDataGenerator {@link CMSSignedDataGenerator} to extend the CMS SignedData
+	 * @param signerInfoToSign {@link SignerInformation} to be counter signed
+	 * @return {@link SignerInformationStore} with a counter signature
+	 */
+	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator,
+																SignerInformation signerInfoToSign) {
 		try {
 			return cmsSignedDataGenerator.generateCounterSigners(signerInfoToSign);
 		} catch (CMSException e) {
@@ -106,7 +127,15 @@ public final class CMSUtils {
 		}
 	}
 
-	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content) {
+	/**
+	 * Generates a detached CMS SignedData
+	 *
+	 * @param generator {@link CMSSignedDataGenerator}
+	 * @param content {@link CMSProcessableByteArray} to sign
+	 * @return {@link CMSSignedData}
+	 */
+	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator,
+															  final CMSProcessableByteArray content) {
 		return generateCMSSignedData(generator, content, false);
 	}
 
@@ -282,8 +311,14 @@ public final class CMSUtils {
 			throw new DSSException("Only enveloping and detached signatures are supported");
 		}
 	}
-	
-	public static CMSTypedData getContentToBeSign(final DSSDocument toSignData) {
+
+	/**
+	 * Returns the content to be signed
+	 *
+	 * @param toSignData {@link DSSDocument} to sign
+	 * @return {@link CMSTypedData}
+	 */
+	public static CMSTypedData getContentToBeSigned(final DSSDocument toSignData) {
 		Objects.requireNonNull(toSignData, "Document to be signed is missing");
 		CMSTypedData content = null;
 		if (toSignData instanceof DigestDocument) {
@@ -297,7 +332,15 @@ public final class CMSUtils {
 		return content;
 	}
 
-	public static DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument, DigestAlgorithm digestAlgorithm) {
+	/**
+	 * Returns a {@code DigestCalculatorProvider}
+	 *
+	 * @param toSignDocument {@link DSSDocument} to sign
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @return {@link DigestCalculatorProvider}
+	 */
+	public static DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument,
+																	   DigestAlgorithm digestAlgorithm) {
 		if (digestAlgorithm != null) {
 			return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigest(digestAlgorithm));
 		} else if (toSignDocument instanceof DigestDocument) {
@@ -321,6 +364,39 @@ public final class CMSUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Reads the SigningDate with respect to the RFC 3852
+	 *
+	 * @param attrValue {@link ASN1Encodable} containing the signingDate
+	 * @return {@link Date} if its format is correct, null otherwise
+	 */
+	public static Date readSigningDate(final ASN1Encodable attrValue) {
+		if (attrValue != null) {
+			final Date signingDate = DSSASN1Utils.getDate(attrValue);
+			if (signingDate != null) {
+				/*
+				 * RFC 3852 [4] states that "dates between January 1, 1950 and
+				 * December 31, 2049 (inclusive) must be encoded as UTCTime. Any
+				 * dates with year values before 1950 or after 2049 must be encoded
+				 * as GeneralizedTime".
+				 */
+				if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)) {
+					// must be ASN1UTCTime
+					if (!(attrValue instanceof ASN1UTCTime)) {
+						LOG.error("RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) " +
+										"must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 " +
+										"must be encoded as GeneralizedTime. Date found is {} encoded as {}",
+								signingDate, attrValue.getClass());
+						return null;
+					}
+				}
+				return signingDate;
+			}
+			LOG.error("Error when reading signing time. Unrecognized {}", attrValue.getClass());
+		}
+		return null;
 	}
 
 }

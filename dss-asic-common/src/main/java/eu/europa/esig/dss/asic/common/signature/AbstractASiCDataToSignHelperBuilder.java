@@ -1,13 +1,17 @@
 package eu.europa.esig.dss.asic.common.signature;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Builds a relevant {@code GetDataToSignASiCWithCAdESHelper} for ASiC container dataToSign creation
+ */
 public abstract class AbstractASiCDataToSignHelperBuilder {
 
+	/** The default name for a detached file if one is not defined */
 	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 	
 	/**

@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.asic.common.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -44,14 +40,25 @@ import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * The abstract class for an ASiC container validation
+ */
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
+	/** List of signature document validators */
 	protected List<DocumentValidator> signatureValidators;
 
+	/** List of timestamp document validators */
 	protected List<DocumentValidator> timestampValidators;
 
+	/** The container extraction result */
 	protected ASiCExtractResult extractResult;
-	
+
+	/** List of manifest files */
 	private List<ManifestFile> manifestFiles;
 
 	/**
@@ -75,12 +82,20 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		this.document = document;
 	}
 
-	protected void analyseEntries() {
-		AbstractASiCContainerExtractor extractor = getArchiveExtractor();
+	/**
+	 * Extracts documents from a container
+	 */
+	protected void extractEntries() {
+		AbstractASiCContainerExtractor extractor = getContainerExtractor();
 		extractResult = extractor.extract();
 	}
 
-	protected abstract AbstractASiCContainerExtractor getArchiveExtractor();
+	/**
+	 * Returns the relevant container extractor
+	 *
+	 * @return {@link AbstractASiCContainerExtractor}
+	 */
+	protected abstract AbstractASiCContainerExtractor getContainerExtractor();
 	
 	@Override
 	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext, List<AdvancedSignature> signatures,
@@ -109,10 +124,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		DSSDocument mimeTypeDocument = extractResult.getMimeTypeDocument();
 		if (mimeTypeDocument != null) {
 			String mimeTypeContent = new String(DSSUtils.toByteArray(mimeTypeDocument));
-			containerInfo.setMimeTypeFilePresent(true);
 			containerInfo.setMimeTypeContent(mimeTypeContent);
-		} else {
-			containerInfo.setMimeTypeFilePresent(false);
 		}
 
 		List<DSSDocument> originalSignedDocuments = extractResult.getSignedDocuments();
@@ -139,7 +151,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return Collections.emptyList();
 	}
 
-	protected abstract List<ManifestFile> getManifestFilesDecriptions();
+	/**
+	 * Returns a list of parser ManifestFiles
+	 *
+	 * @return a list of {@link ManifestFile}s
+	 */
+	protected abstract List<ManifestFile> getManifestFilesDescriptions();
 
 	@Override
 	protected List<AdvancedSignature> getAllSignatures() {
@@ -177,59 +194,130 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return signatureList;
 	}
 
+	/**
+	 * Returns a list of validators for signature documents embedded into the container
+	 *
+	 * @return a list of {@link DocumentValidator}s
+	 */
 	protected abstract List<DocumentValidator> getSignatureValidators();
-	
+
+	/**
+	 * Returns a container type
+	 *
+	 * @return {@link ASiCContainerType}
+	 */
 	public ASiCContainerType getContainerType() {
 		return extractResult.getContainerType();
 	}
 
-	public List<DSSDocument> getSignatureDocuments() {
-		return extractResult.getSignatureDocuments();
-	}
-
-	public List<DSSDocument> getSignedDocuments() {
-		return extractResult.getSignedDocuments();
-	}
-
+	/**
+	 * Returns a list of all embedded  documents
+	 *
+	 * @return a list of all embedded {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getAllDocuments() {
 		return extractResult.getAllDocuments();
 	}
 
+	/**
+	 * Returns a list of embedded signature documents
+	 *
+	 * @return a list of signature {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getSignatureDocuments() {
+		return extractResult.getSignatureDocuments();
+	}
+
+	/**
+	 * Returns a list of embedded signed documents
+	 *
+	 * @return a list of signed {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getSignedDocuments() {
+		return extractResult.getSignedDocuments();
+	}
+
+	/**
+	 * Returns a list of embedded signature manifest documents
+	 *
+	 * @return a list of signature manifest {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getManifestDocuments() {
 		return extractResult.getManifestDocuments();
 	}
 
+	/**
+	 * Returns a list of embedded timestamp documents
+	 *
+	 * @return a list of timestamp {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getTimestampDocuments() {
 		return extractResult.getTimestampDocuments();
 	}
 
+	/**
+	 * Returns a list of embedded archive manifest documents
+	 *
+	 * @return a list of archive manifest {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getArchiveManifestDocuments() {
 		return extractResult.getArchiveManifestDocuments();
 	}
-	
+
+	/**
+	 * Returns a list of all embedded manifest documents
+	 *
+	 * @return a list of manifest {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getAllManifestDocuments() {
 		return extractResult.getAllManifestDocuments();
 	}
-	
+
+	/**
+	 * Returns a list of archive documents embedded the container
+	 *
+	 * @return a list of archive {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getArchiveDocuments() {
 		return extractResult.getContainerDocuments();
 	}
 
+	/**
+	 * Returns a mimetype document
+	 *
+	 * @return {@link DSSDocument} mimetype
+	 */
 	public DSSDocument getMimeTypeDocument() {
 		return extractResult.getMimeTypeDocument();
 	}
-	
+
+	/**
+	 * Returns a list of unsupported documents from the container
+	 *
+	 * @return a list of unsupported documents {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getUnsupportedDocuments() {
 		return extractResult.getUnsupportedDocuments();
 	}
-	
+
+	/**
+	 * Returns a list of parser Manifest files
+	 *
+	 * @return a list of {@link ManifestFile}s
+	 */
 	public List<ManifestFile> getManifestFiles() {
 		if (manifestFiles == null) {
-			manifestFiles = getManifestFilesDecriptions();
+			manifestFiles = getManifestFilesDescriptions();
 		}
 		return manifestFiles;
 	}
 
+	/**
+	 * Returns a list of "package.zip" documents
+	 *
+	 * @param retrievedDocs the retrieved signed documents
+	 * @return a list of {@link DSSDocument}s
+	 */
 	protected List<DSSDocument> getSignedDocumentsASiCS(List<DSSDocument> retrievedDocs) {
 		if (Utils.collectionSize(retrievedDocs) > 1) {
 			throw new DSSException("ASiC-S : More than one file");

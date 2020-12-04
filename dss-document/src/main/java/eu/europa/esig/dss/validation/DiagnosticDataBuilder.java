@@ -1,26 +1,5 @@
 package eu.europa.esig.dss.validation;
 
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.security.auth.x500.X500Principal;
-
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
-import eu.europa.esig.dss.model.QCLimitValue;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
@@ -39,6 +18,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
@@ -58,9 +38,10 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.QCLimitValue;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -100,6 +81,23 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Contains a common code for DiagnosticData building
@@ -109,21 +107,40 @@ public abstract class DiagnosticDataBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DiagnosticDataBuilder.class);
 
+	/** The certificates used during the validation process */
 	protected Set<CertificateToken> usedCertificates;
+
+	/** The revocation used during the validation process */
 	protected Set<RevocationToken<Revocation>> usedRevocations;
+
+	/** The list of trusted certificate sources */
 	protected ListCertificateSource trustedCertSources = new ListCertificateSource();
 
+	/** The validation time */
 	protected Date validationDate;
+
+	/** A map between certificate tokens and source types where they been obtained from */
 	protected Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 
-	protected TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+	/** The token extraction strategy */
+	protected TokenExtractionStrategy tokenExtractionStategy = TokenExtractionStrategy.NONE;
+
+	/** The digest algorithm to use for digest computation */
 	protected DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
+	/** The cached map of certificates */
 	protected Map<String, XmlCertificate> xmlCertsMap = new HashMap<>();
+
+	/** The cached map of revocation data */
 	protected Map<String, XmlRevocation> xmlRevocationsMap = new HashMap<>();
+
+	/** The cached map of trusted lists */
 	protected Map<String, XmlTrustedList> xmlTrustedListsMap = new HashMap<>();
 
+	/** The cached map of orphan certificates */
 	protected Map<String, XmlOrphanCertificateToken> xmlOrphanCertificateTokensMap = new HashMap<>();
+
+	/** The cached map of orphan revocation data */
 	protected Map<String, XmlOrphanRevocationToken> xmlOrphanRevocationTokensMap = new HashMap<>();
 
 	/**
@@ -137,6 +154,9 @@ public abstract class DiagnosticDataBuilder {
 	 */
 	protected Map<String, CertificateToken> certificateIdsMap = new HashMap<>();
 
+	/**
+	 * A map between certificate id Strings and the related CertificateTokens for signing certificates
+	 */
 	protected Map<String, CertificateToken> signingCertificateMap = new HashMap<>();
 
 	/**
@@ -201,13 +221,13 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method allows to set the {@link TokenExtractionStategy} to follow for
+	 * This method allows to set the {@link TokenExtractionStrategy} to follow for
 	 * the token extraction
 	 * 
-	 * @param tokenExtractionStategy {@link TokenExtractionStategy} to use
+	 * @param tokenExtractionStategy {@link TokenExtractionStrategy} to use
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+	public DiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
 		this.tokenExtractionStategy = tokenExtractionStategy;
 		return this;
 	}

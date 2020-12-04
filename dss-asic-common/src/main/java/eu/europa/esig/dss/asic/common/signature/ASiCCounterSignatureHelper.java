@@ -1,11 +1,5 @@
 package eu.europa.esig.dss.asic.common.signature;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -15,15 +9,30 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The class contains methods for document extraction in order to create a counter signature
+ */
 public abstract class ASiCCounterSignatureHelper {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCCounterSignatureHelper.class);
-	
+
+	/** The document representing an ASiC container */
 	protected final DSSDocument asicContainer;
-	
+
+	/** Represents a cached instance of ASiC container extraction result */
 	private ASiCExtractResult extractResult;
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param asicContainer {@link DSSDocument} representing an ASiC container
+	 */
 	protected ASiCCounterSignatureHelper(DSSDocument asicContainer) {
 		this.asicContainer = asicContainer;
 	} 
@@ -82,7 +91,12 @@ public abstract class ASiCCounterSignatureHelper {
 		// not applicable by default
 		return null;
 	}
-	
+
+	/**
+	 * Extracts the ASiC container content (documents)
+	 *
+	 * @return {@link ASiCExtractResult}
+	 */
 	protected ASiCExtractResult getASiCExtractResult() {
 		if (extractResult == null) {
 			AbstractASiCContainerExtractor extractor = getASiCContainerExtractor();

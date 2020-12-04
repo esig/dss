@@ -25,9 +25,18 @@ import org.bouncycastle.cms.CMSSignedData;
 
 import eu.europa.esig.dss.validation.CMSCRLSource;
 
+/**
+ * The CRL source for a CAdES signature
+ */
 @SuppressWarnings("serial")
 public class CAdESCRLSource extends CMSCRLSource {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param cmsSignedData {@link CMSSignedData} of the CAdES signature
+	 * @param unsignedAttributes {@link AttributeTable} the corresponding unsigned properties if present
+	 */
 	public CAdESCRLSource(CMSSignedData cmsSignedData, AttributeTable unsignedAttributes) {
 		super(cmsSignedData, unsignedAttributes);
 	}

@@ -22,6 +22,9 @@ package eu.europa.esig.dss.asic.xades.definition;
 
 import eu.europa.esig.dss.definition.DSSAttribute;
 
+/**
+ * The enumeration of Manifest attributes
+ */
 public enum ManifestAttribute implements DSSAttribute {
 
 	VERSION("version"),
@@ -30,6 +33,7 @@ public enum ManifestAttribute implements DSSAttribute {
 
 	MEDIA_TYPE("media-type");
 
+	/** The attribute name */
 	private final String attributeName;
 
 	ManifestAttribute(String attributeName) {

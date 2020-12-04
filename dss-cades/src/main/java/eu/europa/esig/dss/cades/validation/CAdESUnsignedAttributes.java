@@ -20,23 +20,36 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.util.Collections;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * Represents the CAdES Unsigned attributes
+ */
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param attributeTable {@link AttributeTable} unsigned attributes table
+	 */
 	CAdESUnsignedAttributes(AttributeTable attributeTable) {
 		super(attributeTable);
 	}
-	
+
+	/**
+	 * Builds the {@code CAdESUnsignedAttributes} from a {@code SignerInformation}
+	 *
+	 * @param signerInformation {@link SignerInformation} to build {@link CAdESUnsignedAttributes} from
+	 * @return {@link CAdESUnsignedAttributes}
+	 */
 	public static CAdESUnsignedAttributes build(SignerInformation signerInformation) {
 		return new CAdESUnsignedAttributes(signerInformation.getUnsignedAttributes());
 	}

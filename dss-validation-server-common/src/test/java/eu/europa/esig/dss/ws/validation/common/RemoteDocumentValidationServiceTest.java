@@ -37,7 +37,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -70,7 +70,7 @@ public class RemoteDocumentValidationServiceTest {
 	public void testWithNoPolicyAndNoOriginalFileAndStrategy() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
 		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
-		dto.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_CERTIFICATES_ONLY);
+		dto.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
 		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 	}

@@ -1,16 +1,5 @@
 package eu.europa.esig.dss.xades.signature;
 
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
@@ -30,6 +19,16 @@ import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 /**
  * The XAdES CounterSignatureBuilder used to create a counter signature 

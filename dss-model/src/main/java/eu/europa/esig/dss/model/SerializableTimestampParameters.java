@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
+import java.io.Serializable;
+
+/**
+ * The common interface for timestamp parameters
+ */
 public interface SerializableTimestampParameters extends Serializable {
 	
 	/**

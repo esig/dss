@@ -40,7 +40,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -67,8 +67,8 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected TokenExtractionStategy getTokenExtractionStrategy() {
-		return TokenExtractionStategy.EXTRACT_ALL;
+	protected TokenExtractionStrategy getTokenExtractionStrategy() {
+		return TokenExtractionStrategy.EXTRACT_ALL;
 	}
 
 	@Override

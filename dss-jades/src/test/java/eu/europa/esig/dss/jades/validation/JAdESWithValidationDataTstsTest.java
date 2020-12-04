@@ -14,7 +14,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -39,7 +39,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
+		validator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
 		return validator;
 	}
 	

@@ -22,12 +22,15 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.model.DSSDocument;
 
+/**
+ * Builds data to be timestamped
+ */
 public interface TimestampDataBuilder {
 	
 	/**
 	 * Returns the content timestamp data (timestamped or to be).
 	 *
-	 * @param timestampToken
+	 * @param timestampToken {@link TimestampToken}
 	 * @return {@code DSSDocument} representing the canonicalized data to be timestamped
 	 */
 	DSSDocument getContentTimestampData(final TimestampToken timestampToken);
@@ -35,7 +38,7 @@ public interface TimestampDataBuilder {
 	/**
 	 * Returns the data (signature value) that was timestamped by the SignatureTimeStamp for the given timestamp.
 	 *
-	 * @param timestampToken
+	 * @param timestampToken {@link TimestampToken}
 	 * @return {@code DSSDocument} representing the canonicalized data to be timestamped
 	 */
 	DSSDocument getSignatureTimestampData(final TimestampToken timestampToken);
@@ -46,7 +49,7 @@ public interface TimestampDataBuilder {
 	 * revocation status references.
 	 *
 	 * @param timestampToken
-	 *            {@code TimestampToken} or null during the creation process
+	 *            {@link TimestampToken} or null during the creation process
 	 * @return {@code DSSDocument} representing the canonicalized data to be timestamped
 	 */
 	DSSDocument getTimestampX1Data(final TimestampToken timestampToken);
@@ -64,7 +67,7 @@ public interface TimestampDataBuilder {
 	 * timestamp.
 	 *
 	 * @param timestampToken
-	 *            null when adding a new archive timestamp
+	 *            {@link TimestampToken} null when adding a new archive timestamp
 	 * @return {@code DSSDocument} representing the canonicalized data to be timestamped
 	 */
 	DSSDocument getArchiveTimestampData(final TimestampToken timestampToken);

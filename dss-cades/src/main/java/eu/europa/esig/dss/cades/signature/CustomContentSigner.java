@@ -20,31 +20,32 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.io.ByteArrayOutputStream;
-
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 
-import eu.europa.esig.dss.spi.DSSUtils;
+import java.io.ByteArrayOutputStream;
 
 /**
  * ContentSigner using a provided pre-computed signature
  *
- *
  */
-
 public class CustomContentSigner implements ContentSigner {
 
+    /** The pre-computed SignatureValue */
     private byte[] preComputedSignature;
+
+    /** The signature algorithm identifier */
     private final AlgorithmIdentifier algorithmIdentifier;
 
+    /** The byteOutputStream used to write the data to */
     private ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 
 	/**
 	 * The default constructor for the {@code PreComputedContentSigner}.
 	 *
-	 * @param algorithmIdentifier
+	 * @param algorithmIdentifier {@link String} the JCE algorithm identifier
 	 */
 	public CustomContentSigner(final String algorithmIdentifier) {
 		this(algorithmIdentifier, DSSUtils.EMPTY_BYTE_ARRAY);
@@ -53,7 +54,7 @@ public class CustomContentSigner implements ContentSigner {
 	/**
 	 * This is the constructor for the {@code PreComputedContentSigner} using the real value of the signature.
 	 *
-	 * @param algorithmIdentifier the JCE algorithm identifier
+	 * @param algorithmIdentifier {@link String} the JCE algorithm identifier
 	 * @param preComputedSignature the preComputedSignature to set
 	 */
     public CustomContentSigner(final String algorithmIdentifier, final byte[] preComputedSignature) {

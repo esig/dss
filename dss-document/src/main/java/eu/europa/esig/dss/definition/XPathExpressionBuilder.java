@@ -22,59 +22,147 @@ package eu.europa.esig.dss.definition;
 
 import eu.europa.esig.dss.model.DSSException;
 
+/**
+ * Builds an XPath expression
+ */
 public class XPathExpressionBuilder {
 
+	/** The path to search all entries in the whole document */
 	private static final String ALL_PATH = "//";
+
+	/** The path to search starting from the current element */
 	private static final String FROM_CURRENT_POSITION_PATH = "./";
+
+	/** The path to search all entries starting from the current element */
 	private static final String ALL_FROM_CURRENT_POSITION_PATH = ".//";
+
+	/** The namespace separator */
 	private static final String COLON_PATH = ":";
+
+	/** Defines the next element */
 	private static final String SLASH_PATH = "/";
+
+	/** Defines an attribute value */
 	private static final String ATTRIBUTE_PATH = "@";
 
+	/**
+	 * Defines if to start search from the current position
+	 *
+	 * Default: false
+	 */
 	private boolean fromCurrentPosition = false;
+
+	/**
+	 * Defines if to search all occurrences
+	 *
+	 * Default: false
+	 */
 	private boolean all = false;
+
+	/**
+	 * The elements path
+	 */
 	private DSSElement[] elements;
+
+	/**
+	 * The attribute to search
+	 */
 	private DSSAttribute attribute;
+
+	/**
+	 * Defines that the looking element should not be a parent of this element
+	 */
 	private DSSElement notParentOf;
 
+	/**
+	 * Starts XPath from the current position
+	 *
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder fromCurrentPosition() {
 		return fromCurrentPosition(true);
 	}
 
+	/**
+	 * Defines if to start XPath from the current position
+	 *
+	 * @param fromCurrentPosition if to start XPath from the current position
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder fromCurrentPosition(boolean fromCurrentPosition) {
 		this.fromCurrentPosition = fromCurrentPosition;
 		return this;
 	}
 
+	/**
+	 * Defines if to search all element occurrences
+	 *
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder all() {
 		return all(true);
 	}
 
+	/**
+	 * Defines if to search all element occurrences
+	 *
+	 * @param all if to search all element occurrences
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder all(boolean all) {
 		this.all = all;
 		return this;
 	}
 
+	/**
+	 * Defines the element to search
+	 *
+	 * @param element {@link DSSElement} to search
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder element(DSSElement element) {
 		this.elements = new DSSElement[] { element };
 		return this;
 	}
 
+	/**
+	 * Defines the element path to search
+	 *
+	 * @param elements a {@link DSSElement}s chain to search
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder elements(DSSElement[] elements) {
 		this.elements = elements;
 		return this;
 	}
 
+	/**
+	 * Defines that the looking element shall not be a parent of {@code notParentOf} element
+	 *
+	 * @param notParentOf {@link DSSElement} child element that shall not be present
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder notParentOf(DSSElement notParentOf) {
 		this.notParentOf = notParentOf;
 		return this;
 	}
 
+	/**
+	 * Defines the attribute to search
+	 *
+	 * @param attribute {@link DSSAttribute}
+	 * @return this {@link XPathExpressionBuilder}
+	 */
 	public XPathExpressionBuilder attribute(DSSAttribute attribute) {
 		this.attribute = attribute;
 		return this;
 	}
 
+	/**
+	 * Builds the XPath expression
+	 *
+	 * @return {@link String} XPath expression
+	 */
 	public String build() {
 		StringBuilder sb = new StringBuilder();
 

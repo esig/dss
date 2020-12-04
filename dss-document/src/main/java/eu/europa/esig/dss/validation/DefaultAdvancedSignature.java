@@ -42,6 +42,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A common implementation of {@code AdvancedSignature}
+ */
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private static final long serialVersionUID = 6452189007886779360L;
@@ -78,34 +81,62 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected List<String> structureValidationMessages;
 
+	/**
+	 * The offline copy of a CertificateVerifier
+	 */
 	private CertificateVerifier offlineCertificateVerifier;
 
+	/**
+	 * The certificate source of a signing certificate
+	 */
 	protected CertificateSource signingCertificateSource;
 
-	// Cached {@code SignatureCertificateSource}
+	/**
+	 * Cached offline signature certificate source
+	 */
 	protected SignatureCertificateSource offlineCertificateSource;
 
-	// Cached {@code OfflineCRLSource}
+	/**
+	 * Cached offline signature CRL source
+	 */
 	protected OfflineCRLSource signatureCRLSource;
 
-	// Cached {@code OfflineOCSPSource}
+	/**
+	 * Cached offline signature OCSP source
+	 */
 	protected OfflineOCSPSource signatureOCSPSource;
 
-	// Cached {@code TimestampSource}
+	/**
+	 * Cached offline signature timestamp source
+	 */
 	protected TimestampSource signatureTimestampSource;
 
-	// Cached a list of {@code AdvancedSignature}s
+	/**
+	 * Cached list of embedded counter signatures
+	 */
 	protected List<AdvancedSignature> counterSignatures;
 
+	/**
+	 * The master signature in case if the current signature is a counter signature
+	 */
 	private AdvancedSignature masterSignature;
 
+	/**
+	 * The SignaturePolicy identifier
+	 */
 	protected SignaturePolicy signaturePolicy;
 
+	/**
+	 * A list of found {@code SignatureScope}s
+	 */
 	private List<SignatureScope> signatureScopes;
 
+	/**
+	 * The name of a signature file
+	 */
 	private String signatureFilename;
 	
-	/*
+	/**
 	 * Unique signature identifier
 	 */
 	protected SignatureIdentifier signatureIdentifier;
@@ -539,12 +570,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
-	/* Defines the level T */
+	/**
+	 * Checks if the T-level is present in the signature
+	 *
+	 * @return TRUE if the T-level is present, FALSE otherwise
+	 */
 	public boolean hasTProfile() {
 		return Utils.isCollectionNotEmpty(getSignatureTimestamps());
 	}
 
-	/* Defines the level LT */
+	/**
+	 * Checks if the LT-level is present in the signature
+	 *
+	 * @return TRUE if the LT-level is present, FALSE otherwise
+	 */
 	public boolean hasLTProfile() {
 		ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
 		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
@@ -554,12 +593,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		boolean emptyOCSPs = getCompleteOCSPSource().getAllRevocationBinaries().isEmpty();
 		boolean emptyRevocation = emptyCRLs && emptyOCSPs;
 
-		boolean minimalLTrequirement = !allSelfSigned && !emptyRevocation;
-		if (minimalLTrequirement) {
+		boolean minimalLTRequirement = !allSelfSigned && !emptyRevocation;
+		if (minimalLTRequirement) {
 			// check presence of all revocation data
 			return isAllRevocationDataPresent(certificateSources);
 		}
-		return minimalLTrequirement;
+		return minimalLTRequirement;
 	}
 
 	private boolean isAllRevocationDataPresent(ListCertificateSource certificateSources) {
@@ -591,7 +630,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certificateFound && certificateSources.isAllSelfSigned();
 	}
 
-	/* Defines the level LTA */
+	/**
+	 * Checks if the LTA-level is present in the signature
+	 *
+	 * @return TRUE if the LTA-level is present, FALSE otherwise
+	 */
 	public boolean hasLTAProfile() {
 		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
 	}

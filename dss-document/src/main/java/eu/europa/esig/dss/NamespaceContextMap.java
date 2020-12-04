@@ -20,28 +20,29 @@
  */
 package eu.europa.esig.dss;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-
 /**
  * A class for namespace context management. It is used by XPath queries.
  */
 public final class NamespaceContextMap implements NamespaceContext {
 
+	/** The map between prefixes and their corresponding URIs */
 	private final Map<String, String> prefixMap;
+
+	/** The map between URIs and corresponding prefixes */
 	private final Map<String, Set<String>> namespaceMap;
 
 	/**
 	 * This is the default constructor
 	 */
 	public NamespaceContextMap() {
-
 		prefixMap = new HashMap<>();
 		namespaceMap = new HashMap<>();
 	}
@@ -54,7 +55,6 @@ public final class NamespaceContextMap implements NamespaceContext {
 	 * @return true if this map did not already contain the specified element
 	 */
 	public boolean registerNamespace(final String prefix, final String namespace) {
-
 		final String put = prefixMap.put(prefix, namespace);
 		createNamespace(prefix, namespace);
 		return put == null;
@@ -65,9 +65,17 @@ public final class NamespaceContextMap implements NamespaceContext {
 		prefixes.add(prefix);
 	}
 
+	/**
+	 * Returns a prefix map (a copy)
+	 *
+	 * @return a map between prefixes and their corresponding uris
+	 */
+	public Map<String, String> getPrefixMap() {
+		return new HashMap<>(prefixMap);
+	}
+
 	@Override
 	public String getNamespaceURI(String prefix) {
-
 		checkNotNull(prefix);
 		String nsURI = prefixMap.get(prefix);
 		return nsURI == null ? XMLConstants.NULL_NS_URI : nsURI;
@@ -75,7 +83,6 @@ public final class NamespaceContextMap implements NamespaceContext {
 
 	@Override
 	public String getPrefix(String namespaceURI) {
-
 		checkNotNull(namespaceURI);
 		Set<String> set = namespaceMap.get(namespaceURI);
 		return set == null ? null : set.iterator().next();
@@ -83,16 +90,15 @@ public final class NamespaceContextMap implements NamespaceContext {
 
 	@Override
 	public Iterator<String> getPrefixes(String namespaceURI) {
-
 		checkNotNull(namespaceURI);
 		Set<String> set = namespaceMap.get(namespaceURI);
 		return set.iterator();
 	}
 
 	private void checkNotNull(String value) {
-
 		if (value == null) {
 			throw new IllegalArgumentException("null");
 		}
 	}
+
 }

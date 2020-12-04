@@ -20,20 +20,36 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.signature.GetDataToSignHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.util.List;
+
+/**
+ * The interface defining a helper to create a {@code ToBeSigned} data for an ASiC with XAdES
+ */
 public interface GetDataToSignASiCWithXAdESHelper extends GetDataToSignHelper {
 
-	/* XAdES allows to sign more than one file */
+	/**
+	 * Returns a list of documents to be signed
+	 * (XAdES allows to sign multiple files)
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	List<DSSDocument> getToBeSigned();
-
-	/* For parallel signature in ASiC-S */
+	/**
+	 * Returns the signature document
+	 * (used for parallel signatures)
+	 *
+	 * @return {@linnk DSSDocument}
+	 */
 	DSSDocument getExistingSignature();
-	
-	/* Root container user for OpenDocument files */
+
+	/**
+	 * Returns the root document (used for OpenDocument files)
+	 *
+	 * @return {@link DSSDocument}
+	 */
 	DSSDocument getRootDocument();
 	
 }

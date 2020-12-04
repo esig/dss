@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -39,6 +30,14 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class to build a ValidationDataForInclusion from a signature ValidationContext
@@ -47,12 +46,20 @@ import eu.europa.esig.dss.utils.Utils;
 public class ValidationDataForInclusionBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationDataForInclusionBuilder.class);
-	
+
+	/** The ValidationContext to access and validation certificate chains */
 	private final ValidationContext validationContext;
+
+	/** The merged certificate source */
 	private final ListCertificateSource completeCertificateSource;
 
+	/** The certificate tokens to be excluded from the inclusion */
 	private Collection<CertificateToken> excludeCertificateTokens;
+
+	/** The CRL tokens to be excluded from the inclusion */
 	private Collection<EncapsulatedRevocationTokenIdentifier<CRL>> excludeCRLs;
+
+	/** The OCSP tokens to be excluded from the inclusion */
 	private Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> excludeOCSPs;
 	
 	/**

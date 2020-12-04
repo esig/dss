@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.List;
-
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,17 +30,27 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+
+import java.util.List;
 
 /**
  * This class holds the CAdES-LT signature profiles
  *
- *
  */
-
 public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 
+	/** The CertificateVerifier to use */
 	private final CertificateVerifier certificateVerifier;
 
+
+	/**
+	 * The default constructor.
+	 *
+	 * @param tspSource {@link TSPSource} for a timestamp creation
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 */
 	public CAdESLevelBaselineLT(TSPSource tspSource, CertificateVerifier certificateVerifier) {
 		super(tspSource);
 		this.certificateVerifier = certificateVerifier;
@@ -69,7 +74,8 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	}
 
 	@Override
-	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
+	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation,
+												CAdESSignatureParameters parameters) {
 		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature);
 		ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
@@ -86,9 +92,18 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 		return new ValidationDataForInclusionBuilder(validationContext, cadesSignature.getCompleteCertificateSource());
 	}
-	
-	protected CMSSignedData extendWithValidationData(CMSSignedData cmsSignedData, ValidationDataForInclusion validationDataForInclusion, 
-			List<DSSDocument> detachedContents) {
+
+	/**
+	 * Extends the {@code cmsSignedData} with the LT-level (validation data)
+	 *
+	 * @param cmsSignedData {@link CMSSignedData} to extend
+	 * @param validationDataForInclusion {@link ValidationDataForInclusion} to include
+	 * @param detachedContents a list of {@link DSSDocument} detached documents (only one is allowed)
+	 * @return extended {@link CMSSignedData}
+	 */
+	protected CMSSignedData extendWithValidationData(CMSSignedData cmsSignedData,
+													 ValidationDataForInclusion validationDataForInclusion,
+													 List<DSSDocument> detachedContents) {
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		cmsSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion, detachedContents);
 		return cmsSignedData;

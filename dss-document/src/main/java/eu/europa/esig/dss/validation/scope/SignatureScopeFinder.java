@@ -20,15 +20,31 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
+import java.util.List;
+
+/**
+ * Builds a list of {@code SignatureScope}s from an {@code AdvancedSignature}
+ *
+ * @param <T> {@code AdvancedSignature} implementation
+ */
 public interface SignatureScopeFinder<T extends AdvancedSignature> {
 
+	/**
+	 * Returns a list of {@code SignatureScope}s from a signature
+	 *
+	 * @param advancedSignature {@link AdvancedSignature} to get signatureScopes for
+	 * @return a list of {@link SignatureScope}s
+	 */
 	List<SignatureScope> findSignatureScope(final T advancedSignature);
-	
+
+	/**
+	 * Sets the default DigestAlgorithm to use for {@code SignatureScope} digest computation
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 */
 	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
 	
 }

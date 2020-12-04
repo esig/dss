@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+
+import java.io.Serializable;
 
 /**
  * This class regroups the signature parameters related to ASiC form.
@@ -71,6 +71,11 @@ public class ASiCParameters implements Serializable {
 		this.zipComment = zipComment;
 	}
 
+	/**
+	 * Gets the mimetype
+	 *
+	 * @return {@link String} mimetype
+	 */
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -94,6 +99,11 @@ public class ASiCParameters implements Serializable {
 		return containerType;
 	}
 
+	/**
+	 * Sets the expected container type
+	 *
+	 * @param containerType {@link ASiCContainerType}
+	 */
 	public void setContainerType(ASiCContainerType containerType) {
 		this.containerType = containerType;
 	}

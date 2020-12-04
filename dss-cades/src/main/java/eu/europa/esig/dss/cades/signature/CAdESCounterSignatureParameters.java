@@ -3,6 +3,9 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 
+/**
+ * Parameters for a CAdES counter signature creation
+ */
 public class CAdESCounterSignatureParameters extends CAdESSignatureParameters implements SerializableCounterSignatureParameters {
 
 	private static final long serialVersionUID = -1964623380368542439L;

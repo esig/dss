@@ -20,20 +20,32 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
+import eu.europa.esig.dss.asic.common.ASiCParameters;
+import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
+import eu.europa.esig.dss.model.DSSDocument;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
-import eu.europa.esig.dss.model.DSSDocument;
-
+/**
+ * A class to generate a DataToSign with ASiC-E with XAdES from a files to be signed
+ */
 public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
+	/** A list of files to be signed */
 	private final List<DSSDocument> filesToBeSigned;
+
+	/** Parameters to use */
 	private final ASiCParameters asicParameters;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param filesToBeSigned a list of {@link DSSDocument} to be signed
+	 * @param asicParameters {@link ASiCParameters}
+	 */
 	public DataToSignASiCEWithXAdESFromFiles(List<DSSDocument> filesToBeSigned, ASiCParameters asicParameters) {
 		this.filesToBeSigned = filesToBeSigned;
 		this.asicParameters = asicParameters;

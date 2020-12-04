@@ -20,8 +20,16 @@
  */
 package eu.europa.esig.dss.definition;
 
+/**
+ * The XML attribute interface
+ */
 public interface DSSAttribute {
 
+	/**
+	 * Returns the attribute name
+	 *
+	 * @return {@link String} name
+	 */
 	String getAttributeName();
 
 }

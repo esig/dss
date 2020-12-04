@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.signature;
 
+/**
+ * Defines the performing signature operation
+ */
 public enum SigningOperation {
 
 	/**

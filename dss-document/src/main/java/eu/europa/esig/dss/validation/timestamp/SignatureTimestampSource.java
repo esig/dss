@@ -32,6 +32,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * The timestamp source of a signature
+ *
+ * @param <AS> {@code AdvancedSignature} implementation
+ * @param <SignatureAttribute> the corresponding {@code ISignatureAttribute}
+ */
 public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SignatureAttribute extends ISignatureAttribute>
         extends AbstractTimestampSource implements TimestampSource {
 
@@ -43,9 +49,13 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
     protected final AS signature;
 
     /**
-     * Revocation sources containing merged data from signature and timestamps
+     * CRL revocation source containing merged data from signature and timestamps
      */
     protected ListRevocationSource<CRL> crlSource;
+
+    /**
+     * OCSP revocation source containing merged data from signature and timestamps
+     */
     protected ListRevocationSource<OCSP> ocspSource;
 
     /**
@@ -827,6 +837,12 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      */
     protected abstract List<Identifier> getEncapsulatedCertificateIdentifiers(SignatureAttribute unsignedAttribute);
 
+    /**
+     * Returns a list of timestamped revocation references extracted from the given unsigned attribute
+     *
+     * @param unsignedAttribute {@link SignatureAttribute} containing revocation data
+     * @return a list of {@link TimestampedReference}s
+     */
     protected List<TimestampedReference> getTimestampedRevocationValues(SignatureAttribute unsignedAttribute) {
         List<TimestampedReference> timestampedReferences = new ArrayList<>();
         timestampedReferences.addAll(createReferencesForIdentifiers(getEncapsulatedCRLIdentifiers(unsignedAttribute), TimestampedObjectType.REVOCATION));

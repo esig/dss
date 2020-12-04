@@ -49,16 +49,33 @@ import java.util.Objects;
  */
 public class DetachedTimestampValidator extends SignedDocumentValidator {
 
+	/** The type of the timestamp */
 	protected TimestampType timestampType;
+
+	/** The TimestampToken to be validated */
 	protected TimestampToken timestampToken;
 
+	/**
+	 * Empty constructor
+	 */
 	DetachedTimestampValidator() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param timestampFile {@link DSSDocument} timestamp document to validate
+	 */
 	public DetachedTimestampValidator(final DSSDocument timestampFile) {
 		this(timestampFile, TimestampType.CONTENT_TIMESTAMP);
 	}
 
+	/**
+	 * The default constructor with a type
+	 *
+	 * @param timestampFile {@link DSSDocument} timestamp document to validate
+	 * @param timestampType {@link TimestampType}
+	 */
 	public DetachedTimestampValidator(final DSSDocument timestampFile, TimestampType timestampType) {
 		this.document = timestampFile;
 		this.timestampType = timestampType;
@@ -127,11 +144,21 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 		super.setValidationLevel(validationLevel);
 	}
 
+	/**
+	 * Sets the data that has been timestamped
+	 *
+	 * @param document {@link DSSDocument} timestamped data
+	 */
 	public void setTimestampedData(DSSDocument document) {
 		Objects.requireNonNull(document, "The document is null");
 		setDetachedContents(Arrays.asList(document));
 	}
 
+	/**
+	 * Returns the timestamped data
+	 *
+	 * @return {@link DSSDocument} timestamped data
+	 */
 	public DSSDocument getTimestampedData() {
 		int size = Utils.collectionSize(detachedContents);
 		if (size == 0) {

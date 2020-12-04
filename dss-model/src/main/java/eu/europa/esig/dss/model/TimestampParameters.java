@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
+import java.util.Objects;
 
 /**
  * This class represents the parameters provided when generating specific timestamps in a signature, such as an
@@ -36,10 +36,18 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 	 * The digest algorithm to provide to the timestamping authority
 	 */
 	protected DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	protected TimestampParameters() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for data digest computation
+	 */
 	protected TimestampParameters(DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
 	}
@@ -49,6 +57,11 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 		return digestAlgorithm;
 	}
 
+	/**
+	 * Sets DigestAlgorithm to use for timestamped data's digest computation
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
@@ -84,4 +97,5 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 	public String toString() {
 		return "TimestampParameters {digestAlgorithm=" + digestAlgorithm.getName() + "}";
 	}
+
 }

@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -44,6 +40,10 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature
@@ -156,7 +156,7 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a certificate source which contains ALL certificates embedded in the signature.
 	 *
-	 * @return
+	 * @return {@link SignatureCertificateSource}
 	 */
 	SignatureCertificateSource getCertificateSource();
 
@@ -213,7 +213,7 @@ public interface AdvancedSignature extends Serializable {
 	 * from the signature. If the signing certificate is identified then it is cached and the subsequent calls to this
 	 * method will return this cached value. This method never returns null.
 	 *
-	 * @return
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
 	CandidatesForSigningCertificate getCandidatesForSigningCertificate();
 	
@@ -251,7 +251,7 @@ public interface AdvancedSignature extends Serializable {
 	 * determinate the signing certificate the signature must be
 	 * validated: the method {@code checkSignatureIntegrity} must be called.
 	 *
-	 * @return
+	 * @return {@link CertificateToken}
 	 */
 	CertificateToken getSigningCertificateToken();
 

@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.pades.validation.timestamp;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import eu.europa.esig.dss.pades.validation.PdfRevision;
-import org.bouncycastle.cms.SignerInformation;
-
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
@@ -39,8 +39,9 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
 	private List<TimestampToken> signatureTimestamps = new ArrayList<>();
 
-	public PAdESTimestampDataBuilder(List<PdfRevision> documentRevisions, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
-		super(signerInformation, detacheDocuments);
+	public PAdESTimestampDataBuilder(final List<PdfRevision> documentRevisions, final PAdESSignature signature,
+									 final ListCertificateSource certificateSource) {
+		super(signature, certificateSource);
 		this.documentRevisions = documentRevisions;
 	}
 	

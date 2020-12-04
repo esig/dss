@@ -1,17 +1,24 @@
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.ManifestFile;
+import org.bouncycastle.cms.SignerInformation;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.bouncycastle.cms.SignerInformation;
-
-import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ManifestFile;
-
+/**
+ * Builds a SignatureIdentifier for CAdES signature
+ */
 public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param signature {@link CAdESSignature}
+	 */
 	public CAdESSignatureIdentifierBuilder(CAdESSignature signature) {
 		super(signature);
 	}

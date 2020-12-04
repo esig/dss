@@ -1,10 +1,15 @@
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -19,21 +24,25 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.SignaturePolicyStore;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
+/**
+ * Builds a SignaturePolicyStore for a CAdES signature
+ */
 public class CAdESSignaturePolicyStoreBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignaturePolicyStoreBuilder.class);
-	
+
+	/**
+	 * Creates a new CMSSignedData with a SignaturePolicyStore
+	 *
+	 * @param cmsSignedData {@link CMSSignedData} to extend
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link CMSSignedData} with a SignaturePolicyStore
+	 */
 	public CMSSignedData addSignaturePolicyStore(CMSSignedData cmsSignedData, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(cmsSignedData, "CMSSignedData must be provided");
 		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");

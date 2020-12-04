@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.detailedreport;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -34,14 +34,20 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
-
+/**
+ * Contains methods for DetailedReport generation
+ */
 public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> {
 
+	/**
+	 * Creates a new {@code DetailedReportFacade}
+	 *
+	 * @return {@link DetailedReportFacade}
+	 */
 	public static DetailedReportFacade newFacade() {
 		return new DetailedReportFacade();
 	}
@@ -63,6 +69,9 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 
     /**
      * Generates a Bootstrap 4 Detailed report
+	 *
+	 * @param detailedReport {@link XmlDetailedReport} JAXB report
+	 * @return {@link String} Bootstrap 4 HTML report
      */
 	public String generateHtmlReport(XmlDetailedReport detailedReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
@@ -71,11 +80,23 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 		}
 	}
 
+	/**
+	 * Generates a Bootstrap 4 Detailed report and writes to {@code result}
+	 *
+	 * @param detailedReport {@link XmlDetailedReport} JAXB report
+	 * @param result {@link Result} to embed the report to
+	 */
 	public void generateHtmlReport(XmlDetailedReport detailedReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(detailedReport)), result);
 	}
 
+	/**
+	 * Generates a Bootstrap 4 Detailed report from a string
+	 *
+	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
+	 * @return {@link String} Bootstrap 4 HTML report
+	 */
 	public String generateHtmlReport(String marshalledDetailedReport) throws IOException, TransformerException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlReport(marshalledDetailedReport, new StreamResult(stringWriter));
@@ -83,14 +104,23 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 		}
 	}
 
+	/**
+	 * Generates a Bootstrap 4 Detailed report from a string and writes to {@code result}
+	 *
+	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
+	 * @param result {@link Result} to embed the report to
+	 */
 	public void generateHtmlReport(String marshalledDetailedReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledDetailedReport)), result);
 	}
 
-    /**
-     * Generates a Bootstrap 3 Detailed report
-     */
+	/**
+	 * Generates a Bootstrap 3 Detailed report
+	 *
+	 * @param detailedReport {@link XmlDetailedReport} JAXB report
+	 * @return {@link String} Bootstrap 4 HTML report
+	 */
 	public String generateHtmlBootstrap3Report(XmlDetailedReport detailedReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlBootstrap3Report(detailedReport, new StreamResult(stringWriter));
@@ -98,11 +128,23 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 		}
 	}
 
+	/**
+	 * Generates a Bootstrap 3 Detailed report and writes to {@code result}
+	 *
+	 * @param detailedReport {@link XmlDetailedReport} JAXB report
+	 * @param result {@link Result} to embed the report to
+	 */
 	public void generateHtmlBootstrap3Report(XmlDetailedReport detailedReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(detailedReport)), result);
 	}
 
+	/**
+	 * Generates a Bootstrap 3 Detailed report from a string
+	 *
+	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
+	 * @return {@link String} Bootstrap 4 HTML report
+	 */
 	public String generateHtmlBootstrap3Report(String marshalledDetailedReport) throws IOException, TransformerException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlBootstrap3Report(marshalledDetailedReport, new StreamResult(stringWriter));
@@ -110,19 +152,39 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 		}
 	}
 
+	/**
+	 * Generates a Bootstrap 3 Detailed report from a string and writes to {@code result}
+	 *
+	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
+	 * @param result {@link Result} to embed the report to
+	 */
 	public void generateHtmlBootstrap3Report(String marshalledDetailedReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledDetailedReport)), result);
 	}
-	
-    /**
-     * Generates a PDF Detailed report
-     */
+
+	/**
+	 * Generates a PDF Detailed report
+	 *
+	 * @param detailedReport {@link XmlDetailedReport} JAXB report
+	 * @param result {@link Result} to embed the report to
+	 * @throws IOException if an IOException occurs
+	 * @throws TransformerException if a Transformer Exception occurs
+	 * @throws JAXBException if a JAXB Exception occurs
+	 */
 	public void generatePdfReport(XmlDetailedReport detailedReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = DetailedReportXmlDefiner.getPdfTemplates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(detailedReport)), result);
 	}
 
+	/**
+	 * Generates a PDF Detailed report
+	 *
+	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
+	 * @param result {@link Result} to embed the report to
+	 * @throws IOException if an IOException occurs
+	 * @throws TransformerException if a Transformer Exception occurs
+	 */
 	public void generatePdfReport(String marshalledDetailedReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = DetailedReportXmlDefiner.getPdfTemplates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledDetailedReport)), result);

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.ws.validation.dto;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 public class DataToValidateDTO {
@@ -46,7 +46,7 @@ public class DataToValidateDTO {
 	/**
 	 * The strategy for the token (certificate/timestamp/revocation data) extraction
 	 */
-	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+	private TokenExtractionStrategy tokenExtractionStategy = TokenExtractionStrategy.NONE;
 
 	/**
 	 * The signature to operate on
@@ -99,11 +99,11 @@ public class DataToValidateDTO {
 		this.policy = policy;
 	}
 
-	public TokenExtractionStategy getTokenExtractionStategy() {
+	public TokenExtractionStrategy getTokenExtractionStategy() {
 		return tokenExtractionStategy;
 	}
 
-	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+	public void setTokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
 		this.tokenExtractionStategy = tokenExtractionStategy;
 	}
 

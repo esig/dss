@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * This class is used to read an ASiC Container and to retrieve its content files
@@ -39,6 +38,7 @@ public abstract class AbstractASiCContainerExtractor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerExtractor.class);
 
+	/** Represents an ASiC container */
 	private final DSSDocument asicContainer;
 
 	/**
@@ -51,6 +51,11 @@ public abstract class AbstractASiCContainerExtractor {
 		this.asicContainer = asicContainer;
 	}
 
+	/**
+	 * Extracts a content (documents) embedded into the {@code asicContainer}
+	 *
+	 * @return {@link ASiCExtractResult}
+	 */
 	public ASiCExtractResult extract() {
 		ASiCExtractResult result = new ASiCExtractResult();
 		
@@ -117,6 +122,11 @@ public abstract class AbstractASiCContainerExtractor {
 		return result;
 	}
 
+	/**
+	 * Returns a zip comment {@code String} from the ASiC container
+	 *
+	 * @return {@link String} zip comment
+	 */
 	public String getZipComment() {
 		try (InputStream is = asicContainer.openStream()) {
 			byte[] buffer = Utils.toByteArray(is);
@@ -162,12 +172,40 @@ public abstract class AbstractASiCContainerExtractor {
 				result.getSignedDocuments());
 	}
 
+	/**
+	 * Checks if the given {@code String} file name represents an allowed manifest name
+	 * for the current ASiC container format
+	 *
+	 * @param entryName {@link String} document name to check
+	 * @return TRUE if the name represents an allowed manifest document name, FALSE otherwise
+	 */
 	protected abstract boolean isAllowedManifest(String entryName);
 
+	/**
+	 * Checks if the given {@code String} file name represents an allowed archive manifest name
+	 * for the current ASiC container format
+	 *
+	 * @param entryName {@link String} document name to check
+	 * @return TRUE if the name represents an allowed archive manifest document name, FALSE otherwise
+	 */
 	protected abstract boolean isAllowedArchiveManifest(String entryName);
 
+	/**
+	 * Checks if the given {@code String} file name represents an allowed timestamp document name
+	 * for the current ASiC container format
+	 *
+	 * @param entryName {@link String} document name to check
+	 * @return TRUE if the name represents an allowed timestamp document name, FALSE otherwise
+	 */
 	protected abstract boolean isAllowedTimestamp(String entryName);
 
+	/**
+	 * Checks if the given {@code String} file name represents an allowed signature document name
+	 * for the current ASiC container format
+	 *
+	 * @param entryName {@link String} document name to check
+	 * @return TRUE if the name represents an allowed signature document name, FALSE otherwise
+	 */
 	protected abstract boolean isAllowedSignature(String entryName);
 
 }

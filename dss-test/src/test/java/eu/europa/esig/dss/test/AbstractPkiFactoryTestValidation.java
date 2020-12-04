@@ -61,7 +61,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -233,8 +233,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		return validator;
 	}
 
-	protected TokenExtractionStategy getTokenExtractionStrategy() {
-		return TokenExtractionStategy.NONE;
+	protected TokenExtractionStrategy getTokenExtractionStrategy() {
+		return TokenExtractionStrategy.NONE;
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {

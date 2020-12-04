@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.w3c.dom.Document;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -35,9 +30,19 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import org.w3c.dom.Document;
 
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Defines SignatureParameters to deal with XAdES signature creation/extension
+ */
 public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdESTimestampParameters> {
-    
+
+	/**
+	 * Enumeration defining ways to embed a signature
+	 */
 	public enum XPathElementPlacement {
 
 		/**
@@ -50,6 +55,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		XPathFirstChildOf,
 	}
 
+	/**
+	 * The internal signature processing variable
+	 */
 	private ProfileParameters context;
 
 	/**
@@ -57,6 +65,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	private boolean addX509SubjectName;
 
+	/**
+	 * A list of references to incorporate
+	 */
 	private List<DSSReference> dssReferences;
 
 	/**
@@ -66,6 +77,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	private boolean embedXML;
 
+	/**
+	 * Defines if the signature shall be creates according to ETSI EN 319 132
+	 *
+	 * Default: true
+	 */
 	private boolean en319132 = true;
 
 	/**
@@ -92,7 +108,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private boolean manifestSignature;
 
 	/**
-	 * This attribute is used to inject ASiC root (inclusive canonicalization)
+	 * This attribute defines the root element of the file to create signature in (used in INTERNALLY_DETACHED)
 	 */
 	private Document rootDocument;
 
@@ -115,8 +131,15 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	private boolean signKeyInfo = false;
 
+	/**
+	 * Defines the signature position xpath string (used for ENVELOPED format)
+	 */
 	private String xPathLocationString;
 
+	/**
+	 * Defines the signature placement relatively to the element defined
+	 * in the {@code xPathLocationString} (used for ENVELOPED format)
+	 */
 	private XPathElementPlacement xPathElementPlacement;
 	
 	/**
@@ -163,13 +186,15 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm)}.
 	 *
-	 * @return
+	 * @return {@link DigestAlgorithm}
 	 */
 	public DigestAlgorithm getSigningCertificateDigestMethod() {
 		return signingCertificateDigestMethod;
 	}
 
 	/**
+	 * Gets the SignedInfo canonicalization algorithm
+	 *
 	 * @return the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public String getSignedInfoCanonicalizationMethod() {
@@ -190,6 +215,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	}
 
 	/**
+	 * Gets the SignedProperties canonicalization algorithm
+	 *
 	 * @return the canonicalization algorithm to be used when dealing with SignedProperties.
 	 */
 	public String getSignedPropertiesCanonicalizationMethod() {
@@ -211,6 +238,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	
 	/**
 	 * Returns the canonicalization algorithm used for dealing with KeyInfo
+	 *
 	 * @return - name of the canonicalization algorithm
 	 */
 	public String getKeyInfoCanonicalizationMethod() {
@@ -219,6 +247,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	
 	/**
 	 * Set the canonicalization algorithm used for dealing with KeyInfo.
+	 *
 	 * @param keyInfoCanonicalizationMethod - name of the canonicalization algorithm for dealing with KeyInfo.
 	 */
 	public void setKeyInfoCanonicalizationMethod(final String keyInfoCanonicalizationMethod) {
@@ -230,6 +259,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	
 	/**
 	 * Returns value value specifying if "KeyInfo" element should be signed.
+	 *
 	 * @return TRUE if "KeyInfo" element must be signed, FALSE otherwise.
 	 */
 	public boolean isSignKeyInfo() {
@@ -240,29 +270,45 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * Set the parameter SignKeyInfo defining if the "KeyInfo" element must be signed and
 	 * 		its reference must be included to "SignedInfo" element.
 	 * 		The value is FALSE by default.
+	 *
 	 * @param signKeyInfo - if KeyInfo element should be signed
 	 */
 	public void setSignKeyInfo(boolean signKeyInfo) {
 		this.signKeyInfo = signKeyInfo;
 	}
 
+	/**
+	 * Returns a list of references to be incorporated to the signature
+	 *
+	 * @return a list of {@link DSSReference}s
+	 */
 	public List<DSSReference> getReferences() {
 		return dssReferences;
 	}
 
+	/**
+	 * Sets a list of references to be incorporated into the signature
+	 *
+	 * @param references a list of {@link DSSReference}s
+	 */
 	public void setReferences(List<DSSReference> references) {
 		this.dssReferences = references;
 	}
 
+	/**
+	 * Gets the xPath signature location string (ENVELOPED only)
+	 *
+	 * @return {@link String} xPath
+	 */
 	public String getXPathLocationString() {
 		return xPathLocationString;
 	}
 
 	/**
-	 * Defines the area where the signature will be added (XAdES Enveloped)
+	 * Defines the position where the signature will be added (XAdES Enveloped)
 	 * 
 	 * @param xPathLocationString
-	 *            the xpath location of the signature
+	 *            the xpath position of the signature
 	 */
 	public void setXPathLocationString(String xPathLocationString) {
 		this.xPathLocationString = xPathLocationString;
@@ -273,24 +319,38 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
     }
 
 	/**
-	 * Defines the area where the signature will be added (XAdES Enveloped) 
-	 * in relation to the element referenced by the XPath
+	 * Defines the relation to the element referenced by the XPath where the signature will be added (XAdES Enveloped)
 	 *
 	 * @param xPathElementPlacement
-	 *            the xpath location of the signature
+	 *            the placement of the signature
 	 */
     public void setXPathElementPlacement(XPathElementPlacement xPathElementPlacement) {
         this.xPathElementPlacement = xPathElementPlacement;
     }
 
+	/**
+	 * Returns the root document for INTERNALLY_DETACHED signature creation
+	 *
+	 * @return {@link Document}
+	 */
 	public Document getRootDocument() {
 		return rootDocument;
 	}
 
+	/**
+	 * Sets the root document for INTERNALLY_DETACHED signature creation
+	 *
+	 * @param rootDocument {@link Document}
+	 */
 	public void setRootDocument(Document rootDocument) {
 		this.rootDocument = rootDocument;
 	}
 
+	/**
+	 * Gets the signature creation context (internal variable)
+	 *
+	 * @return {@link ProfileParameters}
+	 */
 	public ProfileParameters getContext() {
 		if (context == null) {
 			context = new ProfileParameters();
@@ -298,50 +358,120 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		return context;
 	}
 
+	/**
+	 * Gets if the signature shall be created according to ETSI EN 319 132
+	 *
+	 * @return TRUE if the signature shall be created according to ETSI EN 319 132,
+	 * otherwise according to the old standard
+	 */
 	public boolean isEn319132() {
 		return en319132;
 	}
 
+	/**
+	 * Sets if the signature shall be created according to ETSI EN 319 132
+	 *
+	 * Default: true
+	 *
+	 * @param en319132 if the signature shall be created according to ETSI EN 319 132
+	 */
 	public void setEn319132(boolean en319132) {
 		this.en319132 = en319132;
 	}
 
+	/**
+	 * Gets if the signed content shall be incorporated as XML (used for ENVELOPING)
+	 *
+	 * @return TRUE if the signed content shall be incorporated as XML, FALSE otherwise (base64 encoded binaries)
+	 */
 	public boolean isEmbedXML() {
 		return embedXML;
 	}
 
+	/**
+	 * Sets if the signed content shall be incorporated as XML (used for ENVELOPING)
+	 * If false, incorporates the document content in its base64 encoded representation
+	 *
+	 * Default: false (base64 encoded binaries)
+	 *
+	 * @param embedXML if the signed content shall be incorporated as XML
+	 */
 	public void setEmbedXML(boolean embedXML) {
 		this.embedXML = embedXML;
 	}
 
+	/**
+	 * Gets if the signature signs a manifest
+	 *
+	 * @return TRUE if teh signature signs a manifest, FALSE otherwise
+	 */
 	public boolean isManifestSignature() {
 		return manifestSignature;
 	}
 
+	/**
+	 * Sets if the signature signs a manifest
+	 *
+	 * @param manifestSignature if the signature signs a manifest
+	 */
 	public void setManifestSignature(boolean manifestSignature) {
 		this.manifestSignature = manifestSignature;
 	}
 
+	/**
+	 * Gets if the {@code <ds:X509Data>} element shall be added
+	 *
+	 * @return TRUE if the X509Data element shall be added, FALSE otherwise
+	 */
 	public boolean isAddX509SubjectName() {
 		return addX509SubjectName;
 	}
 
+	/**
+	 * Sets if the {@code <ds:X509Data>} element shall be added
+	 *
+	 * Default: false
+	 *
+	 * @param addX509SubjectName if the X509Data element shall be added
+	 */
 	public void setAddX509SubjectName(boolean addX509SubjectName) {
 		this.addX509SubjectName = addX509SubjectName;
 	}
 
+	/**
+	 * Gets a custom XAdES Object content
+	 *
+	 * @return XAdES Object binaries
+	 */
 	public byte[] getSignedAdESObject() {
 		return signedAdESObject;
 	}
 
+	/**
+	 * Sets a custom XAdES Object content
+	 *
+	 * @param signedAdESObject XAdES Object content to incorporate into the signature
+	 */
 	public void setSignedAdESObject(byte[] signedAdESObject) {
 		this.signedAdESObject = signedAdESObject;
 	}
-	
+
+	/**
+	 * Gets if the signature shall be pretty-printed
+	 *
+	 * @return TRUE if pretty-print the signature, FALSE otherwise
+	 */
 	public boolean isPrettyPrint() {
 		return prettyPrint;
 	}
-	
+
+	/**
+	 * Sets if the signature shall be pretty-printed
+	 *
+	 * Default: false
+	 *
+	 * @param prettyPrint TRUE if to pretty-print the signature, FALSE otherwise
+	 */
 	public void setPrettyPrint(boolean prettyPrint) {
 		this.prettyPrint = prettyPrint;
 	}
@@ -354,6 +484,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		return xmldsigNamespace;
 	}
 
+	/**
+	 * Sets the XMLDSIG namespace
+	 *
+	 * Default: ds:http://www.w3.org/2000/09/xmldsig#
+	 *
+	 * @param xmldsigNamespace {@link DSSNamespace}
+	 */
 	public void setXmldsigNamespace(DSSNamespace xmldsigNamespace) {
 		Objects.requireNonNull(xmldsigNamespace);
 		String uri = xmldsigNamespace.getUri();
@@ -372,6 +509,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		return xadesNamespace;
 	}
 
+	/**
+	 * Sets the XAdES namespace
+	 *
+	 * Default: xades:http://uri.etsi.org/01903/v1.3.2#
+	 *
+	 * @param xadesNamespace {@link DSSNamespace}
+	 */
 	public void setXadesNamespace(DSSNamespace xadesNamespace) {
 		Objects.requireNonNull(xadesNamespace);
 		String uri = xadesNamespace.getUri();
@@ -390,6 +534,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		return xades141Namespace;
 	}
 
+	/**
+	 * Sets the XAdES 1.4.1 namespace
+	 *
+	 * Default: xades141:http://uri.etsi.org/01903/v1.4.1#
+	 *
+	 * @param xades141Namespace {@link DSSNamespace}
+	 */
 	public void setXades141Namespace(DSSNamespace xades141Namespace) {
 		Objects.requireNonNull(xades141Namespace);
 		String uri = xades141Namespace.getUri();

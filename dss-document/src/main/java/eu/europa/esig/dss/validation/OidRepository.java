@@ -20,16 +20,20 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Contains a map between OIDs and their corresponding descriptions
+ */
 public class OidRepository {
 
+	/** Map between OIDs and their corresponding descriptions */
 	private static final Map<String, String> repository = new HashMap<>();
 
 	static {
@@ -47,6 +51,12 @@ public class OidRepository {
 	private OidRepository() {
 	}
 
+	/**
+	 * Gets description corresponding to the given OID
+	 *
+	 * @param oid {@link String} to get description for
+	 * @return {@link String}
+	 */
 	public static String getDescription(String oid) {
 		return repository.get(oid);
 	}

@@ -20,21 +20,18 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentHint;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentIdentifier;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_commitmentType;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_sigPolicyId;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerAttr;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerLocation;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signingTime;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.SignedAssertion;
+import eu.europa.esig.dss.cades.SignedAssertions;
+import eu.europa.esig.dss.cades.SignerAttributeV2;
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -63,31 +60,31 @@ import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.SignedAssertion;
-import eu.europa.esig.dss.cades.SignedAssertions;
-import eu.europa.esig.dss.cades.SignerAttributeV2;
-import eu.europa.esig.dss.enumerations.CommitmentType;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Policy;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentHint;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentIdentifier;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_commitmentType;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_sigPolicyId;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerAttr;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerLocation;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signingTime;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
- * id_aa_ets_sigPolicyId attribute as specified in ETSI TS 101
- * 733 V1.8.1, clause 5.8.1.
- *
- *
+ * id_aa_ets_sigPolicyId attribute as specified in ETSI TS 101 733 V1.8.1, clause 5.8.1.
  *
  */
 public class CAdESLevelBaselineB {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineB.class);
 
+	/** Defines if the CMS signature will be created for a PAdES */
 	private final boolean padesUsage;
 
 	/**
@@ -98,7 +95,9 @@ public class CAdESLevelBaselineB {
 	}
 
 	/**
-	 * The default constructor for CAdESLevelBaselineB.
+	 * The constructor for CAdESLevelBaselineB with a {@code padesUsage} indication
+	 *
+	 * @param padesUsage defines if the CMS signature shall be created a PAdES
 	 */
 	public CAdESLevelBaselineB(boolean padesUsage) {
 		this.padesUsage = padesUsage;
@@ -107,12 +106,18 @@ public class CAdESLevelBaselineB {
 	/**
 	 * Return the table of unsigned properties.
 	 *
-	 * @return
+	 * @return {@link AttributeTable}
 	 */
 	public AttributeTable getUnsignedAttributes() {
 		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, ASN1Encodable>());
 	}
 
+	/**
+	 * Generates and returns a Signed Attributes Table
+	 *
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link AttributeTable} representing the signed attributes
+	 */
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
 		if (Utils.isArrayNotEmpty(parameters.getSignedData())) {
 			LOG.debug("Using explict SignedAttributes from parameter");

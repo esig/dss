@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
@@ -38,6 +35,12 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Builds a relevant {@code GetDataToSignASiCWithXAdESHelper} for ASiC with XAdES dataToSign creation
+ */
 public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
 
 	/**

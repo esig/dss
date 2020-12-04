@@ -23,12 +23,26 @@ package eu.europa.esig.dss.cades.validation;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 
+/**
+ * Represents the CAdES Signed attributes
+ */
 public class CAdESSignedAttributes extends CAdESSigProperties {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param attributeTable {@link AttributeTable} signed attributes table
+	 */
 	CAdESSignedAttributes(AttributeTable attributeTable) {
 		super(attributeTable);
 	}
-	
+
+	/**
+	 * Builds the {@code CAdESSignedAttributes} from a {@code SignerInformation}
+	 *
+	 * @param signerInformation {@link SignerInformation} to build {@link CAdESSignedAttributes} from
+	 * @return {@link CAdESSignedAttributes}
+	 */
 	public static CAdESSignedAttributes build(SignerInformation signerInformation) {
 		return new CAdESSignedAttributes(signerInformation.getSignedAttributes());
 	}

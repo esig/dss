@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.service.crl;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
@@ -43,6 +33,14 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
@@ -155,7 +153,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 			crlToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return crlToken;
 			
-		} catch (SQLException | IOException e) {
+		} catch (Exception e) {
 			throw new RevocationException(
 					String.format("An error occurred during an attempt to get a revocation token. Reason : %s", e.getMessage()), e);
 		}

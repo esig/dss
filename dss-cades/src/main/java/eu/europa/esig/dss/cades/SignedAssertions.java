@@ -20,20 +20,31 @@
  */
 package eu.europa.esig.dss.cades;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERSequence;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * SignedAssertions ::= SEQUENCE OF SignedAssertion
+ */
 public class SignedAssertions extends ASN1Object {
 
+    /** List of signed assertions */
     private final List<SignedAssertion> assertions;
 
+    /**
+     * Parses the object and return {@code SignedAssertions},
+     * null if the object is of another type
+     *
+     * @param obj object representing {@link SignedAssertions} to parse
+     * @return {@link SignedAssertions}
+     */
     public static SignedAssertions getInstance(Object obj) {
         if (obj instanceof SignedAssertion) {
             return (SignedAssertions) obj;
@@ -44,6 +55,11 @@ public class SignedAssertions extends ASN1Object {
         return null;
     }
 
+    /**
+     * Creates the {@code SignedAssertions} from a list of {@code SignedAssertion}s
+     *
+     * @param assertions a list of {@list SignedAssertion}s
+     */
     public SignedAssertions(List<SignedAssertion> assertions) {
         this.assertions = assertions;
     }
@@ -76,7 +92,13 @@ public class SignedAssertions extends ASN1Object {
         return sb.toString();
     }
 
+    /**
+     * Returns a list of {@code SignedAssertion}s
+     *
+     * @return a list of {@list SignedAssertion}s
+     */
     public List<SignedAssertion> getAssertions() {
         return assertions;
     }
+
 }
