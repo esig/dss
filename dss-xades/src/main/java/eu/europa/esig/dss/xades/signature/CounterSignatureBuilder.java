@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
@@ -143,13 +144,12 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		}
 		
 		Element signatureElement = (Element) signatureNodeList.item(0);
-		documentDom.adoptNode(signatureElement);
+		Node adopted = documentDom.importNode(signatureElement, true);
 		
 		Element counterSignatureElement = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, 
 				getXadesNamespace(), getCurrentXAdESElements().getElementCounterSignature());
-		
-		counterSignatureElement.appendChild(signatureElement);
-		counterSignatureElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), COUNTER_SIGNATURE_PREFIX + params.getDeterministicId());		
+		counterSignatureElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), COUNTER_SIGNATURE_PREFIX + params.getDeterministicId());
+		counterSignatureElement.appendChild(adopted);
 	}
 	
 	private XAdESSignature extractSignatureById(Document documentDom, XAdESCounterSignatureParameters parameters) {
