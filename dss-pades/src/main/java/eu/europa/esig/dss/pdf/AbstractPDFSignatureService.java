@@ -20,24 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.Status;
@@ -64,6 +46,23 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ByteRange;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 
@@ -195,7 +194,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					byte[] signedContent = DSSUtils.EMPTY_BYTE_ARRAY;
 					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
 						LOG.warn("Signature {} is skipped. SIWA detected !", fieldNames);
-						// TODO : continue ?
 					} else {
 						signedContent = PAdESUtils.getSignedContent(document, byteRange);
 					}
@@ -222,9 +220,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 								signedContent, signatureCoversWholeDocument);
 
 					} else {
-						LOG.warn(
-								"The entry {} is skipped. A signature dictionary entry with a type '{}' and subFilter '{}' is not acceptable configuration!",
-								fieldNames, signatureDictionary.getType(), signatureDictionary.getSubFilter());
+						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' " +
+										"and subFilter '{}' is not acceptable configuration!", fieldNames,
+								signatureDictionary.getType(), signatureDictionary.getSubFilter());
 
 					}
 

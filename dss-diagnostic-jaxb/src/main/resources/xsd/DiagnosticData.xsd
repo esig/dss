@@ -827,6 +827,7 @@
 			<xs:enumeration value="CAdES_V3" />
 			<xs:enumeration value="CAdES_DETACHED" />
 			<xs:enumeration value="JAdES" />
+			<xs:enumeration value="PAdES" />
 		</xs:restriction>
 	</xs:simpleType>
 	

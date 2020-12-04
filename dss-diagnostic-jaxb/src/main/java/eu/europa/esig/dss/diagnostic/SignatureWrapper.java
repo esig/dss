@@ -37,6 +37,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -417,8 +418,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	private boolean coversLTLevel(TimestampWrapper timestampWrapper) {
-		return !timestampWrapper.getTimestampedRevocations().isEmpty() ||
-				!timestampWrapper.getTimestampedOrphanRevocations().isEmpty();
+		return ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType());
 	}
 
 	private boolean areTimestampsValid(List<TimestampWrapper> timestampList) {

@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
@@ -41,7 +41,6 @@ import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -201,7 +200,7 @@ public class PAdESSignature extends CAdESSignature {
 		List<TimestampToken> documentTimestamps = getDocumentTimestamps();
 		if (Utils.isCollectionNotEmpty(documentTimestamps)) {
 			for (TimestampToken timestampToken : documentTimestamps) {
-				if (coverLTLevelData(timestampToken)) {
+				if (coversLTLevelData(timestampToken)) {
 					return true;
 				}
 			}
@@ -209,14 +208,8 @@ public class PAdESSignature extends CAdESSignature {
 		return false;
 	}
 
-	private boolean coverLTLevelData(TimestampToken timestampToken) {
-		for (TimestampedReference reference : timestampToken.getTimestampedReferences()) {
-			if (TimestampedObjectType.REVOCATION.equals(reference.getCategory()) ||
-					TimestampedObjectType.ORPHAN_REVOCATION.equals(reference.getCategory())) {
-				return true;
-			}
-		}
-		return false;
+	private boolean coversLTLevelData(TimestampToken timestampToken) {
+		return ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType());
 	}
 
 	private boolean hasDSSDictionary() {

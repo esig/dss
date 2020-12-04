@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCRLSource;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCertificateSource;
@@ -101,6 +102,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
         documentTimestamps = new ArrayList<>();
 
         boolean signatureRevisionReached = false;
+        boolean dssRevisionReached = false;
 
         for (final PdfRevision pdfRevision : documentRevisions) {
 
@@ -111,6 +113,9 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                 final PdfDocTimestampRevision timestampRevision = (PdfDocTimestampRevision) pdfRevision;
                 final TimestampToken timestampToken = timestampRevision.getTimestampToken();
 
+                if (dssRevisionReached) {
+                    timestampToken.setArchiveTimestampType(ArchiveTimestampType.PAdES);
+                }
                 if (signatureRevisionReached) {
                     addReferences(individualTimestampReferences, getSignatureTimestampReferences());
                     addReferences(individualTimestampReferences, getSignatureSignedDataReferences());
@@ -140,6 +145,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                 certificateSource.add(new PdfDssDictCertificateSource(dssDictionary));
                 crlSource.add(new PdfDssDictCRLSource(dssDictionary));
                 ocspSource.add(new PdfDssDictOCSPSource(dssDictionary));
+                dssRevisionReached = true;
 
             } else if (pdfRevision instanceof PdfSignatureRevision) {
                 PAdESSignature padesSignature = (PAdESSignature) signature;

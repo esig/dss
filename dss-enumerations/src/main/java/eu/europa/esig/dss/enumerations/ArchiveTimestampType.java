@@ -39,6 +39,8 @@ public enum ArchiveTimestampType {
 	/* For ASiC */
 	CAdES_DETACHED,
 	
-	JAdES;
+	JAdES,
+
+	PAdES;
 
 }
