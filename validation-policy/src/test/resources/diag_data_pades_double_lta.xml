@@ -718,6 +718,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-32902C8337E0351C4AA33052A3E1DA9232D204C4839BB52879DF7183678CEE61">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
             <ProductionTime>2013-05-08T19:16:15</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
@@ -780,6 +781,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-8E4BDE2CF1609CCB38EDABCC07DBD17B0842A1A08CB376C76B752D6E14475AC9">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
             <ProductionTime>2019-04-23T16:07:02</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>

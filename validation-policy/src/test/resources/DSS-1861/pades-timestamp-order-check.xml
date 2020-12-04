@@ -1133,6 +1133,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-AE3BF3F8C31A995355E8E02E3D65F5E7AA9E27536F121662B382B9EA2201E9E3">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
             <ProductionTime>2019-11-01T14:02:50</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
@@ -1178,6 +1179,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-54FC3AA7E6769F8898D70F4B0DB3A4BD9F76AD7ED2D1611BB88EFDD6F32D3A9F">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
             <ProductionTime>2019-11-01T14:28:14</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
