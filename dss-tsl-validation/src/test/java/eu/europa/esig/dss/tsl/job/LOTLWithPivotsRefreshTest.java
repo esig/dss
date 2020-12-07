@@ -20,21 +20,10 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
@@ -46,6 +35,20 @@ import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class LOTLWithPivotsRefreshTest {
 
@@ -224,7 +227,12 @@ public class LOTLWithPivotsRefreshTest {
 		List<PivotInfo> pivotInfos = lotlInfo.getPivotInfos();
 		assertEquals(4, pivotInfos.size());
 
+		List<Identifier> identifiers = new ArrayList<>();
 		for (PivotInfo pivotInfo : pivotInfos) {
+			assertFalse(identifiers.contains(pivotInfo.getIdentifier()));
+			identifiers.add(pivotInfo.getIdentifier());
+			assertTrue(pivotInfo.isPivot());
+
 			ValidationInfoRecord pivotValidationCacheInfo = pivotInfo.getValidationCacheInfo();
 			assertTrue(pivotValidationCacheInfo.isDesynchronized());
 			assertEquals(expectedIndication, pivotValidationCacheInfo.getIndication());

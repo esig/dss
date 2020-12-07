@@ -20,23 +20,21 @@
  */
 package eu.europa.esig.xmldsig;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class XSDAbstractUtils {
 
@@ -141,16 +139,16 @@ public abstract class XSDAbstractUtils {
 	 */
 	public void validate(final Source xmlSource, final Schema schema, boolean secureValidation)
 			throws IOException {
+		Validator validator = schema.newValidator();
 		try {
-			Validator validator = schema.newValidator();
 			if (secureValidation) {
 				XmlDefinerUtils.getInstance().configure(validator);
 			}
 			validator.validate(xmlSource);
-			XmlDefinerUtils.getInstance().postProcess(validator);
-
 		} catch (SAXException e) {
 			throw new XSDValidationException(Arrays.asList(e.getMessage()));
+		} finally {
+			XmlDefinerUtils.getInstance().postProcess(validator);
 		}
 	}
 
