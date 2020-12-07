@@ -223,7 +223,7 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="WARN" />
-			<UnicitySigningCertificate Level="WARN" />
+			<!-- <UnicitySigningCertificate Level="WARN" /> RFC 5816 -->
 			<CertDigestPresent Level="WARN" />
 			<CertDigestMatch Level="WARN" />
 			<IssuerSerialMatch Level="WARN" />
