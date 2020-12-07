@@ -24,7 +24,7 @@ public class ASiCTestUtils {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				assertNotNull(entry.getName());
-				assertNotNull(entry.getTime());
+				assertNotEquals(-1L, entry.getTime());
 				assertNull(entry.getExtra());
 
 				if ("mimetype".equals(entry.getName())) {

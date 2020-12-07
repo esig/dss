@@ -132,14 +132,12 @@ public abstract class XAdESBuilder {
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param dssReference
-	 *            the current reference to incorporate
 	 * @param digestAlgorithm
 	 *            the digest algorithm to be used
 	 * @param originalDocument
 	 *            the document to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, DSSReference dssReference, final DigestAlgorithm digestAlgorithm,
+	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm,
 			final DSSDocument originalDocument) {
 
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
@@ -150,18 +148,6 @@ public abstract class XAdESBuilder {
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
 		parentDom.appendChild(digestValueDom);
-	}
-
-	private DSSTransform getUniqueCanonicalizationTransform(DSSReference dssReference) {
-		List<DSSTransform> transforms = dssReference.getTransforms();
-		if (Utils.collectionSize(transforms) != 1) {
-			throw new DSSException("Only one transformation is supported");
-		}
-		DSSTransform dssTransform = transforms.get(0);
-		if (!(dssTransform instanceof CanonicalizationTransform)) {
-			throw new DSSException("Only canonicalization transform is allowed in the given use case");
-		}
-		return dssTransform;
 	}
 
 	/**

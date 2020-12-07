@@ -264,7 +264,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			return new InMemoryDocument(baos.toByteArray());
 		} catch (IOException e) {
 			closeEntry(zis);
-			throw new DSSException(String.format("Unable to read an entry binaries. Reason : {}", e.getMessage()), e);
+			throw new DSSException(String.format("Unable to read an entry binaries. Reason : %s", e.getMessage()), e);
 		}
 	}
 

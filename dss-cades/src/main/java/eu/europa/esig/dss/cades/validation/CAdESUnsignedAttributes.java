@@ -45,8 +45,7 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	public List<CAdESAttribute> getAttributes() {
 		List<CAdESAttribute> attributes = super.getAttributes();
 		// Multiple timestamps need to be sorted in CAdES by their production date
-		attributes = sortTimestamps(attributes, DSSASN1Utils.getTimestampOids());
-		return attributes;
+		return sortTimestamps(attributes, DSSASN1Utils.getTimestampOids());
 	}
 	
 	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes, List<ASN1ObjectIdentifier> timestampOids) {

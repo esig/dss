@@ -32,6 +32,10 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 		
 		List<AdvancedSignature> signatures = getSignatures();
 		JAdESSignature signatureById = getSignatureById(signatures, signatureId);
+		if (signatureById == null) {
+			LOG.warn("Signature with id {} not found", signatureId);
+			return Collections.emptyList();
+		}
 		return signatureById.getOriginalDocuments();
 	}
 	

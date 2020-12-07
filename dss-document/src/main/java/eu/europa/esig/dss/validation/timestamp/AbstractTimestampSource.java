@@ -29,8 +29,6 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +40,6 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractTimestampSource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractTimestampSource.class);
 
 	/**
 	 * Adds {@code referenceToAdd} to {@code referenceList} without duplicates

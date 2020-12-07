@@ -52,8 +52,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	}
 
 	@Override
-	protected SignerInformation extendSignerInformation(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
-			throws DSSException {
+	protected SignerInformation extendSignerInformation(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
 		// add a LT level or replace an existing LT level
 		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 
@@ -63,7 +62,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 			cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		}
 		// check if the resulted signature can be extended
-		assertExtendSignaturePossible(cadesSignature);
+		assertExtendSignatureLevelLTPossible(cadesSignature);
 
 		return signerInformation;
 	}
@@ -94,7 +93,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		return cmsSignedData;
 	}
 	
-	private void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
+	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature) {
 		if (cadesSignature.areAllSelfSignedCertificates()) {
 			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}

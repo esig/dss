@@ -86,6 +86,7 @@ import org.bouncycastle.asn1.x509.PolicyQualifierInfo;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
+import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.MonetaryValue;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.asn1.x509.qualified.RFC3739QCObjectIdentifiers;
@@ -1568,7 +1569,7 @@ public final class DSSASN1Utils {
 				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
 				for (int i = 0; i < seq.size(); i++) { 
 					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
-					if (QCStatement.id_etsi_qcs_LimiteValue.equals(statement.getStatementId())) {
+					if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.equals(statement.getStatementId())) {
 						MonetaryValue monetaryValue = MonetaryValue.getInstance(statement.getStatementInfo());
 						result = new QCLimitValue();
 						result.setCurrency(monetaryValue.getCurrency().getAlphabetic());

@@ -789,9 +789,9 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		boolean freshRevocationDataFound = false;
 		for (RevocationToken<Revocation> revocationToken : revocations) {
-			if (refreshNeededAfterTime.before(revocationToken.getProductionDate())
+			if (refreshNeededAfterTime != null && (refreshNeededAfterTime.before(revocationToken.getProductionDate()))
 					&& (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason()
-							&& isConsistent(revocationToken))) {
+					&& isConsistent(revocationToken))) {
 				freshRevocationDataFound = true;
 				break;
 			}

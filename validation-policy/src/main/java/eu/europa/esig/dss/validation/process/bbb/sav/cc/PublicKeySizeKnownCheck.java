@@ -10,13 +10,11 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstra
 public class PublicKeySizeKnownCheck extends AbstractCryptographicCheck {
 	
 	private final String keySize;
-	private final MessageTag position;
 
 	protected PublicKeySizeKnownCheck(I18nProvider i18nProvider, String keySize, XmlCC result, MessageTag position, 
 			CryptographicConstraintWrapper constraintWrapper) {
 		super(i18nProvider, result, position, constraintWrapper);
 		this.keySize = keySize;
-		this.position = position;
 	}
 
 	@Override

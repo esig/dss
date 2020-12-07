@@ -789,7 +789,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
-		if (detachedContent.size() == 1 && detachedContent.size() == 1) {
+		if (Utils.collectionSize(detachedContent) == 1) {
 			return detachedContent.iterator().next();
 
 		} else {

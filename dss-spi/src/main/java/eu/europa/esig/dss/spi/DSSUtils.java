@@ -1136,7 +1136,7 @@ public final class DSSUtils {
 	public static String getObjectIdentifier(String oidOrUriString) {
 		String policyIdString = oidOrUriString;
 		if (Utils.isStringNotEmpty(oidOrUriString)) {
-			policyIdString = policyIdString.replaceAll("\n", "");
+			policyIdString = policyIdString.replace("\n", "");
 			policyIdString = Utils.trim(policyIdString);
 			if (isUrnOid(policyIdString)) {
 				// urn:oid:1.2.3 --> 1.2.3

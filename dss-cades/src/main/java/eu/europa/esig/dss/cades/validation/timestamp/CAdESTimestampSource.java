@@ -585,6 +585,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		return ArchiveTimestampType.CAdES;
 	}
 
+	@Override
 	protected List<TimestampedReference> getEncapsulatedValuesFromTimestamp(TimestampToken timestampedTimestamp) {
 		List<TimestampedReference> references = super.getEncapsulatedValuesFromTimestamp(timestampedTimestamp);
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();

@@ -44,23 +44,11 @@ public class CAdESCounterSignatureBuilder {
 
 	private final CertificateVerifier certificateVerifier;
 	
-	/** Represents a signature detached contents */
-	private List<DSSDocument> detachedContents;
-	
 	/** A signature signed manifest. Used for ASiC */
 	private ManifestFile manifestFile;
 
 	public CAdESCounterSignatureBuilder(CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
-	}
-
-	/**
-	 * Sets detached contents
-	 * 
-	 * @param detachedContents a list of {@link DSSDocument}
-	 */
-	public void setDetachedContents(List<DSSDocument> detachedContents) {
-		this.detachedContents = detachedContents;
 	}
 
 	/**
@@ -229,7 +217,6 @@ public class CAdESCounterSignatureBuilder {
 					// TODO : add a nested counter signature support + check if a master signature is not timestamped
 					throw new UnsupportedOperationException("Nested counter signatures are not supported with CAdES!");
 				}
-				return counterSignatureById;
 			}
 		}
 		return null;

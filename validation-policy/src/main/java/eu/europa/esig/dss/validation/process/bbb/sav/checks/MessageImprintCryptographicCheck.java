@@ -30,8 +30,6 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 
 public class MessageImprintCryptographicCheck extends DigestCryptographicCheck<XmlSAV> {
 
-	private final static MessageTag MESS_IMP_POSITION = MessageTag.ACCM_POS_MESS_IMP;
-	
 	public MessageImprintCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, XmlSAV result,
 			Date validationDate, CryptographicConstraint constraint) {
 		super(i18nProvider, digestAlgorithm, result, validationDate, MessageTag.ACCM_POS_MESS_IMP, constraint);

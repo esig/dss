@@ -290,7 +290,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				spDocSpecification.setId(spDocSpec.toString());
 				
 				try {
-					ASN1OctetString spDocument = DEROctetString.getInstance(sequence.getObjectAt(1));
+					ASN1OctetString spDocument = ASN1OctetString.getInstance(sequence.getObjectAt(1));
 					signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
 				} catch (Exception e) {
 					LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
