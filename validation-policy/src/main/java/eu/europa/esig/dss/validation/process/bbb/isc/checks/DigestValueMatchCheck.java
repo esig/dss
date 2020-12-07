@@ -28,7 +28,10 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+
+import java.util.List;
 
 public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 
@@ -41,9 +44,13 @@ public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected boolean process() {
-		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
-		if (signingCertificateReference != null) {
-			return signingCertificateReference.isDigestValueMatch();
+		List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
+		if (Utils.isCollectionNotEmpty(signingCertificateReferences)) {
+			for (CertificateRefWrapper reference : signingCertificateReferences) {
+				if (reference.isDigestValuePresent() && reference.isDigestValueMatch()) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -33,36 +31,37 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class DigestValuePresentCheck extends ChainItem<XmlISC> {
+import java.util.List;
+
+public class AllDigestValuesMatchCheck extends ChainItem<XmlISC> {
 
 	private final TokenProxy token;
 
-	public DigestValuePresentCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
+	public AllDigestValuesMatchCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;
 	}
 
 	@Override
 	protected boolean process() {
+		boolean isAllMatch = true;
 		List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
 		if (Utils.isCollectionNotEmpty(signingCertificateReferences)) {
 			for (CertificateRefWrapper reference : signingCertificateReferences) {
-				if (reference.isDigestValuePresent()) {
-					return true;
-				}
+				isAllMatch &= (reference.isDigestValuePresent() && reference.isDigestValueMatch());
 			}
 		}
-		return false;
+		return isAllMatch;
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_ICS_ISACDP;
+		return MessageTag.BBB_ICS_ICDVVS;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_ICS_ISACDP_ANS;
+		return MessageTag.BBB_ICS_ICDVVS_ANS;
 	}
 
 	@Override

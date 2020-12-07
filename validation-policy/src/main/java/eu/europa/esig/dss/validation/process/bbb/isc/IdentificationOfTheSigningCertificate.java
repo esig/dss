@@ -38,6 +38,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.isc.checks.AllDigestValuesMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValuePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.IssuerSerialMatchCheck;
@@ -82,7 +83,9 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
 
 		boolean isSignature = Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context);
-		if (isSignature || Context.TIMESTAMP.equals(context)) {
+		boolean isTimestamp = Context.TIMESTAMP.equals(context);
+
+		if (isSignature || isTimestamp) {
 			/*
 			 * 1) If the signature format used contains a way to directly identify the reference to the signers'
 			 * certificate in the attribute, the building block shall check that the digest of the certificate
@@ -101,31 +104,33 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 			item = item.setNextItem(signingCertificateAttributePresent());
 
+			// not revelant for timestamps RFC 5816
 			item = item.setNextItem(unicitySigningCertificateAttribute());
 			
-			if (token.isSigningCertificateReferenceUnique()) {
-				
-				/*
-				 * 2) The building block shall take the first reference and shall check that the digest of the certificate
-				 * referenced matches the result of digesting the signing certificate with the algorithm indicated. If they
-				 * do not match, the building block shall take the next element and shall repeat this step until a matching
-				 * element has been found or all elements have been checked. If they do match, the building block shall
-				 * continue with step 3. If the last element is reached without finding any match, the validation of this
-				 * property shall be taken as failed and the building block shall return the indication INDETERMINATE with
-				 * the sub-indication NO_SIGNING_CERTIFICATE_FOUND.
-				 */
-				item = item.setNextItem(digestValuePresent());
-				item = item.setNextItem(digestValueMatch());
-	
-				/*
-				 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
-				 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in
-				 * the signing certificate: if they do not match, an additional warning shall be returned with the output.
-				 */
-				CertificateRefWrapper signingCertificateRef = token.getSigningCertificateReference();
-				if (signingCertificateRef != null && signingCertificateRef.isIssuerSerialPresent()) {
-					item = item.setNextItem(issuerSerialMatch());
-				}
+			/*
+			 * 2) The building block shall take the first reference and shall check that the digest of the certificate
+			 * referenced matches the result of digesting the signing certificate with the algorithm indicated. If they
+			 * do not match, the building block shall take the next element and shall repeat this step until a matching
+			 * element has been found or all elements have been checked. If they do match, the building block shall
+			 * continue with step 3. If the last element is reached without finding any match, the validation of this
+			 * property shall be taken as failed and the building block shall return the indication INDETERMINATE with
+			 * the sub-indication NO_SIGNING_CERTIFICATE_FOUND.
+			 */
+			item = item.setNextItem(digestValuePresent());
+
+			item = item.setNextItem(digestValueMatch());
+
+			// timestamp : sig cert v1 and v2 might be present and must match the value
+			item = item.setNextItem(allDigestValuesMatch());
+
+			/*
+			 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
+			 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in
+			 * the signing certificate: if they do not match, an additional warning shall be returned with the output.
+			 */
+			CertificateRefWrapper signingCertificateRef = token.getSigningCertificateReference();
+			if (signingCertificateRef != null && signingCertificateRef.isIssuerSerialPresent()) {
+				item = item.setNextItem(issuerSerialMatch());
 			}
 		}
 	}
@@ -176,6 +181,11 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 	private ChainItem<XmlISC> digestValueMatch() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValueMatchConstraint(context);
 		return new DigestValueMatchCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlISC> allDigestValuesMatch() {
+		LevelConstraint constraint = validationPolicy.getAllSigningCertificateDigestValuesMatchConstraint(context);
+		return new AllDigestValuesMatchCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> issuerSerialMatch() {

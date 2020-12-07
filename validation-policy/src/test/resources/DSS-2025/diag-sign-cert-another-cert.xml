@@ -56,7 +56,7 @@
                     <CertificateRef>
                         <Origin>SIGNING_CERTIFICATE</Origin>
                         <IssuerSerial match="true">MH0waaRnMGUxCzAJBgNVBAYTAlBMMSEwHwYDVQQKDBhBc3NlY28gRGF0YSBTeXN0ZW1zIFMuQS4xGDAWBgNVBAMMD0NlcnR1bSBRQ0EgMjAxNzEZMBcGA1UEYQwQVkFUUEwtNTE3MDM1OTQ1OAIQEGq2D93TJqkofjJuJzLELA==</IssuerSerial>
-                        <DigestAlgoAndValue match="true">
+                        <DigestAlgoAndValue match="false">
                             <DigestMethod>SHA256</DigestMethod>
                 			<DigestValue>7TgBiesoD12GyRS/3SjYl5XlZ2rok/PD11sS8+QsyRQ=</DigestValue>
                         </DigestAlgoAndValue>

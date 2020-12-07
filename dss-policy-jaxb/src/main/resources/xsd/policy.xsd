@@ -207,7 +207,12 @@
 			</xsd:element>
 			<xsd:element name="CertDigestMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the signing certificate digest match with the found signer</xsd:documentation>
+					<xsd:documentation>Checks if any signing certificate digest match with the found signer</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AllCertDigestsMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if all signing certificate digests match with the found signer (v1/v2)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="IssuerSerialMatch" type="LevelConstraint" minOccurs="0">

@@ -387,6 +387,12 @@ public interface ValidationPolicy {
 	LevelConstraint getSigningCertificateDigestValueMatchConstraint(Context context);
 
 	/**
+	 * @return {@code LevelConstraint} if AllCertDigestsMatch for a given context element is present in the constraint
+	 *         file, null otherwise.
+	 */
+    LevelConstraint getAllSigningCertificateDigestValuesMatchConstraint(Context context);
+
+    /**
 	 * @return {@code LevelConstraint} if IssuerSerialMatch for a given context element is present in the constraint
 	 *         file, null otherwise.
 	 */
