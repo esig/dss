@@ -33,10 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -247,31 +244,49 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getNextUpdateDate());
 		assertTrue(czTL.getParsingCacheInfo().getIssueDate().before(czTL.getParsingCacheInfo().getNextUpdateDate()));
 		assertNotNull(czTL.getParsingCacheInfo().getDistributionPoints());
-		assertThrows(UnsupportedOperationException.class, () -> czTL.getParsingCacheInfo().getDistributionPoints().add(new String()));
+		List<String> czDistributionPoints = czTL.getParsingCacheInfo().getDistributionPoints();
+		assertThrows(UnsupportedOperationException.class, () -> czDistributionPoints.add("bla"));
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
-		assertThrows(UnsupportedOperationException.class, () -> czTL.getParsingCacheInfo().getTrustServiceProviders().add(new TrustServiceProvider()));
+		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider();
+		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		
 		TrustServiceProvider trustServiceProvider = czTL.getParsingCacheInfo().getTrustServiceProviders().get(0);
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getElectronicAddresses().put(new String(), new ArrayList<String>()));
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getNames().put(new String(), new ArrayList<String>()));
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getTradeNames().put(new String(), new ArrayList<String>()));
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getInformation().put(new String(), new String()));
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getPostalAddresses().put(new String(), new String()));
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getRegistrationIdentifiers().add(new String()));
-		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getServices().add(trustServiceProvider.getServices().get(0)));
+		Map<String, List<String>> electronicAddresses = trustServiceProvider.getElectronicAddresses();
+		String key = "bla";
+		List<String> emptyList = Collections.emptyList();
+		assertThrows(UnsupportedOperationException.class, () -> electronicAddresses.put(key, emptyList));
+		Map<String, List<String>> names = trustServiceProvider.getNames();
+		assertThrows(UnsupportedOperationException.class, () -> names.put(key, emptyList));
+		Map<String, List<String>> tradeNames = trustServiceProvider.getTradeNames();
+		assertThrows(UnsupportedOperationException.class, () -> tradeNames.put(key, emptyList));
+		Map<String, String> information = trustServiceProvider.getInformation();
+		assertThrows(UnsupportedOperationException.class, () -> information.put(key, key));
+		Map<String, String> postalAddresses = trustServiceProvider.getPostalAddresses();
+		assertThrows(UnsupportedOperationException.class, () -> postalAddresses.put(key, "value"));
+		List<String> registrationIdentifiers = trustServiceProvider.getRegistrationIdentifiers();
+		assertThrows(UnsupportedOperationException.class, () -> registrationIdentifiers.add(key));
+		List<TrustService> services = trustServiceProvider.getServices();
+		TrustService trustService1 = trustServiceProvider.getServices().get(0);
+		assertThrows(UnsupportedOperationException.class, () -> services.add(trustService1));
 		
 		TrustService trustService = trustServiceProvider.getServices().get(0);
-		assertThrows(UnsupportedOperationException.class, () -> trustService.getCertificates().add(czSigningCertificate));
+		List<CertificateToken> certificates = trustService.getCertificates();
+		assertThrows(UnsupportedOperationException.class, () -> certificates.add(czSigningCertificate));
 		
 		TimeDependentValues<TrustServiceStatusAndInformationExtensions> timeDependentValues = trustService.getStatusAndInformationExtensions();
 		TrustServiceStatusAndInformationExtensions latest = timeDependentValues.getLatest();
-		assertThrows(UnsupportedOperationException.class, () -> latest.getAdditionalServiceInfoUris().add(new String()));
-		assertThrows(UnsupportedOperationException.class, () -> latest.getConditionsForQualifiers()
-				.add(new ConditionForQualifiers(new CompositeCondition(), new ArrayList<String>())));
-		assertThrows(UnsupportedOperationException.class, () -> latest.getNames().put(new String(), new ArrayList<String>()));
-		assertThrows(UnsupportedOperationException.class, () -> latest.getServiceSupplyPoints().add(new String()));
+		List<String> additionalServiceInfoUris = latest.getAdditionalServiceInfoUris();
+		assertThrows(UnsupportedOperationException.class, () -> additionalServiceInfoUris.add(key));
+		List<ConditionForQualifiers> conditionsForQualifiers = latest.getConditionsForQualifiers();
+		ConditionForQualifiers conditionForQualifiers = new ConditionForQualifiers(new CompositeCondition(), new ArrayList<String>());
+		assertThrows(UnsupportedOperationException.class, () -> conditionsForQualifiers.add(conditionForQualifiers));
+		Map<String, List<String>> latestNames = latest.getNames();
+		assertThrows(UnsupportedOperationException.class, () -> latestNames.put(key, emptyList));
+		List<String> serviceSupplyPoints = latest.getServiceSupplyPoints();
+		assertThrows(UnsupportedOperationException.class, () -> serviceSupplyPoints.add(key));
 		
 		assertTrue(czTL.getValidationCacheInfo().isValid());
 		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationCacheInfo().getIndication());

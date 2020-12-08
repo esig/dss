@@ -68,7 +68,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	 * @param cmsSignedData      {@link CMSSignedData}
 	 * @param unsignedAttributes {@link AttributeTable} unsignedAttributes
 	 */
-	public CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
+	protected CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cmsSignedData;
 		this.unsignedAttributes = unsignedAttributes;
 		extract();

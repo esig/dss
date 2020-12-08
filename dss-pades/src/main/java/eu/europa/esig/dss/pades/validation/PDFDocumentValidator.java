@@ -78,6 +78,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     public PDFDocumentValidator(final DSSDocument document) {
         super(new PAdESSignatureScopeFinder());
         this.document = document;
+        if (!DSSUtils.compareFirstBytes(document, pdfPreamble)) {
+            throw new DSSException("Not supported document");
+        }
     }
 
     @Override

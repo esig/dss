@@ -70,7 +70,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * 
 	 * @param tspSource {@link TSPSource}
 	 */
-	public CAdESSignatureExtension(final TSPSource tspSource) {
+	protected CAdESSignatureExtension(final TSPSource tspSource) {
 		Objects.requireNonNull(tspSource, "Missing TSPSource");
 		this.tspSource = tspSource;
 	}

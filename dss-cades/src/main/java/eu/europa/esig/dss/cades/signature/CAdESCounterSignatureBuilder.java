@@ -100,7 +100,7 @@ public class CAdESCounterSignatureBuilder {
 				}
 				assertCounterSignaturePossible(signerInformation);
 
-				SignerInformationStore counterSignatureSignerInfoStore = generateCounterSignature(originalCMSSignedData, signerInformation, parameters,
+				SignerInformationStore counterSignatureSignerInfoStore = generateCounterSignature(signerInformation, parameters,
 						signatureValue);
 
 				result.add(SignerInformation.addCounterSigners(signerInformation, counterSignatureSignerInfoStore));
@@ -164,7 +164,7 @@ public class CAdESCounterSignatureBuilder {
 		}
 	}
 
-	private SignerInformationStore generateCounterSignature(CMSSignedData originalCMSSignedData, SignerInformation signerInformation,
+	private SignerInformationStore generateCounterSignature(SignerInformation signerInformation,
 			CAdESCounterSignatureParameters parameters, SignatureValue signatureValue) {
 		CMSSignedDataBuilder builder = new CMSSignedDataBuilder(certificateVerifier);
 

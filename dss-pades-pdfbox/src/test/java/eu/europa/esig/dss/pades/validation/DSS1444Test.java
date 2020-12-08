@@ -94,15 +94,6 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void test3bis() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
-			assertTrue(exception.getMessage().contains("Error: End-of-File, expected line"));
-		}
-	}
-
-	@Test
 	public void test4() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/sample.pdf")) {
 			PDDocument document = PDDocument.load(is);

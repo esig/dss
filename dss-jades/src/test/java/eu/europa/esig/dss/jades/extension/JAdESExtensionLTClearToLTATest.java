@@ -53,8 +53,8 @@ public class JAdESExtensionLTClearToLTATest extends AbstractJAdESTestSignature {
 		assertEquals("Unable to extend JAdES-LTA level. Clear 'etsiU' incorporation requires a canonicalization method!",
 				exception.getMessage());
 
-		exception = assertThrows(DSSException.class,
-				() -> signatureParameters.getArchiveTimestampParameters().setCanonicalizationMethod("c14n"));
+		JAdESTimestampParameters archiveTimestampParameters = signatureParameters.getArchiveTimestampParameters();
+		exception = assertThrows(DSSException.class, () -> archiveTimestampParameters.setCanonicalizationMethod("c14n"));
 		assertEquals("Canonicalization is not supported in the current version.", exception.getMessage());
 
 		signatureParameters.setBase64UrlEncodedEtsiUComponents(true);

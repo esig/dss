@@ -19,7 +19,7 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 	 * 
 	 * @param signature {@link AdvancedSignature}
 	 */
-	public AbstractSignatureIdentifierBuilder(final AdvancedSignature signature) {
+	protected AbstractSignatureIdentifierBuilder(final AdvancedSignature signature) {
 		this.signature = signature;
 	}
 	

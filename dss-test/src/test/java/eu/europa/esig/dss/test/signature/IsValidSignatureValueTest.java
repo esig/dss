@@ -36,19 +36,21 @@ public class IsValidSignatureValueTest extends PKIFactoryAccess {
 		assertFalse(service.isValidSignatureValue(wrong, signatureValue, getSigningCert()));
 		assertFalse(service.isValidSignatureValue(empty, signatureValue, getSigningCert()));
 
+		ToBeSigned emptyToBeSigned = new ToBeSigned();
+		SignatureValue emptySignatureValue = new SignatureValue();
 		CertificateToken currentSignCert = getSigningCert();
 		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(null, signatureValue, currentSignCert));
-		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(new ToBeSigned(), signatureValue, currentSignCert));
+		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(emptyToBeSigned, signatureValue, currentSignCert));
 		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(correct, null, currentSignCert));
-		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(correct, new SignatureValue(), currentSignCert));
+		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(correct, emptySignatureValue, currentSignCert));
 		assertThrows(NullPointerException.class, () -> service.isValidSignatureValue(correct, signatureValue, null));
 
 		SignatureAlgorithm originalAlgorithm = signatureValue.getAlgorithm();
 
 		SignatureValue wrongSignatureValue = new SignatureValue(originalAlgorithm, "Hello".getBytes());
-		SignatureValue emptySignatureValue = new SignatureValue(originalAlgorithm, new byte[] {});
+		SignatureValue emptySignatureValueBinary = new SignatureValue(originalAlgorithm, new byte[] {});
 		assertFalse(service.isValidSignatureValue(correct, wrongSignatureValue, getSigningCert()));
-		assertFalse(service.isValidSignatureValue(correct, emptySignatureValue, getSigningCert()));
+		assertFalse(service.isValidSignatureValue(correct, emptySignatureValueBinary, getSigningCert()));
 
 		signingAlias = EE_GOOD_USER;
 		assertFalse(service.isValidSignatureValue(correct, signatureValue, getSigningCert()));

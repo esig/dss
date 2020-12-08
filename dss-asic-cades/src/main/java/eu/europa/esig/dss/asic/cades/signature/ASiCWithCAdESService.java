@@ -577,7 +577,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		assertSigningDateInCertificateValidityRange(parameters);
 
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		verifyAndSetCounterSignatureParameters(parameters);
 		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 
@@ -598,7 +598,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		verifyAndSetCounterSignatureParameters(parameters);
 		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 
@@ -620,9 +620,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 	
 	@Override
-	protected void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper,
-			CAdESCounterSignatureParameters parameters) {
-		super.verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+	protected void verifyAndSetCounterSignatureParameters(CAdESCounterSignatureParameters parameters) {
+		super.verifyAndSetCounterSignatureParameters(parameters);
 
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
 			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "

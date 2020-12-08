@@ -35,12 +35,12 @@ public abstract class AbstractTransform implements DSSTransform {
 
 	protected final String algorithm;
 	protected DSSNamespace namespace = XAdESNamespaces.XMLDSIG;
-	
-	public AbstractTransform(String algorithm) {
+
+	protected AbstractTransform(String algorithm) {
 		this.algorithm = algorithm;
 	}
-	
-	public AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+
+	protected AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
 		this.namespace = xmlDSigNamespace;
 		this.algorithm = algorithm;
 	}

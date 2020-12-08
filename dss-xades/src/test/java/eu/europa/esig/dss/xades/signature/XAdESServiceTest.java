@@ -188,19 +188,18 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
 		assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 
-		exception = assertThrows(NullPointerException.class,
-				() -> signAndValidate(Arrays.asList(documentToSign1, documentToSign2), signatureParameters));
+		final List<DSSDocument> documents = Arrays.asList(documentToSign1, documentToSign2);
+		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, signatureParameters));
 		assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
 
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		exception = assertThrows(DSSException.class,
-				() -> signAndValidate(Arrays.asList(documentToSign1, documentToSign2), signatureParameters));
+		exception = assertThrows(DSSException.class, () -> signAndValidate(documents, signatureParameters));
 		assertEquals("All documents in the list to be signed shall have names!", exception.getMessage());
 
 		documentToSign1.setName("doc");
 		documentToSign2.setName("doc");
-		exception = assertThrows(DSSException.class, () -> signAndValidate(Arrays.asList(documentToSign1, documentToSign2), 
-				signatureParameters));
+		final List<DSSDocument> docsWithName = Arrays.asList(documentToSign1, documentToSign2);
+		exception = assertThrows(DSSException.class, () -> signAndValidate(docsWithName, signatureParameters));
 		assertEquals("The documents to be signed shall have different names! "
 				+ "The name 'doc' appears multiple times.", exception.getMessage());
 		
@@ -258,15 +257,16 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	@Test
 	public void contentTstTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		InMemoryDocument emptyBinaryDoc = new InMemoryDocument(new byte[]{});
 		Exception exception = assertThrows(NullPointerException.class, () -> 
-				service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
+				service.getContentTimestamp(emptyBinaryDoc, signatureParameters));
 		assertEquals("SignaturePackaging must be defined!", exception.getMessage());
 		
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
+		assertNotNull(service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
 		
 		signatureParameters.setContentTimestampParameters(null);
-		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
+		assertNotNull(service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
 		
 		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();
 		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));

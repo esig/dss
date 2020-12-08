@@ -57,7 +57,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	
 	private CryptographicInformationBuilder cryptographicInformationBuilder;
 
-	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
+	protected AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlSAV());
 
 		this.token = token;

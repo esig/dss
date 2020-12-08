@@ -31,12 +31,12 @@ public abstract class AbstractSignDocumentDTO implements Serializable {
 	
 	private RemoteSignatureParameters parameters;
 	private SignatureValueDTO signatureValue;
-	
-	public AbstractSignDocumentDTO() {
+
+	protected AbstractSignDocumentDTO() {
 		super();
 	}
 
-	public AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
+	protected AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
 		super();
 		this.parameters = parameters;
 		this.signatureValue = signatureValue;

@@ -161,7 +161,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @param certificateVerifier
 	 *            the certificate verifier with its OCSPSource,...
 	 */
-	public XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+	protected XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		
 		this.params = params;

@@ -98,7 +98,7 @@ public abstract class XAdESBuilder {
 	 * @param certificateVerifier
 	 *            {@code CertificateVerifier}
 	 */
-	public XAdESBuilder(final CertificateVerifier certificateVerifier) {
+	protected XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
 	

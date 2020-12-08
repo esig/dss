@@ -189,7 +189,7 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
 	}
 	
-	protected void verifyAndSetCounterSignatureParameters(ASiCCounterSignatureHelper counterSignatureHelper, CSP parameters) {
+	protected void verifyAndSetCounterSignatureParameters(CSP parameters) {
 		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");

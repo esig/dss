@@ -34,8 +34,8 @@ public abstract class AbstractSimpleReportBuilder {
 	private final ValidationPolicy policy;
 	protected final DiagnosticData diagnosticData;
 	protected final DetailedReport detailedReport;
-	
-	public AbstractSimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+
+	protected AbstractSimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.policy = policy;
 		this.diagnosticData = diagnosticData;

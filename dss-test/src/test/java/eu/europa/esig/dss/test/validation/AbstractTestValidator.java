@@ -76,26 +76,20 @@ public abstract class AbstractTestValidator {
 
 	@Test
 	public void binaryDocumentValidation() {
-		assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator validator = initValidator(getBinaryDocument());
-			validate(validator);
-		});
+		DSSDocument document = getBinaryDocument();
+		assertThrows(DSSException.class, () -> initValidator(document));
 	}
 
 	@Test
 	public void malformedDocumentValidation() {
-		assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator validator = initValidator(getMalformedDocument());
-			validate(validator);
-		});
+		DSSDocument document = getMalformedDocument();
+		assertThrows(DSSException.class, () -> initValidator(document));
 	}
 
 	@Test
 	public void otherDocumentTypeValidation() {
-		assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator validator = initValidator(getOtherTypeDocument());
-			validate(validator);
-		});
+		DSSDocument document = getOtherTypeDocument();
+		assertThrows(DSSException.class, () -> initValidator(document));
 	}
 
 	@Test
@@ -140,18 +134,12 @@ public abstract class AbstractTestValidator {
 
 	@Test
 	public void nullDocumentProvided() {
-		assertThrows(NullPointerException.class, () -> {
-			SignedDocumentValidator validator = initValidator(null);
-			validate(validator);
-		});
+		assertThrows(NullPointerException.class, () ->  initValidator(null));
 	}
 
 	@Test
 	public void nullFromDocument() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(null);
-			validate(validator);
-		});
+		Exception exception = assertThrows(NullPointerException.class, () ->  SignedDocumentValidator.fromDocument(null));
 		assertEquals("DSSDocument is null", exception.getMessage());
 	}
 

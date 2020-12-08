@@ -154,8 +154,8 @@ public class OnlineOCSPSourceTest {
 		assertTrue(cacheFolder.exists());
 		
 		// nothing in cache
-		Exception exception = assertThrows(DSSException.class, () -> 
-				new OnlineOCSPSource(fileCacheDataLoader).getRevocationToken(certificateToken, rootToken));
+		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource(fileCacheDataLoader);
+		Exception exception = assertThrows(DSSException.class, () -> onlineOCSPSource.getRevocationToken(certificateToken, rootToken));
 		assertEquals("Unable to retrieve OCSP response", exception.getMessage());
 
 		/* 3) Test OnlineOCSPSource with a custom FileCacheDataLoader (with online loader) */

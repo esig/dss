@@ -279,7 +279,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		verifyAndSetCounterSignatureParameters(parameters);
 		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 		
@@ -295,7 +295,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(counterSignatureHelper, parameters);
+		verifyAndSetCounterSignatureParameters(parameters);
 		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 		
