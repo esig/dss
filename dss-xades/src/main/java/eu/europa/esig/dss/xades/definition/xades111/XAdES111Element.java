@@ -25,6 +25,9 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * The XAdES 1.1.1 elements
+ */
 public enum XAdES111Element implements XAdESElement {
 
 	ALL_DATA_OBJECTS_TIMESTAMP("AllDataObjectsTimeStamp"),
@@ -217,9 +220,13 @@ public enum XAdES111Element implements XAdESElement {
 
 	XML_TIMESTAMP("XMLTimeStamp");
 
+	/** Error message */
 	private static final String NOT_SUPPORTED_XADES_111 = "Element not supported by " + XAdESNamespaces.XADES_111.getUri();
 
+	/** The namespace */
 	private final DSSNamespace namespace;
+
+	/** Tag name */
 	private final String tagName;
 
 	XAdES111Element(String tagName) {

@@ -192,7 +192,7 @@
 			</xsd:element>
 			<xsd:element name="SigningCertificateRefersCertificateChain" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those certificate present in the certificate chain</xsd:documentation>
+					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those certificates present in the certificate chain</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ReferencesToAllCertificateChainPresent" type="LevelConstraint" minOccurs="0">

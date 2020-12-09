@@ -21,14 +21,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -36,12 +28,31 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Builds {@code SignatureImageAndPosition}
+ */
 public final class SignatureImageAndPositionBuilder {
 
 	private static final String NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
 	private static final String NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
+	/**
+	 * Builds the {@code SignatureImageAndPosition}
+	 *
+	 * @param signatureImageParameters {@link SignatureImageParameters}
+	 * @param doc {@link PDDocument}
+	 * @param ires {@link ImageAndResolution}
+	 * @return {@link SignatureImageAndPosition}
+	 * @throws IOException if an exception occurs
+	 */
 	public SignatureImageAndPosition build(final SignatureImageParameters signatureImageParameters,
 			final PDDocument doc, final ImageAndResolution ires) throws IOException {
 		try (InputStream is = ires.getInputStream()) {

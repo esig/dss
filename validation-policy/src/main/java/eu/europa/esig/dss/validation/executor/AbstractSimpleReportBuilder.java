@@ -20,22 +20,41 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 
+import java.util.Date;
+
+/**
+ * Abstract code for SimpleReport builder
+ */
 public abstract class AbstractSimpleReportBuilder {
 
+	/** The validation time */
 	private final Date currentTime;
+
+	/** The validation policy */
 	private final ValidationPolicy policy;
+
+	/** The DiagnosticData to use */
 	protected final DiagnosticData diagnosticData;
+
+	/** The detailed report */
 	protected final DetailedReport detailedReport;
 
-	protected AbstractSimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+	/**
+	 * Default constructor
+	 *
+	 * @param currentTime {@link Date} validation time
+	 * @param policy {@link ValidationPolicy}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param detailedReport {@link DetailedReport}
+	 */
+	public AbstractSimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData,
+									   DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.policy = policy;
 		this.diagnosticData = diagnosticData;
@@ -64,10 +83,10 @@ public abstract class AbstractSimpleReportBuilder {
 	}
 
 	private void addPolicyNode(XmlSimpleReport report) {
-		XmlValidationPolicy xmlpolicy = new XmlValidationPolicy();
-		xmlpolicy.setPolicyName(policy.getPolicyName());
-		xmlpolicy.setPolicyDescription(policy.getPolicyDescription());
-		report.setValidationPolicy(xmlpolicy);
+		XmlValidationPolicy xmlPolicy = new XmlValidationPolicy();
+		xmlPolicy.setPolicyName(policy.getPolicyName());
+		xmlPolicy.setPolicyDescription(policy.getPolicyDescription());
+		report.setValidationPolicy(xmlPolicy);
 	}
 
 	private void addValidationTime(XmlSimpleReport report) {

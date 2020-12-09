@@ -20,37 +20,62 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Contains utils for working with ASiC containers
+ */
 public final class ASiCUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCUtils.class);
 
+	/** The manifest name */
 	public static final String MANIFEST_FILENAME = "Manifest";
+
+	/** The ASiC Manifest name */
 	public static final String ASIC_MANIFEST_FILENAME = "ASiCManifest";
+
+	/** The ASiC Archive Manifest name */
 	public static final String ASIC_ARCHIVE_MANIFEST_FILENAME = "ASiCArchiveManifest";
+
+	/** The mimetype filename */
 	public static final String MIME_TYPE = "mimetype";
+
+	/** The mimetype comment */
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
+
+	/** The META-INF folder */
 	public static final String META_INF_FOLDER = "META-INF/";
+
+	/** The "package.zip" filename */
 	public static final String PACKAGE_ZIP = "package.zip";
+
+	/** The signature filename */
 	public static final String SIGNATURE_FILENAME = "signature";
+
+	/** The timestamp filename */
 	public static final String TIMESTAMP_FILENAME = "timestamp";
+
+	/** The signature file extension */
 	public static final String CADES_SIGNATURE_EXTENSION = ".p7s";
+
+	/** The timestamp file extension */
 	public static final String TST_EXTENSION = ".tst";
+
+	/** The XML file extension */
 	public static final String XML_EXTENSION = ".xml";
 
 	private ASiCUtils() {
@@ -411,7 +436,8 @@ public final class ASiCUtils {
 	/**
 	 * Transforms {@code num} with the pattern:
 	 *     {@code "2 -> 002"}, {@code "10 -> 010"}, etc.
-	 * @param num
+	 *
+	 * @param num number to transform
 	 * @return {@link String}
 	 */
 	public static String getPadNumber(int num) {

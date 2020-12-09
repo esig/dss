@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.sync;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
@@ -48,7 +39,18 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+/**
+ * Loads trusted certificate source
+ */
 public class TrustedListCertificateSourceSynchronizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListCertificateSourceSynchronizer.class);
@@ -78,8 +80,19 @@ public class TrustedListCertificateSourceSynchronizer {
 	 */
 	private final SynchronizerCacheAccess cacheAccess;
 
-	public TrustedListCertificateSourceSynchronizer(TLSource[] tlSources, LOTLSource[] lotlSources, TrustedListsCertificateSource certificateSource,
-			SynchronizationStrategy synchronizationStrategy, SynchronizerCacheAccess cacheAccess) {
+	/**
+	 * Default constructor
+	 *
+	 * @param tlSources {@link TLSource}s
+	 * @param lotlSources {@link LOTLSource}s
+	 * @param certificateSource {@link TrustedListsCertificateSource}
+	 * @param synchronizationStrategy {@link SynchronizationStrategy}
+	 * @param cacheAccess {@link SynchronizerCacheAccess}
+	 */
+	public TrustedListCertificateSourceSynchronizer(TLSource[] tlSources, LOTLSource[] lotlSources,
+													TrustedListsCertificateSource certificateSource,
+													SynchronizationStrategy synchronizationStrategy,
+													SynchronizerCacheAccess cacheAccess) {
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 		this.synchronizationStrategy = synchronizationStrategy;
@@ -87,6 +100,9 @@ public class TrustedListCertificateSourceSynchronizer {
 		this.cacheAccess = cacheAccess;
 	}
 
+	/**
+	 * Synchronizes the trusted certificate source based on the validation job processing result
+	 */
 	public void sync() {
 		try {
 

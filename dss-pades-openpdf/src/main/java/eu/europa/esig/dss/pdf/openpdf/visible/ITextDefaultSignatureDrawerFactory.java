@@ -25,6 +25,9 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 
+/**
+ * Default implementation for IText (OpenPDF) to load a relevant visual signature drawer
+ */
 public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerFactory {
 
 	@Override

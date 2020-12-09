@@ -25,6 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Contains a map of occurred exceptions to different URL calls
+ */
 public class DSSDataLoaderMultipleException extends DSSExternalResourceException {
 
 	private static final long serialVersionUID = 4981228392826668216L;

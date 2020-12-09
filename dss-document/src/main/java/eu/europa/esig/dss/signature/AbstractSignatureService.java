@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.signature;
 
-import java.security.GeneralSecurityException;
-import java.security.Security;
-import java.security.Signature;
-import java.util.Date;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,7 +34,21 @@ import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.security.GeneralSecurityException;
+import java.security.Security;
+import java.security.Signature;
+import java.util.Date;
+import java.util.Objects;
+
+/**
+ * The abstract class containing the main methods for a signature creation/extension
+ *
+ * @param <SP> SignatureParameters
+ * @param <TP> TimestampParameters
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> 
 				implements DocumentSignatureService<SP, TP> {
@@ -54,8 +59,10 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureService.class);
 
+	/** The TSPSourse to use for timestamp requests */
 	protected TSPSource tspSource;
 
+	/** The CertificateVerifier used for a certificate chain validation */
 	protected final CertificateVerifier certificateVerifier;
 
 	/**
@@ -100,12 +107,17 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 					notBefore.toString(), notAfter.toString()));
 		}
 	}
-	
-	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, MimeType containerMimeType) {
-		return getFinalArchiveName(originalFile, operation, null, containerMimeType);
-	}
 
-	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, MimeType containerMimeType) {
+	/**
+	 * Generates and returns a final name for the document to create
+	 *
+	 * @param originalFile {@link DSSDocument} original signed/extended document
+	 * @param operation {@link SigningOperation} the performed signing operation
+	 * @param level {@link SignatureLevel} the final signature level
+	 * @param containerMimeType {@link MimeType} the expected mimeType
+	 * @return {@link String} the document filename
+	 */
+	protected String getFinalDocumentName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, MimeType containerMimeType) {
 		StringBuilder finalName = new StringBuilder();
 
 		String originalName = null;
@@ -185,13 +197,28 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		}
 		return Utils.EMPTY_STRING;
 	}
-	
+
+	/**
+	 * Returns the final name for the document to create
+	 *
+	 * @param originalFile {@link DSSDocument} original signed/extended document
+	 * @param operation {@link SigningOperation} the performed signing operation
+	 * @return {@link String} the document filename
+	 */
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation) {
 		return getFinalFileName(originalFile, operation, null);
 	}
 
+	/**
+	 * Returns the final name for the document to create
+	 *
+	 * @param originalFile {@link DSSDocument} original signed/extended document
+	 * @param operation {@link SigningOperation} the performed signing operation
+	 * @param level {@link SignatureLevel} the final signature level
+	 * @return {@link String} the document filename
+	 */
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
-		return getFinalArchiveName(originalFile, operation, level, null);
+		return getFinalDocumentName(originalFile, operation, level, null);
 	}
 
 	@Override

@@ -42,6 +42,12 @@ public class SingleDssDict extends AbstractPdfDssDict {
 	/** Represents a list of VRI dictionaries incorporated into the DSS dictionary */
 	private final List<PdfVRIDict> vris;
 
+	/**
+	 * Extract a DSS dictionary from a {@code PdfDict}
+	 *
+	 * @param documentDict {@link PdfDict}
+	 * @return {@link SingleDssDict}
+	 */
 	public static SingleDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
 			final PdfDict dssCatalog = documentDict.getAsDict(PAdESConstants.DSS_DICTIONARY_NAME);
@@ -53,6 +59,11 @@ public class SingleDssDict extends AbstractPdfDssDict {
 		return null;
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param dssDictionary {@link PdfDict}
+	 */
 	protected SingleDssDict(PdfDict dssDictionary) {
 		super(dssDictionary);
 		this.vris = extractVRIs(dssDictionary);

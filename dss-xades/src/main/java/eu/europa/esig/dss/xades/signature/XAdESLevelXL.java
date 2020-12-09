@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.List;
-import java.util.Set;
-
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -33,6 +28,10 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import org.w3c.dom.Element;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * XL profile of XAdES signature
@@ -42,6 +41,8 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 	/**
 	 * The default constructor for XAdESLevelXL.
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
 	public XAdESLevelXL(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);

@@ -29,11 +29,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+/**
+ * Checks if the container type is acceptable
+ */
 public class ContainerTypeCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
+	/** ASiC container type */
 	private final ASiCContainerType containerType;
 
-	public ContainerTypeCheck(I18nProvider i18nProvider, XmlFC result, ASiCContainerType containerType, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param containerType {@link ASiCContainerType}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public ContainerTypeCheck(I18nProvider i18nProvider, XmlFC result, ASiCContainerType containerType,
+							  MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.containerType = containerType;
 	}

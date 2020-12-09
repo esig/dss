@@ -20,19 +20,28 @@
  */
 package eu.europa.esig.dss.ws.validation.rest;
 
-import java.util.List;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import eu.europa.esig.dss.ws.validation.rest.client.RestDocumentValidationService;
 
+import java.util.List;
+
+/**
+ * REST implementation of the validation service
+ */
 @SuppressWarnings("serial")
 public class RestDocumentValidationServiceImpl implements RestDocumentValidationService {
-	
+
+	/** The validation service to use */
 	private RemoteDocumentValidationService validationService;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param validationService {@link RemoteDocumentValidationService}
+	 */
 	public void setValidationService(RemoteDocumentValidationService validationService) {
 		this.validationService = validationService;
 	}

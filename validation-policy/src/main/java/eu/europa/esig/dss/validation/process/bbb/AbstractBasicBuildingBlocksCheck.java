@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -47,23 +42,52 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Abstract BasicBuildingBlock check
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Diagnostic data */
 	private final DiagnosticData diagnosticData;
 
-	private final XmlBasicBuildingBlocks tokenBBB;
+	/** Contains BasicBuildingBlocks performed for the token */
+	private final XmlBasicBuildingBlocks tokenBBBs;
+
+	/** Map of token ids and related BBBs */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
+	/** The validation indication */
 	private Indication indication;
+
+	/** The validation subIndication */
 	private SubIndication subIndication;
+
+	/** List of errors */
 	private List<XmlName> errors = new ArrayList<>();
 
-	protected AbstractBasicBuildingBlocksCheck(I18nProvider i18nProvider, T result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks tokenBBB,
-			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint, tokenBBB.getId());
-
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param tokenBBBs {@link XmlBasicBuildingBlocks} for the current token
+	 * @param bbbs map of all BBBs
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public AbstractBasicBuildingBlocksCheck(I18nProvider i18nProvider, T result, DiagnosticData diagnosticData,
+											XmlBasicBuildingBlocks tokenBBBs, Map<String, XmlBasicBuildingBlocks> bbbs,
+											LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, tokenBBBs.getId());
 		this.diagnosticData = diagnosticData;
-		this.tokenBBB = tokenBBB;
+		this.tokenBBBs = tokenBBBs;
 		this.bbbs = bbbs;
 	}
 
@@ -79,7 +103,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		 * Signature validation process shall return the indication FAILED with the
 		 * sub-indication FORMAT_FAILURE.
 		 */
-		XmlFC fc = tokenBBB.getFC();
+		XmlFC fc = tokenBBBs.getFC();
 		if (fc != null) {
 			XmlConclusion fcConclusion = fc.getConclusion();
 			if (!Indication.PASSED.equals(fcConclusion.getIndication())) {
@@ -99,7 +123,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		 * process shall return the indication INDETERMINATE with the sub-indication
 		 * NO_SIGNING_CERTIFICATE_FOUND, otherwise it shall go to the next step.
 		 */
-		XmlISC isc = tokenBBB.getISC();
+		XmlISC isc = tokenBBBs.getISC();
 		XmlConclusion iscConclusion = isc.getConclusion();
 		if (Indication.INDETERMINATE.equals(iscConclusion.getIndication())
 				&& SubIndication.NO_SIGNING_CERTIFICATE_FOUND.equals(iscConclusion.getSubIndication())) {
@@ -116,7 +140,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		 * process shall return the indication INDETERMINATE together with that
 		 * sub-indication, otherwise it shall go to the next step.
 		 */
-		XmlVCI vci = tokenBBB.getVCI();
+		XmlVCI vci = tokenBBBs.getVCI();
 		if (vci != null) {
 			XmlConclusion vciConclusion = vci.getConclusion();
 			if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
@@ -158,7 +182,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		 * validation process shall set X509_validation-status to INDETERMINATE with the
 		 * sub-indication REVOKED_NO_POE. The process shall continue with step 5).
 		 */
-		XmlXCV xcv = tokenBBB.getXCV();
+		XmlXCV xcv = tokenBBBs.getXCV();
 		XmlConclusion x509ValidationStatus = null;
 		if (xcv != null) {
 
@@ -169,7 +193,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			errors.addAll(xcvConclusion.getErrors());
 
 			if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
-				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
+				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
 				if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, getRevocationDateForSigningCertificate(currentSignature))) {
 					x509ValidationStatus.setIndication(Indication.FAILED);
 					x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
@@ -193,7 +217,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 					&& (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())
 							|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(xcvConclusion.getSubIndication()))) {
 
-				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
+				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
 				if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, getExpirationDateForSigningCertificate(currentSignature))) {
 					x509ValidationStatus.setIndication(Indication.FAILED);
 					x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
@@ -243,7 +267,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		 * indication, sub-indication and associated information provided by the
 		 * Cryptographic Verification process.
 		 */
-		XmlCV cv = tokenBBB.getCV();
+		XmlCV cv = tokenBBBs.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
 		if (Indication.PASSED.equals(cvConclusion.getIndication())) {
 			if (x509ValidationStatus != null && !Indication.PASSED.equals(x509ValidationStatus.getIndication())) {
@@ -300,14 +324,14 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		 * indication and associated information returned by the signature acceptance
 		 * validation building block
 		 */
-		XmlSAV sav = tokenBBB.getSAV();
+		XmlSAV sav = tokenBBBs.getSAV();
 		XmlConclusion savConclusion = sav.getConclusion();
 		if (Indication.INDETERMINATE.equals(savConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(savConclusion.getSubIndication())) {
 
 			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
 
-			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
+			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
 			if (currentSignature != null && isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo) 
 					&& isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
 				indication = Indication.INDETERMINATE;

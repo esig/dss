@@ -1,15 +1,24 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * The abstract class allowing the signature extension
+ */
 public abstract class JAdESExtensionBuilder {
 
-	protected void assertExtensionPossible(JWS jws, boolean isBase64UrlEtsiUComponents) {
+	/**
+	 * Checks if the type of etsiU components is consistent
+	 *
+	 * @param jws {@link JWS} to check
+	 * @param isBase64UrlEtsiUComponents if the new component shall be base64url encoded
+	 */
+	protected void assertEtsiUComponentsConsistent(JWS jws, boolean isBase64UrlEtsiUComponents) {
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		if (Utils.isCollectionNotEmpty(etsiU)) {
 			if (!DSSJsonUtils.checkComponentsUnicity(etsiU)) {
@@ -18,7 +27,7 @@ public abstract class JAdESExtensionBuilder {
 			}
 			if (DSSJsonUtils.areAllBase64UrlComponents(etsiU) != isBase64UrlEtsiUComponents) {
 				throw new DSSException(String.format("Extension is not possible! The encoding of 'etsiU' "
-						+ "components shall match! Use jadesSingatureParameters.setBase64UrlEncodedEtsiUComponents(%s)",
+						+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(%s)",
 						!isBase64UrlEtsiUComponents));
 			}
 		}

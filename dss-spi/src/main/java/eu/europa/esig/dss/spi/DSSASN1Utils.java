@@ -144,6 +144,7 @@ public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
+	/** Contains a list of all CAdES timestamp OIDs */
 	private static List<ASN1ObjectIdentifier> timestampOids;
 
 	static {
@@ -158,8 +159,10 @@ public final class DSSASN1Utils {
 		timestampOids.add(id_aa_signatureTimeStampToken);
 	}
 
+	/** The QC type statement OID */
 	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
 
+	/** The QC legislation OID */
 	private static final String QC_LEGISLATION_OID = "0.4.0.1862.1.7";
 
 	/**
@@ -242,6 +245,12 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Gets the DER-encoded binaries of the {@code BasicOCSPResp}
+	 *
+	 * @param basicOCSPResp {@link BasicOCSPResp}
+	 * @return DER-encoded binaries
+	 */
 	public static byte[] getEncoded(BasicOCSPResp basicOCSPResp) {
 		try {
 			BasicOCSPResponse basicOCSPResponse = BasicOCSPResponse.getInstance(basicOCSPResp.getEncoded());
@@ -251,6 +260,12 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Converts {@code ASN1GeneralizedTime} to {@code Date}
+	 *
+	 * @param asn1Date {@link ASN1GeneralizedTime}
+	 * @return {@link Date}
+	 */
 	public static Date toDate(final ASN1GeneralizedTime asn1Date) {
 		try {
 			return asn1Date.getDate();
@@ -259,6 +274,12 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Reads {@code ASN1OctetString} value and returns
+	 *
+	 * @param value {@link ASN1OctetString}
+	 * @return {@link String}
+	 */
 	public static String toString(final ASN1OctetString value) {
 		return new String(value.getOctets());
 	}
@@ -289,7 +310,13 @@ public final class DSSASN1Utils {
 			throw new DSSException("Unable to encode to DER", e);
 		}
 	}
-	
+
+	/**
+	 * Gets the DER encoded binaries of {@code TimeStampToken}
+	 *
+	 * @param timeStampToken {@link TimeStampToken}
+	 * @return DER encoded binaries
+	 */
 	public static byte[] getDEREncoded(final TimeStampToken timeStampToken) {
 		return getDEREncoded(timeStampToken.toCMSSignedData());
 	}
@@ -442,8 +469,8 @@ public final class DSSASN1Utils {
 	/**
 	 * Extract the Unsigned Attribute Archive Timestamp Cert Hash Index from a timestampToken
 	 *
-	 * @param atsHashIndexValue
-	 * @return
+	 * @param atsHashIndexValue {@link ASN1Sequence}
+	 * @return {@link ASN1Sequence}
 	 */
 	public static ASN1Sequence getCertificatesHashIndex(final ASN1Sequence atsHashIndexValue) {
 		if (atsHashIndexValue != null) {
@@ -459,8 +486,8 @@ public final class DSSASN1Utils {
 	/**
 	 * Extract the Unsigned Attribute Archive Timestamp Crl Hash Index from a timestampToken
 	 *
-	 * @param atsHashIndexValue
-	 * @return
+	 * @param atsHashIndexValue {@link ASN1Sequence}
+	 * @return {@link ASN1Sequence}
 	 */
 	public static ASN1Sequence getCRLHashIndex(final ASN1Sequence atsHashIndexValue) {
 		if (atsHashIndexValue != null) {
@@ -476,8 +503,8 @@ public final class DSSASN1Utils {
 	/**
 	 * Extract the Unsigned Attribute Archive Timestamp Attribute Hash Index from a timestampToken
 	 *
-	 * @param atsHashIndexValue
-	 * @return
+	 * @param atsHashIndexValue {@link ASN1Sequence}
+	 * @return {@link ASN1Sequence}
 	 */
 	public static ASN1Sequence getUnsignedAttributesHashIndex(final ASN1Sequence atsHashIndexValue) {
 		if (atsHashIndexValue != null) {
@@ -532,6 +559,12 @@ public final class DSSASN1Utils {
 		return false;
 	}
 
+	/**
+	 * Retrieves a list of {@code CertificatePolicy}s from a certificate token
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @return a list of {@code CertificatePolicy}s
+	 */
 	public static List<CertificatePolicy> getCertificatePolicies(final CertificateToken certToken) {
 		List<CertificatePolicy> certificatePolicies = new ArrayList<>();
 		final byte[] certificatePoliciesBinaries = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
@@ -630,6 +663,12 @@ public final class DSSASN1Utils {
 		return qcTypesIdList;
 	}
 
+	/**
+	 * Retrieves a list of QC Legislation statements from the given certificate token
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @return a list of QC Legislation statements
+	 */
 	public static List<String> getQCLegislations(CertificateToken certToken) {
 		final List<String> result = new ArrayList<>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
@@ -747,7 +786,7 @@ public final class DSSASN1Utils {
 	 * 
 	 * @param ski a byte array representing ski value (SHA-1 of the public key)
 	 * @param certificateToken {@link CertificateToken} to check
-	 * @return
+	 * @return TRUE if the SKI equals, FALSE otherwise
 	 */
 	public static boolean isSkiEqual(final byte[] ski, final CertificateToken certificateToken) {
 		byte[] certSki = computeSkiFromCert(certificateToken);
@@ -873,6 +912,13 @@ public final class DSSASN1Utils {
 		return isExtendedKeyUsagePresent(certToken, KeyPurposeId.id_kp_OCSPSigning.toOID());
 	}
 
+	/**
+	 * Checks if the keyUsage with {@code oid} is present in the certificate token
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @param oid {@link ASN1ObjectIdentifier}
+	 * @return TRUE if the certificate token contains a keyUsage with the given OID, FALSE otherwise
+	 */
 	public static boolean isExtendedKeyUsagePresent(CertificateToken certToken, ASN1ObjectIdentifier oid) {
 		try {
 			List<String> keyPurposes = certToken.getCertificate().getExtendedKeyUsage();
@@ -900,6 +946,12 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Extract the certificate token from {@code X509CertificateHolder}
+	 *
+	 * @param x509CertificateHolder {@link X509CertificateHolder}
+	 * @return {@link CertificateToken}
+	 */
 	public static CertificateToken getCertificate(final X509CertificateHolder x509CertificateHolder) {
 		try {
 			JcaX509CertificateConverter converter = new JcaX509CertificateConverter().setProvider(DSSSecurityProvider.getSecurityProviderName());
@@ -994,6 +1046,12 @@ public final class DSSASN1Utils {
 		return firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
 	}
 
+	/**
+	 * Gets a map of X500 attribute names and the values
+	 *
+	 * @param x500Principal {@link X500Principal}
+	 * @return a map of X500 attribute names and the values
+	 */
 	public static Map<String, String> get(final X500Principal x500Principal) {
 		Map<String, String> treeMap = new HashMap<>();
 		final byte[] encoded = x500Principal.getEncoded();
@@ -1031,6 +1089,12 @@ public final class DSSASN1Utils {
 		return new X500Principal(utf8Name);
 	}
 
+	/**
+	 * Gets the UTF-8 distinguished names of {@code X500Principal}
+	 *
+	 * @param x500Principal {@link X500Principal}
+	 * @return {@link String} utf-8
+	 */
 	public static String getUtf8String(final X500Principal x500Principal) {
 
 		final byte[] encoded = x500Principal.getEncoded();
@@ -1092,6 +1156,12 @@ public final class DSSASN1Utils {
 		return stringBuilder.toString();
 	}
 
+	/**
+	 * Reads the value
+	 *
+	 * @param attributeValue {@link ASN1Encodable} to read
+	 * @return {@link String} value
+	 */
 	public static String getString(ASN1Encodable attributeValue) {
 		String string;
 		if (attributeValue instanceof ASN1String) {
@@ -1106,6 +1176,13 @@ public final class DSSASN1Utils {
 		return string;
 	}
 
+	/**
+	 * Extract attribute with the {@code identifier} from {@code X500PrincipalHelper}
+	 *
+	 * @param identifier {@link ASN1ObjectIdentifier} oid of the attribute to get value
+	 * @param principal {@link X500PrincipalHelper} to extract the attribute value from
+	 * @return {@link String} value
+	 */
 	public static String extractAttributeFromX500Principal(ASN1ObjectIdentifier identifier, X500PrincipalHelper principal) {
 		final X500Name x500Name = X500Name.getInstance(principal.getEncoded());
 		RDN[] rdns = x500Name.getRDNs(identifier);
@@ -1127,12 +1204,25 @@ public final class DSSASN1Utils {
 		return null;
 	}
 
+	/**
+	 * Extracts the Subject Common name from the certificate token
+	 *
+	 * @param cert {@link CertificateToken}
+	 * @return {@link String}
+	 */
 	public static String getSubjectCommonName(CertificateToken cert) {
 		return extractAttributeFromX500Principal(BCStyle.CN, cert.getSubject());
 	}
 
+	/**
+	 * Extracts the pretty printed name of the certificate token
+	 *
+	 * @param cert {@link CertificateToken}
+	 * @return {@link String}
+	 */
 	public static String getHumanReadableName(CertificateToken cert) {
-		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM, BCStyle.O, BCStyle.OU);
+		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME,
+				BCStyle.PSEUDONYM, BCStyle.O, BCStyle.OU);
 	}
 
 	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {
@@ -1160,11 +1250,23 @@ public final class DSSASN1Utils {
 		return signers.iterator().next();
 	}
 
+	/**
+	 * Checks if the byte defines an ASN1 Sequence
+	 *
+	 * @param tagByte byte to check
+	 * @return TRUE if the byte defines an ASN1 Sequence, FALSE otherwise
+	 */
 	public static boolean isASN1SequenceTag(byte tagByte) {
 		// BERTags.SEQUENCE | BERTags.CONSTRUCTED = 0x30
 		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == tagByte;
 	}
 
+	/**
+	 * Reads the {@code encodable} and returns a {@code Date}
+	 *
+	 * @param encodable {@link ASN1Encodable} to read
+	 * @return {@link Date}
+	 */
 	public static Date getDate(ASN1Encodable encodable) {
 		try {
 			return Time.getInstance(encodable).getDate();
@@ -1174,18 +1276,36 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Checks if the {@code attributeTable} is empty
+	 *
+	 * @param attributeTable {@link AttributeTable}
+	 * @return TRUE if the attribute table is empty, FALSE otherwise
+	 */
 	public static boolean isEmpty(AttributeTable attributeTable) {
 		return (attributeTable == null) || (attributeTable.size() == 0);
 	}
 
-	public static AttributeTable emptyIfNull(AttributeTable original) {
-		if (original == null) {
+	/**
+	 * Returns the current {@code originalAttributeTable} if instantiated, an empty {@code AttributeTable} if null
+	 *
+	 * @param originalAttributeTable {@link AttributeTable}
+	 * @return {@link AttributeTable}
+	 */
+	public static AttributeTable emptyIfNull(AttributeTable originalAttributeTable) {
+		if (originalAttributeTable == null) {
 			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
 		} else {
-			return original;
+			return originalAttributeTable;
 		}
 	}
 
+	/**
+	 * Extracts all extended key usages for the certificate token
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @return a list of {@link String}s
+	 */
 	public static List<String> getExtendedKeyUsage(CertificateToken certToken) {
 		try {
 			return certToken.getCertificate().getExtendedKeyUsage();
@@ -1195,6 +1315,12 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Gets the {@code IssuerSerial} object
+	 *
+	 * @param binaries representing the {@link IssuerSerial}
+	 * @return {@link IssuerSerial} if able to parse, null otherwise
+	 */
 	public static IssuerSerial getIssuerSerial(byte[] binaries) {
 		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
@@ -1340,6 +1466,7 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns {@link ASN1Encodable} for a given {@code oid} found in the {@code unsignedAttributes}
+	 *
 	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Encodable}
@@ -1354,6 +1481,7 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns an Attribute values for a given {@code oid} found in the {@code unsignedAttributes}
+	 *
 	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Set}
@@ -1368,6 +1496,7 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns an array of {@link Attribute}s for a given {@code oid} found in the {@code unsignedAttributes}
+	 *
 	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link Attribute}s array
@@ -1383,7 +1512,9 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Finds archive {@link TimeStampToken}s
+	 *
 	 * @param unsignedAttributes {@link AttributeTable} to obtain timestamps from
+	 * @return a list of {@link TimeStampToken}s
 	 */
 	public static List<TimeStampToken> findArchiveTimeStampTokens(AttributeTable unsignedAttributes) {
 		List<TimeStampToken> timeStamps = new ArrayList<>();
@@ -1436,6 +1567,7 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Creates a TimeStampToken from the provided {@code attribute}
+	 *
 	 * @param attribute {@link Attribute} to generate {@link TimeStampToken} from
 	 * @return {@link TimeStampToken}
 	 */
@@ -1453,6 +1585,7 @@ public final class DSSASN1Utils {
 
 	/**
 	 * Creates a CMSSignedData from the provided {@code attribute}
+	 *
 	 * @param attribute {@link Attribute} to generate {@link CMSSignedData} from
 	 * @return {@link CMSSignedData}
 	 * @throws IOException in case of encoding exception
@@ -1471,7 +1604,9 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns {@code ASN1Encodable} of the {@code attribute}
+	 *
 	 * @param attribute {@link Attribute}
+	 * @return {@link ASN1Encodable}
 	 */
 	public static ASN1Encodable getAsn1Encodable(Attribute attribute) {
 		return attribute.getAttrValues().getObjectAt(0);
@@ -1479,6 +1614,7 @@ public final class DSSASN1Utils {
 	
 	/**
 	 * Returns generation time for the provided {@code timeStampToken}
+	 *
 	 * @param timeStampToken {@link TimeStampToken} to get generation time for
 	 * @return {@link Date} timestamp generation time
 	 */
@@ -1507,6 +1643,12 @@ public final class DSSASN1Utils {
 		return null;
 	}
 
+	/**
+	 * Converts the {@code OtherCertID} to {@code CertificateRef}
+	 *
+	 * @param otherCertId {@link OtherCertID}
+	 * @return {@link CertificateRef}
+	 */
 	public static CertificateRef getCertificateRef(OtherCertID otherCertId) {
 		CertificateRef certRef = new CertificateRef();
 		DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId());
@@ -1584,6 +1726,12 @@ public final class DSSASN1Utils {
 		return result;
 	}
 
+	/**
+	 * Returns a list of subject alternative names
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @return a list of {@link String}s
+	 */
 	public static List<String> getSubjectAlternativeNames(CertificateToken certToken) {
 		List<String> result = new ArrayList<>();
 		try {
@@ -1607,6 +1755,12 @@ public final class DSSASN1Utils {
 		return result;
 	}
 
+	/**
+	 * Extracts the {@code SemanticsIdentifier} from the certificate token
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @return {@link SemanticsIdentifier}
+	 */
 	public static SemanticsIdentifier getSemanticsIdentifier(CertificateToken certToken) {
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
 		if (Utils.isArrayNotEmpty(qcStatement)) {

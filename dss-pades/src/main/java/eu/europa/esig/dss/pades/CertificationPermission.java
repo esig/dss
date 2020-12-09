@@ -44,12 +44,18 @@ public enum CertificationPermission {
 	 */
 	CHANGES_PERMITTED(3);
 
+	/** The code of the DocMDP enumeration */
 	private final int code;
 
 	CertificationPermission(int code) {
 		this.code = code;
 	}
 
+	/**
+	 * Gets code
+	 *
+	 * @return code
+	 */
 	public int getCode() {
 		return code;
 	}

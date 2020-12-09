@@ -1,15 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.Map;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.x500.X500Name;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.model.Digest;
@@ -18,7 +8,18 @@ import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.security.auth.x500.X500Principal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Contains utils to extract revocation references
+ */
 public final class JAdESRevocationRefExtractionUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESRevocationRefExtractionUtils.class);
@@ -26,6 +27,12 @@ public final class JAdESRevocationRefExtractionUtils {
 	private JAdESRevocationRefExtractionUtils() {
 	}
 
+	/**
+	 * Extract an {@code OCSPRef} from 'ocpsRefs' header
+	 *
+	 * @param ocpRef map representing the value of 'ocpsRefs' header
+	 * @return {@link OCSPRef}
+	 */
 	public static OCSPRef createOCSPRef(final Map<?,?> ocpRef) {
 		ResponderId responderId = null;
 		Date producedAt = null;
@@ -74,6 +81,12 @@ public final class JAdESRevocationRefExtractionUtils {
 		return null;
 	}
 
+	/**
+	 * Extract an {@code CRLRef} from 'crlRefs' header
+	 *
+	 * @param crlRefMap map representing the value of 'crlRefs' header
+	 * @return {@link CRLRef}
+	 */
 	public static CRLRef createCRLRef(Map<?, ?> crlRefMap) {
 
 		X500Name crlIssuer = null;

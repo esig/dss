@@ -1,22 +1,25 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The certificate source containing a map of certificates by KIDs
+ */
 public class KidCertificateSource extends CommonCertificateSource implements CertificateSource {
 
 	private static final long serialVersionUID = 8202022366337914356L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(KidCertificateSource.class);
 
+	/** Map of kids and related certificate tokens */
 	private Map<String, CertificateToken> mapByKid = new HashMap<>();
 
 	@Override
@@ -41,6 +44,12 @@ public class KidCertificateSource extends CommonCertificateSource implements Cer
 		return addedCertificate;
 	}
 
+	/**
+	 * Gets a {@code CertificateToken} by the given KID
+	 *
+	 * @param kid {@link String} to get a certificate token with
+	 * @return {@link CertificateToken}
+	 */
 	public CertificateToken getCertificateByKid(String kid) {
 		return mapByKid.get(kid);
 	}

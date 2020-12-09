@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
+/**
+ * Warns on TL parsing error
+ */
 public class LogTLParsingErrorAlertHandler implements AlertHandler<TLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogTLParsingErrorAlertHandler.class);

@@ -28,33 +28,65 @@ import java.util.List;
  */
 public class CommitmentTypeIndication {
 
-	// URI or OID
+	/** URI or OID identifier */
     private final String identifier;
-    
+
+    /** The description message */
     private String description;
-    
+
+    /** The list of document references */
     private List<String> documentReferences;
-    
-    public CommitmentTypeIndication(String identifier) {
+
+	/**
+	 * The default constructor
+	 *
+	 * @param identifier {@link String} URI or OID
+	 */
+	public CommitmentTypeIndication(String identifier) {
     	this.identifier = identifier;
     }
 
-    public String getIdentifier() {
+	/**
+	 * Gets the identifier
+	 *
+	 * @return {@link String} URI or OID
+	 */
+	public String getIdentifier() {
         return identifier;
     }
 
+	/**
+	 * Gets the description
+	 *
+	 * @return {@link String}
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Sets the description
+	 *
+	 * @param description {@link String}
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * Gets the document references
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getDocumentReferences() {
 		return documentReferences;
 	}
 
+	/**
+	 * Sets the document references
+	 *
+	 * @param documentReferences a list of {@link String}s
+	 */
 	public void setDocumentReferences(List<String> documentReferences) {
 		this.documentReferences = documentReferences;
 	}

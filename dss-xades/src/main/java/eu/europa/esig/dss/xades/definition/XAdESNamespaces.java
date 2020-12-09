@@ -20,21 +20,37 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import javax.xml.crypto.dsig.XMLSignature;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 
+import javax.xml.crypto.dsig.XMLSignature;
+
+/**
+ * Defines a list of used XAdES namespaces
+ */
 public class XAdESNamespaces {
 
+	/** The XMLDSIG namespace */
 	public static final DSSNamespace XMLDSIG = new DSSNamespace(XMLSignature.XMLNS, "ds");
+
+	/** The XMLDSIG Filter 2.0 namespace */
 	public static final DSSNamespace XMLDSIG_FILTER2 = new DSSNamespace("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-filter2");
 
+	/** XAdES 1.1.1 */
 	public static final DSSNamespace XADES_111 = new DSSNamespace("http://uri.etsi.org/01903/v1.1.1#", "xades111");
+
+	/** XAdES 1.2.2 */
 	public static final DSSNamespace XADES_122 = new DSSNamespace("http://uri.etsi.org/01903/v1.2.2#", "xades122");
+
+	/** XAdES 1.3.2 */
 	public static final DSSNamespace XADES_132 = new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades132");
+
+	/** XAdES 1.4.1 */
 	public static final DSSNamespace XADES_141 = new DSSNamespace("http://uri.etsi.org/01903/v1.4.1#", "xades141");
 
+	/**
+	 * Registers the namespaces
+	 */
 	public static void registerNamespaces() {
 		DomUtils.registerNamespace(XMLDSIG);
 

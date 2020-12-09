@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import java.io.IOException;
-import java.util.List;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -31,21 +33,29 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.IOException;
+import java.util.List;
 
+/**
+ * The abstract implementation of PDFBox signature drawer
+ */
 public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer, SignatureFieldBoxBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPdfBoxSignatureDrawer.class);
 
+	/** The CMYK color profile */
 	private static final String CMYK_PROFILE_NAME = "cmyk";
+
+	/** The RGB color profile */
 	private static final String RGB_PROFILE_NAME = "rgb";
 
+	/** Visual signature parameters */
 	protected SignatureImageParameters parameters;
+
+	/** The PDF document */
 	protected PDDocument document;
+
+	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
 	@Override

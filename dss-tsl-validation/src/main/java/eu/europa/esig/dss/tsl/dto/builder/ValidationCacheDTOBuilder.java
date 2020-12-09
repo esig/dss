@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.dto.builder;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -30,8 +27,19 @@ import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Builds {@code ValidationCacheDTO}
+ */
 public class ValidationCacheDTOBuilder extends AbstractCacheDTOBuilder<ValidationResult> {
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param cachedEntry validation cache entry
+	 */
 	public ValidationCacheDTOBuilder(final CachedEntry<ValidationResult> cachedEntry) {
 		super(cachedEntry);
 	}

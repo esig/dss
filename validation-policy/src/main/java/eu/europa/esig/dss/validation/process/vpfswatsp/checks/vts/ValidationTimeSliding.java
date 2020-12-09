@@ -50,20 +50,43 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Performs Validation Time Sliding process
+ */
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 
+	/** Token to process */
 	private final TokenProxy token;
+
+	/** Validation time */
 	private final Date currentTime;
-	
+
+	/** Current BBBs */
 	private final XmlBasicBuildingBlocks bbb;
 
+	/** Validation context */
 	private final Context context;
 
+	/** POE container */
 	private final POEExtraction poe;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
 
+	/** Validation time */
 	private Date controlTime;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token {@link TokenProxy}
+	 * @param currentTime {@link Date}
+	 * @param poe {@link POEExtraction}
+	 * @param bbb {@link XmlBasicBuildingBlocks}
+	 * @param context {@link Context}
+	 * @param policy {@link ValidationPolicy}
+	 */
 	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, POEExtraction poe, 
 			XmlBasicBuildingBlocks bbb, Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlVTS());

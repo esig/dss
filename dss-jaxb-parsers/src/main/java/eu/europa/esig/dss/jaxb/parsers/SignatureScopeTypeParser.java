@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 
+/**
+ * Parses the {@code SignatureScopeType}
+ */
 public final class SignatureScopeTypeParser {
 
 	private SignatureScopeTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code SignatureScopeType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link SignatureScopeType}
+	 */
 	public static SignatureScopeType parse(String v) {
 		if (v != null) {
 			return SignatureScopeType.valueOf(v);
@@ -34,6 +43,12 @@ public final class SignatureScopeTypeParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link SignatureScopeType}
+	 * @return {@link String}
+	 */
 	public static String print(SignatureScopeType v) {
 		if (v != null) {
 			return v.name();

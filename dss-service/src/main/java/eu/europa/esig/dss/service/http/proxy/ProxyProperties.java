@@ -26,15 +26,15 @@ package eu.europa.esig.dss.service.http.proxy;
  */
 public class ProxyProperties {
 
-	/* The host to use */
+	/** The host to use */
 	private String host;
-	/* The port to use */
+	/** The port to use */
 	private int port;
-	/* The user to use */
+	/** The user to use */
 	private String user;
-	/* The password to use */
+	/** The password to use */
 	private String password;
-	/* Allows multiple urls (separator ',', ';' or ' ') */
+	/** Allows multiple urls (separator ',', ';' or ' ') */
 	private String excludedHosts;
 
 	/**

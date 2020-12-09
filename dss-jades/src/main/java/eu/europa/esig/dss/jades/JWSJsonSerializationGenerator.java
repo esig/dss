@@ -1,34 +1,50 @@
 package eu.europa.esig.dss.jades;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+import org.jose4j.json.internal.json_simple.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Crates a JWS Serialization signature
+ */
 public class JWSJsonSerializationGenerator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JWSJsonSerializationGenerator.class);
 
+	/** The container for JWS signature elements */
 	private final JWSJsonSerializationObject jwsJsonSerializationObject;
+
+	/** The target signature's format */
 	private final JWSSerializationType output;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param jwsJsonSerializationObject {@link JWSJsonSerializationObject} containing the signature data to create
+	 * @param output {@link JWSSerializationType} the target output type
+	 */
 	public JWSJsonSerializationGenerator(JWSJsonSerializationObject jwsJsonSerializationObject, JWSSerializationType output) {
 		this.jwsJsonSerializationObject = jwsJsonSerializationObject;
 		this.output = output;
 	}
 
+	/**
+	 * Generates the {@code DSSDocument}
+	 *
+	 * @return {@link DSSDocument} JWS signature
+	 */
 	public DSSDocument generate() {
 		JsonObject jsonSerialization;
 		switch (output) {

@@ -20,35 +20,45 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.SigningOperation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A class to generate a DataToSign with ASiC-E with CAdES from a files to be signed
+ */
 public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
-	private final SigningOperation operation;
+	/** The list of documents to be signed */
 	private final List<DSSDocument> filesToBeSigned;
-	private final ASiCWithCAdESCommonParameters parameters;
 
+	/** The cached ToBeSigned document */
 	private DSSDocument toBeSigned;
 
-	public DataToSignASiCEWithCAdESFromFiles(SigningOperation operation, List<DSSDocument> filesToBeSigned, ASiCWithCAdESCommonParameters parameters) {
-		this.operation = operation;
+	/**
+	 * The default constructor
+	 *
+	 * @param operation {@link SigningOperation} to perform
+	 * @param filesToBeSigned a list of {@link DSSDocument} to sign
+	 * @param parameters {@link ASiCWithCAdESCommonParameters}
+	 */
+	public DataToSignASiCEWithCAdESFromFiles(final SigningOperation operation, final List<DSSDocument> filesToBeSigned,
+											 final ASiCWithCAdESCommonParameters parameters) {
+		super(operation, parameters);
 		this.filesToBeSigned = filesToBeSigned;
-		this.parameters = parameters;
 	}
 
 	@Override
 	public DSSDocument getToBeSigned() {
 		if (toBeSigned == null) {
-			toBeSigned = getASiCManifest(operation, filesToBeSigned, Collections.<DSSDocument>emptyList(), Collections.<DSSDocument>emptyList(),
-					Collections.<DSSDocument>emptyList(), parameters);
+			toBeSigned = getASiCManifest(filesToBeSigned, Collections.<DSSDocument>emptyList(),
+					Collections.<DSSDocument>emptyList(), Collections.<DSSDocument>emptyList());
 		}
 		return toBeSigned;
 	}
@@ -60,7 +70,7 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileName(parameters.aSiC(), Collections.<DSSDocument> emptyList());
+		return getSignatureFileName(Collections.<DSSDocument> emptyList());
 	}
 
 	@Override

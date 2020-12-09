@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.jades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
@@ -47,7 +40,16 @@ import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Finds a SignatureScope for a JAdES signature
+ */
 public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdESSignature> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignatureScopeFinder.class);
@@ -139,6 +141,12 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		return null;
 	}
 
+	/**
+	 * Extracts a SignatureScope list from a list of original documents
+	 *
+	 * @param originalDocuments a list of {@link DSSDocument} original documents
+	 * @return a list of {@link SignatureScope}s
+	 */
 	protected List<SignatureScope> getSignatureScopeFromOriginalDocuments(List<DSSDocument> originalDocuments) {
 		List<SignatureScope> result = new ArrayList<>();
 		if (Utils.isCollectionEmpty(originalDocuments)) {

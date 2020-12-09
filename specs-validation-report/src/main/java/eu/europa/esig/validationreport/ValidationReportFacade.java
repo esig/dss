@@ -20,22 +20,29 @@
  */
 package eu.europa.esig.validationreport;
 
-import java.io.IOException;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.validation.Schema;
+import java.io.IOException;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-
+/**
+ * Performs marshalling/unmarshalling operation for an ETSI Validation report
+ */
 public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportType> {
-	
+
+	/** Validation report utils */
 	private static final ValidationReportUtils ETSI_VR_UTILS = ValidationReportUtils.getInstance();
 
+	/**
+	 * Creates a new facade
+	 *
+	 * @return {@link ValidationReportFacade}
+	 */
 	public static ValidationReportFacade newFacade() {
 		return new ValidationReportFacade();
 	}

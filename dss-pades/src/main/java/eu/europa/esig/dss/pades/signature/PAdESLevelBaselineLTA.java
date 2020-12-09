@@ -32,6 +32,13 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
  */
 class PAdESLevelBaselineLTA extends PAdESLevelBaselineLT {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource} to use
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * @param pdfObjectFactory {@link IPdfObjFactory}
+	 */
 	public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, final IPdfObjFactory pdfObjectFactory) {
 		super(tspSource, certificateVerifier, pdfObjectFactory);
 	}

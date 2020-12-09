@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.policy;
 
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
@@ -46,6 +40,11 @@ import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.policy.jaxb.UnsignedAttributesConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
@@ -56,10 +55,17 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EtsiValidationPolicy.class);
 
+	/** The default validation model (SHELL) */
 	private static final Model DEFAULT_VALIDATION_MODEL = Model.SHELL;
 
+	/** Validation policy constraints */
 	private ConstraintsParameters policy;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param policy {@link ConstraintsParameters}
+	 */
 	public EtsiValidationPolicy(ConstraintsParameters policy) {
 		this.policy = policy;
 	}
@@ -332,7 +338,9 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 	
 	/**
-	 * Overrides all empty fields for the given {@value cryptographicConstraint} by the default {@link CryptographicConstraint}
+	 * Overrides all empty fields for the given {@code cryptographicConstraint}
+	 * by the default {@link CryptographicConstraint}
+	 *
 	 * @param cryptographicConstraint {@link CryptographicConstraint}
 	 */
 	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint) {
@@ -356,6 +364,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 	}
 
+	/**
+	 * Gets the global cryptographic constraints
+	 *
+	 * @return {@link CryptographicConstraint}
+	 */
 	public CryptographicConstraint getDefaultCryptographicConstraint() {
 		return policy.getCryptographic();
 	}
@@ -793,7 +806,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getRevocationTimeAgainstBestSignatureTime() {
+	public LevelConstraint getRevocationTimeAgainstBestSignatureTimeConstraint() {
 		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getRevocationTimeAgainstBestSignatureTime();

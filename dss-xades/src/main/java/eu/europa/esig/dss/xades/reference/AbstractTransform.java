@@ -20,27 +20,43 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import java.util.Objects;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import java.util.Objects;
+
+/**
+ * The abstract implementation of a transfrom
+ */
 public abstract class AbstractTransform implements DSSTransform {
 
+	/** The algorithm url string */
 	protected final String algorithm;
+
+	/** The namespace */
 	protected DSSNamespace namespace = XAdESNamespaces.XMLDSIG;
 
-	protected AbstractTransform(String algorithm) {
+	/**
+	 * Default constructor
+	 *
+	 * @param algorithm {@link String} algorithm url
+	 */
+	public AbstractTransform(String algorithm) {
 		this.algorithm = algorithm;
 	}
 
-	protected AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param algorithm {@link String}
+	 */
+	public AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
 		this.namespace = xmlDSigNamespace;
 		this.algorithm = algorithm;
 	}

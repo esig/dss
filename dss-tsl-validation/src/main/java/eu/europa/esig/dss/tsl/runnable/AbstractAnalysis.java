@@ -33,22 +33,45 @@ import eu.europa.esig.dss.tsl.parsing.LOTLParsingTask;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 
+/**
+ * Processes the LOTL/TL validation job (download - parse - validate)
+ */
 public abstract class AbstractAnalysis {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysis.class);
 
+	/** The cache access of the record */
 	private final CacheAccessByKey cacheAccess;
+
+	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 */
 	protected AbstractAnalysis(final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader) {
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
 	}
 
+	/**
+	 * Gets the {@code CacheAccessByKey}
+	 *
+	 * @return {@link CacheAccessByKey}
+	 */
 	protected final CacheAccessByKey getCacheAccessByKey() {
 		return cacheAccess;
 	}
 
+	/**
+	 * Downloads the document by url
+	 *
+	 * @param url {@link String}
+	 * @return {@link DSSDocument}
+	 */
 	protected DSSDocument download(final String url) {
 		DSSDocument document = null;
 		try {
@@ -69,6 +92,12 @@ public abstract class AbstractAnalysis {
 		return document;
 	}
 
+	/**
+	 * Parses the document
+	 *
+	 * @param document {@link DSSDocument} to parse
+	 * @param source {@link LOTLSource}
+	 */
 	protected void lotlParsing(DSSDocument document, LOTLSource source) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
@@ -83,6 +112,12 @@ public abstract class AbstractAnalysis {
 		}
 	}
 
+	/**
+	 * Validates the document
+	 *
+	 * @param document {@link DSSDocument} to validate
+	 * @param certificateSource {@link CertificateSource} to use
+	 */
 	protected void validation(DSSDocument document, CertificateSource certificateSource) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isValidationRefreshNeeded()) {

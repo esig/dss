@@ -29,11 +29,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the revocation status is known
+ */
 public class RevocationDataKnownCheck extends ChainItem<XmlRAC> {
 
+	/** Revocation data to check */
 	private final CertificateRevocationWrapper revocationData;
 
-	public RevocationDataKnownCheck(I18nProvider i18nProvider, XmlRAC result, CertificateRevocationWrapper revocationData, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlRAC}
+	 * @param revocationData {@link CertificateRevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public RevocationDataKnownCheck(I18nProvider i18nProvider, XmlRAC result,
+									CertificateRevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.revocationData = revocationData;
 	}

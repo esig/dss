@@ -20,29 +20,50 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import java.util.Objects;
-
-import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import org.apache.xml.security.transforms.Transforms;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import java.util.Objects;
+
+/**
+ * The XPath transform
+ */
 public class XPathTransform extends ComplexTransform {
-	
+
+	/** The XPath expression to use */
 	protected final String xPathExpression;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param xPathExpression {@link String}
+	 */
 	public XPathTransform(String xPathExpression) {
 		this(XAdESNamespaces.XMLDSIG, Transforms.TRANSFORM_XPATH, xPathExpression);
 	}
-	
+
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param xPathExpression {@link String}
+	 */
 	public XPathTransform(DSSNamespace xmlDSigNamespace, String xPathExpression) {
 		this(xmlDSigNamespace, Transforms.TRANSFORM_XPATH, xPathExpression);
 	}
-	
+
+	/**
+	 * Internal constructor with a custom algorithm url
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param algorithm {@link String} url
+	 * @param xPathExpression {@link String}
+	 */
 	protected XPathTransform(DSSNamespace xmlDSigNamespace, String algorithm, String xPathExpression) {
 		super(xmlDSigNamespace, algorithm);
 		Objects.requireNonNull(xPathExpression, "xPathExpression cannot be null!");

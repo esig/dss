@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 
+/**
+ * Parses the {@code CertificateQualification}
+ */
 public final class CertificateQualificationParser {
 
 	private CertificateQualificationParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code CertificateQualification}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link CertificateQualification}
+	 */
 	public static CertificateQualification parse(String v) {
 		return CertificateQualification.fromReadable(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link CertificateQualification}
+	 * @return {@link String}
+	 */
 	public static String print(CertificateQualification v) {
 		if (v != null) {
 			return v.getReadable();

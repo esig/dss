@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -10,6 +8,13 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
 
+import java.util.Date;
+
+/**
+ * Verifies the {@code DigestAlgorithm}
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class DigestCryptographicCheck<T extends XmlConstraintsConclusion> extends DigestCryptographicCheckerResultCheck<T> {
 
 	public DigestCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, T result, Date validationDate, MessageTag position,

@@ -20,25 +20,43 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the current state is PASSED
+ */
 public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 
+	/** Indication to check */
 	private final Indication indication;
+
+	/** Corresponding SubIndication */
 	private final SubIndication subIndication;
+
+	/** Current errors  */
 	private final List<XmlName> errors;
 
-	public CurrentTimeIndicationCheck(I18nProvider i18nProvider, XmlPSV result, Indication indication, SubIndication subIndication, 
-			List<XmlName> errors, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlPSV}
+	 * @param indication {@link Indication}
+	 * @param subIndication {@link SubIndication}
+	 * @param errors a list of {@link XmlName}s
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CurrentTimeIndicationCheck(I18nProvider i18nProvider, XmlPSV result, Indication indication,
+									  SubIndication subIndication, List<XmlName> errors, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.indication = indication;

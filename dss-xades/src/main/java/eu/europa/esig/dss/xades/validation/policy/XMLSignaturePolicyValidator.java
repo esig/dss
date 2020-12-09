@@ -16,6 +16,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.AbstractSignaturePolicyValidator;
 
+/**
+ * Validates an XML Signature Policy
+ */
 public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XMLSignaturePolicyValidator.class);

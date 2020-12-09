@@ -22,21 +22,43 @@ package eu.europa.esig.dss.ws.signature.dto;
 
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 
+/**
+ * Timestamp document request DTO
+ */
 public class AbstractTimestampDocumentDTO {
-	
+
+	/** Timestamp parameters */
 	protected RemoteTimestampParameters timestampParameters;
-	
-	public AbstractTimestampDocumentDTO() {
+
+	/**
+	 * Empty constructor
+	 */
+	protected AbstractTimestampDocumentDTO() {
 	}
-	
-	public AbstractTimestampDocumentDTO(RemoteTimestampParameters timestampParameters) {
+
+	/**
+	 * Default constructor
+	 *
+	 * @param timestampParameters {@link RemoteTimestampParameters}
+	 */
+	protected AbstractTimestampDocumentDTO(RemoteTimestampParameters timestampParameters) {
 		this.timestampParameters = timestampParameters;
 	}
 
+	/**
+	 * Gets timestamp parameters
+	 *
+	 * @return {@link RemoteTimestampParameters}
+	 */
 	public RemoteTimestampParameters getTimestampParameters() {
 		return timestampParameters;
 	}
 
+	/**
+	 * Sets timestamp parameters
+	 *
+	 * @param timestampParameters {@link RemoteTimestampParameters}
+	 */
 	public void setTimestampParameters(RemoteTimestampParameters timestampParameters) {
 		this.timestampParameters = timestampParameters;
 	}

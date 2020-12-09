@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -10,12 +8,28 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
+import java.util.List;
+
+/**
+ * Check if EncryptionAlgorithm is acceptable
+ */
 public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck {
-	
+
+	/** The algorithm to check */
 	private final EncryptionAlgorithm encryptionAlgo;
 
-	protected EncryptionAlgorithmReliableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, XmlCC result, MessageTag position, 
-			CryptographicConstraintWrapper constraintWrapper) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param encryptionAlgo {@link EncryptionAlgorithm}
+	 * @param result {@link XmlCC}
+	 * @param position {@link MessageTag}
+	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 */
+	protected EncryptionAlgorithmReliableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
+											   XmlCC result, MessageTag position,
+											   CryptographicConstraintWrapper constraintWrapper) {
 		super(i18nProvider, result, position, constraintWrapper);
 		this.encryptionAlgo = encryptionAlgo;
 	}

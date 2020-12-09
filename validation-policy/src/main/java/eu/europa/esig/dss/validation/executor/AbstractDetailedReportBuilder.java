@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
@@ -39,20 +33,50 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.validation.process.qualification.trust.TLValidationBlock;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Abstract code for DetailedReport builder
+ */
 public abstract class AbstractDetailedReportBuilder {
 
+	/** The i18n provider */
 	protected final I18nProvider i18nProvider;
+
+	/** The DiagnosticData to use */
 	protected final DiagnosticData diagnosticData;
+
+	/** The validation policy */
 	protected final ValidationPolicy policy;
+
+	/** The validation time */
 	protected final Date currentTime;
 
-	protected AbstractDetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date} validation time
+	 * @param policy {@link ValidationPolicy} to use
+	 * @param diagnosticData {@link DiagnosticData}
+	 */
+	protected AbstractDetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy,
+											DiagnosticData diagnosticData) {
 		this.i18nProvider = i18nProvider;
 		this.currentTime = currentTime;
 		this.policy = policy;
 		this.diagnosticData = diagnosticData;
 	}
 
+	/**
+	 * Initializes the {@code XmlDetailedReport} by adding the TL analysis
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	protected XmlDetailedReport init() {
 		XmlDetailedReport detailedReport = new XmlDetailedReport();
 
@@ -63,7 +87,16 @@ public abstract class AbstractDetailedReportBuilder {
 		return detailedReport;
 	}
 
-	protected List<XmlTLAnalysis> executeAllTlAnalysis(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
+	/**
+	 * Executes the TL analysis
+	 *
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param policy {@link ValidationPolicy}
+	 * @param currentTime {@link Date} validation time
+	 * @return a list of {@link XmlTLAnalysis}
+	 */
+	protected List<XmlTLAnalysis> executeAllTlAnalysis(DiagnosticData diagnosticData, ValidationPolicy policy,
+													   Date currentTime) {
 		List<XmlTLAnalysis> result = new ArrayList<>();
 		result.addAll(validateTL(policy, currentTime, diagnosticData.getListOfTrustedLists()));
 		result.addAll(validateTL(policy, currentTime, diagnosticData.getTrustedLists()));
@@ -81,7 +114,15 @@ public abstract class AbstractDetailedReportBuilder {
 		return result;
 	}
 
-	protected void process(Collection<? extends AbstractTokenProxy> tokensToProcess, Context context, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	/**
+	 * Process the tokens validation
+	 *
+	 * @param tokensToProcess collection of tokens to validate
+	 * @param context {@link Context} validation context
+	 * @param bbbs map of BasiBuildingBlocks
+	 */
+	protected void process(Collection<? extends AbstractTokenProxy> tokensToProcess, Context context,
+						   Map<String, XmlBasicBuildingBlocks> bbbs) {
 		for (AbstractTokenProxy token : tokensToProcess) {
 			BasicBuildingBlocks bbb = new BasicBuildingBlocks(i18nProvider, diagnosticData, token, currentTime, policy, context);
 			XmlBasicBuildingBlocks result = bbb.execute();

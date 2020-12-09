@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Certificate policies enumeration, as in ETSI TS 101 456
+ */
 public enum CertificatePolicy implements OidDescription {
-
-	// ------------ ETSI TS 101 456
 
 	/**
 	 * A certificate policy for qualified certificates issued to the public.

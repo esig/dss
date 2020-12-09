@@ -20,26 +20,42 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.CountDownLatch;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CountDownLatch;
+
+/**
+ * Runs the job for a TL analysis
+ */
 public class TLAnalysis extends AbstractAnalysis implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLAnalysis.class);
 
+	/** The TL source */
 	private final TLSource source;
+
+	/** The cache access by the key */
 	private final CacheAccessByKey cacheAccess;
+
+	/** The tasks counter */
 	private final CountDownLatch latch;
 
-	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader, CountDownLatch latch) {
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link TLSource}
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @param latch {@link CountDownLatch}
+	 */
+	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
+					  CountDownLatch latch) {
 		super(cacheAccess, dssFileLoader);
 		this.source = source;
 		this.cacheAccess = cacheAccess;

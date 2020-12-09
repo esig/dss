@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 
+/**
+ * Parses the {@code DigestMatcherType}
+ */
 public final class DigestMatcherTypeParser {
 
 	private DigestMatcherTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code DigestMatcherType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link DigestMatcherType}
+	 */
 	public static DigestMatcherType parse(String v) {
 		if (v != null) {
 			return DigestMatcherType.valueOf(v);
@@ -34,6 +43,12 @@ public final class DigestMatcherTypeParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link DigestMatcherType}
+	 * @return {@link String}
+	 */
 	public static String print(DigestMatcherType v) {
 		if (v != null) {
 			return v.name();

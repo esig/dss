@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents an extension of {@code Policy} class allowing addition
@@ -29,6 +29,9 @@ public class XmlPolicyWithTransforms extends Policy {
 	 */
 	private List<DSSTransform> transforms;
 
+	/**
+	 * Default constructor
+	 */
 	public XmlPolicyWithTransforms() {
 		super();
 	}

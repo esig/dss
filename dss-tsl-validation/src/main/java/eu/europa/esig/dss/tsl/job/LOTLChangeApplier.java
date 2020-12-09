@@ -20,31 +20,44 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.TLChangesCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+/**
+ * Applies changes in the LOTL cache
+ */
 public class LOTLChangeApplier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLChangeApplier.class);
 
+	/** Access the TL caches */
 	private final TLChangesCacheAccess cacheAccess;
 
+	/** Old cache values */
 	private final Map<CacheKey, ParsingCacheDTO> oldValues;
+
+	/** New cache values */
 	private final Map<CacheKey, ParsingCacheDTO> newValues;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param cacheAccess {@link TLChangesCacheAccess} to use
+	 * @param oldValues a map of old parsing values
+	 * @param newValues a map of new parsing values
+	 */
 	public LOTLChangeApplier(final TLChangesCacheAccess cacheAccess, 
 			final Map<CacheKey, ParsingCacheDTO> oldValues, final Map<CacheKey, ParsingCacheDTO> newValues) {
 		this.cacheAccess = cacheAccess;
@@ -52,6 +65,9 @@ public class LOTLChangeApplier {
 		this.newValues = newValues;
 	}
 
+	/**
+	 * Applyes changes for all defined records
+	 */
 	public void analyzeAndApply() {
 		for (Entry<CacheKey, ParsingCacheDTO> oldEntry : oldValues.entrySet()) {
 			Map<String, List<CertificateToken>> oldUrlCerts = getTLPointers(oldEntry.getValue());

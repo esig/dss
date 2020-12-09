@@ -1,16 +1,15 @@
 package eu.europa.esig.dss.jaxb;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.dss.alert.AbstractAlert;
 import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The default {@code DSSErrorHandler} alert
@@ -23,8 +22,12 @@ public final class DSSErrorHandlerAlert extends AbstractAlert<DSSErrorHandler> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSErrorHandlerAlert.class);
 
+	/** The default error message */
 	private static final String ERROR_MESSAGE = "Error during the XML schema validation : {}";
 
+	/**
+	 * The default constructor
+	 */
 	public DSSErrorHandlerAlert() {
 		super(new DSSErrorHandlerAlertDetector(), new DSSErrorHandlerAlertHandler());
 	}

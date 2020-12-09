@@ -22,6 +22,9 @@ package eu.europa.esig.validationreport.enums;
 
 import eu.europa.esig.dss.enumerations.UriBasedEnum;
 
+/**
+ * Defines object types
+ */
 public enum ObjectType implements UriBasedEnum {
 
 	CERTIFICATE("urn:etsi:019102:validationObject:certificate"),

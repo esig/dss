@@ -24,24 +24,43 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Data unit for signing
+ * Represents the ToBeSigned data
  */
 @SuppressWarnings("serial")
 public class ToBeSigned implements Serializable{
 
+	/** The binaries to be signed */
 	private byte[] bytes;
 
+	/**
+	 * Empty constructor
+	 */
 	public ToBeSigned() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param bytes byte array to be signed
+	 */
 	public ToBeSigned(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
+	/**
+	 * Gets bytes to be signed
+	 *
+	 * @return byte array
+	 */
 	public byte[] getBytes() {
 		return bytes;
 	}
 
+	/**
+	 * Sets bytes to be signed
+	 *
+	 * @param bytes byte array
+	 */
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
 	}

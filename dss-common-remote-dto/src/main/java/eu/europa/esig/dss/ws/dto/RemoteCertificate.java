@@ -22,22 +22,44 @@ package eu.europa.esig.dss.ws.dto;
 
 import java.io.Serializable;
 
+/**
+ * DTO containing certificateToken binaries
+ */
 @SuppressWarnings("serial")
 public class RemoteCertificate implements Serializable {
 
+	/** The DER-encoded binaries of the certificate */
 	private byte[] encodedCertificate;
 
+	/**
+	 * Empty constructor
+	 */
 	public RemoteCertificate() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param encodedCertificate the DER-encoded binaries of the certificate
+	 */
 	public RemoteCertificate(byte[] encodedCertificate) {
 		this.encodedCertificate = encodedCertificate;
 	}
 
+	/**
+	 * Gets the DER-encoded binaries of the certificate
+	 *
+	 * @return DER-encoded binaries of the certificate
+	 */
 	public byte[] getEncodedCertificate() {
 		return encodedCertificate;
 	}
 
+	/**
+	 * Sets the DER-encoded binaries of the certificate
+	 *
+	 * @param encodedCertificate DER-encoded binaries of the certificate
+	 */
 	public void setEncodedCertificate(byte[] encodedCertificate) {
 		this.encodedCertificate = encodedCertificate;
 	}

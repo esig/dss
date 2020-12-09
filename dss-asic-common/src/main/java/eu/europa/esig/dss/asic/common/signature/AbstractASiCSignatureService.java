@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -35,6 +28,7 @@ import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -43,23 +37,45 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * The abstract class containing the main methods for ASiC signature creation/extension
+ */
 public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
 					CSP extends SerializableCounterSignatureParameters> extends AbstractSignatureService<SP, TP> 
 					implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
 
+	/** The extracted content (documents) of the ASiC container */
 	protected ASiCExtractResult archiveContent = new ASiCExtractResult();
 
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 */
 	protected AbstractASiCSignatureService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
 
+	/**
+	 * Returns the relevant signature document extension for the implemented format
+	 *
+	 * @return {@link String} signature extension
+	 */
 	protected abstract String getExpectedSignatureExtension();
 
 	@Override
@@ -85,33 +101,74 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		return timestamp(Arrays.asList(toTimestampDocument), parameters);
 	}
 
+	/**
+	 * Extracts the content (documents) of the ASiC container
+	 *
+	 * @param archive {@link DSSDocument} representing an ASiC container
+	 */
 	protected void extractCurrentArchive(DSSDocument archive) {
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor(archive);
 		archiveContent = extractor.extract();
 	}
 
+	/**
+	 * Returns a relevant ASiC container extractor for the given format
+	 *
+	 * @param archive {@link DSSDocument} to get an extractor for
+	 * @return an instance of {@link AbstractASiCContainerExtractor}
+	 */
 	protected abstract AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
 
+	/**
+	 * Returns a list of signature documents embedded into the ASiC container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	protected List<DSSDocument> getEmbeddedSignatures() {
 		return archiveContent.getSignatureDocuments();
 	}
 
+	/**
+	 * Returns a list of manifest documents embedded into the ASiC container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	protected List<DSSDocument> getEmbeddedManifests() {
 		return archiveContent.getManifestDocuments();
 	}
 
+	/**
+	 * Returns a list of archive manifest documents embedded into the ASiC container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	protected List<DSSDocument> getEmbeddedArchiveManifests() {
 		return archiveContent.getArchiveManifestDocuments();
 	}
 
+	/**
+	 * Returns a list of timestamp documents embedded into the ASiC container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	protected List<DSSDocument> getEmbeddedTimestamps() {
 		return archiveContent.getTimestampDocuments();
 	}
 
+	/**
+	 * Returns a list of signed documents embedded into the ASiC container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	protected List<DSSDocument> getEmbeddedSignedDocuments() {
 		return archiveContent.getSignedDocuments();
 	}
 
+	/**
+	 * Returns a mimetype document embedded into the ASiC container
+	 *
+	 * @return {@link DSSDocument}
+	 */
 	protected DSSDocument getEmbeddedMimetype() {
 		return archiveContent.getMimeTypeDocument();
 	}
@@ -188,20 +245,40 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes(StandardCharsets.UTF_8);
 		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
 	}
-	
-	protected void verifyAndSetCounterSignatureParameters(CSP parameters) {
+
+	/**
+	 * Verifies a validity of counter signature parameters
+	 *
+	 * @param parameters counter signature parameters to verify
+	 */
+	protected void assertCounterSignatureParametersValid(CSP parameters) {
 		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
 	}
 
+	/**
+	 * Verifies if incorporation of a SignaturePolicyStore is possible
+	 */
 	protected void assertAddSignaturePolicyStorePossible() {
 		if (Utils.isCollectionEmpty(getEmbeddedSignatures())) {
 			throw new UnsupportedOperationException(
 					"Signature documents of the expected format are not found in the provided ASiC Container! "
 					+ "Add a SignaturePolicyStore is not possible!");
 		}
+	}
+
+	/**
+	 * Generates and returns a final name for the archive to create
+	 *
+	 * @param originalFile {@link DSSDocument} original signed/extended document container
+	 * @param operation {@link SigningOperation} the performed signing operation
+	 * @param containerMimeType {@link MimeType} the expected mimeType
+	 * @return {@link String} the archive filename
+	 */
+	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, MimeType containerMimeType) {
+		return getFinalDocumentName(originalFile, operation, null, containerMimeType);
 	}
 
 }

@@ -1,13 +1,5 @@
 package eu.europa.esig.dss.jades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -20,6 +12,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESExtensionTB64ToLTClearTest extends AbstractJAdESTestSignature {
 
@@ -52,7 +51,7 @@ public class JAdESExtensionTB64ToLTClearTest extends AbstractJAdESTestSignature 
 		Exception exception = assertThrows(DSSException.class,
 				() -> service.extendDocument(signedDocument, signatureParameters));
 		assertEquals("Extension is not possible! The encoding of 'etsiU' "
-				+ "components shall match! Use jadesSingatureParameters.setBase64UrlEncodedEtsiUComponents(true)",
+				+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(true)",
 				exception.getMessage());
 
 		DSSDocument convertedDocument = JWSConverter.fromEtsiUWithBase64UrlToClearJsonIncorporation(signedDocument);

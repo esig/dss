@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import java.net.URLDecoder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLDecoder;
+
+/**
+ * Contains util methods for dealing with LDAP protocol urls
+ */
 public class LdapURLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LdapURLUtils.class);

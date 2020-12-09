@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines the certificate revocation status
+ */
 public enum CertificateStatus {
 
 	/**
@@ -37,14 +40,29 @@ public enum CertificateStatus {
 	 */
 	UNKNOWN;
 
+	/**
+	 * Checks if the certificate status is valid
+	 *
+	 * @return TRUE if the certificate status is valid, FALSE otherwise
+	 */
 	public boolean isGood() {
 		return GOOD == this;
 	}
 
+	/**
+	 * Checks if the certificate is revoked
+	 *
+	 * @return TRUE if the certificate is revoked, FALSE otherwise
+	 */
 	public boolean isRevoked() {
 		return REVOKED == this;
 	}
 
+	/**
+	 * Checks if the certificate status is known
+	 *
+	 * @return TRUE if the certificate status is known, FALSE otherwise
+	 */
 	public boolean isKnown() {
 		return UNKNOWN != this;
 	}

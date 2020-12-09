@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Apache Commons implementation of Utils
+ */
 public class ApacheCommonsUtils implements IUtils {
 
 	@Override

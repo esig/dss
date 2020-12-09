@@ -36,10 +36,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Abstract class for XSD Utils
+ */
 public abstract class XSDAbstractUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XSDAbstractUtils.class);
 
+	/** Cached schema */
 	private Schema schema;
 
 	/**
@@ -136,6 +140,7 @@ public abstract class XSDAbstractUtils {
 	 *                         the used {@code Schema} to validate
 	 * @param secureValidation
 	 *                         enable/disable the secure validation (protection against XXE)
+	 * @throws IOException if an exception occurs
 	 */
 	public void validate(final Source xmlSource, final Schema schema, boolean secureValidation)
 			throws IOException {

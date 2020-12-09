@@ -29,10 +29,22 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if a claimed signing time is present
+ */
 public class SigningTimeCheck extends ChainItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public SigningTimeCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;

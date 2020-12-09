@@ -5,6 +5,9 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 
+/**
+ * Builds a JAdES signature
+ */
 public interface JAdESBuilder {
 	
 	/**

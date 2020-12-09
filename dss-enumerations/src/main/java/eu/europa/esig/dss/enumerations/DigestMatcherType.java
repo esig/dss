@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines available types of DigestMatchers (signed data origins)
+ */
 public enum DigestMatcherType {
 
 	/** XAdES signed reference */

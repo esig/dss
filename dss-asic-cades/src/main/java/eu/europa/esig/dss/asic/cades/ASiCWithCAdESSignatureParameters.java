@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.asic.cades;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
+import java.util.Date;
+
+/**
+ * Defines SignatureParameters to deal with ASiC with CAdES signature creation/extension
+ */
 public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters implements ASiCWithCAdESCommonParameters {
 
 	private static final long serialVersionUID = -830012801924753709L;

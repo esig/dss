@@ -31,14 +31,30 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the manifest file is present inside an ASiC container
+ */
 public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 
+	/** ASiC container info */
 	private final XmlContainerInfo containerInfo;
 
+	/** The constraint message */
 	private MessageTag message;
+
+	/** The error message */
 	private MessageTag error;
 
-	public ManifestFilePresentCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param containerInfo {@link XmlContainerInfo}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public ManifestFilePresentCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo,
+									LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.containerInfo = containerInfo;
 	}

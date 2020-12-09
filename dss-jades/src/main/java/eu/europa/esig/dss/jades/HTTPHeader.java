@@ -1,13 +1,13 @@
 package eu.europa.esig.dss.jades;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * The class represents an HTTP Header to be signed
@@ -18,11 +18,19 @@ import eu.europa.esig.dss.model.MimeType;
  */
 @SuppressWarnings("serial")
 public class HTTPHeader implements DSSDocument {
-	
+
+	/** The HTTP Header's name */
 	private final String name;
+
+	/** The HTTP Header's value */
 	private String value;
 
-	/** The default constructor */
+	/**
+	 * The default constructor
+	 *
+	 * @param name {@link String} of the header
+	 * @param value {@link String} of the header
+	 */
 	public HTTPHeader(final String name, final String value) {
 		this.name = name;
 		this.value = value;

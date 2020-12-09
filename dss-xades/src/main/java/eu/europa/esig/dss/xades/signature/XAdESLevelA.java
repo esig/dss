@@ -37,7 +37,9 @@ public class XAdESLevelA extends XAdESLevelXL {
 
 	/**
 	 * The default constructor for XAdESLevelA.
-	 */
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * */
 	public XAdESLevelA(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}

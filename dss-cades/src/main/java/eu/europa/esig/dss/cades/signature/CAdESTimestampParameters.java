@@ -23,12 +23,23 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
 
+/**
+ * Defines TimestampParameters to deal with CAdES timestamp creation
+ */
 @SuppressWarnings("serial")
 public class CAdESTimestampParameters extends TimestampParameters {
-	
+
+	/**
+	 * The empty constructor
+	 */
 	public CAdESTimestampParameters() {
 	}
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for timestamping data
+	 */
 	public CAdESTimestampParameters(DigestAlgorithm digestAlgorithm) {
 		super(digestAlgorithm);
 	}

@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.asic.cades;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
+import java.util.Date;
+
+/**
+ * Defines TimestampParameters to deal with ASiC with CAdES timestamp creation
+ */
 @SuppressWarnings("serial")
 public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters implements ASiCWithCAdESCommonParameters {
-	
+
+	/** Time is used to set the DateTime for created ZIP entries */
 	private Date zipCreationDate = new Date();
 	
 	/**
@@ -40,14 +44,28 @@ public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters i
 	public ASiCParameters aSiC() {
 		return asicParams;
 	}
-	
+
+	/**
+	 * The empty constructor
+	 */
 	public ASiCWithCAdESTimestampParameters() {
 	}
 
+	/**
+	 * The constructor defining a {@code DigestAlgorithm}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to set
+	 */
 	public ASiCWithCAdESTimestampParameters(DigestAlgorithm digestAlgorithm) {
 		super(digestAlgorithm);
 	}
 
+	/**
+	 * The constructor defining a {@code DigestAlgorithm} and {@code ASiCParameters}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to set
+	 * @param asicParams {@link ASiCParameters} to set
+	 */
 	public ASiCWithCAdESTimestampParameters(DigestAlgorithm digestAlgorithm, ASiCParameters asicParams) {
 		super(digestAlgorithm);
 		this.asicParams = asicParams;
@@ -57,7 +75,12 @@ public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters i
 	public Date getZipCreationDate() {
 		return zipCreationDate;
 	}
-	
+
+	/**
+	 * Sets ZIP creation date, used to define a creation date for ZIP container entries
+	 *
+	 * @param zipCreationDate {@link Date}
+	 */
 	public void setZipCreationDate(Date zipCreationDate) {
 		this.zipCreationDate = zipCreationDate;
 	}

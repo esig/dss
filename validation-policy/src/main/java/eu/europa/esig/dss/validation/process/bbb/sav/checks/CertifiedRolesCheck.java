@@ -20,22 +20,35 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+import java.util.List;
+
+/**
+ * Checks if the certified roles are acceptable
+ */
 public class CertifiedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	public CertifiedRolesCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public CertifiedRolesCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+							   MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}

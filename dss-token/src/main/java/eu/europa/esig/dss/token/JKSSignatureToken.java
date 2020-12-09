@@ -31,6 +31,7 @@ import java.security.KeyStore.PasswordProtection;
  */
 public class JKSSignatureToken extends KeyStoreSignatureTokenConnection {
 
+	/** JKS key store type */
 	private static final String KS_TYPE = "JKS";
 
 	/**

@@ -31,8 +31,10 @@ import eu.europa.esig.dss.definition.DSSNamespace;
  */
 public final class ManifestNamespace {
 
+	/** The OpenDocument Manifest namespace */
 	public static final DSSNamespace NS = new DSSNamespace("urn:oasis:names:tc:opendocument:xmlns:manifest:1.0", "manifest");
 	
 	private ManifestNamespace() {
 	}
+
 }

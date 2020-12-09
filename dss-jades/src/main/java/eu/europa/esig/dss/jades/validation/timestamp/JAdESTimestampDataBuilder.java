@@ -1,35 +1,43 @@
 package eu.europa.esig.dss.jades.validation.timestamp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import eu.europa.esig.dss.jades.validation.EtsiUComponent;
-import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
-import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWS;
-import org.jose4j.json.internal.json_simple.JSONValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
+import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
+import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.jose4j.json.internal.json_simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Builds the message-imprint for JAdES timestamps
+ */
 public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampDataBuilder.class);
 
+	/** The signature */
 	private final JAdESSignature signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link JAdESSignature}
+	 */
 	public JAdESTimestampDataBuilder(JAdESSignature signature) {
 		this.signature = signature;
 	}

@@ -20,8 +20,7 @@
  */
 package eu.europa.esig.dss.crl;
 
-import java.io.IOException;
-
+import eu.europa.esig.dss.model.DSSException;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -36,17 +35,24 @@ import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * The abstract class containing common code for CRL parsing
+ */
 public abstract class AbstractCRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCRLUtils.class);
 
-	public CRLBinary buildCRLBinary(byte[] binaries) throws IOException {
+	/**
+	 * Builds the {@code CRLBinary} object
+	 *
+	 * @param binaries byte array representing the CRL (DER or PEM encoded)
+	 * @return {@link CRLBinary}
+	 */
+	public CRLBinary buildCRLBinary(byte[] binaries) {
 		return new CRLBinary(getDERContent(binaries));
 	}
 	
-	private byte[] getDERContent(byte[] binaries) throws IOException {
+	private byte[] getDERContent(byte[] binaries) {
 		if (binaries != null && binaries.length > 0) {
 			byte first = binaries[0];
 			if (isDerEncoded(first)) {
@@ -68,6 +74,12 @@ public abstract class AbstractCRLUtils {
 		return '-' == first;
 	}
 
+	/**
+	 * Parses and sets the 'expiredCertsOnCRL' value
+	 *
+	 * @param validity {@link CRLValidity} to set the value to
+	 * @param expiredCertsOnCRLBinaries the 'expiredCertsOnCRL' value
+	 */
 	protected void extractExpiredCertsOnCRL(CRLValidity validity, byte[] expiredCertsOnCRLBinaries) {
 		if (expiredCertsOnCRLBinaries != null) {
 			try {
@@ -83,7 +95,13 @@ public abstract class AbstractCRLUtils {
 			}
 		}
 	}
-	
+
+	/**
+	 * Parses and sets the issuing distribution point binaries
+	 *
+	 * @param validity {@link CRLValidity} to set the value to
+	 * @param issuingDistributionPointBinary the the issuing distribution point binaries
+	 */
 	protected void extractIssuingDistributionPointBinary(CRLValidity validity, byte[] issuingDistributionPointBinary) {
 		if (issuingDistributionPointBinary != null) {
 			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint

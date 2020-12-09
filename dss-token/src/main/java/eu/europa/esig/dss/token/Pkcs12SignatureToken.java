@@ -30,6 +30,7 @@ import java.security.KeyStore.PasswordProtection;
  */
 public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 
+	/** The type of the PKCS12 KeyStore */
 	private static final String KS_TYPE = "PKCS12";
 
 	/**

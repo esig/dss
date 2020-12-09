@@ -31,20 +31,31 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 
+/**
+ * Checks if the certificate is Qualified
+ */
 public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
-	public CertificateQualifiedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CertificateQualifiedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+									 LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
 
 	@Override
 	protected boolean process() {
-
 		// This check only uses the certificate (not the TL)
-
 		boolean isQCCompliant = QCStatementPolicyIdentifiers.isQCCompliant(certificate);
 		boolean isQCP = CertificatePolicyIdentifiers.isQCP(certificate);
 		boolean isQCPPlus = CertificatePolicyIdentifiers.isQCPPlus(certificate);

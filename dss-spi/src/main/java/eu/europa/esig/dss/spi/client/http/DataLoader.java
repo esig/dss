@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.io.Serializable;
 import java.util.List;
-
-import eu.europa.esig.dss.model.DSSException;
 
 /**
  * Component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
  *
  */
-
 public interface DataLoader extends Serializable {
 
 	/**

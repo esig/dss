@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.asic.common.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
@@ -12,12 +9,16 @@ import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * DiagnosticDataBuilder for an ASiC container
  *
  */
 public class ASiCContainerDiagnosticDataBuilder extends SignedDocumentDiagnosticDataBuilder {
 
+	/** The information about the validating container */
 	private ContainerInfo containerInfo;
 
 	/**

@@ -28,11 +28,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+/**
+ * Checks if the zip comment is acceptable
+ */
 public class AcceptableZipCommentCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
+	/** Zip comment */
 	private final String zipComment;
 
-	public AcceptableZipCommentCheck(I18nProvider i18nProvider, XmlFC result, String zipComment, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param zipComment {@link String}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public AcceptableZipCommentCheck(I18nProvider i18nProvider, XmlFC result, String zipComment,
+									 MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.zipComment = zipComment;
 	}

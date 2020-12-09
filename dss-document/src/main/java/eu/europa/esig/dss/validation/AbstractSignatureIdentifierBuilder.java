@@ -1,17 +1,21 @@
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.utils.Utils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * The abstract SignatureIdentifier builder
+ */
 public abstract class AbstractSignatureIdentifierBuilder implements SignatureIdentifierBuilder {
-	
+
+	/** The signature to build identifier for */
 	protected final AdvancedSignature signature;
 	
 	/**
@@ -102,7 +106,13 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 			dos.flush();
 		}
 	}
-	
+
+	/**
+	 * Writes the current signature position between other signature entries on the same level
+	 *
+	 * @param baos {@link ByteArrayOutputStream} to add data to
+	 * @throws IOException if an exception occurs
+	 */
 	protected void writeSignaturePosition(ByteArrayOutputStream baos) throws IOException {
 		writeString(baos, getPositionId());
 	}

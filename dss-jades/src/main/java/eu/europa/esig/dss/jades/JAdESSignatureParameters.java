@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.jades;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 
+import java.util.Objects;
+
+/**
+ * The parameters to create/extend a JAdES signature
+ */
 public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdESTimestampParameters> {
 	
 	/**
@@ -221,7 +224,8 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * 
 	 * Default : TRUE (base64Url encoded payload will be used)
 	 * 
-	 * @param base64EncodedPayload
+	 * @param base64EncodedPayload true if the payload shall be present in its corresponding base64url encoding,
+	 *                                FALSE otherwise
 	 */
 	public void setBase64UrlEncodedPayload(boolean base64EncodedPayload) {
 		this.base64UrlEncodedPayload = base64EncodedPayload;

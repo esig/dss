@@ -1,31 +1,48 @@
 package eu.europa.esig.jades;
 
+import eu.europa.esig.jws.AbstractJWSUtils;
+import eu.europa.esig.jws.JWSUtils;
+import org.json.JSONObject;
+
 import java.net.URI;
 import java.util.Map;
 
-import org.json.JSONObject;
-
-import eu.europa.esig.jws.AbstractJWSUtils;
-import eu.europa.esig.jws.JWSUtils;
-
+/**
+ * Contains utils for JAdES signature validation against JSON schemas
+ */
 public final class JAdESUtils extends AbstractJWSUtils {
 
+	/** The JAdES schema of definitions */
 	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-draft07_v005_dss.json";
+
+	/** The JAdES schema name URI */
 	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-draft07_v005c.json";
 
+	/** The RFC 7797 schema of definitions */
 	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfc7797.json";
+
+	/** The RFC 7797 schema name URI */
 	private static final String RFC7797_SCHEMA_URI = "rfc7797.json";
-	
+
+	/** The protected header schema for a JAdES signature */
 	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-protected-draft07_v005.json";
+
+	/** The unprotected header schema for a JAdES signature */
 	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected-draft07_v005_dss.json";
 
+	/** Map of used definition schemas */
 	private Map<URI, JSONObject> definitions;
 
 	private static JAdESUtils singleton;
 
 	private JAdESUtils() {
 	}
-	
+
+	/**
+	 * Returns instance of {@code JAdESUtils}
+	 *
+	 * @return {@link JAdESUtils}
+	 */
 	public static JAdESUtils getInstance() {
 		if (singleton == null) {
 			singleton = new JAdESUtils();

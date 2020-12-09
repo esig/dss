@@ -36,12 +36,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Extracts timestamps from a JAdES signature
+ */
 @SuppressWarnings("serial")
 public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignature, JAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampSource.class);
 
-	public JAdESTimestampSource(JAdESSignature signature) {
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link JAdESSignature}
+	 */
+	public JAdESTimestampSource(final JAdESSignature signature) {
 		super(signature);
 	}
 

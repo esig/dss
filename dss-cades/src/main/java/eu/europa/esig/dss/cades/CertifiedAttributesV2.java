@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.cades;
 
-import java.util.Enumeration;
-
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -32,6 +30,8 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Enumeration;
 
 /**
  * Basic support of ETSI EN 319 122-1 V1.1.1 chapter 5.2.6.1
@@ -50,8 +50,15 @@ public class CertifiedAttributesV2 extends ASN1Object {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertifiedAttributesV2.class);
 
+	/** Cached array of {@code AttributeCertificate} objects */
 	private Object[] values;
 
+	/**
+	 * Parses and returns {@code CertifiedAttributesV2} from the given object
+	 *
+	 * @param o object representing {@link CertifiedAttributesV2}
+	 * @return {@link CertifiedAttributesV2}
+	 */
 	public static CertifiedAttributesV2 getInstance(Object o) {
 		if (o instanceof CertifiedAttributesV2) {
 			return (CertifiedAttributesV2) o;

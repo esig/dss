@@ -24,6 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 
+/**
+ * Loads the relevant validator for an XML document validation
+ */
 public class XMLDocumentValidatorFactory implements DocumentValidatorFactory {
 
 	@Override

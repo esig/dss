@@ -4,8 +4,16 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
+/**
+ * The DSS identifier for a JAdES signature
+ */
 public class JAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link JAdESSignature} to get an identifier for
+	 */
 	public JAdESSignatureIdentifierBuilder(JAdESSignature signature) {
 		super(signature);
 	}

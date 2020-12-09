@@ -22,34 +22,71 @@ package eu.europa.esig.dss.ws.dto;
 
 import java.io.Serializable;
 
+/**
+ * DTO to represent timestamped references for a XAdES IndividualDataObjectsTimeStamp
+ */
 public class TimestampIncludeDTO implements Serializable {
 	
 	private static final long serialVersionUID = -6910516846531402711L;
-	
+
+	/** The URI of the reference to be covered */
 	private String uri;
-	/* The referencedData attribute shall be present in each and every Include element, and set to "true". */
+
+	/**
+	 * Defines if the data is references
+	 * NOTE: The referencedData attribute shall be present in each and every Include element, and set to "true".
+	 */
 	private boolean referencedData;
 
+	/**
+	 * Empty constructor
+	 */
 	public TimestampIncludeDTO() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param uri {@link String} the reference uri
+	 * @param referencedData of the data is referenced
+	 */
 	public TimestampIncludeDTO(String uri, boolean referencedData) {
 		this.uri = uri;
 		this.referencedData = referencedData;
 	}
 
+	/**
+	 * Gets the reference URI
+	 *
+	 * @return {@link String} uri
+	 */
 	public String getURI() {
 		return uri;
 	}
 
+	/**
+	 * Sets the reference URI
+	 *
+	 * @param uri {@link String}
+	 */
 	public void setURI(String uri) {
 		this.uri = uri;
 	}
 
+	/**
+	 * Gets of the data is references
+	 *
+	 * @return TRUE if the {@code 'referencedData'} attribute value set to true, FALSE otherwise
+	 */
 	public boolean isReferencedData() {
 		return referencedData;
 	}
 
+	/**
+	 * Sets the value corresponding to {@code 'referencedData'} attribute value
+	 *
+	 * @param referencedData the value corresponding to {@code 'referencedData'} attribute value
+	 */
 	public void setReferencedData(boolean referencedData) {
 		this.referencedData = referencedData;
 	}

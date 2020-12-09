@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -32,11 +30,28 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the signature validation result is acceptable
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
+	/** SignatureAcceptanceValidation result */
 	private final XmlSAV savResult;
 
-	public SignatureAcceptanceValidationResultCheck(I18nProvider i18nProvider, T result, XmlSAV savResult, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param savResult {@link XmlSAV}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public SignatureAcceptanceValidationResultCheck(I18nProvider i18nProvider, T result, XmlSAV savResult,
+													LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.savResult = savResult;
 	}

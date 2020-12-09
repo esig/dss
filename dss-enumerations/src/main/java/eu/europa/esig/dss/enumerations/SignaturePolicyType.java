@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines available signature policy types
+ */
 public enum SignaturePolicyType {
 
 	/**
@@ -33,6 +36,10 @@ public enum SignaturePolicyType {
 	 */
 	ANY_POLICY,
 
+	/**
+	 * Indicate that the data object(s) being signed and other
+	 * external data imply the signature policy.
+	 */
 	IMPLICIT_POLICY;
 
 }

@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,19 +31,36 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.Callable;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * The call of native java DataLoader using the java.net.URL class.
+ *
+ */
 public class NativeDataLoaderCall implements Callable<byte[]> {
 
+	/** The default error message */
 	private static final String ERROR_MESSAGE = "An error occurred while reading from url '%s' : %s";
-	
+
+	/** The URL */
 	private String url;
+
+	/** The content */
 	private byte[] content;
+
+	/** Max input size */
 	private long maxInputSize;
 
+
+	/** Defines the cache is used */
 	private boolean useCaches;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param url {@link String}
+	 * @param content byte array
+	 * @param useCaches if the caches shall be used
+	 * @param maxInputSize maximum InputStream size
+	 */
 	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, long maxInputSize) {
 		super();
 		this.url = url;
@@ -75,22 +95,49 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 		return result;
 	}
 
+	/**
+	 * Creates connection
+	 *
+	 * @return {@link URLConnection}
+	 * @throws MalformedURLException if MalformedURLException occurred
+	 * @throws IOException if IOException occurred
+	 */
 	protected URLConnection createConnection() throws MalformedURLException, IOException {
 		return new URL(url).openConnection();
 	}
 
+	/**
+	 * Gets URL
+	 *
+	 * @return {@link String}
+	 */
 	public String getUrl() {
 		return url;
 	}
 
+	/**
+	 * Gets content
+	 *
+	 * @return byte array
+	 */
 	public byte[] getContent() {
 		return content;
 	}
 
+	/**
+	 * Gets the maximum InputStream size
+	 *
+	 * @return maximum InputStream size
+	 */
 	public long getMaxInputSize() {
 		return maxInputSize;
 	}
 
+	/**
+	 * Gets if the caches are used
+	 *
+	 * @return TRUE if to use caches, FALSE otherwise
+	 */
 	public boolean isUseCaches() {
 		return useCaches;
 	}

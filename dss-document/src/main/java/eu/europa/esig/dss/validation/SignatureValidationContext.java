@@ -20,22 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -64,6 +48,21 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP
@@ -75,10 +74,24 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureValidationContext.class);
 
+	/**
+	 * A set of certificates to process
+	 */
 	private final Set<CertificateToken> processedCertificates = new HashSet<>();
+
+	/**
+	 * A set of revocation data to process
+	 */
 	private final Set<RevocationToken<Revocation>> processedRevocations = new HashSet<>();
+
+	/**
+	 * A set of timestamps to process
+	 */
 	private final Set<TimestampToken> processedTimestamps = new HashSet<>();
 
+	/**
+	 * The CertificateVerifier to use
+	 */
 	private CertificateVerifier certificateVerifier;
 
 	/**
@@ -86,40 +99,46 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	private DataLoader dataLoader;
 
+	/** Map of tokens defining if they have been processed yet */
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
 
+	/** The last usage of a timestamp's certificate tokens */
 	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<>();
 
+	/** A map of token IDs and their corresponding POE times */
 	private final Map<String, List<Date>> poeTimes = new HashMap<>();
 	
-	/* The map contains all the certificate chains that has been used into the signature. Links the signing certificate and its chain. */
+	/**
+	 * The map contains all the certificate chains that has been used into the signature.
+	 * Links the signing certificate and its chain.
+	 * */
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
 
-	// External OCSP source.
+	/** External OCSP source */
 	private RevocationSource<OCSP> ocspSource;
 
-	// External CRL source.
+	/** External CRL source */
 	private RevocationSource<CRL> crlSource;
 
-	// External trusted certificate sources
+	/** External trusted certificate sources */
 	private ListCertificateSource trustedCertSources;
 
-	// External adjunct certificate sources
+	/** External adjunct certificate sources */
 	private ListCertificateSource adjunctCertSources;
 
-	// CRLs from the signature.
+	/** CRLs from the signature */
 	private ListRevocationSource<CRL> signatureCRLSource;
 
-	// OCSP from the signature.
+	/** OCSP from the signature */
 	private ListRevocationSource<OCSP> signatureOCSPSource;
 
-	// Certificates from the signature.
+	/** Certificates from the signature */
 	private ListCertificateSource signatureCertificateSource;
 	
-	// Certificates collected from AIA
+	/** Certificates collected from AIA */
 	private ListCertificateSource aiaCertificateSources = new ListCertificateSource();
 
-	// Certificates collected from revocation tokens
+	/** Certificates collected from revocation tokens */
 	private ListCertificateSource revocationCertificateSources = new ListCertificateSource();
 
 	/**

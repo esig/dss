@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.common;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
@@ -37,17 +32,37 @@ import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+/**
+ * The webService for a Certificate validation
+ */
 public class RemoteCertificateValidationService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteCertificateValidationService.class);
 
+	/** The CertificateVerifier to use */
 	private CertificateVerifier verifier;
 
+	/**
+	 * Sets the CertificateVerifier
+	 *
+	 * @param verifier {@link CertificateVerifier} to be used for validation
+	 */
 	public void setVerifier(CertificateVerifier verifier) {
 		this.verifier = verifier;
 	}
-	
+
+	/**
+	 * Validates the certificate
+	 *
+	 * @param certificateToValidate {@link CertificateToValidateDTO} the DTO containing the certificate to be validated
+	 *                                                                 and its corresponding data
+	 * @return {@link CertificateReportsDTO} the validation reports
+	 */
 	public CertificateReportsDTO validateCertificate(CertificateToValidateDTO certificateToValidate) {
 		LOG.info("ValidateCertificate in process...");
 		CertificateValidator validator = initValidator(certificateToValidate);
@@ -77,8 +92,8 @@ public class RemoteCertificateValidationService {
 		if (certificateToValidate.getValidationTime() != null) {
 			certificateValidator.setValidationTime(certificateToValidate.getValidationTime());
 		}
-		if (certificateToValidate.getTokenExtractionStategy() != null) {
-			certificateValidator.setTokenExtractionStategy(certificateToValidate.getTokenExtractionStategy());
+		if (certificateToValidate.getTokenExtractionStrategy() != null) {
+			certificateValidator.setTokenExtractionStrategy(certificateToValidate.getTokenExtractionStrategy());
 		}
 		return certificateValidator;
 	}

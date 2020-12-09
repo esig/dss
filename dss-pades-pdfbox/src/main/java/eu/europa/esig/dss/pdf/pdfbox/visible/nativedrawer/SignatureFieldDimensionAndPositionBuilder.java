@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import java.io.IOException;
-
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
@@ -40,20 +32,46 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
+/**
+ * Builds {@code SignatureFieldDimensionAndPosition}
+ */
 public class SignatureFieldDimensionAndPositionBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureFieldDimensionAndPositionBuilder.class);
 
-	private SignatureFieldDimensionAndPosition dimensionAndPosition;
+	/** Visual signature parameters */
 	private final SignatureImageParameters imageParameters;
+
+	/** The page to add the visual signature into */
 	private final PDPage page;
+
+	/** The signature field rectangle */
 	private final PDRectangle pageMediaBox;
+
+	/** The font to use */
 	private final PDFont pdFont;
+
+	/** Cached {@code SignatureFieldDimensionAndPosition} */
+	private SignatureFieldDimensionAndPosition dimensionAndPosition;
 
 	private static final String NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
 	private static final String NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
+	/**
+	 * Default constructor
+	 *
+	 * @param imageParameters {@code SignatureImageParameters}
+	 * @param page {@link PDPage} where the signature will be added
+	 * @param pdFont {@link PDFont} to use for a text creation
+	 */
 	public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page,
 			PDFont pdFont) {
 		this.imageParameters = imageParameters;
@@ -62,6 +80,12 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		this.pdFont = pdFont;
 	}
 
+	/**
+	 * Builds the {@code SignatureFieldDimensionAndPosition}
+	 *
+	 * @return {@link SignatureFieldDimensionAndPosition}
+	 * @throws IOException if an exception occurs
+	 */
 	public SignatureFieldDimensionAndPosition build() throws IOException {
 		this.dimensionAndPosition = new SignatureFieldDimensionAndPosition();
 		initDpi();
@@ -72,7 +96,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		return this.dimensionAndPosition;
 	}
 
-	private void initDpi() throws IOException {
+	private void initDpi() {
 		if (imageParameters.getImage() != null) {
 			ImageAndResolution imageAndResolution;
 			try {

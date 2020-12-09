@@ -25,11 +25,22 @@ import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
 import eu.europa.esig.dss.ws.cert.validation.rest.client.RestCertificateValidationService;
 
+/**
+ * The default implementation of {@code RestCertificateValidationService}
+ */
 @SuppressWarnings("serial")
 public class RestCertificateValidationServiceImpl implements RestCertificateValidationService {
-	
+
+	/**
+	 * The certificate validation service
+	 */
 	private RemoteCertificateValidationService validationService;
-	
+
+	/**
+	 * Sets the certificate validation service
+	 *
+	 * @param validationService {@link RemoteCertificateValidationService}
+	 */
 	public void setValidationService(RemoteCertificateValidationService validationService) {
 		this.validationService = validationService;
 	}

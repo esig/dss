@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -30,10 +28,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
 
+import java.util.Map;
+
+/**
+ * Validates revocation BBBs
+ */
 public class RevocationBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessLongTermData> {
 
-	public RevocationBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, DiagnosticData diagnosticData,
-			XmlBasicBuildingBlocks revocationBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessLongTermData}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param revocationBBB {@link XmlBasicBuildingBlocks}
+	 * @param bbbs map of all BBBs
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public RevocationBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
+											  DiagnosticData diagnosticData, XmlBasicBuildingBlocks revocationBBB,
+											  Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
 		super(i18nProvider, result, diagnosticData, revocationBBB, bbbs, constraint);
 	}
 

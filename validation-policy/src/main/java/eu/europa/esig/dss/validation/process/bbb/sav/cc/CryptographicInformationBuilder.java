@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
-import java.util.Date;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -16,22 +13,54 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Builds a cryptographic information for the ETSI Validation report
+ */
 public class CryptographicInformationBuilder {
-	
+
+	/** The conclusion */
 	private final XmlConclusion conclusion;
+
+	/** The constraint */
 	private final CryptographicConstraint constraint;
-	
+
+	/** Digest Algorithm */
 	private final DigestAlgorithm digestAlgorithm;
+
+	/** Encryption Algorithm */
 	private final EncryptionAlgorithm encryptionAlgorithm;
+
+	/** Mask generation function */
 	private final MaskGenerationFunction maskGenerationFunction;
+
+	/** Key length used to sign the token */
 	private final String keyLength;
-	private final String objectDecription;
-	
+
+	/** Object description */
+	private final String objectDescription;
+
+	/**
+	 * Default constructor to validate {@code TokenProxy}
+	 *
+	 * @param token {@link TokenProxy}
+	 * @param conclusion {@link XmlConclusion}
+	 * @param constraint {@link CryptographicConstraint}
+	 */
 	public CryptographicInformationBuilder(TokenProxy token, XmlConclusion conclusion, CryptographicConstraint constraint) {
 		this(token.getDigestAlgorithm(), token.getEncryptionAlgorithm(), token.getMaskGenerationFunction(), token.getKeyLengthUsedToSignThisToken(), 
 				token.getId(), conclusion, constraint);
 	}
-	
+
+	/**
+	 * Default constructor to validate {@code XmlDigestMatcher}
+	 *
+	 * @param digestMatcher {@link TokenProxy}
+	 * @param conclusion {@link XmlConclusion}
+	 * @param constraint {@link CryptographicConstraint}
+	 */
 	public CryptographicInformationBuilder(XmlDigestMatcher digestMatcher, XmlConclusion conclusion, CryptographicConstraint constraint) {
 		this(digestMatcher.getDigestMethod(), null, null, null, getDigestMatcherDescription(digestMatcher), conclusion, constraint);
 	}
@@ -50,7 +79,7 @@ public class CryptographicInformationBuilder {
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		this.maskGenerationFunction = maskGenerationFunction;
 		this.keyLength = keyLength;
-		this.objectDecription =objectDecription;
+		this.objectDescription =objectDecription;
 		
 		this.conclusion = conclusion;
 		this.constraint = constraint;
@@ -62,7 +91,7 @@ public class CryptographicInformationBuilder {
 		cryptoInfo.setKeyLength(keyLength);
 		cryptoInfo.setSecure(isSecure(conclusion));
 		cryptoInfo.setNotAfter(getNotAfter());
-		cryptoInfo.setConcernedMaterial(objectDecription);
+		cryptoInfo.setConcernedMaterial(objectDescription);
 		return cryptoInfo;
 	}
 

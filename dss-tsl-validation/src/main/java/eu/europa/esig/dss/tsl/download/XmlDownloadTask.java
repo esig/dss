@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.download;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.w3c.dom.Document;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,12 +28,29 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import org.w3c.dom.Document;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.Objects;
+import java.util.function.Supplier;
+
+/**
+ * Downloads the document and returns a {@code XmlDownloadResult}
+ */
 public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 
+	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
+
+	/** The URL to download the document from */
 	private final String url;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param dssFileLoader {@link DSSFileLoader} to use
+	 * @param url {@link String} to download the document from
+	 */
 	public XmlDownloadTask(DSSFileLoader dssFileLoader, String url) {
 		Objects.requireNonNull(dssFileLoader, "The DSSFileLoader is null");
 		Objects.requireNonNull(url, "The url is null");

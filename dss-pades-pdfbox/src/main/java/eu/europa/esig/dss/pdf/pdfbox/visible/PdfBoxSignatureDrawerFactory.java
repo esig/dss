@@ -22,6 +22,9 @@ package eu.europa.esig.dss.pdf.pdfbox.visible;
 
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 
+/**
+ * Loads a relevant signature drawer for a PDFBox implementation
+ */
 public interface PdfBoxSignatureDrawerFactory extends SignatureDrawerFactory {
 
 }

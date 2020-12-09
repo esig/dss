@@ -26,14 +26,34 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the value is allowed
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public abstract class AbstractValueCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Accepts all values */
 	private static final String ALL_VALUE = "*";
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param constraint {@link LevelConstraint}
+	 */
 	protected AbstractValueCheckItem(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 	}
 
+	/**
+	 * Processes the value check
+	 *
+	 * @param value {@link String} to check
+	 * @param expected {@link String} the expected value
+	 * @return TRUE if the {@code value} matches the {@code expected}, FALSE otherwise
+	 */
 	protected boolean processValueCheck(String value, String expected) {
 		if (Utils.isStringEmpty(value)) {
 			return false;

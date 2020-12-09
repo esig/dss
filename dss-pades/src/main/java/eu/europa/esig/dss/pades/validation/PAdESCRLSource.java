@@ -33,7 +33,6 @@ import org.bouncycastle.asn1.x509.CertificateList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -44,8 +43,16 @@ public class PAdESCRLSource extends PdfDssDictCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESCRLSource.class);
 
+	/** The name of the corresponding VRI dictionary */
 	private final String vriDictionaryName;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param dssDictionary {@link PdfDssDict}
+	 * @param vriDictionaryName {@link String} the corresponding VRI dictionary name to extract
+	 * @param signedAttributes {@link AttributeTable}
+	 */
 	public PAdESCRLSource(PdfDssDict dssDictionary, final String vriDictionaryName,
 			AttributeTable signedAttributes) {
 		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
@@ -55,16 +62,21 @@ public class PAdESCRLSource extends PdfDssDictCRLSource {
 		extractCRLArchivalValues(signedAttributes);
 	}
 
-	protected void extractCRLArchivalValues(AttributeTable signedAttributes) {
+	/**
+	 * Extract the CRL Archival values
+	 *
+	 * @param signedAttributes {@link AttributeTable}
+	 */
+	private void extractCRLArchivalValues(AttributeTable signedAttributes) {
 		if (signedAttributes != null) {
 			final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
-			RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchivals(attValue);
+			RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchival(attValue);
 			if (revValues != null) {
 				for (final CertificateList revValue : revValues.getCrlVals()) {
 					try {
 						addBinary(CRLUtils.buildCRLBinary(revValue.getEncoded()),
 								RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
 					}
 				}

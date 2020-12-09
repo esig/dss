@@ -22,6 +22,9 @@ package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
 
+/**
+ * Contains methods for dealing with textual visual signature creation
+ */
 public abstract class AbstractFontMetrics {
 	
 	/**

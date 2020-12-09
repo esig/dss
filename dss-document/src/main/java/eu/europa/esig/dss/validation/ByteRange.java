@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import eu.europa.esig.dss.model.DSSException;
 
 /**
  * This class represents a ByteRange of a PDF Revision
  *
  */
 public class ByteRange {
-	
+
+	/** Represents a PDF signature byteRange */
 	private int[] byteRange;
 	
 	/**

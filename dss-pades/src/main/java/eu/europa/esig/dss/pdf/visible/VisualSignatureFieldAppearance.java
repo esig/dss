@@ -6,13 +6,13 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
  * Contains information about a visual SignatureField appearance
  *
  */
-public interface VisualSignatureFieldAppearence {
+public interface VisualSignatureFieldAppearance {
 	
 	/**
 	 * Creates an {@code AnnotationBox} from the SignatureFieldBox
 	 * 
 	 * @return {@link AnnotationBox}
 	 */
-	public AnnotationBox getAnnotationBox();
+	AnnotationBox getAnnotationBox();
 
 }

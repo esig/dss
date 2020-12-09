@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
+/**
+ * Parses the {@code EncryptionAlgorithm}
+ */
 public final class EncryptionAlgorithmParser {
 
 	private EncryptionAlgorithmParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code EncryptionAlgorithm}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link EncryptionAlgorithm}
+	 */
 	public static EncryptionAlgorithm parse(String v) {
 		if (v != null) {
 			return EncryptionAlgorithm.forName(v);
@@ -34,6 +43,12 @@ public final class EncryptionAlgorithmParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link EncryptionAlgorithm}
+	 * @return {@link String}
+	 */
 	public static String print(EncryptionAlgorithm v) {
 		if (v != null) {
 			return v.getName();

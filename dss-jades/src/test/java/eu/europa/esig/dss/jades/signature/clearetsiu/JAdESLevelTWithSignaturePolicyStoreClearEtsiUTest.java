@@ -1,21 +1,5 @@
 package eu.europa.esig.dss.jades.signature.clearetsiu;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -42,6 +26,21 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJAdESTestSignature {
 
@@ -95,13 +94,13 @@ public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJ
 		Exception exception = assertThrows(DSSException.class,
 				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
 		assertEquals("Extension is not possible! The encoding of 'etsiU' "
-				+ "components shall match! Use jadesSingatureParameters.setBase64UrlEncodedEtsiUComponents(false)",
+				+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(false)",
 				exception.getMessage());
 
 		exception = assertThrows(DSSException.class,
 				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore, true));
 		assertEquals("Extension is not possible! The encoding of 'etsiU' "
-				+ "components shall match! Use jadesSingatureParameters.setBase64UrlEncodedEtsiUComponents(false)",
+				+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(false)",
 				exception.getMessage());
 
 		DSSDocument signedDocumentWithSignaturePolicyStore = service.addSignaturePolicyStore(signedDocument,

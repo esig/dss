@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -31,6 +29,11 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageImprintCryptographicCheck;
 
+import java.util.Date;
+
+/**
+ *
+ */
 public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
 
 	protected final DigestAlgorithm digestAlgorithm;

@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -10,15 +8,35 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
+import java.util.Date;
+
+/**
+ * Check DigestAlgorithm in validation time
+ */
 public class DigestAlgorithmOnValidationTimeCheck extends AbstractCryptographicCheck {
-	
+
+	/** The algorithm to check */
 	private final DigestAlgorithm digestAlgo;
+
+	/** The validation date */
 	private final Date validationDate;
-	
+
+	/** The error message if occurred */
 	private MessageTag errorMessage;
 
-	protected DigestAlgorithmOnValidationTimeCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo, Date validationDate, 
-			XmlCC result, MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param digestAlgo {@link DigestAlgorithm}
+	 * @param validationDate {@link Date}
+	 * @param result {@link XmlCC}
+	 * @param position {@link MessageTag}
+	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 */
+	protected DigestAlgorithmOnValidationTimeCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo,
+												   Date validationDate, XmlCC result, MessageTag position,
+												   CryptographicConstraintWrapper constraintWrapper) {
 		super(i18nProvider, result, position, constraintWrapper);
 		this.digestAlgo = digestAlgo;
 		this.validationDate = validationDate;

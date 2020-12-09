@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.tsl.sync;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 
+import java.util.Date;
+
+/**
+ * Allows to skip expired/invalid trusted lists
+ */
 public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrategy {
 
 	/**

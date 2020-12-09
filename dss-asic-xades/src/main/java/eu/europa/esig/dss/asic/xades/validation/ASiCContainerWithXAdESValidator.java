@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
@@ -41,12 +37,19 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This class is an implementation to validate ASiC containers with XAdES signature(s)
  * 
  */
 public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValidator {
 
+	/**
+	 * The empty constructor
+	 */
 	ASiCContainerWithXAdESValidator() {
 		super(null);
 	}
@@ -58,7 +61,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 */
 	public ASiCContainerWithXAdESValidator(final DSSDocument asicContainer) {
 		super(asicContainer, new XAdESSignatureScopeFinder());
-		analyseEntries();
+		extractEntries();
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getArchiveExtractor() {
+	protected AbstractASiCContainerExtractor getContainerExtractor() {
 		return new ASiCWithXAdESContainerExtractor(document);
 	}
 
@@ -101,7 +104,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected List<ManifestFile> getManifestFilesDecriptions() {
+	protected List<ManifestFile> getManifestFilesDescriptions() {
 		List<ManifestFile> descriptions = new ArrayList<>();
 		List<DSSDocument> signatureDocuments = getSignatureDocuments();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();

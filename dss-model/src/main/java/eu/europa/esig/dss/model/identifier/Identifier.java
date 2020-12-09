@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.model.identifier;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 
 /**
  * This class is used to obtain a unique id for an object
@@ -36,11 +36,16 @@ public abstract class Identifier implements Serializable {
 
 	private static final long serialVersionUID = 1440382536669604521L;
 
+	/** The DigestAlgorithm to use */
 	protected static final DigestAlgorithm DIGEST_ALGO = DigestAlgorithm.SHA256;
 
-	private final Digest id;
-	private final String prefix; // the prefix to be added to a hexValue (e.g. "C-" +  HEX)
+	/** The prefix to be added to a hexValue (e.g. "C-" +  HEX) */
+	private final String prefix;
 
+	/** The digest Id */
+	private final Digest id;
+
+	/** The String Id */
 	private String xmlId;
 
 	/**
@@ -69,6 +74,12 @@ public abstract class Identifier implements Serializable {
 		this.prefix = prefix;
 	}
 
+	/**
+	 * Gets {@code MessageDigest} of the DigestAlgorithm
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return {@link MessageDigest}
+	 */
 	protected MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
 		try {
 			return digestAlgorithm.getMessageDigest();
@@ -77,6 +88,11 @@ public abstract class Identifier implements Serializable {
 		}
 	}
 
+	/**
+	 * Gets {@code Digest} Id
+	 *
+	 * @return {@link Digest}
+	 */
 	Digest getDigestId() {
 		return id;
 	}

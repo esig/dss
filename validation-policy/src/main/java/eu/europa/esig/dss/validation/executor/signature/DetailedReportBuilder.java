@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -63,15 +54,42 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSigna
 import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStamp;
 import eu.europa.esig.dss.validation.reports.DSSReportException;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Builds a DetailedReport for a signature validation
+ */
 public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
+	/** The target highest validation level */
 	private final ValidationLevel validationLevel;
-	
+
+	/** Defines if the semantics information shall be included */
 	private final boolean includeSemantics;
-	
+
+	/** Set of all used Indications (used for semantics) */
 	private Set<Indication> allIndications = new HashSet<>();
+
+	/** Set of all used SubIndications (used for semantics) */
 	private Set<SubIndication> allSubIndications = new HashSet<>();
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date} validation time
+	 * @param policy {@link ValidationPolicy}
+	 * @param validationLevel {@link ValidationLevel} the target highest level
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param includeSemantics defines if the smeantics shall be included
+	 */
 	public DetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, 
 			ValidationLevel validationLevel, DiagnosticData diagnosticData, boolean includeSemantics) {
 		super(i18nProvider, currentTime, policy, diagnosticData);
@@ -79,6 +97,11 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		this.includeSemantics = includeSemantics;
 	}
 
+	/**
+	 * Builds the {@code XmlDetailedReport}
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	XmlDetailedReport build() {
 		XmlDetailedReport detailedReport = init();
 		

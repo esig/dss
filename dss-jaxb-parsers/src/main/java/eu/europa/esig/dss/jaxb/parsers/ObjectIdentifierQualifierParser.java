@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
+/**
+ * Parses the {@code ObjectIdentifierQualifier}
+ */
 public class ObjectIdentifierQualifierParser {
 
 	private ObjectIdentifierQualifierParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code ObjectIdentifierQualifier}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link ObjectIdentifierQualifier}
+	 */
 	public static ObjectIdentifierQualifier parse(String v) {
 		return ObjectIdentifierQualifier.fromValue(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link ObjectIdentifierQualifier}
+	 * @return {@link String}
+	 */
 	public static String print(ObjectIdentifierQualifier v) {
 		if (v != null) {
 			return v.getValue();

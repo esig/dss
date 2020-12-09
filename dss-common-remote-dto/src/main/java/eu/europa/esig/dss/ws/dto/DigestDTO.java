@@ -20,29 +20,45 @@
  */
 package eu.europa.esig.dss.ws.dto;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Locale;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-
+/**
+ * Represent the Digest DTO
+ */
 @SuppressWarnings("serial")
 public class DigestDTO implements Serializable {
 
+	/** The used DigestAlgorithm */
 	private DigestAlgorithm algorithm;
 
+	/** The digest's value */
 	private byte[] value;
 
+	/**
+	 * The empty constructor
+	 */
 	public DigestDTO() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param algorithm {@link DigestAlgorithm} used for the digest calculation
+	 * @param value of the digest
+	 */
 	public DigestDTO(DigestAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
 	}
 
 	/**
+	 * Gets the {@link DigestAlgorithm}
+	 *
 	 * @return the algorithm
 	 */
 	public DigestAlgorithm getAlgorithm() {
@@ -50,14 +66,18 @@ public class DigestDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the {@link DigestAlgorithm}
+	 *
 	 * @param algorithm
-	 *                  the algorithm to set
+	 *                 {@link DigestAlgorithm} the algorithm to set
 	 */
 	public void setAlgorithm(DigestAlgorithm algorithm) {
 		this.algorithm = algorithm;
 	}
 
 	/**
+	 * Gets the digest value
+	 *
 	 * @return the value
 	 */
 	public byte[] getValue() {
@@ -65,6 +85,8 @@ public class DigestDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the digest value
+	 *
 	 * @param value
 	 *              the value to set
 	 */
@@ -72,6 +94,11 @@ public class DigestDTO implements Serializable {
 		this.value = value;
 	}
 
+	/**
+	 * Returns a hex-encoded digest value
+	 *
+	 * @return {@link String} hex-encoded
+	 */
 	protected String hexValue() {
 		String hex = new BigInteger(1, value).toString(16);
 		if (hex.length() % 2 == 1) {

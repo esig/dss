@@ -23,8 +23,18 @@ package eu.europa.esig.dss.alert;
 import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.SilentHandler;
 
+/**
+ * The class is used to process an alert silently (do nothing)
+ *
+ * @param <T> the class of an object to process
+ */
 public class SilentOnAlert<T> extends AbstractAlert<T> {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param detector {@link AlertDetector} to detect an event to trugger the handler
+	 */
 	public SilentOnAlert(AlertDetector<T> detector) {
 		super(detector, new SilentHandler<T>());
 	}

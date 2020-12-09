@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -51,17 +47,42 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCh
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Checks if the revocation is acceptable and can be used
+ */
 public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
+	/** The certificate in question */
 	private final CertificateWrapper certificate;
+
+	/** The revocation data */
 	private final CertificateRevocationWrapper revocationData;
+
+	/** Validation time */
 	private final Date controlTime;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
-	
+
+	/** Internal list of processed tokens (avoids infinite loop) */
 	private final List<String> validatedTokens;
 
-	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-			Date controlTime, ValidationPolicy policy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param certificate {@link CertificateWrapper}
+	 * @param revocationData {@link CertificateRevocationWrapper}
+	 * @param controlTime {@link Date}
+	 * @param policy {@link ValidationPolicy}
+	 */
+	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
+									   CertificateRevocationWrapper revocationData, Date controlTime,
+									   ValidationPolicy policy) {
 		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<String>());
 		result.setId(revocationData.getId());
 		result.setRevocationProductionDate(revocationData.getProductionDate());

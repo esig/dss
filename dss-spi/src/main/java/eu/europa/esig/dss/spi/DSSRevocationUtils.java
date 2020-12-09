@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.spi;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERNull;
@@ -53,14 +54,12 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.ResponderId;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Utility class used to manipulate revocation data (OCSP, CRL)
@@ -70,6 +69,7 @@ public final class DSSRevocationUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSRevocationUtils.class);
 
+	/** Builds DigestCalculatorProvider */
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
 
 	static {
@@ -122,7 +122,7 @@ public final class DSSRevocationUtils {
 	 *
 	 * @param ocspResp
 	 *            {@code OCSPResp} to analysed
-	 * @return
+	 * @return {@link BasicOCSPResp}
 	 */
 	public static BasicOCSPResp fromRespToBasic(final OCSPResp ocspResp) {
 		BasicOCSPResp basicOCSPResp = null;
@@ -155,7 +155,13 @@ public final class DSSRevocationUtils {
 			throw new DSSException(e);
 		}
 	}
-	
+
+	/**
+	 * Gets ASN1 encoded binaries of the {@code basicOCSPResp}
+	 *
+	 * @param basicOCSPResp {@link BasicOCSPResp}
+	 * @return ASN1 encoded binaries
+	 */
 	public static byte[] getEncodedFromBasicResp(final BasicOCSPResp basicOCSPResp) {
 		try {
 			if (basicOCSPResp != null) {
@@ -250,6 +256,12 @@ public final class DSSRevocationUtils {
 		}
 	}
 
+	/**
+	 * Gets a {@code DigestCalculator} for the {@code digestAlgorithm}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return {@link DigestCalculator}
+	 */
 	public static DigestCalculator getDigestCalculator(DigestAlgorithm digestAlgorithm) {
 		try {
 			final DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
@@ -288,6 +300,12 @@ public final class DSSRevocationUtils {
 		return fromRespToBasic(ocspResp);
 	}
 
+	/**
+	 * Returns the encoded binaries of the OCSP response
+	 *
+	 * @param ocspResp {@link OCSPResp}
+	 * @return ASN1 encoded binaries of the OCSP response
+	 */
 	public static byte[] getEncoded(OCSPResp ocspResp) {
 		try {
 			return ocspResp.getEncoded();
@@ -330,7 +348,13 @@ public final class DSSRevocationUtils {
 		}
 		return revocationKeys;
 	}
-	
+
+	/**
+	 * Gets CRL key (SHA-1 digest) of the url
+	 *
+	 * @param crlUrl {@link String}
+	 * @return {@link String}
+	 */
 	public static String getCRLRevocationTokenKey(final String crlUrl) {
 		return DSSUtils.getSHA1Digest(crlUrl);
 	}
@@ -348,12 +372,28 @@ public final class DSSRevocationUtils {
 		}
 		return revocationKeys;
 	}
-	
+
+	/**
+	 * Gets OCSP key (SHA-1 digest) of the url
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param ocspUrl {@link String}
+	 * @return {@link String}
+	 */
 	public static String getOcspRevocationKey(final CertificateToken certificateToken, final String ocspUrl) {
 		return DSSUtils.getSHA1Digest(certificateToken.getEntityKey() + ":" + ocspUrl);
 	}
 
-	public static SingleResp getLatestSingleResponse(BasicOCSPResp basicResponse, CertificateToken certificate, CertificateToken issuer) {
+	/**
+	 * Gets the latest single response from the OCSP response
+	 *
+	 * @param basicResponse {@link BasicOCSPResp}
+	 * @param certificate {@link CertificateToken} to get single response for
+	 * @param issuer {@link CertificateToken} issuer of the {@code certificate}
+	 * @return {@link SingleResp}
+	 */
+	public static SingleResp getLatestSingleResponse(BasicOCSPResp basicResponse, CertificateToken certificate,
+													 CertificateToken issuer) {
 		List<SingleResp> singleResponses = getSingleResponses(basicResponse, certificate, issuer);
 		if (Utils.isCollectionEmpty(singleResponses)) {
 			return null;
@@ -377,7 +417,16 @@ public final class DSSRevocationUtils {
 		return latestResp;
 	}
 
-	public static List<SingleResp> getSingleResponses(BasicOCSPResp basicResponse, CertificateToken certificate, CertificateToken issuer) {
+	/**
+	 * Gets a list of single response from the OCSP response
+	 *
+	 * @param basicResponse {@link BasicOCSPResp}
+	 * @param certificate {@link CertificateToken} to get single response for
+	 * @param issuer {@link CertificateToken} issuer of the {@code certificate}
+	 * @return a list of {@link SingleResp}onses
+	 */
+	public static List<SingleResp> getSingleResponses(BasicOCSPResp basicResponse, CertificateToken certificate,
+													  CertificateToken issuer) {
 		List<SingleResp> result = new ArrayList<>();
 		SingleResp[] responses = getSingleResps(basicResponse);
 		for (final SingleResp singleResp : responses) {
@@ -399,6 +448,12 @@ public final class DSSRevocationUtils {
 		}
 	}
 
+	/**
+	 * Converts {@code OtherHash} to {@code Digest}
+	 *
+	 * @param otherHash {@link OtherHash}
+	 * @return {@link Digest}
+	 */
 	public static Digest getDigest(OtherHash otherHash) {
 		if (otherHash != null) {
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());

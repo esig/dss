@@ -20,32 +20,81 @@
  */
 package eu.europa.esig.dss.definition;
 
+/**
+ * Contains a list of common XML xpaths
+ */
 public abstract class AbstractPaths {
 
+	/**
+	 * Builds the xpath expression to return entries of the {@code element}
+	 *
+	 * @param element {@link DSSElement}
+	 * @return {@link String} xpath expression
+	 */
 	public static final String all(DSSElement element) {
 		return new XPathExpressionBuilder().all().element(element).build();
 	}
 
+	/**
+	 * Builds the xpath expression to return entries of the {@code element} from the current position
+	 *
+	 * @param element {@link DSSElement}
+	 * @return {@link String} xpath expression
+	 */
 	public static final String fromCurrentPosition(DSSElement element) {
 		return new XPathExpressionBuilder().fromCurrentPosition().element(element).build();
 	}
 
+	/**
+	 * Builds the xpath expression to return entries of the {@code element} from the current position
+	 *
+	 * @param element {@link DSSElement}
+	 * @return {@link String} xpath expression
+	 */
 	public static final String allFromCurrentPosition(DSSElement element) {
 		return new XPathExpressionBuilder().all().fromCurrentPosition().element(element).build();
 	}
 
+	/**
+	 * Builds the xpath expression to return entries of the given {@code element}s array
+	 *
+	 * @param elements an array of {@link DSSElement}s
+	 * @return {@link String} xpath expression
+	 */
 	protected static final String all(DSSElement... elements) {
 		return new XPathExpressionBuilder().all().elements(elements).build();
 	}
 
+	/**
+	 * Builds the xpath expression to return entries of the {@code element}
+	 * which are not parent of {@code notParentOf}
+	 *
+	 * @param element {@link DSSElement}
+	 * @param notParentOf {@link DSSElement}
+	 * @return {@link String} xpath expression
+	 */
 	protected static String allNotParent(DSSElement element, DSSElement notParentOf) {
 		return new XPathExpressionBuilder().all().element(element).notParentOf(notParentOf).build();
 	}
 
+	/**
+	 * Builds the xpath expression to return entries starting from the current position
+	 *
+	 * @param elements {@link DSSElement}
+	 * @return {@link String} xpath expression
+	 */
 	protected static final String fromCurrentPosition(DSSElement... elements) {
 		return new XPathExpressionBuilder().fromCurrentPosition().elements(elements).build();
 	}
 
+	/**
+	 * Builds the xpath expression to return entries starting from the current position
+	 * with the given {@code attribute}
+	 *
+	 * @param element {@link DSSElement}
+	 * @param attribute {@link DSSAttribute}
+	 * @return {@link String} xpath expression
+	 */
 	protected static final String fromCurrentPosition(DSSElement element, DSSAttribute attribute) {
 		return new XPathExpressionBuilder().fromCurrentPosition().element(element).attribute(attribute).build();
 	}

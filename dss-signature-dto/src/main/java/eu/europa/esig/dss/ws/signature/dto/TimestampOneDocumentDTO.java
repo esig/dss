@@ -28,21 +28,41 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
  * It's impossible to transfer big objects by GET (url size limitation)
  */
 public class TimestampOneDocumentDTO extends AbstractTimestampDocumentDTO {
-	
+
+	/** The document to be timestamped */
 	private RemoteDocument toTimestampDocument;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	public TimestampOneDocumentDTO() {
 	}
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param toTimestampDocument {@link RemoteDocument} to be timestamped
+	 * @param timestampParameters {@link RemoteTimestampParameters}
+	 */
 	public TimestampOneDocumentDTO(RemoteDocument toTimestampDocument, RemoteTimestampParameters timestampParameters) {
 		super(timestampParameters);
 		this.toTimestampDocument = toTimestampDocument;
 	}
 
+	/**
+	 * Gets a document to be timestamped
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getToTimestampDocument() {
 		return toTimestampDocument;
 	}
 
+	/**
+	 * Sets a document to be timestamped
+	 *
+	 * @param toTimestampDocument {@link RemoteDocument}
+	 */
 	public void setToTimestampDocument(RemoteDocument toTimestampDocument) {
 		this.toTimestampDocument = toTimestampDocument;
 	}

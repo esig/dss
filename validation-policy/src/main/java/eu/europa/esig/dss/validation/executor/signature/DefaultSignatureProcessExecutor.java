@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -32,6 +30,8 @@ import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
+import java.util.Objects;
+
 /**
  * This class executes a signature validation process and produces
  * SimpleReport, DetailedReport and ETSI Validation report
@@ -39,8 +39,13 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
  */
 public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor implements DocumentProcessExecutor {
 
+	/** The target highest validation level (default: ValidationLevel.ARCHIVAL_DATA) */
 	protected ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
+
+	/** Defines if the ETSI Validation Report shall be generated (default: true) */
 	protected boolean enableEtsiValidationReport = true;
+
+	/** Defines if the semantics information shall be included (default: false) */
 	protected boolean includeSemantics = false;
 
 	@Override
@@ -65,11 +70,22 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 		DiagnosticData diagnosticData = getDiagnosticData();
 		return buildReports(diagnosticData);
 	}
-	
+
+	/**
+	 * Gets the DiagnosticDate
+	 *
+	 * @return {@link DiagnosticData}
+	 */
 	protected DiagnosticData getDiagnosticData() {
 		return new DiagnosticData(jaxbDiagnosticData);
 	}
 
+	/**
+	 * Builds reports
+	 *
+	 * @param diagnosticData {@link DiagnosticData} to use
+	 * @return {@link Reports}
+	 */
 	protected Reports buildReports(final DiagnosticData diagnosticData) {
 
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(getI18nProvider(), currentTime, policy,

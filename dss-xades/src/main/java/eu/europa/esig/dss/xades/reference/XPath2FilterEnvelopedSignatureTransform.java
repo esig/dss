@@ -23,16 +23,29 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * Enveloped signature transformation by Filter 2.0. Excludes all signatures from the XML.
+ */
 public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterTransform {
-	
+
+	/** The subtract filter */
 	private static final String SUBTRACT_FILTER = "subtract";
-	
+
+	/** All descendant ds:Signature elements */
 	private static final String DESCENDANT_SIGNATURE = "/descendant::ds:Signature";
 
+	/**
+	 * Default constructor
+	 */
 	public XPath2FilterEnvelopedSignatureTransform() {
 		super(XAdESNamespaces.XMLDSIG, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
 	}
-	
+
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 */
 	public XPath2FilterEnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
 		super(xmlDSigNamespace, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
 	}

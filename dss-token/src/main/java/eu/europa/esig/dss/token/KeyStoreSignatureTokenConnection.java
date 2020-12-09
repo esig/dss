@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.model.DSSException;
+
+import javax.security.auth.DestroyFailedException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,23 +31,48 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 
-import javax.security.auth.DestroyFailedException;
-
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * Connection to a key store
+ */
 public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConnection {
 
+	/** The KeyStore */
 	private final KeyStore keyStore;
+
+	/** The password for the KeyStore */
 	private final PasswordProtection password;
 
+	/**
+	 * Constructor from keyStore's binaries
+	 *
+	 * @param ksBytes byte array representing the keyStore
+	 * @param ksType {@link String} type of the keyStore
+	 * @param ksPassword {@link PasswordProtection}
+	 */
 	public KeyStoreSignatureTokenConnection(byte[] ksBytes, String ksType, PasswordProtection ksPassword) {
 		this(new ByteArrayInputStream(ksBytes), ksType, ksPassword);
 	}
 
+	/**
+	 * Constructor with a path to KeyStore
+	 *
+	 * @param filepath {@link String} path to the KeyStore
+	 * @param ksType {@link String} type of the keyStore
+	 * @param ksPassword {@link PasswordProtection}
+	 * @throws IOException if an exception occurs
+	 */
 	public KeyStoreSignatureTokenConnection(String filepath, String ksType, PasswordProtection ksPassword) throws IOException {
 		this(new File(filepath), ksType, ksPassword);
 	}
 
+	/**
+	 * Constructor from a file
+	 *
+	 * @param ksFile {@link File} to the KeyStore
+	 * @param ksType {@link String} type of the keyStore
+	 * @param ksPassword {@link PasswordProtection}
+	 * @throws IOException if an exception occurs
+	 */
 	public KeyStoreSignatureTokenConnection(File ksFile, String ksType, PasswordProtection ksPassword) throws IOException {
 		this(new FileInputStream(ksFile), ksType, ksPassword);
 	}

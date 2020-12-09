@@ -1,13 +1,12 @@
 package eu.europa.esig.dss.spi.x509;
 
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.model.DSSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Checks signature integrity among a provided list of signing certificate candidates
@@ -16,7 +15,8 @@ import eu.europa.esig.dss.model.DSSException;
 public abstract class SignatureIntegrityValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureIntegrityValidator.class);
-	
+
+	/** The list of errors occurred during the signature integrity validation */
 	private List<String> errorMessages = null;
 	
 	/**

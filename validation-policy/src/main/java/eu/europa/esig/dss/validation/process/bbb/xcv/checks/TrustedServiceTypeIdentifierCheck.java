@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
@@ -35,14 +32,36 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Checks if the certificate's usage time in the validity range of a TrustedService with the accepted type
+ */
 public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
+	/** The certificate to check */
 	private final CertificateWrapper certificate;
-	private final Date usageTime; // timestamp / revocation production date
+
+	/** Timestamp / revocation production */
+	private final Date usageTime;
+
+	/** The validation times */
 	private final Context context;
 
+	/** Service type string */
 	private String serviceTypeStr;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param usageTime {@link Date}
+	 * @param context {@link Context}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
 	public TrustedServiceTypeIdentifierCheck(I18nProvider i18nProvider, XmlXCV result, CertificateWrapper certificate, 
 			Date usageTime, Context context, MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
@@ -64,8 +83,7 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 			Date statusStartDate = trustedService.getStartDate();
 			if (processValueCheck(serviceTypeStr) && statusStartDate != null) {
 				Date statusEndDate = trustedService.getEndDate();
-				// The issuing time of the certificate should be into the validity period of the associated
-				// service
+				// The issuing time of the certificate should be into the validity period of the associated service
 				if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
 					return true;
 				}

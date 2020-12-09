@@ -1,16 +1,15 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //@formatter:off
 /**
@@ -38,12 +37,21 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JWSSerializationDocumentValidator.class);
-	
+
+	/** A list of signatures */
 	private List<AdvancedSignature> signatures;
 
+	/**
+	 * Empty constructor
+	 */
 	public JWSSerializationDocumentValidator() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param document {@link DSSDocument} to validate
+	 */
 	public JWSSerializationDocumentValidator(DSSDocument document) {
 		super(document);
 	}

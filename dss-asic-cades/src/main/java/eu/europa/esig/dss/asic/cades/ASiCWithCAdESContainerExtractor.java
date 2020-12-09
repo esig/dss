@@ -24,8 +24,16 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 
+/**
+ * The class is used to extract the content (documents) embedded into an ASiC with CAdES container
+ */
 public class ASiCWithCAdESContainerExtractor extends AbstractASiCContainerExtractor {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param archive {@link DSSDocument} representing an ASiC with CAdES container
+	 */
 	public ASiCWithCAdESContainerExtractor(DSSDocument archive) {
 		super(archive);
 	}

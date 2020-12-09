@@ -20,69 +20,11 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.ASN1String;
-import org.bouncycastle.asn1.ASN1UTCTime;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
-import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
-import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
-import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
-import org.bouncycastle.asn1.esf.SignaturePolicyId;
-import org.bouncycastle.asn1.esf.SignerAttribute;
-import org.bouncycastle.asn1.esf.SignerLocation;
-import org.bouncycastle.asn1.ess.ContentHints;
-import org.bouncycastle.asn1.ess.ContentIdentifier;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.pkcs.RSASSAPSSparams;
-import org.bouncycastle.asn1.x500.DirectoryString;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
-import org.bouncycastle.asn1.x509.AttributeCertificate;
-import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
-import org.bouncycastle.asn1.x509.RoleSyntax;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataParser;
-import org.bouncycastle.cms.CMSTypedStream;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
+import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -119,6 +61,62 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1String;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
+import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
+import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
+import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
+import org.bouncycastle.asn1.esf.SignaturePolicyId;
+import org.bouncycastle.asn1.esf.SignerAttribute;
+import org.bouncycastle.asn1.esf.SignerLocation;
+import org.bouncycastle.asn1.ess.ContentHints;
+import org.bouncycastle.asn1.ess.ContentIdentifier;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.pkcs.RSASSAPSSparams;
+import org.bouncycastle.asn1.x500.DirectoryString;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
+import org.bouncycastle.asn1.x509.AttributeCertificate;
+import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
+import org.bouncycastle.asn1.x509.RoleSyntax;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataParser;
+import org.bouncycastle.cms.CMSTypedStream;
+import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
 /**
  * CAdES Signature class helper
@@ -129,13 +127,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignature.class);
 
-	// month param is zero-based (i.e. 0 for January)
-	private static final Date JANUARY_1950 = DSSUtils.getUtcDate(1950, 0, 1);
-
-	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
-
+	/** The CMSSignedData of the signature */
 	private final CMSSignedData cmsSignedData;
 
+	/** The corresponding SignerInformation to the signature */
 	private final SignerInformation signerInformation;
 
 	/**
@@ -204,6 +199,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	
 	/**
 	 * Returns {@code SignerId} of the related to the signature {@code signerInformation}
+	 *
 	 * @return {@link SignerId}
 	 */
 	public SignerId getSignerId() {
@@ -327,33 +323,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		final ASN1Set attrValues = attr.getAttrValues();
 		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		final Date signingDate = DSSASN1Utils.getDate(attrValue);
-		if (signingDate != null) {
-			/*
-			 * RFC 3852 [4] states that "dates between January 1, 1950 and
-			 * December 31, 2049 (inclusive) must be encoded as UTCTime. Any
-			 * dates with year values before 1950 or after 2049 must be encoded
-			 * as GeneralizedTime".
-			 */
-			if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)) {
-				// must be ASN1UTCTime
-				if (!(attrValue instanceof ASN1UTCTime)) {
-					LOG.error(
-							"RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 must be encoded as GeneralizedTime. Date found is {} encoded as {}",
-							signingDate, attrValue.getClass());
-					return null;
-				}
-			}
-			return signingDate;
-		}
-		if (LOG.isErrorEnabled()) {
-			LOG.error("Error when reading signing time. Unrecognized {}", attrValue.getClass());
-		}
-		return null;
+		return CMSUtils.readSigningDate(attrValue);
 	}
 
 	/**
-	 * @return the cmsSignedData
+	 * Gets CMSSignedData
+	 *
+	 * @return {@link CMSSignedData} the cmsSignedData
 	 */
 	public CMSSignedData getCmsSignedData() {
 		return cmsSignedData;
@@ -621,7 +597,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	public DigestAlgorithm getPSSHashAlgorithm() {
+	private DigestAlgorithm getPSSHashAlgorithm() {
 		try {
 			byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
 			if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
@@ -714,7 +690,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		LOG.debug(" - RESULT: {}", signatureCryptographicVerification);
 	}
-	
+
+	/**
+	 * Returns the reference validation
+	 *
+	 * @param signerInformationToCheck {@link SignerInformation}
+	 * @return a list of {@link ReferenceValidation}s
+	 */
 	public List<ReferenceValidation> getReferenceValidations(SignerInformation signerInformationToCheck) {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<>();
@@ -874,9 +856,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * This method recreates a {@code SignerInformation} with the content using
 	 * a {@code CMSSignedDataParser}.
 	 *
-	 * @return
-	 * @throws CMSException
-	 * @throws IOException
+	 * @return{@link SignerInformation
+	 * @throws CMSException if CMS exception occurs
+	 * @throws IOException if IOException occurs
 	 */
 	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
 
@@ -897,6 +879,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signerInformationToCheck;
 	}
 
+	/**
+	 * Returns a set of used {@link DigestAlgorithm}s incorporated into the CMSSignedData
+	 *
+	 * @return a set of {@link DigestAlgorithm}s
+	 */
 	public Set<DigestAlgorithm> getMessageDigestAlgorithms() {
 		Set<DigestAlgorithm> result = new HashSet<>();
 		Set<AlgorithmIdentifier> digestAlgorithmIDs = cmsSignedData.getDigestAlgorithmIDs();
@@ -954,6 +941,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
+	 * Gets ContentIdentifier String
+	 *
 	 * @return content identifier as {@code String}
 	 */
 	public String getContentIdentifier() {
@@ -968,6 +957,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
+	 * Gets Content Hints
+	 *
 	 * @return content hints as {@code String}
 	 */
 	public String getContentHints() {
@@ -1000,7 +991,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * @return the signerInformation
+	 * Gets a SignedInformation
+	 *
+	 * @return {@link SignerInformation} the signerInformation
 	 */
 	public SignerInformation getSignerInformation() {
 		return signerInformation;
@@ -1044,6 +1037,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return counterSignaturesStore;
 	}
 
+	/**
+	 * Returns the original signed document
+	 *
+	 * @return {@link DSSDocument}
+	 */
 	public DSSDocument getOriginalDocument() {
 		// RFC 5652 ch 11.4.
 		if (isCounterSignature()) {
@@ -1110,20 +1108,40 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
+	/**
+	 * Checks if the signature has the BASELINE-B profile
+	 *
+	 * @return TRUE if the signature has a BASELINE-B profile, FALSE otherwise
+	 */
 	public boolean hasBProfile() {
 		return ((getSignedAttribute(id_aa_signingCertificate) != null) || (getSignedAttribute(id_aa_signingCertificateV2) != null));
 	}
 
+	/**
+	 * Checks if the signature has the 101733-C profile
+	 *
+	 * @return TRUE if the signature has a 101733-C profile, FALSE otherwise
+	 */
 	public boolean hasCProfile() {
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		return unsignedAttributes.get(id_aa_ets_certificateRefs) != null;
 	}
 
+	/**
+	 * Checks if the signature has the 101733-X profile
+	 *
+	 * @return TRUE if the signature has a 101733-X profile, FALSE otherwise
+	 */
 	public boolean hasXProfile() {
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		return ((unsignedAttributes.get(id_aa_ets_certCRLTimestamp) != null) || (unsignedAttributes.get(id_aa_ets_escTimeStamp) != null));
 	}
 
+	/**
+	 * Checks if the signature has the 101733-A profile
+	 *
+	 * @return TRUE if the signature has a 101733-A profile, FALSE otherwise
+	 */
 	public boolean hasAProfile() {
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		return unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;

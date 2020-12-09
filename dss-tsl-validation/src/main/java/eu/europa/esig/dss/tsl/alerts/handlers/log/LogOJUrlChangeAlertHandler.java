@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 
+/**
+ * Warns on the LOTL Official Journal URL change
+ */
 public class LogOJUrlChangeAlertHandler implements AlertHandler<LOTLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogOJUrlChangeAlertHandler.class);

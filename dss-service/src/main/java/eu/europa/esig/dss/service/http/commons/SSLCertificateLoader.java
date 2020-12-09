@@ -20,16 +20,12 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.net.ssl.SSLSession;
-
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.Protocol;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -44,12 +40,14 @@ import org.apache.http.protocol.HttpCoreContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.Protocol;
-import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
-import eu.europa.esig.dss.utils.Utils;
+import javax.net.ssl.SSLSession;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The data loader which includes server webpage certificates to the response context
@@ -62,9 +60,10 @@ public class SSLCertificateLoader implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SSLCertificateLoader.class);
 
+	/** The attribute containing a certificate chain */
 	private static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
     
-    /* A proxied CommonsDataLoader to be used */
+    /** A proxied CommonsDataLoader to be used */
     private CommonsDataLoader commonsDataLoader;
 
 	/**

@@ -20,23 +20,37 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import java.util.Objects;
-
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
+import java.util.Objects;
 
+/**
+ * The XSLT transform
+ */
 public class XsltTransform extends ComplexTransform {
-	
+
+	/** The document to be added */
 	private final Document content;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param content {@link Document}
+	 */
 	public XsltTransform(Document content) {
 		this(XMLDSigNamespace.NS, content);
 	}
-	
+
+	/**
+	 * Constructor wit namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param content {@link Document}
+	 */
 	public XsltTransform(DSSNamespace xmlDSigNamespace, Document content) {
 		super(xmlDSigNamespace, Transforms.TRANSFORM_XSLT);
 		Objects.requireNonNull(content, "The content cannot be null!");

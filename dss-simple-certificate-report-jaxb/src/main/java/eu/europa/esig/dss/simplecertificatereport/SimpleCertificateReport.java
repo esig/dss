@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.simplecertificatereport;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -36,6 +29,13 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlRevocation;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * A SimpleCertificateReport holder to fetch values from a JAXB SimpleCertificateReport.
  */
@@ -43,6 +43,11 @@ public class SimpleCertificateReport {
 
 	private final XmlSimpleCertificateReport simpleReport;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param simpleReport {@link XmlSimpleCertificateReport}
+	 */
 	public SimpleCertificateReport(XmlSimpleCertificateReport simpleReport) {
 		this.simpleReport = simpleReport;
 	}

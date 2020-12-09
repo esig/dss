@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains attributes of a certificate's distinguished name
+ */
 public enum X520Attributes implements OidDescription {
 
 	OBJECTCLASS("objectClass", "2.5.4.0"),

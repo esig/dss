@@ -1,18 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import eu.europa.esig.dss.jades.validation.timestamp.JAdESTimestampSource;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -25,6 +12,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
+import eu.europa.esig.dss.jades.validation.timestamp.JAdESTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -50,7 +38,21 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Represents the JAdES signature
+ */
 public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private static final long serialVersionUID = -3730351687600398811L;
@@ -73,11 +75,21 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	/** The list of unsigned properties embedded into the 'etsiU' array */
 	private JAdESEtsiUHeader etsiUHeader;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param jws {@link JWS}
+	 */
 	public JAdESSignature(JWS jws) {
 		this.jws = jws;
 		this.isDetached = Utils.isArrayEmpty(jws.getUnverifiedPayloadBytes());
 	}
 
+	/**
+	 * Gets the associated {@code JWS}
+	 *
+	 * @return {@link JWS}
+	 */
 	public JWS getJws() {
 		return jws;
 	}
@@ -868,6 +880,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
+	/**
+	 * Returns a list of original documents signed by the signature
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
 	public List<DSSDocument> getOriginalDocuments() {
 		if (isDetachedSignature()) {
 			

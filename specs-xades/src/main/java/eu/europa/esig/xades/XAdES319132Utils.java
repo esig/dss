@@ -20,29 +20,41 @@
  */
 package eu.europa.esig.xades;
 
-import java.util.List;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
-import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
-
+/**
+ * XAdES 1.3.2 schema utils
+ */
 public final class XAdES319132Utils extends XSDAbstractUtils {
-	
+
+	/** The XAdES 1.3.2 XSD schema */
 	public static final String XADES_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v132-201601.xsd";
+
+	/** The XAdES 1.4.1 XSD schema */
 	public static final String XADES_141_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v141-201601.xsd";
-	
+
+	/** Singleton */
 	private static XAdES319132Utils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private XAdES319132Utils() {
 	}
-	
+
+	/**
+	 * Returns instance of {@code XAdES319132Utils}
+	 *
+	 * @return {@link XAdES319132Utils}
+	 */
 	public static XAdES319132Utils getInstance() {
 		if (singleton == null) {
 			singleton = new XAdES319132Utils();

@@ -10,11 +10,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the certificate in question is not present in the OCSP's certificate chain
+ */
 public class SelfIssuedOCSPCheck extends ChainItem<XmlRAC> {
 
+	/** The certificate in question */
 	private final CertificateWrapper certificateWrapper;
+
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificateWrapper {@link CertificateWrapper}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public SelfIssuedOCSPCheck(I18nProvider i18nProvider, XmlRAC result, CertificateWrapper certificateWrapper,
 			RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

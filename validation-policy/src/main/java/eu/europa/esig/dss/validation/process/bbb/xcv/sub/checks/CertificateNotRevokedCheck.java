@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -34,14 +32,35 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
-public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
+import java.util.Date;
 
+/**
+ * Checks if the certificate is not revokek
+ */
+public class CertificateNotRevokedCheck extends ChainItem<XmlSubXCV> {
+
+	/** Certificate's revocation */
 	private final CertificateRevocationWrapper certificateRevocation;
+
+	/** Validation time */
 	private final Date currentTime;
+
+	/** SubContext */
 	private final SubContext subContext;
 
-	public CertificateRevokedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, 
-			Date currentTime, LevelConstraint constraint, SubContext subContext) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSubXCV}
+	 * @param certificateRevocation {@link CertificateRevocationWrapper}
+	 * @param currentTime {@link Date}
+	 * @param constraint {@link LevelConstraint}
+	 * @param subContext {@link SubContext}
+	 */
+	public CertificateNotRevokedCheck(I18nProvider i18nProvider, XmlSubXCV result,
+									  CertificateRevocationWrapper certificateRevocation, Date currentTime,
+									  LevelConstraint constraint, SubContext subContext) {
 		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;

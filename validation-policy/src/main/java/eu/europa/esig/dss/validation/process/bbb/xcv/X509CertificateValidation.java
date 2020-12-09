@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -43,6 +40,9 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceStatus
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceTypeIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValidation;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 5.2.6 X.509 certificate validation
  * 
@@ -50,18 +50,45 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValid
  */
 public class X509CertificateValidation extends Chain<XmlXCV> {
 
+	/** The certificate to be validated */
 	private final CertificateWrapper currentCertificate;
+
+	/** The validation time */
 	private final Date validationDate;
+
+	/** The certificate usage time */
 	private final Date usageTime;
 
+	/** The validation context */
 	private final Context context;
+
+	/** The validation policy */
 	private final ValidationPolicy validationPolicy;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentCertificate {@link CertificateWrapper} to validate
+	 * @param validationDate {@link Date}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
 	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate,
 			Date validationDate, Context context, ValidationPolicy validationPolicy) {
 		this(i18nProvider, currentCertificate, validationDate, validationDate, context, validationPolicy);
 	}
 
+	/**
+	 * Default constructor with usage time
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentCertificate {@link CertificateWrapper} to validate
+	 * @param validationDate {@link Date}
+	 * @param usageTime {@link Date}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
 	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, 
 			Date validationDate, Date usageTime, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlXCV());
@@ -116,8 +143,8 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 				}
 			}
 
-			for (XmlSubXCV subXCVresult : result.getSubXCV()) {
-				item = item.setNextItem(checkSubXCVResult(subXCVresult));
+			for (XmlSubXCV subXCVResult : result.getSubXCV()) {
+				item = item.setNextItem(checkSubXCVResult(subXCVResult));
 			}
 		}
 	}
@@ -137,8 +164,8 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		return new TrustedServiceStatusCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
 	}
 
-	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVresult) {
-		return new CheckSubXCVResult(i18nProvider, result, subXCVresult, getFailLevelConstraint());
+	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVResult) {
+		return new CheckSubXCVResult(i18nProvider, result, subXCVResult, getFailLevelConstraint());
 	}
 	
 }

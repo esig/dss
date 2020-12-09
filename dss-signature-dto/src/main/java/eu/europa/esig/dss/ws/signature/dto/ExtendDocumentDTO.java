@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+
+import java.io.Serializable;
 
 /**
  * This class is a DTO to transfer required objects to execute extendDocument method
@@ -33,29 +33,61 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 @SuppressWarnings("serial")
 public class ExtendDocumentDTO implements Serializable {
 
+	/** Document to extend */
 	private RemoteDocument toExtendDocument;
+
+	/** Extension parameters */
 	private RemoteSignatureParameters parameters;
 
+	/**
+	 * Empty document
+	 */
 	public ExtendDocumentDTO() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param toExtendDocument {@link RemoteDocument}
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public ExtendDocumentDTO(RemoteDocument toExtendDocument, RemoteSignatureParameters parameters) {
 		this.toExtendDocument = toExtendDocument;
 		this.parameters = parameters;
 	}
 
+	/**
+	 * Gets the document to be extended
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getToExtendDocument() {
 		return toExtendDocument;
 	}
 
+	/**
+	 * Sets the document to be extended
+	 *
+	 * @param toExtendDocument {@link RemoteDocument}
+	 */
 	public void setToExtendDocument(RemoteDocument toExtendDocument) {
 		this.toExtendDocument = toExtendDocument;
 	}
 
+	/**
+	 * Gets the extension parameters
+	 *
+	 * @return {@link RemoteSignatureParameters}
+	 */
 	public RemoteSignatureParameters getParameters() {
 		return parameters;
 	}
 
+	/**
+	 * Sets the extension parameters
+	 *
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public void setParameters(RemoteSignatureParameters parameters) {
 		this.parameters = parameters;
 	}

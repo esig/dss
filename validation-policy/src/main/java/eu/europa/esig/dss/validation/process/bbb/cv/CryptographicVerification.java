@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -39,18 +37,33 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenc
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 
+import java.util.List;
+
 /**
  * 5.2.7 Cryptographic verification
  * This building block checks the integrity of the signed data by performing the cryptographic verifications.
  */
 public class CryptographicVerification extends Chain<XmlCV> {
 
+	/** The token to verify */
 	private final TokenProxy token;
 
+	/** The validation policy */
 	private final ValidationPolicy validationPolicy;
+
+	/** The validation context */
 	private final Context context;
 
-	public CryptographicVerification(I18nProvider i18nProvider, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token {@link TokenProxy}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public CryptographicVerification(I18nProvider i18nProvider, TokenProxy token, Context context,
+									 ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlCV());
 		this.token = token;
 		this.context = context;

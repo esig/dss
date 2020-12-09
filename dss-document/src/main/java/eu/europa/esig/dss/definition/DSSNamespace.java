@@ -20,24 +20,52 @@
  */
 package eu.europa.esig.dss.definition;
 
+/**
+ * Defines the namespaces
+ */
 public class DSSNamespace {
 
+	/** The namespace URI */
 	private final String uri;
+
+	/** The namespace prefix */
 	private final String prefix;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param uri {@link String}
+	 * @param prefix {@link String}
+	 */
 	public DSSNamespace(String uri, String prefix) {
 		this.uri = uri;
 		this.prefix = prefix;
 	}
 
+	/**
+	 * Gets the namespace URI
+	 *
+	 * @return {@link String}
+	 */
 	public String getUri() {
 		return uri;
 	}
 
+	/**
+	 * Gets the namespace prefix
+	 *
+	 * @return {@link String}
+	 */
 	public String getPrefix() {
 		return prefix;
 	}
 
+	/**
+	 * Checks if the given URI is the same as for the current DSSNamespace object
+	 *
+	 * @param paramUri {@link String}
+	 * @return TRUE if the namespace URI matches, FALSE otherwise
+	 */
 	public boolean isSameUri(String paramUri) {
 		return this.uri.equals(paramUri);
 	}

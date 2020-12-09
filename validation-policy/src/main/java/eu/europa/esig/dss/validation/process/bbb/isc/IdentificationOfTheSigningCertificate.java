@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
@@ -46,6 +44,8 @@ import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAt
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.UnicitySigningCertificateAttributeCheck;
 
+import java.util.List;
+
 /**
  * 5.2.3 Identification of the signing certificate
  * This building block is responsible for identifying the signing certificate that will be used to validate the
@@ -53,12 +53,25 @@ import eu.europa.esig.dss.validation.process.bbb.isc.checks.UnicitySigningCertif
  */
 public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
+	/** The token to verify */
 	private final TokenProxy token;
 
-	private final Context context;
+	/** The validation policy */
 	private final ValidationPolicy validationPolicy;
 
-	public IdentificationOfTheSigningCertificate(I18nProvider i18nProvider, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
+	/** The validation context */
+	private final Context context;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token {@link TokenProxy}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public IdentificationOfTheSigningCertificate(I18nProvider i18nProvider, TokenProxy token, Context context,
+												 ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlISC());
 		this.token = token;
 		this.context = context;

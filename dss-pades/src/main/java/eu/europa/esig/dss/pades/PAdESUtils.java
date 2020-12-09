@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -42,7 +31,20 @@ import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ByteRange;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Utils for dealing with PAdES
+ */
 public final class PAdESUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
@@ -184,9 +186,9 @@ public final class PAdESUtils {
 	 * Returns {@link RevocationInfoArchival} from the given encodable
 	 * 
 	 * @param encodable the encoded data to be parsed
-	 * @return an instance of RevocationValues or null if the parsing failled
+	 * @return an instance of RevocationValues or null if the parsing failed
 	 */
-	public static RevocationInfoArchival getRevocationInfoArchivals(ASN1Encodable encodable) {
+	public static RevocationInfoArchival getRevocationInfoArchival(ASN1Encodable encodable) {
 		if (encodable != null) {
 			try {
 				return RevocationInfoArchival.getInstance(encodable);

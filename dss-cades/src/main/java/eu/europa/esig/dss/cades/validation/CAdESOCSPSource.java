@@ -25,10 +25,20 @@ import org.bouncycastle.cms.CMSSignedData;
 
 import eu.europa.esig.dss.validation.CMSOCSPSource;
 
+/**
+ * The OCSP source for a CAdES signature
+ */
 @SuppressWarnings("serial")
 public class CAdESOCSPSource extends CMSOCSPSource {
 
-	CAdESOCSPSource(CMSSignedData cms, AttributeTable unsignedAttributes) {
-		super(cms, unsignedAttributes);
+	/**
+	 * The default constructor
+	 *
+	 * @param cmsSignedData {@link CMSSignedData} of the CAdES signature
+	 * @param unsignedAttributes {@link AttributeTable} the corresponding unsigned properties if present
+	 */
+	public CAdESOCSPSource(CMSSignedData cmsSignedData, AttributeTable unsignedAttributes) {
+		super(cmsSignedData, unsignedAttributes);
 	}
+
 }

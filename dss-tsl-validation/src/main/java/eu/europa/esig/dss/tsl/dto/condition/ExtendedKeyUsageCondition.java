@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.tsl.dto.condition;
 
-import static java.util.Collections.unmodifiableList;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 
 /**
  * ExtendedKeyUsage
@@ -51,8 +50,14 @@ public class ExtendedKeyUsageCondition implements Condition {
 
 	private static final long serialVersionUID = -5969735320082024885L;
 
+	/** List of extended key usages to check */
 	private final List<String> extendedKeyUsageOids;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param oids a list of extended key usages to check
+	 */
 	public ExtendedKeyUsageCondition(List<String> oids) {
 		this.extendedKeyUsageOids = oids;
 	}

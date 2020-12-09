@@ -25,7 +25,7 @@ import eu.europa.esig.dss.alert.exception.AlertException;
 /**
  * Handler which throws an {@code AlertException}
  * 
- * @param <T>
+ * @param <T> class of an object to process
  */
 public class ThrowAlertExceptionHandler<T> implements AlertHandler<T> {
 

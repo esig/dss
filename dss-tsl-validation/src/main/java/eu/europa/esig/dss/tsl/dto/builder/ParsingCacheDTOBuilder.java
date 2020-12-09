@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.dto.builder;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
@@ -34,11 +27,25 @@ import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Builds {@code ParsingCacheDTO}
+ */
 public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractParsingResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ParsingCacheDTOBuilder.class);
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param cachedEntry parsing cache entry
+	 */
 	public ParsingCacheDTOBuilder(final CachedEntry<AbstractParsingResult> cachedEntry) {
 		super(cachedEntry);
 	}

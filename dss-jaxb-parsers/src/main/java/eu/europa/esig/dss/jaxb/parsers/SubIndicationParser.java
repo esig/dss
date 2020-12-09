@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.SubIndication;
 
+/**
+ * Parses the {@code SubIndication}
+ */
 public final class SubIndicationParser {
 
 	private SubIndicationParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code SubIndication}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link SubIndication}
+	 */
 	public static SubIndication parse(String v) {
 		return SubIndication.forName(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link SubIndication}
+	 * @return {@link String}
+	 */
 	public static String print(SubIndication v) {
 		return v.name();
 	}

@@ -35,11 +35,14 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
+/**
+ * Builds XAdES signature extension
+ */
 public abstract class ExtensionBuilder extends XAdESBuilder {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ExtensionBuilder.class);
 
-	/*
+	/**
 	 * This object allows to access DOM signature representation using XPATH
 	 */
 	protected XAdESSignature xadesSignature;
@@ -64,6 +67,11 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected Element unsignedSignaturePropertiesDom;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateVerifier {@code CertificateVerifier}
+	 */
 	protected ExtensionBuilder(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
@@ -125,6 +133,11 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		}
 	}
 
+	/**
+	 * Verifies if the signature is valid. Throws an exception if the signature is invalid.
+	 *
+	 * @param xadesSignature {@link XAdESSignature} to check
+	 */
 	protected void assertSignatureValid(final XAdESSignature xadesSignature) {
 		SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
@@ -132,7 +145,14 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 		}
 	}
-	
+
+	/**
+	 * Indents the {@code nodeToIndent} if pretty-print is enabled
+	 *
+	 * @param nodeToIndent {@link Element} to be indented
+	 * @param oldNode {@link Element} the old node
+	 * @return {@link Element}
+	 */
 	protected Element indentIfPrettyPrint(Element nodeToIndent, Element oldNode) {
 		if (params.isPrettyPrint()) {
 			nodeToIndent = (Element) DSSXMLUtils.indentAndExtend(documentDom, nodeToIndent, oldNode);

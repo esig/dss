@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.asic.xades.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
@@ -10,8 +8,18 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
+import java.util.List;
+
+/**
+ * The class contains useful methods for ASiC with XAdES counter signature creation
+ */
 public class ASiCWithXAdESCounterSignatureHelper extends ASiCCounterSignatureHelper {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param asicContainer {@link DSSDocument} representing an ASiC with CAdES container
+	 */
 	protected ASiCWithXAdESCounterSignatureHelper(DSSDocument asicContainer) {
 		super(asicContainer);
 	}

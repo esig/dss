@@ -30,14 +30,30 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the certificate chain is trusted
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class ProspectiveCertificateChainCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** The certificate to check */
 	private final CertificateWrapper certificate;
 
+	/** The validation context */
 	private final Context context;
 
-	public ProspectiveCertificateChainCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, Context context,
-			LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param context {@link Context}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public ProspectiveCertificateChainCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
+											Context context, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 		this.context = context;
@@ -57,7 +73,6 @@ public class ProspectiveCertificateChainCheck<T extends XmlConstraintsConclusion
 	protected MessageTag getErrorMessageTag() {
 		switch (context) {
 		case SIGNATURE:
-			return MessageTag.BBB_XCV_CCCBB_SIG_ANS;
 		case COUNTER_SIGNATURE:
 			return MessageTag.BBB_XCV_CCCBB_SIG_ANS;
 		case TIMESTAMP:

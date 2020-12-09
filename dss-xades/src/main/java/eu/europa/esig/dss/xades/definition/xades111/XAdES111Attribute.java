@@ -22,6 +22,9 @@ package eu.europa.esig.dss.xades.definition.xades111;
 
 import eu.europa.esig.dss.definition.DSSAttribute;
 
+/**
+ * The XAdES 1.1.1 attributes
+ */
 public enum XAdES111Attribute implements DSSAttribute {
 
 	ID("Id"),
@@ -36,6 +39,7 @@ public enum XAdES111Attribute implements DSSAttribute {
 
 	URI2("URI");
 
+	/** Attribute name */
 	private final String attributeName;
 
 	XAdES111Attribute(String attributeName) {

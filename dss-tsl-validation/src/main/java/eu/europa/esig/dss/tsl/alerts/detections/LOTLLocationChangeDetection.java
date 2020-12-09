@@ -20,18 +20,27 @@
  */
 package eu.europa.esig.dss.tsl.alerts.detections;
 
-import java.util.List;
-
 import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * Detects the change of a LOTL location
+ */
 public class LOTLLocationChangeDetection implements AlertDetector<LOTLInfo> {
 
+	/** The LOTL source */
 	private final LOTLSource lotlSource;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param lotlSource {@link LOTLSource}
+	 */
 	public LOTLLocationChangeDetection(LOTLSource lotlSource) {
 		this.lotlSource = lotlSource;
 	}

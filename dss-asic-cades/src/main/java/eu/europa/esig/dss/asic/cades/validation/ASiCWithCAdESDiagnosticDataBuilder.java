@@ -5,6 +5,9 @@ import eu.europa.esig.dss.cades.validation.CAdESDiagnosticDataBuilder;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
+/**
+ * The DiagnosticData builder for an ASiC with CAdES container
+ */
 public class ASiCWithCAdESDiagnosticDataBuilder extends ASiCContainerDiagnosticDataBuilder {
 
 	@Override

@@ -46,18 +46,35 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Runs the job for a LOTL with pivots analysis
+ */
 public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLWithPivotsAnalysis.class);
 
+	/** Loads a relevant cache access object */
 	private final CacheAccessFactory cacheAccessFactory;
 
+	/** The LOTL source */
 	private final LOTLSource lotlSource;
+
+	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
+
+	/** The tasks counter */
 	private final CountDownLatch latch;
 
-	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source, final DSSFileLoader dssFileLoader,
-			final CountDownLatch latch) {
+	/**
+	 * Default constructor
+	 *
+	 * @param cacheAccessFactory {@link CacheAccessFactory}
+	 * @param source {@link LOTLSource}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @param latch {@link CountDownLatch}
+	 */
+	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source,
+			final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
 		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader);
 		this.cacheAccessFactory = cacheAccessFactory;
 		this.lotlSource = source;

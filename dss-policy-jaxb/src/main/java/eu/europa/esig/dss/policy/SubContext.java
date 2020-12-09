@@ -20,7 +20,15 @@
  */
 package eu.europa.esig.dss.policy;
 
+/**
+ * Defines the validation sub context
+ */
 public enum SubContext {
 
-	SIGNING_CERT, CA_CERTIFICATE
+	/** Used for a signing certificate validation */
+	SIGNING_CERT,
+
+	/** Used for not trusted CA certificates in a chain */
+	CA_CERTIFICATE
+
 }

@@ -41,7 +41,7 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
 
 public class CertificateRevokedCheckTest extends AbstractTestCheck {
 
@@ -60,7 +60,7 @@ public class CertificateRevokedCheckTest extends AbstractTestCheck {
 		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
+		CertificateNotRevokedCheck cec = new CertificateNotRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(),
 				constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 
@@ -82,7 +82,7 @@ public class CertificateRevokedCheckTest extends AbstractTestCheck {
 		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
+		CertificateNotRevokedCheck cec = new CertificateNotRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(),
 				constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 

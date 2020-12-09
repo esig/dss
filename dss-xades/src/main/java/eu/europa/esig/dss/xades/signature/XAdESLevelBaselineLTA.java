@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -46,6 +39,12 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Holds level LTA aspects of XAdES
@@ -57,10 +56,11 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLTA.
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
-	public XAdESLevelBaselineLTA(final CertificateVerifier certVerifier) {
-
-		super(certVerifier);
+	public XAdESLevelBaselineLTA(final CertificateVerifier certificateVerifier) {
+		super(certificateVerifier);
 	}
 
 	/**

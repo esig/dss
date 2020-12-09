@@ -37,7 +37,7 @@ public class TimestampDataLoader extends CommonsDataLoader {
 	/**
 	 * In case of TimestampDataLoader the contentType is fixed to: Content-Type "application/timestamp-query"
 	 *
-	 * @param contentType
+	 * @param contentType {@link String}
 	 */
 	@Override
 	public void setContentType(final String contentType) {

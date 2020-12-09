@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.tsp.TSPException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -46,6 +36,15 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class allows to create a XAdES content-timestamp which covers all documents (AllDataObjectsTimeStamp).
@@ -55,18 +54,39 @@ public class AllDataObjectsTimeStampBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AllDataObjectsTimeStampBuilder.class);
 
+	/** The TSPSource to use */
 	private final TSPSource tspSource;
+
+	/** Signature parameters */
 	private final XAdESSignatureParameters signatureParameters;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tspSource {@link TSPSource}
+	 * @param signatureParameters {@link XAdESSignatureParameters}
+	 */
 	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, XAdESSignatureParameters signatureParameters) {
 		this.tspSource = tspSource;
 		this.signatureParameters = signatureParameters;
 	}
 
+	/**
+	 * Builds a message-imprint from the given document and generates a timestamp
+	 *
+	 * @param document {@link DSSDocument} to timestamp
+	 * @return {@link TimestampToken}
+	 */
 	public TimestampToken build(DSSDocument document) {
 		return build(Arrays.asList(document));
 	}
 
+	/**
+	 * Timestamps the list of documents
+	 *
+	 * @param documents a list of {@link DSSDocument}s to timestamp
+	 * @return {@link TimestampToken}
+	 */
 	public TimestampToken build(List<DSSDocument> documents) {
 		ReferenceBuilder referenceBuilder = new ReferenceBuilder(signatureParameters);
 		

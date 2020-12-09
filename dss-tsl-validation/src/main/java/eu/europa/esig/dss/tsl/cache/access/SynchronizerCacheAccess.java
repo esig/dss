@@ -28,14 +28,30 @@ import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 
+/**
+ * Synchronizes all caches for the given key
+ */
 public class SynchronizerCacheAccess extends ReadOnlyCacheAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SynchronizerCacheAccess.class);
 
-	public SynchronizerCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
+	/**
+	 * Default constructor
+	 *
+	 * @param downloadCache {@link DownloadCache}
+	 * @param parsingCache {@link ParsingCache}
+	 * @param validationCache {@link ValidationCache}
+	 */
+	public SynchronizerCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache,
+								   final ValidationCache validationCache) {
 		super(downloadCache, parsingCache, validationCache);
 	}
 
+	/**
+	 * Synchronizes all records for the {@code key}
+	 *
+	 * @param key {@link CacheKey}
+	 */
 	public void sync(CacheKey key) {
 		LOG.debug("Synchronize all desynchronized caches for key {}", key.getKey());
 

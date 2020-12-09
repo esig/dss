@@ -22,9 +22,15 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
  * Used for a counter signature extension.
  */
 public class CounterSignatureResolver extends ResourceResolverSpi {
-	
+
+	/** The counter signed SignatureValue document */
 	private final DSSDocument document;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param document {@link DSSDocument} counter signed SignatureValue
+	 */
 	public CounterSignatureResolver(DSSDocument document) {
 		this.document = document;
 	}

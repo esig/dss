@@ -30,16 +30,41 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if an acceptable revocation data is found
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class AcceptableRevocationDataAvailableCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
+	/** The certificate in question */
 	private final CertificateWrapper certificateWrapper;
+
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
-	
+
+	/**
+	 * Constructor without certificate
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public AcceptableRevocationDataAvailableCheck(I18nProvider i18nProvider, T result,
 			RevocationWrapper revocationData, LevelConstraint constraint) {
 		this(i18nProvider, result, null, revocationData, constraint);
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificateWrapper {@link CertificateWrapper}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public AcceptableRevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificateWrapper,
 			RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

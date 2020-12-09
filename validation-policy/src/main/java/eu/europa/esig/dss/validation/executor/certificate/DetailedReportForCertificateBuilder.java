@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.certificate;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -35,16 +30,39 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationBlock;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Builds a DetailedReport for a certificate validation
+ */
 public class DetailedReportForCertificateBuilder extends AbstractDetailedReportBuilder {
 
+	/** Id of a certificate to validate */
 	private final String certificateId;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param policy {@link ValidationPolicy}
+	 * @param currentTime {@link Date} validation time
+	 * @param certificateId {@link String} id of a certificate to be validated
+	 */
 	public DetailedReportForCertificateBuilder(I18nProvider i18nProvider, DiagnosticData diagnosticData, 
 			ValidationPolicy policy, Date currentTime, String certificateId) {
 		super(i18nProvider, currentTime, policy, diagnosticData);
 		this.certificateId = certificateId;
 	}
 
+	/**
+	 * Builds the detailed report for the certificate validation
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	XmlDetailedReport build() {
 
 		XmlDetailedReport detailedReport = init();

@@ -20,42 +20,6 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.PublicKey;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
-import org.apache.xml.security.transforms.Transform;
-import org.apache.xml.security.transforms.Transforms;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.definition.DSSElement;
@@ -77,6 +41,40 @@ import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.transforms.Transform;
+import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.PublicKey;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Utility class that contains some XML related method.
@@ -86,13 +84,19 @@ public final class DSSXMLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
 
+	/** List of supported transforms */
 	private static final Set<String> transforms;
 
+	/** List of supported canonicalization methods */
 	private static final Set<String> canonicalizers;
-	
+
+	/** List of transforms resulting to a NodeSet output */
 	private static final Set<String> transformsWithNodeSetOutput;
-	
+
+	/** The Enveloped-signature transformation */
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
+
+	/** The XPath transform name */
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 	
 	/**
@@ -279,8 +283,17 @@ public final class DSSXMLUtils {
 		}
 		return null;
 	}
-	
-	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
+
+	/**
+	 * Pretty prints a signature in the given document
+	 *
+	 * @param documentDom {@link Document} to pretty print
+	 * @param signatureId {@link String} id of a ds:Signature element to be pretty-printed
+	 * @param noIndentObjectIds {@link String} id of elements to not pretty-print
+	 * @return {@link Document} with a pretty-printed signature
+	 */
+	public static Document getDocWithIndentedSignature(final Document documentDom, String signatureId,
+													   List<String> noIndentObjectIds) {
 		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
@@ -321,6 +334,7 @@ public final class DSSXMLUtils {
 	
 	/**
 	 * Returns an indented xmlNode
+	 *
 	 * @param documentDom is an owner {@link Document} of the xmlNode
 	 * @param xmlNode {@link Node} to indent
 	 * @return an indented {@link Node} xmlNode
@@ -379,6 +393,7 @@ public final class DSSXMLUtils {
 	
 	/**
 	 * Aligns indents for all children of the given node
+	 *
 	 * @param parentNode {@link Node} to align children into
 	 * @return the given {@link Node} with aligned children
 	 */
@@ -525,7 +540,7 @@ public final class DSSXMLUtils {
 	 * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
 	 * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
 	 *
-	 * @param element
+	 * @param element {@link Element}
 	 */
 	public static void recursiveIdBrowse(final Element element) {
 
@@ -578,7 +593,7 @@ public final class DSSXMLUtils {
 	 * If this method finds an attribute with names ID (case-insensitive) then declares it to be a user-determined ID
 	 * attribute.
 	 *
-	 * @param childElement
+	 * @param childElement {@link Element}
 	 */
 	public static void setIDIdentifier(final Element childElement) {
 
@@ -794,7 +809,9 @@ public final class DSSXMLUtils {
 
 	/**
 	 * Determines if the given {@code reference} refers to SignedProperties element
+	 *
 	 * @param reference {@link Reference} to check
+	 * @param xadesPaths {@link XAdESPaths}
 	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
 	 */
 	public static boolean isSignedProperties(final Reference reference, final XAdESPaths xadesPaths) {
@@ -803,7 +820,9 @@ public final class DSSXMLUtils {
 
 	/**
 	 * Determines if the given {@code reference} refers to CounterSignature element
+	 *
 	 * @param reference {@link Reference} to check
+	 * @param xadesPaths {@link XAdESPaths}
 	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
 	 */
 	public static boolean isCounterSignature(final Reference reference, final XAdESPaths xadesPaths) {
@@ -909,7 +928,7 @@ public final class DSSXMLUtils {
 	 * 
 	 * @param counterSignatureElement {@link Element} {@code <ds:CounterSignature>} element
 	 * @param masterSignature {@link XAdESSignature} master signature containing the counter signature
-	 * @return
+	 * @return {@link XAdESSignature}
 	 */
 	public static XAdESSignature createCounterSignature(Element counterSignatureElement, XAdESSignature masterSignature) {
 		try {
@@ -1010,6 +1029,7 @@ public final class DSSXMLUtils {
 	 * 
 	 * @param reference {@link Reference} to get OutputType for
 	 * @return {@link ReferenceOutputType}
+	 * @throws XMLSecurityException if an exception occurs
 	 */
 	public static ReferenceOutputType getReferenceOutputType(final Reference reference) throws XMLSecurityException {
 		ReferenceOutputType outputType = getDereferenceOutputType(reference.getURI());
@@ -1049,7 +1069,7 @@ public final class DSSXMLUtils {
 			Iterator<DSSTransform> iterator = transforms.iterator();
 			while (iterator.hasNext()) {
 				DSSTransform transform = iterator.next();
-				transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform);
+				transformedReferenceBytes = transform.getBytesAfterTransformation(nodeToTransform);
 				if (iterator.hasNext()) {
 					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
 				}

@@ -20,10 +20,26 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines result of signature validation for a token
+ */
 public enum SignatureValidity {
-	
-	VALID, INVALID, NOT_EVALUATED;
-	
+
+	/** The signature of the token is valid (signing certificate found successfully) */
+	VALID,
+
+	/** The signature of the token is invalid */
+	INVALID,
+
+	/** The signature of the token is not evaluated yet */
+	NOT_EVALUATED;
+
+	/**
+	 * Returns the SignatureValidity type matching the given value
+	 *
+	 * @param isValid {@link Boolean} type of the signatureValidity to request
+	 * @return {@link SignatureValidity}
+	 */
 	public static SignatureValidity get(Boolean isValid) {
 		if (isValid == null) {
 			return NOT_EVALUATED;

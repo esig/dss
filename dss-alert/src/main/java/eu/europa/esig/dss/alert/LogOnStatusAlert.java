@@ -25,6 +25,9 @@ import org.slf4j.event.Level;
 import eu.europa.esig.dss.alert.handler.LogHandler;
 import eu.europa.esig.dss.alert.status.Status;
 
+/**
+ * The class logs a message on {@code Status} alert
+ */
 public class LogOnStatusAlert extends AbstractStatusAlert {
 
 	/**

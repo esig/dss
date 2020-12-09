@@ -24,18 +24,31 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the Past Certificate Validation result is acceptable
+ */
 public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> {
 
+	/** Past Certificate Validation */
 	private final XmlPCV pcv;
 
-	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, String tokenId, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlPSV}
+	 * @param pcv {@link XmlPCV}
+	 * @param tokenId {@link String}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, String tokenId,
+													LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, tokenId);
-
 		this.pcv = pcv;
 	}
 

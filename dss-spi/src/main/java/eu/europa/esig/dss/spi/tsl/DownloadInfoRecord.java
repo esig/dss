@@ -22,8 +22,16 @@ package eu.europa.esig.dss.spi.tsl;
 
 import java.util.Date;
 
+/**
+ * Defines a download result record
+ */
 public interface DownloadInfoRecord extends InfoRecord {
-		
+
+	/**
+	 * The last time when a download attempt has been proceeded.
+	 *
+	 * @return {@link Date}
+	 */
 	Date getLastDownloadAttemptTime();
 
 }

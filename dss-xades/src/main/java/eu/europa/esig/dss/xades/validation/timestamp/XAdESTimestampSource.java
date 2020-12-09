@@ -68,16 +68,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The timestamp source for a XAdES signature
+ */
 @SuppressWarnings("serial")
 public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignature, XAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
-	
+
+	/** The signature element */
 	private final transient Element signatureElement;
+
+	/** XAdES XPaths to use */
 	private final XAdESPaths xadesPaths;
-	
+
+	/** The XAdESTimestampDataBuilder */
 	private transient XAdESTimestampDataBuilder timestampDataBuilder;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link XAdESSignature}
+	 * @param signatureElement {@link Element}
+	 * @param xadesPaths {@link XAdESPaths}
+	 */
 	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
 			final XAdESPaths xadesPaths) {
 		super(signature);
@@ -327,7 +341,12 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 		}
 		return timestampedReferences;
 	}
-	
+
+	/**
+	 * Returns references from the KeyInfo encapsulated elements
+	 *
+	 * @return list of {@link TimestampedReference}s
+	 */
 	protected List<TimestampedReference> getKeyInfoReferences() {
 		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
 		return createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates());

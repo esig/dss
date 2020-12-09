@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.Collections;
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -25,16 +22,28 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
+import java.util.Collections;
+import java.util.Objects;
+
+/**
+ * Creates a T-level of a JAdES signature
+ */
 public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements SignatureExtension<JAdESSignatureParameters> {
 
+	/** The CertificateVerifier to use */
 	protected final CertificateVerifier certificateVerifier;
 
-	/*
+	/**
 	 * The object encapsulating the Time Stamp Protocol needed to create the level
 	 * -T, of the signature
 	 */
 	protected TSPSource tspSource;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to use
+	 */
 	public JAdESLevelBaselineT(CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
@@ -65,7 +74,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		}
 
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
-			assertExtensionPossible(signature, params.isBase64UrlEncodedEtsiUComponents());
+			assertEtsiUComponentsConsistent(signature, params.isBase64UrlEncodedEtsiUComponents());
 
 			JAdESSignature jadesSignature = new JAdESSignature(signature);
 			jadesSignature.setDetachedContents(params.getDetachedContents());
@@ -79,6 +88,12 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		return generator.generate();
 	}
 
+	/**
+	 * Extends the signature
+	 *
+	 * @param jadesSignature {@link JAdESSignature} to be extended
+	 * @param params {@link JAdESSignatureParameters} the extension parameters
+	 */
 	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 
 		assertExtendSignatureToTPossible(jadesSignature, params);

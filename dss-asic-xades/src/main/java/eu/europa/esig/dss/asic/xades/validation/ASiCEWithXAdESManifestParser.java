@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.asic.xades.definition.ManifestPaths;
@@ -38,7 +28,19 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class parses the ASiC with XAdES manifest document and produces a {@code ManifestFile}
+ */
 public class ASiCEWithXAdESManifestParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestParser.class);
@@ -47,14 +49,28 @@ public class ASiCEWithXAdESManifestParser {
 		DomUtils.registerNamespace(ManifestNamespace.NS);
 	}
 
+	/** The related signature document */
 	private final DSSDocument signatureDocument;
+
+	/** The manifest document to be parsed */
 	private final DSSDocument manifestDocument;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param signatureDocument {@link DSSDocument} the linked signature
+	 * @param manifestDocument {@link DSSDocument} to be parsed
+	 */
 	public ASiCEWithXAdESManifestParser(DSSDocument signatureDocument, DSSDocument manifestDocument) {
 		this.signatureDocument = signatureDocument;
 		this.manifestDocument = manifestDocument;
 	}
 
+	/**
+	 * Returns a parsed {@code ManifestFile}
+	 *
+	 * @return {@link ManifestFile}
+	 */
 	public ManifestFile getManifest() {
 		ManifestFile manifest = new ManifestFile();
 		manifest.setDocument(manifestDocument);
@@ -67,7 +83,7 @@ public class ASiCEWithXAdESManifestParser {
 		List<ManifestEntry> result = new ArrayList<>();
 		try (InputStream is = manifestDocument.openStream()) {
 			Document manifestDom = DomUtils.buildDOM(is);
-			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPaths.FILE_ENTY_PATH);
+			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPaths.FILE_ENTRY_PATH);
 			if (nodeList != null && nodeList.getLength() > 0) {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					ManifestEntry manifestEntry = new ManifestEntry();

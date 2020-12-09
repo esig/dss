@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpftsp;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -32,18 +30,32 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 
+import java.util.Map;
+
 /**
  * 5.4 Validation process for time-stamps
  */
 public class ValidationProcessForTimeStamp extends Chain<XmlValidationProcessTimestamp> {
 
+	/** Diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	/** Timestamp to validate */
 	private final TimestampWrapper timestamp;
 
+	/** Map of BasicBuildingBlocks */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForTimeStamp(I18nProvider i18nProvider, DiagnosticData diagnosticData, TimestampWrapper timestamp,
-			Map<String, XmlBasicBuildingBlocks> bbbs) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param timestamp {@link TimestampWrapper}
+	 * @param bbbs map of BasicBuildingBlocks
+	 */
+	public ValidationProcessForTimeStamp(I18nProvider i18nProvider, DiagnosticData diagnosticData,
+										 TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(i18nProvider, new XmlValidationProcessTimestamp());
 
 		this.diagnosticData = diagnosticData;

@@ -25,7 +25,6 @@ import java.util.List;
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
-// TODO : move to dss-pades module, remove PAdES-specific methods and remove from AdvancedSignature
 public interface PdfRevision {
 	
 	/**

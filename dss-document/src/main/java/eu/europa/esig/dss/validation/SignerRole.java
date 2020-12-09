@@ -20,47 +20,90 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.enumerations.EndorsementType;
+
+import java.util.Date;
 
 /**
  * This class represents the signer roles extracted from the signature.
  */
 public class SignerRole {
 
+	/** The role string */
     private final String role;
+
+    /** The category of the role (certified, claimed, signed) */
     private final EndorsementType category;
+
+    /** The certificate's 'notBefore' date for a 'certified' role category */
     private Date notBefore;
+
+	/** The certificate's 'notAfter' date for a 'certified' role category */
     private Date notAfter;
-    
-    public SignerRole(String role, EndorsementType category) {
+
+	/**
+	 * The default constructor
+	 *
+	 * @param role {@link String}
+	 * @param category {@link EndorsementType} of the SignedRole
+	 */
+	public SignerRole(String role, EndorsementType category) {
     	this.role = role;
     	this.category = category;
     }
 
-    public String getRole() {
+	/**
+	 * Gets the role
+	 *
+	 * @return {@link String}
+	 */
+	public String getRole() {
         return role;
     }
 
-    public Date getNotBefore() {
+	/**
+	 * Gets the role category
+	 *
+	 * @return {@link EndorsementType}
+	 */
+	public EndorsementType getCategory() {
+		return category;
+	}
+
+	/**
+	 * Gets the certificate's 'notBefore' for a 'certified' role category
+	 *
+	 * @return {@link Date}
+	 */
+	public Date getNotBefore() {
         return notBefore;
     }
 
-    public void setNotBefore(Date notBefore) {
+	/**
+	 * Sets the certificate's 'notBefore' for a 'certified' role category
+	 *
+	 * @param notBefore {@link Date}
+	 */
+	public void setNotBefore(Date notBefore) {
         this.notBefore = notBefore;
     }
 
+	/**
+	 * Gets the certificate's 'notAfter' for a 'certified' role category
+	 *
+	 * @return {@link Date}
+	 */
     public Date getNotAfter() {
         return notAfter;
     }
 
+	/**
+	 * Sets the certificate's 'notAfter' for a 'certified' role category
+	 *
+	 * @param notAfter {@link Date}
+	 */
     public void setNotAfter(Date notAfter) {
         this.notAfter = notAfter;
-    }
-    
-    public EndorsementType getCategory() {
-    	return category;
     }
 
 	@Override

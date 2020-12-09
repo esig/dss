@@ -20,28 +20,10 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.Security;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ServiceLoader;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -62,10 +44,24 @@ import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * Validates a signed document. The content of the document is determined
@@ -127,18 +123,31 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected CertificateVerifier certificateVerifier;
 
-	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+	/**
+	 * The used token extraction strategy to define tokens representation in DiagnosticData
+	 */
+	private TokenExtractionStrategy tokenExtractionStategy = TokenExtractionStrategy.NONE;
 
 	/**
 	 * This variable allows to include the semantics for Indication / SubIndication
 	 */
 	private boolean includeSemantics = false;
 
+	/**
+	 * The class to extract a list of {@code SignatureScope}s from a signature
+	 */
 	protected final SignatureScopeFinder signatureScopeFinder;
 
+	/**
+	 * Provides methods to extract a policy content by its identifier
+	 */
 	private SignaturePolicyProvider signaturePolicyProvider;
 
-	// Default configuration with the highest level
+	/**
+	 * The expected validation level
+	 *
+	 * Default: ValidationLevel.ARCHIVAL_DATA (the highest level)
+	 */
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 	
 	/**
@@ -147,20 +156,42 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private Locale locale = Locale.getDefault();
 
-	// Produces the ETSI Validation Report by default
+	/**
+	 * Defines if the ETSI Validation report shall be produced
+	 *
+	 * Default: true
+	 */
 	private boolean enableEtsiValidationReport = true;
 
-	// Disable certificate chain building, revocation data collection,...
+	/**
+	 * Defines if the validation context processing shall be skipped
+	 * (Disable certificate chain building, revocation data collection,...)
+	 *
+	 * Default: false
+	 */
 	protected boolean skipValidationContextExecution = false;
 
+	/**
+	 * The constructor with a null {@code signatureScopeFinder}
+	 */
 	protected SignedDocumentValidator() {
 		this.signatureScopeFinder = null;
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param signatureScopeFinder {@link SignatureScopeFinder}
+	 */
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
 
+	/**
+	 * Sets the default algorithm to use for a {@code SignatureScopeFinder}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
 	protected void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		// Null in the ASiC Container validator
 		if (signatureScopeFinder != null) {
@@ -188,6 +219,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		throw new DSSException("Document format not recognized/handled");
 	}
 
+	/**
+	 * Checks if the document is supported by the current validator
+	 *
+	 * @param dssDocument {@link DSSDocument} to check
+	 * @return TRUE if the document is supported, FALSE otherwise
+	 */
 	public abstract boolean isSupported(DSSDocument dssDocument);
 
 	@Override
@@ -198,7 +235,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		signingCertificateResolver.addCertificate(token);
 		setSigningCertificateSource(signingCertificateResolver);
 	}
-
 
 	@Override
 	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {
@@ -212,7 +248,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * any change in the content of the <code>CommonTrustedCertificateSource</code>
 	 * or in adjunct certificate source is not taken into account.
 	 *
-	 * @param certificateVerifier
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
@@ -220,7 +256,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
+	public void setTokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
 		Objects.requireNonNull(tokenExtractionStategy);
 		this.tokenExtractionStategy = tokenExtractionStategy;
 	}
@@ -660,6 +696,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return executor.execute();
 	}
 
+	/**
+	 * Returns a list of all signatures from the valdiating document
+	 *
+	 * @return a list of {@link AdvancedSignature}s
+	 */
 	protected List<AdvancedSignature> getAllSignatures() {
 
 		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
@@ -676,8 +717,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		
 		return allSignatureList;
 	}
-	
-	protected void appendCounterSignatures(final List<AdvancedSignature> allSignatureList, final AdvancedSignature signature) {
+
+	/**
+	 * The util method to link counter signatures with the related master signatures
+	 *
+	 * @param allSignatureList a list of {@link AdvancedSignature}s
+	 * @param signature current {@link AdvancedSignature}
+	 */
+	protected void appendCounterSignatures(final List<AdvancedSignature> allSignatureList,
+										   final AdvancedSignature signature) {
 		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
 			counterSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 			allSignatureList.add(counterSignature);
@@ -720,10 +768,21 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 	}
 
+	/**
+	 * Sets if the validation context execution shall be skipped
+	 * (skips certificate chain building, revocation requests, ...)
+	 *
+	 * @param skipValidationContextExecution if the context validation shall be skipped
+	 */
 	public void setSkipValidationContextExecution(boolean skipValidationContextExecution) {
 		this.skipValidationContextExecution = skipValidationContextExecution;
 	}
 
+	/**
+	 * Sets Locale for report messages generation
+	 *
+	 * @param locale {@link Locale}
+	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}

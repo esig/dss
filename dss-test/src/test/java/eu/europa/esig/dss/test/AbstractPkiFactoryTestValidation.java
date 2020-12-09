@@ -61,7 +61,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -233,8 +233,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		return validator;
 	}
 
-	protected TokenExtractionStategy getTokenExtractionStrategy() {
-		return TokenExtractionStategy.NONE;
+	protected TokenExtractionStrategy getTokenExtractionStrategy() {
+		return TokenExtractionStrategy.NONE;
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
@@ -293,7 +293,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
 			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 			assertEquals(certificateSource.getSignedDataCertificates().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
 			assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
@@ -325,7 +325,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(), 
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
 				assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 				assertEquals(certificateSource.getSignedDataCertificates()
 						.size(),
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
@@ -718,7 +718,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						certIds.contains(certificate.getId());
 					}
 					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES)) {
+							.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
 						certIds.contains(certificate.getId());
 					}
 				}
@@ -741,7 +741,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						orphanCertIds.contains(certificate.getId());
 					}
 					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES)) {
+							.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
 						orphanCertIds.contains(certificate.getId());
 					}
 				}

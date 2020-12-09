@@ -26,28 +26,28 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum TimestampType {
 	
-	// CAdES: id-aa-ets-contentTimestamp
+	/** CAdES: id-aa-ets-contentTimestamp */
 	CONTENT_TIMESTAMP(0, false),
-	
-	// XAdES: AllDataObjectsTimestamp
+
+	/** XAdES: AllDataObjectsTimestamp */
 	ALL_DATA_OBJECTS_TIMESTAMP(0, false),
-	
-	// XAdES: IndividualDataObjectsTimeStamp
+
+	/** XAdES: IndividualDataObjectsTimeStamp */
 	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP(0, false),
-	
-	// CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp
+
+	/** CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp */
 	SIGNATURE_TIMESTAMP(1, true),
-	
-	// CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp
+
+	/** CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp */
 	VALIDATION_DATA_REFSONLY_TIMESTAMP(2, false),
-	
-	// CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp
+
+	/** CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp */
 	VALIDATION_DATA_TIMESTAMP(2, true),
 
-	// PAdES-LTV "document timestamp"
+	/** PAdES-LTV "document timestamp" */
 	DOCUMENT_TIMESTAMP(3, true),
-	
-	// CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp
+
+	/** CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp */
 	ARCHIVE_TIMESTAMP(3, true);
 	
 	/**
@@ -63,7 +63,7 @@ public enum TimestampType {
 	/* TRUE if the timestamp covers a Signature */
 	private final boolean coversSignature;
 	
-	private TimestampType(int order, boolean coversSignature) {
+	TimestampType(int order, boolean coversSignature) {
 		this.order = order;
 		this.coversSignature = coversSignature;
 	}

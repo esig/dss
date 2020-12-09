@@ -10,13 +10,24 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Verifies if a PDF contains difference between page amount in different revisions
+ */
 public class PdfPageDifferenceCheck extends ChainItem<XmlFC> {
 
+	/** The signature */
 	private final SignatureWrapper signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public PdfPageDifferenceCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.signature = signature;
 	}
 

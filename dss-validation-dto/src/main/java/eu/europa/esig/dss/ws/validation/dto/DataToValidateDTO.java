@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.ws.validation.dto;
 
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+
 import java.util.Arrays;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
-import eu.europa.esig.dss.ws.dto.RemoteDocument;
-
+/**
+ * Represents a validation request DTO
+ */
 public class DataToValidateDTO {
 
 	/**
@@ -46,71 +49,157 @@ public class DataToValidateDTO {
 	/**
 	 * The strategy for the token (certificate/timestamp/revocation data) extraction
 	 */
-	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
 
 	/**
 	 * The signature to operate on
 	 */
 	private String signatureId;
 
+	/**
+	 * Empty constructor
+	 */
 	public DataToValidateDTO() {
 	}
 
+	/**
+	 * Constructor to validate a document
+	 *
+	 * @param signedDocument {@link RemoteDocument} to validate
+	 * @param originalDocument {@link RemoteDocument} detached document
+	 * @param policy {@link RemoteDocument} validation policy
+	 */
 	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument, RemoteDocument policy) {
 		this(signedDocument, Arrays.asList(originalDocument), policy);
 	}
 
-	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments, RemoteDocument policy) {
+	/**
+	 * Constructor to validate a document
+	 *
+	 * @param signedDocument {@link RemoteDocument} to validate
+	 * @param originalDocuments list of {@link RemoteDocument} detached documents
+	 * @param policy {@link RemoteDocument} validation policy
+	 */
+	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments,
+							 RemoteDocument policy) {
 		this(signedDocument, originalDocuments, policy, null);
 	}
 
-	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument, RemoteDocument policy, String signatureId) {
+	/**
+	 * Constructor to extract original documents
+	 *
+	 * @param signedDocument {@link RemoteDocument} to validate
+	 * @param originalDocument {@link RemoteDocument} detached document
+	 * @param policy {@link RemoteDocument} validation policy
+	 * @param signatureId {@link String} to extract original documents for
+	 */
+	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument,
+							 RemoteDocument policy, String signatureId) {
 		this(signedDocument, Arrays.asList(originalDocument), policy, signatureId);
 	}
 
-	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments, RemoteDocument policy, String signatureId) {
+	/**
+	 * Constructor to extract original documents
+	 *
+	 * @param signedDocument {@link RemoteDocument} to validate
+	 * @param originalDocuments list of {@link RemoteDocument} detached documents
+	 * @param policy {@link RemoteDocument} validation policy
+	 * @param signatureId {@link String} to extract original documents for
+	 */
+	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments,
+							 RemoteDocument policy, String signatureId) {
 		this.signedDocument = signedDocument;
 		this.originalDocuments = originalDocuments;
 		this.policy = policy;
 		this.signatureId = signatureId;
 	}
 
+	/**
+	 * Gets signed document
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getSignedDocument() {
 		return signedDocument;
 	}
 
+	/**
+	 * Sets the signed document
+	 *
+	 * @param signedDocument {@link RemoteDocument}
+	 */
 	public void setSignedDocument(RemoteDocument signedDocument) {
 		this.signedDocument = signedDocument;
 	}
 
+	/**
+	 * Gets the original (detached) documents
+	 *
+	 * @return a list of {@link RemoteDocument}s
+	 */
 	public List<RemoteDocument> getOriginalDocuments() {
 		return originalDocuments;
 	}
 
+	/**
+	 * Sets the original (detached) documents
+	 *
+	 * @param originalDocuments a list of {@link RemoteDocument}s
+	 */
 	public void setOriginalDocuments(List<RemoteDocument> originalDocuments) {
 		this.originalDocuments = originalDocuments;
 	}
 
+	/**
+	 * Gets the validation policy
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getPolicy() {
 		return policy;
 	}
 
+	/**
+	 * Sets the validation policy
+	 *
+	 * @param policy {@link RemoteDocument}
+	 */
 	public void setPolicy(RemoteDocument policy) {
 		this.policy = policy;
 	}
 
-	public TokenExtractionStategy getTokenExtractionStategy() {
-		return tokenExtractionStategy;
+	/**
+	 * Gets a token extraction strategy
+	 *
+	 * @return {@link TokenExtractionStrategy}
+	 */
+	public TokenExtractionStrategy getTokenExtractionStrategy() {
+		return tokenExtractionStrategy;
 	}
 
-	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
-		this.tokenExtractionStategy = tokenExtractionStategy;
+	/**
+	 * Sets a token extraction strategy
+	 *
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy}
+	 */
+	public void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
+	/**
+	 * Gets the signature id to get original documents for
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignatureId() {
 		return signatureId;
 	}
 
+	/**
+	 * Sets the signature id to get original documents for
+	 *
+	 * @param signatureId {@link String}
+	 */
 	public void setSignatureId(String signatureId) {
 		this.signatureId = signatureId;
 	}

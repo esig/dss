@@ -24,6 +24,9 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 
+/**
+ * Builds a {@code SchemaFactory}
+ */
 public class SchemaFactoryBuilder extends AbstractFactoryBuilder<SchemaFactory> {
 	
 	private String schemaLanguage = XMLConstants.W3C_XML_SCHEMA_NS_URI;

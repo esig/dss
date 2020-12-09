@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -47,6 +39,13 @@ import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class is an implementation to validate ASiC containers with CAdES signature(s)
@@ -56,6 +55,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCContainerWithCAdESValidator.class);
 
+	/**
+	 * The empty constructor
+	 */
 	ASiCContainerWithCAdESValidator() {
 		super(null);
 	}
@@ -67,7 +69,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 */
 	public ASiCContainerWithCAdESValidator(final DSSDocument asicContainer) {
 		super(asicContainer, new ASiCWithCAdESSignatureScopeFinder());
-		analyseEntries();
+		extractEntries();
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getArchiveExtractor() {
+	protected AbstractASiCContainerExtractor getContainerExtractor() {
 		return new ASiCWithCAdESContainerExtractor(document);
 	}
 	
@@ -112,6 +114,11 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return signatureValidators;
 	}
 
+	/**
+	 * Returns a list of timestamp validators for timestamps embedded into the container
+	 *
+	 * @return a list of {@link DocumentValidator}s
+	 */
 	protected List<DocumentValidator> getTimestampValidators() {
 		if (timestampValidators == null) {
 			timestampValidators = new ArrayList<>();
@@ -243,7 +250,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected List<ManifestFile> getManifestFilesDecriptions() {
+	protected List<ManifestFile> getManifestFilesDescriptions() {
 		List<ManifestFile> descriptions = new ArrayList<>();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		for (DSSDocument manifestDocument : manifestDocuments) {

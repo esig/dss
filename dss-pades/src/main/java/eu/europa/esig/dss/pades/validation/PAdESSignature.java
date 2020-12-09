@@ -54,9 +54,10 @@ public class PAdESSignature extends CAdESSignature {
 
 	private static final long serialVersionUID = 3818555396958720967L;
 
+	/** Represents the corresponding PDF revision */
 	private final PdfSignatureRevision pdfSignatureRevision;
 
-	// contains a complete list of validating document revisions
+	/** contains a complete list of validating document revisions */
 	private final List<PdfRevision> documentRevisions;
 
 	/**
@@ -216,6 +217,11 @@ public class PAdESSignature extends CAdESSignature {
 		return getDssDictionary() != null;
 	}
 
+	/**
+	 * Gets the last DSS dictionary for the signature
+	 *
+	 * @return {@link PdfDssDict}
+	 */
 	public PdfDssDict getDssDictionary() {
 		return pdfSignatureRevision.getDssDictionary();
 	}
@@ -237,12 +243,18 @@ public class PAdESSignature extends CAdESSignature {
 		return pdfSignatureRevision;
 	}
 
+	/**
+	 * Gets the {@code PdfSignatureDictionary}
+	 *
+	 * @return {@link PdfSignatureDictionary}
+	 */
 	public PdfSignatureDictionary getPdfSignatureDictionary() {
 		return pdfSignatureRevision.getPdfSigDictInfo();
 	}
 
 	/**
 	 * Name of the related to the signature VRI dictionary
+	 *
 	 * @return related {@link String} VRI dictionary name
 	 */
 	public String getVRIKey() {

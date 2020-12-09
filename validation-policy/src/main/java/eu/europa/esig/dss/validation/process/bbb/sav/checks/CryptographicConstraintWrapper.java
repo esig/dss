@@ -20,6 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.ListAlgo;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,27 +39,33 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.policy.jaxb.Algo;
-import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.ListAlgo;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * The wrapper for a cryptographic information retrieved from a validation policy
+ */
 public class CryptographicConstraintWrapper {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CryptographicConstraintWrapper.class);
 
+	/** The default date format */
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
+	/** The cryptographic constraint */
 	private final CryptographicConstraint constraint;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param constraint {@link CryptographicConstraint}
+	 */
 	public CryptographicConstraintWrapper(CryptographicConstraint constraint) {
 		this.constraint = constraint;
 	}
 
+	/**
+	 * Returns a list of supported Encryption algorithm names
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getSupportedEncryptionAlgorithms() {
 		if (constraint != null) {
 			return extract(constraint.getAcceptableEncryptionAlgo());
@@ -59,6 +73,11 @@ public class CryptographicConstraintWrapper {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a list of supported Digest algorithm names
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getSupportedDigestAlgorithms() {
 		if (constraint != null) {
 			return extract(constraint.getAcceptableDigestAlgo());
@@ -66,6 +85,11 @@ public class CryptographicConstraintWrapper {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a map of minimum accepted key sizes for different Encryption algorithms
+	 *
+	 * @return a map of minimum accepted key sizes
+	 */
 	public Map<String, Integer> getMinimumKeySizes() {
 		Map<String, Integer> result = new HashMap<>();
 		if (constraint != null) {
@@ -83,7 +107,14 @@ public class CryptographicConstraintWrapper {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * Gets an expiration date for the encryption algorithm with name {@code algoToSearch} and {@code keyLength}
+	 *
+	 * @param algoToSearch {@link String} name of the encryption algorithm
+	 * @param keyLength {@link Integer} key length used to sign the token
+	 * @return {@link Date}
+	 */
 	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
 		TreeMap<Integer, Date> dates = new TreeMap<>();
 		if (constraint != null) {
@@ -113,6 +144,12 @@ public class CryptographicConstraintWrapper {
 		}
 	}
 
+	/**
+	 * Gets an expiration date for the digest algorithm with name {@code digestAlgoToSearch}
+	 *
+	 * @param digestAlgoToSearch {@link String} name of the digest algorithm
+	 * @return {@link Date}
+	 */
 	public Date getDigestAlgorithmExpirationDate(String digestAlgoToSearch) {
 		if (constraint != null) {
 			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
@@ -134,7 +171,12 @@ public class CryptographicConstraintWrapper {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Returns a map of all defined algorithm expiration times
+	 *
+	 * @return a map of algorithm names and the corresponding expiration times
+	 */
 	public Map<String, Date> getExpirationTimes() {
 		Map<String, Date> result = new HashMap<>();
 		if (constraint != null) {
@@ -153,8 +195,14 @@ public class CryptographicConstraintWrapper {
 			}
 		}
 		return result;
-	}	
+	}
 
+	/**
+	 * Extracts a list of algorithm names from {@code ListAlgo}
+	 *
+	 * @param listAlgo {@link ListAlgo}
+	 * @return a list of {@link String}
+	 */
 	private List<String> extract(ListAlgo listAlgo) {
 		List<String> result = new ArrayList<>();
 		if (listAlgo != null && Utils.isCollectionNotEmpty(listAlgo.getAlgo())) {
@@ -164,7 +212,12 @@ public class CryptographicConstraintWrapper {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * Gets the constraint
+	 *
+	 * @return {@link CryptographicConstraint}
+	 */
 	public CryptographicConstraint getConstraint() {
 		return constraint;
 	}

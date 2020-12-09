@@ -24,6 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+/**
+ * Checks if the document is supported and creates a relevant validator for the provided document
+ */
 public class CMSDocumentValidatorFactory implements DocumentValidatorFactory {
 
 	@Override

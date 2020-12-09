@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -33,17 +31,45 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Date;
+
+/**
+ * Checks if the revocation is consistent and can be used for the given certificate
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
+	/** The certificate in question */
 	private final CertificateWrapper certificate;
+
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
-	
+
+	/** ThisUpdate of the revocation */
 	private Date thisUpdate;
+
+	/** Certificate's NotBefore */
 	private Date certNotBefore;
+
+	/** Certificate's NotAfter */
 	private Date certNotAfter;
+
+	/** Defines date after which the revocation issuer ensure the revocation is contained for the certificate */
 	private Date notAfterRevoc;
+
+	/** Defines if certHash matches */
 	private boolean certHashOK;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public RevocationConsistentCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, 
 			RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

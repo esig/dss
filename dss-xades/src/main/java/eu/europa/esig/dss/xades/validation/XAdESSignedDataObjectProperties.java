@@ -25,17 +25,40 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
+/**
+ * Builds {@code XAdESSignedDataObjectProperties}
+ */
 public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 
-	XAdESSignedDataObjectProperties(Element signaturePropties, XAdESPaths xadesPaths) {
-		super(signaturePropties, xadesPaths);
+	/**
+	 * Default constructor
+	 *
+	 * @param signatureProperties {@link Element}
+	 * @param xadesPaths {@link XAdESPaths}
+	 */
+	XAdESSignedDataObjectProperties(Element signatureProperties, XAdESPaths xadesPaths) {
+		super(signatureProperties, xadesPaths);
 	}
-	
+
+	/**
+	 * Builds {@code XAdESSignedDataObjectProperties}
+	 *
+	 * @param signatureElement {@link Element} signature element
+	 * @param xadesPaths {@link XAdESPaths}
+	 * @return {@link XAdESSignedDataObjectProperties}
+	 */
 	public static XAdESSignedDataObjectProperties build(Element signatureElement, XAdESPaths xadesPaths) {
 		Element signedSignatureProperties = getSignedSignaturePropertiesDom(signatureElement, xadesPaths);
 		return new XAdESSignedDataObjectProperties(signedSignatureProperties, xadesPaths);
 	}
 
+	/**
+	 * Gets xades:SignedDataObjectProperties element
+	 *
+	 * @param signatureElement {@link Element} signature element
+	 * @param xadesPaths {@link XAdESPaths}
+	 * @return {@link Element}
+	 */
 	protected static Element getSignedSignaturePropertiesDom(Element signatureElement, XAdESPaths xadesPaths) {
 		return DomUtils.getElement(signatureElement, xadesPaths.getSignedDataObjectPropertiesPath());
 	}

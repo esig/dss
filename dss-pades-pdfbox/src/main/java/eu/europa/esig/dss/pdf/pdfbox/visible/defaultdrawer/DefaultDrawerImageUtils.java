@@ -20,14 +20,19 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
+import eu.europa.esig.dss.enumerations.SignerTextPosition;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -39,22 +44,16 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-
-import eu.europa.esig.dss.enumerations.SignerTextPosition;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
-
+/**
+ * Contains utils for a default PDFBox drawer
+ */
 public class DefaultDrawerImageUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultDrawerImageUtils.class);
@@ -62,11 +61,18 @@ public class DefaultDrawerImageUtils {
 	private DefaultDrawerImageUtils() {
 	}
 
+	/**
+	 * Creates {@code ImageAndResolution} from the given visual signature parameters
+	 *
+	 * @param imageParameters {@link SignatureImageParameters}
+	 * @return {@link ImageAndResolution}
+	 * @throws IOException of an exception occurs
+	 */
 	public static ImageAndResolution create(final SignatureImageParameters imageParameters) throws IOException {
-		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
+		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		DSSDocument image = imageParameters.getImage();
 		
-		if (!textParamaters.isEmpty()) {
+		if (!textParameters.isEmpty()) {
 			BufferedImage scaledImage = null;
 			ImageAndResolution imageAndResolution = null;
 			if (image != null) {
@@ -90,23 +96,23 @@ public class DefaultDrawerImageUtils {
 			}
 			
 			if (scaledImage != null) {
-				SignerTextPosition signerNamePosition = textParamaters.getSignerTextPosition();
+				SignerTextPosition signerNamePosition = textParameters.getSignerTextPosition();
 				switch (signerNamePosition) {
 					case LEFT:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, false);
-						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
+						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParameters.getSignerTextVerticalAlignment());
 						break;
 					case RIGHT:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, false);
-						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
+						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParameters.getSignerTextVerticalAlignment());
 						break;
 					case TOP:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, true);
-						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextHorizontalAlignment());
+						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParameters.getSignerTextHorizontalAlignment());
 						break;
 					case BOTTOM:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, fieldParameters, imageAndResolution, true);
-						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextHorizontalAlignment());
+						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParameters.getSignerTextHorizontalAlignment());
 						break;
 					default:
 						throw new DSSException(String.format("The SignerNamePosition [%s] is not supported!", signerNamePosition.name()));
@@ -156,6 +162,7 @@ public class DefaultDrawerImageUtils {
 	
 	/**
 	 * Returns a scaled {@link BufferedImage} based on its dpi parameters relatively to page dpi
+	 *
 	 * @param image {@link DSSDocument} containing image to scale
 	 * @param imageParameters {@link SignatureImageParameters}
 	 * @param imageAndResolution {@link ImageAndResolution}
@@ -229,6 +236,7 @@ public class DefaultDrawerImageUtils {
 	
 	/**
 	 * Scale the original image according to given X and Y based scale factors
+	 *
 	 * @param original {@link BufferedImage} to zoom
 	 * @param xScaleFactor zoom value by X axis
 	 * @param yScaleFactor zoom value by Y axis

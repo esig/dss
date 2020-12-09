@@ -20,8 +20,24 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines signature validation context
+ */
 public enum Context {
 
-	SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, REVOCATION, CERTIFICATE
+	/** The processing token is a signature */
+	SIGNATURE,
+
+	/** The processing token is a counter signature */
+	COUNTER_SIGNATURE,
+
+	/** The processing token is a timestamp */
+	TIMESTAMP,
+
+	/** The processing token is a revocation */
+	REVOCATION,
+
+	/** The processing token is a certificate */
+	CERTIFICATE
 
 }

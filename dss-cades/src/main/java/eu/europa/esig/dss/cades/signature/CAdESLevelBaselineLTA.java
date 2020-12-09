@@ -20,12 +20,20 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
-
-import java.io.IOException;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -41,20 +49,11 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import java.io.IOException;
+import java.util.List;
+
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
 
 /**
  * This class holds the CAdES-A signature profiles; it supports the later, over time _extension_ of a signature with
@@ -69,6 +68,12 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
 
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource} to request a timestamp
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 */
 	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
 		super(tspSource, certificateVerifier);
 	}
@@ -219,10 +224,10 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 	 * <li>A single instance of ATSHashIndex type (created as specified in clause 6.4.2).
 	 * </ol>
 	 *
-	 * @param cadesSignature
-	 * @param signerInformation
-	 * @param parameters
-	 * @param unsignedAttributes
+	 * @param cadesSignature {@link CAdESSignature}
+	 * @param signerInformation {@link SignerInformation}
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param unsignedAttributes {@link AttributeTable}
 	 */
 	private AttributeTable addArchiveTimestampV3Attribute(CAdESSignature cadesSignature, SignerInformation signerInformation,
 			CAdESSignatureParameters parameters, AttributeTable unsignedAttributes) {

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.alert.handler;
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
+
+import java.util.Objects;
 
 /**
  * Implementation of {@code AlertHandler} which logs the object with the
@@ -34,12 +34,21 @@ public class LogHandler<T> implements AlertHandler<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogHandler.class);
 
+	/** The level of a log */
 	private final Level level;
 
+	/**
+	 * The constructor used to log with a {@code Level.WARN}
+	 */
 	public LogHandler() {
 		this(Level.WARN);
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param level {@link Level} of the log
+	 */
 	public LogHandler(Level level) {
 		Objects.requireNonNull(level);
 		this.level = level;

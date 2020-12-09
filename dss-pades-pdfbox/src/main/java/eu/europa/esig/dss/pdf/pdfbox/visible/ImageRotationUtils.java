@@ -24,6 +24,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 
+/**
+ * Contains utils for the image rotation
+ */
 public class ImageRotationUtils {
 	
 	public static final String SUPPORTED_ANGLES_ERROR_MESSAGE = "rotation angle must be 90, 180, 270 or 360 (0)";

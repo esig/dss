@@ -34,7 +34,7 @@ public class SignatureECDSARIPEMD160 extends SignatureECDSA {
 	/**
 	 * Constructor SignatureECDSARIPEMD160
 	 *
-	 * @throws XMLSignatureException
+	 * @throws XMLSignatureException if an exception occurs
 	 */
 	public SignatureECDSARIPEMD160() throws XMLSignatureException {
 		super();

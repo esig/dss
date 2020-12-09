@@ -22,10 +22,18 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.identifier.Identifier;
 
+/**
+ * The DSS Signature identifier
+ */
 public class SignatureIdentifier extends Identifier {
 	
 	private static final long serialVersionUID = -6700888325973167656L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param bytes SignatureValue binaries
+	 */
 	protected SignatureIdentifier(byte[] bytes) {
 		super("S-", bytes);
 	}

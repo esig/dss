@@ -20,25 +20,50 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A class to generate a DataToSign for an OpenDocument signing
+ */
 public class DataToSignOpenDocument extends AbstractDataToSignASiCEWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
-	private static final String ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE = META_INF + "documentsignatures.xml";
+	/** The default signature filename */
+	private static final String ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE =
+			ASiCUtils.META_INF_FOLDER + "documentsignatures.xml";
 
+	/** The list of signed documents */
 	private final List<DSSDocument> signedDocuments;
+
+	/** The list of signature documents */
 	private final List<DSSDocument> existingSignatures;
+
+	/** The list of manifest documents */
 	private final List<DSSDocument> existingManifests;
+
+	/** The mimetype document */
 	private final DSSDocument mimetype;
+
+	/** The root container */
 	private final DSSDocument rootContainer;
 
-	public DataToSignOpenDocument(List<DSSDocument> signedDocuments, List<DSSDocument> existingSignatures, List<DSSDocument> existingManifests,
-			DSSDocument mimetype, DSSDocument rootContainer) {
+	/**
+	 * The default constructor
+	 *
+	 * @param signedDocuments a list of {@link DSSDocument}s
+	 * @param existingSignatures a list of {@link DSSDocument}s
+	 * @param existingManifests a list of {@link DSSDocument}s
+	 * @param mimetype {@link DSSDocument}
+	 * @param rootContainer {@link DSSDocument}
+	 */
+	public DataToSignOpenDocument(final List<DSSDocument> signedDocuments, final List<DSSDocument> existingSignatures,
+								  final List<DSSDocument> existingManifests, final DSSDocument mimetype,
+								  final DSSDocument rootContainer) {
 		this.signedDocuments = signedDocuments;
 		this.existingSignatures = existingSignatures;
 		this.existingManifests = existingManifests;

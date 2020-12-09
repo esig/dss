@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -34,11 +30,28 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Checks if the timestamp's order is coherent
+ */
 public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
+	/** List of timestamps to check */
 	private final List<TimestampWrapper> timestamps;
 
-	public TimestampCoherenceOrderCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, List<TimestampWrapper> timestamps, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessLongTermData}
+	 * @param timestamps a list of {@link TimestampWrapper}s
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public TimestampCoherenceOrderCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
+										List<TimestampWrapper> timestamps, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.timestamps = timestamps;
 	}

@@ -1,22 +1,19 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Objects;
-
-import javax.imageio.ImageIO;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Contains a set of utils for PdfBox implementation
@@ -24,6 +21,7 @@ import eu.europa.esig.dss.pdf.visible.ImageUtils;
  */
 public class PdfBoxUtils {
 
+	/** The default name for a screenshot document */
 	private static final String SCREENSHOT_PNG_NAME = "screenshot.png";
 
 	private PdfBoxUtils() {
@@ -119,10 +117,8 @@ public class PdfBoxUtils {
 		BufferedImage screenshotDoc1 = generateBufferedImageScreenshot(document1, passwordDocument1, pageDocument1);
 		BufferedImage screenshotDoc2 = generateBufferedImageScreenshot(document2, passwordDocument2, pageDocument2);
 
-		int width = screenshotDoc1.getWidth() > screenshotDoc2.getWidth() ? screenshotDoc1.getWidth()
-				: screenshotDoc2.getWidth();
-		int height = screenshotDoc1.getHeight() > screenshotDoc2.getHeight() ? screenshotDoc1.getHeight()
-				: screenshotDoc2.getHeight();
+		int width = Math.max(screenshotDoc1.getWidth(), screenshotDoc2.getWidth());
+		int height = Math.max(screenshotDoc1.getHeight(), screenshotDoc2.getHeight());
 
 		BufferedImage outputImage = getOutputImage(width, height);
 		ImageUtils.drawSubtractionImage(screenshotDoc1, screenshotDoc2, outputImage);

@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
-import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
@@ -71,6 +58,18 @@ import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.UUID;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
+import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 
 /**
  * -T profile of XAdES signature
@@ -80,16 +79,17 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineT.class);
 
-	/*
+	/**
 	 * The object encapsulating the Time Stamp Protocol needed to create the level -T, of the signature
 	 */
 	protected TSPSource tspSource;
 
 	/**
 	 * The default constructor for XAdESLevelBaselineT.
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
 	public XAdESLevelBaselineT(final CertificateVerifier certificateVerifier) {
-
 		super(certificateVerifier);
 	}
 
@@ -149,10 +149,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * For -T profile adds the SignatureTimeStamp element which contains a single HashDataInfo element that refers to
 	 * the ds:SignatureValue element of the [XMLDSIG] signature. The timestamp token is obtained from TSP source.<br>
 	 * Adds {@code <SignatureTimeStamp>} segment into {@code <UnsignedSignatureProperties>} element.
-	 *
-	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
-	protected void extendSignatureTag() throws DSSException {
+	protected void extendSignatureTag() {
 
 		assertExtendSignatureToTPossible();
 		

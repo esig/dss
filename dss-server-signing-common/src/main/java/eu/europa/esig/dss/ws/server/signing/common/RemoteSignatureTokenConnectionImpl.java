@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.ws.server.signing.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.DSSException;
@@ -38,10 +35,22 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Default implementation of a remote signing service
+ */
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {
 
+	/** The KeyStore token connection */
 	private AbstractKeyStoreTokenConnection token;
 
+	/**
+	 * Sets the connection to the KeyStore
+	 *
+	 * @param token {@link AbstractKeyStoreTokenConnection}
+	 */
 	public void setToken(AbstractKeyStoreTokenConnection token) {
 		this.token = token;
 	}

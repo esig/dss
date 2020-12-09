@@ -4,8 +4,16 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
+/**
+ * Builds a signature identifier for a PAdES signature
+ */
 public class PAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param signature {@link PAdESSignature}
+	 */
 	public PAdESSignatureIdentifierBuilder(PAdESSignature signature) {
 		super(signature);
 	}

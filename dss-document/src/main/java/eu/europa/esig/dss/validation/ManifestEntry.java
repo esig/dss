@@ -23,62 +23,139 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.MimeType;
 
+/**
+ * Defines a references document entry of a ManifestFile
+ */
 public class ManifestEntry {
-	
+
+	/** The filename of the entry */
 	private String filename;
+
+	/** The mimetype of the entry */
 	private MimeType mimeType;
+
+	/** The digest of the referenced entry */
 	private Digest digest;
-	
-	// used for reference validation
+
+	/**
+	 * Defines if the references data is found
+	 * (used for reference validation)
+	 */
 	private boolean dataFound;
+
+	/**
+	 * Defines if the references data is intact (digest matches)
+	 * (used for reference validation)
+	 */
 	private boolean dataIntact;
-	
+
+	/** Defines if it is the root file */
 	private boolean rootfile;
 
+	/**
+	 * Gets the filename
+	 *
+	 * @return {@link String}
+	 */
 	public String getFileName() {
 		return filename;
 	}
-	
+
+	/**
+	 * Sets the filename
+	 *
+	 * @param fileName {@link String}
+	 */
 	public void setFileName(String fileName) {
 		this.filename = fileName;
 	}
-	
+
+	/**
+	 * Gets the mimetype
+	 *
+	 * @return {@link MimeType}
+	 */
 	public MimeType getMimeType() {
 		return mimeType;
 	}
-	
+
+	/**
+	 * Sets the mimetype
+	 *
+	 * @param mimeType {@link MimeType}
+	 */
 	public void setMimeType(MimeType mimeType) {
 		this.mimeType = mimeType;
 	}
-	
+
+	/**
+	 * Gets the manifest entry digest
+	 *
+	 * @return {@link Digest}
+	 */
 	public Digest getDigest() {
 		return digest;
 	}
-	
+
+	/**
+	 * Sets the manifest entry digest
+	 *
+	 * @param digest {@link Digest}
+	 */
 	public void setDigest(Digest digest) {
 		this.digest = digest;
 	}
-	
+
+	/**
+	 * Gets if the referenced document has been found
+	 *
+	 * @return TRUE if the document has been found, FALSE otherwise
+	 */
 	public boolean isFound() {
 		return dataFound;
 	}
-	
+
+	/**
+	 * Sets if the referenced document has been found
+	 *
+	 * @param found if the referenced document has been found
+	 */
 	public void setFound(boolean found) {
 		this.dataFound = found;
 	}
-	
+
+	/**
+	 * Gets if the digest of the reference document matches
+	 *
+	 * @return TRUE if the digest of the reference document matches, FALSE otherwise
+	 */
 	public boolean isIntact() {
 		return dataIntact;
 	}
-	
+
+	/**
+	 * Sets if the digest of the reference document matches
+	 *
+	 * @param intact if the digest of the reference document matches
+	 */
 	public void setIntact(boolean intact) {
 		this.dataIntact = intact;
 	}
-	
+
+	/**
+	 * Checks if it is a rootfile
+	 *
+	 * @return TRUE if value of 'Rootfile' set to true, FALSE otherwise
+	 */
 	public boolean isRootfile() {
 		return rootfile;
 	}
 
+	/**
+	 * Sets if value of 'Rootfile' set to true, FALSE otherwise
+	 *
+	 * @param rootfile if it is a rootfile
+	 */
 	public void setRootfile(boolean rootfile) {
 		this.rootfile = rootfile;
 	}

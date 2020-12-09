@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -17,11 +14,27 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Checks if a signing certificate reference is present and valid
+ */
 public class SigningCertificateReferenceCheck extends ChainItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	public SigningCertificateReferenceCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public SigningCertificateReferenceCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+											LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}

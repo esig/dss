@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -45,6 +41,10 @@ import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature
  * format : XAdES, CAdES and PAdES are treated the same.
@@ -60,10 +60,14 @@ public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * This method allows to set the signature filename (useful in case of ASiC)
+	 *
+	 * @param signatureFilename {@link String}
 	 */
 	void setSignatureFilename(String signatureFilename);
 
 	/**
+	 * Returns detached contents
+	 *
 	 * @return in the case of the detached signature this is the {@code List} of signed contents.
 	 */
 	List<DSSDocument> getDetachedContents();
@@ -77,6 +81,8 @@ public interface AdvancedSignature extends Serializable {
 	void setDetachedContents(final List<DSSDocument> detachedContents);
 	
 	/**
+	 * Returns container's content
+	 *
 	 * @return in case of ASiC-S signature returns a list of an archive container documents
 	 */
 	List<DSSDocument> getContainerContents();
@@ -115,6 +121,8 @@ public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * Specifies the format of the signature
+	 *
+	 * @return {@link SignatureForm}
 	 */
 	SignatureForm getSignatureForm();
 
@@ -156,7 +164,7 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a certificate source which contains ALL certificates embedded in the signature.
 	 *
-	 * @return
+	 * @return {@link SignatureCertificateSource}
 	 */
 	SignatureCertificateSource getCertificateSource();
 
@@ -213,7 +221,7 @@ public interface AdvancedSignature extends Serializable {
 	 * from the signature. If the signing certificate is identified then it is cached and the subsequent calls to this
 	 * method will return this cached value. This method never returns null.
 	 *
-	 * @return
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
 	CandidatesForSigningCertificate getCandidatesForSigningCertificate();
 	
@@ -235,6 +243,8 @@ public interface AdvancedSignature extends Serializable {
 	void setMasterSignature(final AdvancedSignature masterSignature);
 
 	/**
+	 * Gets master signature
+	 *
 	 * @return {@code AdvancedSignature}
 	 */
 	AdvancedSignature getMasterSignature();
@@ -251,7 +261,7 @@ public interface AdvancedSignature extends Serializable {
 	 * determinate the signing certificate the signature must be
 	 * validated: the method {@code checkSignatureIntegrity} must be called.
 	 *
-	 * @return
+	 * @return {@link CertificateToken}
 	 */
 	CertificateToken getSigningCertificateToken();
 
@@ -264,6 +274,8 @@ public interface AdvancedSignature extends Serializable {
 	void checkSignatureIntegrity();
 
 	/**
+	 * Gets signature's cryptographic validation result
+	 *
 	 * @return SignatureCryptographicVerification with all the information collected during the validation process.
 	 */
 	SignatureCryptographicVerification getSignatureCryptographicVerification();
@@ -510,6 +522,7 @@ public interface AdvancedSignature extends Serializable {
 	
 	/**
 	 * Returns the digital signature value
+	 *
 	 * @return digital signature value byte array
 	 */
 	byte[] getSignatureValue();

@@ -20,29 +20,44 @@
  */
 package eu.europa.esig.dss.ws.timestamp.remote;
 
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.timestamp.dto.TimestampResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
+/**
+ * The remote service representing a timestamping service
+ */
 public class RemoteTimestampService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteTimestampService.class);
-	
+
+	/** The TSP Source to use to request timestamps */
 	private TSPSource tspSource;
-	
+
+	/**
+	 * Sets the TSP Source
+	 *
+	 * @param tspSource {@link TSPSource}
+	 */
 	public void setTSPSource(TSPSource tspSource) {
 		this.tspSource = tspSource;
 	}
-	
-	public TimestampResponseDTO getTimestampResponse(final DigestAlgorithm digestAlgorithm, final byte[] value) throws DSSException {
+
+	/**
+	 * Timestamps the {@code value}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} used to compute the {@code value}
+	 * @param value the computed digest value
+	 * @return {@link TimestampResponseDTO}
+	 */
+	public TimestampResponseDTO getTimestampResponse(final DigestAlgorithm digestAlgorithm, final byte[] value) {
 		Objects.requireNonNull(tspSource, "TSPSource must be not null!");
 		LOG.info("Timestamp request in process...");
 		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be not null!");

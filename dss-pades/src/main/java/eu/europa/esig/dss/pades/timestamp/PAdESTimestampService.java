@@ -22,24 +22,42 @@ package eu.europa.esig.dss.pades.timestamp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
+/**
+ * The service to timestamp a PDF
+ */
 public class PAdESTimestampService {
 
+	/** TSP source to obtain a timestamp */
 	private final TSPSource tspSource;
+
+	/** The signature service implementation to use */
 	private final PDFSignatureService pdfSignatureService;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource} to request the timestamp
+	 * @param pdfSignatureService {@link PDFSignatureService} to use
+	 */
 	public PAdESTimestampService(TSPSource tspSource, PDFSignatureService pdfSignatureService) {
 		this.tspSource = tspSource;
 		this.pdfSignatureService = pdfSignatureService;
 	}
-	
-	public DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters params) throws DSSException {
+
+	/**
+	 * Timestamp the document
+	 *
+	 * @param document {@link DSSDocument} to timestamp
+	 * @param params {@link PAdESTimestampParameters}
+	 * @return {@link DSSDocument} timestamped
+	 */
+	public DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters params) {
 		final DigestAlgorithm timestampDigestAlgorithm = params.getDigestAlgorithm();
 		final byte[] digest = pdfSignatureService.digest(document, params);
 		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);

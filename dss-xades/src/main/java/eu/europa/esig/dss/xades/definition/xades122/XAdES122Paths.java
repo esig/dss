@@ -28,6 +28,9 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.xades.XAdES122Utils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
+/**
+ * XAdES 1.2.2 paths
+ */
 public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override

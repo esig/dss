@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Allows storing and retrieving of revocation data to/from a repository (e.g.
@@ -171,6 +170,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	 *                               certificateToken
 	 * @param forceRefresh
 	 *                               if true, explicitly skips the cache
+	 * @return {@link RevocationToken}
 	 */
 	public RevocationToken<R> getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken, boolean forceRefresh) {
 		if ((certificateToken == null) || (issuerCertificateToken == null)) {
@@ -192,6 +192,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	
 	/**
 	 * Extracts a {@link RevocationToken} from Cache Source if the relevant entry is stored, null otherwise
+	 * 
 	 * @param certificateToken {@link CertificateToken} to extract the revocation token for
 	 * @param issuerCertificateToken {@link CertificateToken} of the issuer
 	 * @param keys - list of keys, that can be used as unique identifications of the revocation entry

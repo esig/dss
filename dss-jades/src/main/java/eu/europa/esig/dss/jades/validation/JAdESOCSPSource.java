@@ -1,12 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -16,15 +9,30 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Extracts and stores OCSPs from a JAdES signature
+ */
 public class JAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final long serialVersionUID = -6522217477882736259L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESOCSPSource.class);
 
+	/** Represents the unsigned 'etsiU' header */
 	private transient final JAdESEtsiUHeader etsiUHeader;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} unsigned component
+	 */
 	public JAdESOCSPSource(JAdESEtsiUHeader etsiUHeader) {
 		Objects.requireNonNull(etsiUHeader, "etsiUHeader cannot be null");
 		this.etsiUHeader = etsiUHeader;

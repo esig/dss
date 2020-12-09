@@ -1,12 +1,5 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
@@ -20,6 +13,12 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * The class is used to validate a {@code SignaturePolicy} and build a {@code XmlPolicy}
@@ -28,14 +27,20 @@ import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 public class XmlPolicyBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XmlPolicyBuilder.class);
-	
+
+	/** The {@code SignaturePolicy} to incorporate into the DiagnosticData */
 	private final SignaturePolicy signaturePolicy;
-	
+
+	/** Retrieves the signature policy document */
 	private SignaturePolicyProvider signaturePolicyProvider;
+
+	/** The found SignaturePolicyStore from a signature */
 	private SignaturePolicyStore signaturePolicyStore;
-	
+
+	/** The DigestAlgorithm to use */
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
-	
+
+	/** The signature policy validator instance */
 	private SignaturePolicyValidator validator;
 	
 	/**

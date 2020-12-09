@@ -29,12 +29,18 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.xades.XAdES111Utils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
+/**
+ * XAdES 1.1.1 paths
+ */
 public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
+	/** The path "./xades111:DigestMethod/xades111:Algorithm" */
 	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XAdES111Element.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
 
+	/** The path "./xades111:DigestValue" */
 	public static final String DIGEST_VALUE_PATH = fromCurrentPosition(XAdES111Element.DIGEST_VALUE);
-	
+
+	/** The path "./xades111:HashDataInfo/xades111:Transforms/xades111:Transform" */
 	public static final String HASH_DATA_INFO_TRANSFORM_PATH = fromCurrentPosition(XAdES111Element.HASH_DATA_INFO, XAdES111Element.TRANSFORMS, XMLDSigElement.TRANSFORM);
 
 	@Override

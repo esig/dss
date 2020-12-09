@@ -20,27 +20,49 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+
 import java.io.Serializable;
 import java.util.List;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
+/**
+ * Contains certificates for the url location
+ */
 public class OtherTSLPointer implements Serializable {
 
 	private static final long serialVersionUID = 3015076999802292662L;
-	
+
+	/** URL location */
 	private final String location;
+
+	/** List of certificates */
 	private final List<CertificateToken> certificates;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param location {@link String} url
+	 * @param certificates list of {@link CertificateToken}s
+	 */
 	public OtherTSLPointer(String location, List<CertificateToken> certificates) {
 		this.location = location;
 		this.certificates = certificates;
 	}
 
+	/**
+	 * Gets location url
+	 *
+	 * @return {@link String}
+	 */
 	public String getLocation() {
 		return location;
 	}
 
+	/**
+	 * Gets a list of certificates
+	 *
+	 * @return a list of {@link CertificateToken}s
+	 */
 	public List<CertificateToken> getCertificates() {
 		return certificates;
 	}

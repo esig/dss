@@ -23,22 +23,44 @@ package eu.europa.esig.dss.ws.dto;
 import java.io.Serializable;
 import java.util.Arrays;
 
+/**
+ * The DTO used to transfer ToBeSigned data
+ */
 @SuppressWarnings("serial")
 public class ToBeSignedDTO implements Serializable {
 
+	/** Binaries ToBeSigned */
 	private byte[] bytes;
 
+	/**
+	 * Empty constructor
+	 */
 	public ToBeSignedDTO() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param bytes binaries ToBeSigned
+	 */
 	public ToBeSignedDTO(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
+	/**
+	 * Gets binaries ToBeSigned
+	 *
+	 * @return binaries ToBeSigned
+	 */
 	public byte[] getBytes() {
 		return bytes;
 	}
 
+	/**
+	 * Sets binaries ToBeSigned
+	 *
+	 * @param bytes binaries ToBeSigned
+	 */
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
 	}

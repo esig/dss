@@ -20,39 +20,77 @@
  */
 package eu.europa.esig.dss.ws.dto;
 
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Base64;
 
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-
+/**
+ * Represents a SignatureValue DTO
+ */
 @SuppressWarnings("serial")
 public class SignatureValueDTO implements Serializable {
 
+	/**
+	 * The used SignatureAlgorithm
+	 */
 	private SignatureAlgorithm algorithm;
 
+	/**
+	 * The SignatureValue binaries
+	 */
 	private byte[] value;
 
+	/**
+	 * Empty constructor
+	 */
 	public SignatureValueDTO() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param algorithm {@link SignatureAlgorithm} used to compute the SingatureValue
+	 * @param value the SignatureValue binaries
+	 */
 	public SignatureValueDTO(SignatureAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
 	}
 
+	/**
+	 * Gets the used {@link SignatureAlgorithm}
+	 *
+	 * @return {@link SignatureAlgorithm}
+	 */
 	public SignatureAlgorithm getAlgorithm() {
 		return algorithm;
 	}
 
+	/**
+	 * Sets the used {@link SignatureAlgorithm}
+	 *
+	 * @param algorithm {@link SignatureAlgorithm}
+	 */
 	public void setAlgorithm(SignatureAlgorithm algorithm) {
 		this.algorithm = algorithm;
 	}
 
+	/**
+	 * Gets the SignatureValue binaries
+	 *
+	 * @return the SignatureValue binaries
+	 */
 	public byte[] getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the SignatureValue binaries
+	 *
+	 * @param value the SignatureValue binaries
+	 */
 	public void setValue(byte[] value) {
 		this.value = value;
 	}

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -33,14 +31,36 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Date;
+
+/**
+ * Checks if the revocation date is after best-signature-time
+ */
 public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
+	/** Certificate's revocation */
 	private final CertificateRevocationWrapper certificateRevocation;
+
+	/** Best signature time */
 	private final Date bestSignatureTime;
+
+	/** Validation SubContext */
 	private final SubContext subContext;
 
-	public RevocationDateAfterBestSignatureTimeCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, CertificateRevocationWrapper certificateRevocation, 
-			Date bestSignatureTime, LevelConstraint constraint, SubContext subContext) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessLongTermData}
+	 * @param certificateRevocation {@link CertificateRevocationWrapper}
+	 * @param bestSignatureTime {@link Date}
+	 * @param constraint {@link LevelConstraint}
+	 * @param subContext {@link SubContext}
+	 */
+	public RevocationDateAfterBestSignatureTimeCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
+													 CertificateRevocationWrapper certificateRevocation,
+													 Date bestSignatureTime, LevelConstraint constraint,
+													 SubContext subContext) {
 		super(i18nProvider, result, constraint);
 
 		this.certificateRevocation = certificateRevocation;

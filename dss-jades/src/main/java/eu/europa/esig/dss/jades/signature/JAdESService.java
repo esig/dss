@@ -1,16 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.tsp.TSPException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
@@ -37,7 +26,20 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Contains methods for JAdES signature creation/extension
+ */
 public class JAdESService extends AbstractSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> implements 
 					MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters>,
 					CounterSignatureService<JAdESCounterSignatureParameters> {
@@ -166,7 +168,14 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		signedDocument.setMimeType(jadesBuilder.getMimeType());
 		return signedDocument;
 	}
-	
+
+	/**
+	 * Returns the JAdESBuilder to be used
+	 *
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @param documentsToSign a list of {@link DSSDocument}s
+	 * @return {@link JAdESBuilder}
+	 */
 	protected JAdESBuilder getJAdESBuilder(JAdESSignatureParameters parameters, List<DSSDocument> documentsToSign) {
 		switch (parameters.getJwsSerializationType()) {
 			case COMPACT_SERIALIZATION:

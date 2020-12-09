@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 
 /**
  * This class is a DTO representation for a trust service provider
@@ -33,23 +33,47 @@ public class TrustServiceProvider implements Serializable {
 
 	private static final long serialVersionUID = -2690449134555769275L;
 	
-	/**
+	/*
 	 * Key = lang
 	 * 
 	 * List = values / lang
 	 */
+
+	/** The map of names */
 	private Map<String, List<String>> names;
+
+	/** The map of trade names */
 	private Map<String, List<String>> tradeNames;
+
+	/** The list of registration identifiers */
 	private List<String> registrationIdentifiers;
+
+	/** The map of postal addresses */
 	private Map<String, String> postalAddresses;
+
+	/** The map of electronic addresses */
 	private Map<String, List<String>> electronicAddresses;
+
+	/** The map of information */
 	private Map<String, String> information;
+
+	/** The list of trust services */
 	private List<TrustService> services;
+
+	/** The territory (country) */
 	private String territory;
 
+	/**
+	 * Empty constructor
+	 */
 	public TrustServiceProvider() {
 	}
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param builder {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProvider(TrustServiceProviderBuilder builder) {
 		this.names = builder.getNames();
 		this.tradeNames = builder.getTradeNames();
@@ -61,34 +85,74 @@ public class TrustServiceProvider implements Serializable {
 		this.territory = builder.getTerritory();
 	}
 
+	/**
+	 * Gets a map of names
+	 *
+	 * @return a map of names
+	 */
 	public Map<String, List<String>> getNames() {
 		return names;
 	}
 
+	/**
+	 * Gets a map of trade names
+	 *
+	 * @return a map of trade names
+	 */
 	public Map<String, List<String>> getTradeNames() {
 		return tradeNames;
 	}
 
+	/**
+	 * Gets a list of registration identifiers
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getRegistrationIdentifiers() {
 		return registrationIdentifiers;
 	}
 
+	/**
+	 * Gets a map of postal addresses
+	 *
+	 * @return a map of postal addresses
+	 */
 	public Map<String, String> getPostalAddresses() {
 		return postalAddresses;
 	}
 
+	/**
+	 * Gets a map of electronic addresses
+	 *
+	 * @return a map of electronic addresses
+	 */
 	public Map<String, List<String>> getElectronicAddresses() {
 		return electronicAddresses;
 	}
 
+	/**
+	 * Gets a map of information
+	 *
+	 * @return a map of information
+	 */
 	public Map<String, String> getInformation() {
 		return information;
 	}
 
+	/**
+	 * Gets a list of trust services
+	 *
+	 * @return a list of {@link TrustService}s
+	 */
 	public List<TrustService> getServices() {
 		return services;
 	}
-	
+
+	/**
+	 * Gets territory (country)
+	 *
+	 * @return {@link String}
+	 */
 	public String getTerritory() {
 		return territory;
 	}

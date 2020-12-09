@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import java.math.BigInteger;
-import java.util.Date;
-
-import org.bouncycastle.asn1.esf.CrlIdentifier;
-import org.bouncycastle.asn1.esf.CrlValidatedID;
-import org.bouncycastle.asn1.x500.X500Name;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
+import org.bouncycastle.asn1.esf.CrlIdentifier;
+import org.bouncycastle.asn1.esf.CrlValidatedID;
+import org.bouncycastle.asn1.x500.X500Name;
+
+import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * Reference to a X509CRL
@@ -47,6 +46,8 @@ public final class CRLRef extends RevocationRef<CRL> {
 
 	/**
 	 * The default constructor for CRLRef.
+	 *
+	 * @param digest {@link Digest}
 	 */
 	public CRLRef(Digest digest) {
 		this.digest = digest;
@@ -55,7 +56,7 @@ public final class CRLRef extends RevocationRef<CRL> {
 	/**
 	 * The default constructor for CRLRef.
 	 *
-	 * @param cmsRef
+	 * @param cmsRef {@link CrlValidatedID}
 	 */
 	public CRLRef(CrlValidatedID cmsRef) {
 		try {
@@ -70,28 +71,57 @@ public final class CRLRef extends RevocationRef<CRL> {
 			throw new DSSException("Unable to build CRLRef from CrlValidatedID", e);
 		}
 	}
-	
 
+	/**
+	 * Gets CRL Issuer
+	 *
+	 * @return {@link X500Name}
+	 */
 	public X500Name getCrlIssuer() {
 		return crlIssuer;
 	}
 
+	/**
+	 * Sets CRL Issuer
+	 *
+	 * @param crlIssuer {@link X500Name}
+	 */
 	public void setCrlIssuer(X500Name crlIssuer) {
 		this.crlIssuer = crlIssuer;
 	}
 
+	/**
+	 * Gets CRL Issued time
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getCrlIssuedTime() {
 		return crlIssuedTime;
 	}
 
+	/**
+	 * Sets CRL Issued time
+	 *
+	 * @param crlIssuedTime {@link Date}
+	 */
 	public void setCrlIssuedTime(Date crlIssuedTime) {
 		this.crlIssuedTime = crlIssuedTime;
 	}
 
+	/**
+	 * Gets CRL number
+	 *
+	 * @return {@link BigInteger}
+	 */
 	public BigInteger getCrlNumber() {
 		return crlNumber;
 	}
 
+	/**
+	 * Sets CRL number
+	 *
+	 * @param crlNumber {@link BigInteger}
+	 */
 	public void setCrlNumber(BigInteger crlNumber) {
 		this.crlNumber = crlNumber;
 	}

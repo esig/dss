@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -49,45 +44,88 @@ import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
+/**
+ * The remote signature service implementation
+ */
 @SuppressWarnings("serial")
 public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
 		implements RemoteDocumentSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteDocumentSignatureServiceImpl.class);
 
+	/** XAdES signature service */
 	private XAdESService xadesService;
 
+	/** CAdES signature service */
 	private CAdESService cadesService;
 
+	/** PAdES signature service */
 	private PAdESService padesService;
 
+	/** JAdES signature service */
 	private JAdESService jadesService;
 
+	/** ASiC with XAdES signature service */
 	private ASiCWithXAdESService asicWithXAdESService;
 
+	/** ASiC with CAdES signature service */
 	private ASiCWithCAdESService asicWithCAdESService;
 
+	/**
+	 * Sets the XAdES signature service
+	 *
+	 * @param xadesService {@link XAdESService}
+	 */
 	public void setXadesService(XAdESService xadesService) {
 		this.xadesService = xadesService;
 	}
 
+	/**
+	 * Sets the CAdES signature service
+	 *
+	 * @param cadesService {@link CAdESService}
+	 */
 	public void setCadesService(CAdESService cadesService) {
 		this.cadesService = cadesService;
 	}
 
+	/**
+	 * Sets the PAdES signature service
+	 *
+	 * @param padesService {@link PAdESService}
+	 */
 	public void setPadesService(PAdESService padesService) {
 		this.padesService = padesService;
 	}
 
+	/**
+	 * Sets the JAdES signature service
+	 *
+	 * @param jadesService {@link JAdESService}
+	 */
 	public void setJadesService(JAdESService jadesService) {
 		this.jadesService = jadesService;
 	}
 
+	/**
+	 * Sets the ASiC with XAdES signature service
+	 *
+	 * @param asicWithXAdESService {@link ASiCWithXAdESService}
+	 */
 	public void setAsicWithXAdESService(ASiCWithXAdESService asicWithXAdESService) {
 		this.asicWithXAdESService = asicWithXAdESService;
 	}
 
+	/**
+	 * Sets the ASiC with CAdES signature service
+	 *
+	 * @param asicWithCAdESService {@link ASiCWithCAdESService}
+	 */
 	public void setAsicWithCAdESService(ASiCWithCAdESService asicWithCAdESService) {
 		this.asicWithCAdESService = asicWithCAdESService;
 	}

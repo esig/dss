@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.bouncycastle.tsp.TSPException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
@@ -58,6 +45,18 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * PAdES implementation of the DocumentSignatureService
@@ -66,8 +65,10 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
+	/** Builds the CMSSignedData */
 	private final PadesCMSSignedDataBuilder padesCMSSignedDataBuilder;
 
+	/** Loads a relevant implementation for signature creation/extension */
 	private IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 
 	/**
@@ -149,6 +150,13 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		return new ToBeSigned(dataToSign);
 	}
 
+	/**
+	 * Computes digest of the document to be signed
+	 *
+	 * @param toSignDocument {@link DSSDocument} the to be signed PDF
+	 * @param parameters {@link PAdESSignatureParameters}
+	 * @return bytes to be signed
+	 */
 	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
 		return pdfSignatureService.digest(toSignDocument, parameters);
@@ -178,7 +186,16 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		return signature;
 	}
 
-	protected byte[] generateCMSSignedData(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue) {
+	/**
+	 * Generates the CMSSignedData
+	 *
+	 * @param toSignDocument {@link DSSDocument} to be signed
+	 * @param parameters {@link PAdESSignatureParameters}
+	 * @param signatureValue {@link SignatureValue}
+	 * @return byte array representing the CMSSignedData
+	 */
+	protected byte[] generateCMSSignedData(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters,
+										   final SignatureValue signatureValue) {
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");

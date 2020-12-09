@@ -20,14 +20,22 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import java.awt.Font;
-
+import eu.europa.esig.dss.model.DSSException;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import eu.europa.esig.dss.model.DSSException;
+import java.awt.*;
 
+/**
+ * Maps Java Fonts and PDFBox fonts
+ */
 public class PdfBoxFontMapper {
-	
+
+	/**
+	 * Gets a PDFBox font by Java font
+	 *
+	 * @param javaFont {@link Font} java instance of the font
+	 * @return {@link PDType1Font}
+	 */
 	public static PDType1Font getPDFont(Font javaFont) {
 		switch (javaFont.getFamily()) {
 			case Font.SERIF:

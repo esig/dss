@@ -39,7 +39,7 @@ public class OCSPDataLoader extends CommonsDataLoader {
 	/**
 	 * In case of OCSPDataLoader the contentType is fixed to: Content-Type "application/ocsp-request"
 	 *
-	 * @param contentType
+	 * @param contentType {@link String}
 	 */
 	@Override
 	public void setContentType(final String contentType) {

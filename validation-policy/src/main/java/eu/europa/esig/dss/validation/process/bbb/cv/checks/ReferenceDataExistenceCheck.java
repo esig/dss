@@ -31,10 +31,22 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the referenced data is found
+ */
 public class ReferenceDataExistenceCheck extends ChainItem<XmlCV> {
 
+	/** The reference DigestMatcher */
 	private final XmlDigestMatcher digestMatcher;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlCV}
+	 * @param digestMatcher {@link XmlDigestMatcher}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public ReferenceDataExistenceCheck(I18nProvider i18nProvider, XmlCV result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.digestMatcher = digestMatcher;

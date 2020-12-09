@@ -20,21 +20,39 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.util.List;
+
+/**
+ * A class to generate a DataToSign with ASiC-E with XAdES from an existing archive
+ */
 public class DataToSignASiCEWithXAdESFromArchive extends AbstractDataToSignASiCEWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
+	/** The list of signed documents */
 	private final List<DSSDocument> signedDocuments;
+
+	/** The list of signature documents */
 	private final List<DSSDocument> existingSignatures;
+
+	/** The list of manifest documents */
 	private final List<DSSDocument> existingManifests;
+
+	/** The parameters to use */
 	private final ASiCParameters asicParameters;
 
-	public DataToSignASiCEWithXAdESFromArchive(List<DSSDocument> signedDocuments, List<DSSDocument> existingSignatures, List<DSSDocument> existingManifests,
-			ASiCParameters asicParameters) {
+	/**
+	 * The default constructor
+	 *
+	 * @param signedDocuments a list of {@link DSSDocument} signed documents
+	 * @param existingSignatures a list of {@link DSSDocument} signature documents
+	 * @param existingManifests a list of {@link DSSDocument} manifest documents
+	 * @param asicParameters {@link ASiCParameters}
+	 */
+	public DataToSignASiCEWithXAdESFromArchive(List<DSSDocument> signedDocuments, List<DSSDocument> existingSignatures,
+											   List<DSSDocument> existingManifests, ASiCParameters asicParameters) {
 		this.signedDocuments = signedDocuments;
 		this.existingSignatures = existingSignatures;
 		this.existingManifests = existingManifests;

@@ -1,19 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.keys.X509Util;
-
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -37,20 +23,45 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.jose4j.json.internal.json_simple.JSONArray;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.keys.X509Util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The class builds a JOSE header according to EN 119-182
  *
  */
 public class JAdESLevelBaselineB {
-	
+
+	/** The CertificateVerifier to use */
 	private final CertificateVerifier certificateVerifier;
+
+	/** The signature parameters */
 	private final JAdESSignatureParameters parameters;
+
+	/** List of documents to sign */
 	private final List<DSSDocument> documentsToSign;
 	
-	/* JOSE Header map representation */
+	/** JOSE Header map representation */
 	private Map<String, Object> signedProperties = new LinkedHashMap<>();
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @param documentsToSign a list of {@link DSSDocument}s to sign
+	 */
 	public JAdESLevelBaselineB(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, final List<DSSDocument> documentsToSign) {
 		Objects.requireNonNull(certificateVerifier, "certificateVerifier must not be null!");
 		Objects.requireNonNull(certificateVerifier, "signatureParameters must be defined!");
@@ -61,7 +72,12 @@ public class JAdESLevelBaselineB {
 		this.parameters = parameters;
 		this.documentsToSign = documentsToSign;
 	}
-	
+
+	/**
+	 * Returns a map representing the signed header of a signature
+	 *
+	 * @return a map representing the signed header
+	 */
 	public Map<String, Object> getSignedProperties() {
 		// RFC 7515 headers
 		incorporateSignatureAlgorithm();
@@ -171,9 +187,10 @@ public class JAdESLevelBaselineB {
 		}
 	}
 
-	
 	/**
 	 * Incorporates 5.1.7 The x5t#S256 (X.509 Certificate SHA-256 Thumbprint) header parameter
+	 *
+	 * @param signingCertificate {@link CertificateToken}
 	 */
 	protected void incorporateSiginingCertificateSha256Thumbprint(CertificateToken signingCertificate) {
 		String x5tS256 = X509Util.x5tS256(signingCertificate.getCertificate());
@@ -288,6 +305,9 @@ public class JAdESLevelBaselineB {
 
 	/**
 	 * Incorporates 5.2.2.2 The x5t#o (X509 certificate digest) header parameter
+	 *
+	 * @param signingCertificate {@link CertificateToken}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
 	 */
 	protected void incorporateSigningCertificateOtherDigestReference(CertificateToken signingCertificate,
 			DigestAlgorithm digestAlgorithm) {
@@ -705,8 +725,7 @@ public class JAdESLevelBaselineB {
 	
 	/**
 	 * Returns a list of HTTP message field names being included into 'sigD' for HttpHeaders mechanism
-	 * 
-	 * @param httpMessage {@link HTTPHeader} to extract field names from
+	 *
 	 * @return a set of HTTP message field names
 	 */
 	private Collection<String> getHttpHeaderNames() {

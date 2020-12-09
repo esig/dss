@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss.jaxb;
 
-import java.util.Objects;
+import eu.europa.esig.dss.alert.Alert;
+import org.xml.sax.ErrorHandler;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Validator;
+import java.util.Objects;
 
-import org.xml.sax.ErrorHandler;
-
-import eu.europa.esig.dss.alert.Alert;
-
+/**
+ * Builds a {@code Validator}
+ */
 public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
 
 	/**

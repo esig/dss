@@ -20,19 +20,26 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
-
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 
+import java.io.IOException;
+
+/**
+ * The abstract implementation of an IText (OpenPDF) signature drawer
+ */
 public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer, SignatureFieldBoxBuilder {
 
+	/** The signature field id to be signed */
 	protected String signatureFieldId;
+
+	/** Visual signature parameters */
 	protected SignatureImageParameters parameters;
+
+	/** The visual signature appearance */
 	protected PdfSignatureAppearance appearance;
 
 	@Override
@@ -43,17 +50,17 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	}
 	
 	/**
-	 * Transforms the given {@code appearenceRectangle} to a {@code com.lowagie.text.Rectangle} 
+	 * Transforms the given {@code appearanceRectangle} to a {@code com.lowagie.text.Rectangle}
 	 * with the given page size
 	 * 
-	 * @param appearenceRectangle {@link ITextVisualSignatureAppearence}
+	 * @param appearanceRectangle {@link ITextVisualSignatureAppearance}
 	 * @return {@link com.lowagie.text.Rectangle}
 	 */
-	protected Rectangle toITextRectangle(ITextVisualSignatureAppearence appearenceRectangle) {
+	protected Rectangle toITextRectangle(ITextVisualSignatureAppearance appearanceRectangle) {
 		Rectangle pageRectangle = appearance.getStamper().getReader().getPageSize(parameters.getFieldParameters().getPage());
 		float pageHeight = pageRectangle.getHeight();
 		
-		AnnotationBox annotationBox = appearenceRectangle.getAnnotationBox();
+		AnnotationBox annotationBox = appearanceRectangle.getAnnotationBox();
 		annotationBox = annotationBox.toPdfPageCoordinates(pageHeight);
 		
 		return new Rectangle(annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());

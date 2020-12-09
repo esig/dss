@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
@@ -44,7 +31,6 @@ import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
@@ -57,13 +43,30 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * The IText (OpenPdf) implementation of {@code PdfDocumentReader}
+ */
 public class ITextDocumentReader implements PdfDocumentReader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextDocumentReader.class);
-	
+
+	/** The PDF document reader */
 	private final PdfReader pdfReader;
-	
+
+	/** The map of signature dictionaries and corresponding signature fields */
 	private Map<PdfSignatureDictionary, List<String>> signatureDictionaryMap;
 
 	/**

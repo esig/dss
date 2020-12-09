@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines possible types for an ASiC container
+ */
 public enum ASiCContainerType {
 
-	/* Associated Signature Container Simple */
+	/** Associated Signature Container Simple */
 	ASiC_S,
 
-	/* Associated Signature Container Extended */
+	/** Associated Signature Container Extended */
 	ASiC_E;
 	
 	/**

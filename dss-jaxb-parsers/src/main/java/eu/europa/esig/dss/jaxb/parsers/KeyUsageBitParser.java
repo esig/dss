@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 
+/**
+ * Parses the {@code KeyUsageBit}
+ */
 public final class KeyUsageBitParser {
 
 	private KeyUsageBitParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code KeyUsageBit}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link KeyUsageBit}
+	 */
 	public static KeyUsageBit parse(String v) {
 		if (v != null) {
 			for (KeyUsageBit kub : KeyUsageBit.values()) {
@@ -38,6 +47,12 @@ public final class KeyUsageBitParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link KeyUsageBit}
+	 * @return {@link String}
+	 */
 	public static String print(KeyUsageBit v) {
 		if (v != null) {
 			return v.getValue();

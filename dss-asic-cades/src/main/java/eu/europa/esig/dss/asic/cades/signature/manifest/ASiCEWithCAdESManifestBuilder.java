@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
-import java.util.List;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
 import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
@@ -32,6 +27,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.SigningOperation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * This class is used to generate the ASiCManifest.xml content (ASiC-E)
@@ -55,27 +54,48 @@ import eu.europa.esig.dss.signature.SigningOperation;
  */
 public class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {
 
+	/** The performing operation */
 	private final SigningOperation operation;
-	private final List<DSSDocument> documents;
-	private final DigestAlgorithm digestAlgorithm;
-	private final String uri;
 
-	public ASiCEWithCAdESManifestBuilder(SigningOperation operation, List<DSSDocument> documents, DigestAlgorithm digestAlgorithm, String uri) {
+	/** The list of documents to cover by manifest */
+	private final List<DSSDocument> documents;
+
+	/** The DigestAlgorithm to use for reference digests computation */
+	private final DigestAlgorithm digestAlgorithm;
+
+	/** The URI of a document signing the manifest */
+	private final String documentUri;
+
+	/**
+	 * The default constructor
+	 *
+	 * @param operation {@link SigningOperation} the performing operation
+	 * @param documents a list of {@link DSSDocument}s to incorporate within the manifest
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
+	 * @param documentUri {@link String} filename of the document associated with the manifest
+	 */
+	public ASiCEWithCAdESManifestBuilder(final SigningOperation operation, final List<DSSDocument> documents,
+										 final DigestAlgorithm digestAlgorithm, final String documentUri) {
 		this.operation = operation;
 		this.documents = documents;
 		this.digestAlgorithm = digestAlgorithm;
-		this.uri = uri;
+		this.documentUri = documentUri;
 	}
 
+	/**
+	 * Builds the manifest and returns the document
+	 *
+	 * @return {@link Document}
+	 */
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
 		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		if (SigningOperation.SIGN == operation) {
-			addSigReference(documentDom, asicManifestDom, uri, MimeType.PKCS7);
+			addSigReference(documentDom, asicManifestDom, documentUri, MimeType.PKCS7);
 		} else {
-			addSigReference(documentDom, asicManifestDom, uri, MimeType.TST);
+			addSigReference(documentDom, asicManifestDom, documentUri, MimeType.TST);
 		}
 
 		for (DSSDocument document : documents) {

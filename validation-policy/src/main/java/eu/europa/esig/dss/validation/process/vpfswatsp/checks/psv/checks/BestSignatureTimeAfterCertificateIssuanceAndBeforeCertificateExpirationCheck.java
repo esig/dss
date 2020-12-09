@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -31,14 +29,35 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.Date;
+
+/**
+ * Checks if the best-signature-time is in the certificate's validity range
+ */
 public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck extends ChainItem<XmlPSV> {
 
+	/** Best-signature-time */
 	private final Date controlTime;
+
+	/** The certificate to check */
 	private final CertificateWrapper certificate;
+
+	/** Current SubIndication */
 	private final SubIndication currentTimeSubIndication;
 
-	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(I18nProvider i18nProvider, XmlPSV result, Date controlTime,
-			CertificateWrapper certificate, SubIndication currentTimeSubIndication, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlPSV}
+	 * @param controlTime {@link Date}
+	 * @param certificate {@link CertificateWrapper}
+	 * @param currentTimeSubIndication {@link SubIndication}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(I18nProvider i18nProvider,
+			XmlPSV result, Date controlTime, CertificateWrapper certificate, SubIndication currentTimeSubIndication,
+			LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.controlTime = controlTime;

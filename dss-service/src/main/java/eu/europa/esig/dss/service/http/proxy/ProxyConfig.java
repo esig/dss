@@ -25,24 +25,44 @@ package eu.europa.esig.dss.service.http.proxy;
  */
 public class ProxyConfig {
 
-	/* Properties for HTTP Proxy (null if disabled) */
+	/** Properties for HTTP Proxy (null if disabled) */
 	private ProxyProperties httpProperties;
 
-	/* Properties for HTTPS Proxy (null if disabled) */
+	/** Properties for HTTPS Proxy (null if disabled) */
 	private ProxyProperties httpsProperties;
 
+	/**
+	 * Gets HTTP {@code ProxyProperties}
+	 *
+	 * @return {@link ProxyProperties}
+	 */
 	public ProxyProperties getHttpProperties() {
 		return httpProperties;
 	}
 
+	/**
+	 * Sets HTTP {@code ProxyProperties}
+	 *
+	 * @param httpProperties {@link ProxyProperties}
+	 */
 	public void setHttpProperties(ProxyProperties httpProperties) {
 		this.httpProperties = httpProperties;
 	}
 
+	/**
+	 * Gets HTTPS {@code ProxyProperties}
+	 *
+	 * @return {@link ProxyProperties}
+	 */
 	public ProxyProperties getHttpsProperties() {
 		return httpsProperties;
 	}
 
+	/**
+	 * Sets HTTPS {@code ProxyProperties}
+	 *
+	 * @param httpsProperties {@link ProxyProperties}
+	 */
 	public void setHttpsProperties(ProxyProperties httpsProperties) {
 		this.httpsProperties = httpsProperties;
 	}

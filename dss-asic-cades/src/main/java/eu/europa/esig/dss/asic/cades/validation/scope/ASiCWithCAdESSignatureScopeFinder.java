@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,6 +34,12 @@ import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Finds a list of {@code SignatureScope}s for an ASiC with CAdES container
+ */
 public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder {
 
     @Override

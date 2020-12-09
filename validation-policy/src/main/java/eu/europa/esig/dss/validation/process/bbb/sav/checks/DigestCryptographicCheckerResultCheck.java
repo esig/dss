@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -10,18 +8,50 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Date;
+
+/**
+ * Validates Digest cryptographic constraint
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class DigestCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheckerResultCheck<T> {
 
+	/** Validation time */
 	private final Date validationDate;
+
+	/** The verifying reference name */
 	private final String referenceName;
 
-	public DigestCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate, MessageTag position, 
-			XmlCC ccResult, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param validationDate {@link Date}
+	 * @param position {@link MessageTag}
+	 * @param ccResult {@link XmlCC}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public DigestCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
+												 MessageTag position, XmlCC ccResult, LevelConstraint constraint) {
 		this(i18nProvider, result, validationDate, position, null, ccResult, constraint);
 	}
 
-	public DigestCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate, MessageTag position, String referenceName, 
-			XmlCC ccResult, LevelConstraint constraint) {
+	/**
+	 * Default constructor with reference name
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param validationDate {@link Date}
+	 * @param position {@link MessageTag}
+	 * @param referenceName {@link String}
+	 * @param ccResult {@link XmlCC}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public DigestCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
+												 MessageTag position, String referenceName, XmlCC ccResult,
+												 LevelConstraint constraint) {
 		super(i18nProvider, result, position, ccResult, constraint);
 		this.validationDate = validationDate;
 		this.referenceName = referenceName;

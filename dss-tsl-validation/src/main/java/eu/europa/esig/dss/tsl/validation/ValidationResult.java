@@ -20,24 +20,45 @@
  */
 package eu.europa.esig.dss.tsl.validation;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * The validation task result
+ */
 public class ValidationResult implements CachedResult {
-	
-	private final Indication indication;
-	private final SubIndication subIndication;
-	private final Date signingTime;
-	private final CertificateToken signingCertificate;
+
+	/** The used certificate source */
 	private final CertificateSource certificateSource;
 
+	/** The validation Indication */
+	private Indication indication;
+
+	/** The validation SubIndication */
+	private SubIndication subIndication;
+
+	/** The claimed signing time */
+	private Date signingTime;
+
+	/** The signing certificate */
+	private CertificateToken signingCertificate;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param indication {@link Indication}
+	 * @param subIndication {@link SubIndication}
+	 * @param signingTime {@link Date}
+	 * @param signingCertificate {@link CertificateSource}
+	 * @param certificateSource {@link Indication}
+	 */
 	public ValidationResult(Indication indication, SubIndication subIndication, Date signingTime, 
 			CertificateToken signingCertificate, CertificateSource certificateSource) {
 		this.indication = indication;
@@ -46,23 +67,48 @@ public class ValidationResult implements CachedResult {
 		this.signingCertificate = signingCertificate;
 		this.certificateSource = certificateSource;
 	}
-	
+
+	/**
+	 * Gets validation Indication
+	 *
+	 * @return {@link Indication}
+	 */
 	public Indication getIndication() {
 		return indication;
 	}
 
+	/**
+	 * Gets validation SubIndication
+	 *
+	 * @return {@link SubIndication}
+	 */
 	public SubIndication getSubIndication() {
 		return subIndication;
 	}
 
+	/**
+	 * Gets the (claimed) signing time
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getSigningTime() {
 		return signingTime;
 	}
 
+	/**
+	 * Gets the signing certificate
+	 *
+	 * @return {@link CertificateToken}
+	 */
 	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
 	}
-	
+
+	/**
+	 * Gets a list of signing candidates
+	 *
+	 * @return a list of {@link CertificateToken}s
+	 */
 	public List<CertificateToken> getPotentialSigners() {
 		return new ArrayList<>(certificateSource.getCertificates());
 	}

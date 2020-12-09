@@ -81,7 +81,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * @return the list of all certificates present in the AttrAuthoritiesCertValues
 	 */
 	public List<CertificateToken> getAttrAuthoritiesCertValues() {
-		return getCertificateTokensByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+		return getCertificateTokensByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 	}
 
 	/**

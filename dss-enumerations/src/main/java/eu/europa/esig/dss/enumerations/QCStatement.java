@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines ETSI EN 319 412-5 types
+ */
 public enum QCStatement implements OidDescription {
-
-	// --- ETSI EN 319 412-5
 
 	/**
 	 * QCStatement claiming that the certificate is a EU qualified certificate

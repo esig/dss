@@ -9,10 +9,22 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if a SignaturePolicyStore is present
+ */
 public class SignaturePolicyStoreCheck extends ChainItem<XmlVCI> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlVCI}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public SignaturePolicyStoreCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;

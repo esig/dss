@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.jades;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+
+import java.util.Objects;
 
 /**
  * An HTTP message body, which 'Digest' representation is being signed with 'sigD' HTTP_HEADERS mechanism
@@ -15,6 +15,12 @@ public class HTTPHeaderDigest extends HTTPHeader {
 	
 	private final DSSDocument messageBodyDocument;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param messageBodyDocument {@link DSSDocument} the signing message body document content
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use to compute the document's Digest element
+	 */
 	public HTTPHeaderDigest(final DSSDocument messageBodyDocument, final DigestAlgorithm digestAlgorithm) {
 		super(DSSJsonUtils.HTTP_HEADER_DIGEST, buildInstanceDigestValue(messageBodyDocument, digestAlgorithm));
 		this.messageBodyDocument = messageBodyDocument;

@@ -20,13 +20,15 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-
 import com.lowagie.text.pdf.PdfSignatureAppearance;
-
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 
+import java.io.IOException;
+
+/**
+ * IText (OpenPDF) visual signature drawer
+ */
 public interface ITextSignatureDrawer extends SignatureDrawer {
 
 	/**

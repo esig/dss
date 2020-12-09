@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Map.Entry;
 import java.util.Objects;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
@@ -40,7 +40,6 @@ public class DigestDocument extends CommonDocument {
 	 * Initial algorithm and digest must be specified in order to use the object
 	 */
 	public DigestDocument() {
-		
 	}
 
 	/**
@@ -93,7 +92,12 @@ public class DigestDocument extends CommonDocument {
 		}
 		return base64EncodeDigest;
 	}
-	
+
+	/**
+	 * Gets the defined digest value for the DigestDocument
+	 *
+	 * @return {@link Digest}
+	 */
 	public Digest getExistingDigest() {
 		if (!base64EncodeDigestMap.isEmpty()) {
 			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();

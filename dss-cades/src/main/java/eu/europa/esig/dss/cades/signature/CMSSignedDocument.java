@@ -20,6 +20,16 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.model.CommonDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1OutputStream;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.cms.CMSSignedData;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,22 +37,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1OutputStream;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.cms.CMSSignedData;
-
-import eu.europa.esig.dss.model.CommonDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
-
 /**
  * A document composed by a CMSSignedData
  */
 public class CMSSignedDocument extends CommonDocument {
 
+	/**
+	 * The CMSSignedData representing the document
+	 */
 	protected CMSSignedData signedData;
 
 	/**
@@ -63,7 +65,9 @@ public class CMSSignedDocument extends CommonDocument {
 	}
 
 	/**
-	 * @return the signedData
+	 * Gets {@code CMSSignedData}
+	 *
+	 * @return {@link CMSSignedData} the signedData
 	 */
 	public CMSSignedData getCMSSignedData() {
 		return signedData;
@@ -78,6 +82,11 @@ public class CMSSignedDocument extends CommonDocument {
 		}
 	}
 
+	/**
+	 * Returns base64 encoded representation of the CMSSignedData
+	 *
+	 * @return {@link String} base64 encoded
+	 */
 	public String getBase64Encoded() {
 		return Utils.toBase64(getBytes());
 	}

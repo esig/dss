@@ -1,10 +1,7 @@
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Element;
@@ -12,8 +9,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.utils.Utils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Builds a user-friendly description for the provided 'ds:Transforms' element
@@ -39,9 +38,15 @@ public class TransformsDescriptionBuilder {
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, "Canonical XML 1.1 (omits comments)");
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS, "Exclusive Canonical XML (omits comments)");
 	}
-	
+
+	/** ds:Transforms element */
 	private final Element transforms;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param transforms {@link Element} ds:Transforms
+	 */
 	public TransformsDescriptionBuilder(Element transforms) {
 		this.transforms = transforms;
 	}

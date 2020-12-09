@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Lists the supported origin types for a certificate references
+ */
 public enum CertificateRefOrigin {
 
 	/**

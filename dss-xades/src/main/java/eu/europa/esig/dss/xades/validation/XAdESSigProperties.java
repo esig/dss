@@ -20,21 +20,32 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * XAdES signed properties
+ */
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
-	
+
+	/** Signature properties element */
 	private final Element signaturePropertiesDom;
+
+	/** The XAdES XPaths */
 	private final XAdESPaths xadesPaths;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param signatureProperties {@link Element}
+	 * @param xadesPaths {@link XAdESPaths}
+	 */
 	XAdESSigProperties(Element signatureProperties, XAdESPaths xadesPaths) {
 		this.signaturePropertiesDom = signatureProperties;
 		this.xadesPaths = xadesPaths;

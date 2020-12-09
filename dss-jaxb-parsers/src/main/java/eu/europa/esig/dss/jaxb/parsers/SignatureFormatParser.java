@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
+/**
+ * Parses the {@code SignatureLevel}
+ */
 public class SignatureFormatParser {
 
 	private SignatureFormatParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code SignatureLevel}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link SignatureLevel}
+	 */
 	public static SignatureLevel parse(String v) {
 		if (v != null) {
 			return SignatureLevel.valueByName(v);
@@ -34,6 +43,12 @@ public class SignatureFormatParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link SignatureLevel}
+	 * @return {@link String}
+	 */
 	public static String print(SignatureLevel v) {
 		if (v != null) {
 			return v.toString();

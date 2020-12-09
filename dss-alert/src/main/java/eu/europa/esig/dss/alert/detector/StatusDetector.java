@@ -22,6 +22,9 @@ package eu.europa.esig.dss.alert.detector;
 
 import eu.europa.esig.dss.alert.status.Status;
 
+/**
+ * The class is used to detect a custom event associated with token(s) processing
+ */
 public class StatusDetector implements AlertDetector<Status> {
 
 	@Override

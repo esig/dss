@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
@@ -36,6 +29,12 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.util.Objects;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
@@ -45,7 +44,10 @@ public class XAdESCRLSource extends OfflineCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESCRLSource.class);
 
+	/** The current signature element */
 	private final Element signatureElement;
+
+	/** The XAdES XPaths */
 	private final XAdESPaths xadesPaths;
 
 	/**

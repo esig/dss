@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.tsl.alerts;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * The class to process alerts on TLValidationJob
@@ -39,7 +38,10 @@ public class TLValidationJobAlerter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJobAlerter.class);
 
+	/** Contains a list of LOTL alerts */
 	private final List<Alert<LOTLInfo>> lotlAlerts;
+
+	/** Contains a list of TL alerts */
 	private final List<Alert<TLInfo>> tlAlerts;
 
 	/**

@@ -87,18 +87,44 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
 
+	/** Basic signature validation conclusion */
 	private final XmlConstraintsConclusion basicSignatureValidation;
 
+	/** Diagnostic Data */
 	private final DiagnosticData diagnosticData;
+
+	/** The signature */
 	private final SignatureWrapper currentSignature;
+
+	/** Map of BasicBuildingBlocks */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+	/** List of timestamps */
 	private final List<XmlTimestamp> xmlTimestamps;
 
+	/** Validation policy */
 	private final ValidationPolicy policy;
+
+	/** Validation time */
 	private final Date currentDate;
 
-	public ValidationProcessForSignaturesWithLongTermValidationData(I18nProvider i18nProvider, XmlSignature signatureAnalysis, DiagnosticData diagnosticData,
-			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentDate) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param signatureAnalysis {@link XmlSignature}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param currentSignature {@link SignatureWrapper}
+	 * @param bbbs map of BasicBuildingBlocks
+	 * @param policy {@link ValidationPolicy}
+	 * @param currentDate {@link Date}
+	 */
+	public ValidationProcessForSignaturesWithLongTermValidationData(I18nProvider i18nProvider,
+																	XmlSignature signatureAnalysis,
+																	DiagnosticData diagnosticData,
+																	SignatureWrapper currentSignature,
+																	Map<String, XmlBasicBuildingBlocks> bbbs,
+																	ValidationPolicy policy, Date currentDate) {
 		super(i18nProvider, new XmlValidationProcessLongTermData());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignature();
@@ -461,7 +487,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			ChainItem<XmlValidationProcessLongTermData> item, Map<CertificateRevocationWrapper, SubContext> revocationDataMap, 
 			Date bestSignatureTime, SubIndication subIndication) {
 		
-		LevelConstraint constraint = policy.getRevocationTimeAgainstBestSignatureTime();
+		LevelConstraint constraint = policy.getRevocationTimeAgainstBestSignatureTimeConstraint();
 		
 		for (Map.Entry<CertificateRevocationWrapper, SubContext> revocationMapEntry : revocationDataMap.entrySet()) {
 			CertificateRevocationWrapper revocationData = revocationMapEntry.getKey();

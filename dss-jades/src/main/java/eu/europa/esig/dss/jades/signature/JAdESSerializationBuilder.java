@@ -1,9 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -20,20 +16,39 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Builds a JWS JSON Serialization signature
  *
  */
 public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 
+	/** The JWS signature container */
 	private JWSJsonSerializationObject jwsJsonSerializationObject;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @param documentsToSign a list of {@link DSSDocument}s to sign
+	 */
 	public JAdESSerializationBuilder(final CertificateVerifier certificateVerifier,
 			final JAdESSignatureParameters parameters,
 			final List<DSSDocument> documentsToSign) {
 		super(certificateVerifier, parameters, documentsToSign);
 	}
 
+	/**
+	 * The constructor from an existing signature
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @param jwsJsonSerializationObject {@link JWSJsonSerializationObject} representing the existing signature(s)
+	 */
 	public JAdESSerializationBuilder(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters,
 			final JWSJsonSerializationObject jwsJsonSerializationObject) {
 		super(certificateVerifier, parameters, extractDocumentToBeSigned(parameters, jwsJsonSerializationObject));

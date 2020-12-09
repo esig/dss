@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.ValidationTime;
 
+/**
+ * Parses the {@code ValidationTime}
+ */
 public final class ValidationTimeParser {
 
 	private ValidationTimeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code ValidationTime}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link ValidationTime}
+	 */
 	public static ValidationTime parse(String v) {
 		if (v != null) {
 			return ValidationTime.valueOf(v);
@@ -34,6 +43,12 @@ public final class ValidationTimeParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link ValidationTime}
+	 * @return {@link String}
+	 */
 	public static String print(ValidationTime v) {
 		if (v != null) {
 			return v.name();

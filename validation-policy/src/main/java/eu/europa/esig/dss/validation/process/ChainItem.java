@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -39,6 +32,12 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is an item of the {@code Chain} class.
@@ -55,14 +54,19 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChainItem.class);
 
-	private ChainItem<T> nextItem;
-
-	private T result;
-	
+	/** i18nProvider */
 	protected final I18nProvider i18nProvider;
 
+	/** Level constraint for the current chain item */
 	private final LevelConstraint constraint;
 
+	/** The next item to be executed if the following chainItem succeeds */
+	private ChainItem<T> nextItem;
+
+	/** The conclusion result */
+	private T result;
+
+	/** The executed BasicBuildingBlock id */
 	private String bbbId;
 
 	/**
@@ -140,6 +144,11 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		}
 	}
 
+	/**
+	 * Performs the check
+	 *
+	 * @return TRUE if the check succeeds, FALSE otherwise
+	 */
 	protected abstract boolean process();
 
 	/**
@@ -160,12 +169,27 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		return null;
 	}
 
+	/**
+	 * Return a list of previous errors occurred in the chain
+	 *
+	 * @return a list of {@link XmlName}s
+	 */
 	protected List<XmlName> getPreviousErrors() {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Gets an Indication in case of failure
+	 *
+	 * @return {@link Indication}
+	 */
 	protected abstract Indication getFailedIndicationForConclusion();
 
+	/**
+	 * Gets a SubIndication in case of failure
+	 *
+	 * @return {@link Indication}
+	 */
 	protected abstract SubIndication getFailedSubIndicationForConclusion();
 
 	private void recordIgnore() {
@@ -230,18 +254,38 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		addConstraint(xmlConstraint);
 	}
 
+	/**
+	 * Builds an error message
+	 *
+	 * @return {@link XmlName}
+	 */
 	protected XmlName buildErrorMessage() {
 		return buildXmlName(getErrorMessageTag());
 	}
 
+	/**
+	 * Builds a constraint message
+	 *
+	 * @return {@link XmlName}
+	 */
 	protected XmlName buildConstraintMessage() {
 		return buildXmlName(getMessageTag());
 	}
 
+	/**
+	 * Builds an additional information
+	 *
+	 * @return {@link String}
+	 */
 	protected String buildAdditionalInfo() {
 		return ValidationProcessUtils.buildStringMessage(i18nProvider, getAdditionalInfo());
 	}
 
+	/**
+	 * Gets an additional information
+	 *
+	 * @return {@link MessageTag}
+	 */
 	protected MessageTag getAdditionalInfo() {
 		return null;
 	}
@@ -250,6 +294,13 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		result.getConstraint().add(constraint);
 	}
 
+	/**
+	 * Builds the {@code XmlName}
+	 *
+	 * @param messageTag {@link MessageTag}
+	 * @param args arguments
+	 * @return {@link XmlName}
+	 */
 	protected XmlName buildXmlName(MessageTag messageTag, Object... args) {
 		XmlName xmlName = new XmlName();
 		String message = i18nProvider.getMessage(messageTag, args);
@@ -284,10 +335,20 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		return getSuccessIndication() != null;
 	}
 
+	/**
+	 * Gets an Indication if the check succeeds
+	 *
+	 * @return {@link Indication}
+	 */
 	protected Indication getSuccessIndication() {
 		return null;
 	}
 
+	/**
+	 * Gets a SubIndication if the check succeeds
+	 *
+	 * @return {@link SubIndication}
+	 */
 	protected SubIndication getSuccessSubIndication() {
 		return null;
 	}
@@ -313,18 +374,42 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		}
 	}
 
+	/**
+	 * Checks if the conclusion is valid
+	 *
+	 * @param constraintConclusion {@link XmlConstraintsConclusion}
+	 * @return TRUE if the conclusion has a passed status, FALSE otherwise
+	 */
 	protected boolean isValid(XmlConstraintsConclusion constraintConclusion) {
 		return constraintConclusion != null && isValidConclusion(constraintConclusion.getConclusion());
 	}
 
+	/**
+	 * Checks if the conclusion is valid
+	 *
+	 * @param conclusion {@link XmlConclusion}
+	 * @return TRUE if the conclusion has a PASSED indication, FALSE otherwise
+	 */
 	protected boolean isValidConclusion(XmlConclusion conclusion) {
 		return conclusion != null && Indication.PASSED.equals(conclusion.getIndication());
 	}
 
+	/**
+	 * Checks if the conclusion is invalid
+	 *
+	 * @param conclusion {@link XmlConclusion}
+	 * @return TRUE if the conclusion has a FAILED indication, FALSE otherwise
+	 */
 	protected boolean isInvalidConclusion(XmlConclusion conclusion) {
 		return conclusion != null && Indication.FAILED.equals(conclusion.getIndication());
 	}
 
+	/**
+	 * Checks if the conclusion is indeterminate
+	 *
+	 * @param conclusion {@link XmlConclusion}
+	 * @return TRUE if the conclusion has a INDETERMINATE indication, FALSE otherwise
+	 */
 	protected boolean isIndeterminateConclusion(XmlConclusion conclusion) {
 		return conclusion != null && Indication.INDETERMINATE.equals(conclusion.getIndication());
 	}

@@ -20,29 +20,40 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.PublicKey;
-import java.util.Collection;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.security.PublicKey;
+import java.util.Collection;
+import java.util.Objects;
+
+/**
+ * The certificate source requesting issuer certificates by AIA
+ */
 public class AIACertificateSource extends CommonCertificateSource {
 
 	private static final long serialVersionUID = -2604947158902474169L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AIACertificateSource.class);
 
+	/** The certificate token to get issuer for */
 	private final CertificateToken certificate;
+
+	/** The DataLoader to use to access the certificate by AIA */
 	private final DataLoader dataLoader;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificate {@link CertificateToken} to get the issuer for
+	 * @param dataLoader {@link DataLoader} to use to obtain the issuer certificate
+	 */
 	public AIACertificateSource(CertificateToken certificate, DataLoader dataLoader) {
 		Objects.requireNonNull(certificate, "The certificate cannot be null");
 		Objects.requireNonNull(dataLoader, "The data loader cannot be null");

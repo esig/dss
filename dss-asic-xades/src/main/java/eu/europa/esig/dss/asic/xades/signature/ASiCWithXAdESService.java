@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -56,7 +46,19 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * The service containing the main methods for ASiC with XAdES signature creation/extension
+ */
 @SuppressWarnings("serial")
 public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters, 
 					XAdESCounterSignatureParameters> {
@@ -68,6 +70,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		DomUtils.registerNamespace(ManifestNamespace.NS);
 	}
 
+	/**
+	 * The default constructor to instantiate the service
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to use
+	 */
 	public ASiCWithXAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ ASiCService with XAdES created");
@@ -139,7 +146,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters,
 					parameters.bLevel().getSigningDate());
 		}
-		asicSignature.setName(getFinalArchiveName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
+		asicSignature.setName(getFinalDocumentName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
 	}
@@ -179,7 +186,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments,
 				parameters.bLevel().getSigningDate(),
 				ASiCUtils.getZipComment(parameters.aSiC()));
-		extensionResult.setName(getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), toExtendDocument.getMimeType()));
+		extensionResult.setName(getFinalDocumentName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), toExtendDocument.getMimeType()));
 		return extensionResult;
 	}
 
@@ -277,10 +284,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument asicContainer, XAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		assertCounterSignatureParametersValid(parameters);
 		
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(parameters);
-		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 		
 		XAdESService xadesService = getXAdESService();
@@ -293,10 +299,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		assertCounterSignatureParametersValid(parameters);
 		
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
-		verifyAndSetCounterSignatureParameters(parameters);
-		
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 		
 		XAdESService xadesService = getXAdESService();
@@ -308,7 +313,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		DSSDocument resultArchive = mergeArchiveAndExtendedSignatures(asicContainer, newSignaturesList,
 				parameters.bLevel().getSigningDate(),
 				ASiCUtils.getZipComment(asicContainer.getMimeType().getMimeTypeString()));
-		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		resultArchive.setName(getFinalDocumentName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		return resultArchive;
 	}
 

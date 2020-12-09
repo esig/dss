@@ -25,6 +25,9 @@ import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 
+/**
+ * Detects if an error in a TL validation occurred
+ */
 public class TLSignatureErrorDetection implements AlertDetector<TLInfo> {
 
 	@Override

@@ -20,30 +20,41 @@
  */
 package eu.europa.esig.validationreport;
 
-import java.util.List;
+import eu.europa.esig.trustedlist.TrustedListUtils;
+import eu.europa.esig.validationreport.jaxb.ObjectFactory;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.trustedlist.TrustedListUtils;
-import eu.europa.esig.validationreport.jaxb.ObjectFactory;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-
+/**
+ * ETSI Validation Report Utils
+ */
 public final class ValidationReportUtils extends XSDAbstractUtils {
 
-	public static final String VALIDATION_REPORT_SCHEMA_LOCATION = "/xsd/1910202xmlSchema.xsd";
-
+	/** The Object Factory to use */
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
+	/** The ETSI Validation Report XSD schema location */
+	public static final String VALIDATION_REPORT_SCHEMA_LOCATION = "/xsd/1910202xmlSchema.xsd";
+
+	/** Singleton */
 	private static ValidationReportUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private ValidationReportUtils() {
 	}
 
+	/**
+	 * Returns instance of {@code ValidationReportUtils}
+	 *
+	 * @return {@link ValidationReportUtils}
+	 */
 	public static ValidationReportUtils getInstance() {
 		if (singleton == null) {
 			singleton = new ValidationReportUtils();

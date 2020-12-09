@@ -25,6 +25,9 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * Defines elements for a XAdES 1.3.2 schema
+ */
 public enum XAdES132Element implements XAdESElement {
 
 	ALL_DATA_OBJECTS_TIMESTAMP("AllDataObjectsTimeStamp"),
@@ -247,7 +250,10 @@ public enum XAdES132Element implements XAdESElement {
 	
 	XML_TIMESTAMP("XMLTimeStamp");
 
+	/** The namespace */
 	private final DSSNamespace namespace;
+
+	/** The tag name */
 	private final String tagName;
 
 	XAdES132Element(String tagName) {
@@ -275,6 +281,12 @@ public enum XAdES132Element implements XAdESElement {
 		return tagName.equals(value);
 	}
 
+	/**
+	 * Returns a DSSElement by the given tag name
+	 *
+	 * @param tagName {@link String}
+	 * @return {@link DSSElement}
+	 */
 	public static DSSElement fromTagName(String tagName) {
 		for (XAdES132Element element : XAdES132Element.values()) {
 			if (element.getTagName().equals(tagName)) {

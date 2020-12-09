@@ -41,7 +41,7 @@ import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
-import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearence;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -64,11 +64,17 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * The abstract implementation of a PDF signature service
+ */
 public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
+	/** The executed service mode */
 	private final PDFServiceMode serviceMode;
+
+	/** The signature drawer factory to use for a visual signature/timestamp creation */
 	private final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
@@ -147,11 +153,21 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return signatureDrawer;
 	}
 
+	/**
+	 * Checks if a DocumentTimestamp has to be added in the current mode
+	 *
+	 * @return TRUE if it is a DocumentTimestamp layer, FALSE otherwise
+	 */
 	protected boolean isDocumentTimestampLayer() {
 		// CONTENT_TIMESTAMP is part of the signature
 		return PDFServiceMode.SIGNATURE_TIMESTAMP == serviceMode || PDFServiceMode.ARCHIVE_TIMESTAMP == serviceMode;
 	}
 
+	/**
+	 * Gets the type of the signature dictionary
+	 *
+	 * @return {@link String}
+	 */
 	protected String getType() {
 		if (isDocumentTimestampLayer()) {
 			return PAdESConstants.TIMESTAMP_TYPE;
@@ -290,6 +306,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param dssDocument        {@link DSSDocument} to read
 	 * @param passwordProtection {@link String} the password used to protect the
 	 *                           document
+	 * @return {@link PdfDocumentReader}
 	 * @throws IOException              in case of loading error
 	 * @throws InvalidPasswordException if the password is not provided or invalid
 	 *                                  for a protected document
@@ -303,6 +320,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param binaries           a byte array
 	 * @param passwordProtection {@link String} the password used to protect the
 	 *                           document
+	 * @return {@link PdfDocumentReader}
 	 * @throws IOException              in case of loading error
 	 * @throws InvalidPasswordException if the password is not provided or invalid
 	 *                                  for a protected document
@@ -336,6 +354,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
+	/**
+	 * Checks if the of the value incorporated into /Contents matches the range defined in the {@code byteRange}
+	 *
+	 * NOTE: used for SIWA detection
+	 *
+	 * @param document {@link DSSDocument} to be validated
+	 * @param byteRange {@link ByteRange}
+	 * @param cms binaries of the CMSSignedData
+	 * @param signatureFieldNames a list of {@link String}
+	 * @return TRUE if the content value equals the byte range extraction, FALSE otherwise
+	 */
 	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, ByteRange byteRange, byte[] cms,
 			List<String> signatureFieldNames) {
 		boolean match = false;
@@ -357,8 +386,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return match;
 	}
 
+	/**
+	 * Gets the SignatureValue from the {@code dssDocument} according to the {@code byteRange}
+	 *
+	 * Example: extracts bytes from 841 to 959. [0, 840, 960, 1200]
+	 *
+	 * @param dssDocument {@link DSSDocument} to process
+	 * @param byteRange {@link ByteRange} specifying the signatureValue
+	 * @return signatureValue binaries
+	 * @throws IOException if an exception occurs
+	 */
 	protected byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
-		// Extracts bytes from 841 to 959. [0, 840, 960, 1200]
 		int startSigValueContent = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() + 1;
 		int endSigValueContent = byteRange.getSecondPartStart() - 1;
 
@@ -378,6 +416,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return Utils.fromHex(new String(signatureValueArray));
 	}
 
+	/**
+	 * Extract the content before the signature value
+	 *
+	 * @param byteRange {@link ByteRange}
+	 * @param signedContent byte array representing the signed content
+	 * @return the first part of the byte range
+	 */
 	protected byte[] extractBeforeSignatureValue(ByteRange byteRange, byte[] signedContent) {
 		final int length = byteRange.getFirstPartEnd();
 		if (signedContent.length < length) {
@@ -423,8 +468,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Dictionaries). This map will be used to avoid duplicate the same objects
 	 * between layers.
 	 * 
-	 * @param callbacks
-	 * @return
+	 * @param callbacks a list of {@link DSSDictionaryCallback}s
+	 * @return a map of built objects and their ids
 	 */
 	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
 		Map<String, Long> result = new HashMap<>();
@@ -460,6 +505,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return result;
 	}
 
+	/**
+	 * Gets SHA-256 digest of the token
+	 *
+	 * @param token {@link Token}
+	 * @return {@link String} base64 encoded SHA-256 digest
+	 */
 	protected String getTokenDigest(Token token) {
 		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
 	}
@@ -493,7 +544,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected AnnotationBox buildSignatureFieldBox(SignatureDrawer signatureDrawer) throws IOException {
 		if (signatureDrawer instanceof SignatureFieldBoxBuilder) {
 			SignatureFieldBoxBuilder signatureFieldBoxBuilder = (SignatureFieldBoxBuilder) signatureDrawer;
-			VisualSignatureFieldAppearence signatureFieldBox = signatureFieldBoxBuilder.buildSignatureFieldBox();
+			VisualSignatureFieldAppearance signatureFieldBox = signatureFieldBoxBuilder.buildSignatureFieldBox();
 			if (signatureFieldBox != null) {
 				return signatureFieldBox.getAnnotationBox();
 			}
@@ -586,6 +637,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param finalRevisionReader  {@link PdfDocumentReader} for the input PDF
 	 *                             document
 	 * @return a list of {@link PdfModification}s
+	 * @throws IOException if an exception occurs
 	 */
 	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
 			final PdfDocumentReader finalRevisionReader) throws IOException {

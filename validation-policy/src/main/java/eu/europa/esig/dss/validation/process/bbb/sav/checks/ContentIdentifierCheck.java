@@ -29,12 +29,27 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractValueCheckItem;
 
+/**
+ * Checks if the content identifier is acceptable
+ */
 public class ContentIdentifierCheck extends AbstractValueCheckItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
+
+	/** The constraint */
 	private final ValueConstraint constraint;
 
-	public ContentIdentifierCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, ValueConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link ValueConstraint}
+	 */
+	public ContentIdentifierCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+								  ValueConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.constraint = constraint;

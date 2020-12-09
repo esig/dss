@@ -20,17 +20,12 @@
  */
 package eu.europa.esig.dss.tsl.validation;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -48,12 +43,20 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+
 /**
  * This class allows to validate TL or LOTL.
  */
 public class TLValidatorTask implements Supplier<ValidationResult> {
 
+	/** The Trusted List document to validate */
 	private final DSSDocument trustedList;
+
+	/** The certificate source to use */
 	private final CertificateSource certificateSource;
 
 	/**
@@ -82,7 +85,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
-		xmlDocumentValidator.setTokenExtractionStategy(TokenExtractionStategy.EXTRACT_CERTIFICATES_ONLY);
+		xmlDocumentValidator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
 		xmlDocumentValidator.setEnableEtsiValidationReport(false); // Ignore ETSI VR
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
 		xmlDocumentValidator.setSkipValidationContextExecution(true); // Only need to validate against the trusted certificate source

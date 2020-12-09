@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -16,13 +14,35 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Performs cryptographic validation
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** The cryptographic constrain position to be validated */
 	protected final MessageTag position;
+
+	/** Cryptographic Check result */
 	protected final XmlCC ccResult;
+
+	/** The checker result message */
 	private final XmlName checkerResultMessage;
 
-	protected AbstractCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, MessageTag position, XmlCC ccResult, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param position {@link MessageTag} cryptographic constrain position
+	 * @param ccResult {@link XmlCC}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	protected AbstractCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, MessageTag position,
+													  XmlCC ccResult, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.position = position;
 		this.ccResult = ccResult;
@@ -95,7 +115,12 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	protected List<XmlName> getPreviousErrors() {
 		return ccResult.getConclusion().getErrors();
 	}
-	
+
+	/**
+	 * Gets error message
+	 *
+	 * @return {@link String}, or empty string if check succeeded
+	 */
 	protected String getErrorMessage() {
 		return checkerResultMessage != null ? checkerResultMessage.getValue() : Utils.EMPTY_STRING;
 	}

@@ -20,20 +20,18 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
-import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -57,21 +55,28 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
+import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
+import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
+
+/**
+ * Builds a CMSSignedData
+ */
 public class CMSSignedDataBuilder {
 
+	/**
+	 * The CertificateVerifier to use for a certificate chain validation
+	 */
 	private final CertificateVerifier certificateVerifier;
 
 	/**
@@ -104,10 +109,9 @@ public class CMSSignedDataBuilder {
 	 *            the original signed data if extending an existing signature. null otherwise.
 	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned
 	 *         CMS attributes
-	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	protected CMSSignedDataGenerator createCMSSignedDataGenerator(final CAdESSignatureParameters parameters, final ContentSigner contentSigner,
-			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder, final CMSSignedData originalSignedData) throws DSSException {
+			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder, final CMSSignedData originalSignedData) {
 		try {
 			final CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
 			final SignerInfoGenerator signerInfoGenerator = getSignerInfoGenerator(signerInfoGeneratorBuilder, contentSigner, parameters);
@@ -250,9 +254,23 @@ public class CMSSignedDataBuilder {
 		}
 	}
 
+	/**
+	 * Generates a new CMSSignedData with incorporation of defined validation data stores
+	 *
+	 * @param cmsSignedData {@link CMSSignedData} to be re-generated
+	 * @param detachedContents a list of {@link DSSDocument}s to add (shall be one)
+	 * @param certificatesStore {@link Store} of certificates
+	 * @param attributeCertificatesStore {@link Store} of attribute certificates
+	 * @param crlsStore {@link Store} of CRLs
+	 * @param otherRevocationInfoFormatStoreBasic {@link Store} of other revocation data
+	 * @param otherRevocationInfoFormatStoreOcsp {@link Store} of OCSPs
+	 * @return {@link CMSSignedData}
+	 */
 	@SuppressWarnings("rawtypes")
-	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, List<DSSDocument> detachedContents, Store certificatesStore,
-			Store attributeCertificatesStore, Store crlsStore, Store otherRevocationInfoFormatStoreBasic, Store otherRevocationInfoFormatStoreOcsp) {
+	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, List<DSSDocument> detachedContents,
+													Store certificatesStore, Store attributeCertificatesStore,
+													Store crlsStore, Store otherRevocationInfoFormatStoreBasic,
+													Store otherRevocationInfoFormatStoreOcsp) {
 		try {
 
 			final CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
@@ -266,7 +284,7 @@ public class CMSSignedDataBuilder {
 			if (!encapsulate) {
 				// CAdES can only sign one document
 				final DSSDocument doc = detachedContents.get(0);
-				final CMSTypedData content = CMSUtils.getContentToBeSign(doc);
+				final CMSTypedData content = CMSUtils.getContentToBeSigned(doc);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
 			} else {
 				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);

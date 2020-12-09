@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -36,16 +32,30 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+/**
+ * Contains utils for a validation process
+ */
 public class ValidationProcessUtils {
 
+	/** The Validaiton policy date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
-	/*
+	/**
+	 * Verifies if the revocation check is required for the OCSP Responder's certificate
+	 *
 	 * RFC 2560 : 4.2.2.2.1  Revocation Checking of an Authorized Responder
 	 * 
 	 * A CA may specify that an OCSP client can trust a responder for the
 	 * lifetime of the responder's certificate. The CA does so by including
 	 * the extension id-pkix-ocsp-nocheck.
+	 *
+	 * @param certificate {@link CertificateWrapper} to check
+	 * @param controlTime {@link Date} validation time
+	 * @return TRUE if the revocation check is required for the OCSP Responder certificate, FALSE otherwise
 	 */
 	public static boolean isRevocationCheckRequired(CertificateWrapper certificate, Date controlTime) {
 		if (certificate.isIdPkixOcspNoCheck()) {

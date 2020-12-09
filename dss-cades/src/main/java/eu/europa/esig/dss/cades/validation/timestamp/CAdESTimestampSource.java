@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.cades.validation.timestamp;
 
 import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESSignedAttributes;
@@ -102,21 +101,26 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocat
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
+/**
+ * The timestamp source for a CAdES signature
+ */
 @SuppressWarnings("serial")
 public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignature, CAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param signature {@link CAdESSignature} to get timestamps for
+	 */
 	public CAdESTimestampSource(final CAdESSignature signature) {
 		super(signature);
 	}
 
 	@Override
 	protected CAdESTimestampDataBuilder getTimestampDataBuilder() {
-		CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
-				signature.getCmsSignedData(), certificateSource.getAllCertificateTokens());
-		return new CAdESTimestampDataBuilder(signature.getCmsSignedData(), signature.getSignerInformation(), 
-				signature.getDetachedContents(), timestampExtractor);
+		return new CAdESTimestampDataBuilder(signature, certificateSource);
 	}
 
 	@Override
@@ -361,7 +365,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		return references;
 	}
 	
-	protected List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,
+	private List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,
 			final DigestAlgorithm digestAlgorithm, final List<TimestampToken> previousTimestamps) {
 		final List<TimestampedReference> references = new ArrayList<>();
 

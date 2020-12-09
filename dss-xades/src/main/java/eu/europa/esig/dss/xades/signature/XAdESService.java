@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -51,6 +42,14 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * XAdES implementation of DocumentSignatureService
@@ -61,7 +60,6 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	static {
 		SantuarioInitializer.init();
-
 		XAdESNamespaces.registerNamespaces();
 	}
 
@@ -195,8 +193,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	/**
 	 * The choice of profile according to the passed parameter.
 	 *
-	 * @param parameters
-	 * @return
+	 * @param parameters {@link XAdESSignatureParameters}
+	 * @return {@link SignatureExtension}
 	 */
 	private SignatureExtension<XAdESSignatureParameters> getExtensionProfile(final XAdESSignatureParameters parameters) {
 		switch (parameters.getSignatureLevel()) {
@@ -238,7 +236,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	/**
 	 * Only DETACHED and ENVELOPING signatures are allowed
 	 * 
-	 * @param parameters
+	 * @param parameters {@link XAdESSignatureParameters}
 	 */
 	private void assertMultiDocumentsAllowed(XAdESSignatureParameters parameters) {
 		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");

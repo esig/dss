@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
@@ -43,6 +40,9 @@ import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicCheck
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheckerResultCheck;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
  * additional verification to be performed on the signature itself or on the
@@ -50,16 +50,33 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicC
  */
 public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy> extends Chain<XmlSAV> {
 
+	/** The token to be validated */
 	protected final T token;
+
+	/** The validation time */
 	protected final Date currentTime;
+
+	/** The validation context */
 	protected final Context context;
+
+	/** The validation policy */
 	protected final ValidationPolicy validationPolicy;
-	
+
+	/** Builds cryptographic information for the report */
 	private CryptographicInformationBuilder cryptographicInformationBuilder;
 
-	protected AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token to validate
+	 * @param currentTime {@link Date}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context,
+										ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlSAV());
-
 		this.token = token;
 		this.currentTime = currentTime;
 		this.context = context;

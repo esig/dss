@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * This class allows to avoid downloading resources.
@@ -33,6 +33,8 @@ public class IgnoreDataLoader implements DataLoader {
 	private static final long serialVersionUID = -1808691070503805042L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(IgnoreDataLoader.class);
+
+	/** Default error message */
 	private static final String URL_IS_IGNORED = "Url '{}' is ignored";
 
 	@Override

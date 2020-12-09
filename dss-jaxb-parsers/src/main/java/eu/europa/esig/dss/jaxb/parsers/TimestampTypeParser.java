@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
 
+/**
+ * Parses the {@code TimestampType}
+ */
 public class TimestampTypeParser {
 
 	private TimestampTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code TimestampType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link TimestampType}
+	 */
 	public static TimestampType parse(String v) {
 		return TimestampType.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link TimestampType}
+	 * @return {@link String}
+	 */
 	public static String print(TimestampType v) {
 		if (v != null) {
 			return v.name();

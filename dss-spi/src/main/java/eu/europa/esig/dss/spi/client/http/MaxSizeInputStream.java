@@ -28,13 +28,17 @@ import java.io.InputStream;
  */
 public class MaxSizeInputStream extends InputStream {
 
+	/** The maximum InputStream size */
 	private long maxSize;
 
+	/** The wrapped InputStream */
 	private InputStream wrappedStream;
 
-	private long count = 0;
-
+	/** The requested URL */
 	private String url;
+
+	/** The counter */
+	private long count = 0;
 
 	/**
 	 * The default constructor for NativeHTTPDataLoader.MaxSizeInputStream.

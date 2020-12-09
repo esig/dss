@@ -24,10 +24,19 @@ import com.lowagie.text.pdf.BaseFont;
 
 import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
 
+/**
+ * The IText (OpenPDF) implementation of Font metrics
+ */
 public class ITextFontMetrics extends AbstractFontMetrics {
-	
+
+	/** The OpenPDF font */
 	private final BaseFont baseFont;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param baseFont {@link BaseFont}
+	 */
 	public ITextFontMetrics(BaseFont baseFont) {
 		this.baseFont = baseFont;
 	}

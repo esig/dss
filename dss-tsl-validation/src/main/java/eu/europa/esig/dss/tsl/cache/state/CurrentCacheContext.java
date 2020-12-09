@@ -20,20 +20,33 @@
  */
 package eu.europa.esig.dss.tsl.cache.state;
 
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
+/**
+ * Contains information for a cache record state
+ */
 public class CurrentCacheContext implements CacheContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CurrentCacheContext.class);
 
+	/** The current state */
 	private CacheState state;
-	private Date lastStateTransitionTime; // last time when state of the current cache context has been changed
-	private Date lastSuccessSynchronizationTime; // last time when the cache had been synchronized
+
+	/** Last time when state of the current cache context has been changed */
+	private Date lastStateTransitionTime;
+
+	/** Last time when the cache had been synchronized */
+	private Date lastSuccessSynchronizationTime;
+
+	/** The exception message */
 	private CachedException exception;
 
+	/**
+	 * Default constructor
+	 */
 	public CurrentCacheContext() {
 		state(CacheStateEnum.REFRESH_NEEDED);
 	}

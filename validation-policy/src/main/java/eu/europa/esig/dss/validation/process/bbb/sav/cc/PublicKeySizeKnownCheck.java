@@ -7,10 +7,23 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
+/**
+ * Check if EncryptionAlgorithm is public key size is known
+ */
 public class PublicKeySizeKnownCheck extends AbstractCryptographicCheck {
-	
+
+	/** Used key size */
 	private final String keySize;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param keySize {@link String}
+	 * @param result {@link XmlCC}
+	 * @param position {@link MessageTag}
+	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 */
 	protected PublicKeySizeKnownCheck(I18nProvider i18nProvider, String keySize, XmlCC result, MessageTag position, 
 			CryptographicConstraintWrapper constraintWrapper) {
 		super(i18nProvider, result, position, constraintWrapper);

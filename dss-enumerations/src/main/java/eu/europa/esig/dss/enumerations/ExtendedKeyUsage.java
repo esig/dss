@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * The KeyPurposeId object.
+ * KeyPurposeId ::= OBJECT IDENTIFIER
+ *
+ * id-kp ::= OBJECT IDENTIFIER { iso(1) identified-organization(3)
+ * dod(6) internet(1) security(5) mechanisms(5) pkix(7) 3}
+ */
 public enum ExtendedKeyUsage implements OidDescription {
 
-	/**
-	 * The KeyPurposeId object.
-	 * KeyPurposeId ::= OBJECT IDENTIFIER
-	 *
-	 * id-kp ::= OBJECT IDENTIFIER { iso(1) identified-organization(3)
-	 * dod(6) internet(1) security(5) mechanisms(5) pkix(7) 3}
-	 */
 	SERVER_AUTH("serverAuth", "1.3.6.1.5.5.7.3.1"),
 
 	CLIENT_AUTH("clientAuth", "1.3.6.1.5.5.7.3.2"),

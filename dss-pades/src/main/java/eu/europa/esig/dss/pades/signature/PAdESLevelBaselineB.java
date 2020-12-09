@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.util.Map;
-
+import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSAttributeTableGenerator;
 
-import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import java.util.Map;
 
 /**
  * PAdES Baseline B signature
@@ -37,6 +36,15 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
  */
 class PAdESLevelBaselineB {
 
+	/**
+	 * Builds the signed attributes {@code AttributeTable}
+	 *
+	 * @param params map of parameters
+	 * @param cadesProfile {@link CAdESLevelBaselineB}
+	 * @param parameters {@link PAdESSignatureParameters}
+	 * @param messageDigest the message digest value
+	 * @return {@link AttributeTable}
+	 */
 	AttributeTable getSignedAttributes(@SuppressWarnings("rawtypes") Map params, 
 			CAdESLevelBaselineB cadesProfile, PAdESSignatureParameters parameters, byte[] messageDigest) {
 
@@ -57,6 +65,11 @@ class PAdESLevelBaselineB {
 		return signedAttributes;
 	}
 
+	/**
+	 * Builds the unsigned attributes {@code AttributeTable}
+	 *
+	 * @return {@link AttributeTable}
+	 */
 	AttributeTable getUnsignedAttributes() {
 		// Unsigned attributes can't be an empty set (RFC 5652 5.3.)
 		return null;

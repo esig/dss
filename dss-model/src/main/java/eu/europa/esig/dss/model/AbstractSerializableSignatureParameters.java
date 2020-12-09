@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+
+import java.util.Objects;
 
 /**
  * Parameters for a Signature creation/extension
@@ -220,6 +220,11 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		}
 	}
 
+	/**
+	 * Sets the mask generation function if used with the given SignatureAlgorithm
+	 *
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 */
 	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
 		this.maskGenerationFunction = maskGenerationFunction;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
@@ -259,6 +264,11 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		return referenceDigestAlgorithm;
 	}
 
+	/**
+	 * Sets the DigestAlgorithm to be used for reference digest calculation
+	 *
+	 * @param referenceDigestAlgorithm {@link DigestAlgorithm}
+	 */
 	public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
 		this.referenceDigestAlgorithm = referenceDigestAlgorithm;
 	}

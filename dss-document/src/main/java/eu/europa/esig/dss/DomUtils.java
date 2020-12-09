@@ -20,20 +20,23 @@
  */
 package eu.europa.esig.dss;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -53,54 +56,62 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
-import eu.europa.esig.dss.definition.DSSAttribute;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * The utils for dealing with {@code org.w3c.dom} objects
+ */
 public final class DomUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomUtils.class);
-	
-	// values used to pretty print xades signature
+
+	/** Value used to pretty print xades signature */
 	public static final int TRANSFORMER_INDENT_NUMBER = 4;
-	
+
+	/** The default value of the used Transformer */
 	private static final String TRANSFORMER_METHOD_VALUE = "xml";
 
+	/** The 'xmlns' opener */
 	private static final String XNS_OPEN = "xmlns(";
+
+	/** The 'xpointer' opener */
 	private static final String XP_OPEN = "xpointer(";
+
+	/** The 'xpointer' with id opener */
 	private static final String XP_WITH_ID_OPEN = "#xpointer(id(";
 
+	/** The staring binaries of an XML file */
 	private static final byte[] xmlPreamble = new byte[] { '<' };
+
+	/** The staring binaries of an XML file with BOM */
 	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
 
 	private DomUtils() {
 	}
 
+	/** The used DocumentBuilderFactory */
 	private static DocumentBuilderFactory dbFactory;
-	private static final XPathFactory factory = XPathFactory.newInstance();
-	private static NamespaceContextMap namespacePrefixMapper;
 
-	private static final Map<String, String> namespaces;
+	/** The used XPathFactory */
+	private static final XPathFactory factory = XPathFactory.newInstance();
+
+	/** Map containing the defined namespaces */
+	private static NamespaceContextMap namespacePrefixMapper;
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
-		namespaces = new HashMap<>();
 
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
@@ -117,8 +128,9 @@ public final class DomUtils {
 	
 	/**
 	 * Enables a feature for the DocumentBuilderFactory
+	 *
 	 * @param feature {@link String} feature name (URL) to enable
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException if an exception occurs
 	 */
 	public static void enableFeature(String feature) throws ParserConfigurationException {
 		if (LOG.isDebugEnabled()) {
@@ -129,8 +141,9 @@ public final class DomUtils {
 
 	/**
 	 * Disables a feature for the DocumentBuilderFactory
+	 *
 	 * @param feature {@link String} feature name (URL) to disable
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException if an exception occurs
 	 */
 	public static void disableFeature(String feature) throws ParserConfigurationException {
 		if (LOG.isDebugEnabled()) {
@@ -164,9 +177,7 @@ public final class DomUtils {
 	 * @return true if this map did not already contain the specified element
 	 */
 	public static boolean registerNamespace(final DSSNamespace namespace) {
-		final String put = namespaces.put(namespace.getPrefix(), namespace.getUri());
-		namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
-		return put == null;
+		return namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
 	}
 
 	/**
@@ -498,7 +509,6 @@ public final class DomUtils {
 	 *            text to be added
 	 */
 	public static void setTextNode(final Document document, final Element parentDom, final String text) {
-
 		final Text textNode = document.createTextNode(text);
 		parentDom.appendChild(textNode);
 	}
@@ -511,7 +521,6 @@ public final class DomUtils {
 	 * @return the new {@code XMLGregorianCalendar} or null
 	 */
 	public static XMLGregorianCalendar createXMLGregorianCalendar(final Date date) {
-
 		if (date == null) {
 			return null;
 		}
@@ -632,7 +641,7 @@ public final class DomUtils {
 	 * @return a map with the prefix and the related URI
 	 */
 	public static Map<String, String> getCurrentNamespaces() {
-		return new HashMap<>(namespaces);
+		return namespacePrefixMapper.getPrefixMap();
 	}
 
 	/**
@@ -703,7 +712,7 @@ public final class DomUtils {
      * Method getXPointerId
      * See {@code org.apache.xml.security.utils.resolver.implementations.ResolverXPointer}
      *
-     * @param uri
+     * @param uri {@link String}
      * @return xpointerId to search.
      */
     public static String getXPointerId(String uri) {
@@ -720,6 +729,14 @@ public final class DomUtils {
         return null;
     }
 
+	/**
+	 * Creates an element with the given namespace
+	 *
+	 * @param documentDom {@link Document} to add the element into
+	 * @param namespace {@link DSSNamespace} namespace to be defined
+	 * @param element {@link DSSElement} to add
+	 * @return created {@link Element} with the namespace
+	 */
 	public static Element createElementNS(Document documentDom, DSSNamespace namespace, DSSElement element) {
 		StringBuffer elementSB = new StringBuffer();
 		if (Utils.isStringNotEmpty(namespace.getPrefix())) {
@@ -730,6 +747,12 @@ public final class DomUtils {
 		return documentDom.createElementNS(namespace.getUri(), elementSB.toString());
 	}
 
+	/**
+	 * Adds a namespace attribute to the element
+	 *
+	 * @param element {@link Element} to add a namespace to
+	 * @param namespace {@link DSSNamespace} to add
+	 */
 	public static void addNamespaceAttribute(Element element, DSSNamespace namespace) {
 		StringBuffer namespaceAttribute = new StringBuffer();
 		namespaceAttribute.append("xmlns:");

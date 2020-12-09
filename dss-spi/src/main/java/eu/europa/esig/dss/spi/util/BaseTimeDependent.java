@@ -22,18 +22,33 @@ package eu.europa.esig.dss.spi.util;
 
 import java.util.Date;
 
+/**
+ * The default implementation of a time dependent interval
+ */
 public class BaseTimeDependent implements TimeDependent {
 
 	private static final long serialVersionUID = -6972849560865304279L;
-	
+
+	/** The start of validity date */
 	private Date startDate;
+
+	/** The end of validity date */
 	private Date endDate;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	public BaseTimeDependent() {
 		super();
 	}
 
-	public BaseTimeDependent( final Date startDate, final Date endDate ) {
+	/**
+	 * Default constructor
+	 *
+	 * @param startDate {@link Date} start of the validity
+	 * @param endDate {@link Date} end of the validity
+	 */
+	public BaseTimeDependent(final Date startDate, final Date endDate) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;

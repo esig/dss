@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.RevocationReason;
 
+/**
+ * Parses the {@code RevocationReason}
+ */
 public class RevocationReasonParser {
 
 	private RevocationReasonParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code RevocationReason}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link RevocationReason}
+	 */
 	public static RevocationReason parseShortName(String v) {
 		for (RevocationReason reason : RevocationReason.values()) {
 			if (reason.getShortName().equals(v)) {
@@ -36,6 +45,12 @@ public class RevocationReasonParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link RevocationReason}
+	 * @return {@link String}
+	 */
 	public static String printShortName(RevocationReason v) {
 		if (v != null) {
 			return v.getShortName();

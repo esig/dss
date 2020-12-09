@@ -20,23 +20,36 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
+import java.util.Date;
+
+/**
+ * Parameters to create/extend a PAdES signature
+ */
 public class PAdESSignatureParameters extends CAdESSignatureParameters implements PAdESCommonParameters {
 
 	private static final long serialVersionUID = -1632557456487796227L;
 
+	/** The signature creation reason */
 	private String reason;
+
+	/** The contact info */
 	private String contactInfo;
+
+	/** The signer's location */
 	private String location;
 
-	private int signatureSize = 9472; // default value in pdfbox
+	/**
+	 * Defines the preserved space for a signature context
+	 *
+	 * Default : 9472 (default value in pdfbox)
+	 */
+	private int signatureSize = 9472;
 
 	/**
 	 * This attribute allows to override the used Filter for a Signature.
@@ -83,30 +96,38 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	}
 
 	/**
-	 * @return the reason
+	 * Gets the reason
+	 *
+	 * @return {@link String}
 	 */
 	public String getReason() {
 		return this.reason;
 	}
 
 	/**
+	 * Sets the reason
+	 *
 	 * @param reason
-	 *            the reason to set
+	 *            {@link String} the reason to set
 	 */
 	public void setReason(final String reason) {
 		this.reason = reason;
 	}
 
 	/**
-	 * @return the contactInfo
+	 * Gets the contactInfo
+	 *
+	 * @return {@link String}
 	 */
 	public String getContactInfo() {
 		return this.contactInfo;
 	}
 
 	/**
+	 * Sets the contactInfo
+	 *
 	 * @param contactInfo
-	 *            the contactInfo to set
+	 *            {@link String}
 	 */
 	public void setContactInfo(final String contactInfo) {
 		this.contactInfo = contactInfo;
@@ -117,6 +138,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		return signatureFilter;
 	}
 
+	/**
+	 * Sets the filter
+	 *
+	 * @param signatureFilter {@link String}
+	 */
 	public void setFilter(String signatureFilter) {
 		this.signatureFilter = signatureFilter;
 	}
@@ -126,6 +152,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		return signatureSubFilter;
 	}
 
+	/**
+	 * Sets the sub filter
+	 *
+	 * @param signatureSubFilter {@link String}
+	 */
 	public void setSubFilter(String signatureSubFilter) {
 		this.signatureSubFilter = signatureSubFilter;
 	}
@@ -134,6 +165,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		return signerName;
 	}
 
+	/**
+	 * Sets the name of the signed
+	 *
+	 * @param signerName {@link String}
+	 */
 	public void setSignerName(final String signerName) {
 		this.signerName = signerName;
 	}
@@ -146,6 +182,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		return signatureImageParameters;
 	}
 
+	/**
+	 * Sets the {@code SignatureImageParameters} for a visual signature creation
+	 *
+	 * @param signatureImageParameters {@link SignatureImageParameters}
+	 */
 	public void setImageParameters(SignatureImageParameters signatureImageParameters) {
 		this.signatureImageParameters = signatureImageParameters;
 	}
@@ -187,15 +228,27 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 
 	/**
 	 * This setter allows to reserve more than the default size for a signature (9472bytes)
+	 *
+	 * @param signatureSize /Contents parameter reserved space
 	 */
 	public void setContentSize(int signatureSize) {
 		this.signatureSize = signatureSize;
 	}
 
+	/**
+	 * Gets the permission for the PDF document modification
+	 *
+	 * @return {@link CertificationPermission}
+	 */
 	public CertificationPermission getPermission() {
 		return permission;
 	}
 
+	/**
+	 * Sets the permission for the PDF document modification
+	 *
+	 * @param permission {@link CertificationPermission}
+	 */
 	public void setPermission(CertificationPermission permission) {
 		this.permission = permission;
 	}

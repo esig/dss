@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.awt.Color;
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.awt.*;
+import java.io.Serializable;
 
 /**
  * This class allows to custom text generation in the PAdES visible signature
@@ -35,9 +35,14 @@ import eu.europa.esig.dss.utils.Utils;
 public class SignatureImageTextParameters implements Serializable {
 
 	private static final long serialVersionUID = 727438728149346847L;
-	
+
+	/** The default background color (white) */
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+
+	/** The default padding (5 pixels) */
 	private static final float DEFAULT_PADDING = 5f;
+
+	/** The default text color (black) */
 	private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
 
 	/**

@@ -29,11 +29,20 @@ import eu.europa.esig.dss.ws.signature.dto.SignMultipleDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.TimestampMultipleDocumentDTO;
 import eu.europa.esig.dss.ws.signature.soap.client.SoapMultipleDocumentsSignatureService;
 
+/**
+ * SOAP implementation of the remote multiple signature service
+ */
 @SuppressWarnings("serial")
 public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDocumentsSignatureService {
 
+	/** The service to use */
 	private RemoteMultipleDocumentsSignatureService service;
 
+	/**
+	 * Sets the remote signature multiple service
+	 *
+	 * @param service {@link RemoteMultipleDocumentsSignatureService}
+	 */
 	public void setService(RemoteMultipleDocumentsSignatureService service) {
 		this.service = service;
 	}

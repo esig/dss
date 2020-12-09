@@ -1,11 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.List;
-import java.util.Set;
-
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -22,9 +16,22 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import org.jose4j.json.internal.json_simple.JSONArray;
+import org.jose4j.json.internal.json_simple.JSONObject;
 
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Creates an LT-level of a JAdES signature
+ */
 public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to use
+	 */
 	public JAdESLevelBaselineLT(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
@@ -71,7 +78,15 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		}
 	}
 
-	protected ValidationDataForInclusion getValidationDataForInclusion(JAdESSignature jadesSignature, ValidationContext validationContext) {
+	/**
+	 * Gets the validation data to be included into the signature
+	 *
+	 * @param jadesSignature {@link JAdESSignature} to get validation data to be included for
+	 * @param validationContext {@link ValidationContext} used to process the signature
+	 * @return {@link ValidationDataForInclusion}
+	 */
+	protected ValidationDataForInclusion getValidationDataForInclusion(JAdESSignature jadesSignature,
+																	   ValidationContext validationContext) {
 		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = new ValidationDataForInclusionBuilder(
 				validationContext, jadesSignature.getCompleteCertificateSource())
 						.excludeCertificateTokens(jadesSignature.getCertificateSource().getCertificates())

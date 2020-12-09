@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class allows to inject trusted certificates from Trusted Lists
@@ -43,8 +42,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
 
+	/** The TL Validation job summary */
 	private TLValidationJobSummary summary;
 
+	/** The map of trust properties by EntityIdentifier (public keys) */
 	private Map<EntityIdentifier, List<TrustProperties>> trustPropertiesByEntity = new HashMap<>();
 
 	/**
@@ -54,10 +55,20 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		super();
 	}
 
+	/**
+	 * Gets TL Validation job summary
+	 *
+	 * @return {@link TLValidationJobSummary}
+	 */
 	public TLValidationJobSummary getSummary() {
 		return summary;
 	}
 
+	/**
+	 * Sets TL Validation job summary
+	 *
+	 * @param summary {@link TLValidationJobSummary}
+	 */
 	public void setSummary(TLValidationJobSummary summary) {
 		this.summary = summary;
 	}
@@ -143,6 +154,11 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return urls;
 	}
 
+	/**
+	 * Gets the number of trusted public keys
+	 *
+	 * @return the number of trusted public keys
+	 */
 	public int getNumberOfTrustedPublicKeys() {
 		return trustPropertiesByEntity.size();
 	}

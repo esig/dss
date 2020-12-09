@@ -10,15 +10,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The CRL source extracted from a DSS dictionary
+ */
 public class PdfDssDictCRLSource extends OfflineCRLSource {
 
+    /** The map of PDF object ids and corresponding CRL binaries */
     private transient Map<Long, CRLBinary> crlMap;
 
+    /**
+     * Default constructor
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     public PdfDssDictCRLSource(PdfDssDict dssDictionary) {
         extractDSSCRLs(dssDictionary);
         extractVRICRLs(dssDictionary);
     }
 
+    /**
+     * Empty constructor
+     */
     PdfDssDictCRLSource() {
     }
 
@@ -43,6 +55,11 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         return Collections.emptyMap();
     }
 
+    /**
+     * Extract the CRLs from the DSS dictionary
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     protected void extractDSSCRLs(PdfDssDict dssDictionary) {
         Map<Long, CRLBinary> dssCrlMap = getDssCrlMap(dssDictionary);
         for (CRLBinary crl : dssCrlMap.values()) {
@@ -50,6 +67,11 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         }
     }
 
+    /**
+     * Extract the CRLs from all embedded VRI dictionaries
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     protected void extractVRICRLs(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
             List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
@@ -59,6 +81,11 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         }
     }
 
+    /**
+     * Extract the CRLs from the VRI dictionary
+     *
+     * @param vriDictionary {@link PdfDssDict}
+     */
     protected void extractVRICRLs(PdfVRIDict vriDictionary) {
         if (vriDictionary != null) {
             for (Map.Entry<Long, CRLBinary> crlEntry : vriDictionary.getCRLs().entrySet()) {

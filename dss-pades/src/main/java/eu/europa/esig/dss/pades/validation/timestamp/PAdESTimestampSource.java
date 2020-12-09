@@ -75,7 +75,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     @Override
     protected PAdESTimestampDataBuilder getTimestampDataBuilder() {
         PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(
-                documentRevisions, signature.getSignerInformation(), signature.getDetachedContents());
+                documentRevisions, (PAdESSignature) signature, certificateSource);
         padesTimestampDataBuilder.setSignatureTimestamps(getSignatureTimestamps());
         return padesTimestampDataBuilder;
     }

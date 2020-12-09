@@ -24,6 +24,9 @@ import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * The XAdES 1.4.1 elements
+ */
 public enum XAdES141Element implements DSSElement {
 
 	ARCHIVE_TIMESTAMP("ArchiveTimeStamp"),

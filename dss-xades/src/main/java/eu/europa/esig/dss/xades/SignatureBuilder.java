@@ -22,8 +22,17 @@ package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.model.DSSDocument;
 
+/**
+ * Builds a XAdES signature of the defined format
+ */
 public interface SignatureBuilder {
 
+	/**
+	 * Signs a document
+	 *
+	 * @param signatureValue byte array
+	 * @return {@link DSSDocument}
+	 */
 	DSSDocument signDocument(byte[] signatureValue);
 
 }

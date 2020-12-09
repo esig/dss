@@ -28,11 +28,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+/**
+ * Checks if the mimetype file is acceptable
+ */
 public class AcceptableMimetypeFileContentCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
+	/** The mimetype file content */
 	private final String mimetypeFileContent;
 
-	public AcceptableMimetypeFileContentCheck(I18nProvider i18nProvider, XmlFC result, String mimetypeFileContent, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param mimetypeFileContent {@link String}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public AcceptableMimetypeFileContentCheck(I18nProvider i18nProvider, XmlFC result, String mimetypeFileContent,
+											  MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.mimetypeFileContent = mimetypeFileContent;
 	}

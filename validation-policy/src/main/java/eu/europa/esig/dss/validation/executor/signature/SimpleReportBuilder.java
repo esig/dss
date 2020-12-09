@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -58,20 +52,48 @@ import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
  */
 public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
+	/** i18nProvider */
 	private final I18nProvider i18nProvider;
+
+	/** Defines if the semantics shall be included */
 	private final boolean includeSemantics;
 
+	/** The number of processed signatures */
 	private int totalSignatureCount = 0;
+
+	/** The number of valid signatures */
 	private int validSignatureCount = 0;
+
+	/** Set of all used Indications (used for semantics) */
 	private Set<Indication> finalIndications = new HashSet<>();
+
+	/** Set of all used SubIndications (used for semantics) */
 	private Set<SubIndication> finalSubIndications = new HashSet<>();
+
+	/** The POE set */
 	private POEExtraction poe;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date} validation time
+	 * @param policy {@link ValidationPolicy}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param detailedReport {@link DetailedReport}
+	 * @param includeSemantics defines if the semantics shall be included
+	 */
 	public SimpleReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy,
 			DiagnosticData diagnosticData, DetailedReport detailedReport, boolean includeSemantics) {
 		super(currentTime, policy, diagnosticData, detailedReport);
@@ -198,7 +220,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		return xmlSignature;
 	}
 
-	public XmlCertificateChain getCertChain(String tokenId) {
+	private XmlCertificateChain getCertChain(String tokenId) {
 		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(tokenId);
 		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 		if (Utils.isCollectionNotEmpty(certIds)) {

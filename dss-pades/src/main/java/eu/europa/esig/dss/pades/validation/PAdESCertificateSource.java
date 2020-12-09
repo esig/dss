@@ -20,22 +20,16 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bouncycastle.cms.SignerInformation;
-
 import eu.europa.esig.dss.cades.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.cms.SignerInformation;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * CertificateSource that will retrieve the certificate from a PAdES Signature
@@ -44,6 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
+	/** The certificate source of the DSS dictionary */
 	private final PdfDssDictCertificateSource dssDictionaryCertificateSource;
 
 	/**
@@ -68,6 +63,11 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 		}
 	}
 
+	/**
+	 * Gets the map of certificate PDF object ids and the certificateTokens
+	 *
+	 * @return a map between certificate PDF object ids and tokens
+	 */
 	public Map<Long, CertificateToken> getCertificateMap() {
 		return dssDictionaryCertificateSource.getCertificateMap();
 	}
