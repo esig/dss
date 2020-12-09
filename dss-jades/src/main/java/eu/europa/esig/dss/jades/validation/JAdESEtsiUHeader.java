@@ -51,8 +51,8 @@ public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 					if (map != null) {
 						// increment a hashCode because equal Strings compute the same hashCode
 						Map.Entry<String, Object> mapEntry = map.entrySet().iterator().next();
-						EtsiUComponent etsiUComponent = new EtsiUComponent(item, mapEntry.getKey(), mapEntry.getValue(),
-								ii);
+						EtsiUComponent etsiUComponent = new EtsiUComponent(
+								item, mapEntry.getKey(), mapEntry.getValue(), ii);
 						components.add(etsiUComponent);
 					}
 				}

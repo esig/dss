@@ -1,15 +1,15 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Builds payload binaries from HTTPHeaderDocuments for the 'sigD' HttpHeaders mechanism
@@ -72,17 +72,17 @@ public class HttpHeadersPayloadBuilder {
 		 * 3. If value is not the last value then append an ASCII newline `\n`.
 		 */
 		
-		List<HTTPHeader> concatenatedHTTPFields = new ArrayList<>();
+		List<HTTPHeader> concatenatedHttpFields = new ArrayList<>();
 		
 		for (HTTPHeader httpHeader : httpHeaderDocuments) {
 			String headerName = Utils.trim(httpHeader.getName());
 			String headerValue = Utils.trim(httpHeader.getValue());
 
-			HTTPHeader concatenedHttpHeader = getHTTPHeaderWithName(concatenatedHTTPFields, headerName);
+			HTTPHeader concatenatedHttpHeader = getHTTPHeaderWithName(concatenatedHttpFields, headerName);
 
 			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(headerName) && isTimestamp) {
 				if (httpHeader instanceof HTTPHeaderDigest) {
-					concatenedHttpHeader = httpHeader;
+					concatenatedHttpHeader = httpHeader;
 					continue;
 
 				} else {
@@ -91,22 +91,22 @@ public class HttpHeadersPayloadBuilder {
 				}
 			}
 			
-			if (concatenedHttpHeader != null) {
-				StringBuilder stringBuilder = new StringBuilder(concatenedHttpHeader.getValue());
+			if (concatenatedHttpHeader != null) {
+				StringBuilder stringBuilder = new StringBuilder(concatenatedHttpHeader.getValue());
 				stringBuilder.append(", ");
 				stringBuilder.append(headerValue);
 				headerValue = stringBuilder.toString();
 
-				concatenedHttpHeader.setValue(headerValue);
+				concatenatedHttpHeader.setValue(headerValue);
 
 			} else {
-				concatenedHttpHeader = new HTTPHeader(headerName, headerValue);
-				concatenatedHTTPFields.add(concatenedHttpHeader);
+				concatenatedHttpHeader = new HTTPHeader(headerName, headerValue);
+				concatenatedHttpFields.add(concatenatedHttpHeader);
 			}
 		}
 		
 		StringBuilder stringBuilder = new StringBuilder();
-		Iterator<HTTPHeader> iterator = concatenatedHTTPFields.iterator();
+		Iterator<HTTPHeader> iterator = concatenatedHttpFields.iterator();
 		while (iterator.hasNext()) {
 			HTTPHeader header = iterator.next();
 			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(header.getName()) && isTimestamp) {

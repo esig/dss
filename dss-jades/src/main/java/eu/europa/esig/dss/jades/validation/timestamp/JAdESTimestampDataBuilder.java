@@ -56,11 +56,11 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		if (sigDMechanism != null) {
 			return getSigDReferencedOctets(sigDMechanism);
 		} else {
-			return getBase64UrlEncodedPayload();
+			return getJWSPayloadValue();
 		}
 	}
 	
-	private byte[] getBase64UrlEncodedPayload() {
+	private byte[] getJWSPayloadValue() {
 		if (signature.getJws().isRfc7797UnencodedPayload()) {
 			return signature.getJws().getUnverifiedPayloadBytes();
 		} else {
@@ -69,16 +69,6 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism) {
-		/*
-		 * 3) Else, if the JAdES signature incorporates the sigD header parameter
-		 * specified in clause 5.2.8 of the present document, then: For each reference
-		 * to one data object within the ordered list of references present within the
-		 * aforementioned header parameter: 
-		 * - Retrieve the referenced data object. 
-		 * - Base64url encode the retrieved data object Concatenate the result to 
-		 *   the octet stream.
-		 */
-
 		byte[] sigDOctets = null;
 		List<DSSDocument> documentList = null;
 
@@ -97,7 +87,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 				break;
 			default:
-				LOG.warn("Unsupported SigDMechanism has been found '{}'!", sigDMechanism);
+				LOG.warn("Unsupported SigDMechanism '{}' has been found!", sigDMechanism);
 		}
 
 		return sigDOctets;
@@ -137,22 +127,19 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			
 			/*
 			 * 3) Those among the following components that appear before sigRTst, in their
-			 * order of appearance within the etsiU array, base64url-encoded, and separated
-			 * by the character '.':
+			 * order of appearance within the etsiU array, base64url-encoded:
 			 * 
 			 * NOTE: there is a difference in processing base64url encoded values and clear
 			 * incorporation
 			 */
 			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			if (DSSJsonUtils.checkComponentsUnicity(etsiU)) {
-			
-				boolean separate = false;
 				/*
 				 * - sigTst if it is present.
 				 * - xRefs if it is present.
 				 * - rRefs if it is present.
 				 * - axRefs if it is present. And
-				 * - arRefs if it ispresent.
+				 * - arRefs if it is present.
 				 */
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
@@ -165,12 +152,9 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 					if (isAllowedTypeEntry(etsiUComponent, JAdESHeaderParameterNames.SIG_TST,
 							JAdESHeaderParameterNames.X_REFS, JAdESHeaderParameterNames.R_REFS,
 							JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS)) {
-						if (separate) {
-							baos.write('.');
-						}
+
 						baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
 					}
-					separate = true;
 
 				}
 
@@ -193,21 +177,21 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private boolean isAllowedTypeEntry(EtsiUComponent etsiUComponent, String... allowedTypes) {
-		return Arrays.stream(allowedTypes).allMatch(etsiUComponent.getHeaderName()::equals);
+		return Arrays.stream(allowedTypes).anyMatch(etsiUComponent.getHeaderName()::equals);
 	}
 
 	@Override
 	public DSSDocument getTimestampX2Data(TimestampToken timestampToken) {
 		
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get SigAndRefs timestamp data");
+			LOG.trace("--->Get RefsOnly timestamp data");
 		}
 		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
 		
 		JWS jws = signature.getJws();
 		
 		/*
-		 * A.1.5.2	The rfsTst JSON object
+		 * A.1.5.2.2 The rfsTst JSON object
 		 * 
 		 * The message imprint computation input shall be the concatenation of the components, 
 		 * in the order they are listed below.
@@ -216,29 +200,28 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			
 			/*
 			 * The message imprint computation input shall be the concatenation of the
-			 * components listed below, base64url encoded, and separated by the character
-			 * '.', in their order of appearance within the etsiU array: - xRefs if it is
-			 * present. - rRefs if it is present. - axRefs if it is present. And - arRefs if
-			 * it is present.
+			 * components listed below, base64url encoded, in their order of appearance within the etsiU array:
+			 * - xRefs if it is present.
+			 * - rRefs if it is present.
+			 * - axRefs if it is present. And
+			 * - arRefs if it is present.
 			 * 
 			 * NOTE: there is a difference in processing base64url encoded values and clear
 			 * incorporation
 			 */
 			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			if (DSSJsonUtils.checkComponentsUnicity(etsiU)) {
-				boolean separate = false;
 
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
+
 					if (isAllowedTypeEntry(etsiUComponent, JAdESHeaderParameterNames.X_REFS,
 							JAdESHeaderParameterNames.R_REFS, JAdESHeaderParameterNames.AX_REFS,
 							JAdESHeaderParameterNames.AR_REFS)) {
-						if (separate) {
-							baos.write('.');
-						}
+
 						baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
 					}
-					separate = true;
+
 				}
 				
 			} else {
@@ -280,7 +263,14 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		// timestamp creation
 		return getArchiveTimestampData(null, canonicalizationMethod);
 	}
-	
+
+	/**
+	 * Returns the message-imprint computed for the archive {@code timestampToken}
+	 *
+	 * @param timestampToken {@link TimestampToken} archive timestamp token
+	 * @param canonicalizationMethod {@link String} if defined
+	 * @return message-imprint byte array
+	 */
 	protected byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
 		
 		if (LOG.isTraceEnabled()) {
@@ -301,11 +291,11 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			/*
-			 * 1) If the sigD header parameter is absent then: a) If the b64 header
-			 * parameter specified in clause 3 of IETF RFC 7797 [15] is present and set to
-			 * "false" then concatenate the JWS Payload value. b) If the b64 header
-			 * parameter specified in clause 3 of IETF RFC 7797 [15] is present and set to
-			 * "true", OR it is absent, then concatenate the base64url-encoded JWS Payload.
+			 * 1) If the sigD header parameter is absent then:
+			 * a) If the b64 header parameter specified in clause 3 of IETF RFC 7797 [15] is present
+			 * and set to "false" then concatenate the JWS Payload value.
+			 * b) If the b64 header parameter specified in clause 3 of IETF RFC 7797 [15] is present
+			 * and set to "true", OR it is absent, then concatenate the base64url-encoded JWS Payload.
 			 * 
 			 * 2) If the sigD header parameter is present: a) If the value of its mId member
 			 * is "http://uri.etsi.org/19182/HttpHeaders" then concatenate the bytes
@@ -343,12 +333,15 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 */
 			List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 			if (DSSJsonUtils.checkComponentsUnicity(etsiU)) {
+
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
+
 					if (timestampToken != null && timestampToken.getHashCode() == etsiUComponent.hashCode()) {
-						// the timestamp is found, stop the iteration
+						// the timestamp is reached, stop the iteration
 						break;
 					}
+
 					baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
 				}
 
@@ -380,7 +373,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getCanonicalizedValue(Object jsonObject, String canonicalizationMethod) {
-		// TODO: canonicalization is not implemented yet
+		// TODO: canonicalization is not supported yet
 		LOG.warn("Canonicalization is not supported in the current version. "
 				+ "The message imprint computation can lead to an unexpected result");
 		// temporary solution

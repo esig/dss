@@ -1,11 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
@@ -29,11 +23,17 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/jades-with-sigAndRefsTst.json");
+		return new FileDocument("src/test/resources/validation/jades-with-sigAndRefsTst-with-dot.json");
 	}
 	
 	@Override
@@ -127,7 +127,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		assertEquals(4, diagnosticData.getTimestampList().size());
 		boolean sigTstFound = false;
 		boolean firstSigAndRfsTstFound = false;
-		boolean seconfSigAndRfsTstFound = false;
+		boolean secondSigAndRfsTstFound = false;
 		boolean rfsTstFound = false;
 		
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
@@ -147,7 +147,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 					firstSigAndRfsTstFound = true;
 				} else {
 					assertEquals(5, timestampWrapper.getTimestampedCertificates().size());
-					seconfSigAndRfsTstFound = true;
+					secondSigAndRfsTstFound = true;
 				}
 				
 			} else if (TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.equals(timestampWrapper.getType())) {
@@ -158,7 +158,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		}
 		assertTrue(sigTstFound);
 		assertTrue(firstSigAndRfsTstFound);
-		assertTrue(seconfSigAndRfsTstFound);
+		assertTrue(secondSigAndRfsTstFound);
 		assertTrue(rfsTstFound);
 	}
 
