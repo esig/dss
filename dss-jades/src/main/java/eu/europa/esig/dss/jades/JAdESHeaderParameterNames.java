@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.jades;
 
 /**
- * ETSI TS 119 182-1 V0.0.3
+ * Defines a list of JAdES header names as in ETSI TS 119 182-1
  */
 public final class JAdESHeaderParameterNames {
 	

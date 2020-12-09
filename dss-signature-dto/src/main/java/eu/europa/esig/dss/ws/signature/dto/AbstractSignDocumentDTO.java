@@ -20,40 +20,75 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Sign Document DTO request
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractSignDocumentDTO implements Serializable {
-	
+
+	/** The signature parameters */
 	private RemoteSignatureParameters parameters;
+
+	/** The SignatureValue */
 	private SignatureValueDTO signatureValue;
-	
-	public AbstractSignDocumentDTO() {
+
+	/**
+	 * Empty constructor
+	 */
+	protected AbstractSignDocumentDTO() {
 		super();
 	}
 
-	public AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
+	/**
+	 * Default constructor
+	 *
+	 * @param parameters {@link RemoteSignatureParameters}
+	 * @param signatureValue {@link SignatureValueDTO}
+	 */
+	protected AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
 		super();
 		this.parameters = parameters;
 		this.signatureValue = signatureValue;
 	}
 
+	/**
+	 * Gets signature parameters
+	 *
+	 * @return {@link RemoteSignatureParameters}
+	 */
 	public RemoteSignatureParameters getParameters() {
 		return parameters;
 	}
 
+	/**
+	 * Sets signature parameters
+	 *
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public void setParameters(RemoteSignatureParameters parameters) {
 		this.parameters = parameters;
 	}
 
+	/**
+	 * Gets signature value
+	 *
+	 * @return {@link SignatureValueDTO}
+	 */
 	public SignatureValueDTO getSignatureValue() {
 		return signatureValue;
 	}
 
+	/**
+	 * Sets signature value
+	 *
+	 * @param signatureValue {@link SignatureValueDTO}
+	 */
 	public void setSignatureValue(SignatureValueDTO signatureValue) {
 		this.signatureValue = signatureValue;
 	}

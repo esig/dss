@@ -1,19 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.security.PublicKey;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.jose4j.jwk.PublicJsonWebKey;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -30,16 +16,41 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.jose4j.jwk.PublicJsonWebKey;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.security.PublicKey;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+/**
+ * Extracts and stores certificates from a JAdES signature
+ */
 public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final long serialVersionUID = -8170607661341382049L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCertificateSource.class);
 
+	/** The JWS Signature to extract certificates from */
 	private transient final JWS jws;
+
+	/** Represents the unsigned 'etsiU' header */
 	private transient final JAdESEtsiUHeader etsiUHeader;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param jws {@link JWS} signature
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} unsigned component
+	 */
 	public JAdESCertificateSource(JWS jws, JAdESEtsiUHeader etsiUHeader) {
 		Objects.requireNonNull(jws, "JSON Web signature cannot be null");
 		Objects.requireNonNull(etsiUHeader, "etsiUHeader cannot be null");
@@ -133,7 +144,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 		for (JAdESAttribute attribute : etsiUHeader.getAttributes()) {
 			extractCertificateValues(attribute);
-			extractAttrAutoritiesCertValues(attribute);
+			extractAttrAuthoritiesCertValues(attribute);
 			extractTimestampValidationData(attribute);
 
 			extractCompleteCertificateRefs(attribute);
@@ -147,9 +158,9 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	private void extractAttrAutoritiesCertValues(JAdESAttribute attribute) {
+	private void extractAttrAuthoritiesCertValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AX_VALS.equals(attribute.getHeaderName())) {
-			extractCertificateValues((List<?>) attribute.getValue(), CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+			extractCertificateValues((List<?>) attribute.getValue(), CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 		}
 	}
 
@@ -283,7 +294,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		return null;
 	}
 
-	public void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {
+	private void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {
 
 		IssuerSerial issuerSerial = getCurrentIssuerSerial();
 		Digest signingCertificateDigest = getSigningCertificateDigest();
@@ -329,7 +340,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	public Digest getSigningCertificateDigest() {
+	private Digest getSigningCertificateDigest() {
 		List<CertificateRef> signingCertificateRefs = getSigningCertificateRefs();
 		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
 			// must contain only one reference

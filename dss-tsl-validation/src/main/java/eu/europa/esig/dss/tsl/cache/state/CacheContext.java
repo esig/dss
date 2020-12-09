@@ -22,6 +22,9 @@ package eu.europa.esig.dss.tsl.cache.state;
 
 import java.util.Date;
 
+/**
+ * Contains information for a Cache entry
+ */
 public interface CacheContext {
 
 	/**

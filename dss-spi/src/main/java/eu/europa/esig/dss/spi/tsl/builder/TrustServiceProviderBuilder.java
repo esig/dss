@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.spi.tsl.builder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustService.TrustServiceBuilder;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
@@ -35,15 +28,40 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.Tru
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Builds {@code TrustServiceProvider}
+ */
 public class TrustServiceProviderBuilder {
-	
+
+	/** Map of names (the key is the language) */
 	private Map<String, List<String>> names;
+
+	/** Map of trade names */
 	private Map<String, List<String>> tradeNames;
+
+	/** List of registration identifiers */
 	private List<String> registrationIdentifiers;
+
+	/** Map of postal addresses */
 	private Map<String, String> postalAddresses;
+
+	/** Map of electronic addresses */
 	private Map<String, List<String>> electronicAddresses;
+
+	/** Map of information */
 	private Map<String, String> information;
+
+	/** List of trust services */
 	private List<TrustService> services;
+
+	/** The territory (country) */
 	private String territory;
 
 	/**
@@ -68,76 +86,170 @@ public class TrustServiceProviderBuilder {
 		this.territory = original.getTerritory();
 	}
 
+	/**
+	 * Builds {@code TrustServiceProvider}
+	 *
+	 * @return {@link TrustServiceProvider}
+	 */
 	public TrustServiceProvider build() {
 		return new TrustServiceProvider(this);
 	}
 
+	/**
+	 * Gets a map of names (first key is the language)
+	 *
+	 * @return a map of names
+	 */
 	public Map<String, List<String>> getNames() {
 		return getUnmodifiableMapWithLists(names);
 	}
 
+	/**
+	 * Sets a map of names
+	 *
+	 * @param names a map of names (first key is the language)
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setNames(Map<String, List<String>> names) {
 		this.names = names;
 		return this;
 	}
 
+	/**
+	 * Gets a map of trade names
+	 *
+	 * @return a map of trade names
+	 */
 	public Map<String, List<String>> getTradeNames() {
 		return getUnmodifiableMapWithLists(tradeNames);
 	}
 
+	/**
+	 * Sets a map of trade names
+	 *
+	 * @param tradeNames a map of trade names (first key is the language)
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setTradeNames(Map<String, List<String>> tradeNames) {
 		this.tradeNames = tradeNames;
 		return this;
 	}
 
+	/**
+	 * Gets registration identifiers
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getRegistrationIdentifiers() {
 		return getUnmodifiableList(registrationIdentifiers);
 	}
 
+	/**
+	 * Sets registration identifiers
+	 *
+	 * @param registrationIdentifiers a list of {@link String}s
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setRegistrationIdentifiers(List<String> registrationIdentifiers) {
 		this.registrationIdentifiers = registrationIdentifiers;
 		return this;
 	}
 
+	/**
+	 * Gets a map of postal addresses
+	 *
+	 * @return a map of postal addresses
+	 */
 	public Map<String, String> getPostalAddresses() {
 		return getUnmodifiableMap(postalAddresses);
 	}
 
+	/**
+	 * Sets a map of postal addresses
+	 *
+	 * @param postalAddresses a map of postal addresses
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setPostalAddresses(Map<String, String> postalAddresses) {
 		this.postalAddresses = postalAddresses;
 		return this;
 	}
 
+	/**
+	 * Gets a map of electronic addresses
+	 *
+	 * @return a map of electronic addresses
+	 */
 	public Map<String, List<String>> getElectronicAddresses() {
 		return getUnmodifiableMapWithLists(electronicAddresses);
 	}
 
+	/**
+	 * Sets a map of electronic addresses
+	 *
+	 * @param electronicAddresses a map of electronic addresses
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setElectronicAddresses(Map<String, List<String>> electronicAddresses) {
 		this.electronicAddresses = electronicAddresses;
 		return this;
 	}
 
+	/**
+	 * Gets a map of information
+	 *
+	 * @return a map of information
+	 */
 	public Map<String, String> getInformation() {
 		return getUnmodifiableMap(information);
 	}
 
+	/**
+	 * Sets a map of information
+	 *
+	 * @param information a map of information
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setInformation(Map<String, String> information) {
 		this.information = information;
 		return this;
 	}
+
+	/**
+	 * Gets a list of trust services
+	 *
+	 * @return a a list of {@link TrustService}s
+	 */
 	public List<TrustService> getServices() {
 		return getUnmodifiableTrustServices(services);
 	}
 
+	/**
+	 * Sets a list of trust services
+	 *
+	 * @param services a list of {@link TrustService}s
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setServices(List<TrustService> services) {
 		this.services = services;
 		return this;
 	}
-	
+
+	/**
+	 * Gets territory (country)
+	 *
+	 * @return {@link String}
+	 */
 	public String getTerritory() {
 		return territory;
 	}
 
+	/**
+	 * Sets territory (country)
+	 *
+	 * @param territory {@link String}
+	 * @return this {@link TrustServiceProviderBuilder}
+	 */
 	public TrustServiceProviderBuilder setTerritory(String territory) {
 		this.territory = territory;
 		return this;

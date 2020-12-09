@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -35,6 +28,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.util.Objects;
 
 /**
  * Retrieves OCSP values from an XAdES (XL/LT) signature.
@@ -45,8 +44,10 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESOCSPSource.class);
 
+	/** The current signature element */
 	private final Element signatureElement;
 
+	/** The XAdES XPaths */
 	private final XAdESPaths xadesPaths;
 
 	/**

@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 
+/**
+ * Parses the {@code CertificateOrigin}
+ */
 public class CertificateOriginParser {
 
 	private CertificateOriginParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code CertificateOrigin}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link CertificateOrigin}
+	 */
 	public static CertificateOrigin parse(String v) {
 		return CertificateOrigin.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link CertificateOrigin}
+	 * @return {@link String}
+	 */
 	public static String print(CertificateOrigin v) {
 		return v.name();
 	}

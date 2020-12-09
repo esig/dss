@@ -28,8 +28,18 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+/**
+ * Checks if the POE exists
+ */
 public class POEExistsCheck extends ChainItem<XmlPSV> {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlPSV}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public POEExistsCheck(I18nProvider i18nProvider, XmlPSV result, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 	}

@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.awt.Color;
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+
+import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Parameters for a visible signature creation
@@ -37,6 +37,7 @@ public class SignatureImageParameters implements Serializable {
 
 	private static final long serialVersionUID = -327971057134928889L;
 
+	/** The default zoom constraint */
 	private static final int NO_SCALING = 100;
 
 	/**

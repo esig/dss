@@ -1,15 +1,14 @@
 package eu.europa.esig.dss.jades;
 
+import eu.europa.esig.dss.jades.validation.JWS;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import org.jose4j.jwx.CompactSerializer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-
-import org.jose4j.jwx.CompactSerializer;
-
-import eu.europa.esig.dss.jades.validation.JWS;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 
 /**
  * The class is used to parse a Compact JWS
@@ -17,10 +16,17 @@ import eu.europa.esig.dss.model.DSSException;
  */
 public class JWSCompactSerializationParser {
 
+	/** Defines the maximum number of '.' character inside a JWS signature */
 	private final static int NUMBER_DOTS = 2;
 
+	/** The document to be parsed */
 	private final DSSDocument document;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param document {@link DSSDocument} to parse
+	 */
 	public JWSCompactSerializationParser(DSSDocument document) {
 		this.document = document;
 	}

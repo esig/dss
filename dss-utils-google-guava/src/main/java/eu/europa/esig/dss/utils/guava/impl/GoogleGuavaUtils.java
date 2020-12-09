@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Google Guava implementation of Utils
+ */
 public class GoogleGuavaUtils implements IUtils {
 
 	private static final String STRING_EMPTY = "";

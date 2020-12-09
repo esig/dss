@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
+/**
+ * Parses the {@code DigestAlgorithm}
+ */
 public final class DigestAlgorithmParser {
 
 	private DigestAlgorithmParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code DigestAlgorithm}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link DigestAlgorithm}
+	 */
 	public static DigestAlgorithm parse(String v) {
 		if (v != null) {
 			return DigestAlgorithm.valueOf(v);
@@ -34,6 +43,12 @@ public final class DigestAlgorithmParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link DigestAlgorithm}
+	 * @return {@link String}
+	 */
 	public static String print(DigestAlgorithm v) {
 		if (v != null) {
 			return v.name();

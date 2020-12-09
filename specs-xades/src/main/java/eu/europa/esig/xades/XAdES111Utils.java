@@ -20,28 +20,38 @@
  */
 package eu.europa.esig.xades;
 
-import java.util.List;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
-import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
-
+/**
+ * XAdES 1.1.1 schema utils
+ */
 public final class XAdES111Utils extends XSDAbstractUtils {
-	
+
+	/** The XAdES 1.1.1 XSD schema */
 	public static final String XADES_111_SCHEMA_LOCATION = "/xsd/XAdESv111.xsd";
 
+	/** Singleton */
 	private static XAdES111Utils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private XAdES111Utils() {
 	}
-	
+
+	/**
+	 * Returns instance of {@code XAdES111Utils}
+	 *
+	 * @return {@link XAdES111Utils}
+	 */
 	public static XAdES111Utils getInstance() {
 		if (singleton == null) {
 			singleton = new XAdES111Utils();

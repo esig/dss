@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -31,6 +29,8 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+
+import java.util.Date;
 
 /**
  * If best-signature-time is before the issuance date of the signing
@@ -43,9 +43,16 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
  */
 public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Best signature time */
 	private final Date bestSignatureTime;
+
+	/** The signing certificate */
 	private final CertificateWrapper signingCertificate;
+
+	/** Current Indication */
 	private final Indication currentIndication;
+
+	/** Current SubIndication */
 	private final SubIndication currentSubIndication;
 
 	/**
@@ -64,6 +71,14 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 
 	/**
 	 * The default constructor allowing setting of returned Indication/subIndication on success result
+	 *
+	 * @param i18nProvider       the il8n provider
+	 * @param result             the result
+	 * @param bestSignatureTime  the best signature time
+	 * @param signingCertificate the signing certificate
+	 * @param currentIndication  {@link Indication}
+	 * @param currentSubIndication {@link SubIndication}
+	 * @param constraint         the constraint
 	 */
 	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, T result, Date bestSignatureTime,
 			CertificateWrapper signingCertificate, Indication currentIndication, SubIndication currentSubIndication, LevelConstraint constraint) {

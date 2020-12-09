@@ -1,11 +1,5 @@
 package eu.europa.esig.dss.xades;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import eu.europa.esig.dss.AbstractSignatureParametersBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -16,6 +10,11 @@ import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Creates Signature parameters for a Trusted List creation
@@ -31,7 +30,8 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	 * See TS 119 612 "B.1 The Signature element"
 	 */
 	private final static String DEFAULT_CANONICALIZATION = CanonicalizationMethod.EXCLUSIVE;
-	
+
+	/** The default prefix for an enveloped signature reference id */
 	private final static String DEFAULT_REFERENCE_PREFIX = "enveloped-signature-";
 	
 	/**

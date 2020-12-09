@@ -29,13 +29,27 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if an acceptable revocation data exists
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class SatisfyingRevocationDataExistsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
 
-	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, T result, RevocationWrapper revocationData, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, T result, RevocationWrapper revocationData,
+											   LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.revocationData = revocationData;
 	}
 

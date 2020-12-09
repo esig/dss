@@ -24,6 +24,9 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 
+/**
+ * Loads the native PDFBox signature drawer
+ */
 public class PdfBoxNativeSignatureDrawerFactory implements PdfBoxSignatureDrawerFactory {
 
 	@Override

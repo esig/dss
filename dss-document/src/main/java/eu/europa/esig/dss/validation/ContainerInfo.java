@@ -93,7 +93,7 @@ public class ContainerInfo {
 	/**
 	 * Sets mimetype file content
 	 *
-	 * @@param mimeTypeContent {@link String}
+	 * @param mimeTypeContent {@link String}
 	 */
 	public void setMimeTypeContent(String mimeTypeContent) {
 		this.mimeTypeContent = mimeTypeContent;
@@ -129,7 +129,7 @@ public class ContainerInfo {
 	/**
 	 * Gets a list of manifest files
 	 *
-	 * @returna list of {@link ManifestFile}s
+	 * @return a list of {@link ManifestFile}s
 	 */
 	public List<ManifestFile> getManifestFiles() {
 		return manifestFiles;

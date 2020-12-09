@@ -29,9 +29,13 @@ import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.xades.XAdES319132Utils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
+/**
+ * XAdES 1.3.2 paths
+ */
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
 	// TODO find a proper way (namespace independent)
+	/** Gets all signatures without counter signatures */
 	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,
 			XAdES132Element.COUNTER_SIGNATURE);
 

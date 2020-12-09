@@ -20,23 +20,34 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.IOException;
-import java.util.Date;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.ByteRange;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 
+import java.io.IOException;
+import java.util.Date;
+
+/**
+ * The default implementation of {@code PdfSignatureDictionary}
+ */
 public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
+	/** The PDF dictionary */
 	private final PdfDict dictionary;
 
+	/** The CMSSignedData */
 	private final CMSSignedData cmsSignedData;
+
+	/** The signed ByteRange */
 	private final ByteRange byteRange;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param dictionary {@link PdfDict}
+	 */
 	public PdfSigDictWrapper(PdfDict dictionary) {
 		this.dictionary = dictionary;
 		this.cmsSignedData = buildCMSSignedData();

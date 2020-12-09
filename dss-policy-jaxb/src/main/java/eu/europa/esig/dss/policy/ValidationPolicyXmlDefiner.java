@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.policy;
 
-import java.io.IOException;
-import java.io.InputStream;
+import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.policy.jaxb.ObjectFactory;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -29,26 +30,43 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.dss.policy.jaxb.ObjectFactory;
-
+/**
+ * Contains cached the {@code JAXBContext} and {@code Schema} for an XML validation policy
+ */
 public final class ValidationPolicyXmlDefiner {
 
+	/** The object factory to use */
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
+	/** The Validation Policy XSD schema location */
 	private static final String VALIDATION_POLICY_SCHEMA_LOCATION = "/xsd/policy.xsd";
 
 	private ValidationPolicyXmlDefiner() {
 	}
 
-	// Thread-safe
+	/**
+	 * The cached JAXBContext
+	 *
+	 * NOTE: Thread-safe
+	 */
 	private static JAXBContext jc;
-	// Thread-safe
+
+	/**
+	 * The cached Schema
+	 *
+	 * NOTE: Thread-safe
+	 */
 	private static Schema schema;
 
+	/**
+	 * Gets the {@code JAXBContext}
+	 *
+	 * @return {@link JAXBContext}
+	 * @throws JAXBException if an exception occurs
+	 */
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(ObjectFactory.class);
@@ -56,6 +74,13 @@ public final class ValidationPolicyXmlDefiner {
 		return jc;
 	}
 
+	/**
+	 * Gets the {@code Schema}
+	 *
+	 * @return {@link Schema}
+	 * @throws IOException if an IOException occurs
+	 * @throws SAXException if a SAXException occurs
+	 */
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream inputStream = ValidationPolicyXmlDefiner.class.getResourceAsStream(VALIDATION_POLICY_SCHEMA_LOCATION)) {

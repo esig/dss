@@ -20,17 +20,19 @@
  */
 package eu.europa.esig.saml;
 
-import java.util.List;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
-import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
-
+/**
+ * SAML Assertion Utils
+ */
 public class SAMLAssertionUtils extends XSDAbstractUtils {
 
 	public static final String SAML_ASSERTION_SCHEMA_LOCATION = "/xsd/saml-schema-assertion-2.0.xsd";
@@ -42,13 +44,20 @@ public class SAMLAssertionUtils extends XSDAbstractUtils {
 	public static final String SAML_XACML_SCHEMA_LOCATION = "/xsd/saml-schema-xacml-2.0.xsd";
 	public static final String SAML_AUTHN_CONTEXT_TYPES_SCHEMA_LOCATION = "/xsd/saml-schema-authn-context-types-2.0.xsd";
 
+	/** Singleton */
 	private static SAMLAssertionUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private SAMLAssertionUtils() {
 	}
 
+	/**
+	 * Returns instance of {@code SAMLAssertionUtils}
+	 *
+	 * @return {@link SAMLAssertionUtils}
+	 */
 	public static SAMLAssertionUtils getInstance() {
 		if (singleton == null) {
 			singleton = new SAMLAssertionUtils();

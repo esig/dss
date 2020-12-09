@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -33,13 +31,30 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
-public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
+import java.util.Date;
 
+/**
+ * Checks if the certificate is not on hold
+ */
+public class CertificateNotOnHoldCheck extends ChainItem<XmlSubXCV> {
+
+	/** Certificate's revocation */
 	private final CertificateRevocationWrapper certificateRevocation;
+
+	/** Validation time */
 	private final Date currentTime;
 
-	public CertificateOnHoldCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, 
-			Date currentTime, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificateRevocation {@link CertificateRevocationWrapper}
+	 * @param currentTime {@link Date} validation time
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CertificateNotOnHoldCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation,
+									 Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;

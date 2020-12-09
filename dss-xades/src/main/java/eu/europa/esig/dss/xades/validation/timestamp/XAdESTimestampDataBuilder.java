@@ -20,22 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.timestamp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -51,16 +35,45 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Builds a message-imprint for XAdES timestamps
+ */
 public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampDataBuilder.class);
-	
+
+	/** List of XAdES signature references */
 	private final List<Reference> references;
+
+	/** The signature element */
 	private final Element signature;
-	
+
+	/** The XAdES XPaths to use */
 	private final XAdESPaths xadesPaths;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link Element} the signature element
+	 * @param references a list of found {@link Reference}s
+	 * @param xadesPaths {@link XAdESPaths}
+	 */
 	public XAdESTimestampDataBuilder(final Element signature, final List<Reference> references, final XAdESPaths xadesPaths) {
 		this.signature = signature;
 		this.references = references;
@@ -131,8 +144,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * attribute, which is set to "true". In case one of
 	 * these Include elements has its referenceData set to false, the method returns false
 	 *
-	 * @param timestampToken
-	 * @return
+	 * @param timestampToken {@link TimestampToken}
+	 * @return TRUE all timestamp includes hasve referencedData attribute set to true, FALSE otherwise
 	 */
 	private boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
 		final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
@@ -289,6 +302,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * @param timestampToken
 	 *            {@code TimestampToken} to validate, or {@code null} when adding a new archive timestamp
 	 * @param canonicalizationMethod
+	 *            {@link String}
 	 * @return {@code byte} array containing the canonicalized and concatenated timestamped data
 	 */
 	protected byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {

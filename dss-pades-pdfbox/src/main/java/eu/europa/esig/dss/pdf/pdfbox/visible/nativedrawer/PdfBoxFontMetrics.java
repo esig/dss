@@ -20,17 +20,25 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import java.io.IOException;
-
-import org.apache.pdfbox.pdmodel.font.PDFont;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
+import java.io.IOException;
+
+/**
+ * Contains font metrics for a PDFBox font
+ */
 public class PdfBoxFontMetrics extends AbstractFontMetrics {
-	
+
+	/** PdfBox font */
 	private final PDFont pdFont;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param pdFont {@link PDFont}
+	 */
 	public PdfBoxFontMetrics(PDFont pdFont) {
 		this.pdFont = pdFont;
 	}

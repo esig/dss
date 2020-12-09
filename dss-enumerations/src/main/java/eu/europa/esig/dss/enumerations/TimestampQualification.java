@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines possible timestamp qualification types
+ */
 public enum TimestampQualification {
 
 	QTSA("QTSA", "Qualified timestamp", "urn:cef:dss:timestampQualification:QTSA"),
@@ -38,14 +41,29 @@ public enum TimestampQualification {
 		this.uri = uri;
 	}
 
+	/**
+	 * Returns a short name of the qualification status
+	 *
+	 * @return {@link String}
+	 */
 	public String getReadable() {
 		return readable;
 	}
 
+	/**
+	 * Returns a complete name of the qualification status
+	 *
+	 * @return {@link String}
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * Returns a URI of the qualification status
+	 *
+	 * @return {@link String}
+	 */
 	public String getUri() {
 		return uri;
 	}

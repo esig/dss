@@ -29,10 +29,22 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the zip comment is present
+ */
 public class ZipCommentPresentCheck extends ChainItem<XmlFC> {
 
+	/** The zip comment */
 	private final String zipComment;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param zipComment {@link String}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public ZipCommentPresentCheck(I18nProvider i18nProvider, XmlFC result, String zipComment, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.zipComment = zipComment;

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.io.Serializable;
-import java.util.List;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * This class is a DTO representation for a TSL service
@@ -32,41 +32,88 @@ import eu.europa.esig.dss.spi.util.TimeDependentValues;
 public class TrustService implements Serializable {
 
 	private static final long serialVersionUID = -7162121430380199621L;
-	
+
+	/** List of certificates */
 	private final List<CertificateToken> certificates;
+
+	/** Statuses based on time */
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> status;
-	
-	public TrustService(final List<CertificateToken> certificates, final TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
+
+	/**
+	 * Default constructor
+	 *
+	 * @param certificates a list of {@link CertificateToken}s
+	 * @param status {@link TimeDependentValues}
+	 */
+	public TrustService(final List<CertificateToken> certificates,
+						final TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
 		this.certificates = certificates;
 		this.status = status;
 	}
 
+	/**
+	 * Gets a list of certificates
+	 *
+	 * @return a list of {@link CertificateToken}s
+	 */
 	public List<CertificateToken> getCertificates() {
 		return certificates;
 	}
 
+	/**
+	 * Gets status based on time
+	 *
+	 * @return {@link TimeDependentValues}
+	 */
 	public TimeDependentValues<TrustServiceStatusAndInformationExtensions> getStatusAndInformationExtensions() {
 		return status;
 	}
-	
+
+	/**
+	 * Builds {@code TrustService}
+	 */
 	public static final class TrustServiceBuilder {
 
+		/** List of certificates */
 		private List<CertificateToken> certificates;
+
+		/** Statuses based on time */
 		private TimeDependentValues<TrustServiceStatusAndInformationExtensions> status;
-		
+
+		/**
+		 * Default constructor
+		 */
 		public TrustServiceBuilder() {
 		}
 
+		/**
+		 * Sets a list of certificates
+		 *
+		 * @param certificates a list of {@link CertificateToken}s
+		 * @return this {@link TrustServiceBuilder}
+		 */
 		public TrustServiceBuilder setCertificates(List<CertificateToken> certificates) {
 			this.certificates = certificates;
 			return this;
 		}
 
-		public TrustServiceBuilder setStatusAndInformationExtensions(TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
+		/**
+		 * Sets a status
+		 *
+		 * @param status {@link TimeDependentValues}
+		 * @return this {@link TrustServiceBuilder}
+		 */
+		public TrustServiceBuilder setStatusAndInformationExtensions(
+				TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
 			this.status = status;
 			return this;
 		}
-		
+
+		/**
+		 * Builds {@code TrustService}
+		 *
+		 * @return {@link TrustService}
+		 */
 		public TrustService build() {
 			return new TrustService(certificates, status);
 		}

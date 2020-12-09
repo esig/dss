@@ -1,18 +1,17 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
-import org.jose4j.json.internal.json_simple.JSONArray;
-
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureProperties;
+import org.jose4j.json.internal.json_simple.JSONArray;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Represents the list of components present inside the unprotected 'etsiU' header
@@ -20,9 +19,17 @@ import eu.europa.esig.dss.validation.SignatureProperties;
  */
 public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 
+	/** The JWS signature */
 	private final JWS jws;
+
+	/** The list of 'etsiU' components */
 	private List<EtsiUComponent> components;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param jws {@link JWS} signature
+	 */
 	public JAdESEtsiUHeader(JWS jws) {
 		this.jws = jws;
 	}

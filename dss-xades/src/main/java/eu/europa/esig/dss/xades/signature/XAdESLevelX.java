@@ -42,6 +42,8 @@ public class XAdESLevelX extends XAdESLevelC {
 
 	/**
 	 * The default constructor for XAdESLevelX.
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
 	public XAdESLevelX(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
@@ -87,4 +89,5 @@ public class XAdESLevelX extends XAdESLevelC {
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelCUnsignedProperties);
 		}
 	}
+
 }

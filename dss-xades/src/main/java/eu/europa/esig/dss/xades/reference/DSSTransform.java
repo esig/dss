@@ -26,6 +26,9 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
 
+/**
+ * Defines a transform used for a reference transformations
+ */
 public interface DSSTransform {
 	
 	/**
@@ -48,7 +51,7 @@ public interface DSSTransform {
 	 * @param node {@link Node} to perform transformation on
 	 * @return byte array
 	 */
-	byte[] getBytesAfterTranformation(Node node);
+	byte[] getBytesAfterTransformation(Node node);
 	
 	/**
 	 * Creates a Transform element DOM and appends it to the {@code parentNode}

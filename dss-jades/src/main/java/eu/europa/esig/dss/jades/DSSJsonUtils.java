@@ -1,5 +1,56 @@
 package eu.europa.esig.dss.jades;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
+import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.validation.JWS;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.jades.JAdESUtils;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.jose4j.base64url.Base64Url;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.json.internal.json_simple.JSONArray;
+import org.jose4j.json.internal.json_simple.JSONValue;
+import org.jose4j.jwx.CompactSerializer;
+import org.jose4j.lang.JoseException;
+import org.jose4j.lang.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.ADO_TST;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_D;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PID;
@@ -31,59 +82,6 @@ import static org.jose4j.jwx.HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT;
 import static org.jose4j.jwx.HeaderParameterNames.X509_URL;
 import static org.jose4j.jwx.HeaderParameterNames.ZIP;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.jose4j.base64url.Base64Url;
-import org.jose4j.json.JsonUtil;
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONValue;
-import org.jose4j.jwx.CompactSerializer;
-import org.jose4j.lang.JoseException;
-import org.jose4j.lang.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.ObjectIdentifier;
-import eu.europa.esig.dss.jades.validation.EtsiUComponent;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
-import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
-import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWS;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.jades.JAdESUtils;
-
 /**
  * Utility class for working with JSON objects
  *
@@ -91,15 +89,17 @@ import eu.europa.esig.jades.JAdESUtils;
 public class DSSJsonUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSJsonUtils.class);
-	
+
+	/** The MimeType application prefix */
 	public static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
-	
+
+	/** The HttpHeader defining the Digest value of a signed message body */
 	public static final String HTTP_HEADER_DIGEST = "Digest";
 
-	/* RFC 2045 */
+	/** The binary content encoding (RFC 2045) */
 	public static final String CONTENT_ENCODING_BINARY = "binary";
 
-	/* Format date-time as specified in RFC 3339 5.6 */
+	/** Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	
 	/**
@@ -383,7 +383,7 @@ public class DSSJsonUtils {
 	/**
 	 * Creates a 'tstToken' JsonObject according to EN 119-182 ch. 5.4.3.3 The tstContainer type
 	 * 
-	 * @param timestampToken {@link TimestampToken}s to incorporate
+	 * @param timestampBinary {@link TimestampBinary}s to incorporate
 	 * @return 'tstToken' {@link JsonObject}
 	 */
 	private static JsonObject getTstToken(TimestampBinary timestampBinary) {
@@ -688,6 +688,12 @@ public class DSSJsonUtils {
 		return clearEtsiU;
 	}
 
+	/**
+	 * Parses 'etsiU' component as it is (base64url-encoded or JSON), and returns the resulting Map
+	 *
+	 * @param etsiUComponent object to parse (base64url-encoded or JSON)
+	 * @return map representing the object
+	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> parseEtsiUComponent(Object etsiUComponent) {
 		try {

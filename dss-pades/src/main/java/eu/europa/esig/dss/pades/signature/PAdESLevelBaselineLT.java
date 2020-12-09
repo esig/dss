@@ -38,7 +38,6 @@ import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,19 +48,22 @@ import java.util.Set;
  */
 class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 
+	/** The used CertificateVerifier */
 	private final CertificateVerifier certificateVerifier;
 
-	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier, final IPdfObjFactory pdfObjectFactory) {
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource} to use
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * @param pdfObjectFactory {@link IPdfObjFactory}
+	 */
+	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier,
+						 final IPdfObjFactory pdfObjectFactory) {
 		super(tspSource, pdfObjectFactory);
 		this.certificateVerifier = certificateVerifier;
 	}
 
-	/**
-	 * @param document
-	 * @param parameters
-	 * @return
-	 * @throws IOException
-	 */
 	@Override
 	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
 
@@ -120,6 +122,12 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		}
 	}
 
+	/**
+	 * Validates the signature and returns the DSS dictionary to be created
+	 *
+	 * @param signature {@link PAdESSignature} to validate
+	 * @return {@link DSSDictionaryCallback}
+	 */
 	protected DSSDictionaryCallback validate(PAdESSignature signature) {
 
 		final ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);

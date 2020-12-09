@@ -20,6 +20,11 @@
  */
 package eu.europa.esig.dss.pades;
 
+/**
+ * The native font used in PDF libraries
+ *
+ * @param <F> class of the font instance
+ */
 public interface DSSNativeFont<F extends Object> {
 	
 	/**
@@ -27,6 +32,6 @@ public interface DSSNativeFont<F extends Object> {
 	 * 
 	 * @return Font object
 	 */
-	public abstract F getFont();
+	F getFont();
 
 }

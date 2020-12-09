@@ -79,7 +79,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		// init
 		extractCertificates(XMLDSigPaths.KEY_INFO_X509_CERTIFICATE_PATH, CertificateOrigin.KEY_INFO);
 		extractCertificates(xadesPaths.getEncapsulatedCertificateValuesPath(), CertificateOrigin.CERTIFICATE_VALUES);
-		extractCertificates(xadesPaths.getEncapsulatedAttrAuthoritiesCertValuesPath(), CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+		extractCertificates(xadesPaths.getEncapsulatedAttrAuthoritiesCertValuesPath(), CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 		extractCertificates(xadesPaths.getEncapsulatedTimeStampValidationDataCertValuesPath(), CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 
 		extractCertificateRefs(xadesPaths.getSigningCertificatePath(), xadesPaths.getSigningCertificateV2Path(), CertificateRefOrigin.SIGNING_CERTIFICATE);

@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.qualification;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 
-import javax.xml.bind.DatatypeConverter;
-
+/**
+ * Contains EIDAS Utils
+ */
 public final class EIDASUtils {
 
 	private EIDASUtils() {

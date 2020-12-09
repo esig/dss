@@ -20,20 +20,25 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSSignedData;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.ByteRange;
+import org.bouncycastle.cms.CMSSignedData;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Defines a PDF revision containing a CMS data (signature/timestamp)
+ */
 public abstract class PdfCMSRevision implements PdfRevision {
 
+	/**
+	 *  The PDF Signature Dictionary
+	 */
 	private final PdfSignatureDictionary signatureDictionary;
 
 	/**
@@ -41,13 +46,23 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	 */
 	private final byte[] signedContent;
 
+	/**
+	 * Defines if the revision covers all document bytes
+	 */
 	private final boolean coverAllOriginalBytes;
-	
+
+	/**
+	 * A list of signed fields by the corresponding signature
+	 */
 	private final List<String> signatureFieldNames;
-	
+
+	/**
+	 * Detects the modification in the PDF content
+	 */
 	private PdfModificationDetection modificationDetection;
 
 	/**
+	 * Default contructor
 	 *
 	 * @param signatureDictionary
 	 *                              The signature dictionary
@@ -70,7 +85,9 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	}
 
 	/**
-	 * @return the byte of the originally signed document
+	 * Gets the bytes of the originally signed document
+	 *
+	 * @return byte array
 	 */
 	public byte[] getRevisionCoveredBytes() {
 		return signedContent;
@@ -80,15 +97,30 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	public PdfSignatureDictionary getPdfSigDictInfo() {
 		return signatureDictionary;
 	}
-	
+
+	/**
+	 * Gets the signed byte range
+	 *
+	 * @return {@link ByteRange}
+	 */
 	public ByteRange getByteRange() {
 		return signatureDictionary.getByteRange();
 	}
 
+	/**
+	 * Gets the claimed signing time
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getSigningDate() {
 		return signatureDictionary.getSigningDate();
 	}
 
+	/**
+	 * Gets of the all PDF's content is signed
+	 *
+	 * @return TRUE if the whole PDF is signed, FALSE otherwise
+	 */
 	public boolean areAllOriginalBytesCovered() {
 		return coverAllOriginalBytes;
 	}
@@ -97,7 +129,12 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	public List<String> getFieldNames() {
 		return signatureFieldNames;
 	}
-	
+
+	/**
+	 * Gets the CMSSignedData
+	 *
+	 * @return {@link CMSSignedData}
+	 */
 	public CMSSignedData getCMSSignedData() {
 		return signatureDictionary.getCMSSignedData();
 	}
@@ -107,6 +144,11 @@ public abstract class PdfCMSRevision implements PdfRevision {
 		return modificationDetection;
 	}
 
+	/**
+	 * Sets the {@code PdfModificationDetection} result
+	 *
+	 * @param modificationDetection {@link PdfModificationDetection}
+	 */
 	public void setModificationDetection(PdfModificationDetection modificationDetection) {
 		this.modificationDetection = modificationDetection;
 	}

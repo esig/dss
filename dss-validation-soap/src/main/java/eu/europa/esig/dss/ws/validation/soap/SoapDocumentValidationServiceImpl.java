@@ -20,19 +20,28 @@
  */
 package eu.europa.esig.dss.ws.validation.soap;
 
-import java.util.List;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import eu.europa.esig.dss.ws.validation.soap.client.SoapDocumentValidationService;
 
+import java.util.List;
+
+/**
+ * SOAP implementation of the validation service
+ */
 @SuppressWarnings("serial")
 public class SoapDocumentValidationServiceImpl implements SoapDocumentValidationService {
 
+	/** The validation service to use */
 	private RemoteDocumentValidationService validationService;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param validationService {@link RemoteDocumentValidationService}
+	 */
 	public void setValidationService(RemoteDocumentValidationService validationService) {
 		this.validationService = validationService;
 	}

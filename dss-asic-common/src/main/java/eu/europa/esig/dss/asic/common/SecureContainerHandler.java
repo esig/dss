@@ -1,5 +1,13 @@
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,15 +20,6 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The default implementation of {@code ZipContainerHandler}, providing
@@ -76,7 +75,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * 
 	 * Default : 100
 	 * 
-	 * @param maxCompressionRatio
+	 * @param maxCompressionRatio the maximum compression ratio
 	 */
 	public void setMaxCompressionRatio(long maxCompressionRatio) {
 		this.maxCompressionRatio = maxCompressionRatio;
@@ -87,7 +86,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * 
 	 * Default : 1000
 	 * 
-	 * @param maxAllowedFilesAmount
+	 * @param maxAllowedFilesAmount the maximum number of allowed files
 	 */
 	public void setMaxAllowedFilesAmount(int maxAllowedFilesAmount) {
 		this.maxAllowedFilesAmount = maxAllowedFilesAmount;
@@ -98,7 +97,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * 
 	 * Default : 100
 	 * 
-	 * @param maxMalformedFiles
+	 * @param maxMalformedFiles the maximum number of malformed files
 	 */
 	public void setMaxMalformedFiles(int maxMalformedFiles) {
 		this.maxMalformedFiles = maxMalformedFiles;

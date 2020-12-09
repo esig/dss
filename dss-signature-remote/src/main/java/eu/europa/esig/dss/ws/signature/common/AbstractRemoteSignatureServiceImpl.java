@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.io.ByteArrayInputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
@@ -72,8 +67,23 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
+import java.io.ByteArrayInputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * The abstract remote signature service
+ */
 public abstract class AbstractRemoteSignatureServiceImpl {
 
+	/**
+	 * Gets the ASiC Signature Parameters
+	 *
+	 * @param asicContainerType {@link ASiCContainerType}
+	 * @param signatureForm {@link SignatureForm}
+	 * @return {@link SerializableSignatureParameters}
+	 */
 	protected SerializableSignatureParameters getASiCSignatureParameters(ASiCContainerType asicContainerType,
 			SignatureForm signatureForm) {
 		switch (signatureForm) {
@@ -90,6 +100,12 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 	}
 
+	/**
+	 * Creates {@code SerializableSignatureParameters} from {@code RemoteSignatureParameters}
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableSignatureParameters}
+	 */
 	@SuppressWarnings("unchecked")
 	protected SerializableSignatureParameters createParameters(RemoteSignatureParameters remoteParameters) {
 		SerializableSignatureParameters parameters = null;
@@ -124,7 +140,13 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 
 		return parameters;
 	}
-	
+
+	/**
+	 * Gets PAdES signature parameters
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableSignatureParameters}
+	 */
 	protected SerializableSignatureParameters getPAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
 		PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
 		padesParams.setContentSize(9472 * 2); // double reserved space for signature
@@ -132,9 +154,12 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return padesParams;
 	}
 	
-	/*
+	/**
 	 * Return {@code SerializableCounterSignatureParameters} in order to support
 	 * counter signature
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableCounterSignatureParameters}
 	 */
 	protected SerializableCounterSignatureParameters getJAdESSignatureParameters(
 			RemoteSignatureParameters remoteParameters) {
@@ -146,7 +171,14 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return jadesParameters;
 	}
 
-	protected void fillParameters(AbstractSignatureParameters<TimestampParameters> parameters, RemoteSignatureParameters remoteParameters) {
+	/**
+	 * Fills the parameters
+	 *
+	 * @param parameters {@link AbstractSignatureParameters} to fill
+	 * @param remoteParameters {@link RemoteSignatureParameters} to get values from
+	 */
+	protected void fillParameters(AbstractSignatureParameters<TimestampParameters> parameters,
+								  RemoteSignatureParameters remoteParameters) {
 		parameters.setBLevelParams(toBLevelParameters(remoteParameters.getBLevelParams()));
 		parameters.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
@@ -212,7 +244,13 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		
 		return bLevelParameters;
 	}
-	
+
+	/**
+	 * Transforms {@code RemoteTimestampParameters} to {@code TimestampParameters}
+	 *
+	 * @param remoteTimestampParameters {@link RemoteTimestampParameters}
+	 * @return {@link TimestampParameters}
+	 */
 	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters) {
 		TimestampContainerForm timestampForm = remoteTimestampParameters.getTimestampContainerForm();
 		if (timestampForm != null) {
@@ -230,7 +268,15 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			throw new DSSException("Timestamp container form is not defined!");
 		}
 	}
-	
+
+	/**
+	 * Transforms ASiC {@code RemoteTimestampParameters} to {@code TimestampParameters}
+	 *
+	 * @param remoteTimestampParameters {@link RemoteTimestampParameters}
+	 * @param signatureForm {@link SignatureForm}
+	 * @param asicContainerType {@link ASiCContainerType}
+	 * @return {@link TimestampParameters}
+	 */
 	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters, 
 			SignatureForm signatureForm, ASiCContainerType asicContainerType) {
 		TimestampParameters timestampParameters;
@@ -270,11 +316,23 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 		return timestampParameters;
 	}
-	
+
+	/**
+	 * Transforms {@code SignatureValueDTO} to {@code SignatureValue}
+	 *
+	 * @param signatureValueDTO {@link SignatureValueDTO}
+	 * @return {@link SignatureValue}
+	 */
 	protected SignatureValue toSignatureValue(SignatureValueDTO signatureValueDTO) {
 		return new SignatureValue(signatureValueDTO.getAlgorithm(), signatureValueDTO.getValue());
 	}
-	
+
+	/**
+	 * Transforms a list of {@code CommitmentTypeEnum}s to a list of {@code CommitmentType}s
+	 *
+	 * @param commitmentTypeEnums a list of {@link CommitmentTypeEnum}s
+	 * @return a list of {@link CommitmentType}s
+	 */
 	protected List<CommitmentType> toCommitmentTypeList(List<CommitmentTypeEnum> commitmentTypeEnums) {
 		if (Utils.isCollectionNotEmpty(commitmentTypeEnums)) {
 			return commitmentTypeEnums.stream().map(obj -> (CommitmentType) obj).collect(Collectors.toList());
@@ -395,7 +453,14 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return textParameters;
 	}
 
-	protected SerializableCounterSignatureParameters createCounterSignatureParameters(RemoteSignatureParameters remoteParameters) {
+	/**
+	 * Creates counter signature parameters
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableCounterSignatureParameters}
+	 */
+	protected SerializableCounterSignatureParameters createCounterSignatureParameters(
+			RemoteSignatureParameters remoteParameters) {
 		SerializableCounterSignatureParameters parameters;
 
 		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();

@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
+/**
+ * Parses the {@code TimestampedObjectType}
+ */
 public final class TimestampedObjectTypeParser {
 
 	private TimestampedObjectTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code TimestampedObjectType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link TimestampedObjectType}
+	 */
 	public static TimestampedObjectType parse(String v) {
 		if (v != null) {
 			return TimestampedObjectType.valueOf(v);
@@ -34,6 +43,12 @@ public final class TimestampedObjectTypeParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link TimestampedObjectType}
+	 * @return {@link String}
+	 */
 	public static String print(TimestampedObjectType v) {
 		if (v != null) {
 			return v.name();

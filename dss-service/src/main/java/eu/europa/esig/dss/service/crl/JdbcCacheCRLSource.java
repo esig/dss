@@ -50,6 +50,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	private static final long serialVersionUID = 3007740140330998336L;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCRLSource.class);
+
 	/**
 	 * Used in the init method to check if the table exists
 	 */

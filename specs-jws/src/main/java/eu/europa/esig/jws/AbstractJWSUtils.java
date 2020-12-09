@@ -1,11 +1,5 @@
 package eu.europa.esig.jws;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -13,6 +7,15 @@ import org.everit.json.schema.loader.SchemaLoader.SchemaLoaderBuilder;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Abstract class for JWS signature validation against JSON schemas
+ */
 public abstract class AbstractJWSUtils {
 	
 	/**

@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -46,6 +39,12 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Performs operations in order to find all signed data for a XAdES Signature
@@ -176,7 +175,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		return detachedSignatureScopes;
 	}
 
-	public boolean isEverythingCovered(XAdESSignature signature, String coveredObjectId) {
+	private boolean isEverythingCovered(XAdESSignature signature, String coveredObjectId) {
 		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
 		if (parent != null) {
 			if (isRelatedToUri(parent, coveredObjectId)) {

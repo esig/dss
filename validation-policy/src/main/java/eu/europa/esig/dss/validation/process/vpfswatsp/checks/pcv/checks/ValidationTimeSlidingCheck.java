@@ -29,13 +29,26 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+/**
+ * Checks if the Validation Time SLiding result is valid
+ */
 public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 
+	/** Validation Time Sliding */
 	private final XmlVTS vts;
 
-	public ValidationTimeSlidingCheck(I18nProvider i18nProvider, XmlPCV result, XmlVTS vts, String tokenId, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlPCV}
+	 * @param vts {@link XmlVTS}
+	 * @param tokenId {@link String}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public ValidationTimeSlidingCheck(I18nProvider i18nProvider, XmlPCV result, XmlVTS vts, String tokenId,
+									  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, tokenId);
-
 		this.vts = vts;
 	}
 

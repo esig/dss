@@ -22,6 +22,9 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.validation.reports.Reports;
 
+/**
+ * Processes a document validation
+ */
 public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {
 
 	/**

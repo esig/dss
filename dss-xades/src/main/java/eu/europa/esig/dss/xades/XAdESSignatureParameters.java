@@ -176,7 +176,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * The digest method indicates the digest algorithm to be used to calculate the CertDigest element that contains the
 	 * digest for each certificate referenced in the sequence.
 	 *
-	 * @param signingCertificateDigestMethod
+	 * @param signingCertificateDigestMethod {@link DigestAlgorithm}
 	 */
 	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
 		Objects.requireNonNull(signingCertificateDigestMethod, "SigningCertificateDigestMethod cannot be null!");
@@ -479,6 +479,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * This method returns the current used XMLDSig namespace
 	 * Never returns null
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	public DSSNamespace getXmldsigNamespace() {
 		return xmldsigNamespace;
@@ -504,6 +506,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * This method returns the current used XAdES namespace
 	 * Never returns null
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	public DSSNamespace getXadesNamespace() {
 		return xadesNamespace;
@@ -529,6 +533,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * This method returns the current used XAdES 1.4.1 namespace
 	 * Never returns null
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	public DSSNamespace getXades141Namespace() {
 		return xades141Namespace;

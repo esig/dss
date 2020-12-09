@@ -20,26 +20,34 @@
  */
 package eu.europa.esig.dss.jaxb;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
+import eu.europa.esig.dss.alert.status.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
-import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.alert.status.Status;
-
+/**
+ * Abstract class to build a secure builder instance
+ *
+ * @param <F> class of the object to be built
+ */
 public abstract class AbstractFactoryBuilder<F extends Object> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractFactoryBuilder.class);
-	
+
+	/** Map of features to set */
 	private Map<String, Boolean> features = new HashMap<>();
+
+	/** Map of attribute names and values to set */
 	private Map<String, Object> attributes = new HashMap<>();
-	
+
+	/** Defines the behaviour for processing a security exception */
 	private StatusAlert securityExceptionAlert = new ExceptionOnStatusAlert();
 
 	/**
@@ -120,6 +128,8 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	
 	/**
 	 * Sets all features to the factory
+	 *
+	 * @param factory object
 	 */
 	protected void setSecurityFeatures(F factory) {
 		List<String> messages = new ArrayList<>();
@@ -152,6 +162,8 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 
 	/**
 	 * Sets all attributes to the factory
+	 *
+	 * @param factory object
 	 */
 	protected void setSecurityAttributes(F factory) {
 		List<String> messages = new ArrayList<>();

@@ -20,29 +20,72 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Validation result record
+ */
 public interface ValidationInfoRecord extends InfoRecord {
-	
+
+	/**
+	 * Gets validation Indication
+	 *
+	 * @return {@link Indication}
+	 */
 	Indication getIndication();
-	
+
+	/**
+	 * Gets validation SubIndication
+	 *
+	 * @return {@link SubIndication}
+	 */
 	SubIndication getSubIndication();
-	
+
+	/**
+	 * Gets the (claimed) signing time
+	 *
+	 * @return {@link Date}
+	 */
 	Date getSigningTime();
-	
+
+	/**
+	 * Gets the signing certificate
+	 *
+	 * @return {@link CertificateToken}
+	 */
 	CertificateToken getSigningCertificate();
-	
+
+	/**
+	 * Gets a list of signing candidates
+	 *
+	 * @return a list of {@link CertificateToken}s
+	 */
 	List<CertificateToken> getPotentialSigners();
-	
+
+	/**
+	 * Gets if the signature is valid
+	 *
+	 * @return TRUE if the validation succeeded, FALSE otherwise
+	 */
 	boolean isValid();
-	
+
+	/**
+	 * Gets if the validation result is indeterminate
+	 *
+	 * @return TRUE if the validation result is indeterminate, FALSE otherwise
+	 */
 	boolean isIndeterminate();
-	
+
+	/**
+	 * Gets if the signature is invalid
+	 *
+	 * @return TRUE if the validation failed, FALSE otherwise
+	 */
 	boolean isInvalid();
 
 }

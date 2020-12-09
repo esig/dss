@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 
+/**
+ * Parses the {@code ArchiveTimestampType}
+ */
 public class CertificateStatusParser {
 
 	private CertificateStatusParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code CertificateStatus}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link CertificateStatus}
+	 */
 	public static CertificateStatus parse(String v) {
 		return CertificateStatus.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link CertificateStatus}
+	 * @return {@link String}
+	 */
 	public static String print(CertificateStatus v) {
 		return v.name();
 	}

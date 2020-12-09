@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -14,13 +11,27 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.math.BigInteger;
+import java.util.List;
+
+/**
+ * Verifies if a PDF contains annotations overlapping
+ */
 public class PdfAnnotationOverlapCheck extends ChainItem<XmlFC> {
 
+	/** The signature */
 	private final SignatureWrapper signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public PdfAnnotationOverlapCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.signature = signature;
 	}
 

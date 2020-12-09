@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -49,6 +47,8 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateRe
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 
+import java.util.Date;
+
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
  * additional verification to be performed on the signature itself or on the
@@ -56,10 +56,21 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidation
  */
 public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<SignatureWrapper> {
 
+	/** The Diagnostic Data */
 	private final DiagnosticData diagnosticData;
 
-	public SignatureAcceptanceValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, 
-			Context context, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param currentTime {@link Date} validation time
+	 * @param signature {@link SignatureWrapper}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public SignatureAcceptanceValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, Date currentTime,
+										 SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, signature, currentTime, context, validationPolicy);
 		this.diagnosticData = diagnosticData;
 	}

@@ -41,7 +41,7 @@ public interface GetDataToSignASiCWithXAdESHelper extends GetDataToSignHelper {
 	 * Returns the signature document
 	 * (used for parallel signatures)
 	 *
-	 * @return {@linnk DSSDocument}
+	 * @return {@link DSSDocument}
 	 */
 	DSSDocument getExistingSignature();
 

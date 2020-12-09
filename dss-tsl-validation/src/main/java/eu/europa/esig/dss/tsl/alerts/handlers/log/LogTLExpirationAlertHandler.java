@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
+/**
+ * Warns on the TL expiration
+ */
 public class LogTLExpirationAlertHandler implements AlertHandler<TLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogTLExpirationAlertHandler.class);

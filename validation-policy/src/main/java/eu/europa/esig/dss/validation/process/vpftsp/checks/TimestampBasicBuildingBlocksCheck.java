@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpftsp.checks;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -30,10 +28,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
 
+import java.util.Map;
+
+/**
+ * Checks if the timestamp BBB is valid
+ */
 public class TimestampBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessTimestamp> {
 
-	public TimestampBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessTimestamp result, DiagnosticData diagnosticData,
-			XmlBasicBuildingBlocks timestampBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessTimestamp}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param timestampBBB {@link XmlBasicBuildingBlocks}
+	 * @param bbbs map of BasicBuildingBlocks
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public TimestampBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessTimestamp result,
+											 DiagnosticData diagnosticData, XmlBasicBuildingBlocks timestampBBB,
+											 Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
 		super(i18nProvider, result, diagnosticData, timestampBBB, bbbs, constraint);
 	}
 

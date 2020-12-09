@@ -35,6 +35,9 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
+/**
+ * The server signing service for SOAP webService
+ */
 @WebService(targetNamespace = "http://server-signing.dss.esig.europa.eu/")
 public interface SoapSignatureTokenConnection extends Serializable {
 

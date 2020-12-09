@@ -219,6 +219,8 @@ public class SignerLocation implements Serializable {
 
 	/**
 	 * Deprecated since DSS 5.8. Use {@code setStreetAddress(streetAddress)}
+	 *
+	 * @param street {@link String}
 	 */
 	@Deprecated
 	public void setStreet(String street) {

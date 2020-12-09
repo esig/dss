@@ -20,19 +20,34 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.CountDownLatch;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
+import java.util.concurrent.CountDownLatch;
+
+/**
+ * Runs the job for a LOTL analysis
+ */
 public class LOTLAnalysis extends AbstractAnalysis implements Runnable {
 
+	/** The LOTL source */
 	private final LOTLSource source;
+
+	/** The tasks counter */
 	private final CountDownLatch latch;
 
-	public LOTLAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader, CountDownLatch latch) {
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link LOTLSource}
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @param latch {@link CountDownLatch}
+	 */
+	public LOTLAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
+						CountDownLatch latch) {
 		super(cacheAccess, dssFileLoader);
 		this.source = source;
 		this.latch = latch;

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.model;
 
+/**
+ * Represents the SignaturePolicyStore
+ */
 public class SignaturePolicyStore {
 
 	/**

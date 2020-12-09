@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.simplereport;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -36,13 +31,24 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 /**
  * A SimpleReport holder to fetch values from a JAXB SimpleReport.
  */
 public class SimpleReport {
 
+	/** The JAXB Simple report */
 	private final XmlSimpleReport wrapped;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link XmlSimpleReport}
+	 */
 	public SimpleReport(final XmlSimpleReport wrapped) {
 		this.wrapped = wrapped;
 	}

@@ -1023,6 +1023,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      * Returns {@link ArchiveTimestampType} for the given {@code unsignedAttribute}
      *
      * @param unsignedAttribute {@link SignatureAttribute} to get archive timestamp type for
+     * @return {@link ArchiveTimestampType}
      */
     protected abstract ArchiveTimestampType getArchiveTimestampType(SignatureAttribute unsignedAttribute);
 

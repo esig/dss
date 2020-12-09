@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -15,8 +13,20 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
+import java.util.List;
+
+/**
+ * Builds JWS Compact Signature
+ */
 public class JAdESCompactBuilder extends AbstractJAdESBuilder {
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @param documentsToSign a list of {@link DSSDocument}s to sign
+	 */
 	public JAdESCompactBuilder(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, 
 			final List<DSSDocument> documentsToSign) {
 		super(certificateVerifier, parameters, documentsToSign);

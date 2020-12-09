@@ -1,26 +1,35 @@
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-
 import com.lowagie.text.Image;
-
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
-public class ImageOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangleBuilder {
-	
+import java.io.IOException;
+
+/**
+ * Creates a {@code VisualSignatureFieldAppearance} for an image only visual signature
+ */
+public class ImageOnlyAppearanceRectangleBuilder extends ITextAppearanceRectangleBuilder {
+
+	/** The image to create */
 	private final Image image;
 
-	protected ImageOnlyAppearenceRectangleBuilder(SignatureImageParameters imageParameters, Image image) {
+	/**
+	 * Default constructor
+	 *
+	 * @param imageParameters {@link SignatureImageParameters}
+	 * @param image {@link Image}
+	 */
+	protected ImageOnlyAppearanceRectangleBuilder(SignatureImageParameters imageParameters, Image image) {
 		super(imageParameters);
 		this.image = image;
 	}
 
 	@Override
-	public ITextVisualSignatureAppearence build() throws IOException {
+	public ITextVisualSignatureAppearance build() throws IOException {
 		float zoom = ImageUtils.getScaleFactor(imageParameters.getZoom());
 		
 		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
@@ -37,7 +46,7 @@ public class ImageOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangl
 		width *= zoom;
 		height *= zoom;
 		
-		return new ITextVisualSignatureAppearence(
+		return new ITextVisualSignatureAppearance(
 				fieldParameters.getOriginX(),
 				fieldParameters.getOriginY(),
 				fieldParameters.getOriginX() + width, 

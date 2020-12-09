@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+
+import java.util.Date;
 
 @SuppressWarnings("serial")
 public class PAdESTimestampParameters extends CAdESTimestampParameters implements PAdESCommonParameters {
@@ -64,15 +64,28 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 * Password used to encrypt a PDF
 	 */
 	private String passwordProtection;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	public PAdESTimestampParameters() {
 	}
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
 	public PAdESTimestampParameters(DigestAlgorithm digestAlgorithm) {
 		super(digestAlgorithm);
 	}
-	
-	public PAdESTimestampParameters(CAdESTimestampParameters cadesTimestampParameters) {
+
+	/**
+	 * The constructor is used internally to recreate parameters from CAdES Timestamp Parameters
+	 *
+	 * @param cadesTimestampParameters {@link CAdESTimestampParameters}
+	 */
+	PAdESTimestampParameters(CAdESTimestampParameters cadesTimestampParameters) {
 		this(cadesTimestampParameters.getDigestAlgorithm());
 	}
 
@@ -81,6 +94,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampFilter;
 	}
 
+	/**
+	 * Sets the filter
+	 *
+	 * @param timestampFilter {@link String}
+	 */
 	public void setFilter(String timestampFilter) {
 		this.timestampFilter = timestampFilter;
 	}
@@ -90,6 +108,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampSubFilter;
 	}
 
+	/**
+	 * Sets the sub filter
+	 *
+	 * @param timestampSubFilter {@link String}
+	 */
 	public void setSubFilter(String timestampSubFilter) {
 		this.timestampSubFilter = timestampSubFilter;
 	}
@@ -102,6 +125,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampImageParameters;
 	}
 
+	/**
+	 * Sets the {@code SignatureImageParameters} for a visual timestamp creation
+	 *
+	 * @param timestampImageParameters {@link SignatureImageParameters}
+	 */
 	public void setImageParameters(SignatureImageParameters timestampImageParameters) {
 		this.timestampImageParameters = timestampImageParameters;
 	}
@@ -112,7 +140,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	}
 
 	/**
-	 * This setter allows to reserve more than the default size for a timestamp (9472bytes)
+	 * This setter allows to reserve more than the default size for a timestamp
+	 *
+	 * Default : 9472 bytes
+	 *
+	 * @param timestampSize representing the reserved space for /Context element
 	 */
 	public void setContentSize(int timestampSize) {
 		this.timestampSize = timestampSize;
@@ -128,7 +160,7 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 * 
 	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setFieldId()}
 	 * 
-	 * @param timestampFieldId
+	 * @param timestampFieldId {@link String}
 	 */
 	@Deprecated
 	public void setFieldId(String timestampFieldId) {

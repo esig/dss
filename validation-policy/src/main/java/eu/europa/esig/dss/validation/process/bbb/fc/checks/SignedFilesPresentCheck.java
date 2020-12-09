@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -33,14 +31,32 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if signed file are present in an ASiC container
+ */
 public class SignedFilesPresentCheck extends ChainItem<XmlFC> {
 
+	/** ASiC Container info */
 	private final XmlContainerInfo containerInfo;
 
+	/** The constraint message */
 	private MessageTag message;
+
+	/** The error message */
 	private MessageTag error;
 
-	public SignedFilesPresentCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param containerInfo {@link XmlContainerInfo}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public SignedFilesPresentCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo,
+								   LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.containerInfo = containerInfo;
 	}

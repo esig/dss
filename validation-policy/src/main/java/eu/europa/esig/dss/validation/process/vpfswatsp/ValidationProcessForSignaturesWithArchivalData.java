@@ -61,18 +61,45 @@ import java.util.Map;
  */
 public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlValidationProcessArchivalData> {
 
+	/** Signature validation with long-term data result */
 	private final XmlValidationProcessLongTermData validationProcessLongTermData;
-	private final List<XmlTimestamp> xmlTimestamps;
-	private final SignatureWrapper signature;
+
+	/** Diagnostic Data */
 	private final DiagnosticData diagnosticData;
+
+	/** The signature */
+	private final SignatureWrapper signature;
+
+	/** Map of BasicBuildingBlocks */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+	/** List of timestamps */
+	private final List<XmlTimestamp> xmlTimestamps;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
+
+	/** Validation time */
 	private final Date currentTime;
 
+	/** The POE container */
 	private final POEExtraction poe = new POEExtraction();
 
-	public ValidationProcessForSignaturesWithArchivalData(I18nProvider i18nProvider, XmlSignature signatureAnalysis, SignatureWrapper signature, 
-			DiagnosticData diagnosticData, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentTime) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param signatureAnalysis {@link XmlSignature}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param signature {@link SignatureWrapper}
+	 * @param bbbs map of BasicBuildingBlocks
+	 * @param policy {@link ValidationPolicy}
+	 * @param currentTime {@link Date}
+	 */
+	public ValidationProcessForSignaturesWithArchivalData(I18nProvider i18nProvider, XmlSignature signatureAnalysis,
+														  SignatureWrapper signature, DiagnosticData diagnosticData,
+														  Map<String, XmlBasicBuildingBlocks> bbbs,
+														  ValidationPolicy policy, Date currentTime) {
 		super(i18nProvider, new XmlValidationProcessArchivalData());
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.xmlTimestamps = signatureAnalysis.getTimestamp();

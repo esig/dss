@@ -20,25 +20,44 @@
  */
 package eu.europa.esig.dss.policy;
 
-import java.util.concurrent.TimeUnit;
-
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Converts {@code TimeConstraint} from a policy into the corresponding long time value
+ */
 public final class RuleUtils {
 
 	private RuleUtils() {
 	}
 
-	public static long convertDuration(eu.europa.esig.dss.policy.jaxb.TimeUnit fromJaxb, eu.europa.esig.dss.policy.jaxb.TimeUnit toJaxb, int value) {
+	/**
+	 * Converts the given {@code value} to the corresponding long value
+	 *
+	 * @param fromJaxb {@code eu.europa.esig.dss.policy.jaxb.TimeUnit} of the value
+	 * @param toJaxb {@code eu.europa.esig.dss.policy.jaxb.TimeUnit} to obtain
+	 * @param value integer value to convert
+	 * @return long time value
+	 */
+	public static long convertDuration(eu.europa.esig.dss.policy.jaxb.TimeUnit fromJaxb,
+									   eu.europa.esig.dss.policy.jaxb.TimeUnit toJaxb, int value) {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
 		Long convert = to.convert(value, from);
 		return convert.longValue();
 	}
 
+	/**
+	 * Converts the {@code TimeConstraint} to the corresponding long time value in milliseconds
+	 *
+	 * @param timeConstraint {@link TimeConstraint}
+	 * @return long time value in milliseconds
+	 */
 	public static long convertDuration(TimeConstraint timeConstraint) {
 		if (timeConstraint != null) {
-			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.dss.policy.jaxb.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+			return convertDuration(timeConstraint.getUnit(),
+					eu.europa.esig.dss.policy.jaxb.TimeUnit.MILLISECONDS, timeConstraint.getValue());
 		}
 		return Long.MAX_VALUE;
 	}

@@ -29,17 +29,19 @@ import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
 
 /**
- * SignedAssertion ::= SEQUENCE {
- *  signedAssertionID SIGNED-ASSERTION.&id,
- *  signedAssertion SIGNED-ASSERTION.&Assertion OPTIONAL
- * }
+ * {@code
+ *     SignedAssertion ::= SEQUENCE {
+ *     signedAssertionID SIGNED-ASSERTION.&id,
+ *     signedAssertion SIGNED-ASSERTION.&Assertion OPTIONAL
+ *    }
  *
- * SIGNED-ASSERTION::= CLASS {
- *  &id OBJECT IDENTIFIER UNIQUE,
- *  &Assertion OPTIONAL }
- *  WITH SYNTAX {
- *  SIGNED-ASSERTION-ID &id
- *  [SIGNED-ASSERTION-TYPE &Assertion] }
+ *    SIGNED-ASSERTION::= CLASS {
+ *     &id OBJECT IDENTIFIER UNIQUE,
+ *     &Assertion OPTIONAL }
+ *     WITH SYNTAX {
+ *     SIGNED-ASSERTION-ID &id
+ *     [SIGNED-ASSERTION-TYPE &Assertion] }
+ *     }
  */
 public class SignedAssertion extends ASN1Object {
 

@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.tsl.cache;
 
+import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
+import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
+import eu.europa.esig.dss.tsl.cache.state.CachedException;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
-import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
-import eu.europa.esig.dss.tsl.cache.state.CachedException;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The abstract class containing basic methods for handling the {@code Result} implementations
@@ -206,6 +205,11 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	protected abstract CacheType getCacheType();
 
+	/**
+	 * Produces a report of the current cache state
+	 *
+	 * @return {@link String} the cache report
+	 */
 	public String dump() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 

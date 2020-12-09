@@ -20,27 +20,35 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.tsp.TSPException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.ws.dto.TimestampDTO;
 import eu.europa.esig.dss.ws.dto.TimestampIncludeDTO;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Contains utils to convert {@code TimestampDTO} to {@code TimestampToken} and vice versa
+ */
 public class TimestampTokenConverter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampTokenConverter.class);
-	
+
+	/**
+	 * Converts a list of {@code TimestampDTO}s to a list of {@link TimestampToken}s
+	 *
+	 * @param timestampDTOs list of {@code TimestampDTO}s
+	 * @return a list of {@link TimestampToken}s
+	 */
 	public static List<TimestampToken> toTimestampTokens(List<TimestampDTO> timestampDTOs) {
 		List<TimestampToken> timestampTokens = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestampDTOs)) {
@@ -56,7 +64,13 @@ public class TimestampTokenConverter {
 		}
 		return timestampTokens;
 	}
-	
+
+	/**
+	 * Converts {@code TimestampDTO}s to {@link TimestampToken}s
+	 *
+	 * @param timestampDTO {@code TimestampDTO}
+	 * @return {@link TimestampToken}
+	 */
 	public static TimestampToken toTimestampToken(TimestampDTO timestampDTO) throws DSSException {
 		Objects.requireNonNull(timestampDTO, "TimestampDTO cannot be null!");
 		Objects.requireNonNull(timestampDTO.getBinaries(), "TimestampDTO binaries cannot be null!");
@@ -72,7 +86,13 @@ public class TimestampTokenConverter {
 			throw new DSSException(String.format("Cannot convert a TimestampDTO to TimestampToken class, reason : '%s'", e.getMessage()), e);
 		}
 	}
-	
+
+	/**
+	 * Converts {@code TimestampToken}s to {@link TimestampDTO}s
+	 *
+	 * @param timestampToken {@code TimestampToken}
+	 * @return {@link TimestampDTO}
+	 */
 	public static TimestampDTO toTimestampDTO(TimestampToken timestampToken) {
 		Objects.requireNonNull(timestampToken, "TimestampToken cannot be null!");
 		TimestampDTO timestampDTO = new TimestampDTO(timestampToken.getEncoded(), timestampToken.getTimeStampType());

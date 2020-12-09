@@ -6,9 +6,13 @@ package eu.europa.esig.dss.pdf;
  */
 public class PdfAnnotation {
 
+	/** Defines the box of the annotation */
 	private final AnnotationBox annotationBox;
 
+	/** The name of the annotation */
 	private String name;
+
+	/** Defines the annotation is signed (covered by a signature/timestamp) */
 	private boolean signed;
 
 	/**

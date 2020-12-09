@@ -34,7 +34,7 @@ public class SignatureRSARIPEMD160AT extends SignatureBaseRSA {
 	/**
 	 * Constructor SignatureECDSARIPEMD160
 	 *
-	 * @throws org.apache.xml.security.signature.XMLSignatureException
+	 * @throws org.apache.xml.security.signature.XMLSignatureException if an exception occurs
 	 */
 	public SignatureRSARIPEMD160AT() throws XMLSignatureException {
 		super();

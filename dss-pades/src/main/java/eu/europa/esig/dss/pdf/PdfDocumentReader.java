@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-
+/**
+ * Reads the PDF Document
+ */
 public interface PdfDocumentReader extends Closeable {
 	
 	/**

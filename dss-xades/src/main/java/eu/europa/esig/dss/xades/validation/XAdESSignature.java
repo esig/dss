@@ -20,31 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.dom.DOMSource;
-
-import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
-import org.apache.xml.security.algorithms.JCEMapper;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
-import org.apache.xml.security.signature.SignedInfo;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.XMLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
@@ -92,6 +67,29 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
+import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.signature.SignedInfo;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.transform.dom.DOMSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must
@@ -115,16 +113,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private final List<XAdESPaths> xadesPathsHolders;
 
+	/** The current signature element */
+	private final Element signatureElement;
+
+	/** The XMLDSIG namespace */
 	private DSSNamespace xmldSigNamespace;
-	
+
+	/** The current signature xades namespace */
 	private DSSNamespace xadesNamespace;
-	
+
+	/** The XAdES XPaths to use */
 	private XAdESPaths xadesPaths;
 
+	/** Defines if the XSW protection shall be disabled (false by default) */
 	private boolean disableXSWProtection = false;
 
-	private final Element signatureElement;
-	
+	/** Cached Apache Santuario Signature */
 	private transient XMLSignature santuarioSignature;
 	
 	/**
@@ -229,7 +233,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This method sets the namespace which will determinate the {@code XAdESPaths} to use. The content of the
 	 * Transform element is ignored.
 	 *
-	 * @param element
+	 * @param element {@link Element}
 	 */
 	public void recursiveNamespaceBrowser(final Element element) {
 		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
@@ -259,19 +263,39 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 	}
-	
+
+	/**
+	 * Returns a list of used {@code XAdESPaths}
+	 *
+	 * @return a list of {@code XAdESPaths}
+	 */
 	public List<XAdESPaths> getXAdESPathsHolders() {
 		return xadesPathsHolders;
 	}
 
+	/**
+	 * Gets the current {@code XAdESPaths}
+	 *
+	 * @return {@link XAdESPaths}
+	 */
 	public XAdESPaths getXAdESPaths() {
 		return xadesPaths;
 	}
-	
+
+	/**
+	 * Returns the XMLDSIG namespace
+	 *
+	 * @return {@link DSSNamespace}
+	 */
 	public DSSNamespace getXmldSigNamespace() {
 		return xmldSigNamespace;
 	}
 
+	/**
+	 * Returns the XAdES namespace
+	 *
+	 * @return {@link DSSNamespace}
+	 */
 	public DSSNamespace getXadesNamespace() {
 		return xadesNamespace;
 	}
@@ -641,7 +665,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Returns Id of the ds:SignatureValue element
+	 *
+	 * @return {@link String} Id
+	 */
 	public String getSignatureValueId() {
 		return DomUtils.getValue(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_ID_PATH);
 	}
@@ -649,20 +678,35 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method returns the list of ds:Object elements for the current signature element.
 	 *
-	 * @return
+	 * @return {@link NodeList}
 	 */
 	public NodeList getObjects() {
 		return DomUtils.getNodeList(signatureElement, XMLDSigPaths.OBJECT_PATH);
 	}
 
+	/**
+	 * Gets xades:CompleteCertificateRefs element
+	 *
+	 * @return {@link Element}
+	 */
 	public Element getCompleteCertificateRefs() {
 		return DomUtils.getElement(signatureElement, xadesPaths.getCompleteCertificateRefsPath());
 	}
 
+	/**
+	 * Gets xades:CompleteRevocationRefs element
+	 *
+	 * @return {@link Element}
+	 */
 	public Element getCompleteRevocationRefs() {
 		return DomUtils.getElement(signatureElement, xadesPaths.getCompleteRevocationRefsPath());
 	}
 
+	/**
+	 * Gets xades:SigAndRefsTimeStamp node list
+	 *
+	 * @return {@link NodeList}
+	 */
 	public NodeList getSigAndRefsTimeStamp() {
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
 		if (nodeList == null || nodeList.getLength() == 0) {
@@ -674,10 +718,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return nodeList;
 	}
 
+	/**
+	 * Gets xades:CertificateValues element
+	 *
+	 * @return {@link Element}
+	 */
 	public Element getCertificateValues() {
 		return DomUtils.getElement(signatureElement, xadesPaths.getCertificateValuesPath());
 	}
 
+	/**
+	 * Gets xades:RevocationValues element
+	 *
+	 * @return {@link Element}
+	 */
 	public Element getRevocationValues() {
 		return DomUtils.getElement(signatureElement, xadesPaths.getRevocationValuesPath());
 	}
@@ -953,17 +1007,29 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return getObjectById(uri) != null;
 	}
 
-	public Node getObjectById(String uri) {
-		if (Utils.isStringNotBlank(uri)) {
-			String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(uri);
+	/**
+	 * Gets ds:Object by its Id
+	 *
+	 * @param id {@link String} object Id
+	 * @return {@link Node}
+	 */
+	public Node getObjectById(String id) {
+		if (Utils.isStringNotBlank(id)) {
+			String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(id);
 			return DomUtils.getNode(signatureElement, objectById);
 		}
 		return null;
 	}
 
-	public Node getManifestById(String uri) {
-		if (Utils.isStringNotBlank(uri)) {
-			String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(uri);
+	/**
+	 * Gets ds:Manifest by its Id
+	 *
+	 * @param id {@link String} manifest Id
+	 * @return {@link Node}
+	 */
+	public Node getManifestById(String id) {
+		if (Utils.isStringNotBlank(id)) {
+			String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
 			return DomUtils.getNode(signatureElement, manifestById);
 		}
 		return null;
@@ -1105,7 +1171,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	@Override
 	protected SignatureIdentifierBuilder getSignatureIdentifierBuilder() {
-		return new XAdESSignatureIdentiferBuilder(this);
+		return new XAdESSignatureIdentifierBuilder(this);
 	}
 	
 	@Override
@@ -1117,7 +1183,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Retrieves the name of each node found under the unsignedSignatureProperties element
+	 * Retrieves the name of each node found under the UnsignedSignatureProperties element
 	 *
 	 * @return an ArrayList containing the retrieved node names
 	 */
@@ -1125,18 +1191,38 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return DomUtils.getChildrenNames(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 
+	/**
+	 * Retrieves the name of each node found under the SignedSignatureProperties element
+	 *
+	 * @return an ArrayList containing the retrieved node names
+	 */
 	public List<String> getSignedSignatureProperties() {
 		return DomUtils.getChildrenNames(signatureElement, xadesPaths.getSignedSignaturePropertiesPath());
 	}
 
+	/**
+	 * Retrieves the name of each node found under the SignedProperties element
+	 *
+	 * @return an ArrayList containing the retrieved node names
+	 */
 	public List<String> getSignedProperties() {
 		return DomUtils.getChildrenNames(signatureElement, xadesPaths.getSignedPropertiesPath());
 	}
 
+	/**
+	 * Retrieves the name of each node found under the UnsignedProperties element
+	 *
+	 * @return an ArrayList containing the retrieved node names
+	 */
 	public List<String> getUnsignedProperties() {
 		return DomUtils.getChildrenNames(signatureElement, xadesPaths.getUnsignedPropertiesPath());
 	}
 
+	/**
+	 * Retrieves the name of each node found under the SignedDataObjectProperties element
+	 *
+	 * @return an ArrayList containing the retrieved node names
+	 */
 	public List<String> getSignedDataObjectProperties() {
 		return DomUtils.getChildrenNames(signatureElement, xadesPaths.getSignedDataObjectPropertiesPath());
 	}
@@ -1230,6 +1316,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
+	/**
+	 * Gets a list of found references
+	 *
+	 * @return a list of {@link Reference}s
+	 */
 	public List<Reference> getReferences() {
 		if (references == null) {
 			extractReferences();
@@ -1238,7 +1329,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * @return
+	 * Gets a list of found signature ds:Object elements
+	 *
+	 * @return a list of {@link Element}s
 	 */
 	public List<Element> getSignatureObjects() {
 

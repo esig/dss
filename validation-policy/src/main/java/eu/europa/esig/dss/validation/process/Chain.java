@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -31,6 +29,8 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+
+import java.util.List;
 
 /**
  * This class is part of the design pattern "Chain of responsibility".
@@ -99,51 +99,92 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 		return result;
 	}
 
+	/**
+	 * Builds the chain title
+	 *
+	 * @return {@link String} chain title
+	 */
 	protected String buildChainTitle() {
 		return ValidationProcessUtils.buildStringMessage(i18nProvider, getTitle());
 	}
 	
 	/**
 	 * Returns title of a Chain (i.e. BasicBuildingBlock title)
+	 *
 	 * @return {@link MessageTag}
 	 */
 	protected MessageTag getTitle() {
 		return null;
 	}
 
+	/**
+	 * Adds an additional info to the chain
+	 */
 	protected void addAdditionalInfo() {
 		// default is empty
 	}
 
+	/**
+	 * Initializes the chain
+	 */
 	protected abstract void initChain();
-	
+
+	/**
+	 * Checks if the {@code constraintConclusion} has a successful validation result
+	 *
+	 * @param constraintConclusion {@link XmlConstraintsConclusion}
+	 * @return TRUE if the conclusion is valid, FALSE otherwise
+	 */
 	protected boolean isValid(XmlConstraintsConclusion constraintConclusion) {
 		return constraintConclusion != null && isValidConclusion(constraintConclusion.getConclusion());
 	}
 
+	/**
+	 * Checks if the conclusion is valid
+	 *
+	 * @param conclusion {@link XmlConclusion}
+	 * @return TRUE if the conclusion has a PASSED Indication, FALSE otherwise
+	 */
 	protected boolean isValidConclusion(XmlConclusion conclusion) {
 		return conclusion != null && Indication.PASSED.equals(conclusion.getIndication());
 	}
 
-	// TODO uses validation policy
+	/**
+	 * Returns the FAIL level constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
 	protected LevelConstraint getFailLevelConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		return constraint;
 	}
 
+	/**
+	 * Returns the WARN level constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
 	protected LevelConstraint getWarnLevelConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.WARN);
 		return constraint;
 	}
 
+	/**
+	 * Returns the INFO level constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
 	protected LevelConstraint getInfoLevelConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.INFORM);
 		return constraint;
 	}
 
+	/**
+	 * Collects all messages
+	 */
 	protected void collectErrorsWarnsInfos() {
 		XmlConclusion conclusion = result.getConclusion();
 		conclusion.getErrors().clear(); // avoid duplicates

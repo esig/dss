@@ -189,6 +189,7 @@ public abstract class AbstractUtilsTest {
 	@Test
 	public void endsWithIgnoreCase() {
 		assertTrue(Utils.endsWithIgnoreCase("hello", "lo"));
+		assertTrue(Utils.endsWithIgnoreCase("hello", "LO"));
 		assertFalse(Utils.endsWithIgnoreCase("hello", null));
 		assertFalse(Utils.endsWithIgnoreCase(null, "lo"));
 		assertFalse(Utils.endsWithIgnoreCase("hello", "la"));

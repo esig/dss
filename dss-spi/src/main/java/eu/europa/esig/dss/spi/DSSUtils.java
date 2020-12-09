@@ -86,6 +86,9 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+/**
+ * Set of common utils
+ */
 public final class DSSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
@@ -94,11 +97,13 @@ public final class DSSUtils {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
 
+	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+	/** Default DateTime format */
 	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	
-	/* RFC 3061 */
+	/** The URN OID prefix (RFC 3061) */
 	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/**
@@ -255,6 +260,12 @@ public final class DSSUtils {
 		throw new DSSException("Could not parse certificate");
 	}
 
+	/**
+	 * Loads a collection of certificates from a p7c source
+	 *
+	 * @param is {@link InputStream} p7c
+	 * @return a collection of {@link CertificateToken}s
+	 */
 	public static Collection<CertificateToken> loadCertificateFromP7c(InputStream is) {
 		return loadCertificates(is);
 	}
@@ -414,6 +425,12 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Gets the message digest from the {@code DigestAlgorithm}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return {@link MessageDigest}
+	 */
 	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestAlgorithm, "The DigestAlgorithm cannot be null");
 		try {
@@ -467,6 +484,13 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Computes the digests for the {@code document}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @param document {@link DSSDocument} to calculate the digest on
+	 * @return digest value
+	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, DSSDocument document) {
 		try (InputStream is = document.openStream()) {
 			return digest(digestAlgorithm, is);
@@ -475,6 +499,13 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Computes the digest on the data concatenation
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @param data an sequence of byte arrays to compute digest on
+	 * @return digest value
+	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		for (final byte[] bytes : data) {
@@ -889,6 +920,12 @@ public final class DSSUtils {
 	}
 
 
+	/**
+	 * Decodes URI to UTF-8
+	 *
+	 * @param uri {@link String}
+	 * @return {@link String} UTF-8
+	 */
 	public static String decodeUrl(String uri) {
 		try {
 			return URLDecoder.decode(uri, "UTF-8");
@@ -1031,6 +1068,13 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Returns {@code Digest} of the {@code dssDocument}
+	 *
+	 * @param digestAlgo {@link DigestAlgorithm} to use
+	 * @param dssDocument {@link DSSDocument} to compute digest on
+	 * @return {@link Digest}
+	 */
 	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
 		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}

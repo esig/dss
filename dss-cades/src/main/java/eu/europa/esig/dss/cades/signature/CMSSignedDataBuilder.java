@@ -109,10 +109,9 @@ public class CMSSignedDataBuilder {
 	 *            the original signed data if extending an existing signature. null otherwise.
 	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned
 	 *         CMS attributes
-	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	protected CMSSignedDataGenerator createCMSSignedDataGenerator(final CAdESSignatureParameters parameters, final ContentSigner contentSigner,
-			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder, final CMSSignedData originalSignedData) throws DSSException {
+			final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder, final CMSSignedData originalSignedData) {
 		try {
 			final CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
 			final SignerInfoGenerator signerInfoGenerator = getSignerInfoGenerator(signerInfoGeneratorBuilder, contentSigner, parameters);

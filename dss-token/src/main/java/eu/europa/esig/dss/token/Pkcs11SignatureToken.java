@@ -20,6 +20,13 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.model.DSSException;
+
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.security.AuthProvider;
 import java.security.KeyStore;
@@ -31,34 +38,36 @@ import java.security.Security;
 import java.security.Signature;
 import java.util.UUID;
 
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.auth.login.LoginException;
-
-import eu.europa.esig.dss.model.DSSException;
-
 /**
  * PKCS11 token with callback
  */
 public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
+	/** The type of the PKCS11 KeyStore */
 	private static final String SUN_PKCS11_KEYSTORE_TYPE = "PKCS11";
 
+	/** New line character (used for configuration building) */
 	private static final String NEW_LINE = "\n";
+
+	/** Double quote character (used for configuration building) */
 	private static final String DOUBLE_QUOTE = "\"";
 
+	/** The provider */
 	private Provider provider;
 
+	/** The path to the library */
 	private final String pkcs11Path;
 
+	/** The callback to enter a password/pincode */
 	private final PasswordInputCallback callback;
 
+	/** The slot Id to use */
 	private final int slotId;
 
+	/** The slot list index to use */
 	private final int slotListIndex;
 
+	/** Additional PKCS11 config */
 	private final String extraPkcs11Config;
 
 	/**
@@ -228,6 +237,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
         this.extraPkcs11Config = extraPkcs11Config;
     }
 
+	/**
+	 * Gets the Provider to use
+	 *
+	 * @return {@link Provider}
+	 */
 	protected Provider getProvider() {
 		if (provider == null) {
 			String configString = buildConfig();
@@ -245,6 +259,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		return provider;
 	}
 
+	/**
+	 * Builds the PKCS11 config
+	 *
+	 * @return {@link String}
+	 */
 	protected String buildConfig() {
 		/*
 		 * The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive
@@ -272,6 +291,12 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		return pkcs11Config.toString();
 	}
 
+	/**
+	 * Replaces the path like ('\' to '\\')
+	 *
+	 * @param pathToEscape {@link String} to modify
+	 * @return {@link String}
+	 */
 	protected String escapePath(String pathToEscape) {
 		if (pathToEscape != null) {
 			return pathToEscape.replace("\\", "\\\\");
@@ -312,6 +337,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		}
 	}
 
+	/**
+	 * Gets the path to PKCS library
+	 *
+	 * @return {@link String}
+	 */
 	protected String getPkcs11Path() {
 		return pkcs11Path;
 	}

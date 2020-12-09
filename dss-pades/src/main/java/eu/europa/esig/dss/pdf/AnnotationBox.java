@@ -7,10 +7,17 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
  *
  */
 public class AnnotationBox {
-	
+
+	/** The lower left X coordinate */
 	private final float minX;
+
+	/** The upper right X coordinate */
 	private final float maxX;
+
+	/** The lower left Y coordinate */
 	private final float minY;
+
+	/** The upper right Y coordinate */
 	private final float maxY;
 	
 	/**
@@ -103,6 +110,7 @@ public class AnnotationBox {
 	 * while in DSS parameters is top-based
 	 * 
 	 * @param pageHeight the height of a page the annotation box will be created on
+	 * @return {@link AnnotationBox}
 	 */
 	public AnnotationBox toPdfPageCoordinates(float pageHeight) {
 		return new AnnotationBox(minX, pageHeight - maxY, maxX, pageHeight - minY);

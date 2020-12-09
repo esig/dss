@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.ws.server.signing.rest.client;
 
-import java.io.Serializable;
-import java.util.List;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.ws.dto.DigestDTO;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,14 +34,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
+import java.util.List;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.ws.dto.DigestDTO;
-import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
-import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
-import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
-
+/**
+ * The server signing service for REST webService
+ */
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

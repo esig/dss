@@ -1,12 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
@@ -26,6 +19,12 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * The builder used to incorporate a {@code SignaturePolicyStore} to a
@@ -63,7 +62,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		}
 
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
-			assertExtensionPossible(signature, base64UrlInstance);
+			assertEtsiUComponentsConsistent(signature, base64UrlInstance);
 
 			JAdESSignature jadesSignature = new JAdESSignature(signature);
 			extendSignature(jadesSignature, signaturePolicyStore, base64UrlInstance);

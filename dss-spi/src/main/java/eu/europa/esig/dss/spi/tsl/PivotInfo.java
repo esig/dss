@@ -20,25 +20,29 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.identifier.PivotIdentifier;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Contains information about a pivot
+ */
 public class PivotInfo extends LOTLInfo {
 
 	private static final long serialVersionUID = 1724138551018429654L;
 	
-	/* Map between certificates and their change statuses in the current Pivot */
+	/** Map between certificates and their change statuses in the current Pivot */
 	private Map<CertificateToken, CertificatePivotStatus> certificateStatusMap = new HashMap<>();
 	
-	/* associated XML LOTL Location */
+	/** Associated XML LOTL Location */
 	private String lotlLocation;
 
 	/**
 	 * The default constructor
+	 *
 	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
 	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
 	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
@@ -57,6 +61,7 @@ public class PivotInfo extends LOTLInfo {
 	
 	/**
 	 * Returns a map of certificate tokens with a status regarding to the current pivot
+	 *
 	 * @return map between {@link CertificateToken} and {@link CertificatePivotStatus}
 	 */
 	public Map<CertificateToken, CertificatePivotStatus> getCertificateStatusMap() {
@@ -65,6 +70,7 @@ public class PivotInfo extends LOTLInfo {
 	
 	/**
 	 * Returns the associated with the pivot LOTL Location url
+	 *
 	 * @return {@link String} LOTL location url
 	 */
 	public String getLOTLLocation() {

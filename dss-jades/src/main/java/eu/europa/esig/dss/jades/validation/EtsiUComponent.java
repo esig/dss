@@ -3,12 +3,28 @@ package eu.europa.esig.dss.jades.validation;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JsonObject;
 
+/**
+ * Represents an item of the 'etsiU' header array
+ */
 public class EtsiUComponent extends JAdESAttribute {
 
-	private Object component;
-	private boolean base64UrlEncoded;
-	private int hashValue;
+	/** If the component is a base64url encoded instance */
+	private final boolean base64UrlEncoded;
 
+	/** The hash-value of the original object */
+	private final int hashValue;
+
+	/** The component in its original representation */
+	private Object component;
+
+	/**
+	 * The default constructor
+	 *
+	 * @param component {@link Object} the original component
+	 * @param headerName {@link String} the header name
+	 * @param value {@link Object} value
+	 * @param order the order of the component in 'etsiU' array
+	 */
 	public EtsiUComponent(Object component, String headerName, Object value, int order) {
 		super(headerName, value);
 		this.component = component;
@@ -25,10 +41,20 @@ public class EtsiUComponent extends JAdESAttribute {
 		return component;
 	}
 
+	/**
+	 * Gets if the component is base64url encoded
+	 *
+	 * @return TRUE if the component is represented in its base64url encoding, FALSE otherwise
+	 */
 	public boolean isBase64UrlEncoded() {
 		return base64UrlEncoded;
 	}
 
+	/**
+	 * Overwrites the value of the object
+	 *
+	 * @param value new object value
+	 */
 	public void overwriteValue(Object value) {
 		this.value = value;
 		this.component = recreateEtsiUComponent(name, value, base64UrlEncoded);

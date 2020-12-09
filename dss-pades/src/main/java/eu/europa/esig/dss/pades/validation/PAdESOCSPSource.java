@@ -47,8 +47,16 @@ public class PAdESOCSPSource extends PdfDssDictOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESOCSPSource.class);
 
+	/** The name of the corresponding VRI dictionary */
 	private final String vriDictionaryName;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param dssDictionary {@link PdfDssDict}
+	 * @param vriDictionaryName {@link String} the corresponding VRI dictionary name to extract
+	 * @param signedAttributes {@link AttributeTable}
+	 */
 	public PAdESOCSPSource(PdfDssDict dssDictionary, final String vriDictionaryName,
 			AttributeTable signedAttributes) {
 		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
@@ -62,7 +70,7 @@ public class PAdESOCSPSource extends PdfDssDictOCSPSource {
 		if (signedAttributes != null) {
 			final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
 			if (attValue != null) {
-				RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchivals(attValue);
+				RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchival(attValue);
 				if (revocationArchival != null) {
 					for (final OCSPResponse ocspResponse : revocationArchival.getOcspVals()) {
 						final OCSPResp ocspResp = new OCSPResp(ocspResponse);

@@ -127,7 +127,7 @@ public class SignatureCryptographicVerification implements Serializable {
 	 * @param errorMessage {@link String} to add
 	 */
 	public void setErrorMessage(final String errorMessage) {
-		if (!errorMessageBuilder.isEmpty()) {
+		if (errorMessageBuilder.length() != 0) {
 			errorMessageBuilder.append("<br/>\n");
 		}
 		errorMessageBuilder.append(errorMessage);

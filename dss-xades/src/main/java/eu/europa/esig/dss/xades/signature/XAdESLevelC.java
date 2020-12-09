@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.RespID;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -44,6 +34,14 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.RespID;
+import org.w3c.dom.Element;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Contains XAdES-C profile aspects
@@ -53,6 +51,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	/**
 	 * The default constructor for XAdESLevelC.
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
 	public XAdESLevelC(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
@@ -285,4 +285,5 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 		}
 	}
+
 }

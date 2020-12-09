@@ -825,7 +825,7 @@ public abstract class DiagnosticDataBuilder {
 					signatureCertificateSource.getSignedDataCertificates(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.CERTIFICATE_VALUES,
 					signatureCertificateSource.getCertificateValues(), certificateSource);
-			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES,
+			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES,
 					signatureCertificateSource.getAttrAuthoritiesCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.TIMESTAMP_VALIDATION_DATA,
 					signatureCertificateSource.getTimeStampValidationDataCertValues(), certificateSource);

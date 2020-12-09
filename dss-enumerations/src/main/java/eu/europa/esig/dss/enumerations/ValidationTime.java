@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines the used validation time types
+ */
 public enum ValidationTime {
 
 	/**

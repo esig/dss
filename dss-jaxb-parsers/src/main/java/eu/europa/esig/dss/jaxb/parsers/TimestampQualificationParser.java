@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 
+/**
+ * Parses the {@code TimestampQualification}
+ */
 public final class TimestampQualificationParser {
 
 	private TimestampQualificationParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code TimestampQualification}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link TimestampQualification}
+	 */
 	public static TimestampQualification parse(String v) {
 		for (TimestampQualification timestampQualification : TimestampQualification.values()) {
 			if (timestampQualification.getReadable().equals(v)) {
@@ -36,6 +45,12 @@ public final class TimestampQualificationParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link TimestampQualification}
+	 * @return {@link String}
+	 */
 	public static String print(TimestampQualification v) {
 		if (v != null) {
 			return v.getReadable();

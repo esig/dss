@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+
+import java.util.Date;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -35,7 +35,16 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
  */
 public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<TimestampWrapper> {
 
-	public TimestampAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date} validation time
+	 * @param timestamp {@link TimestampWrapper}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public TimestampAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, TimestampWrapper timestamp,
+										 ValidationPolicy validationPolicy) {
 		super(i18nProvider, timestamp, currentTime, Context.TIMESTAMP, validationPolicy);
 	}
     

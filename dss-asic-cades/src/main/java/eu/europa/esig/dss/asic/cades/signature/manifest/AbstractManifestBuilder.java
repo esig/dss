@@ -64,6 +64,7 @@ public abstract class AbstractManifestBuilder {
 	 *                                          the DataObjectReference within
 	 * @param document {@link DSSDocument} to refer
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use for digest calculation
+	 * @return {@link Element}
 	 */
 	protected Element addDataObjectReference(final Document documentDom, final Element asicManifestDom,
 											 DSSDocument document, DigestAlgorithm digestAlgorithm) {

@@ -20,14 +20,37 @@
  */
 package eu.europa.esig.dss.pdf;
 
+/**
+ * Loads the relevant implementation of {@code PDFSignatureService}
+ */
 public interface IPdfObjFactory {
 
+	/**
+	 * The services used for a content timestamp creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
 	PDFSignatureService newContentTimestampService();
-	
+
+	/**
+	 * The services used for a signature creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
 	PDFSignatureService newPAdESSignatureService();
-	
+
+	/**
+	 * The services used for a signature timestamp creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
 	PDFSignatureService newSignatureTimestampService();
 
+	/**
+	 * The services used for an archive timestamp creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
 	PDFSignatureService newArchiveTimestampService();
 
 }

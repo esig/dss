@@ -25,6 +25,9 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * The XAdES 1.2.2 elements
+ */
 public enum XAdES122Element implements XAdESElement {
 
 	ALL_DATA_OBJECTS_TIMESTAMP("AllDataObjectsTimeStamp"),

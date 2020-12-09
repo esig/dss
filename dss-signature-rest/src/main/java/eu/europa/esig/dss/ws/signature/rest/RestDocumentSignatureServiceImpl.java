@@ -32,11 +32,20 @@ import eu.europa.esig.dss.ws.signature.dto.SignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.TimestampOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.rest.client.RestDocumentSignatureService;
 
+/**
+ * REST implementation of the remote signature service
+ */
 @SuppressWarnings("serial")
 public class RestDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl implements RestDocumentSignatureService {
 
+	/** The service to use */
 	private RemoteDocumentSignatureService service;
 
+	/**
+	 * Sets the remote signature service
+	 *
+	 * @param service {@link RemoteDocumentSignatureService}
+	 */
 	public void setService(RemoteDocumentSignatureService service) {
 		this.service = service;
 	}

@@ -20,31 +20,63 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.Map;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import java.util.Map;
+
+/**
+ * An abstract implementation of {@code PdfDssDict}
+ */
 public abstract class AbstractPdfDssDict implements PdfDssDict {
 
+	/** The map of CRL objects */
 	private final Map<Long, CRLBinary> crlMap;
+
+	/** The map of OCSP objects */
 	private final Map<Long, BasicOCSPResp> ocspMap;
+
+	/** The map of certificate objects */
 	private final Map<Long, CertificateToken> certMap;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param dssDictionary {@link PdfDict}
+	 */
 	protected AbstractPdfDssDict(PdfDict dssDictionary) {
 		this.certMap = DSSDictionaryExtractionUtils.getCertsFromArray(dssDictionary, getDictionaryName(), getCertArrayDictionaryName());
 		this.ocspMap = DSSDictionaryExtractionUtils.getOCSPsFromArray(dssDictionary, getDictionaryName(), getOCSPArrayDictionaryName());
 		this.crlMap = DSSDictionaryExtractionUtils.getCRLsFromArray(dssDictionary, getDictionaryName(), getCRLArrayDictionaryName());
 	}
-	
+
+	/**
+	 * Gets the dictionary name (DSS or VRI)
+	 *
+	 * @return {@link String}
+	 */
 	protected abstract String getDictionaryName();
-	
+
+	/**
+	 * Gets the certificate array dictionary name
+	 *
+	 * @return {@link String}
+	 */
 	protected abstract String getCertArrayDictionaryName();
-	
+
+	/**
+	 * Gets the CRL array dictionary name
+	 *
+	 * @return {@link String}
+	 */
 	protected abstract String getCRLArrayDictionaryName();
-	
+
+	/**
+	 * Gets the OCSP array dictionary name
+	 *
+	 * @return {@link String}
+	 */
 	protected abstract String getOCSPArrayDictionaryName();
 
 	@Override

@@ -20,22 +20,39 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.util.List;
-
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 
+import java.util.List;
+
+/**
+ * Parsed TL result
+ */
 public class TLParsingResult extends AbstractParsingResult {
 
+	/** List of found trust service providers */
 	private List<TrustServiceProvider> trustServiceProviders;
-	
+
+	/**
+	 * Default constructor
+	 */
 	public TLParsingResult() {
 		super();
 	}
-	
+
+	/**
+	 * Gets trust service providers
+	 *
+	 * @return a list of {@link TrustServiceProvider}s
+	 */
 	public List<TrustServiceProvider> getTrustServiceProviders() {
 		return trustServiceProviders;
 	}
 
+	/**
+	 * Sets trust service providers
+	 *
+	 * @param trustServiceProviders a list of {@link TrustServiceProvider}s
+	 */
 	public void setTrustServiceProviders(List<TrustServiceProvider> trustServiceProviders) {
 		this.trustServiceProviders = trustServiceProviders;
 	}

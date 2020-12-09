@@ -23,6 +23,9 @@ package eu.europa.esig.dss.enumerations;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Defines available signature qualification types
+ */
 public enum SignatureQualification implements UriBasedEnum {
 
 	/**

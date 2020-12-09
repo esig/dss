@@ -24,8 +24,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Contains utils to parse a date
+ */
 public final class DateUtils {
 
+	/** The default date format */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	private DateUtils() {

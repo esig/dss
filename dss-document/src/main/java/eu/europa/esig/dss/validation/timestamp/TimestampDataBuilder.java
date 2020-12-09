@@ -58,6 +58,7 @@ public interface TimestampDataBuilder {
 	 * Returns the data to be time-stamped which contains the concatenation of CompleteCertificateRefs and
 	 * CompleteRevocationRefs elements (XAdES example).
 	 *
+	 * @param timestampToken {@link TimestampToken}
 	 * @return {@code DSSDocument} representing the canonicalized data to be timestamped
 	 */
 	DSSDocument getTimestampX2Data(final TimestampToken timestampToken);

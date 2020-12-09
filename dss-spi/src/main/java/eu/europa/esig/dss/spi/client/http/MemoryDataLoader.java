@@ -20,18 +20,27 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * Defines a map between URL and document to load the data from offline source
+ */
 public class MemoryDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = -2899281917849499181L;
 
+	/** The map between URLs and the corresponding binary content */
 	private Map<String, byte[]> dataMap = new HashMap<>();
 
+	/**
+	 * Default constructor
+	 *
+	 * @param dataMap a map between URLs and the corresponding binary content
+	 */
 	public MemoryDataLoader(Map<String, byte[]> dataMap) {
 		this.dataMap.putAll(dataMap);
 	}

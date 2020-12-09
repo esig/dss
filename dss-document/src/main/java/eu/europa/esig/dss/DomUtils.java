@@ -130,7 +130,7 @@ public final class DomUtils {
 	 * Enables a feature for the DocumentBuilderFactory
 	 *
 	 * @param feature {@link String} feature name (URL) to enable
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException if an exception occurs
 	 */
 	public static void enableFeature(String feature) throws ParserConfigurationException {
 		if (LOG.isDebugEnabled()) {
@@ -143,7 +143,7 @@ public final class DomUtils {
 	 * Disables a feature for the DocumentBuilderFactory
 	 *
 	 * @param feature {@link String} feature name (URL) to disable
-	 * @throws ParserConfigurationException 
+	 * @throws ParserConfigurationException if an exception occurs
 	 */
 	public static void disableFeature(String feature) throws ParserConfigurationException {
 		if (LOG.isDebugEnabled()) {

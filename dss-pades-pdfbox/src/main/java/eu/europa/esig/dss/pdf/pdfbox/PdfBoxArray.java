@@ -20,25 +20,38 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
-
+import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.spi.DSSUtils;
+import java.io.IOException;
 
+/**
+ * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
+ */
 class PdfBoxArray implements PdfArray {
 
+	/** The PDFBox object */
 	private COSArray wrapped;
 
-	// Retain this reference ! PDDocument must not be garbage collected
+	/**
+	 * The document
+	 *
+	 * NOTE for developers: Retain this reference ! PDDocument must not be garbage collected
+	 */
 	@SuppressWarnings("unused")
 	private PDDocument document;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link COSArray}
+	 * @param document {@link PDDocument}
+	 */
 	public PdfBoxArray(COSArray wrapped, PDDocument document) {
 		this.wrapped = wrapped;
 		this.document = document;

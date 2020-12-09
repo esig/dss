@@ -1,12 +1,5 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -15,15 +8,30 @@ import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Extracts and stores CRLs from a JAdES signature
+ */
 public class JAdESCRLSource extends OfflineCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCRLSource.class);
 
 	private static final long serialVersionUID = -8088419662779006608L;
 
+	/** Represents the unsigned 'etsiU' header */
 	private transient final JAdESEtsiUHeader etsiUHeader;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} unsigned component
+	 */
 	public JAdESCRLSource(JAdESEtsiUHeader etsiUHeader) {
 		Objects.requireNonNull(etsiUHeader, "etsiUComponents cannot be null");
 		this.etsiUHeader = etsiUHeader;

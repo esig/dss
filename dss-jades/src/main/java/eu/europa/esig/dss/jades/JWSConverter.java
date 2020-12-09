@@ -1,10 +1,5 @@
 package eu.europa.esig.dss.jades;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -12,11 +7,26 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Contains utils for a JAdES signature format conversion
+ */
 public final class JWSConverter {
 
+	/** The name for a Flattened Serialization signature */
 	private static final String FLATTENED_SERIALIZATION_DOCUMENT_NAME = "json-flattened-serialization.json";
+
+	/** The name for a JSON Serialization signature */
 	private static final String SERIALIZATION_DOCUMENT_NAME = "json-serialization.json";
+
+	/** The name for a signature containing JSON components in clear JSON form */
 	private static final String CLEAR_ETSIU_DOCUMENT_NAME = "etsiU-clear-incorporation.json";
+
+	/** The name for a signature containing JSON components in their corresponding base64url encoded form */
 	private static final String BASE64URL_ETSIU_DOCUMENT_NAME = "etsiU-base64url-incorporation.json";
 
 	private static List<String> timestampHeaderNames;
@@ -124,7 +134,7 @@ public final class JWSConverter {
 			if (clearEtsiUComponent == null) {
 				throw new DSSException(String.format("Unable to parse 'etsiU' component : '%s'", item));
 			}
-			assertComponentSupportsConvertion(clearEtsiUComponent);
+			assertComponentSupportsConversion(clearEtsiUComponent);
 			clearEtsiUContent.add(new JsonObject(clearEtsiUComponent));
 		}
 		return clearEtsiUContent;
@@ -173,13 +183,13 @@ public final class JWSConverter {
 			if (base64UrlEtsiUComponent == null) {
 				throw new DSSException(String.format("Unable to parse 'etsiU' component : '%s'", item));
 			}
-			assertComponentSupportsConvertion(base64UrlEtsiUComponent);
+			assertComponentSupportsConversion(base64UrlEtsiUComponent);
 			base64UrlEtsiUContent.add(DSSJsonUtils.toBase64Url(base64UrlEtsiUComponent));
 		}
 		return base64UrlEtsiUContent;
 	}
 
-	private static void assertComponentSupportsConvertion(Map<String, Object> etsiUComponent) {
+	private static void assertComponentSupportsConversion(Map<String, Object> etsiUComponent) {
 		// only one is allowed
 		String componentName = etsiUComponent.keySet().iterator().next();
 		if (timestampHeaderNames.contains(componentName)) {

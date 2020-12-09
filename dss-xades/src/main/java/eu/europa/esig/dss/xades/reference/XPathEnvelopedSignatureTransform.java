@@ -23,17 +23,30 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * The simple enveloped signature transform.
+ *
+ * WARN: cannot be used with parallel signatures!
+ */
 public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 
 	/**
 	 * This XPath filter allows to remove all ds:Signature elements from the XML
 	 */
 	private static final String NOT_ANCESTOR_OR_SELF_DS_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
-	
+
+	/**
+	 * Default constructor
+	 */
 	public XPathEnvelopedSignatureTransform() {
 		super(XAdESNamespaces.XMLDSIG, NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
 	}
 
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 */
 	public XPathEnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
 		super(xmlDSigNamespace, NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
 	}

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
 /**
  * This class allows to define the signature policy.
@@ -34,22 +34,30 @@ public class Policy implements Serializable {
 
 	private static final long serialVersionUID = 2792220193195511748L;
 
+	/** The Id of the SignaturePolicy */
 	private String id;
 
-	/* Qualifier attribute for XAdES Identifier */
+	/** Qualifier attribute for XAdES Identifier */
 	private ObjectIdentifierQualifier qualifier;
 
+	/** The SignaturePolicy description */
 	private String description;
 	
-	/* Used in XAdES */
+	/** The array of documentation references (used in XAdES) */
 	private String[] documentationReferences;
 
+	/** The digest algorithm used to conpute the digest */
 	private DigestAlgorithm digestAlgorithm;
 
+	/** The computed digest value */
 	private byte[] digestValue;
 
+	/** The SignaturePolicy URI */
 	private String spuri;
 
+	/**
+	 * Empty constructor
+	 */
 	public Policy() {
 	}
 

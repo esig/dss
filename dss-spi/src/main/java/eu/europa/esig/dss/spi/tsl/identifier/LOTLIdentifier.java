@@ -22,10 +22,18 @@ package eu.europa.esig.dss.spi.tsl.identifier;
 
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 
+/**
+ * The identifier for a LOTL
+ */
 public class LOTLIdentifier extends AbstractTLIdentifier {
 
 	private static final long serialVersionUID = 8038937216737566183L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param lotlInfo {@link LOTLInfo}
+	 */
 	public LOTLIdentifier(LOTLInfo lotlInfo) {
 		super("LOTL-", lotlInfo);
 	}

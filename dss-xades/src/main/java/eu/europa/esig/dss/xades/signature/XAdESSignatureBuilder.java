@@ -20,24 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.apache.xml.security.transforms.Transforms;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
@@ -71,6 +53,22 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class implements all the necessary mechanisms to build each form of the XML signature.
@@ -665,13 +663,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 	
 	/**
-	 * Creates the ds:DigectValue DOM object for the given {@value canonicalizedBytes}
+	 * Creates the ds:DigectValue DOM object for the given {@code canonicalizedBytes}
 	 * @param referenceDom - the parent element to append new DOM element to
 	 * @param digestAlgorithm - {@link DigestAlgorithm} to use
 	 * @param canonicalizedBytes - canonicalized byte array of the relevant reference DOM to hash
 	 */
-	private void incorporateDigestValueOfReference(final Element referenceDom, final DigestAlgorithm digestAlgorithm, final byte[] canonicalizedBytes) {
-		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
+	private void incorporateDigestValueOfReference(final Element referenceDom, final DigestAlgorithm digestAlgorithm,
+												   final byte[] canonicalizedBytes) {
+		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(),
+				XMLDSigElement.DIGEST_VALUE);
 		final String base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, canonicalizedBytes));
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
@@ -1186,12 +1186,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	/**
 	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
 	 *
-	 * @param signatureValue
+	 * @param signatureValue byte array
 	 * @return {@link DSSDocument} representing the signature
-	 * @throws DSSException
 	 */
 	@Override
-	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
+	public DSSDocument signDocument(final byte[] signatureValue) {
 		if (!built) {
 			build();
 		}
@@ -1207,7 +1206,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	/**
 	 * Adds the content of a timestamp into a given timestamp element
 	 *
-	 * @param timestampElement
+	 * @param timestampElement {@link Element}
+	 * @param token {@link TimestampToken}
 	 */
 	protected void addTimestamp(final Element timestampElement, final TimestampToken token) {
 

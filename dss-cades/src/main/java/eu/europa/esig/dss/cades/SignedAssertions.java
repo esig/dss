@@ -58,7 +58,7 @@ public class SignedAssertions extends ASN1Object {
     /**
      * Creates the {@code SignedAssertions} from a list of {@code SignedAssertion}s
      *
-     * @param assertions a list of {@list SignedAssertion}s
+     * @param assertions a list of {@link SignedAssertion}s
      */
     public SignedAssertions(List<SignedAssertion> assertions) {
         this.assertions = assertions;
@@ -95,7 +95,7 @@ public class SignedAssertions extends ASN1Object {
     /**
      * Returns a list of {@code SignedAssertion}s
      *
-     * @return a list of {@list SignedAssertion}s
+     * @return a list of {@link SignedAssertion}s
      */
     public List<SignedAssertion> getAssertions() {
         return assertions;

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
 
 /**
  * Qualified Certificate Statement constants
@@ -34,10 +34,22 @@ public final class QCStatementPolicyIdentifiers {
 	private QCStatementPolicyIdentifiers() {
 	}
 
+	/**
+	 * Checks if the certificate if supported by QSCD
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
+	 */
 	public static boolean isSupportedByQSCD(CertificateWrapper certificate) {
 		return hasQCStatementOID(certificate, QCStatement.QC_SSCD);
 	}
 
+	/**
+	 * Checks if the certificate is QC compliant
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is QC compliant, FALSE otherwise
+	 */
 	public static boolean isQCCompliant(CertificateWrapper certificate) {
 		return hasQCStatementOID(certificate, QCStatement.QC_COMPLIANCE);
 	}

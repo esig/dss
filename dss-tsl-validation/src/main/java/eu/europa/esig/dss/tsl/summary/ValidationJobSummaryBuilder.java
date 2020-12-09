@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Builds a {@code TLValidationJobSummary}
+ */
 public class ValidationJobSummaryBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationJobSummaryBuilder.class);
@@ -65,12 +68,25 @@ public class ValidationJobSummaryBuilder {
 	 */
 	private final LOTLSource[] lotlSources;
 
-	public ValidationJobSummaryBuilder(final ReadOnlyCacheAccess readOnlyCacheAccess, final TLSource[] tlSources, final LOTLSource[] lotlSources) {
+	/**
+	 * Default constructor
+	 *
+	 * @param readOnlyCacheAccess {@link ReadOnlyCacheAccess}
+	 * @param tlSources {@link TLSource}s
+	 * @param lotlSources {@link LOTLSource}s
+	 */
+	public ValidationJobSummaryBuilder(final ReadOnlyCacheAccess readOnlyCacheAccess, final TLSource[] tlSources,
+									   final LOTLSource[] lotlSources) {
 		this.readOnlyCacheAccess = readOnlyCacheAccess;
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 	}
 
+	/**
+	 * Builds the {@code TLValidationJobSummary}
+	 *
+	 * @return {@link TLValidationJobSummary}
+	 */
 	public TLValidationJobSummary build() {
 
 		final List<TLInfo> otherTLInfos = new ArrayList<>();

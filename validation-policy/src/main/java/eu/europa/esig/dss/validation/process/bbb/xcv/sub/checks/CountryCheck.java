@@ -29,13 +29,25 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+/**
+ * Checks if the country's name is acceptable
+ */
 public class CountryCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
-	public CountryCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public CountryCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+						MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.certificate = certificate;
 	}
 

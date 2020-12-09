@@ -20,32 +20,43 @@
  */
 package eu.europa.esig.trustedlist;
 
-import java.util.List;
+import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
+import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
-import eu.europa.esig.xades.XAdESUtils;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-
+/**
+ * Trusted Lists Utils
+ */
 public final class TrustedListUtils extends XSDAbstractUtils {
 
+	/** The Object Factory to use */
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
+	/** The Trusted List XSD schema location */
 	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020101_xsd.xsd";
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
 	public static final String TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION = "/xsd/ts_119612v020101_additionaltypes_xsd.xsd";
-	
+
+	/** Singleton */
 	private static TrustedListUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private TrustedListUtils() {
 	}
-	
+
+	/**
+	 * Returns instance of {@code TrustedListUtils}
+	 *
+	 * @return {@link TrustedListUtils}
+	 */
 	public static TrustedListUtils getInstance() {
 		if (singleton == null) {
 			singleton = new TrustedListUtils();

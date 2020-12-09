@@ -30,10 +30,22 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the issuer serial matches for a signing certificate reference
+ */
 public class IssuerSerialMatchCheck extends ChainItem<XmlISC> {
 
+	/** The token to verify */
 	private final TokenProxy token;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlISC}
+	 * @param token {@link TokenProxy}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public IssuerSerialMatchCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;

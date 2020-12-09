@@ -23,9 +23,9 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearence;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 
-public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearence {
+public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
 	
 	private float boxX = 0;
 	private float boxY = 0;

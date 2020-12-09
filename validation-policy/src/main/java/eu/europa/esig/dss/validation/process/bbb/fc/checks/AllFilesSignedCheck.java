@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
@@ -39,12 +36,31 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Checks if all files are signed inside an ASiC container
+ */
 public class AllFilesSignedCheck extends ChainItem<XmlFC> {
 
+	/** The signature */
 	private final SignatureWrapper signature;
+
+	/** Container information */
 	private final XmlContainerInfo containerInfo;
 
-	public AllFilesSignedCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, XmlContainerInfo containerInfo, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param signature {@link SignatureWrapper}
+	 * @param containerInfo {@link XmlContainerInfo}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public AllFilesSignedCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature,
+							   XmlContainerInfo containerInfo, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.containerInfo = containerInfo;

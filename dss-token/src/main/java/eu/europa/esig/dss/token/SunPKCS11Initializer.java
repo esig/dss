@@ -20,20 +20,30 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.security.Provider;
 
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * Initializes the SunPKCS11 Provider
+ */
 public final class SunPKCS11Initializer {
 
+	/** The SunPKCS11 class name */
 	private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
 
 	private SunPKCS11Initializer() {
 	}
 
+	/**
+	 * Initializes the provider
+	 *
+	 * @param configString {@link String} configuration to use
+	 * @return {@link Provider}
+	 */
 	public static Provider getProvider(String configString) {
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(configString.getBytes())) {
 			Class<?> sunPkcs11ProviderClass = Class.forName(SUN_PKCS11_CLASSNAME);

@@ -23,6 +23,9 @@ package eu.europa.esig.dss.spi;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
+/**
+ * Contains the used OIDs
+ */
 public class OID {
 
 	private OID() {
@@ -34,9 +37,14 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_aa_ets_archiveTimestampV2 = PKCSObjectIdentifiers.id_aa.branch("48");
 
+	/**
+	 * Attributes {itu-t(0) identified-organization(4) etsi(0) electronic-signature-standard(1733) attributes(2)}
+	 */
 	public static final ASN1ObjectIdentifier id_etsi_electronicSignatureStandard_attributes = new ASN1ObjectIdentifier("0.4.0.1733.2");
 
-	// see ETSI EN 319 122-1
+	/**
+	 * Signer attributes {itu-t(0) identified-organization(4) etsi(0) cades(19122) attributes(1)} (see ETSI EN 319 122-1)
+	 */
 	public static final ASN1ObjectIdentifier id_etsi_signer_attributes = new ASN1ObjectIdentifier("0.4.0.19122.1");
 
 	/**

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
- *
+ * XPointer signature scope
  */
 public class XPointerSignatureScope extends SignatureScope {
 
@@ -34,6 +34,13 @@ public class XPointerSignatureScope extends SignatureScope {
 	 */
 	private final String uri;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param xmlId {@link String} id of the reference element
+	 * @param uri {@link String}
+	 * @param digest {@link Digest}
+	 */
 	protected XPointerSignatureScope(final String xmlId, final String uri, final Digest digest) {
 		super(xmlId, digest);
 		this.uri = uri;

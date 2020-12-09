@@ -20,34 +20,67 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * Contain util methods for certificate policy identifiers checks
+ */
 public final class CertificatePolicyIdentifiers {
 
 	private CertificatePolicyIdentifiers() {
 	}
 
+	/**
+	 * Checks if the certificate if supported by QSCD
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
+	 */
 	public static boolean isSupportedByQSCD(CertificateWrapper certificate) {
 		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_PUBLIC_WITH_SSCD, CertificatePolicy.QCP_LEGAL_QSCD,
 				CertificatePolicy.QCP_NATURAL_QSCD);
 	}
 
+	/**
+	 * Checks if the certificate is QCP
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is QCP, FALSE otherwise
+	 */
 	public static boolean isQCP(CertificateWrapper certificate) {
 		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_PUBLIC);
 	}
 
+	/**
+	 * Checks if the certificate is QCP with SSCD
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is QCP with SSCD, FALSE otherwise
+	 */
 	public static boolean isQCPPlus(CertificateWrapper certificate) {
 		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_PUBLIC_WITH_SSCD);
 	}
 
+	/**
+	 * Checks if the certificate is legal QCP
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is legal QCP, FALSE otherwise
+	 */
 	public static boolean isLegal(CertificateWrapper certificate) {
 		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_LEGAL, CertificatePolicy.QCP_LEGAL_QSCD);
 	}
 
+	/**
+	 * Checks if the certificate is natural QCP
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 * @return TRUE if the certificate is natural QCP, FALSE otherwise
+	 */
 	public static boolean isNatural(CertificateWrapper certificate) {
 		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_NATURAL, CertificatePolicy.QCP_NATURAL_QSCD);
 	}

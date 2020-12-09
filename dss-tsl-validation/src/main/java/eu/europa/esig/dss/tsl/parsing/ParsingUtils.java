@@ -20,15 +20,17 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+/**
+ * Contains utils for LOTL/TL parsing
+ */
 public class ParsingUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ParsingUtils.class);

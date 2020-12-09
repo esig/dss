@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.Callable;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
@@ -33,12 +31,28 @@ import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.ParsingUtils;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
+import java.util.concurrent.Callable;
+
+/**
+ * Processes a pivot analysis
+ */
 public class PivotProcessing extends AbstractAnalysis implements Callable<PivotProcessingResult> {
 
+	/** The pivot source */
 	private final LOTLSource pivotSource;
+
+	/** The cache access of the record */
 	private final CacheAccessByKey cacheAccess;
 
-	public PivotProcessing(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader) {
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link LOTLSource} pivot source
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 */
+	public PivotProcessing(final LOTLSource source, final CacheAccessByKey cacheAccess,
+						   final DSSFileLoader dssFileLoader) {
 		super(cacheAccess, dssFileLoader);
 		this.pivotSource = source;
 		this.cacheAccess = cacheAccess;

@@ -39,8 +39,8 @@ public class BinaryFilteringInputStream extends FilterInputStream {
 	/**
 	 * The default constructor
 	 *
-	 * @param in {@link InputStream} to read
-	 * @param os {@link OutputStream) to write data to
+	 * @param in to read
+	 * @param os to write data to
 	 */
 	public BinaryFilteringInputStream(InputStream in, OutputStream os) {
 		super(in);

@@ -6,6 +6,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+/**
+ * Parameters for a XAdES counter signature creation
+ */
 public class XAdESCounterSignatureParameters extends XAdESSignatureParameters implements SerializableCounterSignatureParameters {
 	
 	/**

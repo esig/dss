@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is a DTO to transfer required objects to execute signDocument method
@@ -35,21 +35,43 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 @SuppressWarnings("serial")
 public class SignMultipleDocumentDTO extends AbstractSignDocumentDTO {
 
+	/** List of documents to be signed */
 	private List<RemoteDocument> toSignDocuments;
 
+	/**
+	 * Empty constructor
+	 */
 	public SignMultipleDocumentDTO() {
 		super(null, null);
 	}
 
-	public SignMultipleDocumentDTO(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
+	/**
+	 * Default constructor
+	 *
+	 * @param toSignDocuments a list of {@link RemoteDocument}s tob e signed
+	 * @param parameters {@link RemoteSignatureParameters}
+	 * @param signatureValue {@link SignatureValueDTO}
+	 */
+	public SignMultipleDocumentDTO(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters parameters,
+								   SignatureValueDTO signatureValue) {
 		super(parameters, signatureValue);
 		this.toSignDocuments = toSignDocuments;
 	}
 
+	/**
+	 * Gets a list of documents to be signed
+	 *
+	 * @return a list of {@link RemoteDocument}s
+	 */
 	public List<RemoteDocument> getToSignDocuments() {
 		return toSignDocuments;
 	}
 
+	/**
+	 * Sets a list of documents to be signed
+	 *
+	 * @param toSignDocuments a list of {@link RemoteDocument}s
+	 */
 	public void setToSignDocuments(List<RemoteDocument> toSignDocuments) {
 		this.toSignDocuments = toSignDocuments;
 	}

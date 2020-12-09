@@ -1,28 +1,40 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Abstract JAdES signature builder
+ */
 public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractJAdESBuilder.class);
-	
+
+	/** Signature parameters */
 	protected final JAdESSignatureParameters parameters;
+
+	/** The instance of a B-level generator class */
 	protected final JAdESLevelBaselineB jadesLevelBaselineB;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to use
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @param documentsToSign a list of {@link DSSDocument}s to sign
+	 */
 	protected AbstractJAdESBuilder(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, 
 			final List<DSSDocument> documentsToSign) {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier must be defined!");
@@ -103,6 +115,8 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 	/**
 	 * Verifies if the given signaturePackaging type is supported
 	 * Throws an Exception if the configuration is not valid
+	 *
+	 * @param signatureParameters {@link JAdESSignatureParameters}
 	 */
 	protected abstract void assertConfigurationValidity(final JAdESSignatureParameters signatureParameters);
 

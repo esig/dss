@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
@@ -55,16 +50,45 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.Current
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POEExistsCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationAcceptableCheck;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Performs the Past Signature Validation
+ */
 public class PastSignatureValidation extends Chain<XmlPSV> {
 
+	/** Token to check */
 	private final TokenProxy token;
+
+	/** Map of all BBBs */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+	/** POE container */
 	private final POEExtraction poe;
+
+	/** Validation time */
 	private final Date currentTime;
 
+	/** Validation policy */
 	private final ValidationPolicy policy;
+
+	/** Validation context */
 	private final Context context;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token {@link TokenProxy}
+	 * @param bbbs map of all BBSs
+	 * @param poe {@link POEExtraction}
+	 * @param currentTime {@link Date}
+	 * @param policy {@link ValidationPolicy}
+	 * @param context {@link Context}
+	 */
 	public PastSignatureValidation(I18nProvider i18nProvider, TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs, 
 			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPSV());

@@ -25,8 +25,35 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum CertificateSourceType {
 
-	TRUSTED_STORE, TRUSTED_LIST, SIGNATURE, OCSP_RESPONSE, OTHER, AIA, TIMESTAMP, UNKNOWN;
-	
+	/** Defines a pre-defines trusted source */
+	TRUSTED_STORE,
+
+	/** Defines a certificate source populated by a TLValidationJob */
+	TRUSTED_LIST,
+
+	/** Certificate source extracted from a signature */
+	SIGNATURE,
+
+	/** Certificate source extracted from an OCSP response */
+	OCSP_RESPONSE,
+
+	/** Other types of certificate sources */
+	OTHER,
+
+	/** The certificate source has been obtained by AIA */
+	AIA,
+
+	/** Certificate source extracted from a timestamp */
+	TIMESTAMP,
+
+	/** The unknown origin of a certificate source */
+	UNKNOWN;
+
+	/**
+	 * Gets of the certificate source is trusted
+	 *
+	 * @return TRUE if the certificates in the source are trusted, FALSE otherwise
+	 */
 	public boolean isTrusted() {
 		return TRUSTED_STORE.equals(this) || TRUSTED_LIST.equals(this);
 	}

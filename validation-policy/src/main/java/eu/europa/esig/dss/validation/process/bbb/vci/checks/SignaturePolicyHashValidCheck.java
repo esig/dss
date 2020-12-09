@@ -29,11 +29,24 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+/**
+ * Checks if signature policy identifier is present and the hash matched
+ */
 public class SignaturePolicyHashValidCheck extends ChainItem<XmlVCI> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	public SignaturePolicyHashValidCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlVCI}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public SignaturePolicyHashValidCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature,
+										 LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}

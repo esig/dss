@@ -29,24 +29,51 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
  */
 public class PivotProcessingResult {
 
+	/** The pivot document */
 	private final DSSDocument pivot;
+
+	/** The certificate source to use */
 	private final CertificateSource certificateSource;
+
+	/** The LOTL location */
 	private final String lotlLocation;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param pivot {@link DSSDocument}
+	 * @param certificateSource {@link CertificateSource}
+	 * @param lotlLocation {@link String}
+	 */
 	public PivotProcessingResult(DSSDocument pivot, CertificateSource certificateSource, String lotlLocation) {
 		this.pivot = pivot;
 		this.certificateSource = certificateSource;
 		this.lotlLocation = lotlLocation;
 	}
 
+	/**
+	 * Gets the pivot document
+	 *
+	 * @return {@link DSSDocument}
+	 */
 	public DSSDocument getPivot() {
 		return pivot;
 	}
 
+	/**
+	 * Gets the certificate source
+	 *
+	 * @return {@link CertificateSource}
+	 */
 	public CertificateSource getCertificateSource() {
 		return certificateSource;
 	}
 
+	/**
+	 * Gets LOTL location
+	 *
+	 * @return {@link String}
+	 */
 	public String getLotlLocation() {
 		return lotlLocation;
 	}

@@ -40,7 +40,7 @@ public interface PdfArray {
 	 * @param i
 	 *          the position
 	 * @return the found byte array
-	 * @throws IOException
+	 * @throws IOException if an exception occurs
 	 */
 	byte[] getBytes(int i) throws IOException;
 
@@ -59,7 +59,7 @@ public interface PdfArray {
 	 * @param i
 	 *          the position
 	 * @return the found integer
-	 * @throws IOException
+	 * @throws IOException if an exception occurs\ASiCUtils.
 	 */
 	int getInt(int i) throws IOException;
 

@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.tsl.source;
 
-import java.util.function.Predicate;
-
 import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.LOTLSigningCertificatesAnnouncementSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 
+import java.util.function.Predicate;
+
+/**
+ * Represent a List of Trusted Lists source
+ */
 public class LOTLSource extends TLSource {
 
 	/**

@@ -28,18 +28,37 @@ import java.util.List;
  */
 public class ConditionForQualifiers {
 
+	/** The condition */
 	private Condition condition;
+
+	/** List of Qualifiers */
 	private List<String> qualifiers;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param condition {@link Condition}
+	 * @param qualifiers a list of {@link String}
+	 */
 	public ConditionForQualifiers(Condition condition, List<String> qualifiers) {
 		this.condition = condition;
 		this.qualifiers = qualifiers;
 	}
 
+	/**
+	 * Gets the list of qualifiers
+	 *
+	 * @return a list of {@link String}
+	 */
 	public List<String> getQualifiers() {
 		return qualifiers;
 	}
 
+	/**
+	 * Gets the condition
+	 *
+	 * @return {@link Condition}
+	 */
 	public Condition getCondition() {
 		return condition;
 	}

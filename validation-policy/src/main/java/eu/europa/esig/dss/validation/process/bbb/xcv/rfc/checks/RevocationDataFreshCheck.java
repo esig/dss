@@ -20,19 +20,33 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 
+import java.util.Date;
+
+/**
+ * Checks if the revocation data is fresh
+ */
 public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 
+	/** Defines max freshness */
 	private final TimeConstraint timeConstraint;
 
-	public RevocationDataFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlRFC}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param validationDate {@link Date}
+	 * @param constraint {@link TimeConstraint}
+	 */
+	public RevocationDataFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData,
+									Date validationDate, TimeConstraint constraint) {
 		super(i18nProvider, result, revocationData, validationDate, constraint);
 		this.timeConstraint = constraint;
 	}

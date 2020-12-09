@@ -25,6 +25,10 @@ import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxNativeSignatureDrawerFactory;
 
+/**
+ * The PDFBox native implementation of {@code IPdfObjFactory}
+ * Creates text content in its native representation
+ */
 public class PdfBoxNativeObjectFactory implements IPdfObjFactory {
 
 	@Override

@@ -5,7 +5,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 
-public class TextOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangleBuilder {
+public class TextOnlyAppearenceRectangleBuilder extends ITextAppearanceRectangleBuilder {
 
 	private final ITextFontMetrics iTextFontMetrics;
 	private final float properSize;
@@ -18,7 +18,7 @@ public class TextOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangle
 	}
 
 	@Override
-	public ITextVisualSignatureAppearence build() {
+	public ITextVisualSignatureAppearance build() {
 		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
 		float width = fieldParameters.getWidth();
 		float height = fieldParameters.getHeight();
@@ -31,7 +31,7 @@ public class TextOnlyAppearenceRectangleBuilder extends ITextAppearenceRectangle
 			height = textBox.getHeight();
 		}
 
-		return new ITextVisualSignatureAppearence(fieldParameters.getOriginX(), fieldParameters.getOriginY(),
+		return new ITextVisualSignatureAppearance(fieldParameters.getOriginX(), fieldParameters.getOriginY(),
 				fieldParameters.getOriginX() + width, fieldParameters.getOriginY() + height);
 	}
 

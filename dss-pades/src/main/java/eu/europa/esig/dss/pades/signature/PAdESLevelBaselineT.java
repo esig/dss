@@ -35,9 +35,18 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
  */
 class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters> {
 
+	/** The TSPSource to obtain a timestamp */
 	private final TSPSource tspSource;
+
+	/** The used implementation for processing of a PDF document */
 	private final IPdfObjFactory pdfObjectFactory;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource}
+	 * @param pdfObjectFactory {@link IPdfObjFactory}
+	 */
 	protected PAdESLevelBaselineT(TSPSource tspSource, IPdfObjFactory pdfObjectFactory) {
 		this.tspSource = tspSource;
 		this.pdfObjectFactory = pdfObjectFactory;
@@ -48,13 +57,27 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 		return timestampDocument(document, params.getSignatureTimestampParameters(), params.getPasswordProtection());
 	}
-	
-	protected DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters timestampParameters, final String pwd) {
+
+	/**
+	 * Timestamp document
+	 *
+	 * @param document {@link DSSDocument} to timestamp
+	 * @param timestampParameters {@link PAdESTimestampParameters}
+	 * @param pwd {@link String} password if required
+	 * @return {@link DSSDocument} timestamped
+	 */
+	protected DSSDocument timestampDocument(final DSSDocument document,
+											final PAdESTimestampParameters timestampParameters, final String pwd) {
 		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, newPdfSignatureService());
 		timestampParameters.setPasswordProtection(pwd);
 		return padesTimestampService.timestampDocument(document, timestampParameters);
 	}
-	
+
+	/**
+	 * Returns PDF signature service
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
 	protected PDFSignatureService newPdfSignatureService() {
 		return pdfObjectFactory.newSignatureTimestampService();
 	}

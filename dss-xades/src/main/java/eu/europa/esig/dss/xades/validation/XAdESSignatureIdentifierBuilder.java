@@ -8,9 +8,17 @@ import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
-public class XAdESSignatureIdentiferBuilder extends AbstractSignatureIdentifierBuilder {
+/**
+ * Builds a DSS identifier for a XADES signature
+ */
+public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
-	public XAdESSignatureIdentiferBuilder(XAdESSignature signature) {
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link XAdESSignature}
+	 */
+	public XAdESSignatureIdentifierBuilder(XAdESSignature signature) {
 		super(signature);
 	}
 

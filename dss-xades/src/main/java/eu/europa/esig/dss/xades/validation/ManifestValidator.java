@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.InvalidTransformException;
-import org.apache.xml.security.transforms.Transform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
@@ -45,6 +31,19 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.InvalidTransformException;
+import org.apache.xml.security.transforms.Transform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class validates a ds:Manifest element against external files
@@ -69,19 +68,35 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 public class ManifestValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestValidator.class);
-	
+
+	/** Contains the signature in question */
 	private final Element signatureElement;
+
+	/** The manifest node */
 	private final Node manifestNode;
+
+	/** Detached documents */
 	private final List<DSSDocument> detachedContents;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signatureElement {@link Element}
+	 * @param manifestNode {@link Node}
+	 * @param detachedContents list of {@link DSSDocument}s
+	 */
 	ManifestValidator(Element signatureElement, Node manifestNode, List<DSSDocument> detachedContents) {
 		this.signatureElement = signatureElement;
 		this.manifestNode = manifestNode;
 		this.detachedContents = detachedContents;
 	}
 
+	/**
+	 * Validates the manifest and returns a list of {@code ReferenceValidation}s
+	 *
+	 * @return a list of {@link ReferenceValidation}s
+	 */
 	List<ReferenceValidation> validate() {
-
 		LOG.info("Validation of the manifest references ...");
 
 		List<ReferenceValidation> result = new ArrayList<>();

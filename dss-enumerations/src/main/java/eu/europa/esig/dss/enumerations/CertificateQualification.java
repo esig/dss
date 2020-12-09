@@ -23,6 +23,9 @@ package eu.europa.esig.dss.enumerations;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Available certificate qualification types
+ */
 public enum CertificateQualification {
 
 	/**
@@ -105,10 +108,20 @@ public enum CertificateQualification {
 		this.qscd = qscd;
 	}
 
+	/**
+	 * Returns a short string defining the qualification type
+	 *
+	 * @return {@link String}
+	 */
 	public String getReadable() {
 		return readable;
 	}
 
+	/**
+	 * Returns a complete name of the qualification type
+	 *
+	 * @return {@link String}
+	 */
 	public String getLabel() {
 		return label;
 	}
@@ -141,14 +154,29 @@ public enum CertificateQualification {
 		return null;
 	}
 
+	/**
+	 * Returns if the certificate is qualified
+	 *
+	 * @return TRUE if it is a qualified certificate, FALSE otherwise
+	 */
 	public boolean isQc() {
 		return qc;
 	}
 
+	/**
+	 * Returns if the certificate can be used for an electronic signature
+	 *
+	 * @return TRUE if it is an eSig certificate, FALSE otherwise
+	 */
 	public boolean isForEsig() {
 		return forEsig;
 	}
 
+	/**
+	 * Returns if the certificate is used on a Qualified Signature Creation Device
+	 *
+	 * @return TRUE if the certificate os QSCD, FALSE otherwise
+	 */
 	public boolean isQscd() {
 		return qscd;
 	}

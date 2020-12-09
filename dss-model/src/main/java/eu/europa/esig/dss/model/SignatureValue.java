@@ -20,39 +20,73 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Base64;
 
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-
+/**
+ * The SignatureValue
+ */
 @SuppressWarnings("serial")
 public final class SignatureValue implements Serializable {
 
+	/** Used SignatureAlgorithm for signing */
 	private SignatureAlgorithm algorithm;
 
+	/** The SignatureValue value */
 	private byte[] value;
 
+	/**
+	 * Empty constructor
+	 */
 	public SignatureValue() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param algorithm {@link SignatureAlgorithm}
+	 * @param value the SigntureValue binaries
+	 */
 	public SignatureValue(SignatureAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
 	}
 
+	/**
+	 * Gets the {@code SignatureAlgorithm}
+	 *
+	 * @return {@link SignatureAlgorithm}
+	 */
 	public SignatureAlgorithm getAlgorithm() {
 		return algorithm;
 	}
 
+	/**
+	 * Sets the {@code SignatureAlgorithm}
+	 *
+	 * @param algorithm {@link SignatureAlgorithm}
+	 */
 	public void setAlgorithm(SignatureAlgorithm algorithm) {
 		this.algorithm = algorithm;
 	}
 
+	/**
+	 * Gets the SignatureValue binaries
+	 *
+	 * @return SignatureValue binaries
+	 */
 	public byte[] getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the SignatureValue binaries
+	 *
+	 * @param value SignatureValue binaries
+	 */
 	public void setValue(byte[] value) {
 		this.value = value;
 	}

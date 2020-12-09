@@ -1,20 +1,28 @@
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.validation.SignatureProperties;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.jwx.Headers;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jose4j.json.JsonUtil;
-import org.jose4j.jwx.Headers;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.SignatureProperties;
-
+/**
+ * Represents a list of JAdES signed properties (protected header)
+ */
 public class JAdESSignedProperties implements SignatureProperties<JAdESAttribute> {
 
+	/** Represent the protected header map */
 	private final Headers headers;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param headers {@link Headers}
+	 */
 	public JAdESSignedProperties(Headers headers) {
 		this.headers = headers;
 	}

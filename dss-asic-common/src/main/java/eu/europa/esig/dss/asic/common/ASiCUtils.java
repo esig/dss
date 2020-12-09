@@ -436,7 +436,8 @@ public final class ASiCUtils {
 	/**
 	 * Transforms {@code num} with the pattern:
 	 *     {@code "2 -> 002"}, {@code "10 -> 010"}, etc.
-	 * @param num
+	 *
+	 * @param num number to transform
 	 * @return {@link String}
 	 */
 	public static String getPadNumber(int num) {

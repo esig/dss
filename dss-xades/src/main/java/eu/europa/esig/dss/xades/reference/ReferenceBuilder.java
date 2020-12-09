@@ -1,17 +1,5 @@
 package eu.europa.esig.dss.xades.reference;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.xml.security.transforms.Transforms;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
@@ -26,6 +14,17 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Creates, validates references and processes defined transformations 
@@ -40,9 +39,10 @@ public class ReferenceBuilder {
 	 */
 	private final XAdESSignatureParameters signatureParameters;
 
-	// id-suffix for ds:Object element
+	/** id-suffix for ds:Object element */
 	private static final String OBJECT_ID_SUFFIX = "o-";
-	// id-suffix for ds:Reference element
+
+	/** id-suffix for ds:Reference element */
 	private static final String REFERENCE_ID_SUFFIX = "r-";
 	
 	/**

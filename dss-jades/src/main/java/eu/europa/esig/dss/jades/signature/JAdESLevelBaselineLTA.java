@@ -1,11 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import org.jose4j.json.internal.json_simple.JSONArray;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -26,9 +20,22 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import org.jose4j.json.internal.json_simple.JSONArray;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Creates an LTA-level of a JAdES signature
+ */
 public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to use
+	 */
 	public JAdESLevelBaselineLTA(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
@@ -62,7 +69,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		
 	}
 
-	protected JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {
+	private JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {
 		Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
 		List<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
 		List<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();

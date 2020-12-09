@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Objects;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
@@ -38,15 +29,37 @@ import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyURIListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSLSchemeInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
+
+/**
+ * Abstract class to parse a LOTL/TL
+ */
 public abstract class AbstractParsingTask {
 
+	/** The document to parse */
 	private final DSSDocument document;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param document {@link DSSDocument}
+	 */
 	protected AbstractParsingTask(DSSDocument document) {
 		Objects.requireNonNull(document, "The document is null");
 		this.document = document;
 	}
 
+	/**
+	 * Gets the {@code TrustStatusListType}
+	 *
+	 * @return {@link TrustStatusListType}
+	 */
 	protected TrustStatusListType getJAXBObject() {
 		try (InputStream is = document.openStream()) {
 			return TrustedListFacade.newFacade().unmarshall(is);
@@ -60,15 +73,19 @@ public abstract class AbstractParsingTask {
 		}
 	}
 
+	/**
+	 * Extracts the common values
+	 *
+	 * @param result {@link AbstractParsingResult}
+	 * @param schemeInformation {@link TSLSchemeInformationType}
+	 */
 	protected void commonParseSchemeInformation(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
-
 		extractSequenceNumber(result, schemeInformation);
 		extractTerritory(result, schemeInformation);
 		extractVersion(result, schemeInformation);
 		extractIssueDate(result, schemeInformation);
 		extractNextUpdateDate(result, schemeInformation);
 		extractDistributionPoints(result, schemeInformation);
-
 	}
 
 	private void extractSequenceNumber(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {

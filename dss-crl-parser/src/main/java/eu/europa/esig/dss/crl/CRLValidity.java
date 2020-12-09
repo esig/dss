@@ -92,6 +92,8 @@ public class CRLValidity {
 	
 	/**
 	 * Default constructor
+	 *
+	 * @param crlBinary {@link CRLBinary}
 	 */	
 	public CRLValidity(CRLBinary crlBinary) {
 		Objects.requireNonNull(crlBinary, "CRLBinary cannot be null!");

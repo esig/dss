@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
@@ -32,17 +30,36 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the long-term validation check is acceptable
+ */
 public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
+	/** Long-term validation's conclusion */
 	private final XmlConstraintsConclusion longTermValidationResult;
+
+	/** LTV Indication */
 	private Indication ltvIndication;
+
+	/** LTV SubIndication */
 	private SubIndication ltvSubIndication;
+
+	/** LTV errors */
 	private List<XmlName> ltvErrors;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessArchivalData}
+	 * @param longTermValidationResult {@link XmlConstraintsConclusion}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public LongTermValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, 
 			XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.longTermValidationResult = longTermValidationResult;
 	}
 

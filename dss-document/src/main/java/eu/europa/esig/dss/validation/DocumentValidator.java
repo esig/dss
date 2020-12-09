@@ -119,7 +119,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * This method allows to define the signing certificate. It is useful in the
 	 * case of non AdES signatures.
 	 *
-	 * @param x509Certificate
+	 * @param x509Certificate {@link CertificateToken}
 	 * @deprecated use {@link #setSigningCertificateSource(CertificateSource)}
 	 */
 	@Deprecated
@@ -152,7 +152,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * This method allows to set a provider for Signature policies
 	 * 
-	 * @param signaturePolicyProvider
+	 * @param signaturePolicyProvider {@link SignaturePolicyProvider}
 	 */
 	void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider);
 
@@ -168,7 +168,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * are retrieved from this location. If null or empty the
 	 * default file is used.
 	 *
-	 * @param validationPolicyURL
+	 * @param validationPolicyURL {@link URL}
 	 * @return {@code Reports}: diagnostic data, detailed report and simple report
 	 */
 	Reports validateDocument(final URL validationPolicyURL);
@@ -209,7 +209,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param validationPolicyJaxb
 	 *            {@code ConstraintsParameters}
-	 * @return
+	 * @return {@link Reports}
 	 */
 	Reports validateDocument(final ConstraintsParameters validationPolicyJaxb);
 
@@ -219,7 +219,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param validationPolicy
 	 *            {@code ValidationPolicy}
-	 * @return
+	 * @return {@link Reports}
 	 */
 	Reports validateDocument(final ValidationPolicy validationPolicy);
 
@@ -228,6 +228,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param signatureId
 	 *            the DSS ID of the signature to extract original signer data for
+	 * @return list of {@link DSSDocument}s
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId);
 
@@ -236,6 +237,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param advancedSignature
 	 *            {@link AdvancedSignature} to find signer documents for
+	 * @return list of {@link DSSDocument}s
 	 */
 	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
 	

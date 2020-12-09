@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -34,12 +31,30 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Checks if the commitment type indications are acceptable
+ */
 public class CommitmentTypeIndicationsCheck extends ChainItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
+
+	/** The constraint */
 	private final MultiValuesConstraint constraint;
 
-	public CommitmentTypeIndicationsCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public CommitmentTypeIndicationsCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+										  MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.constraint = constraint;

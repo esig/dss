@@ -25,8 +25,17 @@ import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
+/**
+ * The class to process events on TL
+ */
 public class TLAlert extends AbstractAlert<TLInfo> {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param detection {@link AlertDetector}
+	 * @param handler {@link AlertHandler}
+	 */
 	public TLAlert(AlertDetector<TLInfo> detection, AlertHandler<TLInfo> handler) {
 		super(detection, handler);
 	}

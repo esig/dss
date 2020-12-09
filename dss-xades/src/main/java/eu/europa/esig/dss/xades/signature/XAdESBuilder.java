@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
@@ -61,13 +49,32 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Builds a XAdES signature
+ */
 public abstract class XAdESBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
 
+	/** The attribute used for timestamp includes */
 	public static final String REFERENCED_DATA = "referencedData";
+
+	/** The qualifying properties target */
 	public static final String TARGET = "Target";
+
+	/** The URI attribute */
 	public static final String URI = "URI";
 
 	/**
@@ -76,7 +83,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected XAdESPaths xadesPaths;
 
-	/*
+	/**
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
 	 * extension of the electronic signature.
 	 */
@@ -236,6 +243,7 @@ public abstract class XAdESBuilder {
 	 *            the parent element
 	 * @param certificate
 	 *            the certificate to be added
+	 * @return {@link Element}
 	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
 		final Element certDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCert());
@@ -256,6 +264,12 @@ public abstract class XAdESBuilder {
 		return certDom;
 	}
 
+	/**
+	 * Incorporates IssuerSerial element
+	 *
+	 * @param parentDom {@link Element}
+	 * @param certificate {@link CertificateToken} to get issuer for
+	 */
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
 
@@ -271,6 +285,12 @@ public abstract class XAdESBuilder {
 		DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 	}
 
+	/**
+	 * Incorporates IssuerSerialV2 element
+	 *
+	 * @param parentDom {@link Element}
+	 * @param certificate {@link CertificateToken} to get issuer for
+	 */
 	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerialV2());
 
@@ -299,6 +319,8 @@ public abstract class XAdESBuilder {
 	
 	/**
 	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
+	 *
+	 * @param params {@link XAdESSignatureParameters}
 	 * @return {@link DigestAlgorithm}
 	 */
 	protected DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
@@ -307,13 +329,14 @@ public abstract class XAdESBuilder {
 	
 	/**
 	 * Creates {@link DSSDocument} from the current documentDom
+	 *
 	 * @return {@link DSSDocument}
 	 */
 	protected DSSDocument createXmlDocument() {
 		byte[] bytes;
 		if (Operation.SIGNING.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
 			alignNodes();
-			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignatures(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
+			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
 		} else {
 			bytes = DSSXMLUtils.serializeNode(documentDom);
 		}
@@ -326,6 +349,8 @@ public abstract class XAdESBuilder {
 	
 	/**
 	 * This method returns the current used XMLDSig namespace
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	protected DSSNamespace getXmldsigNamespace() {
 		return params.getXmldsigNamespace();
@@ -333,6 +358,8 @@ public abstract class XAdESBuilder {
 
 	/**
 	 * This method returns the current used XAdES namespace
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	protected DSSNamespace getXadesNamespace() {
 		return params.getXadesNamespace();
@@ -340,11 +367,18 @@ public abstract class XAdESBuilder {
 
 	/**
 	 * This method returns the current used XAdES 1.4.1 namespace
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	protected DSSNamespace getXades141Namespace() {
 		return params.getXades141Namespace();
 	}
-	
+
+	/**
+	 * Gets a relevant class containing the list of elements
+	 *
+	 * @return {@link XAdESElement} implementation
+	 */
 	protected XAdESElement getCurrentXAdESElements() {
 		String xadesURI = getXadesNamespace().getUri();
 		if (XAdESNamespaces.XADES_132.getUri().equals(xadesURI)) {
@@ -357,6 +391,11 @@ public abstract class XAdESBuilder {
 		throw new DSSException("Unsupported URI : " + xadesURI);
 	}
 
+	/**
+	 * Gets a relevant class containing the list of paths
+	 *
+	 * @return {@link XAdESPaths} implementation
+	 */
 	protected XAdESPaths getCurrentXAdESPaths() {
 		String xadesURI = getXadesNamespace().getUri();
 		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), xadesURI)) {

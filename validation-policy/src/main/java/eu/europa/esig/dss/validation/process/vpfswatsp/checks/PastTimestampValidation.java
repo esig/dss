@@ -31,18 +31,38 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if timestamp's past validation is acceptable
+ */
 public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchivalData> {
-	
+
+	/** Past signature validation */
 	private XmlPSV xmlPSV;
+
+	/** Signature acceptance validation */
 	private XmlSAV xmlSAV;
 
+	/** Current Indication */
 	private Indication indication;
+
+	/** Current SubIndication */
 	private SubIndication subIndication;
-	
+
+	/** Past signature validation suffic */
 	private static final String PSV_BLOCK_SUFFIX = "-PSV";
 
-	public PastTimestampValidation(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, XmlPSV xmlPSV, XmlSAV xmlSAV, 
-			TimestampWrapper timestamp, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessArchivalData}
+	 * @param xmlPSV {@link XmlPSV}
+	 * @param xmlSAV {@link XmlSAV}
+	 * @param timestamp {@link TimestampWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public PastTimestampValidation(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, XmlPSV xmlPSV,
+								   XmlSAV xmlSAV, TimestampWrapper timestamp, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, timestamp.getId() + PSV_BLOCK_SUFFIX);
 		this.xmlPSV = xmlPSV;
 		this.xmlSAV = xmlSAV;

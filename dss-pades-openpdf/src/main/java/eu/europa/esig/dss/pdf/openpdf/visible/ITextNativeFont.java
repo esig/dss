@@ -20,18 +20,26 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.awt.Font;
-
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.DefaultFontMapper;
-
 import eu.europa.esig.dss.pades.AbstractDSSFont;
 import eu.europa.esig.dss.pades.DSSNativeFont;
 
+import java.awt.*;
+
+/**
+ * The IText (OpenPDF) native font
+ */
 public class ITextNativeFont extends AbstractDSSFont implements DSSNativeFont<BaseFont> {
-	
+
+	/** The OpenPDF font */
 	private final BaseFont baseFont;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param baseFont {@link BaseFont}
+	 */
 	public ITextNativeFont(BaseFont baseFont) {
 		this.baseFont = baseFont;
 	}

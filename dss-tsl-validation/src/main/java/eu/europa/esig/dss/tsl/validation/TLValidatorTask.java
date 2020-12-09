@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.validation;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -48,12 +43,20 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+
 /**
  * This class allows to validate TL or LOTL.
  */
 public class TLValidatorTask implements Supplier<ValidationResult> {
 
+	/** The Trusted List document to validate */
 	private final DSSDocument trustedList;
+
+	/** The certificate source to use */
 	private final CertificateSource certificateSource;
 
 	/**

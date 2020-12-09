@@ -24,20 +24,42 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
+/**
+ * Defines the download result
+ */
 public class XmlDownloadResult implements CachedResult {
 
+	/** The downloaded document */
 	private final DSSDocument dssDocument;
-	private final Digest digest; // digest of a canonicalized document
 
+	/** Digest of a canonicalized document */
+	private final Digest digest;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param dssDocument {@link DSSDocument} downloaded document
+	 * @param digest {@link Digest} of the canonicalized document
+	 */
 	public XmlDownloadResult(DSSDocument dssDocument, Digest digest) {
 		this.dssDocument = dssDocument;
 		this.digest = digest;
 	}
-	
+
+	/**
+	 * Gets the downloaded document
+	 *
+	 * @return {@link DSSDocument}
+	 */
 	public DSSDocument getDSSDocument() {
 		return dssDocument;
 	}
 
+	/**
+	 * Gets digest of a canonicalized document
+	 *
+	 * @return {@link Digest}
+	 */
 	public Digest getDigest() {
 		return digest;
 	}

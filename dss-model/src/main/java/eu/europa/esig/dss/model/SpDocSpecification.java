@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.model;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
+
+import java.io.Serializable;
 
 /**
  * Represents a "SpDocSpecification" element of a "SignaturePolicyStore"
@@ -10,16 +10,16 @@ import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
  */
 public class SpDocSpecification implements Serializable {
 
-	/* eg. OID : 2.2.25.1 */
+	/** The OID, e.g. OID : 2.2.25.1 */
 	private String id;
 	
-	/* Optional description */
+	/** Optional description */
 	private String description;
 	
-	/* Optional document references */
+	/** Optional document references */
 	private String[] documentationReferences;
 
-	/* Specified in EN 319 132 */
+	/** Specified in EN 319 132 */
 	private ObjectIdentifierQualifier qualifier;
 
 	/**

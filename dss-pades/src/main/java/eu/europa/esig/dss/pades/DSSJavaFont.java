@@ -22,26 +22,54 @@ package eu.europa.esig.dss.pades;
 
 import java.awt.Font;
 
+/**
+ * Represent the JAVA implementation of the DSSFont
+ */
 public class DSSJavaFont extends AbstractDSSFont {
-	
+
+	/** The default font style */
 	private static final int DEFAULT_FONT_STYLE = Font.PLAIN;
 
+	/** The Java font */
 	private Font javaFont;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param javaFont {@link Font}
+	 */
 	public DSSJavaFont(Font javaFont) {
 		this.javaFont = javaFont;
 		this.size = javaFont.getSize();
 	}
-	
+
+	/**
+	 * Constructor from font's name
+	 *
+	 * @param fontName {@link String} name of the Java font to load
+	 */
 	public DSSJavaFont(String fontName) {
 		this.javaFont = new Font(fontName, DEFAULT_FONT_STYLE, (int) DEFAULT_TEXT_SIZE);
 	}
-	
+
+	/**
+	 * Constructor from font's name with size
+	 *
+	 * @param fontName {@link String} name of the Java font to load
+	 * @param size value for the font
+	 */
 	public DSSJavaFont(String fontName, int size) {
 		this.size = size;
 		this.javaFont = new Font(fontName, DEFAULT_FONT_STYLE, size);
 	}
-	
+
+	/**
+	 * Constructor from font's name with a style and size
+	 *
+	 * @param fontName {@link String} name of the Java font to load
+	 * @param style value for the font
+	 * @param size value for the font
+	 */
 	public DSSJavaFont(String fontName, int style, int size) {
 		this.size = size;
 		this.javaFont = new Font(fontName, style, size);
@@ -52,6 +80,11 @@ public class DSSJavaFont extends AbstractDSSFont {
 		return javaFont;
 	}
 
+	/**
+	 * Gets the name of the font
+	 *
+	 * @return {@link String}
+	 */
 	public String getName() {
 		return javaFont.getFontName();
 	}

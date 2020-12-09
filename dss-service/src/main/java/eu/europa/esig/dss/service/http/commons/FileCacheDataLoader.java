@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -41,6 +30,16 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class provides some caching features to handle the resources. The default cache folder is set to
@@ -53,31 +52,56 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
 
+	/** The error message if the dataloader is not configured */
 	private static final String DATA_LOADER_NOT_CONFIGURED = "The DataLoader is not configured";
 
+	/** The directory to cache files */
 	private File fileCacheDirectory = new File(System.getProperty("java.io.tmpdir"));
 
+	/** Loads absolute path */
 	private ResourceLoader resourceLoader = new ResourceLoader();
 
+	/** List of URIs to be loaded */
 	private List<String> toBeLoaded;
 
+	/** List of URIs to be ignored */
 	private List<String> toIgnored;
 
+	/** The cache expiration time, after with the document shall be downloaded again */
 	private Long cacheExpirationTime;
 
+	/** The dataloader to be used for a remote files access */
 	private DataLoader dataLoader;
 
+	/**
+	 * Empty constructor
+	 */
 	public FileCacheDataLoader() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param dataLoader {@link DataLoader} to use for remote access (e.g. online)
+	 */
 	public FileCacheDataLoader(DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
 
+	/**
+	 * Gets the dataloader
+	 *
+	 * @return {@link DataLoader}
+	 */
 	public DataLoader getDataLoader() {
 		return dataLoader;
 	}
 
+	/**
+	 * Sets the data loader for a remote documents access (e.g. online)
+	 *
+	 * @param dataLoader {@link DataLoader}
+	 */
 	public void setDataLoader(DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
@@ -101,12 +125,17 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	 *
 	 * If the expiration time is not set, then the cache does not expire.
 	 *
-	 * @param cacheExpirationTimeInMilliseconds
+	 * @param cacheExpirationTimeInMilliseconds value in milliseconds
 	 */
 	public void setCacheExpirationTime(long cacheExpirationTimeInMilliseconds) {
 		this.cacheExpirationTime = cacheExpirationTimeInMilliseconds;
 	}
 
+	/**
+	 * Sets the ResourceLoader for an absolute path creation
+	 *
+	 * @param resourceLoader {@link ResourceLoader}
+	 */
 	public void setResourceLoader(final ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}
@@ -218,6 +247,12 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 		return file.delete();
 	}
 
+	/**
+	 * Checks if the URL defines a network protocol
+	 *
+	 * @param urlString {@link String} url to check
+	 * @return TRUE if the URL defines a network protocol, FALSE otherwise
+	 */
 	protected boolean isNetworkProtocol(final String urlString) {
 		final String normalizedUrl = Utils.trim(urlString).toLowerCase();
 		return Protocol.isHttpUrl(normalizedUrl) || Protocol.isLdapUrl(normalizedUrl) || Protocol.isFtpUrl(normalizedUrl);
@@ -254,6 +289,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
      *            the URL to add to the cache
      * @param bytes
      *            the content of the cache file
+	 * @return {@link File}
      */
 	public File createFile(final String urlString, final byte[] bytes) {
 		final String fileName = DSSUtils.getNormalizedString(urlString);
@@ -265,6 +301,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	/**
 	 * Allows to load the file for a given file name from the cache folder.
 	 *
+	 * @param urlString {@link String} url
 	 * @return the content of the file or {@code null} if the file does not exist
 	 * @throws DSSException in case if the file does not exist in the cache
 	 */

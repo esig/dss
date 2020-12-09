@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfbs.checks;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
@@ -31,10 +29,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
 
+import java.util.Map;
+
+/**
+ * Validates signature's basic building blocks
+ */
 public class SignatureBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessBasicSignature> {
 
-	public SignatureBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessBasicSignature result, DiagnosticData diagnosticData,
-			XmlBasicBuildingBlocks signatureBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessBasicSignature}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param signatureBBB {@link XmlBasicBuildingBlocks}
+	 * @param bbbs map of all BBBs
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public SignatureBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessBasicSignature result,
+											 DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
+											 Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
 		super(i18nProvider, result, diagnosticData, signatureBBB, bbbs, constraint);
 
 		result.setProofOfExistence(getCurrentTime(diagnosticData));

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.ws.server.signing.soap;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
@@ -31,11 +29,22 @@ import eu.europa.esig.dss.ws.server.signing.common.RemoteSignatureTokenConnectio
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 import eu.europa.esig.dss.ws.server.signing.soap.client.SoapSignatureTokenConnection;
 
+import java.util.List;
+
+/**
+ * The SOAP implementation of server signing
+ */
 @SuppressWarnings("serial")
 public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConnection {
 
+	/** The connection to the remote token */
 	private RemoteSignatureTokenConnection token;
 
+	/**
+	 * Sets remote token connection
+	 *
+	 * @param token {@link RemoteSignatureTokenConnection}
+	 */
 	public void setToken(RemoteSignatureTokenConnection token) {
 		this.token = token;
 	}

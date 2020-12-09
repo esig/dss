@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+
 import java.io.Serializable;
 import java.security.PublicKey;
 import java.util.Objects;
-
-import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This class stores the information about the validity of the signing certificate.
@@ -154,44 +154,89 @@ public class CertificateValidity implements Serializable {
 	/**
 	 * Indicates if the IssuerSerial (issuerAndSerialNumber) is present in the signature.
 	 *
-	 * @return
+	 * @return TRUE if the IssuerSerial is present
 	 */
 	public boolean isIssuerSerialPresent() {
 		return issuerSerialPresent;
 	}
 
+	/**
+	 * Sets if the IssuerSerial is present
+	 *
+	 * @param issuerSerialPresent TRUE if the IssuerSerial is present, FALSE otherwise
+	 */
 	public void setIssuerSerialPresent(boolean issuerSerialPresent) {
 		this.issuerSerialPresent = issuerSerialPresent;
 	}
 
+	/**
+	 * Indicates if the SerialNumber equals
+	 *
+	 * @return TRUE if the SerialNumber equals
+	 */
 	public boolean isSerialNumberEqual() {
 		return serialNumberEqual;
 	}
 
+	/**
+	 * Sets if the serial number matches
+	 *
+	 * @param serialNumberEqual if the serial number matches
+	 */
 	public void setSerialNumberEqual(final boolean serialNumberEqual) {
 		this.serialNumberEqual = serialNumberEqual;
 	}
 
+	/**
+	 * Gets if the distinguished name equals
+	 *
+	 * @return TRUE if the distinguished name equals, FALSE otherwise
+	 */
+	public boolean isDistinguishedNameEqual() {
+		return distinguishedNameEqual;
+	}
+
+	/**
+	 * Sets if the distinguished name equals
+	 *
+	 * @param distinguishedNameEqual if the distinguished name equals
+	 */
 	public void setDistinguishedNameEqual(final boolean distinguishedNameEqual) {
 		this.distinguishedNameEqual = distinguishedNameEqual;
 	}
 
-	public boolean isDistinguishedNameEqual() {
-		return distinguishedNameEqual;
-	}
-	
+	/**
+	 * Gets if the ResponderId is present
+	 *
+	 * @return TRUE if the ResponderId is present, FALSE otherwise
+	 */
 	public boolean isResponderIdPresent() {
 		return responderIdPresent;
 	}
 
+	/**
+	 * Sets if the ResponderId is present
+	 *
+	 * @param responderIdPresent if the ResponderId is present
+	 */
 	public void setResponderIdPresent(boolean responderIdPresent) {
 		this.responderIdPresent = responderIdPresent;
 	}
-	
+
+	/**
+	 * Gets if the Responder Id matches
+	 *
+	 * @return TRUE if the Responder Id matches, FALSE otherwise
+	 */
 	public boolean isResponderIdMatch() {
 		return responderIdMatch;
 	}
 
+	/**
+	 * Sets if the ResponderId matches
+	 *
+	 * @param responderIdMatch if the ResponderId matches
+	 */
 	public void setResponderIdMatch(boolean responderIdMatch) {
 		this.responderIdMatch = responderIdMatch;
 	}

@@ -52,7 +52,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	}
 
 	@Override
-	public ITextVisualSignatureAppearence buildSignatureFieldBox() {
+	public ITextVisualSignatureAppearance buildSignatureFieldBox() {
 		ITextFontMetrics iTextFontMetrics = getITextFontMetrics();
 		return new TextOnlyAppearenceRectangleBuilder(parameters, iTextFontMetrics, getProperSize()).build();
 	}
@@ -78,7 +78,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			appearance.setLayer2Text(text);
 			
 		} else {
-			ITextVisualSignatureAppearence appearenceRectangle = buildSignatureFieldBox();
+			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
 			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
 			
 			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders

@@ -20,15 +20,27 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
+import java.util.Date;
+
+/**
+ * Checks if the revocation data is fresh against its ThisUpdate and NextUpdate time interval
+ */
 public class RevocationDataFreshCheckWithNullConstraint extends AbstractRevocationFreshCheck {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlRFC}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param validationDate {@link Date}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public RevocationDataFreshCheckWithNullConstraint(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, 
 			Date validationDate, LevelConstraint constraint) {
 		super(i18nProvider, result, revocationData, validationDate, constraint);

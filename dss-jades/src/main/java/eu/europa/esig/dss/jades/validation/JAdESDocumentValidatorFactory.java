@@ -4,6 +4,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+/**
+ * Loads the relevant Validator to process a given JAdES signature
+ */
 public class JAdESDocumentValidatorFactory implements DocumentValidatorFactory {
 
 	@Override

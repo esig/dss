@@ -1,26 +1,36 @@
 package eu.europa.esig.dss.jades.validation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * The abstract class for a JWS signature validation
+ */
 public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractJWSDocumentValidator.class);
-	
+
+	/**
+	 * Empty constructor
+	 */
 	protected AbstractJWSDocumentValidator() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param document {@link DSSDocument} to validate
+	 */
 	protected AbstractJWSDocumentValidator(DSSDocument document) {
 		super(new JAdESSignatureScopeFinder());
 		this.document = document;

@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
+/**
+ * Parses the {@code SignatureQualification}
+ */
 public final class SignatureQualificationParser {
 
 	private SignatureQualificationParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code SignatureQualification}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link SignatureQualification}
+	 */
 	public static SignatureQualification parse(String v) {
 		return SignatureQualification.fromReadable(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link SignatureQualification}
+	 * @return {@link String}
+	 */
 	public static String print(SignatureQualification v) {
 		if (v != null) {
 			return v.getReadable();

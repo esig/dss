@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.RevocationType;
 
+/**
+ * Parses the {@code RevocationType}
+ */
 public class RevocationTypeParser {
 
 	private RevocationTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code RevocationType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link RevocationType}
+	 */
 	public static RevocationType parse(String v) {
 		return RevocationType.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link RevocationType}
+	 * @return {@link String}
+	 */
 	public static String print(RevocationType v) {
 		if (v != null) {
 			return v.name();

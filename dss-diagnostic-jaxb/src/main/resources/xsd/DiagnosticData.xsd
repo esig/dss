@@ -756,7 +756,7 @@
 			<xs:enumeration value="KEY_INFO" />
 			<xs:enumeration value="SIGNED_DATA" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
-			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
+			<xs:enumeration value="ATTR_AUTHORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />

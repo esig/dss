@@ -20,28 +20,30 @@
  */
 package eu.europa.esig.xmldsig;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
-
+/**
+ * Abstract class for XSD Utils
+ */
 public abstract class XSDAbstractUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XSDAbstractUtils.class);
 
+	/** Cached schema */
 	private Schema schema;
 
 	/**
@@ -138,6 +140,7 @@ public abstract class XSDAbstractUtils {
 	 *                         the used {@code Schema} to validate
 	 * @param secureValidation
 	 *                         enable/disable the secure validation (protection against XXE)
+	 * @throws IOException if an exception occurs
 	 */
 	public void validate(final Source xmlSource, final Schema schema, boolean secureValidation)
 			throws IOException {

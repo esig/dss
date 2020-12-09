@@ -25,8 +25,17 @@ import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 
+/**
+ * The class to process events on LOTL
+ */
 public class LOTLAlert extends AbstractAlert<LOTLInfo> {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param detection {@link AlertDetector}
+	 * @param handler {@link AlertHandler}
+	 */
 	public LOTLAlert(AlertDetector<LOTLInfo> detection, AlertHandler<LOTLInfo> handler) {
 		super(detection, handler);
 	}

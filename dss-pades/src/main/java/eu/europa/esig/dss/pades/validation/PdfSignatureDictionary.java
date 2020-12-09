@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.Date;
-
+import eu.europa.esig.dss.validation.ByteRange;
 import org.bouncycastle.cms.CMSSignedData;
 
-import eu.europa.esig.dss.validation.ByteRange;
+import java.util.Date;
 
 /**
  * Contains PDF signature dictionary information
@@ -32,26 +31,81 @@ import eu.europa.esig.dss.validation.ByteRange;
  */
 public interface PdfSignatureDictionary {
 
+	/**
+	 * Gets the signed/timestamped ByteRange
+	 *
+	 * @return {@link ByteRange}
+	 */
 	ByteRange getByteRange();
 
+	/**
+	 * Gets name of the signed
+	 *
+	 * @return {@link String}
+	 */
 	String getSignerName();
 
+	/**
+	 * Gets the signer's location
+	 *
+	 * @return {@link String}
+	 */
 	String getLocation();
 
+	/**
+	 * Gets the signer's contact info
+	 *
+	 * @return {@link String}
+	 */
 	String getContactInfo();
 
+	/**
+	 * Gets the signing reason
+	 *
+	 * @return {@link String}
+	 */
 	String getReason();
-	
+
+	/**
+	 * Gets type of the dictionary
+	 *
+	 * @return {@link String}
+	 */
 	String getType();
 
+	/**
+	 * Gets the Filter value
+	 *
+	 * @return {@link String}
+	 */
 	String getFilter();
 
+	/**
+	 * Gets the SubFilter value
+	 *
+	 * @return {@link String}
+	 */
 	String getSubFilter();
-	
+
+	/**
+	 * Gets the CMSSignedData from /Contents
+	 *
+	 * @return {@link CMSSignedData}
+	 */
 	CMSSignedData getCMSSignedData();
-	
+
+	/**
+	 * Gets /Contents binaries (CMSSignedData)
+	 *
+	 * @return /Contents binaries
+	 */
 	byte[] getContents();
 
+	/**
+	 * Gets the claimed signing time
+	 *
+	 * @return {@link Date}
+	 */
 	Date getSigningDate();
 
 }

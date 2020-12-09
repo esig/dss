@@ -137,15 +137,43 @@ public class TimestampToken extends Token {
 
 	/* cached */
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param binaries byte array
+	 * @param type {@link TimestampType}
+	 * @throws TSPException if timestamp creation exception occurs
+	 * @throws IOException if IOException occurs
+	 * @throws CMSException if CMS data building exception occurs
+	 */
 	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
-		this(binaries, type, new ArrayList<TimestampedReference>());
+		this(binaries, type, new ArrayList<>());
 	}
 
+	/**
+	 * Default constructor with timestamped references
+	 *
+	 * @param binaries byte array
+	 * @param type {@link TimestampType}
+	 * @param timestampedReferences a list of {@link TimestampedReference}s
+	 * @throws TSPException if timestamp creation exception occurs
+	 * @throws IOException if IOException occurs
+	 * @throws CMSException if CMS data building exception occurs
+	 */
 	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences) throws TSPException, IOException, CMSException {
 		this(new CMSSignedData(binaries), type, timestampedReferences);
 	}
 
+	/**
+	 * Default constructor with timestamped references
+	 *
+	 * @param cms {@link CMSSignedData}
+	 * @param type {@link TimestampType}
+	 * @param timestampedReferences a list of {@link TimestampedReference}s
+	 * @throws TSPException if timestamp creation exception occurs
+	 * @throws IOException if IOException occurs
+	 */
 	public TimestampToken(final CMSSignedData cms, final TimestampType type, final List<TimestampedReference> timestampedReferences) throws TSPException, IOException {
 		this(new TimeStampToken(cms), type, timestampedReferences);
 	}
@@ -246,7 +274,13 @@ public class TimestampToken extends Token {
 	public boolean isSignedBy(final PublicKey publicKey) {
 		throw new UnsupportedOperationException("Use method isSignedBy(certificateToken) for a TimestampToken validation!");
 	}
-	
+
+	/**
+	 * Checks if timestamp is signed by teh given certificate
+	 *
+	 * @param candidate {@link CertificateToken}
+	 * @return {@link SignatureValidity}
+	 */
 	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
 
 		final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(candidate);
@@ -409,6 +443,11 @@ public class TimestampToken extends Token {
 		return messageImprintIntact;
 	}
 
+	/**
+	 * Checks if the timestamp's signature has been validated
+	 *
+	 * @return TRUE if the timestamp's signature has been validated, FALSE otherwise
+	 */
 	public boolean isProcessed() {
 		return processed;
 	}
@@ -561,12 +600,17 @@ public class TimestampToken extends Token {
 	/**
 	 * Returns the covered references by the current timestamp (XAdES IndividualDataObjectsTimeStamp)
 	 * 
-	 * @return
+	 * @return a list of timestamp's includes
 	 */
 	public List<TimestampInclude> getTimestampIncludes() {
 		return timestampIncludes;
 	}
 
+	/**
+	 * Sets the covered references by the current timestamp (XAdES IndividualDataObjectsTimeStamp)
+	 *
+	 * @param timestampIncludes a list of timestamp's includes
+	 */
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
 	}
@@ -580,6 +624,11 @@ public class TimestampToken extends Token {
 		return timestampScopes;
 	}
 
+	/**
+	 * Sets timestamp's signature scopes
+	 *
+	 * @param timestampScopes a list of {@link SignatureScope}s
+	 */
 	public void setTimestampScopes(List<SignatureScope> timestampScopes) {
 		this.timestampScopes = timestampScopes;
 	}
@@ -602,10 +651,20 @@ public class TimestampToken extends Token {
 		return certificateSource.getAllCertificateRefs();
 	}
 
+	/**
+	 * Gets unsigned attribute table
+	 *
+	 * @return {@link AttributeTable}
+	 */
 	public AttributeTable getUnsignedAttributes() {
 		return timeStamp.getUnsignedAttributes();
 	}
 
+	/**
+	 * Gets BouncyCastle implementation of a TimestampToken
+	 *
+	 * @return {@link TimeStampToken}
+	 */
 	public TimeStampToken getTimeStamp() {
 		return timeStamp;
 	}

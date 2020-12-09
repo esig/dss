@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.CommitmentType;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import eu.europa.esig.dss.enumerations.CommitmentType;
 
 @SuppressWarnings("serial")
 public class BLevelParameters implements Serializable {
@@ -45,20 +45,28 @@ public class BLevelParameters implements Serializable {
 	 */
 	private boolean trustAnchorBPPolicy = true;
 
+	/** The claimed signing time */
 	private Date signingDate = new Date();
 
+	/** Claimed signer roles */
 	private List<String> claimedSignerRoles;
 
+	/** Signed assertions */
 	private List<String> signedAssertions;
 
+	/** The Signature Policy Identifier */
 	private Policy signaturePolicy;
 
+	/** List of commitment type indications */
 	private List<CommitmentType> commitmentTypeIndications;
-	
+
+	/** The SignerLocation */
 	private SignerLocation signerLocation;
 
 	/**
-	 * @return indicates the trust anchor policy shall be used when creating -B and -LT levels
+	 * Check if the trust anchor policy shall be used when creating -B and -LT levels
+	 *
+	 * @return TRUE if the trust anchor policy shall be used when creating -B and -LT levels, FALSE otherwise
 	 */
 	public boolean isTrustAnchorBPPolicy() {
 		return trustAnchorBPPolicy;
@@ -69,8 +77,7 @@ public class BLevelParameters implements Serializable {
 	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are
 	 * included when building -B level.
 	 *
-	 * @param trustAnchorBPPolicy
-	 *            {@code boolean}
+	 * @param trustAnchorBPPolicy {@code boolean}
 	 */
 	public void setTrustAnchorBPPolicy(boolean trustAnchorBPPolicy) {
 		this.trustAnchorBPPolicy = trustAnchorBPPolicy;
@@ -134,11 +141,21 @@ public class BLevelParameters implements Serializable {
 		return claimedSignerRoles;
 	}
 
+	/**
+	 * Get the signed assertions
+	 *
+	 * @return list of {@link String}s
+	 */
 	public List<String> getSignedAssertions() {
         return signedAssertions;
     }
 
-    public void setSignedAssertions(List<String> signedAssertions) {
+	/**
+	 * Set signed assertions
+	 *
+	 * @param signedAssertions a list of {@link String}s
+	 */
+	public void setSignedAssertions(List<String> signedAssertions) {
         this.signedAssertions = signedAssertions;
     }
 

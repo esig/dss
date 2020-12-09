@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.converter.TrustServiceProviderConverter;
@@ -38,10 +32,26 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustServiceProviderListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+/**
+ * Parses a TL and returns {@code TLParsingResult}
+ */
 public class TLParsingTask extends AbstractParsingTask implements Supplier<TLParsingResult> {
 
+	/** The TLSource to parse */
 	private final TLSource tlSource;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param document {@link DSSDocument} TL document to parse
+	 * @param tlSource {@link TLSource}
+	 */
 	public TLParsingTask(DSSDocument document, TLSource tlSource) {
 		super(document);
 		Objects.requireNonNull(tlSource, "The TLSource is null");

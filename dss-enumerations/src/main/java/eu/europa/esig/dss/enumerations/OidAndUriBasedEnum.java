@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Interface has joined attributes between OID and URI enums
+ */
 public interface OidAndUriBasedEnum extends OidBasedEnum, UriBasedEnum {
 
 }

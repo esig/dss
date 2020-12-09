@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import java.io.IOException;
-
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfIndirectReference;
@@ -29,13 +27,23 @@ import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
-
 import eu.europa.esig.dss.model.DSSException;
 
+import java.io.IOException;
+
+/**
+ * The IText (OpenPDF) implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
+ */
 class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
+	/** The OpenPDF object */
 	private PdfArray wrapped;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link PdfArray}
+	 */
 	ITextPdfArray(PdfArray wrapped) {
 		this.wrapped = wrapped;
 	}

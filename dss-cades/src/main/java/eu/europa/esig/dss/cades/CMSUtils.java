@@ -295,7 +295,9 @@ public final class CMSUtils {
 	
 	/**
 	 * Returns the original document from the provided {@code cmsSignedData}
+	 *
 	 * @param cmsSignedData {@link CMSSignedData} to get original document from
+	 * @param detachedDocuments list of {@link DSSDocument}s
 	 * @return original {@link DSSDocument}
 	 */
 	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {

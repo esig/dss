@@ -46,12 +46,25 @@ import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyZeroH
  */
 public class ValidationContextInitialization extends Chain<XmlVCI> {
 
+	/** The signature to validate */
 	private final SignatureWrapper signature;
 
+	/** The validation context */
 	private final Context context;
+
+	/** The validation policy */
 	private final ValidationPolicy validationPolicy;
 
-	public ValidationContextInitialization(I18nProvider i18nProvider, SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param signature {@link SignatureWrapper}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public ValidationContextInitialization(I18nProvider i18nProvider, SignatureWrapper signature, Context context,
+										   ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlVCI());
 		this.signature = signature;
 		this.context = context;

@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 
+/**
+ * Parses the {@code RevocationRefOrigin}
+ */
 public class RevocationRefOriginParser {
 
 	private RevocationRefOriginParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code RevocationRefOrigin}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link RevocationRefOrigin}
+	 */
 	public static RevocationRefOrigin parse(String v) {
 		return RevocationRefOrigin.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link RevocationRefOrigin}
+	 * @return {@link String}
+	 */
 	public static String print(RevocationRefOrigin v) {
 		return v.name();
 	}

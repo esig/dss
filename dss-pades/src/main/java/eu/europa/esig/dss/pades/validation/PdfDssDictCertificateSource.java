@@ -13,10 +13,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The certificate source extracted from a DSS dictionary
+ */
 public class PdfDssDictCertificateSource extends TokenCertificateSource {
 
+    /** The DSS dictionary */
     private final PdfDssDict dssDictionary;
 
+    /**
+     * Default constructor
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     public PdfDssDictCertificateSource(final PdfDssDict dssDictionary) {
         this.dssDictionary = dssDictionary;
         extractFromDSSDict();
@@ -31,6 +40,11 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
         }
     }
 
+    /**
+     * Gets a map of PDF object ids and corresponding certificate tokens
+     *
+     * @return a map of PDF object ids and corresponding certificate tokens
+     */
     public Map<Long, CertificateToken> getCertificateMap() {
         if (dssDictionary != null) {
             Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
@@ -45,6 +59,11 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
         return Collections.emptyMap();
     }
 
+    /**
+     * Gets list of DSS dictionary certificate tokens
+     *
+     * @return a list of {@link CertificateToken}s
+     */
     public List<CertificateToken> getDSSDictionaryCertValues() {
         if (dssDictionary != null) {
             Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
@@ -53,6 +72,11 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
         return Collections.emptyList();
     }
 
+    /**
+     * Gets list of certificate tokens extracted from all VRI dictionaries
+     *
+     * @return a list of {@link CertificateToken}s
+     */
     public List<CertificateToken> getVRIDictionaryCertValues() {
         if (dssDictionary != null) {
             Map<Long, CertificateToken> vriCerts = new HashMap<>();

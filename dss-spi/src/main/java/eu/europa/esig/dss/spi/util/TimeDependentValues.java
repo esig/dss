@@ -36,7 +36,10 @@ import java.util.List;
  */
 public class TimeDependentValues<T extends TimeDependent> implements Iterable<T> {
 
+	/** The linked list of values */
 	protected final List<T> list = new LinkedList<>();
+
+	/** The immutable list */
 	private final List<T> immutableList = Collections.unmodifiableList(list);
 
 	/**
@@ -63,10 +66,21 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 		return immutableList.iterator();
 	}
 
+	/**
+	 * Gets the latest time dependent value
+	 *
+	 * @return the latest time dependent value
+	 */
 	public T getLatest() {
 		return (list.isEmpty()) ? null : list.get(0);
 	}
 
+	/**
+	 * Gets the value with the date {@code d} if present
+	 *
+	 * @param d {@link Date}
+	 * @return the value with the date {@code d} if present, null otherwise
+	 */
 	public T getCurrent(final Date d) {
 		for (final T x : list) {
 			if (x.getStartDate().compareTo(d) <= 0) {
@@ -79,6 +93,12 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 		return null;
 	}
 
+	/**
+	 * Gets a list of time dependent values occurred after {@code notBefore}
+	 *
+	 * @param notBefore {@link Date}
+	 * @return a list of time dependent values
+	 */
 	public List<T> getAfter(Date notBefore) {
 		List<T> result = new ArrayList<>();
 		for (final T x : list) {

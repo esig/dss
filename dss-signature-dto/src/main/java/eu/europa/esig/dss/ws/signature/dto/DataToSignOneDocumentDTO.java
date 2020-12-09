@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+
+import java.util.Objects;
 
 /**
  * This class is a DTO to transfer required objects to execute getDataToSign method
@@ -33,21 +33,41 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 @SuppressWarnings("serial")
 public class DataToSignOneDocumentDTO extends AbstractDataToSignDTO {
 
+	/** Th document to be signed */
 	private RemoteDocument toSignDocument;
 
+	/**
+	 * Empty constructor
+	 */
 	public DataToSignOneDocumentDTO() {
 		super(null);
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param toSignDocument {@link RemoteDocument} to be signed
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public DataToSignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters) {
 		super(parameters);
 		this.toSignDocument = toSignDocument;
 	}
 
+	/**
+	 * Gets document to be signed
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getToSignDocument() {
 		return toSignDocument;
 	}
 
+	/**
+	 * Sets document to be signed
+	 *
+	 * @param toSignDocument {@link RemoteDocument}
+	 */
 	public void setToSignDocument(RemoteDocument toSignDocument) {
 		this.toSignDocument = toSignDocument;
 	}

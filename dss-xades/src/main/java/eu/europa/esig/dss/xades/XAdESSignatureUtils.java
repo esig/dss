@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.xml.security.signature.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,7 +28,18 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.apache.xml.security.signature.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Contains util methods for dealing with XAdES
+ */
 public final class XAdESSignatureUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignatureUtils.class);
@@ -110,10 +112,10 @@ public final class XAdESSignatureUtils {
 	}
 	
 	/**
-	 * Checks if the given {@value reference} is an occurrence of signed object
+	 * Checks if the given {@code reference} is an occurrence of signed object
 	 * @param reference - Reference to check
-	 * @param signature - Signature, containing the given {@value reference}
-	 * @return - TRUE if the given {@value reference} is a signed object, FALSE otherwise
+	 * @param signature - Signature, containing the given {@code reference}
+	 * @return - TRUE if the given {@code reference} is a signed object, FALSE otherwise
 	 */
 	private static boolean isReferenceLinkedToDocument(Reference reference, XAdESSignature signature) {
 		String referenceType = reference.getType();

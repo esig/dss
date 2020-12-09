@@ -20,19 +20,16 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * This class allows to merge two pictures together
@@ -45,6 +42,15 @@ public final class ImageMerger {
 	private ImageMerger() {
 	}
 
+	/**
+	 * Creates a joined image between {@code bottom} and {@code top}
+	 *
+	 * @param bottom {@link BufferedImage} to place in the bottom
+	 * @param top {@link BufferedImage} to place in the top
+	 * @param bgColor {@link Color} the background color
+	 * @param imageHorizontalAlignment {@link SignerTextHorizontalAlignment}
+	 * @return {@link BufferedImage}
+	 */
 	public static BufferedImage mergeOnTop(final BufferedImage bottom, final BufferedImage top, final Color bgColor,
 			final SignerTextHorizontalAlignment imageHorizontalAlignment) {
 		if (bottom == null) {
@@ -83,6 +89,15 @@ public final class ImageMerger {
 		return combined;
 	}
 
+	/**
+	 * Creates a joined image between {@code left} and {@code right}
+	 *
+	 * @param left {@link BufferedImage} to place in the left
+	 * @param right {@link BufferedImage} to place in the right
+	 * @param bgColor {@link Color} the background color
+	 * @param imageVerticalAlignment {@link SignerTextVerticalAlignment}
+	 * @return {@link BufferedImage}
+	 */
 	public static BufferedImage mergeOnRight(final BufferedImage left, final BufferedImage right, final Color bgColor,
 			final SignerTextVerticalAlignment imageVerticalAlignment) {
 		if (left == null) {

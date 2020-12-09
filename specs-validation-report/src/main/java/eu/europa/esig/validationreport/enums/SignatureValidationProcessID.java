@@ -22,6 +22,9 @@ package eu.europa.esig.validationreport.enums;
 
 import eu.europa.esig.dss.enumerations.UriBasedEnum;
 
+/**
+ * Defines SignatureValidationProcessID
+ */
 public enum SignatureValidationProcessID implements UriBasedEnum {
 
 	/**

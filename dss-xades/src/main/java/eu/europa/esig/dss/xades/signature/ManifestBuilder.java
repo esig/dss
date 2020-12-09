@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.List;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+
+import java.util.List;
 
 /**
  * This class builds a ds:Manifest element
@@ -55,9 +54,16 @@ import eu.europa.esig.dss.model.DSSDocument;
  */
 public class ManifestBuilder {
 
+	/** The manifest id */
 	private final String manifestId;
+
+	/** The DigestAlgorithm to use */
 	private final DigestAlgorithm digestAlgorithm;
+
+	/** List of manifested documents */
 	private final List<DSSDocument> documents;
+
+	/** The namespace */
 	private final DSSNamespace xmldsigNamespace;
 	
 	/**
@@ -105,6 +111,11 @@ public class ManifestBuilder {
 		this.xmldsigNamespace = xmldsigNamespace;
 	}
 
+	/**
+	 * Builds the Manifest
+	 *
+	 * @return {@link DSSDocument}
+	 */
 	public DSSDocument build() {
 		Document documentDom = DomUtils.buildDOM();
 

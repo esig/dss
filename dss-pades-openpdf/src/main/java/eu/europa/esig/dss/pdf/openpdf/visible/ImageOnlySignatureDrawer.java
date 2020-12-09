@@ -36,13 +36,13 @@ import eu.europa.esig.dss.utils.Utils;
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	
 	private Image image;
-	private ITextVisualSignatureAppearence appearenceRectangle;
+	private ITextVisualSignatureAppearance appearenceRectangle;
 
 	@Override
-	public ITextVisualSignatureAppearence buildSignatureFieldBox() throws IOException {
+	public ITextVisualSignatureAppearance buildSignatureFieldBox() throws IOException {
 		if (appearenceRectangle == null) {
 			Image image = getImage();
-			appearenceRectangle = new ImageOnlyAppearenceRectangleBuilder(parameters, image).build();
+			appearenceRectangle = new ImageOnlyAppearanceRectangleBuilder(parameters, image).build();
 		}
 		return appearenceRectangle;
 	}
@@ -71,7 +71,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 				height = (int) rect.getHeight();
 			}
 		} else {
-			ITextVisualSignatureAppearence appearenceRectangle = buildSignatureFieldBox();
+			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
 			
 			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
 			iTextRectangle.setBackgroundColor(parameters.getBackgroundColor());

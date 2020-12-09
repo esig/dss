@@ -20,26 +20,46 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * The validation record DTO
+ */
 public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationInfoRecord {
 
 	private static final long serialVersionUID = -4534009898186648431L;
-	
+
+	/** The validation Indication */
 	private Indication indication;
+
+	/** The validation SubIndication */
 	private SubIndication subIndication;
+
+	/** The claimed signing time */
 	private Date signingTime;
+
+	/** The signing certificate */
 	private CertificateToken signingCertificate;
+
+	/** Signing candidates */
 	private List<CertificateToken> potentialSigners;
 
+	/**
+	 * Default constructor
+	 */
 	public ValidationCacheDTO() {}
-	
+
+	/**
+	 * Copies the cache DTO
+	 *
+	 * @param cacheDTO {@link AbstractCacheDTO}
+	 */
 	public ValidationCacheDTO(AbstractCacheDTO cacheDTO) {
 		super(cacheDTO);
 	}
@@ -48,7 +68,12 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 	public Indication getIndication() {
 		return indication;
 	}
-	
+
+	/**
+	 * Sets the validation Indication
+	 *
+	 * @param indication {@link Indication}
+	 */
 	public void setIndication(Indication indication) {
 		this.indication = indication;
 	}
@@ -57,7 +82,12 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 	public SubIndication getSubIndication() {
 		return subIndication;
 	}
-	
+
+	/**
+	 * Sets the validation SubIndication
+	 *
+	 * @param subIndication {@link SubIndication}
+	 */
 	public void setSubIndication(SubIndication subIndication) {
 		this.subIndication = subIndication;
 	}
@@ -66,7 +96,12 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 	public Date getSigningTime() {
 		return signingTime;
 	}
-	
+
+	/**
+	 * Sets the claimed signing time
+	 *
+	 * @param signingTime {@link Date}
+	 */
 	public void setSigningTime(Date signingTime) {
 		this.signingTime = signingTime;
 	}
@@ -76,6 +111,11 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 		return signingCertificate;
 	}
 
+	/**
+	 * Sets the signing certificate token
+	 *
+	 * @param signingCertificate {@link CertificateToken}
+	 */
 	public void setSigningCertificate(CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
@@ -85,6 +125,11 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 		return potentialSigners;
 	}
 
+	/**
+	 * Sets a list of signing candidates
+	 *
+	 * @param potentialSigners a list of {@link CertificateToken}s
+	 */
 	public void setPotentialSigners(List<CertificateToken> potentialSigners) {
 		this.potentialSigners = potentialSigners;
 	}

@@ -20,24 +20,40 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if a counter signature is present for the signature
+ */
 public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 
+	/** The diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	public CounterSignatureCheck(I18nProvider i18nProvider, XmlSAV result, DiagnosticData diagnosticData, SignatureWrapper signature, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CounterSignatureCheck(I18nProvider i18nProvider, XmlSAV result, DiagnosticData diagnosticData,
+								 SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;

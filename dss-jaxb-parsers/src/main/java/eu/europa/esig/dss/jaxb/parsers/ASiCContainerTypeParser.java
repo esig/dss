@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 
+/**
+ * Parses the {@code ASiCContainerType}
+ */
 public class ASiCContainerTypeParser {
 
 	private ASiCContainerTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code ASiCContainerType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link ASiCContainerType}
+	 */
 	public static ASiCContainerType parse(String v) {
 		if (v != null) {
 			return ASiCContainerType.valueByName(v);
@@ -34,6 +43,12 @@ public class ASiCContainerTypeParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link ASiCContainerType}
+	 * @return {@link String}
+	 */
 	public static String print(ASiCContainerType v) {
 		if (v != null) {
 			return v.toString();

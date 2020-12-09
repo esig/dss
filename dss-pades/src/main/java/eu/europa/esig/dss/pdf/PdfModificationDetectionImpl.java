@@ -1,15 +1,23 @@
 package eu.europa.esig.dss.pdf;
 
-import java.util.List;
-
 import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * The default implementation to detect modifications in a PDF document
+ */
 public class PdfModificationDetectionImpl implements PdfModificationDetection {
-	
+
+	/** List of annotation overlaps */
 	private List<PdfModification> annotationOverlaps;
+
+	/** List of visual differences between revisions */
 	private List<PdfModification> visualDifferences;
+
+	/** List of page amount differences between revisions */
 	private List<PdfModification> pageDifferences;
 
 	@Override

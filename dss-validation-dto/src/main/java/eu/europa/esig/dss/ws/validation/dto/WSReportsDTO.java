@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.ws.validation.dto;
 
-import java.io.Serializable;
-
-import javax.activation.DataHandler;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlMimeType;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
@@ -35,79 +27,157 @@ import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
+import javax.activation.DataHandler;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
+import java.io.Serializable;
+
+/**
+ * Represents a validation response DTO, containing the reports
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @SuppressWarnings("serial")
 public class WSReportsDTO implements Serializable {
 
+	/** The DiagnosticData report */
 	@XmlElement(name = "DiagnosticData", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
 	private XmlDiagnosticData diagnosticData;
 
+	/** The SimpleReport report */
 	@XmlElement(name = "SimpleReport", namespace = "http://dss.esig.europa.eu/validation/simple-report")
 	private XmlSimpleReport simpleReport;
 
+	/** The DetailedReport report */
 	@XmlElement(name = "DetailedReport", namespace = "http://dss.esig.europa.eu/validation/detailed-report")
 	private XmlDetailedReport detailedReport;
 
 	// Use MTOM to avoid XML ID conflict (between diagnostic data and etsi
 	// validation report)
+	/** Uses MTOM to avoid XML ID conflict (between diagnostic data and etsi validation report) */
 	@XmlMimeType("application/octet-stream")
-	private DataHandler validationReportaDataHandler;
+	private DataHandler validationReportDataHandler;
 
+	/** The ETSI validation report */
 	private transient ValidationReportType validationReport;
 
+	/**
+	 * Empty constructor
+	 */
 	public WSReportsDTO() {
 	}
 
+	/**
+	 * Default constructor without ETSI Validation report
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 * @param simpleReport {@link XmlSimpleReport}
+	 * @param detailedReport {@link XmlDetailedReport}
+	 */
 	public WSReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleReport simpleReport, XmlDetailedReport detailedReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 		this.simpleReport = simpleReport;
 	}
 
+	/**
+	 * Default constructor with ETSI Validation report
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 * @param simpleReport {@link XmlSimpleReport}
+	 * @param detailedReport {@link XmlDetailedReport}
+	 * @param validationReport {@link ValidationReportType}
+	 */
 	public WSReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleReport simpleReport, XmlDetailedReport detailedReport,
 			ValidationReportType validationReport) {
 		this(diagnosticData, simpleReport, detailedReport);
 		this.validationReport = validationReport;
 
-		this.validationReportaDataHandler = new DataHandler(new ValidationReportTypeDataSource(validationReport));
+		this.validationReportDataHandler = new DataHandler(new ValidationReportTypeDataSource(validationReport));
 	}
 
+	/**
+	 * Gets the DiagnosticData
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
 	public XmlDiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
 
+	/**
+	 * Sets the DiagnosticData
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 */
 	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
 
+	/**
+	 * Gets a SimpleReport
+	 *
+	 * @return {@link XmlSimpleReport}
+	 */
 	public XmlSimpleReport getSimpleReport() {
 		return simpleReport;
 	}
 
+	/**
+	 * Sets a SimpleReport
+	 *
+	 * @param simpleReport {@link XmlSimpleReport}
+	 */
 	public void setSimpleReport(XmlSimpleReport simpleReport) {
 		this.simpleReport = simpleReport;
 	}
 
+	/**
+	 * Gets a DetailedReport
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	public XmlDetailedReport getDetailedReport() {
 		return detailedReport;
 	}
 
+	/**
+	 * Sets a DetailedReport
+	 *
+	 * @param detailedReport {@link XmlDetailedReport}
+	 */
 	public void setDetailedReport(XmlDetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
 	}
 
-	public DataHandler getValidationReportaDataHandler() {
-		return validationReportaDataHandler;
+	/**
+	 * Gets a Validation report data handler
+	 *
+	 * @return {@link DataHandler}
+	 */
+	public DataHandler getValidationReportDataHandler() {
+		return validationReportDataHandler;
 	}
 
-	public void setValidationReportaDataHandler(DataHandler validationReportaDataHandler) {
-		this.validationReportaDataHandler = validationReportaDataHandler;
+	/**
+	 * Sets a validation report data handler
+	 *
+	 * @param validationReportDataHandler {@link DataHandler}
+	 */
+	public void setValidationReportDataHandler(DataHandler validationReportDataHandler) {
+		this.validationReportDataHandler = validationReportDataHandler;
 	}
 
+	/**
+	 * Gets the ETSI validation report
+	 *
+	 * @return {@link ValidationReportType}
+	 */
 	public ValidationReportType getValidationReport() {
-		if ((validationReport == null) && (validationReportaDataHandler != null)) {
+		if ((validationReport == null) && (validationReportDataHandler != null)) {
 			try {
-				validationReport = ValidationReportFacade.newFacade().unmarshall(validationReportaDataHandler.getInputStream());
+				validationReport = ValidationReportFacade.newFacade().unmarshall(validationReportDataHandler.getInputStream());
 			} catch (Exception e) {
 				throw new DSSRemoteServiceException("Unable to unmarshall ValidationReportType", e);
 			}
@@ -115,6 +185,11 @@ public class WSReportsDTO implements Serializable {
 		return validationReport;
 	}
 
+	/**
+	 * Sets the ETSI validation report
+	 *
+	 * @param validationReport {@link ValidationReportType}
+	 */
 	public void setValidationReport(ValidationReportType validationReport) {
 		this.validationReport = validationReport;
 	}

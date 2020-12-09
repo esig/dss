@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.tsl.identifier.TrustedListIdentifier;
+
+import java.io.Serializable;
 
 /**
  * Computes summary for a single Trusted List processing result
@@ -38,9 +38,13 @@ public class TLInfo implements Serializable {
 	 */
 	private final String url;
 	
-	/* DTOs */
+	/** The download result record */
 	private final DownloadInfoRecord downloadCacheInfo;
+
+	/** The parsing result record */
 	private final ParsingInfoRecord parsingCacheInfo;
+
+	/** The validation result record */
 	private final ValidationInfoRecord validationCacheInfo;
 	
 	/**

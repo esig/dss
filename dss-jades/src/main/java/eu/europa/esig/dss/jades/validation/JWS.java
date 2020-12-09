@@ -1,16 +1,18 @@
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
+import eu.europa.esig.dss.model.DSSException;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.lang.JoseException;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.lang.JoseException;
-
-import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * Extension of a JSON web Signature according to RFC 7515
+ */
 public class JWS extends JsonWebSignature {
 
 	/**
@@ -67,6 +69,8 @@ public class JWS extends JsonWebSignature {
 	/**
 	 * Returns payload string based on a 'b64' value in the protected header
 	 * (The actual signed payload value)
+	 *
+	 * @return {@link String} payload to be signed
 	 */
 	public String getSignedPayload() {
 		if (isRfc7797UnencodedPayload()) {
@@ -100,22 +104,48 @@ public class JWS extends JsonWebSignature {
 		super.setSignature(signature);
 	}
 
+	/**
+	 * Sets the protected header
+	 *
+	 * @param protectedBase64Url {@link String} base64url encoded protected header
+	 * @throws JoseException if a format exception occurs
+	 */
 	public void setProtected(String protectedBase64Url) throws JoseException {
 		super.setEncodedHeader(protectedBase64Url);
 	}
 
-	public void setUnprotected(Map<String, Object> unprotected) {
-		this.unprotected = unprotected;
-	}
-
+	/**
+	 * Gets unprotected header map
+	 *
+	 * @return unprotected header map
+	 */
 	public Map<String, Object> getUnprotected() {
 		return unprotected;
 	}
 
+	/**
+	 * Sets the unprotected header
+	 *
+	 * @param unprotected the unprotected header map
+	 */
+	public void setUnprotected(Map<String, Object> unprotected) {
+		this.unprotected = unprotected;
+	}
+
+	/**
+	 * Gets the {@code JWSJsonSerializationObject}
+	 *
+	 * @return {@link JWSJsonSerializationObject}
+	 */
 	public JWSJsonSerializationObject getJwsJsonSerializationObject() {
 		return jwsJsonSerializationObject;
 	}
 
+	/**
+	 * Sets the {@code JWSJsonSerializationObject}
+	 *
+	 * @param jwsJsonSerializationObject {@link JWSJsonSerializationObject}
+	 */
 	public void setJwsJsonSerializationObject(JWSJsonSerializationObject jwsJsonSerializationObject) {
 		this.jwsJsonSerializationObject = jwsJsonSerializationObject;
 	}

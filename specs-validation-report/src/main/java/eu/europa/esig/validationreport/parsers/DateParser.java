@@ -20,24 +20,35 @@
  */
 package eu.europa.esig.validationreport.parsers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+/**
+ * Parses a date
+ */
 public final class DateParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DateParser.class);
 
+	/** Default used date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
+	/** The default timezone (UTC) */
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
 	private DateParser() {
 	}
 
+	/**
+	 * Parses the date
+	 *
+	 * @param v {@link String} date in the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
+	 * @return {@link Date}, null if not able to parse
+	 */
 	public static Date parse(String v) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
@@ -50,6 +61,12 @@ public final class DateParser {
 		return null;
 	}
 
+	/**
+	 * Prints the date according to the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
+	 *
+	 * @param v {@link Date}
+	 * @return {@link String}
+	 */
 	public static String print(Date v) {
 		if (v != null) {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);

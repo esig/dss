@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.i18n;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Internalization provider
@@ -84,7 +84,7 @@ public class I18nProvider {
 		}
 	}
 
-	/* Allows nested MessageTags */
+	/** Allows nested MessageTags */
 	private Object[] getArgs(Object[] args) {
 		Object[] translated = null;
 		if (args != null) {

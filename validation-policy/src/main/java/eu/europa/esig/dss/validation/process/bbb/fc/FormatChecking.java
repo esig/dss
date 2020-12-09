@@ -57,13 +57,29 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentChec
  */
 public class FormatChecking extends Chain<XmlFC> {
 
+	/** Diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	/** The signature to validate */
 	private final SignatureWrapper signature;
 
+	/** The validation context */
 	private final Context context;
+
+	/** The validation policy */
 	private final ValidationPolicy policy;
 
-	public FormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, Context context, ValidationPolicy policy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param signature {@link SignatureWrapper}
+	 * @param context {@link Context}
+	 * @param policy {@link ValidationPolicy}
+	 */
+	public FormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature,
+						  Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlFC());
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;

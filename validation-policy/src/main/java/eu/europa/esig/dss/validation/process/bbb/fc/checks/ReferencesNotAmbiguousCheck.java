@@ -11,12 +11,25 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the references are not ambiguous (only one document is retrieved)
+ */
 public class ReferencesNotAmbiguousCheck extends ChainItem<XmlFC> {
 
+	/** The signature */
 	private final SignatureWrapper signature;
 
+	/** The ambiguous reference */
 	private XmlDigestMatcher duplicatedReference;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public ReferencesNotAmbiguousCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature,
 			LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

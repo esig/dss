@@ -70,7 +70,7 @@ public class RemoteDocumentValidationServiceTest {
 	public void testWithNoPolicyAndNoOriginalFileAndStrategy() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xadesLTA.xml"));
 		DataToValidateDTO dto = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
-		dto.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
+		dto.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
 		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 	}

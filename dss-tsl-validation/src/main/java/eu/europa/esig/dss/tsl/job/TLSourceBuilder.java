@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -33,16 +29,37 @@ import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Builds a list of {@code TLSource}s
+ */
 public class TLSourceBuilder {
 
+	/** The LOTL sources to builds TLSources from */
 	private final List<LOTLSource> lotlList;
+
+	/** The parsing LOTL results */
 	private final Map<CacheKey, ParsingCacheDTO> parsingResults;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param lotlList a list of {@link LOTLSource}s
+	 * @param parsingResults a map of LOTL parsing results
+	 */
 	public TLSourceBuilder(List<LOTLSource> lotlList, Map<CacheKey, ParsingCacheDTO> parsingResults) {
 		this.lotlList = lotlList;
 		this.parsingResults = parsingResults;
 	}
 
+	/**
+	 * Builds a list of {@code TLSource}s
+	 *
+	 * @return a list of {@link TLSource}s
+	 */
 	public List<TLSource> build() {
 		List<TLSource> result = new ArrayList<>();
 		if (lotlList != null) {

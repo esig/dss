@@ -29,11 +29,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the only one reference to the signing certificate reference is present
+ */
 public class UnicitySigningCertificateAttributeCheck extends ChainItem<XmlISC> {
 
+	/** The token to verify */
 	private final TokenProxy token;
 
-	public UnicitySigningCertificateAttributeCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlISC}
+	 * @param token {@link TokenProxy}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public UnicitySigningCertificateAttributeCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token,
+												   LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;
 	}

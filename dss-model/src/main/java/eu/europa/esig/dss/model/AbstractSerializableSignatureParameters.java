@@ -220,6 +220,11 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		}
 	}
 
+	/**
+	 * Sets the mask generation function if used with the given SignatureAlgorithm
+	 *
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 */
 	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
 		this.maskGenerationFunction = maskGenerationFunction;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {

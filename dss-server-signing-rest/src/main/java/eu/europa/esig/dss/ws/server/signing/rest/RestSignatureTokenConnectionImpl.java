@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.ws.server.signing.rest;
 
-import java.util.List;
-
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
@@ -32,11 +30,22 @@ import eu.europa.esig.dss.ws.server.signing.common.RemoteSignatureTokenConnectio
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 import eu.europa.esig.dss.ws.server.signing.rest.client.RestSignatureTokenConnection;
 
+import java.util.List;
+
+/**
+ * The REST implementation of server signing
+ */
 @SuppressWarnings("serial")
 public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConnection {
 
+	/** The connection to the remote token */
 	private RemoteSignatureTokenConnection token;
 
+	/**
+	 * Sets remote token connection
+	 *
+	 * @param token {@link RemoteSignatureTokenConnection}
+	 */
 	public void setToken(RemoteSignatureTokenConnection token) {
 		this.token = token;
 	}

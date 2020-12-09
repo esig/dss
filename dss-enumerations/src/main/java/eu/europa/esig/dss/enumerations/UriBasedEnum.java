@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines an enumeration containing an URI
+ */
 public interface UriBasedEnum {
 
 	String getUri();

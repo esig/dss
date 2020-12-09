@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.validation.TransformsDescriptionBuilder;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.transforms.Transforms;
@@ -30,40 +32,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.validation.TransformsDescriptionBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Contains information about a XAdES reference validation
+ */
 public class XAdESReferenceValidation extends ReferenceValidation {
 
 	private static final long serialVersionUID = 2721340360134442005L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESReferenceValidation.class);
 
-	/* The digest value of the original document, before applying transformations (if accessible) */
+	/** The digest value of the original document, before applying transformations (if accessible) */
 	private final Reference reference;
-	/* For XAdES : reference id */
+	/** For XAdES : reference id */
 	private final String id;
-	/* For XAdES : reference uri */
+	/** For XAdES : reference uri */
 	private final String uri;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param reference {@link Reference}
+	 */
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
 		this.id = reference.getId();
 		this.uri = extractUri(reference);
 	}
 
+	/**
+	 * Gets Id of the reference
+	 *
+	 * @return {@link String}
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Gets URI of the reference
+	 *
+	 * @return {@link String}
+	 */
 	public String getUri() {
 		return uri;
 	}
 
-	/* Method is used due to Apache Santuario Signature does return empty instead of null result */
+	/** Method is used due to Apache Santuario Signature does return empty instead of null result */
 	private String extractUri(Reference reference) {
 		if (reference != null) {
 			Element element = reference.getElement();
@@ -76,6 +93,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 
 	/**
 	 * Returns original bytes of the referenced document
+	 *
 	 * @return byte array
 	 */
 	public byte[] getOriginalContentBytes() {

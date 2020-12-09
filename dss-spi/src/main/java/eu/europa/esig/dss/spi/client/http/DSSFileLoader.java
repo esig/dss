@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 
+import java.io.Serializable;
+
+/**
+ * Loads files
+ */
 public interface DSSFileLoader extends Serializable {
 	
 	/**

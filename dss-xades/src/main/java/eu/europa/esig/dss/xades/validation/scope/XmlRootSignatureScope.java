@@ -20,18 +20,34 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * Defines a root XML document signature scope
+ */
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
 
+    /**
+     * Default constructor
+     *
+     * @param transformations a list of {@link String} transform descriptions
+     * @param digest {@link Digest} of the element
+     */
     protected XmlRootSignatureScope(final List<String> transformations, final Digest digest) {
     	super("Full XML File", transformations, digest);
     }
-    
+
+    /**
+     * Constructor with document name
+     *
+     * @param name {@link String} document name
+     * @param transformations a list of {@link String} transform descriptions
+     * @param digest {@link Digest} of the element
+     */
     protected XmlRootSignatureScope(final String name, final List<String> transformations, final Digest digest) {
         super(name, transformations, digest);
     }

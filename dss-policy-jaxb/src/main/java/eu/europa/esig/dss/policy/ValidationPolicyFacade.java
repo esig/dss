@@ -20,27 +20,36 @@
  */
 package eu.europa.esig.dss.policy;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.validation.Schema;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-
+/**
+ * Used to read an XML validation policy
+ */
 public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParameters> {
 
+	/** The default validation policy path */
 	private static final String DEFAULT_VALIDATION_POLICY_LOCATION = "/policy/constraint.xml";
+
+	/** The path for a LOTL/TL validation policy */
 	private static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/policy/tsl-constraint.xml";
 
+	/**
+	 * Initializes a new {@code ValidationPolicyFacade}
+	 *
+	 * @return {@link ValidationPolicyFacade}
+	 */
 	public static ValidationPolicyFacade newFacade() {
 		return new ValidationPolicyFacade();
 	}
@@ -60,27 +69,76 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 		return ValidationPolicyXmlDefiner.OBJECT_FACTORY.createConstraintsParameters(jaxbObject);
 	}
 
-	public ValidationPolicy getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+	/**
+	 * Gets the default validation policy
+	 *
+	 * @return {@link ValidationPolicy}
+	 * @throws JAXBException if {@link JAXBException} occurs
+	 * @throws XMLStreamException if {@link XMLStreamException} occurs
+	 * @throws IOException if {@link IOException} occurs
+	 * @throws SAXException if {@link SAXException} occurs
+	 */
+	public ValidationPolicy getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException,
+			SAXException {
 		return loadDefault();
 	}
 
+	/**
+	 * Gets the validation policy for LOTL/TL
+	 *
+	 * @return {@link ValidationPolicy}
+	 * @throws JAXBException if {@link JAXBException} occurs
+	 * @throws XMLStreamException if {@link XMLStreamException} occurs
+	 * @throws IOException if {@link IOException} occurs
+	 * @throws SAXException if {@link SAXException} occurs
+	 */
 	public ValidationPolicy getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		try (InputStream is = ValidationPolicyFacade.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)) {
 			return getValidationPolicy(is);
 		}
 	}
 
+	/**
+	 * Gets the validation policy from the {@code path}
+	 *
+	 * @param path {@link String}
+	 * @return {@link ValidationPolicy}
+	 * @throws JAXBException if {@link JAXBException} occurs
+	 * @throws XMLStreamException if {@link XMLStreamException} occurs
+	 * @throws IOException if {@link IOException} occurs
+	 * @throws SAXException if {@link SAXException} occurs
+	 */
 	public ValidationPolicy getValidationPolicy(String path) throws JAXBException, XMLStreamException, IOException, SAXException {
 		try (InputStream is = ValidationPolicyFacade.class.getResourceAsStream(path)) {
 			return getValidationPolicy(is);
 		}
 	}
 
+	/**
+	 * Gets the validation policy from the {@code is}
+	 *
+	 * @param is {@link InputStream}
+	 * @return {@link ValidationPolicy}
+	 * @throws JAXBException if {@link JAXBException} occurs
+	 * @throws XMLStreamException if {@link XMLStreamException} occurs
+	 * @throws IOException if {@link IOException} occurs
+	 * @throws SAXException if {@link SAXException} occurs
+	 */
 	public ValidationPolicy getValidationPolicy(InputStream is) throws JAXBException, XMLStreamException, IOException, SAXException {
 		Objects.requireNonNull(is, "The provided validation policy is null");
 		return new EtsiValidationPolicy(unmarshall(is));
 	}
 
+	/**
+	 * Gets the validation policy from the {@code file}
+	 *
+	 * @param file {@link File}
+	 * @return {@link ValidationPolicy}
+	 * @throws JAXBException if {@link JAXBException} occurs
+	 * @throws XMLStreamException if {@link XMLStreamException} occurs
+	 * @throws IOException if {@link IOException} occurs
+	 * @throws SAXException if {@link SAXException} occurs
+	 */
 	public ValidationPolicy getValidationPolicy(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
 		Objects.requireNonNull(file, "The provided validation policy is null");
 		return new EtsiValidationPolicy(unmarshall(file));

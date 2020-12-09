@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.Indication;
 
+/**
+ * Parses the {@code Indication}
+ */
 public final class IndicationParser {
 
 	private IndicationParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code Indication}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link Indication}
+	 */
 	public static Indication parse(String v) {
 		return Indication.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link Indication}
+	 * @return {@link String}
+	 */
 	public static String print(Indication v) {
 		return v.name();
 	}

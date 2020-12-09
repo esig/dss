@@ -25,12 +25,26 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
+/**
+ * Performs a canonicalization transform on XML NodeSet
+ */
 public class CanonicalizationTransform extends ComplexTransform {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param canonicalizationAlgorithm {@link String} url
+	 */
 	public CanonicalizationTransform(String canonicalizationAlgorithm) {
 		this(XAdESNamespaces.XMLDSIG, canonicalizationAlgorithm);
 	}
 
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param canonicalizationAlgorithm {@link String} url
+	 */
 	public CanonicalizationTransform(DSSNamespace xmlDSigNamespace, String canonicalizationAlgorithm) {
 		super(xmlDSigNamespace, canonicalizationAlgorithm);
 		if (!DSSXMLUtils.canCanonicalize(canonicalizationAlgorithm)) {

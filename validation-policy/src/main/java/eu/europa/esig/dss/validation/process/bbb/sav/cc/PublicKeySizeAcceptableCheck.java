@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -10,11 +8,29 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
+import java.util.Map;
+
+/**
+ * Check if public key size is acceptable
+ */
 public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
-	
+
+	/** The algorithm to check */
 	private final EncryptionAlgorithm encryptionAlgo;
+
+	/** Used public key size */
 	private final String keySize;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param encryptionAlgo {@link EncryptionAlgorithm}
+	 * @param keySize {@link String}
+	 * @param result {@link XmlCC}
+	 * @param position {@link MessageTag}
+	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 */
 	protected PublicKeySizeAcceptableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, String keySize, 
 			XmlCC result, MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
 		super(i18nProvider, result, position, constraintWrapper);

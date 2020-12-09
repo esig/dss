@@ -12,9 +12,9 @@ public interface SignatureFieldBoxBuilder {
 	/**
 	 * Builds a {@code SignatureFieldBox}, defining signature field position and dimension
 	 * 
-	 * @return {@link VisualSignatureFieldAppearence}
+	 * @return {@link VisualSignatureFieldAppearance}
 	 * @throws IOException if an exception occurs
 	 */
-	VisualSignatureFieldAppearence buildSignatureFieldBox() throws IOException;
+	VisualSignatureFieldAppearance buildSignatureFieldBox() throws IOException;
 
 }

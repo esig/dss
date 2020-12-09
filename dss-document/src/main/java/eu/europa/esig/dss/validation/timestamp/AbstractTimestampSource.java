@@ -95,6 +95,7 @@ public abstract class AbstractTimestampSource {
 	 * Gets a list of all validation data embedded to the {@code timestampedTimestamp}
 	 *
 	 * @param timestampedTimestamp {@link TimestampToken} to extract embedded values from
+	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getEncapsulatedValuesFromTimestamp(TimestampToken timestampedTimestamp) {
 		final List<TimestampedReference> references = new ArrayList<>();

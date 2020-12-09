@@ -138,19 +138,41 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Builds the ETSI Validation report
+ */
 public class ETSIValidationReportBuilder {
 
+	/** The objet factory to use */
 	private final ObjectFactory objectFactory = new ObjectFactory();
+
+	/** The validation time */
 	private final Date currentTime;
+
+	/** The diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	 /** The detailed report */
 	private final DetailedReport detailedReport;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param currentTime {@link Date} validation time
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param detailedReport {@link DetailedReport}
+	 */
 	public ETSIValidationReportBuilder(Date currentTime, DiagnosticData diagnosticData, DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 	}
 
+	/**
+	 * Builds {@code ValidationReportType}
+	 *
+	 * @return {@link ValidationReportType}
+	 */
 	public ValidationReportType build() {
 		ValidationReportType result = objectFactory.createValidationReportType();
 
@@ -811,8 +833,8 @@ public class ETSIValidationReportBuilder {
 
 	private void addAttrAuthoritiesCertValues(SignatureAttributesType sigAttributes, FoundCertificatesProxy foundCertificates) {
 		List<String> certIds = new ArrayList<>();
-		certIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES)));
-		certIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES)));
+		certIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)));
+		certIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)));
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(certIds)));

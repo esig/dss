@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.trustedlist.enums;
 
+/**
+ * Trusted List assert list
+ */
 public enum Assert {
 
 	ALL("all"),

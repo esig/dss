@@ -1,15 +1,5 @@
 package eu.europa.esig.dss.xades.signature;
 
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
-
-import java.util.Arrays;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -31,15 +21,39 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
+
+/**
+ * Builds a XAdES SignaturePolicyStore
+ */
 public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePolicyStoreBuilder.class);
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 */
 	protected SignaturePolicyStoreBuilder(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
 
+	/**
+	 * Adds a signaturePolicyStore to all signatures inside the document
+	 *
+	 * @param document {@link DSSDocument} containing signatures to add signature policy store into
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} with signaturePolicyStore
+	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification(), "SpDocSpecification must be provided");

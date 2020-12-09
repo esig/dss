@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import java.awt.Color;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.DSSFileFont;
+import eu.europa.esig.dss.pades.DSSFont;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -51,25 +54,28 @@ import org.apache.pdfbox.util.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pades.DSSFileFont;
-import eu.europa.esig.dss.pades.DSSFont;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
-import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
-import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
+/**
+ * The native PDFBox signature drawer.
+ * Creates text in the native way.
+ */
 public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NativePdfBoxVisibleSignatureDrawer.class);
 
+	/** PDFBox font */
 	private PDFont pdFont;
 
+	/** Defines signature field dimensions and position */
 	private SignatureFieldDimensionAndPosition dimensionAndPosition;
 
+	/** Defines the default value for a non-transparent alpha layer */
 	private static final float OPAQUE_VALUE = 0xff;
 
 	@Override
@@ -257,7 +263,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * @param cs                   {@link PDPageContentStream} current stream
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition} size
 	 *                             and position to place the text to
-	 * @param textParameters       {@link SignatureImageTextParameters} text to
+	 * @param parameters       {@link SignatureImageTextParameters} text to
 	 *                             place on the signature field
 	 * @throws IOException in case of error
 	 */

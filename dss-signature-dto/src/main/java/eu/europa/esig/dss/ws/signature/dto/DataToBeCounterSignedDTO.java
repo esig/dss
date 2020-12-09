@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+
+import java.util.Objects;
 
 /**
  * This class is a DTO to transfer required objects to execute getDataToBeCounterSigned method 
@@ -13,21 +13,41 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 @SuppressWarnings("serial")
 public class DataToBeCounterSignedDTO extends AbstractDataToSignDTO {
 
+	/** Document containing a signature to be counter signed */
 	private RemoteDocument signatureDocument;
 
+	/**
+	 * Empty constructor
+	 */
 	public DataToBeCounterSignedDTO() {
 		super(null);
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signatureDocument {@link RemoteDocument} with a signature to counter sign
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public DataToBeCounterSignedDTO(RemoteDocument signatureDocument, RemoteSignatureParameters parameters) {
 		super(parameters);
 		this.setSignatureDocument(signatureDocument);
 	}
 
+	/**
+	 * Gets the signature document
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getSignatureDocument() {
 		return signatureDocument;
 	}
 
+	/**
+	 * Sets the signature document
+	 *
+	 * @param signatureDocument {@link RemoteDocument}
+	 */
 	public void setSignatureDocument(RemoteDocument signatureDocument) {
 		this.signatureDocument = signatureDocument;
 	}

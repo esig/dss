@@ -349,10 +349,12 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * Retrieves a Map of orphan {@code RevocationRef} with their
 	 * {@code RevocationRefOrigin}s for a given
 	 * {@code EncapsulatedRevocationTokenIdentifier}
-	 * 
+	 *
+	 * @param identifier {@link EncapsulatedRevocationTokenIdentifier}
 	 * @return a Map of orphan references with their origins
 	 */
-	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> findRefsAndOriginsForBinary(EncapsulatedRevocationTokenIdentifier<R> identifier) {
+	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> findRefsAndOriginsForBinary(
+			EncapsulatedRevocationTokenIdentifier<R> identifier) {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> result = new HashMap<>();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
 			RevocationRef<R> currentReference = entry.getKey();

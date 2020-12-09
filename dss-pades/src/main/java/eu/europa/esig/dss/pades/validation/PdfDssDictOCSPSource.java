@@ -12,15 +12,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The OCSP source extracted from a DSS dictionary
+ */
 public class PdfDssDictOCSPSource extends OfflineOCSPSource {
 
+    /** The map of PDF object ids and corresponding OCSP binaries */
     private transient Map<Long, BasicOCSPResp> ocspMap;
 
+    /**
+     * Default constructor
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     public PdfDssDictOCSPSource(PdfDssDict dssDictionary) {
         extractDSSOCSPs(dssDictionary);
         extractVRIOCSPs(dssDictionary);
     }
 
+    /**
+     * Empty constructor
+     */
     PdfDssDictOCSPSource() {
     }
 
@@ -50,6 +62,11 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         return Collections.emptyMap();
     }
 
+    /**
+     * Extract the OCSPs from the DSS dictionary
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     protected void extractDSSOCSPs(PdfDssDict dssDictionary) {
         Map<Long, BasicOCSPResp> dssOcspMap = getDssOcspMap(dssDictionary);
         for (BasicOCSPResp basicOCSPResp : dssOcspMap.values()) {
@@ -57,6 +74,11 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         }
     }
 
+    /**
+     * Extract the OCSPs from all embedded VRI dictionaries
+     *
+     * @param dssDictionary {@link PdfDssDict}
+     */
     protected void extractVRIOCSPs(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
             List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
@@ -68,6 +90,11 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         }
     }
 
+    /**
+     * Extract the OCSPs from the VRI dictionary
+     *
+     * @param vriDictionary {@link PdfDssDict}
+     */
     protected void extractVRIOCSPs(PdfVRIDict vriDictionary) {
         if (vriDictionary != null) {
             for (Map.Entry<Long, BasicOCSPResp> ocspEntry : vriDictionary.getOCSPs().entrySet()) {

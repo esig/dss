@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.jaxb;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The default {@code ErrorHandler} used to collect the occurred during 
@@ -14,8 +14,13 @@ import org.xml.sax.SAXParseException;
  */
 public class DSSErrorHandler implements ErrorHandler {
 
+	/** List of error exceptions */
 	private final List<SAXException> errors = new ArrayList<>();
+
+	/** List of fatal error exceptions */
 	private final List<SAXException> fatalErrors = new ArrayList<>();
+
+	/** List of warning exceptions */
 	private final List<SAXException> warnings = new ArrayList<>();
 
 	@Override

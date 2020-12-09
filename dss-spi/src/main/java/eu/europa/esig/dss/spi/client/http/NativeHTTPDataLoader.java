@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
+import eu.europa.esig.dss.model.DSSException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -28,23 +32,22 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSException;
-
 /**
  * Implementation of native java DataLoader using the java.net.URL class.
  *
  */
 public class NativeHTTPDataLoader implements DataLoader {
 
+	/**
+	 * Available HTTPMethods
+	 */
 	protected enum HttpMethod {
 		GET, POST
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
 
+	/** Max inputStream size */
 	private long maxInputSize;
 
 	/**
@@ -52,6 +55,15 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 */
 	private long timeout = 0;
 
+	/**
+	 * Execute the request
+	 *
+	 * @param url {@link String}
+	 * @param method {@link HttpMethod}
+	 * @param content request content
+	 * @param refresh if enforce the refresh
+	 * @return response binaries
+	 */
 	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
 		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, refresh, maxInputSize);
 
@@ -105,19 +117,40 @@ public class NativeHTTPDataLoader implements DataLoader {
 		throw new DSSException("Not implemented");
 	}
 
+	/**
+	 * Gets the maximum InputStream size
+	 *
+	 * @return maximum InputStream size
+	 */
 	public long getMaxInputSize() {
 		return maxInputSize;
 	}
 
+	/**
+	 * Sets the maximum InputStream size
+	 *
+	 * @param maxInputSize maximum InputStream size
+	 */
 	public void setMaxInputSize(long maxInputSize) {
 		this.maxInputSize = maxInputSize;
 	}
 
+	/**
+	 * Gets timeout value
+	 *
+	 * @return timeout value
+	 */
 	public long getTimeout() {
 		return timeout;
 	}
 
+	/**
+	 * Sets timeout value
+	 *
+	 * @param timeout timeout value
+	 */
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
 	}
+
 }

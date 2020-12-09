@@ -24,8 +24,16 @@ import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
 
+/**
+ * Builds {@code DownloadCacheDTO}
+ */
 public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<XmlDownloadResult> {
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param cachedEntry download cache entry
+	 */
 	public DownloadCacheDTOBuilder(final CachedEntry<XmlDownloadResult> cachedEntry) {
 		super(cachedEntry);
 	}

@@ -327,6 +327,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method validates the signing certificate and all timestamps.
 	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 * @return signature validation context containing all certificates and
 	 *         revocation data used during the validation process.
 	 */
@@ -505,6 +506,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	/**
 	 * This method processes the structure validation of the signature.
+	 *
+	 * @return list of {@link String} errors
 	 */
 	protected List<String> validateStructure() {
 		// not implemented by default
