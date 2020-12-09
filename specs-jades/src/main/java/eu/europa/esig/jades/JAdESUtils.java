@@ -13,10 +13,10 @@ import java.util.Map;
 public final class JAdESUtils extends AbstractJWSUtils {
 
 	/** The JAdES schema of definitions */
-	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-draft07_v005_dss.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-draft07_v006.json";
 
 	/** The JAdES schema name URI */
-	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-draft07_v005c.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-draft07_v006.json";
 
 	/** The RFC 7797 schema of definitions */
 	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfc7797.json";
@@ -28,7 +28,7 @@ public final class JAdESUtils extends AbstractJWSUtils {
 	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-protected-draft07_v005.json";
 
 	/** The unprotected header schema for a JAdES signature */
-	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected-draft07_v005_dss.json";
+	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected-draft07_v006.json";
 
 	/** Map of used definition schemas */
 	private Map<URI, JSONObject> definitions;

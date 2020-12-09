@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
+
+import java.io.Serializable;
 
 /**
  * This interface {@code RemoteDocumentSignatureService} provides operations for the signature creation and for its
@@ -37,8 +37,8 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 public interface RemoteDocumentSignatureService extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
-	 * .
+	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}.
+	 *
 	 * When {@code toSignDocument} contains an already existing signature the returned bytes are related to a new
 	 * parallel signature.
 	 *

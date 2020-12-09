@@ -16,31 +16,31 @@
 				{
 					"properties": {
 						"sigT": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/sigT"
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigT"
 						},
 						"x5t#o": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/x5t%23o"
+							"$ref": "esi001982-draft07_v006.json#/definitions/x5t%23o"
 						},
 						"sigX5ts": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/sigX5ts"
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigX5ts"
 						},
 						"srCms": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/srCms"
+							"$ref": "esi001982-draft07_v006.json#/definitions/srCms"
 						},
 						"sigPl": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/sigPl"
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigPl"
 						},
 						"srAts": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/srAts"
+							"$ref": "esi001982-draft07_v006.json#/definitions/srAts"
 						},
 						"adoTst": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/adoTst"
+							"$ref": "esi001982-draft07_v006.json#/definitions/adoTst"
 						},
 						"sigPId": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/sigPId"
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigPId"
 						},
 						"sigD": {
-							"$ref": "esi001982-draft07_v005c.json#/definitions/sigD"
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigD"
 						}
 					},
 					"required": [

@@ -4,7 +4,7 @@
 		"jwsUnprotectedHeader": {
 			"type":"object",
 			"properties":{
-				"etsiU": {"$ref": "#/definitions/etsiU"}
+				"etsiU": {"$ref": "esi001982-draft07_v006.json#/definitions/etsiU"}
 			},
 			"required": ["etsiU"],
 			"additionalProperties": false
