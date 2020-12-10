@@ -170,9 +170,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] canonicalisedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
+			final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalisedValue);
+			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
 			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);

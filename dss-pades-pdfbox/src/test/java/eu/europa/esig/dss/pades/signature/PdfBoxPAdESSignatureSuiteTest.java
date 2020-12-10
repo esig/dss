@@ -40,9 +40,11 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithSHA256andMGF1Test
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTNotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprintTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
@@ -56,7 +58,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESWithPemEncodedCrlTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
 import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
-import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDifferentIdTest;
+import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
@@ -67,12 +69,13 @@ import org.junit.runner.RunWith;
 		PAdESLevelBOnlySigningCertTest.class, PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class,
 		PAdESLevelBWithECDSATest.class, PAdESLevelBWithSHA256andMGF1Test.class,	PAdESLevelImpossibleLTAExceptionTest.class,
 		PAdESLevelImpossibleLTExceptionTest.class, PAdESLevelLTTest.class, PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class,
-		PAdESLevelTTest.class, PDFTimestampFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class,
+		PAdESLevelTTest.class, PDFTimestampFiltersTest.class, TwoPAdESSignaturesMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class,
 		InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class, PAdESDoubleLTAValidationDataTest.class,
 		PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, PAdESWithSHA3Test.class, PAdESLevelTWithSHA1MessageImprintTest.class,
 		PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class,
 		PAdESTwoSignersLTALevelTest.class, PAdESWithPemEncodedCrlTest.class, PAdESSignatureParametersSerializationTest.class,
-		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class })
+		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
+		PAdESLevelLTANotTrustedTSPTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

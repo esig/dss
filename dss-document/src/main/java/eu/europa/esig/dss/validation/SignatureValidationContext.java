@@ -597,12 +597,12 @@ public class SignatureValidationContext implements ValidationContext {
 		return revocations;
 	}
 
-	private boolean containsTrustAnchor(List<Token> certChain) {
+	private <T extends Token> boolean containsTrustAnchor(List<T> certChain) {
 		return getFirstTrustAnchor(certChain) != null;
 	}
 
-	private Token getFirstTrustAnchor(List<Token> certChain) {
-		for (Token token : certChain) {
+	private <T extends Token> Token getFirstTrustAnchor(List<T> certChain) {
+		for (T token : certChain) {
 			if (isTrusted(token)) {
 				return token;
 			}
@@ -699,7 +699,9 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			
 			if (!found) {
-				if (bestSignatureTime == null) {
+				if (!certificateVerifier.isCheckRevocationForUntrustedChains() && !containsTrustAnchor(certificates)) {
+					errors.add(String.format("Revocation data is skipped for untrusted certificate chain for the token : '%s'", certificateToken.getDSSIdAsString()));
+				} else if (bestSignatureTime == null) {
 					// simple revocation presence check
 					errors.add(String.format("No revocation data found for certificate : %s", certificateToken.getDSSIdAsString()));
 				} else if (earliestNextUpdate != null) {
@@ -846,7 +848,7 @@ public class SignatureValidationContext implements ValidationContext {
 			return hasPOEAfterProductionAndBeforeNextUpdate(revocation);
 		} else {
 			// if the next update time is not defined, check the validity of the issuer's certificate
-			// useful for short-life certificates (i.e. ocsp responser)
+			// useful for short-life certificates (i.e. ocsp responder)
 			return hasPOEInTheValidityRange(certificateTokenChain.iterator().next());
 		}
 	}
@@ -937,7 +939,7 @@ public class SignatureValidationContext implements ValidationContext {
 		return Collections.unmodifiableSet(processedTimestamps);
 	}
 
-	private boolean isTrusted(Token token) {
+	private <T extends Token> boolean isTrusted(T token) {
 		return token instanceof CertificateToken && trustedCertSources.isTrusted((CertificateToken) token);
 	}
 

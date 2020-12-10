@@ -44,21 +44,25 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		if (jadesSignature.hasLTAProfile()) {
 			return;
 		}
-		
-		assertExtendSignatureToLTPossible(jadesSignature, params);
-		checkSignatureIntegrity(jadesSignature);
-
-		final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
 
 		// Data sources can already be loaded in memory (force reload)
 		jadesSignature.resetCertificateSource();
 		jadesSignature.resetRevocationSources();
 		jadesSignature.resetTimestampSource();
 
+		assertExtendSignatureToLTPossible(jadesSignature, params);
 		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
 
-		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
-		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
+		/**
+		 * In all cases the -LT level need to be regenerated.
+		 */
+		checkSignatureIntegrity(jadesSignature);
+
+		// must be executed before data removing
+		final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
+
+		removeOldCertificateValues(jadesSignature, etsiUHeader);
+		removeOldRevocationValues(jadesSignature, etsiUHeader);
 
 		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature,
 				validationContext);
@@ -76,6 +80,16 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS, rVals,
 					params.isBase64UrlEncodedEtsiUComponents());
 		}
+	}
+
+	private void removeOldCertificateValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
+		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
+		jadesSignature.resetCertificateSource();
+	}
+
+	private void removeOldRevocationValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
+		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
+		jadesSignature.resetRevocationSources();
 	}
 
 	/**

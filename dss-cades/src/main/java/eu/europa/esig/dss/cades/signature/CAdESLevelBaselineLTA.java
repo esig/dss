@@ -94,6 +94,7 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 		 */
 		if (!includesATSv2(cmsSignedData)) {
 			for (SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
+				signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
 				cmsSignedData = super.extendCMSSignedData(cmsSignedData, signerInformation, parameters);
 			}
 		}

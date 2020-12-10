@@ -40,6 +40,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithFailTimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithSelfSignedTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTAWithSelfSignedTest;
@@ -60,7 +61,8 @@ import org.junit.runner.RunWith;
 		PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class, PAdESExtensionBToLTASelfSignedTSATest.class,
 		PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class, PAdESExtensionLTToLTASelfSignedTSATest.class,
 		PAdESExtensionAllSelfSignedCertsTest.class, PDFTimestampingTest.class, PDFArchiveTimestampingTest.class, DSS1443Test.class,
-		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class, PAdESExtensionLTAToLTAWithDifferentTSATest.class })
+		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class, PAdESExtensionLTAToLTAWithDifferentTSATest.class,
+		PAdESExtensionTToLTANotTrustedTSPTest.class })
 public class PdfBoxPAdESExtensionSuiteTest {
 
 }
