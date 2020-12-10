@@ -123,7 +123,7 @@ public abstract class DiagnosticDataBuilder {
 	protected Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 
 	/** The token extraction strategy */
-	protected TokenExtractionStrategy tokenExtractionStategy = TokenExtractionStrategy.NONE;
+	protected TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
 
 	/** The digest algorithm to use for digest computation */
 	protected DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
@@ -224,11 +224,11 @@ public abstract class DiagnosticDataBuilder {
 	 * This method allows to set the {@link TokenExtractionStrategy} to follow for
 	 * the token extraction
 	 * 
-	 * @param tokenExtractionStategy {@link TokenExtractionStrategy} to use
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} to use
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
-		this.tokenExtractionStategy = tokenExtractionStategy;
+	public DiagnosticDataBuilder tokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
 		return this;
 	}
 
@@ -519,7 +519,7 @@ public abstract class DiagnosticDataBuilder {
 					getXmlFoundCertificates(revocationToken.getDSSId(), revocationToken.getCertificateSource()));
 		}
 
-		if (tokenExtractionStategy.isRevocationData()) {
+		if (tokenExtractionStrategy.isRevocationData()) {
 			xmlRevocation.setBase64Encoded(revocationToken.getEncoded());
 		} else {
 			byte[] revocationDigest = revocationToken.getDigest(defaultDigestAlgorithm);
@@ -1083,7 +1083,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(trustedCertSources.isTrusted(certToken));
 
-		if (tokenExtractionStategy.isCertificate()) {
+		if (tokenExtractionStrategy.isCertificate()) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
 		} else {
 			byte[] certDigest = certToken.getDigest(defaultDigestAlgorithm);

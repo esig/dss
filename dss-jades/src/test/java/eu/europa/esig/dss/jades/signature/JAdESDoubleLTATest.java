@@ -148,7 +148,7 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_TIMESTAMPS_ONLY);
+		validator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_TIMESTAMPS_ONLY);
 		return validator;
 	}
 	

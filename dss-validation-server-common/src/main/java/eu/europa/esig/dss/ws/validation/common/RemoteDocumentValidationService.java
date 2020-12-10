@@ -124,7 +124,7 @@ public class RemoteDocumentValidationService {
 		signedDocValidator.setCertificateVerifier(verifier);
 		// If null, uses default (NONE)
 		if (dataToValidate.getTokenExtractionStrategy() != null) {
-			signedDocValidator.setTokenExtractionStategy(dataToValidate.getTokenExtractionStrategy());
+			signedDocValidator.setTokenExtractionStrategy(dataToValidate.getTokenExtractionStrategy());
 		}
 		return signedDocValidator;
 	}

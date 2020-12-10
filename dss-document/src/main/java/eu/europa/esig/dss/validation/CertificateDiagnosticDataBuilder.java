@@ -44,8 +44,8 @@ public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public CertificateDiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
-		return (CertificateDiagnosticDataBuilder) super.tokenExtractionStategy(tokenExtractionStategy);
+	public CertificateDiagnosticDataBuilder tokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+		return (CertificateDiagnosticDataBuilder) super.tokenExtractionStrategy(tokenExtractionStrategy);
 	}
 
 	@Override

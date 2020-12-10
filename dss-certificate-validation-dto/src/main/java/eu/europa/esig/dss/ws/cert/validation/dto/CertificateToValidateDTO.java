@@ -91,14 +91,14 @@ public class CertificateToValidateDTO {
 	 * @param certificate {@link RemoteCertificate} to be validated
 	 * @param certificateChain a list of {@link RemoteCertificate}s representing the certificate chain
 	 * @param validationTime {@link Date} the validation time
-	 * @param tokenExtractionStategy {@link TokenExtractionStrategy} for the DiagnosticData report
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} for the DiagnosticData report
 	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
-			Date validationTime, TokenExtractionStrategy tokenExtractionStategy) {
+			Date validationTime, TokenExtractionStrategy tokenExtractionStrategy) {
 		this.certificate = certificate;
 		this.certificateChain = certificateChain;
 		this.validationTime = validationTime;
-		this.tokenExtractionStrategy = tokenExtractionStategy;
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
 	/**

@@ -69,9 +69,9 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * This method allows to set the token extraction strategy to follow in the
 	 * diagnostic data generation.
 	 * 
-	 * @param tokenExtractionStategy the {@link TokenExtractionStrategy}
+	 * @param tokenExtractionStrategy the {@link TokenExtractionStrategy}
 	 */
-	void setTokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy);
+	void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy);
 	
 	/**
 	 * This method allows to enable/disable the semantics inclusion in the reports

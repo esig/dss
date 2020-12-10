@@ -130,8 +130,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public SignedDocumentDiagnosticDataBuilder tokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
-		return (SignedDocumentDiagnosticDataBuilder) super.tokenExtractionStategy(tokenExtractionStategy);
+	public SignedDocumentDiagnosticDataBuilder tokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+		return (SignedDocumentDiagnosticDataBuilder) super.tokenExtractionStrategy(tokenExtractionStrategy);
 	}
 
 	@Override
@@ -727,7 +727,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
 		String tokenId = revocationIdentifier.asXmlId();
 		orphanToken.setId(tokenId);
-		if (tokenExtractionStategy.isRevocationData()) {
+		if (tokenExtractionStrategy.isRevocationData()) {
 			orphanToken.setBase64Encoded(revocationIdentifier.getBinaries());
 		} else {
 			byte[] digestValue = revocationIdentifier.getDigestValue(defaultDigestAlgorithm);
@@ -831,7 +831,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlTimestampToken.setFoundRevocations(
 				getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
 
-		if (tokenExtractionStategy.isTimestamp()) {
+		if (tokenExtractionStrategy.isTimestamp()) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
 		} else {
 			byte[] certDigest = timestampToken.getDigest(defaultDigestAlgorithm);

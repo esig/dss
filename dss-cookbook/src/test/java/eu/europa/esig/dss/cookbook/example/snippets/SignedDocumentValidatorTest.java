@@ -68,7 +68,7 @@ public class SignedDocumentValidatorTest {
 		
 		// Allows specifying which tokens need to be extracted in the diagnostic data (Base64).
 		// Default : NONE)
-		documentValidator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_TIMESTAMPS);
+		documentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_TIMESTAMPS);
 
 		// Allows providing signing certificate(s) in the explicit way, in case if the
 		// certificate is not provided in the signature itself (can be used for non-ASiC signatures)

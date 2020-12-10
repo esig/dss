@@ -156,7 +156,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.usedCertificates(svc.getProcessedCertificates())
 				.usedRevocations(svc.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.tokenExtractionStategy(tokenExtractionStrategy)
+				.tokenExtractionStrategy(tokenExtractionStrategy)
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).build();

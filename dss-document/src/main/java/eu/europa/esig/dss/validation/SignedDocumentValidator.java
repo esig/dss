@@ -126,7 +126,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * The used token extraction strategy to define tokens representation in DiagnosticData
 	 */
-	private TokenExtractionStrategy tokenExtractionStategy = TokenExtractionStrategy.NONE;
+	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
 
 	/**
 	 * This variable allows to include the semantics for Indication / SubIndication
@@ -256,9 +256,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setTokenExtractionStategy(TokenExtractionStrategy tokenExtractionStategy) {
-		Objects.requireNonNull(tokenExtractionStategy);
-		this.tokenExtractionStategy = tokenExtractionStategy;
+	public void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+		Objects.requireNonNull(tokenExtractionStrategy);
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
 	@Override
@@ -482,7 +482,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.usedCertificates(validationContext.getProcessedCertificates())
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.tokenExtractionStategy(tokenExtractionStategy)
+				.tokenExtractionStrategy(tokenExtractionStrategy)
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime());

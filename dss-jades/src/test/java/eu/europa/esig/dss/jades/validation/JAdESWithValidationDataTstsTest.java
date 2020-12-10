@@ -39,7 +39,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
+		validator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
 		return validator;
 	}
 	

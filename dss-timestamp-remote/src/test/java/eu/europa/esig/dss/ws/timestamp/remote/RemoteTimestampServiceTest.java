@@ -104,7 +104,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.setTokenExtractionStategy(TokenExtractionStrategy.EXTRACT_TIMESTAMPS_ONLY);
+		validator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_TIMESTAMPS_ONLY);
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 		

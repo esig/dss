@@ -227,7 +227,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.setTokenExtractionStategy(getTokenExtractionStrategy());
+		validator.setTokenExtractionStrategy(getTokenExtractionStrategy());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		validator.setDetachedContents(getDetachedContents());
 		return validator;
