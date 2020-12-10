@@ -319,9 +319,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @return a list of {@link DSSDocument}s
 	 */
 	protected List<DSSDocument> getSignedDocumentsASiCS(List<DSSDocument> retrievedDocs) {
-		if (Utils.collectionSize(retrievedDocs) > 1) {
-			throw new DSSException("ASiC-S : More than one file");
-		}
 		List<DSSDocument> containerDocuments = extractResult.getContainerDocuments();
 		if (Utils.isCollectionNotEmpty(containerDocuments)) {
 			return containerDocuments;

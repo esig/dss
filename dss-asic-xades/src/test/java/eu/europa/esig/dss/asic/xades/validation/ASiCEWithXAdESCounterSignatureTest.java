@@ -53,15 +53,13 @@ public class ASiCEWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTes
 		
 		AdvancedSignature signature = signatures.iterator().next();
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signatures.iterator().next());
-		assertEquals(0, originalDocuments.size());
-		// a custom type is defined
-		
+		assertEquals(2, originalDocuments.size());
+
 		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 		assertEquals(1, counterSignatures.size());
 		
 		originalDocuments = validator.getOriginalDocuments(counterSignatures.iterator().next());
-		assertEquals(1, originalDocuments.size());
-		assertEquals("service-body.json", originalDocuments.get(0).getName());
+		assertEquals(6, originalDocuments.size());
 	}
 
 	@Override

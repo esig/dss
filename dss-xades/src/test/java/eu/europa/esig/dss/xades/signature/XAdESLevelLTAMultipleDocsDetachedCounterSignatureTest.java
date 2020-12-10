@@ -95,24 +95,7 @@ public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends Abstr
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
-		assertNotNull(signatureWrapper);
-		
-		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signatureId);
-		assertEquals(2, originalDocuments.size());
-		
-		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignaturesForMasterSignature(signatureWrapper);
-		assertEquals(1, counterSignatures.size());
-		
-		SignatureWrapper counterSignature = counterSignatures.iterator().next();
-		
-		originalDocuments = validator.getOriginalDocuments(counterSignature.getId());
-		assertEquals(0, originalDocuments.size());
-	}
-	
+
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		return documentsToSign;

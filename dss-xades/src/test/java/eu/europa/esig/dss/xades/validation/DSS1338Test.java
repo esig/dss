@@ -45,7 +45,7 @@ public class DSS1338Test extends AbstractXAdESTestValidation {
 		super.verifyOriginalDocuments(validator, diagnosticData);
 		
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
-		assertEquals(1, originalDocuments.size());
+		assertEquals(2, originalDocuments.size());
 
 		try {
 			boolean found = false;

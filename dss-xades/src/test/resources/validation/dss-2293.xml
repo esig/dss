@@ -1,0 +1,96 @@
+<ds:Signature Id="ID-ff26e0a3-a312-497e-9564-ef6c6a0bb4ae" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo Id="ID-79a0845a-c23f-499c-b4a3-122d6e375dab"><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#ID-d128ea3a-70bc-4ec7-8656-542bb96d688d" Id="ID-68eee67e-ae0f-4d2a-94e7-894e6104882f"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>6cdeFJiTmFQECMlWI+a+SPTl8nHIQ3GqtNSD645rz8c=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#ID-6c01cd40-12e5-4a64-839c-bdbec8f0a316" Id="ID-92baa9f8-b1d7-4ede-9a82-ade8a04f5766"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>easY+ZFkQ4ZB2FVC9JNP/RJDAeQCT8yfpTV1FkwD1nE=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="ID-d6a01476-d5f7-46e2-89d4-680b1b323a16">Jj0hNPyqi2j9DCaDv9bH7JDy9ufVsdD2Q5ylFC/syqJtjwA/UIbYd91NFtVtPePEETkW7aeYRApxmtvt
+vAhqqonaO9rGe1pt94o3gJbjdP4MAA5OzPHMz41hAYWCcHsMWL7Gs/ev/rP5UiunNbQ7lCIsBYSIjkhs
+/ym/H8p75vCP+CMK2JKTTbqtk7hMKKxihT4qa9XAHRfx1/bbpl/Vy+ByXZYtpFqVfyXs7Rlr4XfT7a4t
+HfrKOBZbd1AN8HIN8K+yZvDzRl7NpccZPLUHuyW8xBtcNMxTrePqlnr7RkdYV6WudEXQ3y8uONUkEUIn
+QLj8UMBOcIO/NfD2leoQ5IQP2tqeA9imO6y/gsPJZ5XvG2awjZtdLSaMmPF+7Q4wAP6ty3S6rWn5JFvv
+R7Behh384hE0n1V2qCJw8UVa0tfYocbZF4kOGWSoKVBaSfqD+f/Q97YiPp4hEO0GbqhK043upnVt1pwD
+uE27o7pgKcpCQNxcodQAuUSFMfN2yDJp6DVicgk5hsrAFEiJe+hiLKA3DQxmDvULhGOgBYjalisV26hZ
+tVUBSvwCpDrbexZorfBMPMMm0ydo1E3SHW4p52V5LXbtHggE9vZgBqFUsi0K80eF96EIBSgMGfegdfyc
+C3S1ckBWGP2guUrJGMjLeZu4DzTHkqEEt5ETHe1N294=</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIFazCCA1OgAwIBAgIUKbYu+irbfGT3rzSuFI/A5UD1KWAwDQYJKoZIhvcNAQELBQAwRTELMAkGA1UE
+BhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0
+ZDAeFw0yMDExMTAxNDM3MjlaFw0yMTExMTAxNDM3MjlaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApT
+b21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggIiMA0GCSqGSIb3DQEB
+AQUAA4ICDwAwggIKAoICAQDeslaa2lC5EkIMiO8xu8eczg2k8lxaBDm8nB5NpObC8ZYia8ajtrTZzSz7
+ZTJtxPl2U96zkFOqdEcKizq+qcofczplIub/i+sQDbfigMjbGhZi8yRCMTZWrJVcmqk+xao0q1PII9Ri
+RfDqi/zCR0/HxPfdrxKgSlHY5lf0yxqaSOzaDCzJRpWrMFIiQCaJC33gz94LaSSIxEK3Fu95z5qLeki0
+6rOnOBSIjX1QY/6jm0avYBmP/fbn22UK1m+sALrvDHCL1Xx/23Q0dC/Es/KS1KaR3ZRmMJgPu85Sto43
+W/hr796u2yeDnWaAUv2B3aVY4zx9OCZp/lHoRVerZZgOEko7eDenduIlZPRIocJNWwJQM2X+aDsNjum1
+HvXU7jtGlYTXiw9jKyBB6EJlPZUfBRUOJhKhvA96LzGMhAetOVspraVfTbyKgGYekVX6teSYuv2DL3mS
+torg08XuIeROUId4L7lxKzEr6uzqkBjuHzaHRLDFV93ULp3jW86N/h1uzcZTmws1GRr5tw4jb9j42oxC
+TvyUgMIyBbT1tzcASj7DGqyw9zO6g44T69Vx2FIFo+5wcFfQOSsRbX5L3rI5/PqOuOs+cej97EmHI4x4
+gmIIaYUeDxZWNIY3N6mhz9qLs16DAFwWLkSY50Ob0NmyJI8u8KG2GukuIlNHQUOnswIDAQABo1MwUTAd
+BgNVHQ4EFgQUoBsETbehMt9BkaFXrcXqLthl57cwHwYDVR0jBBgwFoAUoBsETbehMt9BkaFXrcXqLthl
+57cwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAJNUfQnseTxOUO0pn2K60/URkPcjF
+Owv7VUqsvWFjhoNRNQxzEpBVlZRQZRZ7EmsW5sVXgOLi6zJ28kfIe5ZKHPF2W5HPVTbTGWh1rw+kfRJn
+ONU1WP5xNRrS2eNZsnZOsKmQAJN8aDlYGrRnhM6Efc15x+z117DDAIvmi4laix8x3If1bmNh36CkCOnl
+ekzTLqatqoTe3ChbxUBXWpJXI4xS74KK1fkGPG/99oU+/kkJNvwUDTw+ED5ZGGhJdt/0keebeTxhNtUI
+wPRDmCKfkw/9In1G0OVwnnCXwYGv5rzTcB4XQk18Um+1pzaLJ5jnVlgS82fIx0F1VmnfeZS0Jf694eZY
+kXb0pzypOxJOn68B631lzx03/BQuo3c99SxVEjvZBrc3uGKqHil8tB0g1qr2qyvPXslxi4CKIJM9NmXO
+NGm6s+0SQjkwNWqh5qI3XjYjOWVdhoWGbA/93uZkq8t9RC/kM1WCnDrJryCEu5MjaNRJAJgND7vGBZw4
+W5Ghoape4HDoiBJcRp3K3brAaVOlgiTGxhKdv89OdKuXOFnDohpwW0kPwpSg6PeDaPYAZ0CXB0hJ2BWS
+RDna+BCTRXUMXppVFz2bWjK7/HsdkFe2pCKnynGjOY6evjbym8WSshgTrihDqSBje7ZhuzjlTO4Oa/NX
+XJBa27KZUUYcgqs=</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xades:QualifyingProperties Target="#ID-ff26e0a3-a312-497e-9564-ef6c6a0bb4ae" Id="ID-6aa38070-96d4-4b6c-a364-e37d40995a30" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"><xades:SignedProperties Id="ID-6c01cd40-12e5-4a64-839c-bdbec8f0a316"><xades:SignedSignatureProperties><xades:SigningTime>2020-11-10T17:15:36Z</xades:SigningTime>
+<xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>7X3RfIthzUqjoDwiRyD8poslFqBZGUT8NKnKH+/MDGQ=</ds:DigestValue>
+</xades:CertDigest>
+<xades:IssuerSerial><ds:X509IssuerName>O=Internet Widgits Pty Ltd,ST=Some-State,C=AU</ds:X509IssuerName>
+<ds:X509SerialNumber>238131449522621796964527316623119567667703654752</ds:X509SerialNumber>
+</xades:IssuerSerial>
+</xades:Cert>
+</xades:SigningCertificate>
+</xades:SignedSignatureProperties>
+<xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#ID-68eee67e-ae0f-4d2a-94e7-894e6104882f"><xades:Description>DATA_BUFFER</xades:Description>
+<xades:MimeType>text/plain</xades:MimeType>
+<xades:Encoding>http://www.w3.org/2000/09/xmldsig#base64</xades:Encoding>
+</xades:DataObjectFormat>
+</xades:SignedDataObjectProperties>
+</xades:SignedProperties>
+</xades:QualifyingProperties>
+</ds:Object>
+<ds:Object MimeType="text/xml" Id="ID-d128ea3a-70bc-4ec7-8656-542bb96d688d"><InitUpload xmlns="http://e-dokumenty.mf.gov.pl">
+      <DocumentType>JPK</DocumentType>
+      <Version>01.02.01.20160617</Version>
+      <EncryptionKey padding="PKCS#1" mode="ECB" encoding="Base64" algorithm="RSA">eACeoRGx3V0mwsJBjvF9aVeS/Wwx1i9Bm8MAUO6FeH9is+m1X1fhdsvw5rVHStZgTYhIGek+VLTJjonds3KbI1IuB8c3Oqj2hBEmB2jLrI/2pRwCsLCx/S6WNdkNHh6w/YOoasXbm13gGanC3CbN09ugSIHItYIJtfNZ+eUfmL97IHn4ApsZtPGybbA3OtNOihuExuXwh5iHG0xio7xpLCEnRs6Tr084/WNFuNXSmVLgF2OHT7Y9GUV0rJoK169G7oGIjpgmJ150aUZat8vWzCDiW1l7UinrZV7vEBstH3jcb9dJB+dSnQlojl0Sz1/MgE1c1wQyAFLYBi0sQx+VnA==</EncryptionKey>
+      <DocumentList>
+        <Document>
+          <FormCode systemCode="JPK_V7M (1)" schemaVersion="1-2E">JPK_V7M</FormCode>
+          <FileName>VAT7M_JPK.xml</FileName>
+          <ContentLength>2209</ContentLength>
+          <HashValue encoding="Base64" algorithm="SHA-256">bFOML/vOF9TVloen5ZobJPD2sF+0zF8ByY2mH7bOwKA=</HashValue>
+          <FileSignatureList filesNumber="1">
+            <Packaging>
+              <SplitZip type="split" mode="zip"/>
+            </Packaging>
+            <Encryption>
+              <AES size="256" padding="PKCS#7" mode="CBC" block="16">
+                <IV encoding="Base64" bytes="16">hzXizTELVaWUMy1g/OpKHw==</IV>
+              </AES>
+            </Encryption><FileSignature>
+                <OrdinalNumber>1</OrdinalNumber>
+                <FileName>VAT7M_JPK2603240736492777338.xml.zip.aes</FileName>
+                <ContentLength>992</ContentLength>
+                <HashValue encoding="Base64" algorithm="MD5">8LXtWLLhboRdWVhiB3YhJw==</HashValue>
+              </FileSignature>
+          </FileSignatureList>
+        </Document>
+      </DocumentList>
+    </InitUpload></ds:Object>
+</ds:Signature>
