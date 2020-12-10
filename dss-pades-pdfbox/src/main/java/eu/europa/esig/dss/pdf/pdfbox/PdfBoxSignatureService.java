@@ -209,8 +209,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		};
 		
 		SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
-		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters); // can be null
-		final PDSignature pdSignature = createSignatureDictionary(pdDocument, pdSignatureField, parameters);
+		final PDSignature pdSignature = createSignatureDictionary(pdDocument, parameters);
+		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters);
+		if (pdSignatureField != null) {
+			setSignatureToField(pdSignatureField, pdSignature);
+		}
 		
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getContentSize());
@@ -263,11 +266,17 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return null;
 	}
 
-	private PDSignature createSignatureDictionary(final PDDocument pdDocument, PDSignatureField pdSignatureField, final PAdESCommonParameters parameters) {
+	/**
+	 * Creates a new signature dictionary
+	 *
+	 * Note for developers: keep protected! See https://github.com/esig/dss/pull/138
+	 *
+	 * @param pdDocument {@link PDDocument}
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return {@link PDSignature}
+	 */
+	protected PDSignature createSignatureDictionary(final PDDocument pdDocument, final PAdESCommonParameters parameters) {
 		final PDSignature signature = new PDSignature();
-		if (pdSignatureField != null) {
-			pdSignatureField.getCOSObject().setItem(COSName.V, signature);
-		}
 		
 		COSName currentType = COSName.getPDFName(getType());
 		signature.setType(currentType);
@@ -316,6 +325,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 		
 		return signature;
+	}
+
+	private void setSignatureToField(final PDSignatureField pdSignatureField, final  PDSignature pdSignature) {
+		pdSignatureField.getCOSObject().setItem(COSName.V, pdSignature);
 	}
 
 	private boolean containsFilledSignature(PDDocument pdDocument) {
