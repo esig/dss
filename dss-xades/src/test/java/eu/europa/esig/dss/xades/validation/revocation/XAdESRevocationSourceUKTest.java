@@ -60,12 +60,5 @@ public class XAdESRevocationSourceUKTest extends AbstractXAdESTestValidation {
 		assertNotNull(revocationRef.getProductionTime());
 		assertNotNull(revocationRef.getResponderIdKey());
 	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		// the reference does not have type "Object"
-		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
-		assertTrue(Utils.isCollectionEmpty(originalDocuments));
-	}
 
 }

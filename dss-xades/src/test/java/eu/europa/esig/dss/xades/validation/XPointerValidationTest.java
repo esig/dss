@@ -91,12 +91,5 @@ public class XPointerValidationTest extends AbstractXAdESTestValidation {
 		assertEquals(Utils.toBase64(xPointerDigestMatcher.getDigestValue()), Utils.toBase64(xmlSignerData.getDigestAlgoAndValue().getDigestValue()));
 		assertTrue(Arrays.equals(xPointerDigestMatcher.getDigestValue(), xmlSignerData.getDigestAlgoAndValue().getDigestValue()));
 	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
-		assertEquals(0, originalDocuments.size());
-		// unable to extract by XPath expression, see LOG
-	}
 
 }

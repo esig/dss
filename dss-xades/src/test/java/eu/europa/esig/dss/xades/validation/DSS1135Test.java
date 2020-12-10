@@ -69,12 +69,5 @@ public class DSS1135Test extends AbstractXAdESTestValidation {
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertTrue(signatureWrapper.isPolicyStatus());
 	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		super.verifyOriginalDocuments(validator, diagnosticData);
-		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
-		assertEquals(1, retrievedOriginalDocuments.size());
-	}
 
 }
