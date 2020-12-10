@@ -20,22 +20,23 @@
  */
 package eu.europa.esig.dss.service.crl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OnlineCRLSourceTest {
 
@@ -65,7 +66,10 @@ public class OnlineCRLSourceTest {
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
 		ed25519RootCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-root-ca.crt"));
+	}
 
+	@BeforeEach
+	public void beforeEach() {
 		onlineCRLSource = new OnlineCRLSource(dataLoader);
 	}
 	
@@ -118,6 +122,15 @@ public class OnlineCRLSourceTest {
 		assertNull(revocationToken);
 
 		dataLoader.setTimeoutConnection(6000);
+	}
+
+	@Test
+	public void testNullDataLoader() {
+		onlineCRLSource.setDataLoader(null);
+
+		Exception exception = assertThrows(NullPointerException.class,
+				() -> onlineCRLSource.getRevocationToken(goodCa, rootCa));
+		assertEquals("DataLoader is not provided !", exception.getMessage());
 	}
 
 }

@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.service.crl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
@@ -44,6 +37,13 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSuppo
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Online CRL repository. This CRL repository implementation will download the
@@ -118,6 +118,8 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 	@Override
 	public CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken,
 			List<String> alternativeUrls) {
+		Objects.requireNonNull(dataLoader, "DataLoader is not provided !");
+
 		if (certificateToken == null) {
 			return null;
 		}

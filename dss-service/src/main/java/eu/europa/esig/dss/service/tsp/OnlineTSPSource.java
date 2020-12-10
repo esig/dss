@@ -20,8 +20,15 @@
  */
 package eu.europa.esig.dss.service.tsp;
 
-import java.io.IOException;
-
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.service.NonceSource;
+import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.tsp.TSPException;
@@ -32,15 +39,8 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.service.NonceSource;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Class encompassing a RFC 3161 TSA, accessed through HTTP(S) to a given URI
@@ -80,13 +80,29 @@ public class OnlineTSPSource implements TSPSource {
 	}
 
 	/**
-	 * Build a OnlineTSPSource that will query the specified URL
+	 * Builds an OnlineTSPSource that will query the specified URL with default {@code TimestampDataLoader}
 	 *
 	 * @param tspServer
 	 *            the tsp URL
 	 */
 	public OnlineTSPSource(final String tspServer) {
 		this.tspServer = tspServer;
+		this.dataLoader = new TimestampDataLoader();
+		LOG.trace("+OnlineTSPSource with the default data loader.");
+	}
+
+	/**
+	 * Builds an OnlineTSPSource that will query the URL and the specified {@code DataLoader}
+	 *
+	 * @param tspServer
+	 *            the tsp URL
+	 * @param dataLoader
+	 *            {@link DataLoader} to retrieve the TSP
+	 */
+	public OnlineTSPSource(final String tspServer, final DataLoader dataLoader) {
+		this.tspServer = tspServer;
+		this.dataLoader = dataLoader;
+		LOG.trace("+OnlineTSPSource with the specific data loader.");
 	}
 
 	/**
@@ -132,6 +148,7 @@ public class OnlineTSPSource implements TSPSource {
 	@Override
 	public TimestampBinary getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
 		try {
+			Objects.requireNonNull(dataLoader, "DataLoader is not provided !");
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Timestamp digest algorithm: {}", digestAlgorithm.getName());
 				LOG.trace("Timestamp digest value    : {}", Utils.toHex(digest));
@@ -155,9 +172,6 @@ public class OnlineTSPSource implements TSPSource {
 			final byte[] requestBytes = timeStampRequest.getEncoded();
 
 			// Call the communications layer
-			if (dataLoader == null) {
-				dataLoader = new NativeHTTPDataLoader();
-			}
 			byte[] respBytes = dataLoader.post(tspServer, requestBytes);
 
 			// Handle the TSA response

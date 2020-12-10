@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
@@ -50,6 +35,20 @@ import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OnlineOCSPSourceTest {
 
@@ -236,6 +235,16 @@ public class OnlineOCSPSourceTest {
 		
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
+	}
+
+	@Test
+	public void testNullDataLoader() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setDataLoader(null);
+
+		Exception exception = assertThrows(NullPointerException.class,
+				() -> ocspSource.getRevocationToken(certificateToken, rootToken));
+		assertEquals("DataLoader is not provided !", exception.getMessage());
 	}
 	
 }
